@@ -1,0 +1,275 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Threads</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Threads">
+<META NAME="keywords" CONTENT="Debugging with GDB: Threads">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC25"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_24.html#SEC24"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_26.html#SEC26"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.9 Debugging programs with multiple threads </H2>
+<!--docid::SEC25::-->
+<P>
+
+<A NAME="IDX103"></A>
+<A NAME="IDX104"></A>
+<A NAME="IDX105"></A>
+In some operating systems, such as HP-UX and Solaris, a single program
+may have more than one <EM>thread</EM> of execution.  The precise semantics
+of threads differ from one operating system to another, but in general
+the threads of a single program are akin to multiple processes--except
+that they share one address space (that is, they can all examine and
+modify the same variables).  On the other hand, each thread has its own
+registers and execution stack, and perhaps private memory.
+</P><P>
+
+GDB provides these facilities for debugging multi-thread
+programs:
+</P><P>
+
+<UL>
+<LI>automatic notification of new threads
+<LI><SAMP>`thread <VAR>threadno</VAR>'</SAMP>, a command to switch among threads
+<LI><SAMP>`info threads'</SAMP>, a command to inquire about existing threads
+<LI><SAMP>`thread apply [<VAR>threadno</VAR>] [<VAR>all</VAR>] <VAR>args</VAR>'</SAMP>,
+a command to apply a command to a list of threads
+<LI>thread-specific breakpoints
+</UL>
+<P>
+
+<BLOCKQUOTE>
+<EM>Warning:</EM> These facilities are not yet available on every
+GDB configuration where the operating system supports threads.
+If your GDB does not support threads, these commands have no
+effect.  For example, a system without thread support shows no output
+from <SAMP>`info threads'</SAMP>, and always rejects the <CODE>thread</CODE> command,
+like this:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) info threads
+(gdb) thread 1
+Thread ID 1 not known.  Use the "info threads" command to
+see the IDs of currently known threads.
+</FONT></pre></td></tr></table></BLOCKQUOTE>
+<P>
+
+<A NAME="IDX106"></A>
+<A NAME="IDX107"></A>
+The GDB thread debugging facility allows you to observe all
+threads while your program runs--but whenever GDB takes
+control, one thread in particular is always the focus of debugging.
+This thread is called the <EM>current thread</EM>.  Debugging commands show
+program information from the perspective of the current thread.
+</P><P>
+
+<A NAME="IDX108"></A>
+<A NAME="IDX109"></A>
+Whenever GDB detects a new thread in your program, it displays
+the target system's identification for the thread with a message in the
+form <SAMP>`[New <VAR>systag</VAR>]'</SAMP>.  <VAR>systag</VAR> is a thread identifier
+whose form varies depending on the particular system.  For example, on
+LynxOS, you might see
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>[New process 35 thread 27]
+</FONT></pre></td></tr></table></P><P>
+
+when GDB notices a new thread.  In contrast, on an SGI system,
+the <VAR>systag</VAR> is simply something like <SAMP>`process 368'</SAMP>, with no
+further qualifier.
+</P><P>
+
+<A NAME="IDX110"></A>
+<A NAME="IDX111"></A>
+For debugging purposes, GDB associates its own thread
+number--always a single integer--with each thread in your program.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX112"></A>
+<DT><CODE>info threads</CODE>
+<DD>Display a summary of all threads currently in your
+program.  GDB displays for each thread (in this order):
+<P>
+
+<OL>
+<LI>the thread number assigned by GDB
+<P>
+
+<LI>the target system's thread identifier (<VAR>systag</VAR>)
+<P>
+
+<LI>the current stack frame summary for that thread
+</OL>
+<P>
+
+An asterisk <SAMP>`*'</SAMP> to the left of the GDB thread number
+indicates the current thread.
+</P><P>
+
+For example,
+</DL>
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) info threads
+  3 process 35 thread 27  0x34e5 in sigpause ()
+  2 process 35 thread 23  0x34e5 in sigpause ()
+* 1 process 35 thread 13  main (argc=1, argv=0x7ffffff8)
+    at threadtest.c:68
+</FONT></pre></td></tr></table></P><P>
+
+On HP-UX systems:
+</P><P>
+
+<A NAME="IDX113"></A>
+<A NAME="IDX114"></A>
+For debugging purposes, GDB associates its own thread
+number--a small integer assigned in thread-creation order--with each
+thread in your program.
+</P><P>
+
+<A NAME="IDX115"></A>
+<A NAME="IDX116"></A>
+Whenever GDB detects a new thread in your program, it displays
+both GDB's thread number and the target system's identification for the thread with a message in the
+form <SAMP>`[New <VAR>systag</VAR>]'</SAMP>.  <VAR>systag</VAR> is a thread identifier
+whose form varies depending on the particular system.  For example, on
+HP-UX, you see
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>[New thread 2 (system thread 26594)]
+</FONT></pre></td></tr></table></P><P>
+
+when GDB notices a new thread.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX117"></A>
+<DT><CODE>info threads</CODE>
+<DD>Display a summary of all threads currently in your
+program.  GDB displays for each thread (in this order):
+<P>
+
+<OL>
+<LI>the thread number assigned by GDB
+<P>
+
+<LI>the target system's thread identifier (<VAR>systag</VAR>)
+<P>
+
+<LI>the current stack frame summary for that thread
+</OL>
+<P>
+
+An asterisk <SAMP>`*'</SAMP> to the left of the GDB thread number
+indicates the current thread.
+</P><P>
+
+For example,
+</DL>
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) info threads
+    * 3 system thread 26607  worker (wptr=0x7b09c318 "@") \<BR>
+                               at quicksort.c:137
+      2 system thread 26606  0x7b0030d8 in __ksleep () \<BR>
+                               from /usr/lib/libc.2
+      1 system thread 27905  0x7b003498 in _brk () \<BR>
+                               from /usr/lib/libc.2
+</FONT></pre></td></tr></table></P><P>
+
+<DL COMPACT>
+<A NAME="IDX118"></A>
+<DT><CODE>thread <VAR>threadno</VAR></CODE>
+<DD>Make thread number <VAR>threadno</VAR> the current thread.  The command
+argument <VAR>threadno</VAR> is the internal GDB thread number, as
+shown in the first field of the <SAMP>`info threads'</SAMP> display.
+GDB responds by displaying the system identifier of the thread
+you selected, and its current stack frame summary:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) thread 2
+[Switching to process 35 thread 23]
+0x34e5 in sigpause ()
+</FONT></pre></td></tr></table></P><P>
+
+As with the <SAMP>`[New <small>...</small>]'</SAMP> message, the form of the text after
+<SAMP>`Switching to'</SAMP> depends on your system's conventions for identifying
+threads.
+</P><P>
+
+<A NAME="IDX119"></A>
+<DT><CODE>thread apply [<VAR>threadno</VAR>] [<VAR>all</VAR>]  <VAR>args</VAR></CODE>
+<DD>The <CODE>thread apply</CODE> command allows you to apply a command to one or
+more threads.  Specify the numbers of the threads that you want affected
+with the command argument <VAR>threadno</VAR>.  <VAR>threadno</VAR> is the internal
+GDB thread number, as shown in the first field of the <SAMP>`info
+threads'</SAMP> display.  To apply a command to all threads, use
+<CODE>thread apply all</CODE> <VAR>args</VAR>.
+</DL>
+<P>
+
+<A NAME="IDX120"></A>
+<A NAME="IDX121"></A>
+<A NAME="IDX122"></A>
+Whenever GDB stops your program, due to a breakpoint or a
+signal, it automatically selects the thread where that breakpoint or
+signal happened.  GDB alerts you to the context switch with a
+message of the form <SAMP>`[Switching to <VAR>systag</VAR>]'</SAMP> to identify the
+thread.
+</P><P>
+
+See section <A HREF="gdb_40.html#SEC40">Stopping and starting multi-thread programs</A>, for
+more information about how GDB behaves when you stop and start
+programs with multiple threads.
+</P><P>
+
+See section <A HREF="gdb_30.html#SEC30">Setting watchpoints</A>, for information about
+watchpoints in programs with multiple threads.
+</P><P>
+
+<A NAME="Processes"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_24.html#SEC24"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_26.html#SEC26"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

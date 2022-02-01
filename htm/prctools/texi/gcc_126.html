@@ -1,0 +1,85 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Cross-Compiler Problems</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Cross-Compiler Problems">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Cross-Compiler Problems">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC126"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_125.html#SEC125"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_127.html#SEC127"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_127.html#SEC127"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.3 Cross-Compiler Problems </H2>
+<!--docid::SEC126::-->
+<P>
+
+You may run into problems with cross compilation on certain machines,
+for several reasons.
+</P><P>
+
+<UL>
+<LI>
+Cross compilation can run into trouble for certain machines because
+some target machines' assemblers require floating point numbers to be
+written as <EM>integer</EM> constants in certain contexts.
+<P>
+
+The compiler writes these integer constants by examining the floating
+point value as an integer and printing that integer, because this is
+simple to write and independent of the details of the floating point
+representation.  But this does not work if the compiler is running on
+a different machine with an incompatible floating point format, or
+even a different byte-ordering.
+</P><P>
+
+In addition, correct constant folding of floating point values
+requires representing them in the target machine's format.
+(The C standard does not quite require this, but in practice
+it is the only way to win.)
+</P><P>
+
+It is now possible to overcome these problems by defining macros such
+as <CODE>REAL_VALUE_TYPE</CODE>.  But doing so is a substantial amount of
+work for each target machine.
+See section `Cross Compilation and Floating Point Format' in <CITE>Using and Porting GCC</CITE>.
+</P><P>
+
+<LI>
+At present, the program <TT>`mips-tfile'</TT> which adds debug
+support to object files on MIPS systems does not work in a cross
+compile environment.
+</UL>
+<P>
+
+<A NAME="Interoperation"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

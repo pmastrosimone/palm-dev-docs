@@ -1,0 +1,87 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: trapfilt</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: trapfilt">
+<META NAME="keywords" CONTENT="Using PRC-Tools: trapfilt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC38"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_32.html#SEC37"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_27.html#SEC32"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 6.6 trapfilt </H2>
+<!--docid::SEC38::-->
+<P>
+
+<A NAME="IDX16"></A>
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>trapfilt [ -q | --quiet | --silent ] [ <VAR>vector</VAR><small>...</small> ]
+</pre></td></tr></table></P><P>
+
+On the 68000, calls to Palm OS system API functions are compiled into a
+<CODE>trap</CODE> instruction followed by a <EM>trap vector</EM>, which is a 16-bit
+number in a range starting at 0xA000.  The mapping between particular system
+functions and numeric trap vectors is given in the <TT>`CoreTraps.h'</TT> header
+in a Palm OS SDK (or <TT>`SysTraps.h'</TT> in older SDKs).
+</P><P>
+
+A disassembly listing of a Palm OS program displays only the <CODE>trap</CODE>
+instructions and the raw trap vectors.  The <CODE>trapfilt</CODE> utility decodes
+trap vectors using the mapping given by the header from the default SDK
+selected with <CODE>palmdev-prep</CODE>.  Typically you use it in conjunction
+with a disassembly listing from <CODE>objdump</CODE>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>m68k-palmos-objdump -d myapp | m68k-palmos-trapfilt
+</pre></td></tr></table></P><P>
+
+If any <VAR>vector</VAR> arguments are given, <CODE>trapfilt</CODE> decodes them and
+outputs the results on standard output.  Otherwise, when no such arguments
+are given, it acts as a filter: copying from standard input to standard
+output, annotating each line that matches the syntax of a trap vector
+(i.e., the syntax as printed by <CODE>objdump</CODE>) with the name of the
+corresponding system function, if any.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-q</CODE>
+<DD><DT><CODE>--quiet</CODE>
+<DD><DT><CODE>--silent</CODE>
+<DD>In non-filter mode, output only the system function name for each <VAR>vector</VAR>
+given.  The default output format in non-filter mode is similar to that used
+in filter mode.
+</DL>
+<P>
+
+<HR SIZE=1>
+
+</BODY>
+</HTML>

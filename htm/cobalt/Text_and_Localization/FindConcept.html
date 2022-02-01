@@ -1,0 +1,391 @@
+<html>
+<head>
+<title>(Protein) Implementing Global Find | Text and Localization </title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:30:38">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="1036996"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="TextLocTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Text.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Localization.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="TextLocIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">2 &nbsp;&nbsp;
+Implementing Global Find</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Text and Localization </p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="TextLoc_PartConcept.html">Part I: Concepts</a> </h1>
+<h1 class="SideTOC1"><a href="FindConcept.html">2  Implementing Global Find</a></h1>
+
+   <h2 class="SideTOC2"><a href="#1044821">
+   Implementing sysAppLaunchCmdFind</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1044908">
+   Implementing sysAppLaunchCmdGoTo</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1038476">
+   Implementing sysAppLaunchCmdSaveData</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1046081">
+   Summary of Find Manager API</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="1044669"> </a>The Global Find facility allows a user to search all databases on the device for a particular string and then jump to the application that supports the database containing the matching record he or she wants to see. </p>
+
+<p><a name="1044697"> </a>Find is launched when the user taps the Find icon in the status bar. To integrate your application with the Global Find facility, you must do the following: </p>
+<ol type="1">
+  <li value="1"><a name="1044748"> </a>Create an <code>APP_LAUNCH_PREFS_RESOURCE</code> with ID 0 in your application's resource file. See the book <i>Resource File Formats</i> for more information on this resource. 
+</ol>
+
+<div><hr>
+  <a name="1044815"> </a> <b>TIP: </b> Be sure you use a resource ID of 0. 
+<hr>
+</div>
+<ol type="1">
+  <li value="2"><a name="1044749"> </a>In the resource, set the <code>ALPF_FLAG_NOTIFY_FIND</code> attribute to <code>true</code>. 
+  <li value="3"><a name="1044799"> </a>In your application's <code>PilotMain()</code> function, implement responses to these launch codes: 
+  <ul type="disc">
+    <li><a name="1045984"> </a><a href="Find.html#1007141"><code>sysAppLaunchCmdFind</code></a>
+    <li><a name="1045990"> </a><a href="../Programming_Basics/CmnLaunchCodes.html#993710"><code>sysAppLaunchCmdGoTo</code></a>
+    <li><a name="1045999"> </a><a href="../Programming_Basics/CmnLaunchCodes.html#994125"><code>sysAppLaunchCmdSaveData</code></a>
+  </ul>
+</ol>
+
+<h2 class="haH2">
+  <a name="1044821"> </a>Implementing sysAppLaunchCmdFind <a href="#1036996"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1044341"> </a>The Find Manager sends each application registered to receive it the <a href="Find.html#1007141"><code>sysAppLaunchCmdFind</code></a> launch code. This launch code is a signal that you should search your application's databases for the string passed to you in the launch code's parameter block. To implement the <code>sysAppLaunchCmdFind</code> launch code, you should do the following: </p>
+<ol type="1">
+  <li value="1"><a name="1044993"> </a>Open your application's record database using the open mode parameter that is passed to your application in the launch code's parameter block. 
+  <li value="2"><a name="1045000"> </a>Use <a href="Find.html#1002030"><code>FindDrawHeader()</code></a> to pass back to the Find Manager a string that is used to delineate your application's search results from those of all other applications in the Find Results dialog. This string is only used if your application has matching results. 
+  <li value="3"><a name="1044999"> </a>Search each record using <a href="TextMgr.html#1027900"><code>TxtFindString()</code></a>. <code>TxtFindString()</code> accurately matches single-byte characters with their corresponding multi-byte characters, and it passes back the length of the matched text. You'll need to know the length of the matching text to highlight it when the system requests that you display the matching record. 
+  <li value="4"><a name="1045038"> </a>If a match is found, do the following: 
+  <ol type="a">
+    <li><a name="1045548"> </a>Send information about the matching result back to the Find Manager using <a href="Find.html#1003363"><code>FindSaveMatch()</code></a>. The parameters you pass to <code>FindSaveMatch()</code> are used in the <a href="../Programming_Basics/CmnLaunchCodes.html#993710"><code>sysAppLaunchCmdGoTo</code></a> parameter block if the user selects your record in the Find Results dialog. 
+    <li><a name="1045465"> </a>If <code>FindSaveMatch()</code> returns <code>false</code>, it means that there is room to display the matching record. Call <a href="../User_Interface/UI_Window.html#1027460"><code>WinDrawChars()</code></a> to send the text to the Find Results dialog. Use <a href="Find.html#1011869"><code>FindGetLineBounds()</code></a> to determine where to draw, and use <code>WinDrawChars() </code>to do the drawing. 
+      <p><a name="1045802"> </a>When a Find is in progress, <code>WinDrawChars()</code> does not draw directly to the screen. The Find Manager traps all <code>WinDrawChars()</code> calls and copies the string into a buffer that it later draws to the screen. </p>
+  </ol>
+</ol>
+
+<div><hr>
+  <a name="1046226"> </a> <b>IMPORTANT: </b> Do not use <code>GcDrawTextAt()</code> in conjunction with Global Find. If you do, your string is not displayed. 
+<hr>
+</div>
+<ol type="1">
+  <li value="5"><a name="1045362"> </a>If your database is potentially large, you should occasionally check the event queue to see if there is another event pending. For example, the user might start a find but then press one of the device's hard keys, which would generate a <code>keyDownEvent</code>. <a href="FindConcept.html#1044942">Listing 2.1</a> shows an example of a search that checks the event queue every 16 records. 
+</ol>
+
+<p><a name="1044555"> </a><a href="FindConcept.html#1044942">Listing 2.1</a> shows an example of a function that should be called in response to the <code>sysAppLaunchCmdFind</code> launch code. </p>
+<p class="CCodeCaption">
+  <a name="1044942"> </a><b>Listing 2.1&nbsp;&nbsp;Implementing Global Find </b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+static void Search (FindParamsType *findParams)<a name="1045052"> </a>
+{<a name="1045053"> </a>
+   uint16_t pos;<a name="1045054"> </a>
+   char * header;<a name="1045055"> </a>
+   uint16_t recordNum;<a name="1045056"> </a>
+   MemHandle recordH;<a name="1045057"> </a>
+   MemHandle headerStringH;<a name="1045058"> </a>
+   RectangleType r;<a name="1045059"> </a>
+   Boolean done;<a name="1045060"> </a>
+   Boolean match;<a name="1045061"> </a>
+   DmOpenRef dbP;<a name="1045062"> </a>
+   status_t err;<a name="1045064"> </a>
+   DatabaseID dbID;<a name="1045066"> </a>
+   MemoDBRecordPtr memoRecP;<a name="1045067"> </a>
+   size_t longPos;<a name="1045068"> </a>
+   size_t matchLength;<a name="1045069"> </a>
+<a name="1045081"> </a>
+   // Locate the Memo database.<a name="1045239"> </a>
+   dbID = DmFindDatabaseByTypeCreator(ty, cr, dmFindAllDB, <a name="1045213"> </a>
+      NULL);<a name="1045220"> </a>
+   if (!dbID) {<a name="1045093"> </a>
+      findParams-&gt;more = false;<a name="1045095"> </a>
+      return;<a name="1045096"> </a>
+   }<a name="1045097"> </a>
+   dbP = DmOpenDatabase(dbID, <a name="1045100"> </a>
+      (DmOpenModeType)findParams-&gt;dbAccesMode);<a name="1045612"> </a>
+   if (!dbP) {<a name="1045101"> </a>
+      findParams-&gt;more = false;<a name="1045103"> </a>
+      return;<a name="1045104"> </a>
+   }<a name="1045105"> </a>
+<a name="1045106"> </a>
+   // Display the heading line. <a name="1045107"> </a>
+   headerStringH = DmGetResource(gAppResDBRef, strRsc, <a name="1045108"> </a>
+      FindMemoHeaderStr);<a name="1045254"> </a>
+   header = MemHandleLock(headerStringH);<a name="1045109"> </a>
+   done = FindDrawHeader(findParams, header);<a name="1045110"> </a>
+   MemHandleUnlock(headerStringH);<a name="1045111"> </a>
+   DmReleaseResource(headerStringH);<a name="1045112"> </a>
+   if (done)<a name="1045113"> </a>
+      goto Exit;<a name="1045114"> </a>
+<a name="1045115"> </a>
+   // Search the memos for the "find" string.<a name="1045116"> </a>
+   recordNum = findParams-&gt;recordNum;<a name="1045117"> </a>
+   while (true) {<a name="1045118"> </a>
+      if ((recordNum &amp; 0x000f) == 0 &amp;&amp; // every 16th record<a name="1045132"> </a>
+         EvtSysEventAvail(true)) {<a name="1045133"> </a>
+         // Stop the search process.<a name="1045135"> </a>
+         findParams-&gt;more = true;<a name="1045136"> </a>
+         break;<a name="1045137"> </a>
+      }<a name="1045138"> </a>
+<a name="1045139"> </a>
+      recordH = DmQueryNextInCategory (dbP, &amp;recordNum, <a name="1045140"> </a>
+         dmAllCategories);<a name="1045353"> </a>
+<a name="1045141"> </a>
+      // Have we run out of records?<a name="1045142"> </a>
+      if (!recordH) {<a name="1045143"> </a>
+         findParams-&gt;more = false;<a name="1045145"> </a>
+         break;<a name="1045146"> </a>
+      }<a name="1045147"> </a>
+<a name="1045148"> </a>
+      memoRecP = MemHandleLock (recordH);<a name="1045149"> </a>
+<a name="1045150"> </a>
+      // Search for the string passed,  if it's found display <a name="1045151"> </a>
+      // the title of the memo.<a name="1045152"> </a>
+      match = TxtFindString (&amp;(memoRecP-&gt;note), <a name="1045153"> </a>
+         findParams-&gt;strToFind, &amp;longPos, &amp;matchLength);<a name="1045424"> </a>
+<a name="1045154"> </a>
+      pos = longPos;<a name="1045155"> </a>
+<a name="1045156"> </a>
+      if (match) {<a name="1045157"> </a>
+         // Add the match to the find paramter block,  if <a name="1045159"> </a>
+         // there is no room to display the match the <a name="1045160"> </a>
+         // following function will return true.<a name="1045432"> </a>
+         done = FindSaveMatch (findParams, recordNum, pos, 0, <a name="1045161"> </a>
+            matchLength, cardNo, dbID);<a name="1045537"> </a>
+<a name="1045162"> </a>
+         if (!done) {<a name="1045163"> </a>
+            // Get the bounds of the region where we will<a name="1045723"> </a>
+            // draw the results.<a name="1045165"> </a>
+            FindGetLineBounds (findParams, &amp;r);<a name="1045166"> </a>
+<a name="1045167"> </a>
+            // Display the title of the description.<a name="1045168"> </a>
+            DrawMemoTitle (&amp;(memoRecP-&gt;note), r.topLeft.x+1, <a name="1045169"> </a>
+                r.topLeft.y, r.extent.x-2);<a name="1045170"> </a>
+<a name="1045171"> </a>
+            findParams-&gt;lineNumber++;<a name="1045172"> </a>
+         }<a name="1045173"> </a>
+      }<a name="1045174"> </a>
+<a name="1045175"> </a>
+      MemHandleUnlock(recordH);<a name="1045176"> </a>
+      if (done) break;<a name="1045177"> </a>
+<a name="1045178"> </a>
+      recordNum++;<a name="1045179"> </a>
+   }<a name="1045180"> </a>
+<a name="1045181"> </a>
+Exit:<a name="1045182"> </a>
+   DmCloseDatabase (dbP);<a name="1045183"> </a>
+}<a name="1044980"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h2 class="haH2">
+  <a name="1044908"> </a>Implementing sysAppLaunchCmdGoTo <a href="#1036996"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1044909"> </a>When the user taps one of the results displayed in the Find Results dialog, the system sends a <a href="../Programming_Basics/CmnLaunchCodes.html#993710"><code>sysAppLaunchCmdGoTo</code></a> launch code to the application containing the matching record. In most cases, your application should use the information in the launch code's parameter block to locate the matching record and display it, with the matching text highlighted. </p>
+
+<p><a name="1046069"> </a><a href="FindConcept.html#1044416">Listing 2.2</a> shows how the Memo sample application responds to the <code>sysAppLaunchCmdGoto</code> launch code. It enqueues a <a href="../User_Interface/UI_Form.html#1089192"><code>frmGotoEvent</code></a> for its Edit form, passing to this event information about which record to display. See the Memo sample application in the SDK for full source code. </p>
+<p class="CCodeCaption">
+  <a name="1044416"> </a><b>Listing 2.2&nbsp;&nbsp;Displaying the matching record</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+static void GoToRecord (GoToParamsPtr goToParams, <a name="1044417"> </a>
+   Boolean launchingApp)<a name="1045814"> </a>
+{<a name="1044418"> </a>
+   uint16_t recordNum;<a name="1044419"> </a>
+   EventType event;<a name="1044420"> </a>
+ <a name="1044421"> </a>
+   recordNum = goToParams-&gt;recordNum;<a name="1044422"> </a>
+   ...<a name="1044423"> </a>
+ <a name="1044424"> </a>
+   // Send an event to goto a form and select the <a name="1044425"> </a>
+   // matching text.<a name="1044426"> </a>
+   MemSet (&amp;event, sizeof(EventType), 0);<a name="1044427"> </a>
+ <a name="1044428"> </a>
+   event.eType = frmLoadEvent;<a name="1044429"> </a>
+   event.data.frmLoad.formID = EditView;<a name="1044430"> </a>
+   EvtAddEventToQueue (&amp;event);<a name="1044431"> </a>
+ <a name="1044432"> </a>
+   MemSet (&amp;event, sizeof(EventType), 0);<a name="1044433"> </a>
+   event.eType = frmGotoEvent;<a name="1044434"> </a>
+   event.data.frmGoto.recordNum = recordNum;<a name="1044435"> </a>
+   event.data.frmGoto.matchPos = goToParams-&gt;matchPos;<a name="1044436"> </a>
+   event.data.formGoto.matchLen = goToParams-&gt;matchLen;<a name="1044438"> </a>
+   event.data.frmGoto.matchFieldNum = <a name="1045779"> </a>
+      goToParams-&gt;matchFieldNum;<a name="1045780"> </a>
+   event.data.frmGoto.formID = EditView;<a name="1045781"> </a>
+   EvtAddEventToQueue (&amp;event);<a name="1044443"> </a>
+   ...<a name="1044444"> </a>
+}<a name="1044445"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h2 class="haH2">
+  <a name="1038476"> </a>Implementing sysAppLaunchCmdSaveData <a href="#1036996"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1046082"> </a>Your application receives the <a href="../Programming_Basics/CmnLaunchCodes.html#994125"><code>sysAppLaunchCmdSaveData</code></a> launch code only if it is the current application when the user taps the Find icon. This launch code gives your application a chance to save any data that the user is in the process of entering before the Find is launched so that the search results are what the user expects. </p>
+
+<p><a name="1046092"> </a>For example, suppose that the user is editing a contact in the Address Book to change the first name from "Ted" to "Theodore." Before tapping the Done button, the user decides to do a search for any other records that contain "Ted." The user expects that the current record will not appear in the Find Results dialog. </p>
+
+<p><a name="1046151"> </a>For this reason, Palm OS<sup>&#174;</sup> sends the Address Book the <code>sysAppLaunchCmdSaveData</code> launch code to give the application a chance to clean up any activity before the Find begins. Address Book responds to this launch code by calling <a href="../User_Interface/UI_Form.html#1002631"><code>FrmSaveAllForms()</code></a>. <code>FrmSaveAllForms()</code> enqueues a <a href="../User_Interface/UI_Form.html#1321621"><code>frmSaveEvent</code></a> for each open form. The event handler for the Edit form responds to the <code>frmSaveEvent</code> by saving the field that is currently being edited to the database. This way, its response to the <a href="Find.html#1007141"><code>sysAppLaunchCmdFind</code></a> launch code will successfully pass over this record. </p>
+
+<h2 class="haH2">
+  <a name="1046081"> </a>Summary of Find Manager API <a href="#1036996"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1045824"> </a><b><span style="color: #000000;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">Find Manager</span></b></p>
+    </th>
+    <th><p class="tt"><a name="1045826"> </a><b></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1045831"> </a><a href="Find.html#1002030"><code>FindDrawHeader()</code></a><br><a href="Find.html#1011869"><code>FindGetLineBounds()</code></a><br><a href="Find.html#1003363"><code>FindSaveMatch()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1045839"> </a><a href="TextMgr.html#1027900"><code>TxtFindString()</code></a><br><a href="TextMgr.html#1036841"><code>TxtPrepFindString()</code></a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="1045819"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="TextLoc_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="TextLocTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Text.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Localization.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="TextLocIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

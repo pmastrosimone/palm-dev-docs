@@ -1,0 +1,88 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Multi-Alternative</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Multi-Alternative">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Multi-Alternative">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC97"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_96.html#SEC96"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_98.html#SEC98"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_98.html#SEC98"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_95.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_100.html#SEC100"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 4.33.2 Multiple Alternative Constraints </H3>
+<!--docid::SEC97::-->
+<P>
+
+Sometimes a single instruction has multiple alternative sets of possible
+operands.  For example, on the 68000, a logical-or instruction can combine
+register or an immediate value into memory, or it can combine any kind of
+operand into a register; but it cannot combine one memory location into
+another.
+</P><P>
+
+These constraints are represented as multiple alternatives.  An alternative
+can be described by a series of letters for each operand.  The overall
+constraint for an operand is made from the letters for this operand
+from the first alternative, a comma, the letters for this operand from
+the second alternative, a comma, and so on until the last alternative.
+</P><P>
+
+If all the operands fit any one alternative, the instruction is valid.
+Otherwise, for each alternative, the compiler counts how many instructions
+must be added to copy the operands so that that alternative applies.
+The alternative requiring the least copying is chosen.  If two alternatives
+need the same amount of copying, the one that comes first is chosen.
+These choices can be altered with the <SAMP>`?'</SAMP> and <SAMP>`!'</SAMP> characters:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX346"></A>
+<A NAME="IDX347"></A>
+<DT><CODE>?</CODE>
+<DD>Disparage slightly the alternative that the <SAMP>`?'</SAMP> appears in,
+as a choice when no alternative applies exactly.  The compiler regards
+this alternative as one unit more costly for each <SAMP>`?'</SAMP> that appears
+in it.
+<P>
+
+<A NAME="IDX348"></A>
+<A NAME="IDX349"></A>
+<DT><CODE>!</CODE>
+<DD>Disparage severely the alternative that the <SAMP>`!'</SAMP> appears in.
+This alternative can still be used if it fits without reloading,
+but if reloading is needed, some other alternative will be used.
+</DL>
+<P>
+
+<A NAME="Modifiers"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

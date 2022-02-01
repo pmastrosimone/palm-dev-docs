@@ -1,0 +1,139 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Dump/Restore Files</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Dump/Restore Files">
+<META NAME="keywords" CONTENT="Debugging with GDB: Dump/Restore Files">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC69"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_68.html#SEC68"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_53.html#SEC53"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.14 Copy between memory and a file </H2>
+<!--docid::SEC69::-->
+<P>
+
+The commands <CODE>dump</CODE>, <CODE>append</CODE>, and <CODE>restore</CODE> are used
+for copying data between target memory and a file.  Data is written
+into a file using <CODE>dump</CODE> or <CODE>append</CODE>, and restored from a 
+file into memory by using <CODE>restore</CODE>.  Files may be binary, srec,
+intel hex, or tekhex (but only binary files can be appended).
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX380"></A>
+<A NAME="IDX381"></A>
+<DT><CODE>dump binary memory <VAR>filename</VAR> <VAR>start_addr</VAR> <VAR>end_addr</VAR></CODE>
+<DD>Dump contents of memory from <VAR>start_addr</VAR> to <VAR>end_addr</VAR> into 
+raw binary format file <VAR>filename</VAR>.
+<P>
+
+<DT><CODE>append binary memory <VAR>filename</VAR> <VAR>start_addr</VAR> <VAR>end_addr</VAR></CODE>
+<DD>Append contents of memory from <VAR>start_addr</VAR> to <VAR>end_addr</VAR> to
+raw binary format file <VAR>filename</VAR>.
+<P>
+
+<DT><CODE>dump binary value <VAR>filename</VAR> <VAR>expression</VAR></CODE>
+<DD>Dump value of <VAR>expression</VAR> into raw binary format file <VAR>filename</VAR>.
+<P>
+
+<DT><CODE>append binary memory <VAR>filename</VAR> <VAR>expression</VAR></CODE>
+<DD>Append value of <VAR>expression</VAR> to raw binary format file <VAR>filename</VAR>.
+<P>
+
+<A NAME="IDX382"></A>
+<DT><CODE>dump ihex memory <VAR>filename</VAR> <VAR>start_addr</VAR> <VAR>end_addr</VAR></CODE>
+<DD>Dump contents of memory from <VAR>start_addr</VAR> to <VAR>end_addr</VAR> into 
+intel hex format file <VAR>filename</VAR>.
+<P>
+
+<DT><CODE>dump ihex value <VAR>filename</VAR> <VAR>expression</VAR></CODE>
+<DD>Dump value of <VAR>expression</VAR> into intel hex format file <VAR>filename</VAR>.
+<P>
+
+<A NAME="IDX383"></A>
+<DT><CODE>dump srec memory <VAR>filename</VAR> <VAR>start_addr</VAR> <VAR>end_addr</VAR></CODE>
+<DD>Dump contents of memory from <VAR>start_addr</VAR> to <VAR>end_addr</VAR> into 
+srec format file <VAR>filename</VAR>.
+<P>
+
+<DT><CODE>dump srec value <VAR>filename</VAR> <VAR>expression</VAR></CODE>
+<DD>Dump value of <VAR>expression</VAR> into srec format file <VAR>filename</VAR>.
+<P>
+
+<A NAME="IDX384"></A>
+<DT><CODE>dump tekhex memory <VAR>filename</VAR> <VAR>start_addr</VAR> <VAR>end_addr</VAR></CODE>
+<DD>Dump contents of memory from <VAR>start_addr</VAR> to <VAR>end_addr</VAR> into 
+tekhex format file <VAR>filename</VAR>.
+<P>
+
+<DT><CODE>dump tekhex value <VAR>filename</VAR> <VAR>expression</VAR></CODE>
+<DD>Dump value of <VAR>expression</VAR> into tekhex format file <VAR>filename</VAR>.
+<P>
+
+<DT><CODE>restore <VAR>filename</VAR> [<VAR>binary</VAR>] <VAR>bias</VAR> <VAR>start</VAR> <VAR>end</VAR></CODE>
+<DD>Restore the contents of file <VAR>filename</VAR> into memory.  The <CODE>restore</CODE>
+command can automatically recognize any known bfd file format, except for
+raw binary.  To restore a raw binary file you must use the optional argument
+<VAR>binary</VAR> after the filename.
+<P>
+
+If <VAR>bias</VAR> is non-zero, its value will be added to the addresses 
+contained in the file.  Binary files always start at address zero, so
+they will be restored at address <VAR>bias</VAR>.  Other bfd files have
+a built-in location; they will be restored at offset <VAR>bias</VAR>
+from that location.
+</P><P>
+
+If <VAR>start</VAR> and/or <VAR>end</VAR> are non-zero, then only data between
+file offset <VAR>start</VAR> and file offset <VAR>end</VAR> will be restored.
+These offsets are relative to the addresses in the file, before 
+the <VAR>bias</VAR> argument is applied.
+</P><P>
+
+</DL>
+<P>
+
+<A NAME="Macros"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_68.html#SEC68"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_53.html#SEC53"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

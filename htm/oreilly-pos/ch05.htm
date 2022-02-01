@@ -1,0 +1,2044 @@
+<HTML>
+<HEAD>
+<TITLE>Palm OS:  &#160;5.&#160; Forms and Form Objects </TITLE>
+<META NAME="GENERATOR" CONTENT="Transit Central Station 3.2 by InfoAccess Inc. www.infoaccess.com">
+</HEAD>
+<BODY BACKGROUND="images/grnitbkg.gif"><A NAME="TopOfPage"> </A>
+<A HREF="http://www.oreilly.com/catalog/palmprog/"><IMG SRC="images/palm_comp_ani_ad.gif" ALT="Order the book from O'Reilly" BORDER=0 width="468" height="60"></A>
+<P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch04.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch06.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P><P><I>In this chapter:</I></P>
+
+
+  <UL COMPACT><LI><A HREF="#P26_584" NAME="LOC_P26_584">Resources</A></LI>
+
+  <LI><A HREF="#P229_11183" NAME="LOC_P229_11183">Forms</A></LI>
+
+  <LI><A HREF="#P408_18824" NAME="LOC_P408_18824">Form Objects</A></LI>
+
+  <LI><A HREF="#P1127_56204" NAME="LOC_P1127_56204">Resources, Forms, and Form Objects <BR>
+in the Sales Application</A></LI></UL>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=156>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+<H1 ALIGN=LEFT><I><FONT SIZE=+3>&#160;5.&#160; Forms and <BR>
+Form Objects</FONT></I></H1>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This chapter describes forms and form objects. Before we cover these subjects, however, we explain how the resources associated with the forms are created and used. Your application is stored in the form of resources. Once we discuss resources and forms in general, we give you some programming tips for creating specific types of forms (like alerts). Last, we turn to a discussion of resources and forms in the sample application.</FONT></P>
+
+<P><A NAME="P26_584"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Resources</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">A <A NAME="P28_595"></A>resource is a relocatable block marked with a four-byte type (usually represented as four characters, like CODE or tSTR) and a two-byte ID. Resources are stored in a <A NAME="P28_761"></A>resource database (on the desktop, these files end in the extension <I>.PRC</I>).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">An application is a resource database. One of the resources in this database contains code, another resource contains the application's name, another the application's icon, and the rest contain the forms, alerts, menus, strings, and other elements of the application. The Palm OS uses these resources directly from the storage heap (after locking them) via the Resource Manager.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The two most common tools to create Palm OS application resources are CodeWarrior's Constructor tool or PilRC as part of the GCC collection of tools. Our discussion turns to Constructor first and PilRC second.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Creating Resources in Constructor</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P37_1456"></A>CodeWarrior's Constructor is a visual resource editor: you lay out the user interface object resources using a graphical layout tool. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">In the following example, we take a peek at the Forms section of the resource file. You will see how to use the New Form Resource menu item and select the name and change it to be called &quot;Main&quot; (see <A HREF="#P42_1812">Figure 5-1</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 5- 1</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P42_1812"></A>Creating a form resource in Constructor</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch05-plmp.0501-1.gif" WIDTH=503 HEIGHT=355 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The following discussion is not a tutorial on how to use Constructor. The Code Warrior documentation does a fine job at that. Rather, it is intended to be just enough information to give you a clear idea of what it's like to create a resource using Constructor.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P52_2112"></A>To add a particular type of object resource to a form-a button, for instance-you drag it from the catalog window and drop it into the form (see <A HREF="#P57_2910">Figure 5-2</A>). Clicking on any item that has been dropped into the form allows you to edit its attributes. Double-clicking brings up a separate window. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you look at <A HREF="#P64_2992">Figure 5-3</A>, you will see several windows: one shows you all the items in your form; another shows you the hierarchy of your form and its objects (as shown in the Object Hierarchy window); and last, but not least, another shows editing a form.</FONT><I><FONT FACE="Times" SIZE="-1"> </FONT></I><FONT FACE="Times">In <A HREF="#P64_2992">Figure 5-3</A>, the top left window is the form window used to edit the form shown at the top right. The bottom left window is an editor for the Done button. The bottom right window shows the hierarchy of items on this particular form. </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 5- 2</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P57_2910"></A>The catalog window from which you can drag-and-drop an item to a form</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch05-plmp.0502-2.gif" WIDTH=503 HEIGHT=286 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">  </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 5- 3</FONT></B><A NAME="P64_2992"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P66_2992"></A>Editing a form</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch05-plmp.0503-3.gif" WIDTH=500 HEIGHT=416 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are a couple of worthwhile things to know about creating resources in Constructor.</FONT><A NAME="P74_3094"></A></P>
+
+<P><I><FONT FACE="Times">Use constants rather than raw resource IDs</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P78_3136"></A>When using Constructor to create resources, you won't be embedding resource IDs directly in your code as raw numbers like this:</FONT></P><PRE><FONT SIZE="-1">FrmAlert(1056);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Instead, you should create symbolic constants for each of the resource IDs:</FONT></P><PRE><FONT SIZE="-1">#define  TellUserSomethingAlert 1056</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Thus, when you use the resource with a function, you will have code that looks like this:</FONT></P><PRE><FONT SIZE="-1">FrmAlert(TellUserSomethingAlert);</FONT></PRE>
+
+<P><I><FONT FACE="Times">Using constants for your resources</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Constructor rewards you for creating symbolic constants for your resources. When it saves the resource file, it also saves a corresponding header file with all symbolic constant definitions nicely and neatly laid out for you (<A HREF="#P92_3937">Figure 5-4</A> shows you how to choose the header filename). The names it creates are based on the type of the resource and the resource name you've provided. </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 5- 4</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P92_3937"></A>Specifying the header file Constructor generates with ID definitions</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch05-plmp.0504-4.gif" WIDTH=503 HEIGHT=149 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">This is Constructor's way of keeping you from editing the resource file directly-that's Constructor's job and strictly hands off to you. For one thing, Constructor can change IDs on an item. Further, your project development or maintenance will not work correctly. You are supposed to use Constructor only for resource editing, whether that is adding, deleting, or renumbering them. To keep things all lined up nicely, Constructor regenerates the header file after any change, ensuring that your constant definitions match exactly the resources that exist.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Constructor creates constants not only for resource IDs, but for form object IDs (see <A HREF="#P407_18824">&quot;Form Objects</A>,&quot; later in this chapter) as well.</FONT><BR>
+</P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the header file generated by Constructor for the resource file we created in <A HREF="#P66_2992">Figure 5-3</A>. As you can see in the comments, you are not supposed to fiddle with this file:</FONT></P><PRE><FONT SIZE="-1">// Header generated by Constructor for Pilot 1.0.2</FONT>
+<FONT SIZE="-1">//</FONT>
+<FONT SIZE="-1">// Generated at 10:55:44 AM on Friday, July 10, 1998</FONT>
+<FONT SIZE="-1">//</FONT>
+<FONT SIZE="-1">// Generated for file: Macintosh HD::MyForm.rsc</FONT>
+<FONT SIZE="-1">//</FONT>
+<FONT SIZE="-1">// THIS IS AN AUTOMATICALLY GENERATED HEADER FILE FROM</FONT>
+<FONT SIZE="-1">// CONSTRUCTOR FOR PALMPILOT;</FONT>
+<FONT SIZE="-1">// - DO NOT EDIT - CHANGES MADE TO THIS FILE WILL BE LOST</FONT>
+<FONT SIZE="-1">//</FONT>
+<FONT SIZE="-1">// Pilot App Name:    &quot;Untitled&quot;</FONT>
+<FONT SIZE="-1">//</FONT>
+<FONT SIZE="-1">// Pilot App Version: &quot;1.0&quot;</FONT>
+
+<FONT SIZE="-1">// Resource: tFRM 8000</FONT>
+<FONT SIZE="-1">#define MainForm                                  8000</FONT>
+<FONT SIZE="-1">#define MainDoneButton                            8002</FONT>
+<FONT SIZE="-1">#define MainNameField                             8001</FONT>
+<FONT SIZE="-1">#define MainUnnamed8003Label                      8003</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Constructor has generated constants for every resource in the file; one for the form and three for the form <A NAME="P125_5572"></A>objects.</FONT><A NAME="P125_5580"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Creating Resources in PilRC</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P130_5607"></A>PilRC is a resource compiler that takes textual descriptions (stored in an <I>.<A NAME="P130_5683"></A>RCP</I> file) of your resources and compiles them into the binary format required by a <I>.PRC</I> file. Unlike Constructor, PilRC doesn't allow you to visually create your resources; instead, you type in text to designate their characteristics. There is a way to see what that PilRC text-based description will look like visually, however. You can use PilRCUI, a tool that reads an <I>.RCP</I> file and displays a graphic preview of that file. This allows you to see what your resource objects are going to look like on the Palm device (see <A HREF="#P133_6230">Figure 5-5</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 5- 5</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P133_6230"></A>PilRCUI displaying a preview of a form from an .RCP file</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch05-plmp.0505-5.gif" WIDTH=503 HEIGHT=182 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">The pretty points of PilRC</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">PilRC does do some of the grunt work of creating resources for you. For example, you don't need to specify a number for every item's top and left coordinates, and every item's width and height. <A NAME="P143_6506"></A>PilRC has a mechanism for automatically calculating the width or height of an item based on the text width or height. This works especially well for things like buttons, push buttons, and checkboxes. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">It also allows you to specify the <A NAME="P145_6740"></A>center justification of items. Beyond this, you can even justify the coordinates of one item based on those of another; you use the width/height of the previous item. These mechanisms also make it possible to specify the relationships between items on a form, so that changes affect not just one, but related groups of items. Thus, you can move an item or resize it and have that change affect succeeding items on the form as well.</FONT></P>
+
+<P><I><FONT FACE="Times">PilRC example</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's a PilRC example. It is a simple form that contains:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  A label</FONT></LI>
+
+  <LI><FONT FACE="Times">  Three checkboxes whose left edges line up under the right edge of the label</FONT></LI>
+
+  <LI><FONT FACE="Times">  Three buttons at the bottom of the form, each with three pixels of space between the borders of the buttons </FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A HREF="#P133_6230">Figure 5-5</A> shows you what this text description looks like graphically:</FONT></P><PRE><FONT SIZE="-1">FORM ID 1 AT (2 2 156 156)</FONT>
+<FONT SIZE="-1">USABLE</FONT>
+<FONT SIZE="-1">MODAL</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">   TITLE &quot;Foo&quot;</FONT>
+<FONT SIZE="-1">   LABEL &quot;Choose one:&quot; 2001  AT (8 16) </FONT>
+
+<FONT SIZE="-1">   CHECKBOX &quot;Check 1&quot; ID 2002 AT (PrevRight PrevBottom+3 AUTO AUTO) GROUP 1</FONT>
+<FONT SIZE="-1">   CHECKBOX &quot;Another choice&quot; ID 2003 AT (PrevLeft PrevBottom+3 AUTO AUTO) </FONT>
+<FONT SIZE="-1">      GROUP 1</FONT>
+<FONT SIZE="-1">   CHECKBOX &quot;Maybe&quot; ID 2004 AT (PrevLeft PrevBottom+3 AUTO AUTO) GROUP 1</FONT>
+
+<FONT SIZE="-1">   BUTTON &quot;Test1&quot; ID 2006 AT (7 140 AUTO AUTO)</FONT>
+<FONT SIZE="-1">   BUTTON &quot;Another&quot; ID 2007 AT (PrevRight+5 PrevTop AUTO AUTO)</FONT>
+<FONT SIZE="-1">   BUTTON &quot;3rd&quot; ID 2008 AT (PrevRight+5 PrevTop AUTO AUTO)</FONT>
+<FONT SIZE="-1">END</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Just as Constructor discourages you from embedding resource IDs directly into your code as raw numbers (see <A HREF="#P74_3094">Figure 5-3</A>), similarly, you shouldn't embed resource IDs directly into your <I>.RCP</I> files. The right way to do this with PilRC is to use constants.</FONT></P>
+
+<P><I><FONT FACE="Times">Using constants for your resources</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P176_8293"></A>PilRC doesn't automatically generate symbolic constants, as Constructor does. PilRC does, however, have a mechanism for unification. If you create a header file that defines symbolic constants, you can include that header file both in your C code and in your PilRC <I>.RCP</I> definition file. PilRC allows you to include a file using </FONT><FONT FACE="Courier New">#include</FONT><FONT FACE="Times"> and understands C-style </FONT><FONT FACE="Courier New">#define</FONT><FONT FACE="Times"> statements. You'll simply be sharing your </FONT><FONT FACE="Courier New">#define</FONT><FONT FACE="Times">s between your C code and your resource definitions.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">PilRC does have an </FONT><FONT FACE="Courier New">-H</FONT><FONT FACE="Times"> flag that automatically creates resource IDs for symbolic constants you provide. </FONT><BR>
+</P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's a header file we've created, <I>ResDefs.h</I>, with constant definitions (similar to the kind that Constructor generates automatically):</FONT></P><PRE><FONT SIZE="-1">#define MainForm         8000</FONT>
+<FONT SIZE="-1">#define MainDoneButton   8002</FONT>
+<FONT SIZE="-1">#define MainNameField    8001</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We include that in our <I>.c</I> file and then include it in our <I>resources.rcp</I> file:</FONT></P><PRE><FONT SIZE="-1">#include &quot;ResDefs.h&quot;</FONT>
+
+<FONT SIZE="-1">FORM ID MainForm AT (0 0 160 160)</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">   TITLE &quot;Form title&quot;</FONT>
+<FONT SIZE="-1">   LABEL &quot;Name:&quot; AUTOID AT (11 35) FONT 1</FONT>
+<FONT SIZE="-1">   FIELD ID MainNameField AT (PrevRight PrevTop 50 AUTO) UNDERLINED</FONT>
+<FONT SIZE="-1">      MULTIPLELINES MAXCHARS 80</FONT>
+<FONT SIZE="-1">   BUTTON &quot;Done&quot; ID MainDoneButton AT (CENTER 143 AUTO AUTO) </FONT>
+<FONT SIZE="-1">END</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note that the label doesn't have an explicit ID but uses </FONT><FONT FACE="Courier New">AUTOID</FONT><FONT FACE="Times">. An ID of </FONT><FONT FACE="Courier New"><A NAME="P197_9522"></A>AUTOID</FONT><FONT FACE="Times"> causes PilRC to create a unique ID for you automatically. This is handy for items on a form that you don't need to refer to programmatically from your code as is often the case with labels, for example.</FONT><A NAME="P197_9731"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Reading Resources</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P202_9748"></A>Occasionally, you may need to use the Resource Manager to directly obtain a resource from your application's resource database. Here's what you do:</FONT></P>
+
+<P><FONT FACE="Times"> 1. Get a handle to the resource.</FONT></P>
+
+<P><FONT FACE="Times"> 2. Lock it.</FONT></P>
+
+<P><FONT FACE="Times"> 3. Mess with it, doing whatever you need to do.</FONT></P>
+
+<P><FONT FACE="Times"> 4. Unlock it.</FONT></P>
+
+<P><FONT FACE="Times"> 5. Release it.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You modify a resource with a call to </FONT><FONT FACE="Courier New">&#160;<A NAME="P209_10050"></A>DmGetResource</FONT><FONT FACE="Times">. This function gives you a handle to that resource as an unlocked relocatable block. To find the particular resource you want, you specify the resource type and ID when you make the call. </FONT><FONT FACE="Courier New">DmGetResource</FONT><FONT FACE="Times"> searches through the application's resources and the system's resources. When it finds the matching resource, it marks it busy and returns its handle. You lock the handle with a call to </FONT><FONT FACE="Courier New">MemHandleLock</FONT><FONT FACE="Times">. When you are finished with the resource, you call </FONT><FONT FACE="Courier New">&#160;<A NAME="P209_10518"></A>DmReleaseResource</FONT><FONT FACE="Times"> to release it.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's some sample code that retrieves a string resource, uses it, and then releases it:</FONT></P><PRE><FONT SIZE="-1">Handle  h;</FONT>
+<FONT SIZE="-1">CharPtr s;</FONT>
+
+<FONT SIZE="-1">h = DmGetResource('tSTR', 1099);</FONT>
+<FONT SIZE="-1">s = MemHandleLock(h);</FONT>
+<FONT SIZE="-1">// use the string s</FONT>
+<FONT SIZE="-1">MemHandleUnlock(h);</FONT>
+<FONT SIZE="-1">DmReleaseResource(h);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Actually, </FONT><FONT FACE="Courier New">DmGetResource</FONT><FONT FACE="Times"> searches through the entire list of open resource databases, including the system resource database stored in ROM. Use </FONT><FONT FACE="Courier New">&#160;<A NAME="P221_10914"></A>DmGet1Resource</FONT><FONT FACE="Times"> to search through only the topmost open resource database; this is normally your application.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Writing Resources</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P226_11039"></A>Although it is possible to write to resources (see &quot;Modifying a Record&quot; on page&#160;149), it is uncommon; most resources are used only for reading. </FONT><A NAME="P226_11183"></A></P>
+
+<P><A NAME="P229_11183"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Forms</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P231_11188"></A>As we discussed earlier, a form is a container for the application's visual elements. A form is created based on information from a resource (of type &quot;tFRM&quot;) that describes the elements. There are both modal and modeless forms in an application. The classic example of a modal form is an alert. Other forms can be made modal but require extra work on your part. </FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">A <A NAME="P234_11552"></A>modal dialog is different from a modeless form in:</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Times">&#183; </FONT><FONT FACE="Times" SIZE="-1"> Appearance: a modal dialog has a full-width titlebar with the title centered and with buttons from left to right along the bottom. Most modal dialogs should have an info button that provides additional help.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Times">&#183; </FONT><FONT FACE="Times" SIZE="-1"> Behavior: the Find button doesn't work while a modal dialog is being displayed.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">In the following material, we first discuss alerts and then modal forms. We also offer several tips in each section.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Alerts</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P242_12014"></A>An alert is a very constrained form (based on a &quot;Talt&quot; resource); it is a modal dialog with an icon, a message, and one or more <A NAME="P242_12142"></A>buttons at the bottom that dismiss the dialog (see <A HREF="#P245_12418">Figure 5-6</A>). As we discussed in Chapter&#160;3, <I>Designing a Solution</I>, there are four different types of alerts (information, warning, confirmation, and error). The user can distinguish the alert type by the icon shown.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 5- 6</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P245_12418"></A>An alert showing an icon, a message, and a button</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch05-plmp.0506-6.gif" WIDTH=503 HEIGHT=132 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The return result of </FONT><FONT FACE="Courier New">&#160;<A NAME="P253_12489"></A>FrmAlert</FONT><FONT FACE="Times"> is the number of the button that was pressed (where the first button is number 0).</FONT></P>
+
+<P><I><FONT FACE="Times">Customizing an alert</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P257_12600"></A>It is worth noting that you can customize the message in an alert. You do so with runtime parameters that allow you to make up to three textual substitutions in the message. In the resource, you specify a placeholder for the runtime text with </FONT><FONT FACE="Courier New">^1</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">^2</FONT><FONT FACE="Times">, or </FONT><FONT FACE="Courier New">^3</FONT><FONT FACE="Times">. Instead of calling </FONT><FONT FACE="Courier New">FrmAlert</FONT><FONT FACE="Times">, you call </FONT><FONT FACE="Courier New">&#160;<A NAME="P257_12897"></A>FrmCustomAlert</FONT><FONT FACE="Times">. The first string replaces any occurrence of </FONT><FONT FACE="Courier New">^1</FONT><FONT FACE="Times">, the second replaces any occurrence of </FONT><FONT FACE="Courier New">^2</FONT><FONT FACE="Times">, and the third replaces occurrences of </FONT><FONT FACE="Courier New">^3</FONT><FONT FACE="Times">.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">When you call </FONT><FONT FACE="Courier New" SIZE="-1">FrmCustomAlert</FONT><FONT FACE="Times" SIZE="-1">, you can pass </FONT><FONT FACE="Courier New">NULL</FONT><FONT FACE="Times"> as the text pointer only if there is no corresponding placeholder in the alert resource. If there is a corresponding placeholder, then passing </FONT><FONT FACE="Courier New">NULL</FONT><FONT FACE="Times"> will cause a crash; pass a string with one space in it (</FONT><FONT FACE="Courier New">&quot; &quot;</FONT><FONT FACE="Times">) instead.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">That is, if your alert message is </FONT><FONT FACE="Courier New">&quot;My Message ^1 (^2)&quot;</FONT><FONT FACE="Times">, you can call:</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Times">FrmCustomAlert(MyAlertID, &quot;string&quot;, &quot; &quot;, NULL)</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">but not this:</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Times">FrmCustomAlert(MyAlertID, &quot;string&quot;, NULL, NULL)</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P265_13484"></A>User interface guidelines recommend that modal dialogs have an info button at the top right that provides help for the dialog. To do so, create a string resource with your help text and specify the string resource ID as the help ID in the alert resource.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Make sure that any alerts you display with </FONT><FONT FACE="Courier New" SIZE="-1">FrmAlert</FONT><FONT FACE="Times" SIZE="-1"> don't have </FONT><FONT FACE="Courier New">^1</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">^2</FONT><FONT FACE="Times">, or </FONT><FONT FACE="Courier New">^3</FONT><FONT FACE="Times"> in them. </FONT><FONT FACE="Courier New">FrmAlert(alertID)</FONT><FONT FACE="Times"> is equivalent to </FONT><FONT FACE="Courier New">FrmCustomAlert(alertID, NULL, NULL, NULL)</FONT><FONT FACE="Times">. The Form Manager will try to replace any occurrences of </FONT><FONT FACE="Courier New">^1</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">^2</FONT><FONT FACE="Times">, or </FONT><FONT FACE="Courier New">^3</FONT><FONT FACE="Times"> with </FONT><FONT FACE="Courier New">NULL</FONT><FONT FACE="Times">, and this will certainly cause a crash.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">Alert example</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's a resource description of an alert with two buttons:</FONT></P><PRE><FONT SIZE="-1">#define MyAlert 1000</FONT>
+
+<FONT SIZE="-1">ALERT ID MyAlert</FONT>
+<FONT SIZE="-1">CONFIRMATION</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">    TITLE &quot;My Alert Title (^1)&quot;</FONT>
+<FONT SIZE="-1">    MESSAGE &quot;My Message (^1) (^2)  (^1)&quot;</FONT>
+<FONT SIZE="-1">    BUTTONS &quot;OK&quot; &quot;Cancel&quot;</FONT>
+<FONT SIZE="-1">END</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you display the alert with </FONT><FONT FACE="Courier New">FrmCustomAlert</FONT><FONT FACE="Times">, it appears as shown in <A HREF="#P292_14450">Figure 5-7</A>:</FONT></P><PRE><FONT SIZE="-1">if (FrmCustomAlert(MyAlert, &quot;foo&quot;, &quot;bar&quot;, NULL) == 0) {</FONT>
+<FONT SIZE="-1">   // user pressed OK</FONT>
+<FONT SIZE="-1">} else {</FONT>
+<FONT SIZE="-1">   // user pressed Cancel</FONT>
+<FONT SIZE="-1">} &#160;&#160;<A NAME="P289_14438"></A> </FONT></PRE>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 5- 7</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P292_14450"></A>An alert displayed with </FONT></B><FONT FACE="Courier New" SIZE="-1">FrmCustomAlert</FONT><B><FONT FACE="Times" SIZE="-1">; note that FrmCustomAlert doesn't replace strings in the title</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch05-plmp.0507-7.gif" WIDTH=503 HEIGHT=93 align=left></P>
+</TD></TR></TABLE></UL><PRE><FONT SIZE="-1"> </FONT></PRE>
+
+<P><I><FONT FACE="Times">Tips on creating alerts</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P301_14575"></A>Here are a few tips that will help you avoid common mistakes:</FONT></P>
+
+<P><I><FONT FACE="Times">Button capitalization</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P304_14657"></A>Buttons in an alert should be capitalized. Thus, a button should be titled &quot;Cancel&quot; and not &quot;cancel&quot;.</FONT></P>
+
+<P><I><FONT FACE="Times">OK buttons</FONT></I></P>
+
+<P><FONT FACE="Times">An &quot;<A NAME="P306_14772"></A>OK&quot; button should be exactly that. Don't use &quot;Ok&quot;, &quot;Okay&quot;, &quot;ok&quot;, or &quot;Okey-dokey&quot;. OK?</FONT><A NAME="P306_14857"></A></P>
+
+<P><I><FONT FACE="Times">Using ^1, ^2, ^3</FONT></I></P>
+
+<P><FONT FACE="Times">The ^1, ^2, ^3 placeholders aren't replaced in the alert title or in buttons but are replaced only in the alert message.</FONT><A NAME="P308_14993"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Modal Dialogs</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P312_15006"></A>The easiest way to display a modal dialog is to use </FONT><FONT FACE="Courier New">FrmAlert</FONT><FONT FACE="Times"> or </FONT><FONT FACE="Courier New">FrmCustomAlert</FONT><FONT FACE="Times">. The fixed structure of alerts (icon, text, and buttons) may not always match what you need, however. For example, you may need a checkbox or other control in your dialog.</FONT></P>
+
+<P><I><FONT FACE="Times">Modal form template</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you need this type of flexible modal dialog, use a form resource (setting the </FONT><FONT FACE="Courier New">modal</FONT><FONT FACE="Times"> attribute of the form) and then display the dialog using the following code:</FONT></P><PRE><FONT SIZE="-1">// returns object ID of hit button</FONT>
+<FONT SIZE="-1">static Word DisplayMyFormModally(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    FormPtr previousForm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">    FormPtr frm = FrmInitForm(MyForm);</FONT>
+<FONT SIZE="-1">    Word    hitButton;</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    FrmSetActiveForm(frm);</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">// Set an event handler, if you wish, with FrmSetEventHandler</FONT>
+<FONT SIZE="-1">// Initialize any form objects in the form</FONT>
+
+<FONT SIZE="-1">    hitButton = FrmDoDialog(frm);</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    // read any values from the form objects here</FONT>
+<FONT SIZE="-1">    // before the form is deleted</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    if (previousForm)</FONT>
+<FONT SIZE="-1">        FrmSetActiveForm(previousForm);</FONT>
+<FONT SIZE="-1">    FrmDeleteForm(frm);</FONT>
+<FONT SIZE="-1">    return hitButton;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="-1">&#160;<A NAME="P341_15983"></A>FrmDoDialog</FONT><FONT FACE="Times" SIZE="-1"> is documented to return the number of the tapped button, where the first button is 0. Actually, it returns the button ID of the tapped button.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">For example, if you've got a form with an icon, a label, and two buttons, where the first button has a button ID of 1002 and the second button has a button ID of 1001, </FONT><FONT FACE="Courier New" SIZE="-1">FrmDoDialog</FONT><FONT FACE="Times" SIZE="-1"> will return either 1002 or 1001, depending on whether the first or second button is pressed.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">Modal form example</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P346_16427"></A>Here we have an example that displays a modal dialog with a checkbox in it (see <A HREF="#P378_17608">Figure 5-8</A>). The initial value of the checkbox is determined by the parameter to </FONT><FONT FACE="Courier New">TrueOrFalse</FONT><FONT FACE="Times">. The final value of </FONT><FONT FACE="Courier New">TrueOrFalse</FONT><FONT FACE="Times"> is the value of the checkbox (if the user taps OK) or the initial value (if the user taps Cancel). This demonstrates setting <A NAME="P346_16757"></A>form object values in a modal form before displaying it and reading values from a modal form's objects after it is done:</FONT></P><PRE><FONT SIZE="-1">// takes a true/false value and allows the user to edit it</FONT>
+<FONT SIZE="-1">static Boolean TrueOrFalse(Boolean initialValue)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr previousForm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">   FormPtr frm = FrmInitForm(TrueOrFalseForm);</FONT>
+<FONT SIZE="-1">   Word    hitButton;</FONT>
+<FONT SIZE="-1">   ControlPtr  checkbox = FrmGetObjectPtr(frm, </FONT>
+<FONT SIZE="-1">            FrmGetObjectIndex(frm, TrueOrFalseCheckbox));</FONT>
+<FONT SIZE="-1">   Boolean  newValue;</FONT>
+
+<FONT SIZE="-1">   FrmSetActiveForm(frm);</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">// Set an event handler, if you wish, with FrmSetEventHandler</FONT>
+
+<FONT SIZE="-1">   CtlSetValue(checkbox, initialValue);</FONT>
+
+<FONT SIZE="-1">   hitButton = FrmDoDialog(frm);</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">   newValue = CtlGetValue(checkbox);</FONT>
+
+<FONT SIZE="-1">   if (previousForm)</FONT>
+<FONT SIZE="-1">      FrmSetActiveForm(previousForm);</FONT>
+<FONT SIZE="-1">   FrmDeleteForm(frm);</FONT>
+<FONT SIZE="-1">   if (hitButton == TrueOrFalseOKButton)</FONT>
+<FONT SIZE="-1">      return newValue;</FONT>
+<FONT SIZE="-1">   else</FONT>
+<FONT SIZE="-1">      return initialValue;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 5- 8</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P378_17608"></A>The modal form that allows you to edit a true/false value with a checkbox</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch05-plmp.0508-8.gif" WIDTH=503 HEIGHT=103 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">A tip for modal forms</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P388_17702"></A>When you call </FONT><FONT FACE="Courier New">&#160;<A NAME="P388_17717"></A>FrmDoDialog</FONT><FONT FACE="Times"> with a modal form, your event handler won't get a </FONT><FONT FACE="Courier New"><A NAME="P388_17779"></A>frmOpenEvent</FONT><FONT FACE="Times">, and it doesn't have to call </FONT><FONT FACE="Courier New">FrmDrawForm</FONT><FONT FACE="Times">. Since your event handler won't be notified that the form is opening, any form initialization must be done before you call </FONT><FONT FACE="Courier New">FrmDoDialog</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><I><FONT FACE="Times">Modal form sizes</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P392_17984"></A>You don't want your modal form to take up the entire screen real estate. Center it horizontally at the bottom of the screen, and make sure that the borders of the form can be seen. You'll need to inset the bounds of your form by at least two pixels in each direction.</FONT></P>
+
+<P><I><FONT FACE="Times">Help for modal forms</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P396_18271"></A>The Palm user interface guidelines specify that modal dialogs should provide online help through the &quot;i&quot; button at the top right of the form (see <A HREF="#P397_18764">Figure 5-9</A>). You provide this help text as a string resource (</FONT><FONT FACE="Courier New">tSTR</FONT><FONT FACE="Times">) that contains the appropriate help message. In your form (or alert) resource, you then set the help ID to the string resource ID. The Palm OS takes care of displaying the &quot;i&quot; button (only if the help ID is nonzero) and displaying the help text if the <A NAME="P396_18736"></A>button is<A NAME="P396_18745"></A> tapped.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 5- 9</FONT></B><A NAME="P397_18764"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Modal dialog (left) with &quot;i&quot; button bringing up help (right)</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch05-plmp.0509-9.gif" WIDTH=503 HEIGHT=181 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><A NAME="P408_18824"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2"><A NAME="P407_18824"></A>Form Objects</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P410_18836"></A>The elements that populate a form are called form objects. Before we get into the details of specific form objects, however, there are some very important things to know about how forms deal with all form objects.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Many of the form objects post specific kinds of events when they are tapped on, or used. To use a particular type of form object, you need to consult the Palm OS documentation to see what kinds of events that form object produces.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Dealing with Form Objects in Your Form Event</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P417_19323"></A>Form objects communicate their actions by posting events. Most of the form objects have a similar structure:</FONT></P>
+
+<P><FONT FACE="Times"> 1. When the stylus is pressed on the object, it sends an enter event.</FONT></P>
+
+<P><FONT FACE="Times"> 2. In response to the enter event, the object responds appropriately while the stylus is pressed down. For example: a button highlights while the pen is within the button and unhighlights while it is outside the button; a scrollbar sends </FONT><FONT FACE="Courier New">sclRepeatEvent</FONT><FONT FACE="Times">s while the user has a scroll arrow tapped; a list highlights the row the stylus is on and scrolls, if necessary, when the pen reaches the top or bottom of the list.</FONT></P>
+
+<P><FONT FACE="Times"> 3. When the stylus is released:</FONT></P>
+
+  <UL><P><FONT FACE="Times">a. If it is on the object, it sends a select event.</FONT></P>
+
+  <P><FONT FACE="Times">b. If it is outside the object, it sends an exit event.</FONT></P>
+
+</UL><P ALIGN=LEFT><FONT FACE="Times">In all these events, the ID of the tapped form object and a pointer to the form object itself are provided as part of the event. The ID allows you to distinguish between different instances that generate the same types of events. For example, two buttons would both generate a </FONT><FONT FACE="Courier New">ctlSelectEvent</FONT><FONT FACE="Times"> when tapped; you need the IDs to know which is which.</FONT></P>
+
+<P><I><FONT FACE="Times">Events generated by a successful tap</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P428_20435"></A>Most often, you want to know only when an object has been successfully tapped; that is, the user lifts the stylus while still within the boundaries of the object. You'll be interested in these events:</FONT></P>
+
+  <UL><LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"><A NAME="P430_20637"> </A>ctlSelectEvent</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"><A NAME="P431_20653"> </A>frmTitleSelectEvent</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"><A NAME="P432_20674"> </A>lstSelectEvent</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"><A NAME="P433_20690"> </A>popSelectEvent</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"><A NAME="P434_20706"> </A>tblSelectEvent</FONT></LI></UL>
+
+<P><I><FONT FACE="Times">Events generated by repeated taps</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Sometimes, you'll need to be notified of a repetitive action while a form object is being pressed. The events are </FONT><FONT FACE="Courier New"><A NAME="P438_20867"></A>ctlRepeatEvent</FONT><FONT FACE="Times"> (used for repeating buttons) and </FONT><FONT FACE="Courier New"><A NAME="P438_20915"></A>sclRepeatEvent</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><I><FONT FACE="Times">Events generated by the start of a tap</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Occasionally, you'll want to know when the user starts to tap on a form object. For example, when the user starts to tap on a <A NAME="P442_21094"></A>pop-up trigger you may want to dynamically fill in the contents of the pop-up list before it is displayed. You'd do that in the </FONT><FONT FACE="Courier New"><A NAME="P442_21222"></A>ctlEnterEvent</FONT><FONT FACE="Times">, looking for the appropriate control ID. The events sent when the user starts to tap on a form object are: </FONT></P>
+
+  <UL><LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> ctlEnterEvent</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"><A NAME="P445_21360"> </A>fldEnterEvent</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"><A NAME="P446_21375"> </A>frmTitleEnterEvent</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"><A NAME="P447_21395"> </A>lstEnterEvent</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"><A NAME="P448_21410"> </A>sclEnterEvent</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"><A NAME="P449_21425"> </A>tblEnterEvent</FONT></LI></UL>
+
+<P><I><FONT FACE="Times">Events generated by the end of an unsuccessful tap</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P453_21488"></A>Rarely, you'll want to know when a form object has been unsuccessfully tapped (the user tapped the object, but scuttled the stylus outside the boundaries before lifting it). For example, if you allocate some memory in the enter event, you'd deallocate the memory in both the select event and in the corresponding exit event (covering all your bases, so to speak). The events are </FONT><FONT FACE="Courier New"><A NAME="P453_21867"></A>ctlExitEvent</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New"><A NAME="P453_21881"></A>lstExitEvent</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New"><A NAME="P453_21895"></A>sclExitEvent</FONT><FONT FACE="Times">, and </FONT><FONT FACE="Courier New"><A NAME="P453_21913"></A>tblExitEvent</FONT><FONT FACE="Times">.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Note that although there is a </FONT><FONT FACE="Courier New">frmTitleSelectEvent</FONT><FONT FACE="Times">, there is no corresponding </FONT><FONT FACE="Courier New">frmTitleExitEvent</FONT><FONT FACE="Times">. We know of no reason why this is so.</FONT><A NAME="P456_22058"></A></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Getting an Object from a Form</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P460_22088"></A>Whenever you need to do something with an object, you will need to get it from the form. You do this with a pointer and the function </FONT><FONT FACE="Courier New">FrmGetObjectPtr</FONT><FONT FACE="Times">. Note that </FONT><FONT FACE="Courier New">FrmGetObjectPtr</FONT><FONT FACE="Times"> takes an object index and not an object ID. The return result of </FONT><FONT FACE="Courier New">FrmGetObjectPtr</FONT><FONT FACE="Times"> depends on the type of the form object. </FONT></P>
+
+<P><I><FONT FACE="Times">Types of form object pointers</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0"><A NAME="P464_22414"></A>FrmGetObjectPtr </FONT><FONT FACE="Times">returns one of the following, depending on the type of the form object kept at that index:</FONT></P>
+
+  <UL><LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> FieldPtr</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> ControlPtr</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> ListPtr</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> TablePtr</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> FormBitmapPtr</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> FormLabelPtr</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> FormTitlePtr</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> FormPopupPtr</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> FormGraffitiStatePtr</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> FormGadgetPtr</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> ScrollBarPtr</FONT></LI></UL>
+
+<P><I><FONT FACE="Times">Code example</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you pass the correct index into </FONT><FONT FACE="Courier New">FrmGetObjectPtr</FONT><FONT FACE="Times">, you can safely typecast the return result. For example, here we get a field from the form and cast it to a </FONT><FONT FACE="Courier New">FieldPtr</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">FormPtr frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">FieldPtr fld = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, MainMyField));</FONT></PRE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">C doesn't require an explicit typecast when casting from a </FONT><FONT FACE="Courier New">void *</FONT><FONT FACE="Times"> such as the return result of </FONT><FONT FACE="Courier New">FrmGetObjectPtr</FONT><FONT FACE="Times">. It automatically typecasts for you. C++, on the other hand, requires an explicit typecast in that situation.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">Error checking</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You can use </FONT><FONT FACE="Courier New">&#160;<A NAME="P489_23202"></A>FrmGetObjectType</FONT><FONT FACE="Times"> with </FONT><FONT FACE="Courier New">FrmGetObjectPtr</FONT><FONT FACE="Times"> to ensure that the type of the form object you retrieve is the type you expect. Here's an example that retrieves a </FONT><FONT FACE="Courier New">FieldPtr</FONT><FONT FACE="Times">, using additional error checking to verify the type:</FONT></P><PRE><FONT SIZE="-1">FieldPtr GetFieldPtr(FormPtr frm, Word objectIndex)</FONT>
+<FONT SIZE="-1">{
+    ErrNonFatalDisplayIf(FrmGetObjectType(frm, objectIndex &lt;&gt; frmFieldObj,</FONT>
+<FONT SIZE="-1">      &quot;Form object isn't a field&quot;</FONT>
+<FONT SIZE="-1">   return (FieldPtr) FrmGetObjectPtr(frm, objectIndex);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">In a finished application, of course, your code shouldn't be accessing form objects of the wrong type. During the development process, however, it is frightfully easy to accidentally pass the wrong index to </FONT><FONT FACE="Courier New">FrmGetObjectPtr</FONT><FONT FACE="Times">. Thus, using a safety checking routine like </FONT><FONT FACE="Courier New">GetFieldPtr</FONT><FONT FACE="Times"> can be helpful in catching programming errors that are common in early development.&#160;</FONT><A NAME="P496_23994"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Form Object &quot;Gotchas&quot;</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here are a couple of problems to watch out for when dealing with form functions and handling form objects:</FONT></P>
+
+<P><I><FONT FACE="Times">Remember which form functions require object IDs versus object indexes</FONT></I></P>
+
+<P><FONT FACE="Times">You must keep track of which form functions require form object IDs and which require form object indexes. If you pass an object ID to a routine that expects an object index, you'll probably cause the device to crash. Remember that you can translate back and forth between these two using </FONT><FONT FACE="Courier New">FrmGetObjectID</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">FrmGetObjectIndex</FONT><FONT FACE="Times"> whenever it's necessary.</FONT></P>
+
+<P><I><FONT FACE="Times">Bitmaps don't have object IDs</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P506_24570"></A>Bitmaps on a form don't have an associated object ID. This can be a problem if you want to do hit-testing on a bitmap, for instance. In such cases, you can create a gadget that has the same bounds as the bitmap and do hit-testing on it. This has an associated object ID.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Specific Form Objects</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now that you have an idea how forms interact with form objects, it is time to look at the quirks associated with programming particular form objects. Concerning these form objects there is both good news and bad. Let's start with the good.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We don't discuss any of the following objects, because their creation and coding requirements are well documented and straightforward:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Buttons</FONT></LI>
+
+  <LI><FONT FACE="Times">  Checkboxes</FONT></LI>
+
+  <LI><FONT FACE="Times">  Form bitmaps</FONT></LI>
+
+  <LI><FONT FACE="Times">  Graffiti shift indicators</FONT></LI>
+
+  <LI><FONT FACE="Times">  Push buttons</FONT></LI>
+
+  <LI><FONT FACE="Times">  Repeating buttons</FONT></LI>
+
+  <LI><FONT FACE="Times">  Selector triggers</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The bad news is that the rest of the form objects require further discussion. Indeed, some objects, like editable text field objects, require extensive help before you can successfully add them to an application. Here is the list of objects that we are going to discuss further:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Labels</FONT></LI>
+
+  <LI><FONT FACE="Times">  Gadgets</FONT></LI>
+
+  <LI><FONT FACE="Times">  Lists</FONT></LI>
+
+  <LI><FONT FACE="Times">  Pop-up triggers</FONT></LI>
+
+  <LI><FONT FACE="Times">  Text</FONT></LI>
+
+  <LI><FONT FACE="Times">  Scrollbars</FONT></LI>
+
+  <LI><FONT FACE="Times">  Tables (we actually describe these later in Chapter&#160;8, <I>Extras</I>, on page&#160;204)</FONT></LI></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Label Objects</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P533_25775"></A>Label objects can be a little bit tricky if you are going to change the label at runtime. They are a snap if the label values don't switch.</FONT></P>
+
+<P><I><FONT FACE="Times">Changing the text of a label</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To change the text of a label form object, use </FONT><FONT FACE="Courier New">&#160;<A NAME="P537_25990"></A>FrmCopyLabel</FONT><FONT FACE="Times">. Unfortunately, </FONT><FONT FACE="Courier New">FrmCopyLabel</FONT><FONT FACE="Times"> only redraws the new label, while not erasing the old one. You can have problems with this in the case where the new text is shorter than the old text; remnants of the old text are left behind. One way to avoid this problem is to hide the label before doing the copy and then show it afterward. Here is an example of that:</FONT></P><PRE><FONT SIZE="-1">FormPtr frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">Word    myLabelObjectIndex = FrmGetObjectIndex(frm, MainMyLabel);</FONT>
+
+<FONT SIZE="-1">FrmHideObject(frm, myLabelObjectIndex);</FONT>
+<FONT SIZE="-1">FrmCopyLabel(FrmGetActiveForm(), MainMyLabel, &quot;newText&quot;);</FONT>
+<FONT SIZE="-1">FrmShowObject(frm, myLabelObjectIndex);</FONT></PRE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">To change the label of a control (like a checkbox, for instance), use </FONT><FONT FACE="Courier New" SIZE="-1">CtlSetLabel</FONT><FONT FACE="Times" SIZE="-1">, not </FONT><FONT FACE="Courier New" SIZE="-1">FrmCopyLabel</FONT><FONT FACE="Times" SIZE="-1">.</FONT><BR>
+</P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">Problems with labels longer than the resource specification</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P550_26746"></A>You will also have trouble if the length of the new label is longer than the length specified in the resource. Longer strings definitely cause errors, since </FONT><FONT FACE="Courier New">FrmCopyLabel</FONT><FONT FACE="Times"> blindly writes beyond the space allocated for the label.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">In general, you should realize that labels aren't well suited for text that needs to change at runtime. In most cases, if you've got some text on the screen that needs to change, you are better off not using a label. A preferable choice, in such instances, is a field that has the editable and underline attributes turned off.</FONT><A NAME="P552_27298"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Gadget Objects</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P557_27312"></A>Once you have rifled through the other objects and haven't found anything suitable for the task you have in mind, you are left with using a gadget. A gadget is the form object you use when nothing else will do. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">A gadget is a custom form object with an on-screen bounds that can have data programmatically associated with it. (You can't set data for a gadget from a resource.) It also has an object ID. That's all the Form Manager knows about a gadget: bounds, object ID, and a data pointer. Everything else you need to handle yourself. </FONT></P>
+
+<P><I><FONT FACE="Times">What the gadget is responsible for</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The two biggest tasks the gadget needs to handle are:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  All the drawing of the gadget on the screen</FONT></LI>
+
+  <LI><FONT FACE="Times">  All the taps on the gadget</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are two times when the gadget needs to be drawn-when the form first gets opened and whenever your event handler receives a </FONT><FONT FACE="Courier New"><A NAME="P567_28137"></A>frmUpdateEvent</FONT><FONT FACE="Times"> (these are the same times you need to call </FONT><FONT FACE="Courier New">FrmUpdateForm</FONT><FONT FACE="Times">). </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you'll be saving data associated with the gadget, use the function </FONT><FONT FACE="Courier New">FrmSetGadgetData</FONT><FONT FACE="Times">. You also need to initialize the data when your form is opened.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Although you could draw and respond to taps without a gadget, it has three advantages over a totally custom-coded structure:</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Times">&#183; </FONT><FONT FACE="Times" SIZE="-1"> The gadget maintains a pointer that allows you to store gadget-specific data.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Times">&#183; </FONT><FONT FACE="Times" SIZE="-1"> The gadget maintains a rectangular bounds specified in the resource.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Times">&#183; </FONT><FONT FACE="Times" SIZE="-1"> Gremlins, the automatic random tester (see page&#160;293), recognizes gadgets and taps on them. This is an enormous advantage, because Gremlins relentlessly tap on them during testing cycles. While it is true that it will tap on areas that lie outside the bounds of any form object, it is a rare event. Gremlins are especially attracted to buttons and objects and like to spend time tapping in them. If you didn't use gadgets, your code would rarely receive taps during this type of testing.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">A sample gadget</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P579_29137"></A>Let's look at an example gadget that stores the integer 0 or 1 and displays either a vertical or horizontal line. Tapping on the gadget flips the integer and the line. Here's the form's initialization routine that initializes the data in the gadget and then draws it:</FONT></P><PRE><FONT SIZE="-1">FormPtr  frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">VoidHand h = MemHandleNew(sizeof(Word));</FONT>
+
+<FONT SIZE="-1">if (h) {</FONT>
+<FONT SIZE="-1">   * (Word *) MemHandleLock(h) = 1;</FONT>
+<FONT SIZE="-1">   MemHandleUnlock(h);</FONT>
+<FONT SIZE="-1">   FrmSetGadgetData(frm, FrmGetObjectIndex(frm, MainG1Gadget), h);</FONT>
+<FONT SIZE="-1">}</FONT>
+
+<FONT SIZE="-1">// Draw the form.</FONT>
+<FONT SIZE="-1">FrmDrawForm(frm);</FONT>
+<FONT SIZE="-1">GadgetDraw(frm, MainG1Gadget);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">When the form is closed, the gadget's data handle must be deallocated:</FONT></P><PRE><FONT SIZE="-1">VoidHand h;</FONT>
+<FONT SIZE="-1">FormPtr  frm = FrmGetActiveForm();</FONT>
+
+<FONT SIZE="-1">h = FrmGetGadgetData(frm, FrmGetObjectIndex(frm, MainG1Gadget));</FONT>
+<FONT SIZE="-1">if (h)</FONT>
+<FONT SIZE="-1">   MemHandleFree(h);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the routine that draws the horizontal or vertical line:&#160;</FONT><A NAME="P601_29942"></A></P><PRE><FONT SIZE="-1">// draws  | or - depending on the data in the gadget</FONT>
+<FONT SIZE="-1">static void GadgetDraw(FormPtr frm, Word gadgetID)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   RectangleType  bounds;</FONT>
+<FONT SIZE="-1">   UInt           fromx, fromy, tox, toy;</FONT>
+<FONT SIZE="-1">   Word           gadgetIndex = FrmGetObjectIndex(frm, gadgetID);</FONT>
+<FONT SIZE="-1">   VoidHand       data = FrmGetGadgetData(frm, gadgetIndex);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (data) {</FONT>
+<FONT SIZE="-1">      WordPtr        wordP = MemHandleLock(data);</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      FrmGetObjectBounds(frm, gadgetIndex, &amp;bounds);</FONT>
+<FONT SIZE="-1">      switch (*wordP) {</FONT>
+<FONT SIZE="-1">      case 0:</FONT>
+<FONT SIZE="-1">         fromx = bounds.topLeft.x + bounds.extent.x / 2;</FONT>
+<FONT SIZE="-1">         fromy = bounds.topLeft.y;</FONT>
+<FONT SIZE="-1">         tox = fromx;</FONT>
+<FONT SIZE="-1">         toy = fromy + bounds.extent.y - 1;</FONT>
+<FONT SIZE="-1">         break;</FONT>
+<FONT SIZE="-1">      case 1:</FONT>
+<FONT SIZE="-1">         fromx = bounds.topLeft.x;</FONT>
+<FONT SIZE="-1">         fromy = bounds.topLeft.y + bounds.extent.y / 2;</FONT>
+<FONT SIZE="-1">         tox = fromx + bounds.extent.x - 1;</FONT>
+<FONT SIZE="-1">         toy = fromy;</FONT>
+<FONT SIZE="-1">         break;</FONT>
+<FONT SIZE="-1">      default:</FONT>
+<FONT SIZE="-1">         fromx = tox = bounds.topLeft.x;</FONT>
+<FONT SIZE="-1">         fromy = toy = bounds.topLeft.y;</FONT>
+<FONT SIZE="-1">         break;</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">      MemHandleUnlock(data);</FONT>
+<FONT SIZE="-1">      WinEraseRectangle(&amp;bounds, 0);</FONT>
+<FONT SIZE="-1">      WinDrawLine(fromx, fromy, tox, toy);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Every time the user taps down on the form, the form's event handler needs to check to see whether the tap is on the gadget. It does so by comparing the tap point with the gadget's bounds. Here is an example:</FONT></P><PRE><FONT SIZE="-1">case penDownEvent:</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      FormPtr        frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">      Word           gadgetIndex = FrmGetObjectIndex(frm, MainG1Gadget);</FONT>
+<FONT SIZE="-1">      RectangleType  bounds;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      FrmGetObjectBounds(frm, gadgetIndex, &amp;bounds);</FONT>
+<FONT SIZE="-1">      if (RctPtInRectangle (event-&gt;screenX, event-&gt;screenY, &amp;bounds)) {</FONT>
+<FONT SIZE="-1">         GadgetTap(frm, MainG1Gadget, event);</FONT>
+<FONT SIZE="-1">         handled = true;</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   break;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The </FONT><FONT FACE="Courier New">&#160;<A NAME="P653_31572"></A>GadgetTap</FONT><FONT FACE="Times"> function handles a tap and acts like a button (highlighting and unhighlighting as the stylus moves in and out of the gadget):</FONT></P><PRE><FONT SIZE="-1">// it'll work like a button: Invert when you tap in it.</FONT>
+<FONT SIZE="-1">// Stay inverted while you stay in the button. Leave the button, uninvert,</FONT>
+<FONT SIZE="-1">// let go outside, nothing happens; let go inside, data changes/redraws</FONT>
+<FONT SIZE="-1">static void GadgetTap(FormPtr frm, Word gadgetID, EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Word           gadgetIndex = FrmGetObjectIndex(frm, gadgetID);</FONT>
+<FONT SIZE="-1">   VoidHand       data = FrmGetGadgetData(frm, gadgetIndex);</FONT>
+<FONT SIZE="-1">   SWord          x, y;</FONT>
+<FONT SIZE="-1">   Boolean        penDown;</FONT>
+<FONT SIZE="-1">   RectangleType  bounds;</FONT>
+<FONT SIZE="-1">   Boolean        wasInBounds = true;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (data) {</FONT>
+<FONT SIZE="-1">      FrmGetObjectBounds(frm, gadgetIndex, &amp;bounds);</FONT>
+<FONT SIZE="-1">      WinInvertRectangle(&amp;bounds, 0);</FONT>
+<FONT SIZE="-1">      do {</FONT>
+<FONT SIZE="-1">         Boolean  nowInBounds;</FONT>
+<FONT SIZE="-1">         </FONT>
+<FONT SIZE="-1">         PenGetPoint (&amp;x, &amp;y, &amp;penDown);</FONT>
+<FONT SIZE="-1">         nowInBounds = RctPtInRectangle(x, y, &amp;bounds);</FONT>
+<FONT SIZE="-1">         if (nowInBounds != wasInBounds) {</FONT>
+<FONT SIZE="-1">            WinInvertRectangle(&amp;bounds, 0);</FONT>
+<FONT SIZE="-1">            wasInBounds = nowInBounds;</FONT>
+<FONT SIZE="-1">         }</FONT>
+<FONT SIZE="-1">      } while (penDown);</FONT>
+<FONT SIZE="-1">      if (wasInBounds) {</FONT>
+<FONT SIZE="-1">         WordPtr  wPtr = MemHandleLock(data);</FONT>
+<FONT SIZE="-1">         *wPtr = !(*wPtr)</FONT>
+<FONT SIZE="-1">         MemHandleUnlock(data);</FONT>
+<FONT SIZE="-1">         </FONT>
+<FONT SIZE="-1">         // GadgetDraw will erase--we don't need to invert</FONT>
+<FONT SIZE="-1">         GadgetDraw(frm, gadgetID);</FONT>
+<FONT SIZE="-1">      } // else gadget is already uninverted</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P689_32892"></A></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">If we wanted to have multiple gadgets on a single form, we'd need to modify the form open and close routines to allocate and deallocate handles for each gadget in the form. In addition, we'd have to modify the event handler to check for taps in the bounds of each gadget, rather than just the one.</FONT><A NAME="P690_33189"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">List Objects</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P695_33201"></A>A list can be used as is without any programmatic customization. In the resource, you can specify the text of each list row and the number of rows that can be displayed at one time (the number of visible items). The list will automatically provide scroll arrows if the number of items is greater than the number that can be shown.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Lists are used both alone and with pop-up triggers (see <A HREF="#P830_40073">&quot;Pop-up Trigger Objects</A>&quot; later in this chapter). If you are using a standalone list, you'll receive a </FONT><FONT FACE="Courier New"><A NAME="P697_33689"></A>lstSelectEvent</FONT><FONT FACE="Times"> when the user taps on a list item. The list manager highlights the selected item.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You can manipulate the display of a list in two ways:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  You can programmatically set the default selection using </FONT><FONT FACE="Courier New">&#160;<A NAME="P701_33898"></A>LstSetSelection</FONT><FONT FACE="Times">.</FONT></LI>
+
+  <LI><FONT FACE="Times">  You can make a specific item visible with </FONT><FONT FACE="Courier New">&#160;<A NAME="P702_33959"></A>LstMakeItemVisible</FONT><FONT FACE="Times">; the list will scroll, if necessary, to display that item.</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">You can get information from it using three different routines:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  You can retrieve information from the list by using </FONT><FONT FACE="Courier New">&#160;<A NAME="P705_34154"></A>LstGetNumberOfItems</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">&#160;<A NAME="P705_34176"></A>LstGetVisibleItems</FONT><FONT FACE="Times">, or </FONT><FONT FACE="Courier New">&#160;<A NAME="P705_34200"></A>LstGetSelectionText</FONT><FONT FACE="Times">.</FONT></LI></UL>
+
+<P><I><FONT FACE="Times">Sample that displays a specific list item</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's some sample code that selects the 11th item in a list (the first item is at 0) and scrolls the list, if necessary, so that it is visible:</FONT></P><PRE><FONT SIZE="-1">FormPtr  frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">ListPtr  list = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, MainMyList));</FONT>
+
+<FONT SIZE="-1">LstSetSelection(list, 10);</FONT>
+<FONT SIZE="-1">LstMakeItemVisible(list, 10);</FONT></PRE>
+
+<P><I><FONT FACE="Times">Custom versus noncustom lists</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P718_34596"></A>If you want to specify the contents of the list at runtime, there are two ways to do it:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Use </FONT><FONT FACE="Courier New">&#160;<A NAME="P720_34691"></A>LstSetArrayChoices</FONT><FONT FACE="Times"> to pass an array of strings that will become the new items. The List Manager retains the strings and draws each string as necessary.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Use </FONT><FONT FACE="Courier New">&#160;<A NAME="P721_34849"></A>LstSetDrawFunction</FONT><FONT FACE="Times"> to provide a callback function that is responsible for drawing the contents of each row.</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">You'll find that the second way is almost always easier than the first. Let's look at a sample written twice, using the first approach and again using the second.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The sample draws a list composed of items in a <A NAME="P724_35165"></A>string list resource. A string list resource contains:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  A null-terminated prefix string which </FONT><FONT FACE="Courier New">SysStringByIndex</FONT><FONT FACE="Times"> prepends to each of the strings in the list</FONT></LI>
+
+  <LI><FONT FACE="Times">  A two-byte count of the number of strings in the list</FONT></LI>
+
+  <LI><FONT FACE="Times">  The null-terminated strings concatenated together</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">There's no particular significance to retrieving the items from a string list resource; we just needed some example that required the runtime retrieval of the strings.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's a C structure defining a string resource:</FONT><A NAME="P731_35640"></A></P><PRE><FONT SIZE="-1">typedef struct StrListType {</FONT>
+<FONT SIZE="-1">   char prefixString;       // we assume it's empty</FONT>
+<FONT SIZE="-1">   char numStringsHiByte;   // we assume it's 0</FONT>
+<FONT SIZE="-1">   char numStrings;         // low byte of the count</FONT>
+<FONT SIZE="-1">   char firstString[1];     // more than 1-all concated together</FONT>
+<FONT SIZE="-1">} *StrListPtr;</FONT></PRE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">This sample asssumes that the prefix string is empty, and that there are no more than 255 strings in the string list. For a sample that has been modified to correctly handle more general cases, see </FONT><FONT FACE="Times" SIZE="-1"><I><A HREF="http://www.calliopeinc.com/PalmProgramming">http://www.calliopeinc.com/PalmProgramming</A></I>.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Using the first approach, we need to create an array with each element pointing to a string. The easiest way to create such an array is with </FONT><FONT FACE="Courier New">&#160;<A NAME="P741_36279"></A>SysFormPointerArrayToStrings</FONT><FONT FACE="Times">. This routine takes a concatenation of null-terminated strings and returns a newly allocated array that points to the beginning of each string in the concatenation. We lock the return result and pass it to </FONT><FONT FACE="Courier New">&#160;<A NAME="P741_36515"></A>LstSetListChoices</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">static void MainViewInit(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr        frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   gStringsHandle = DmGetResource('tSTL', MyStringList);</FONT>
+<FONT SIZE="-1">   if (gStringsHandle) {</FONT>
+<FONT SIZE="-1">      ListPtr  list = FrmGetObjectPtr(frm, </FONT>
+<FONT SIZE="-1">         FrmGetObjectIndex(frm, MainMyList));</FONT>
+<FONT SIZE="-1">      StrLstPtr   stringsPtr = = MemHandleLock(gStringsHandle);</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      gStringArrayH = SysFormPointerArrayToStrings(</FONT>
+<FONT SIZE="-1">         stringsPtr-&gt;firstString, stringsPtr-&gt;numStrings);</FONT>
+<FONT SIZE="-1">      LstSetListChoices(list, MemHandleLock(gStringArrayH), </FONT>
+<FONT SIZE="-1">         stringsPtr-&gt;numStrings);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   // Draw the form.</FONT>
+<FONT SIZE="-1">   FrmDrawForm(frm);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The resource handle and the newly allocated array are stored in global variables so that they can be deallocated when the form closes:</FONT></P><PRE><FONT SIZE="-1">static VoidHand  gStringArrayH = 0;</FONT>
+<FONT SIZE="-1">static VoidHand  gStringsHandle = 0;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the deallocation routine where we deallocate the allocated array, and unlock and release the resource:</FONT></P><PRE><FONT SIZE="-1">static void MainViewDeInit(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   if (gStringArrayH) {</FONT>
+<FONT SIZE="-1">      MemHandleFree(gStringArrayH);</FONT>
+<FONT SIZE="-1">      gStringArrayH = NULL;</FONT>
+<FONT SIZE="-1">   }</FONT>
+
+<FONT SIZE="-1">   if (gStringsHandle) {</FONT>
+<FONT SIZE="-1">      MemHandleUnlock(gStringsHandle);</FONT>
+<FONT SIZE="-1">      DmReleaseResource(gStringsHandle);</FONT>
+<FONT SIZE="-1">      gStringsHandle = NULL;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the alternative way of customizing the list at runtime. Our drawing function to draw each row is similar. Our initialization routine must initialize the number of rows in the list and must install a callback routine:</FONT></P><PRE><FONT SIZE="-1">static void MainViewInit(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr        frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   VoidHand stringsHandle = DmGetResource('tSTL', MyStringList);</FONT>
+<FONT SIZE="-1">   if (stringsHandle) {</FONT>
+<FONT SIZE="-1">      StrListPtr  stringsPtr;</FONT>
+<FONT SIZE="-1">      ListPtr  list = FrmGetObjectPtr(frm, </FONT>
+<FONT SIZE="-1">         FrmGetObjectIndex(frm, MainMyList));</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      stringsPtr = MemHandleLock(stringsHandle);</FONT>
+<FONT SIZE="-1">      LstSetListChoices(list, NULL, stringsPtr-&gt;numStrings);</FONT>
+<FONT SIZE="-1">      MemHandleUnlock(stringsHandle);</FONT>
+<FONT SIZE="-1">      DmReleaseResource(stringsHandle);</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      LstSetDrawFunction(list, ListDrawFunc);</FONT>
+<FONT SIZE="-1">   }</FONT>
+
+<FONT SIZE="-1">   // Draw the form.</FONT>
+<FONT SIZE="-1">   FrmDrawForm(frm);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P803_38456"></A>ListDrawFunc</FONT><FONT FACE="Times"> gets the appropriate string from the list and draws it. If the callback routine had wanted to do additional drawing (lines, bitmaps, etc.), it could have:</FONT></P><PRE><FONT SIZE="-1">static void ListDrawFunc(UInt itemNum, RectanglePtr bounds, CharPtr *data)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   VoidHand stringsHandle = DmGetResource('tSTL', MyStringList);</FONT>
+<FONT SIZE="-1">   if (stringsHandle) {</FONT>
+<FONT SIZE="-1">      StrListPtr  stringsPtr;</FONT>
+<FONT SIZE="-1">      FormPtr     frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">      ListPtr     list = FrmGetObjectPtr(frm, </FONT>
+<FONT SIZE="-1">         FrmGetObjectIndex(frm, MainMyList));</FONT>
+<FONT SIZE="-1">      CharPtr     s;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      stringsPtr = MemHandleLock(stringsHandle);</FONT>
+<FONT SIZE="-1">      s = stringsPtr-&gt;firstString;</FONT>
+<FONT SIZE="-1">      while (itemNum-- &gt; 0)</FONT>
+<FONT SIZE="-1">         s += StrLen(s) + 1;  // skip this string, including null byte</FONT>
+<FONT SIZE="-1">      WinDrawChars(s, StrLen(s), bounds-&gt;topLeft.x, bounds-&gt;topLeft.y);</FONT>
+<FONT SIZE="-1">      MemHandleUnlock(stringsHandle);</FONT>
+<FONT SIZE="-1">      DmReleaseResource(stringsHandle);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">There is no cleanup necessary when the form is completed.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note that the two different approaches had roughly the same amount of code. The first used more memory (because of the allocated array). It also kept the resource locked the entire time the form was open, resulting in possible heap fragmentation.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The second approach was somewhat slower, since, for each row, the resource was obtained, locked, iterated through to find the correct string, and unlocked. Note that if we'd been willing to keep the resource locked as we did in the first case, the times would have been very similar. The second approach had more flexibility in that the drawing routine could have drawn text in different fonts or styles, or could have done additional drawing on a row-by-row <A NAME="P828_40067"></A>basis.</FONT><A NAME="P828_40073"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1"><A NAME="P830_40073"></A>Pop-up Trigger Objects</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P833_40095"></A>Pop-up triggers need an associated list. The list's bounds should be set so that when it pops up, it will be equal to or bigger than the trigger. Otherwise, you get the ugly effect of a telltale fragment of the original trigger under the list. In addition, the </FONT><FONT FACE="Courier New">usable</FONT><FONT FACE="Times"> attribute must be set to false so that it won't appear until the pop-up trigger is pressed. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">When the pop-up trigger is pressed, the list is displayed. When a list item is chosen, the pop-up label is set to the chosen item. These actions occur automatically; no code needs to be written. When a new item is chosen from the pop-up, a </FONT><FONT FACE="Courier New"><A NAME="P835_40695"></A>popSelectEvent</FONT><FONT FACE="Times"> is sent. Some associated data goes with it that includes the list ID, the list pointer, a pointer to the trigger control, and the indexes of the previously selected item and newly selected items.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's an example resource:</FONT></P><PRE><FONT SIZE="-1">#define MainForm        1100</FONT>
+<FONT SIZE="-1">#define MainTriggerID   1102</FONT>
+<FONT SIZE="-1">#define MainListID      1103</FONT>
+
+<FONT SIZE="-1">FORM ID 1100 AT (0 0 160 160)</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">    POPUPTRIGGER &quot;States&quot; ID MainTriggerID AT (55 30 44 12) </FONT>
+<FONT SIZE="-1">        LEFTANCHOR NOFRAME FONT 0</FONT>
+<FONT SIZE="-1">        POPUPLIST ID MainTriggerID MainListID</FONT>
+<FONT SIZE="-1">    LIST &quot;California&quot; &quot;Kansas&quot; &quot;New Mexico&quot; &quot;Pennsylvania&quot; &quot;Rhode Island&quot;</FONT>
+<FONT SIZE="-1">        &quot;Wyoming&quot; ID MainListID AT (64 29 63 33) NONUSABLE DISABLED FONT 0</FONT>
+<FONT SIZE="-1">END</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's an example of handling a </FONT><FONT FACE="Courier New">popSelectEvent</FONT><FONT FACE="Times"> in an event handler:</FONT></P><PRE><FONT SIZE="-1">case popSelectEvent: </FONT>
+<FONT SIZE="-1">      // do something with following fields of event-&gt;data.popSelect</FONT>
+<FONT SIZE="-1">      //   controlID</FONT>
+<FONT SIZE="-1">      //   controlPtr</FONT>
+<FONT SIZE="-1">      //   listID</FONT>
+<FONT SIZE="-1">      //   listP</FONT>
+<FONT SIZE="-1">      //   selection</FONT>
+<FONT SIZE="-1">      //   priorSelection</FONT>
+<FONT SIZE="-1">   break;</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Text Objects</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P865_41634"></A>Editable text objects require attention to many details.</FONT></P>
+
+<P><I><FONT FACE="Times">Setting text in a field</FONT></I><A NAME="P867_41713"></A></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P869_41714"></A>Accessing an editable field needs to be done in a particular way. In the first place, you must use a handle instead of a pointer. The ability to resize the text requires the use of a handle. You must also make sure to get the field's current handle and expressly free it in your code. Here is some sample code that shows you how to do this:</FONT></P><PRE><FONT SIZE="-1">static FieldPtr SetFieldTextFromHandle(Word fieldID, Handle txtH)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Handle      oldTxtH;</FONT>
+<FONT SIZE="-1">   FormPtr     frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">   FieldPtr    fldP;</FONT>
+
+
+<FONT SIZE="-1">   // get the field and the field's current text handle.</FONT>
+<FONT SIZE="-1">   fldP     = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, fieldID));</FONT>
+<FONT SIZE="-1">   ErrNonFatalDisplayIf(!fldP, &quot;missing field&quot;);</FONT>
+<FONT SIZE="-1">   oldTxtH  = FldGetTextHandle(fldP);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // set the field's text to the new text.</FONT>
+<FONT SIZE="-1">   FldSetTextHandle(fldP, txtH);</FONT>
+<FONT SIZE="-1">   FldDrawField(fldP);</FONT>
+
+<FONT SIZE="-1">   // free the handle AFTER we call FldSetTextHandle().</FONT>
+<FONT SIZE="-1">   if (oldTxtH) </FONT>
+<FONT SIZE="-1">      MemHandleFree(oldTxtH);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   return fldP;</FONT>
+<FONT SIZE="-1">}  </FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The previous bit of code is actually quite tricky. The Palm OS documentation doesn't tell you that it's your responsibility to dispose of the field's old handle. (We get the field handle with </FONT><FONT FACE="Courier New">FldGetTextHandle</FONT><FONT FACE="Times"> and dispose of it with </FONT><FONT FACE="Courier New">MemHandleFree</FONT><FONT FACE="Times"> at the end of the routine.) </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Were we not to dispose of the old handles of editable text fields in the application, we would get slowly growing memory leaks all over the running application. Imagine if every time an editable field were modified programmatically, its old handle were kept in memory, along with its new handle. It wouldn't take long for our running application to choke the application heap with its vampire-like hunger for memory. Further, debugging such a problem would require diligent sleuthing as the cause of the problem would not be readily obvious. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Last, we redraw the field with </FONT><FONT FACE="Courier New">&#160;<A NAME="P897_43481"></A>FldDrawField</FONT><FONT FACE="Times">. If we had not done so, the changed text wouldn't be displayed. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note that when a form closes, each field within it frees its handle. If you don't want that behavior for a particular field, call </FONT><FONT FACE="Courier New">&#160;<A NAME="P899_43689"></A>FldSetTextHandle(fld, NULL)</FONT><FONT FACE="Times"> before the field is closed. If a field has no handle associated with it, when the user starts writing in the field, the Field Manager automatically allocates a handle for it.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here are some utility routines that are wrappers around the previous routine. The first one sets a field's text to that of a string, allocates a handle, and copies the string for you:&#160;</FONT><A NAME="P901_44075"></A></P><PRE><FONT SIZE="-1">// Allocates new handle and copies incoming string</FONT>
+<FONT SIZE="-1">static FieldPtr SetFieldTextFromStr(Word fieldID, CharPtr strP)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Handle      txtH;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // get some space in which to stash the string.</FONT>
+<FONT SIZE="-1">   txtH  = MemHandleNew(StrLen(strP) + 1);</FONT>
+<FONT SIZE="-1">   if (!txtH)</FONT>
+<FONT SIZE="-1">      return NULL;</FONT>
+
+<FONT SIZE="-1">   // copy the string to the locked handle.</FONT>
+<FONT SIZE="-1">   StrCopy(MemHandleLock(txtH), strP);</FONT>
+
+<FONT SIZE="-1">   // unlock the string handle.</FONT>
+<FONT SIZE="-1">   MemHandleUnlock(txtH);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // set the field to the handle</FONT>
+<FONT SIZE="-1">   return SetFieldTextFromHandle(fieldID, txtH);</FONT>
+<FONT SIZE="-1">} </FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The second utility routine clears the text from a field:</FONT></P><PRE><FONT SIZE="-1">static void &#160;<A NAME="P924_44627"></A>ClearFieldText(Word fieldID)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   SetFieldTextFromHandle(fieldID, NULL);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Modifying text in a field</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P930_44723"></A>One way to make changes to text is to use </FONT><FONT FACE="Courier New">&#160;<A NAME="P930_44766"></A>FldDelete</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">FldSetSelection</FONT><FONT FACE="Times">, and </FONT><FONT FACE="Courier New">FldInsert</FONT><FONT FACE="Times">. </FONT><FONT FACE="Courier New">FldDelete</FONT><FONT FACE="Times"> deletes a specified range of text. </FONT><FONT FACE="Courier New">&#160;<A NAME="P930_44855"></A>FldInsert</FONT><FONT FACE="Times"> inserts text at the current selection (</FONT><FONT FACE="Courier New">&#160;<A NAME="P930_44905"></A>FldSetSelection</FONT><FONT FACE="Times"> sets the selection). By making judicious calls to these routines, you can change the existing text into whatever new text you desire. The routines are easy to use. They have a flaw, however, that may make them inappropriate to use in some cases: </FONT><FONT FACE="Courier New">FldDelete</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">FldInsert</FONT><FONT FACE="Times"> redraw the field. If you're making multiple calls to these routines for a single field (let's say, for example, you were replacing every other character with an &quot;X&quot;), you'd see the field redraw after every call. Users might find this distracting. Be careful with </FONT><FONT FACE="Courier New">FldChanged</FONT><FONT FACE="Times"> events, as well, as they can overflow the event queue if they are too numerous. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">An alternative approach exists that involves directly modifying the text in the handle. However, you must not change the text in a handle while it is being used by a field. Changing the text while the field is using it confuses the field and its internal information is not updated correctly. Among other things, line breaks won't work correctly.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To properly change the text, first remove it from the field, modify it, and then put it back. Here's an example of how to do that:</FONT></P><PRE><FONT SIZE="-1">FormPtr     frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">FieldPtr    fld;</FONT>
+<FONT SIZE="-1">Handle      h;</FONT>
+
+<FONT SIZE="-1">// get the field and the field's current text handle.</FONT>
+<FONT SIZE="-1">fld      = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, Main1Field));</FONT>
+<FONT SIZE="-1">h = FldGetTextHandle(fld);</FONT>
+<FONT SIZE="-1">if (h) {</FONT>
+<FONT SIZE="-1">   CharPtr  s;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   FldSetTextHandle(fld, NULL);</FONT>
+<FONT SIZE="-1">   s = MemHandleLock(h);</FONT>
+<FONT SIZE="-1">  // change contents of s</FONT>
+<FONT SIZE="-1">   while (*s != '\0') {</FONT>
+<FONT SIZE="-1">      if (*s &gt;= 'A' &amp;&amp; *s &lt;= 'Z')</FONT>
+<FONT SIZE="-1">         StrCopy(s, s+1);</FONT>
+<FONT SIZE="-1">      else</FONT>
+<FONT SIZE="-1">         s++;</FONT>
+<FONT SIZE="-1">   }</FONT>
+
+<FONT SIZE="-1">   MemHandleUnlock(h);</FONT>
+<FONT SIZE="-1">   FldSetTextHandle(fld, h);</FONT>
+<FONT SIZE="-1">   FldDrawField(fld);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This no-brainer example simply removes any uppercase characters in the field.</FONT><FONT FACE="Courier New">&#160;&#160;</FONT><A NAME="P960_46599"></A></P>
+
+<P><I><FONT FACE="Times">Getting text from a field</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P964_46624"></A>To read the text from a field, you can use </FONT><FONT FACE="Courier New">&#160;<A NAME="P964_46668"></A>FldGetTextHandle</FONT><FONT FACE="Times">. It is often more convenient, however, to obtain a pointer instead by using </FONT><FONT FACE="Courier New">&#160;<A NAME="P964_46762"></A>FldGetTextPtr</FONT><FONT FACE="Times">. It returns a locked pointer to the text. Note that this text pointer can become invalid if the user subsequently edits the text (if there isn't enough room left for new text, the field manager unlocks the handle, resizes it, and then relocks it).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">If the field is empty, it won't have any text associated with it. In such cases, </FONT><FONT FACE="Courier New">FldGetTextPtr</FONT><FONT FACE="Times"> returns </FONT><FONT FACE="Courier New">NULL</FONT><FONT FACE="Times">. Make sure you check for this case.</FONT></P>
+
+<P><I><FONT FACE="Times">Other aspects of a field that require attention</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P970_47213"></A>When a form containing editable text fields is displayed, one of the text fields should contain the focus; this means it displays an insertion point and receives any Graffiti input. You must choose the field that has the initial focus by setting it in your code. The user can change the focus by tapping on a field. The Form Manager handles changing the focus in this case. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You must also handle the </FONT><FONT FACE="Courier New"><A NAME="P972_47612"></A>prevFieldChr</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">nextFieldChr</FONT><FONT FACE="Times"> characters; these allow the user to move from field to field using Graffiti (the Graffiti strokes for these characters are <IMG SRC="images/ch05-plmp.05A-10.gif" WIDTH=9 HEIGHT=10> and <IMG SRC="images/ch05-plmp.05B-11.gif" WIDTH=9 HEIGHT=10>).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To move the focus, use </FONT><FONT FACE="Courier New">&#160;<A NAME="P974_47796"></A>FrmSetFocus</FONT><FONT FACE="Times">. Here's an example that sets the focus to the </FONT><FONT FACE="Courier New">MyFormMyTextField</FONT><FONT FACE="Times"> field:</FONT></P><PRE><FONT SIZE="-1">FormPtr frm = FrmGetActiveForm();</FONT>
+
+<FONT SIZE="-1">FrmSetFocus(frm, FrmGetObjectIndex(frm, MyFormMyTextField));</FONT></PRE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Do not use </FONT><FONT FACE="Courier New" SIZE="-1">FldGrabFocus</FONT><FONT FACE="Times" SIZE="-1">. It changes the insertion point, but doesn't notify the form that the focus has changed. </FONT><FONT FACE="Courier New" SIZE="-1">FrmSetFocus</FONT><FONT FACE="Times" SIZE="-1"> ends up calling </FONT><FONT FACE="Courier New" SIZE="-1">FldGrabFocus</FONT><FONT FACE="Times" SIZE="-1"> anyway.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">Field &quot;gotchas&quot;</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P983_48147"></A>As might be expected with such a complicated type of field, there are a number of things to watch out for in your code:</FONT></P>
+
+<P><I><FONT FACE="Times">Preventing deallocation of a handle</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P986_48301"></A>When a form containing a field is closed, the field frees its handle (with </FONT><FONT FACE="Courier New">FldFreeMemory</FONT><FONT FACE="Times">). In some cases, this is fine (for instance, if the field automatically allocated the handle because the user started writing into an empty field). In other cases, it is not. For example, when you've used </FONT><FONT FACE="Courier New">FldSetTextHandle</FONT><FONT FACE="Times"> so that a field will edit your handle, you may not want the handle deallocated-you may want to deallocate it yourself or retain it. </FONT></P>
+
+<P><FONT FACE="Times">To prevent the field from deallocating your handle, call </FONT><FONT FACE="Courier New">&#160;<A NAME="P987_48802"></A>FldSetTextHandle(fld, NULL) </FONT><FONT FACE="Times">to set the field's text handle to </FONT><FONT FACE="Courier New">NULL. </FONT><FONT FACE="Times">Do this when your form receives a </FONT><FONT FACE="Courier New">frmCloseEvent</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><I><FONT FACE="Times">Preventing memory leaks</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P989_48941"></A>When you call </FONT><FONT FACE="Courier New">FldSetTextHandle</FONT><FONT FACE="Times">, any existing handle in the field is not automatically deallocated. To prevent memory leaks, you'll normally want to:</FONT></P>
+
+  <UL><P><FONT FACE="Times">1. Get the old handle with </FONT><FONT FACE="Courier New">FldGetTextHandle</FONT></P>
+
+  <P><FONT FACE="Times">2. Set the new handle with </FONT><FONT FACE="Courier New">FldSetTextHandle</FONT></P>
+
+  <P><FONT FACE="Times">3. Deallocate the old handle</FONT></P>
+
+</UL><P><I><FONT FACE="Times">Don't use FldSetTextPtr and FldSetTextHandle together</FONT></I></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">&#160;&#160;<A NAME="P994_49258"></A>FldSetTextPtr</FONT><FONT FACE="Times"> should be used only for noneditable fields for which you'll never call </FONT><FONT FACE="Courier New">FldSetTextHandle</FONT><FONT FACE="Times">. The two routines do not work well together.</FONT></P>
+
+<P><I><FONT FACE="Times">Remove the handle when editing a field</FONT></I></P>
+
+<P><FONT FACE="Times">If you're going to modify the text within a field's handle, first remove the handle from the field with </FONT><FONT FACE="Courier New">FldSetTextHandle(fld, NULL)</FONT><FONT FACE="Times">, modify the text, and then set the handle back again.</FONT></P>
+
+<P><I><FONT FACE="Times">Compacting string handles</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P998_49652"></A>The length of the handle in a field may be longer than the length of the string itself, since a field expands a handle in chunks. When a handle has been edited with a field, call </FONT><FONT FACE="Courier New">&#160;<A NAME="P998_49832"></A>FldCompactText</FONT><FONT FACE="Times"> to shrink the handle to the length of the string (actually, one longer than the length of the string for the trailing null byte).</FONT><A NAME="P998_49976"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Scrollbar Objects</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">A <A NAME="P1002_49995"></A>scrollbar doesn't know anything about scrolling or about any other form objects. It is just a form object that stores a current number, along with a minimum and maximum. The user interface effect is a result of the scrollbar's allowing the user to modify that number graphically within the constraints of the minimum and maximum.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Scrollbars were introduced in Palm OS 2.0 and therefore aren't available in the 1.0 OS. If you intend to run on 1.0 systems, your code will need to do something about objects that rely on scrollbars.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">Scrollbar coding requirements</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are a few things that you need to handle in your code:</FONT></P>
+
+  <UL><LI><FONT FACE="Times"> <A NAME="P1011_50614"> </A>You must respond to a change in the scrollbar's current value by scrolling the objects the scrollbar is supposed to be moving over.</FONT></LI></UL>
+
+<P><FONT FACE="Times">Here is how you do that. Your event handler receives a </FONT><FONT FACE="Courier New"><A NAME="P1012_50800"></A>sclRepeatEvent</FONT><FONT FACE="Times"> while the user holds the stylus down and a </FONT><FONT FACE="Courier New"><A NAME="P1012_50858"></A>sclExitEvent</FONT><FONT FACE="Times"> when the user releases the stylus. Your code is on the lookout for one or the other event, depending on whether your application wants to scroll immediately (as the user is scrolling with the scrollbar) or postpone the scrolling until the user has gotten to the final scroll position with the scrollbar.</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  You must change the scrollbar if the current scroll position changes through other appropriate user actions; for example, if the user pushes the built-in Scroll buttons or does drag-scrolling through text.</FONT></LI>
+
+  <LI><FONT FACE="Times">  You must change the scrollbar if the scroll maximum value changes. It would do so, for example, when typing changes the total number of lines. A field sends a </FONT><FONT FACE="Courier New"><A NAME="P1014_51542"></A>fldChangedEvent</FONT><FONT FACE="Times"> at this point if its resource attribute </FONT><FONT FACE="Courier New"><A NAME="P1014_51598"></A>hasScrollbar</FONT><FONT FACE="Times"> is set.</FONT></LI></UL>
+
+<P><I><FONT FACE="Times">Updating the scrollbar based on the insertion point</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P1018_51670"></A>Let's look at the code for a sample application that has a field connected to a scrollbar. We need a routine that will update the scrollbar based on the current insertion point, field height, and number of text lines (</FONT><FONT FACE="Courier New">&#160;<A NAME="P1018_51889"></A>FldGetScrollValues</FONT><FONT FACE="Times"> is designed to return these values):</FONT></P><PRE><FONT SIZE="-1">static void UpdateScrollbar(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr        frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">   ScrollBarPtr   scroll;</FONT>
+<FONT SIZE="-1">   FieldPtr       field;</FONT>
+<FONT SIZE="-1">   Word           currentPosition;</FONT>
+<FONT SIZE="-1">   Word           textHeight;</FONT>
+<FONT SIZE="-1">   Word           fieldHeight;</FONT>
+<FONT SIZE="-1">   Word           maxValue;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   field = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, Main1Field));</FONT>
+<FONT SIZE="-1">   FldGetScrollValues(field, &amp;currentPosition, &amp;textHeight, &amp;fieldHeight);</FONT>
+
+<FONT SIZE="-1">   // if the field is 3 lines, and the text height is 4 lines</FONT>
+<FONT SIZE="-1">   // then we can scroll so that the first line is at the top </FONT>
+<FONT SIZE="-1">   // (scroll position 0) or so the second line is at the top</FONT>
+<FONT SIZE="-1">   // (scroll postion 1). These two values are enough to see</FONT>
+<FONT SIZE="-1">   // the entire text.</FONT>
+<FONT SIZE="-1">   if (textHeight &gt; fieldHeight)</FONT>
+<FONT SIZE="-1">      maxValue = textHeight - fieldHeight;</FONT>
+<FONT SIZE="-1">   else if (currentPosition)</FONT>
+<FONT SIZE="-1">      maxValue = currentPosition;</FONT>
+<FONT SIZE="-1">   else</FONT>
+<FONT SIZE="-1">      maxValue = 0;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   scroll = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, MainMyScrollBar));</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // on a page scroll, want to overlap by one line (to provide context)</FONT>
+<FONT SIZE="-1">   SclSetScrollBar(scroll, currentPosition, 0, maxValue, fieldHeight - 1);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We update the scrollbar when the form is initially opened:</FONT></P><PRE><FONT SIZE="-1">static void MainViewInit(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   UpdateScrollbar();</FONT>
+<FONT SIZE="-1">   // Draw the form.</FONT>
+<FONT SIZE="-1">   FrmDrawForm(FrmGetActiveForm());</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Updating the scrollbar when the number of lines changes</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We've also got to update the scrollbar whenever the number of lines in the field changes. Since we set the </FONT><FONT FACE="Courier New">hasScrollbar</FONT><FONT FACE="Times"> attribute of the field in the resource, when the lines change, the </FONT><FONT FACE="Courier New"><A NAME="P1060_53400"></A>fldChangedEvent</FONT><FONT FACE="Times"> passes to our event handler (in fact, this is the only reason for the existence of the </FONT><FONT FACE="Courier New">hasScrollbar</FONT><FONT FACE="Times"> attribute). Here's the code we put in the event handler:</FONT></P><PRE><FONT SIZE="-1">case fldChangedEvent:</FONT>
+<FONT SIZE="-1">   UpdateScrollbar();</FONT>
+<FONT SIZE="-1">   handled = true;</FONT>
+<FONT SIZE="-1">   break;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">At this point, the scrollbar updates automatically as the text changes. </FONT></P>
+
+<P><I><FONT FACE="Times">Updating the display when the scrollbar moves</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Next, we've got to handle changes made via the scrollbar. Of the two choices open to us, we want to scroll immediately, so we handle the </FONT><FONT FACE="Courier New">sclRepeatEvent</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">case sclRepeatEvent:</FONT>
+<FONT SIZE="-1">   ScrollLines(event-&gt;data.sclRepeat.newValue - </FONT>
+<FONT SIZE="-1">      event-&gt;data.sclRepeat.value, false);</FONT>
+<FONT SIZE="-1">   break;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P1076_54030"></A>ScrollLines</FONT><FONT FACE="Times"> is responsible for scrolling the text field (using </FONT><FONT FACE="Courier New">&#160;<A NAME="P1076_54094"></A>FldScrollField</FONT><FONT FACE="Times">). Things can get tricky, however, if there are empty lines at the end of the field. When the user scrolls up, the number of lines is reduced. Thus, we have to make sure the scrollbar gets updated to reflect this change (note that </FONT><FONT FACE="Courier New">up</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">down</FONT><FONT FACE="Times"> are constant enumerations defined in the Palm OS include files):</FONT></P><PRE><FONT SIZE="-1">static void ScrollLines(int numLinesToScroll, Boolean redraw)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr        frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">   FieldPtr       field;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   field = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, Main1Field));</FONT>
+<FONT SIZE="-1">   if (numLinesToScroll &lt; 0)</FONT>
+<FONT SIZE="-1">      FldScrollField(field, -numLinesToScroll, up);</FONT>
+<FONT SIZE="-1">   else</FONT>
+<FONT SIZE="-1">      FldScrollField(field, numLinesToScroll, down);</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   // if there are blank lines at the end and we scroll up, FldScrollField</FONT>
+<FONT SIZE="-1">   // makes the blank lines disappear. Therefore, we've got to update</FONT>
+<FONT SIZE="-1">   // the scrollbar</FONT>
+<FONT SIZE="-1">   if ((FldGetNumberOfBlankLines(field) &amp;&amp; numLinesToScroll &lt; 0) ||</FONT>
+<FONT SIZE="-1">      redraw)</FONT>
+<FONT SIZE="-1">      UpdateScrollbar();</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Updating the display when the scroll buttons are used</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Next on the list of things to do is handling the <A NAME="P1098_55128"></A>Scroll buttons. When the user taps either of the Scroll buttons, we receive a </FONT><FONT FACE="Courier New"><A NAME="P1098_55206"></A>keyDownEvent</FONT><FONT FACE="Times">. Here's the code in our event handler that takes care of these buttons:</FONT></P><PRE><FONT SIZE="-1">case keyDownEvent:</FONT>
+<FONT SIZE="-1">  if (event-&gt;data.keyDown.chr == pageUpChr) {</FONT>
+<FONT SIZE="-1">      PageScroll(up);</FONT>
+<FONT SIZE="-1">      handled = true;</FONT>
+<FONT SIZE="-1">    } else if (event-&gt;data.keyDown.chr == pageDownChr) {</FONT>
+<FONT SIZE="-1">      PageScroll(down);</FONT>
+<FONT SIZE="-1">      handled = true;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   break;</FONT><A NAME="P1108_55508"></A></PRE>
+
+<P><I><FONT FACE="Times">Scrolling a full page</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Finally, here's our page scrolling function. Of course, we don't want to scroll if we've already scrolled as far as we can. </FONT><FONT FACE="Courier New">FldScrollable</FONT><FONT FACE="Times"> tells us if we can scroll in a particular direction. We use </FONT><FONT FACE="Courier New">ScrollLines</FONT><FONT FACE="Times"> to do the actual scrolling and rely on it to update the scrollbar:</FONT></P><PRE><FONT SIZE="-1">static void PageScroll(DirectionType direction)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr        frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">   FieldPtr       field;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   field = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, Main1Field));</FONT>
+<FONT SIZE="-1">   if (FldScrollable(field, direction)) {</FONT>
+<FONT SIZE="-1">      int linesToScroll = FldGetVisibleLines(field) - 1;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      if (direction == up)</FONT>
+<FONT SIZE="-1">         linesToScroll = -linesToScroll;</FONT>
+<FONT SIZE="-1">      ScrollLines(linesToScroll, true);</FONT>
+<FONT SIZE="-1">   }</FONT><A NAME="P1125_56203"></A>
+<FONT SIZE="-1">}</FONT><A NAME="P1126_56204"></A></PRE>
+
+<P><A NAME="P1127_56204"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Resources, Forms, and Form Objects <BR>
+in the Sales Application</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1129_56263"></A>Now that we have given you general information about resources, forms, and form objects, we will add them to the Sales application. We'll show you the resource definitions of all the forms, alerts, and help text. We won't show you all the code, however, as it would get exceedingly repetitious and not teach you anything new. In particular, we won't show the code to bring up every alert. We also postpone adding the table to the order form until &quot;Tables in the Sample Application&quot; on page&#160;216.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We cover the forms and the code for them in order of increasing complexity. This yields the following sequence:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Alerts</FONT></LI>
+
+  <LI><FONT FACE="Times">  The Delete Customer dialog</FONT></LI>
+
+  <LI><FONT FACE="Times">  The Edit Customer form</FONT></LI>
+
+  <LI><FONT FACE="Times">  The Item Details form</FONT></LI>
+
+  <LI><FONT FACE="Times">  The Customers form</FONT></LI>
+
+  <LI><FONT FACE="Times">  Switching forms</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">All the resources are shown in text as PilRC format. (This format is easier to explain than a bunch of screen dumps from Constructor.) </FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Alerts</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1144_57129"></A>Here are the defines for the alert IDs and for the buttons in the <A NAME="P1144_57195"></A>Delete Item alert (this is the alert that has more than one button):</FONT></P><PRE><FONT SIZE="-1">#define RomIncompatibleAlert                      1001</FONT>
+<FONT SIZE="-1">#define DeleteItemAlert                           1201</FONT>
+<FONT SIZE="-1">#define DeleteItemOK                              0</FONT>
+<FONT SIZE="-1">#define DeleteItemCancel                          1</FONT>
+<FONT SIZE="-1">#define NoItemSelectedAlert                       1000</FONT>
+<FONT SIZE="-1">#define AboutBoxAlert                             1100</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here are the alerts themselves:</FONT></P><PRE><FONT SIZE="-1">ALERT ID NoItemSelectedAlert</FONT><A NAME="P1154_57640"></A>
+<FONT SIZE="-1">INFORMATION</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">    TITLE &quot;Select Item&quot;</FONT>
+<FONT SIZE="-1">    MESSAGE &quot;You must have an item selected to perform this command. &quot; \</FONT>
+<FONT SIZE="-1">            &quot;To select an item, tap on the product name of the item.&quot;</FONT>
+<FONT SIZE="-1">    BUTTONS &quot;OK&quot;</FONT>
+<FONT SIZE="-1">END</FONT>
+<FONT SIZE="-1">ALERT ID RomIncompatibleAlert</FONT><A NAME="P1162_57868"></A>
+<FONT SIZE="-1">ERROR</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">    TITLE &quot;System Incompatible&quot;</FONT>
+<FONT SIZE="-1">    MESSAGE &quot;System Version 2.0 or greater is required to run this &quot; \</FONT>
+<FONT SIZE="-1">            &quot;application.&quot;</FONT>
+<FONT SIZE="-1">    BUTTONS &quot;OK&quot;</FONT>
+<FONT SIZE="-1">END</FONT>
+
+<FONT SIZE="-1">ALERT ID DeleteItemAlert</FONT>
+<FONT SIZE="-1">CONFIRMATION</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">    TITLE &quot;Delete Item&quot;</FONT>
+<FONT SIZE="-1">    MESSAGE &quot;Delete selected order item?&quot;</FONT>
+<FONT SIZE="-1">    BUTTONS &quot;OK&quot; &quot;Cancel&quot;</FONT>
+<FONT SIZE="-1">END</FONT>
+
+<FONT SIZE="-1">ALERT ID AboutBoxAlert</FONT><A NAME="P1179_58179"></A>
+<FONT SIZE="-1">INFORMATION</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">   TITLE &quot;Sales v. 1.0&quot;</FONT>
+<FONT SIZE="-1">   MESSAGE &quot;This application is from the book \&quot;Palm Programming: The &quot; \</FONT>
+<FONT SIZE="-1">      Developer's Guide\&quot; by Neil Rhodes and Julie McKeehan.&quot;</FONT>
+<FONT SIZE="-1">   BUTTONS &quot;OK&quot;</FONT>
+<FONT SIZE="-1">END</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We won't show every call to </FONT><FONT FACE="Courier New">FrmAlert</FONT><FONT FACE="Times"> (the call that displays each of these alerts). Here, however, is a piece of code from </FONT><FONT FACE="Courier New">OrderHandleMenuEvent</FONT><FONT FACE="Times">, which shows two calls to </FONT><FONT FACE="Courier New">FrmAlert</FONT><FONT FACE="Times">. The code is called when the user chooses to delete an item. If nothing is selected, we put up an alert to notify the user of that. If an item is selected, we put up an alert asking if they really want to delete it:</FONT></P><PRE><FONT SIZE="-1">if (!gCellSelected)</FONT>
+<FONT SIZE="-1">   FrmAlert(NoItemSelectedAlert);</FONT>
+<FONT SIZE="-1">else if (FrmAlert(DeleteItemAlert) == DeleteItemOK) {</FONT>
+<FONT SIZE="-1">      // code to delete an item</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Delete Customer</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1197_58916"></A>Our Delete Customer dialog has a checkbox in it, so we can't use an alert. We use a <A NAME="P1197_59000"></A>modal form, instead. Here are the resources for the form:</FONT></P><PRE><FONT SIZE="-1">#define DeleteCustomerForm                   1400</FONT>
+<FONT SIZE="-1">#define DeleteCustomerOKButton               1404</FONT>
+<FONT SIZE="-1">#define DeleteCustomerCancelButton           1405</FONT>
+<FONT SIZE="-1">#define DeleteCustomerSaveBackupCheckbox     1403</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We have only one define to add:</FONT></P><PRE><FONT SIZE="-1">#define DeleteCustomerHelpString                  1400</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here is the Delete Customer dialog:</FONT></P><PRE><FONT SIZE="-1">STRING ID DeleteCustomerHelpString &quot;The Save Backup Copy option will &quot; \</FONT>
+<FONT SIZE="-1">   &quot;store deleted records in an archive file on your desktop computer &quot; \</FONT>
+<FONT SIZE="-1">   &quot;at the next HotSync. Some records will be hidden but not deleted &quot; \</FONT>
+<FONT SIZE="-1">   &quot;until then.&quot;</FONT>
+
+<FONT SIZE="-1">FORM ID DeleteCustomerForm AT (2 40 156 118)</FONT>
+<FONT SIZE="-1">MODAL</FONT>
+<FONT SIZE="-1">SAVEBEHIND</FONT>
+<FONT SIZE="-1">HELPID DeleteCustomerHelpString</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">   TITLE &quot;Delete Customer&quot;</FONT>
+<FONT SIZE="-1">   FORMBITMAP AT (13 29) BITMAP 10005</FONT>
+<FONT SIZE="-1">   LABEL &quot;Delete selected customer?&quot; ID 1402 AT (42 30) FONT 1</FONT>
+<FONT SIZE="-1">   CHECKBOX &quot;Save backup copy on PC?&quot; ID DeleteCustomerSaveBackupCheckbox </FONT>
+<FONT SIZE="-1">      AT (12 68 140 12) LEFTANCHOR  FONT 1 GROUP 0 CHECKED</FONT>
+<FONT SIZE="-1">   BUTTON &quot;OK&quot; ID DeleteCustomerOKButton AT (12 96 36 12) LEFTANCHOR FRAME</FONT>
+<FONT SIZE="-1">      FONT 0</FONT>
+<FONT SIZE="-1">   BUTTON &quot;Cancel&quot; ID DeleteCustomerCancelButton AT (56 96 36 12)</FONT>
+<FONT SIZE="-1">      LEFTANCHOR FRAME FONT 0</FONT>
+<FONT SIZE="-1">END</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The bitmap is a resource in the system ROM; the Palm OS header files define </FONT><FONT FACE="Courier New">ConfirmationAlertBitmap</FONT><FONT FACE="Times"> as its resource ID. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the code that displays the dialog. Note that we set the value of the checkbox before calling </FONT><FONT FACE="Courier New">&#160;<A NAME="P1231_60362"></A>FrmDoDialog</FONT><FONT FACE="Times">. We take a look at it again to see if the user has changed the value after </FONT><FONT FACE="Courier New">FrmDoDialog</FONT><FONT FACE="Times"> returns but before we delete the form:</FONT></P><PRE><FONT SIZE="-1">static Boolean &#160;<A NAME="P1233_60515"></A>AskDeleteCustomer(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr  previousForm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">   FormPtr frm = FrmInitForm(DeleteCustomerForm);</FONT>
+<FONT SIZE="-1">   Word  hitButton;</FONT>
+<FONT SIZE="-1">   Word  ctlIndex;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   FrmSetActiveForm(frm);</FONT>
+<FONT SIZE="-1">   // Set the &quot;save backup&quot; checkbox to its previous setting.</FONT>
+<FONT SIZE="-1">   ctlIndex = FrmGetObjectIndex(frm, DeleteCustomerSaveBackupCheckbox);</FONT>
+<FONT SIZE="-1">   FrmSetControlValue(frm, ctlIndex, gSaveBackup);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   hitButton = FrmDoDialog(frm);</FONT>
+<FONT SIZE="-1">   if (hitButton == DeleteCustomerOKButton)</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      gSaveBackup = FrmGetControlValue(frm, ctlIndex);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   if (previousForm)</FONT>
+<FONT SIZE="-1">      FrmSetActiveForm(previousForm);</FONT>
+<FONT SIZE="-1">   FrmDeleteForm(frm);</FONT>
+<FONT SIZE="-1">   return hitButton == DeleteCustomerOKButton;</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P1254_61147"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Edit Customer</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1257_61160"></A>We have a bunch of resources for the Edit Customer form. Here are the </FONT><FONT FACE="Courier New">#define</FONT><FONT FACE="Times">s:</FONT></P><PRE><FONT SIZE="-1">#define CustomerForm                              1300</FONT>
+<FONT SIZE="-1">#define CustomerOKButton                          1303</FONT>
+<FONT SIZE="-1">#define CustomerCancelButton                      1304</FONT>
+<FONT SIZE="-1">#define CustomerDeleteButton                      1305</FONT>
+<FONT SIZE="-1">#define CustomerPrivateCheckbox                   1310</FONT>
+<FONT SIZE="-1">#define CustomerNameField                         1302</FONT>
+<FONT SIZE="-1">#define CustomerAddressField                      1307</FONT>
+<FONT SIZE="-1">#define CustomerCityField                         1309</FONT>
+<FONT SIZE="-1">#define CustomerPhoneField                        1313</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now we get down to business and create the form:</FONT></P><PRE><FONT SIZE="-1">FORM ID CustomerForm AT (2 20 156 138)</FONT>
+<FONT SIZE="-1">MODAL</FONT>
+<FONT SIZE="-1">SAVEBEHIND</FONT>
+<FONT SIZE="-1">HELPID CustomerhelpString</FONT>
+<FONT SIZE="-1">MENUID DialogWithInputFieldMenuBar</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">   TITLE &quot;Customer Information&quot;</FONT>
+<FONT SIZE="-1">   LABEL &quot;Name:&quot; AUTOID AT (15 29) FONT 1</FONT>
+<FONT SIZE="-1">   FIELD ID CustomerNameField AT (54 29 97 13) LEFTALIGN FONT 0 UNDERLINED</FONT>
+<FONT SIZE="-1">      MULTIPLELINES MAXCHARS 80</FONT>
+<FONT SIZE="-1">   BUTTON &quot;OK&quot; ID CustomerOKButton AT (7 119 36 12) LEFTANCHOR FRAME </FONT>
+<FONT SIZE="-1">      FONT 0</FONT>
+<FONT SIZE="-1">   BUTTON &quot;Cancel&quot; ID CustomerCancelButton AT (49 119 36 12) LEFTANCHOR</FONT>
+<FONT SIZE="-1">      FRAME FONT 0</FONT>
+<FONT SIZE="-1">   BUTTON &quot;Delete&quot; ID CustomerDeleteButton AT (93 119 36 12) LEFTANCHOR </FONT>
+<FONT SIZE="-1">      FRAME FONT 0</FONT>
+<FONT SIZE="-1">   LABEL &quot;Address:&quot; AUTOID AT (10 46) FONT 1</FONT>
+<FONT SIZE="-1">   FIELD ID CustomerAddressField AT (49 46 97 13) LEFTALIGN FONT 0   </FONT>
+<FONT SIZE="-1">      UNDERLINED MULTIPLELINES MAXCHARS 80</FONT>
+<FONT SIZE="-1">   LABEL &quot;City:&quot; AUTOID AT (11 67) FONT 1</FONT>
+<FONT SIZE="-1">   FIELD ID CustomerCityField AT (53 66 97 13) LEFTALIGN FONT 0 UNDERLINED </FONT>
+<FONT SIZE="-1">      MULTIPLELINES MAXCHARS 80</FONT>
+<FONT SIZE="-1">   CHECKBOX &quot;&quot; ID CustomerPrivateCheckbox AT (54 101 19 12) LEFTANCHOR </FONT>
+<FONT SIZE="-1">      FONT  0 GROUP 0</FONT>
+<FONT SIZE="-1">   LABEL &quot;Private:&quot; AUTOID AT (9 102) FONT 1</FONT>
+<FONT SIZE="-1">   LABEL &quot;Phone:&quot; AUTOID AT (12 86) FONT 1</FONT>
+<FONT SIZE="-1">   FIELD ID CustomerPhoneField AT (51 86 97 13) LEFTALIGN FONT 0 </FONT>
+<FONT SIZE="-1">      UNDERLINED  MULTIPLELINES MAXCHARS 80</FONT>
+<FONT SIZE="-1">END</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the event handler for the form. It's responsible for bringing up the Delete Customer dialog if the user taps on the Delete button:&#160;</FONT><A NAME="P1299_63056"></A></P><PRE><FONT SIZE="-1">static Boolean CustomerHandleEvent(EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_PROLOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   if (event-&gt;eType == ctlSelectEvent &amp;&amp; </FONT>
+<FONT SIZE="-1">      event-&gt;data.ctlSelect.controlID == CustomerDeleteButton) {</FONT>
+<FONT SIZE="-1">      if (!AskDeleteCustomer())</FONT>
+<FONT SIZE="-1">         return true;   // don't bail out if they cancel the delete dialog</FONT>
+<FONT SIZE="-1">   } else if (event-&gt;eType == menuEvent) {</FONT>
+<FONT SIZE="-1">      if (HandleCommonMenuItems(event-&gt;data.menu.itemID))</FONT>
+<FONT SIZE="-1">         return true;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_EPILOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   return false;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Last, but not least, here is the code that makes sure the customer was handled correctly:</FONT></P><PRE><FONT SIZE="-1">static void EditCustomerWithSelection(UInt recordNumber, Boolean isNew,</FONT>
+<FONT SIZE="-1">   Boolean *deleted, Boolean *hidden, struct frmGoto *gotoData)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr  previousForm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">   FormPtr  frm;</FONT>
+<FONT SIZE="-1">   UInt     hitButton;</FONT>
+<FONT SIZE="-1">   Boolean  dirty = false;</FONT>
+<FONT SIZE="-1">   ControlPtr  privateCheckbox;</FONT>
+<FONT SIZE="-1">   UInt     attributes;</FONT>
+<FONT SIZE="-1">   Boolean     isSecret;</FONT>
+<FONT SIZE="-1">   FieldPtr nameField;</FONT>
+<FONT SIZE="-1">   FieldPtr addressField;</FONT>
+<FONT SIZE="-1">   FieldPtr cityField;</FONT>
+<FONT SIZE="-1">   FieldPtr phoneField;</FONT>
+<FONT SIZE="-1">   Customer theCustomer;</FONT>
+<FONT SIZE="-1">   UInt     offset = offsetof(PackedCustomer, name);</FONT>
+<FONT SIZE="-1">   VoidHand    customerHandle = DmGetRecord(gCustomerDB, recordNumber);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   *hidden = *deleted = false;</FONT>
+<FONT SIZE="-1">   // code deleted that initializes isSecret based on the record</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   frm = FrmInitForm(CustomerForm);</FONT>
+<FONT SIZE="-1">   FrmSetEventHandler(frm, CustomerHandleEvent);</FONT>
+<FONT SIZE="-1">   FrmSetActiveForm(frm);</FONT>
+
+<FONT SIZE="-1">   UnpackCustomer(&amp;theCustomer, MemHandleLock(customerHandle));</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   nameField = GetObjectFromActiveForm(CustomerNameField);</FONT>
+<FONT SIZE="-1">   addressField = GetObjectFromActiveForm(CustomerAddressField);</FONT>
+<FONT SIZE="-1">   cityField = GetObjectFromActiveForm(CustomerCityField);</FONT>
+<FONT SIZE="-1">   phoneField = GetObjectFromActiveForm(CustomerPhoneField);</FONT>
+
+<FONT SIZE="-1">   SetFieldTextFromStr(CustomerNameField,    (CharPtr) theCustomer.name);</FONT>
+<FONT SIZE="-1">   SetFieldTextFromStr(CustomerAddressField, </FONT>
+<FONT SIZE="-1">      (CharPtr) theCustomer.address);</FONT>
+<FONT SIZE="-1">   SetFieldTextFromStr(CustomerCityField,    (CharPtr) theCustomer.city);</FONT>
+<FONT SIZE="-1">   SetFieldTextFromStr(CustomerPhoneField,   (CharPtr) theCustomer.phone);</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   // select one of the fields</FONT>
+<FONT SIZE="-1">   if (gotoData &amp;&amp; gotoData-&gt;matchFieldNum) {</FONT>
+<FONT SIZE="-1">      FieldPtr selectedField =   </FONT>
+<FONT SIZE="-1">         GetObjectFromActiveForm(gotoData-&gt;matchFieldNum);</FONT>
+<FONT SIZE="-1">      FldSetScrollPosition(selectedField, gotoData-&gt;matchPos);</FONT>
+<FONT SIZE="-1">      FrmSetFocus(frm, FrmGetObjectIndex(frm, gotoData-&gt;matchFieldNum));</FONT>
+<FONT SIZE="-1">      FldSetSelection(selectedField, gotoData-&gt;matchPos, </FONT>
+<FONT SIZE="-1">         gotoData-&gt;matchPos + gotoData-&gt;matchLen);</FONT>
+<FONT SIZE="-1">   } else {</FONT>
+<FONT SIZE="-1">      FrmSetFocus(frm, FrmGetObjectIndex(frm, CustomerNameField));</FONT>
+<FONT SIZE="-1">      FldSetSelection(nameField, 0, FldGetTextLength(nameField));</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   // unlock the customer</FONT>
+<FONT SIZE="-1">   MemHandleUnlock(customerHandle);</FONT>
+
+<FONT SIZE="-1">   privateCheckbox = GetObjectFromActiveForm(CustomerPrivateCheckbox);</FONT>
+<FONT SIZE="-1">   CtlSetValue(privateCheckbox, isSecret);</FONT>
+
+<FONT SIZE="-1">   hitButton = FrmDoDialog(frm);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (hitButton == CustomerOKButton) {      </FONT>
+<FONT SIZE="-1">      dirty = FldDirty(nameField) || FldDirty(addressField) ||</FONT>
+<FONT SIZE="-1">         FldDirty(cityField) || FldDirty(phoneField);</FONT>
+<FONT SIZE="-1">      if (dirty) {</FONT>
+<FONT SIZE="-1">         theCustomer.name = FldGetTextPtr(nameField);</FONT>
+<FONT SIZE="-1">         if (!theCustomer.name)</FONT>
+<FONT SIZE="-1">            theCustomer.name = &quot;&quot;;</FONT>
+<FONT SIZE="-1">         theCustomer.address = FldGetTextPtr(addressField);</FONT>
+<FONT SIZE="-1">         if (!theCustomer.address)</FONT>
+<FONT SIZE="-1">            theCustomer.address = &quot;&quot;;</FONT>
+<FONT SIZE="-1">         theCustomer.city = FldGetTextPtr(cityField);</FONT>
+<FONT SIZE="-1">         if (!theCustomer.city)</FONT>
+<FONT SIZE="-1">            theCustomer.city = &quot;&quot;;</FONT>
+<FONT SIZE="-1">         theCustomer.phone = FldGetTextPtr(phoneField);</FONT>
+<FONT SIZE="-1">         if (!theCustomer.phone)</FONT>
+<FONT SIZE="-1">            theCustomer.phone = &quot;&quot;;</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">      PackCustomer(&amp;theCustomer, customerHandle);</FONT>
+<FONT SIZE="-1">      if (CtlGetValue(privateCheckbox) != isSecret) {</FONT>
+<FONT SIZE="-1">         // code deleted that sets information about secret records</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (hitButton == CustomerDeleteButton) {</FONT>
+<FONT SIZE="-1">      // code deleted that deletes the record</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   else if (hitButton == CustomerOKButton &amp;&amp; isNew &amp;&amp; </FONT>
+<FONT SIZE="-1">      !(StrLen(theCustomer.name) || StrLen(theCustomer.address) ||</FONT>
+<FONT SIZE="-1">      StrLen(theCustomer.city) || StrLen(theCustomer.phone))) {</FONT>
+<FONT SIZE="-1">      // code deleted that deletes the record</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   else if (hitButton == CustomerCancelButton &amp;&amp; isNew) {</FONT>
+<FONT SIZE="-1">      // code deleted that deletes the record</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (previousForm)</FONT>
+<FONT SIZE="-1">      FrmSetActiveForm(previousForm);</FONT>
+<FONT SIZE="-1">   FrmDeleteForm(frm);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note that in the code we set </FONT><FONT FACE="Courier New">CustomerHandleEvent</FONT><FONT FACE="Times"> as the event handler, and we initialize each of the text fields before calling </FONT><FONT FACE="Courier New">&#160;<A NAME="P1418_67271"></A>FrmDoDialog</FONT><FONT FACE="Times">. After the call to </FONT><FONT FACE="Courier New">FrmDoDialog</FONT><FONT FACE="Times">, the text from the text fields is copied if the OK button was pressed and any of the fields have been changed.</FONT><A NAME="P1418_67424"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Item Details</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1423_67436"></A>This <A NAME="P1423_67441"></A>modal dialog allows editing the quantity and product for an item. The interesting part of this dialog is the pop-up trigger that contains both product categories and products.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The code uses the following globals:</FONT></P><PRE><FONT SIZE="-1">static UInt          gCurrentCategory = 0;</FONT>
+<FONT SIZE="-1">static Long          gCurrentSelectedItemIndex = -1;</FONT>
+<FONT SIZE="-1">static UInt          gNumCategories;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">gCurrentCategory</FONT><FONT FACE="Times"> contains the current category number. </FONT><FONT FACE="Courier New">ProductsOffsetInList</FONT><FONT FACE="Times"> shows where in the list the products start. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">When the Item Details form opens, here is the code that gets called:&#160;</FONT><A NAME="P1432_67971"></A></P><PRE><FONT SIZE="-1">static void ItemFormOpen(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   ListPtr  list;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   FormPtr  frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">   FieldPtr fld = GetObjectFromActiveForm(ItemQuantityField);</FONT>
+<FONT SIZE="-1">   char  quantityString[kMaxNumericStringLength];</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // initialize quantity</FONT>
+<FONT SIZE="-1">   StrIToA(quantityString, gCurrentItem-&gt;quantity);</FONT>
+<FONT SIZE="-1">   SetFieldTextFromStr(ItemQuantityField, quantityString);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // select entire quantity (so it doesn't have to be selected before </FONT>
+<FONT SIZE="-1">   // writing a new quantity)</FONT>
+<FONT SIZE="-1">   FrmSetFocus(frm, FrmGetObjectIndex(frm, ItemQuantityField));</FONT>
+<FONT SIZE="-1">   FldSetSelection(fld, 0, StrLen(quantityString));</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   list = GetObjectFromActiveForm(ItemProductsList);</FONT>
+<FONT SIZE="-1">   LstSetDrawFunction(list, DrawOneProductInList);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (gCurrentItem-&gt;productID) {</FONT>
+<FONT SIZE="-1">      Product  p;</FONT>
+<FONT SIZE="-1">      VoidHand h;</FONT>
+<FONT SIZE="-1">      UInt     index;</FONT>
+<FONT SIZE="-1">      UInt     attr;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      h = GetProductFromProductID(gCurrentItem-&gt;productID, &amp;p, &amp;index);</FONT>
+<FONT SIZE="-1">      ErrNonFatalDisplayIf(!h, &quot;can't get product for existing item&quot;);</FONT>
+<FONT SIZE="-1">      // deleted code that sets finds attr--the category;</FONT>
+<FONT SIZE="-1">      SelectACategory(list, attr &amp; dmRecAttrCategoryMask);</FONT>
+<FONT SIZE="-1">      LstSetSelection(list, </FONT>
+<FONT SIZE="-1">         DmPositionInCategory(gProductDB, index, gCurrentCategory) + </FONT>
+<FONT SIZE="-1">         (gNumCategories + 1));</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      CtlSetLabel(GetObjectFromActiveForm(ItemProductPopTrigger), </FONT>
+<FONT SIZE="-1">         (CharPtr) p.name);</FONT>
+<FONT SIZE="-1">      MemHandleUnlock(h);</FONT>
+<FONT SIZE="-1">   } else</FONT>
+<FONT SIZE="-1">      SelectACategory(list, gCurrentCategory);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">First, we set the quantity field. Next, we set a custom draw function. Finally, if the current item already has a product selected, we initialize the list using </FONT><FONT FACE="Courier New">SelectACategory</FONT><FONT FACE="Times">. We use </FONT><FONT FACE="Courier New">LstSetSelection</FONT><FONT FACE="Times"> to set the current list selection and </FONT><FONT FACE="Courier New">CtlSetLabel</FONT><FONT FACE="Times"> to set the label of the trigger. If no product is selected, we initialize the list using whatever category has been previously used.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's </FONT><FONT FACE="Courier New">&#160;<A NAME="P1476_69700"></A>SelectACategory</FONT><FONT FACE="Times">, which sets the current category, initializes the list with the correct number of items, and sets the list height (the number of items shown concurrently):</FONT></P><PRE><FONT SIZE="-1">static void SelectACategory(ListPtr list, UInt newCategory)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Word     numItems;</FONT>
+
+<FONT SIZE="-1">   gCurrentCategory = newCategory;</FONT>
+<FONT SIZE="-1">   // code deleted that sets numItems based on the </FONT>
+<FONT SIZE="-1">   // product category</FONT>
+<FONT SIZE="-1">   LstSetHeight(list, numItems);</FONT>
+<FONT SIZE="-1">   LstSetListChoices(list, NULL, numItems);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">When the user taps on the trigger, the list is shown. We've used </FONT><FONT FACE="Courier New">&#160;<A NAME="P1488_70201"></A>DrawOneProductInList</FONT><FONT FACE="Times"> to draw the list. It draws the categories at the top (with the current category in bold), a separator line, and then the products for that category:</FONT></P><PRE><FONT SIZE="-1">static void DrawOneProductInList(UInt itemNumber, RectanglePtr bounds, </FONT>
+<FONT SIZE="-1">   CharPtr *text)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FontID   curFont;</FONT>
+<FONT SIZE="-1">   Boolean  setFont = false;</FONT>
+<FONT SIZE="-1">   const char  *toDraw = &quot;&quot;;  </FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_PROLOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   if (itemNumber == gCurrentCategory) {</FONT>
+<FONT SIZE="-1">      curFont = FntSetFont(boldFont);</FONT>
+<FONT SIZE="-1">      setFont = true;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   if (itemNumber == gNumCategories)</FONT>
+<FONT SIZE="-1">      toDraw = &quot;---&quot;;</FONT>
+<FONT SIZE="-1">   else if (itemNumber &lt; gNumCategories) {</FONT>
+<FONT SIZE="-1">      // code deleted that sets toDraw based on category name</FONT>
+<FONT SIZE="-1">   } else {</FONT>
+<FONT SIZE="-1">      // code deleted that sets toDraw based on product name</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   DrawCharsToFitWidth(toDraw, bounds);</FONT>
+<FONT SIZE="-1">   if (setFont)</FONT>
+<FONT SIZE="-1">      FntSetFont(curFont);</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_EPILOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">When the user selects an item from the pop-up, a </FONT><FONT FACE="Courier New">popSelectEvent</FONT><FONT FACE="Times"> is generated. Here's the event handler for that event:</FONT></P><PRE><FONT SIZE="-1">static Boolean &#160;<A NAME="P1520_71174"></A>ItemHandleEvent(EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Boolean     handled = false;</FONT>
+
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_PROLOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   switch (event-&gt;eType) {</FONT>
+<FONT SIZE="-1">      // code deleted that handles other kinds of events</FONT>
+<FONT SIZE="-1">               </FONT>
+<FONT SIZE="-1">      case popSelectEvent: </FONT>
+<FONT SIZE="-1">         if (event-&gt;data.popSelect.listID == ItemProductsList){</FONT>
+<FONT SIZE="-1">            HandleClickInProductPopup(event);</FONT>
+<FONT SIZE="-1">            handled = true;</FONT>
+<FONT SIZE="-1">         }</FONT>
+<FONT SIZE="-1">         break;</FONT>
+<FONT SIZE="-1">         </FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_EPILOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   return handled;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P1543_71639"></A>HandleClickInProductPopup</FONT><FONT FACE="Times"> actually handles the selection. If a product is selected, the trigger's label is updated (as is the item). If a new category is selected, the list is updated with a new category, and </FONT><FONT FACE="Courier New">CtlHitControl</FONT><FONT FACE="Times"> is called to simulate tapping again on the trigger. This makes the list reappear without work on the user's part:</FONT></P><PRE><FONT SIZE="-1">static void HandleClickInProductPopup(EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   ListPtr     list = event-&gt;data.popSelect.listP;</FONT>
+<FONT SIZE="-1">   ControlPtr  control = event-&gt;data.popSelect.controlP;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (event-&gt;data.popSelect.selection &lt; (gNumCategories + 1)) {</FONT>
+<FONT SIZE="-1">      if (event-&gt;data.popSelect.selection &lt; gNumCategories)</FONT>
+<FONT SIZE="-1">         SelectACategory(list, event-&gt;data.popSelect.selection);</FONT>
+<FONT SIZE="-1">      LstSetSelection(list, gCurrentCategory);</FONT>
+<FONT SIZE="-1">      CtlHitControl(control);</FONT>
+<FONT SIZE="-1">   } else {</FONT>
+<FONT SIZE="-1">      // code deleted that sets s.name to product name</FONT>
+<FONT SIZE="-1">      CtlSetLabel(control, (CharPtr) s.name);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P1559_72515"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Customers Form</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1562_72529"></A>Here's the form containing only one form object, the list. Here are the resource definitions of the form, the list, and a menu:</FONT></P><PRE><FONT SIZE="-1">#define CustomersForm                             1000</FONT>
+<FONT SIZE="-1">#define CustomersCustomersList                    1002</FONT>
+<FONT SIZE="-1">#define CustomersMenuBar                          1000</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here is the Customers form:</FONT></P><PRE><FONT SIZE="-1">FORM ID CustomersForm AT (0 0 160 160)</FONT>
+<FONT SIZE="-1">MENUID CustomersCustomerMenu</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">    TITLE &quot;Sales&quot;</FONT>
+<FONT SIZE="-1">    LIST &quot;&quot; ID CustomersCustomersList AT (0 15 160 132) DISABLED FONT 0</FONT>
+<FONT SIZE="-1">END</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Our initialization routine (which we call on a </FONT><FONT FACE="Courier New">frmOpenEvent</FONT><FONT FACE="Times">) sets the draw function callback for the list and sets the number (by calling </FONT><FONT FACE="Courier New">InitNumberCustomers</FONT><FONT FACE="Times">):</FONT></P><PRE><FONT SIZE="-1">static void CustomersFormOpen(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   ListPtr  list = GetObjectFromActiveForm(CustomersCustomersList);</FONT>
+<FONT SIZE="-1">   InitNumberCustomers();</FONT>
+<FONT SIZE="-1">   LstSetDrawFunction(list, DrawOneCustomerInListWithFont);</FONT>
+
+<FONT SIZE="-1">   // code deleted that sets different menus on a pre-3.0 device</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P1586_73419"></A>InitNumberCustomers</FONT><FONT FACE="Times"> calls </FONT><FONT FACE="Courier New">LstSetListChoices</FONT><FONT FACE="Times"> to set the number of elements in the list. It is called when the form is opened and when the number of customers changes (this happens if a customer is added):</FONT></P><PRE><FONT SIZE="-1">static void InitNumberCustomers(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   ListPtr  list = GetObjectFromActiveForm(CustomersCustomersList);</FONT>
+<FONT SIZE="-1">   // code deleted that sets numCustomers from the databas</FONT>
+<FONT SIZE="-1">   LstSetListChoices(list, NULL, numCustomers);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Our event handler handles an open event by calling </FONT><FONT FACE="Courier New">CustomersFormOpen</FONT><FONT FACE="Times">, then draws the form:</FONT></P><PRE><FONT SIZE="-1">case frmOpenEvent:   </FONT>
+<FONT SIZE="-1">   CustomersFormOpen();</FONT>
+<FONT SIZE="-1">   FrmDrawForm(FrmGetActiveForm());</FONT>
+<FONT SIZE="-1">   handled = true;</FONT>
+<FONT SIZE="-1">   break;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">A </FONT><FONT FACE="Courier New"><A NAME="P1602_74031"></A>lstSelectEvent</FONT><FONT FACE="Times"> is sent when the user taps (and releases) on a list entry. Our event handler calls </FONT><FONT FACE="Courier New">OpenNthCustomer</FONT><FONT FACE="Times"> to open the Order form for that customer:</FONT></P><PRE><FONT SIZE="-1">case lstSelectEvent: </FONT>
+<FONT SIZE="-1">   OpenNthCustomer(event-&gt;data.lstSelect.selection);</FONT>
+<FONT SIZE="-1">   handled = true;</FONT>
+<FONT SIZE="-1">   break;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P1608_74287"></A>OpenNthCustomer</FONT><FONT FACE="Times"> calls </FONT><FONT FACE="Courier New">SwitchForm</FONT><FONT FACE="Times"> to switch to a different form:</FONT></P><PRE><FONT SIZE="-1">static void OpenNthCustomer(UInt customerIndex)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Long  customerID = GetCustomerIDForNthCustomer(customerIndex);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if ((gCurrentOrder =  GetOrCreateOrderForCustomer(</FONT>
+<FONT SIZE="-1">      customerID, &amp;gCurrentOrderIndex)) != NULL)</FONT>
+<FONT SIZE="-1">      SwitchForm(OrderForm);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;&#160;<A NAME="P1618_74598"></A>SwitchForm</FONT><FONT FACE="Times"> calls </FONT><FONT FACE="Courier New">FrmGotoForm</FONT><FONT FACE="Times"> to open a new form (and to save the ID of the new form):</FONT></P><PRE><FONT SIZE="-1">static void SwitchForm(Word formID)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FrmGotoForm(formID);</FONT>
+<FONT SIZE="-1">   gCurrentView = formID;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The event handler has to handle the up and down scroll keys. It calls the list to do the actual scrolling (note that we scroll by one row at a time, instead of by an entire page):</FONT><A NAME="P1625_74947"></A></P><PRE><FONT SIZE="-1">case keyDownEvent:   </FONT>
+<FONT SIZE="-1">   if (event-&gt;data.keyDown.chr == pageUpChr || </FONT>
+<FONT SIZE="-1">      event-&gt;data.keyDown.chr == pageDownChr) {</FONT>
+<FONT SIZE="-1">      ListPtr  list = GetObjectFromActiveForm(CustomersCustomersList);</FONT>
+<FONT SIZE="-1">      enum directions   d;</FONT>
+<FONT SIZE="-1">      if (event-&gt;data.keyDown.chr == pageUpChr)</FONT>
+<FONT SIZE="-1">         d = up;</FONT>
+<FONT SIZE="-1">      else</FONT>
+<FONT SIZE="-1">         d = down;</FONT>
+<FONT SIZE="-1">      LstScrollList(list, d, 1);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   handled = true;</FONT>
+<FONT SIZE="-1">   break;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">When a new customer is created, code in </FONT><FONT FACE="Courier New">CustomerHandleMenuEvent</FONT><FONT FACE="Times"> calls </FONT><FONT FACE="Courier New">&#160;<A NAME="P1640_75383"></A>EditCustomer</FONT><FONT FACE="Times"> to put up a modal dialog for the user to enter the new customer data. When the modal dialog is dismissed, the Form Manager automatically restores the contents of the Customers form. The Customers form also needs to be redrawn, as a new customer has been added to the list. </FONT><FONT FACE="Courier New">CustomerHandleMenuEvent</FONT><FONT FACE="Times"> calls </FONT><FONT FACE="Courier New">FrmUpdateForm</FONT><FONT FACE="Times">, which sends our event handler a </FONT><FONT FACE="Courier New">frmUpdateEvent</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">EditCustomer(recordNumber, true);</FONT>
+<FONT SIZE="-1">FrmUpdateForm(CustomersForm, frmRedrawUpdateCode);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">By default, the Form Manager redraws the form when a </FONT><FONT FACE="Courier New"><A NAME="P1644_75897"></A>frmUpdateEvent</FONT><FONT FACE="Times"> occurs. However, it doesn't erase the form first. We need to have the list erased before it is redrawn, since we've changed the contents of the list. So, we erase the list with </FONT><FONT FACE="Courier New">&#160;<A NAME="P1644_76090"></A>LstEraseList</FONT><FONT FACE="Times"> and then update the list with the new number of customers. We set </FONT><FONT FACE="Courier New">handled</FONT><FONT FACE="Times"> to </FONT><FONT FACE="Courier New">false</FONT><FONT FACE="Times"> so the default behavior (redrawing the form) will occur.</FONT></P><PRE><FONT SIZE="-1">case frmUpdateEvent:</FONT>
+<FONT SIZE="-1">   LstEraseList(GetObjectFromActiveForm(CustomersCustomersList));</FONT>
+<FONT SIZE="-1">   InitNumberCustomers();</FONT>
+<FONT SIZE="-1">   handled = false;</FONT>
+<FONT SIZE="-1">   break;</FONT><A NAME="P1650_76380"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Switching Forms</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1653_76395"></A>The </FONT><FONT FACE="Courier New">&#160;<A NAME="P1653_76400"></A>ApplicationHandleEvent</FONT><FONT FACE="Times"> needs to load forms when a </FONT><FONT FACE="Courier New">frmLoadEvent</FONT><FONT FACE="Times"> occurs (not necessary for forms shown with </FONT><FONT FACE="Courier New">FrmDoDialog</FONT><FONT FACE="Times">):</FONT></P><PRE><FONT SIZE="-1">static Boolean ApplicationHandleEvent(EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr  frm;</FONT>
+<FONT SIZE="-1">   Int      formId;</FONT>
+<FONT SIZE="-1">   Boolean  handled = false;</FONT>
+
+<FONT SIZE="-1">   if (event-&gt;eType == frmLoadEvent)</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      // Load the form resource specified in event then activate the form.</FONT>
+<FONT SIZE="-1">      formId = event-&gt;data.frmLoad.formID;</FONT>
+<FONT SIZE="-1">      frm = FrmInitForm(formId);</FONT>
+<FONT SIZE="-1">      FrmSetActiveForm(frm);</FONT>
+
+<FONT SIZE="-1">      // Set the event handler for the form.  The handler of the currently </FONT>
+<FONT SIZE="-1">      // active form is called by FrmDispatchEvent each time it receives </FONT>
+<FONT SIZE="-1">      // an event.</FONT>
+<FONT SIZE="-1">      switch (formId)</FONT>
+<FONT SIZE="-1">      {</FONT>
+<FONT SIZE="-1">      case OrderForm:</FONT>
+<FONT SIZE="-1">         FrmSetEventHandler(frm, OrderHandleEvent);</FONT>
+<FONT SIZE="-1">         break;</FONT>
+<FONT SIZE="-1">         </FONT>
+<FONT SIZE="-1">      case CustomersForm:</FONT>
+<FONT SIZE="-1">         FrmSetEventHandler(frm, CustomersHandleEvent);</FONT>
+<FONT SIZE="-1">         break;</FONT>
+<FONT SIZE="-1">         </FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">      handled = true;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   return handled;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We keep a variable that tells us which is the current form, the </FONT><FONT FACE="Courier New">CustomersForm</FONT><FONT FACE="Times"> or the </FONT><FONT FACE="Courier New">OrderForm</FONT><FONT FACE="Times">. This variable can be saved in the application's preferences entry so that when the application is reopened, it can return to the form the user was last viewing:</FONT></P><PRE><FONT SIZE="-1">static Word gCurrentView = CustomersForm;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">In our </FONT><FONT FACE="Courier New">PilotMain</FONT><FONT FACE="Times">, we open the form specified by </FONT><FONT FACE="Courier New">gCurrentView</FONT><FONT FACE="Times">. We also check to make sure that we're running on a 2.0 OS or greater (since we want our application to take advantage of some calls not present in the 1.0 OS):&#160;&#160;&#160;&#160;</FONT><A NAME="P1690_77819"></A></P><PRE><FONT SIZE="-1">error = RomVersionCompatible(0x02000000, launchFlags);</FONT>
+<FONT SIZE="-1">if (error)</FONT>
+<FONT SIZE="-1">   return error;</FONT>
+
+<FONT SIZE="-1">if (cmd == sysAppLaunchCmdNormalLaunch)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   error = StartApplication();</FONT>
+<FONT SIZE="-1">   if (!error)</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      FrmGotoForm(gCurrentView);</FONT>
+<FONT SIZE="-1">      EventLoop();</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      StopApplication();</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The </FONT><FONT FACE="Courier New">RomVersionCompatible</FONT><FONT FACE="Times"> checks whether the OS version of the handheld device is at least that required to run. It puts up an alert telling the user that a newer OS is required (only if the application's launch flags specify that it should interact with the user):</FONT></P><PRE><FONT SIZE="-1">static Err RomVersionCompatible(DWord requiredVersion, Word launchFlags)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   DWord       romVersion;</FONT>
+<FONT SIZE="-1">   // See if we're on a minimum required version of the ROM or later.</FONT>
+<FONT SIZE="-1">   // The system records the version number in a feature.  A feature is a</FONT>
+<FONT SIZE="-1">   // piece of information that can be looked up by a creator and feature</FONT>
+<FONT SIZE="-1">   // number.</FONT>
+<FONT SIZE="-1">   FtrGet(sysFtrCreator, sysFtrNumROMVersion, &amp;romVersion);</FONT>
+<FONT SIZE="-1">   if (romVersion &lt; requiredVersion)</FONT>
+<FONT SIZE="-1">      {</FONT>
+<FONT SIZE="-1">      // If the user launched the app from the launcher, explain</FONT>
+<FONT SIZE="-1">      // why the app shouldn't run.  If the app was contacted for </FONT>
+<FONT SIZE="-1">      // something else, like it was asked to find a string by the  </FONT>
+<FONT SIZE="-1">      // system find, then don't bother the user with a warning dialog.   </FONT>
+<FONT SIZE="-1">      // These flags tell how the app was launched to decided if a </FONT>
+<FONT SIZE="-1">      // warning should be displayed.</FONT>
+<FONT SIZE="-1">      if ((launchFlags &amp; </FONT>
+<FONT SIZE="-1">         (sysAppLaunchFlagNewGlobals | sysAppLaunchFlagUIApp)) </FONT>
+<FONT SIZE="-1">         == (sysAppLaunchFlagNewGlobals | sysAppLaunchFlagUIApp)) {</FONT>
+<FONT SIZE="-1">         FrmAlert(RomIncompatibleAlert);</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">         // Pilot 1.0 will continuously relaunch this app unless we switch  </FONT>
+<FONT SIZE="-1">         // to another safe one.  The sysFileCDefaultApp is </FONT>
+<FONT SIZE="-1">         // considered &quot;safe&quot;.</FONT>
+<FONT SIZE="-1">         if (romVersion &lt; 0x02000000) {</FONT>
+<FONT SIZE="-1">            Err err;</FONT>
+
+<FONT SIZE="-1">            AppLaunchWithCommand(sysFileCDefaultApp,</FONT>
+<FONT SIZE="-1">               sysAppLaunchCmdNormalLaunch, NULL);</FONT>
+<FONT SIZE="-1">         }</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">      return sysErrRomIncompatible;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   return 0;</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P1743_79738"></A></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">That is all there is of interest to the resources, forms, and form objects in the Sales application. This material took so much space simply because of the large number of objects we needed to show you, rather than because of the complexity of the subject material. This is all good news, however, as a rich set of forms and form objects means greater flexibility in the types of applications you can create for Palm OS devices.</FONT><A NAME="P1744_80166"></A></P>
+<HR ALIGN=LEFT SIZE=2 WIDTH=100% NOSHADE>
+<!-- TRANSIT - TEXTBAR -->
+
+<ADDRESS><FONT SIZE=-1>Palm Programming: The Developer's Guide
+<BR>Copyright &#169; 1999, O'Rielly and Associates, Inc.
+<BR>Published on the web by permission of O'Rielly and Associates, Inc. Contents modified for web display.</FONT></ADDRESS><P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch04.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch06.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P>
+</BODY>
+</HTML>

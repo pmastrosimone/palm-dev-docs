@@ -1,0 +1,69 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: i386-Notes</TITLE>
+
+<META NAME="description" CONTENT="Using as: i386-Notes">
+<META NAME="keywords" CONTENT="Using as: i386-Notes">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC279"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_269.html#SEC278"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_259.html#SEC268"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.12.13 Notes </H3>
+<!--docid::SEC279::-->
+<P>
+
+<A NAME="IDX803"></A>
+<A NAME="IDX804"></A>
+<A NAME="IDX805"></A>
+<A NAME="IDX806"></A>
+<A NAME="IDX807"></A>
+There is some trickery concerning the <SAMP>`mul'</SAMP> and <SAMP>`imul'</SAMP>
+instructions that deserves mention.  The 16-, 32-, 64- and 128-bit expanding
+multiplies (base opcode <SAMP>`0xf6'</SAMP>; extension 4 for <SAMP>`mul'</SAMP> and 5
+for <SAMP>`imul'</SAMP>) can be output only in the one operand form.  Thus,
+<SAMP>`imul %ebx, %eax'</SAMP> does <EM>not</EM> select the expanding multiply;
+the expanding multiply would clobber the <SAMP>`%edx'</SAMP> register, and this
+would confuse <CODE>gcc</CODE> output.  Use <SAMP>`imul %ebx'</SAMP> to get the
+64-bit product in <SAMP>`%edx:%eax'</SAMP>.
+</P><P>
+
+We have added a two operand form of <SAMP>`imul'</SAMP> when the first operand
+is an immediate mode expression and the second operand is a register.
+This is just a shorthand, so that, multiplying <SAMP>`%eax'</SAMP> by 69, for
+example, can be done with <SAMP>`imul $69, %eax'</SAMP> rather than <SAMP>`imul
+$69, %eax, %eax'</SAMP>.
+</P><P>
+
+<A NAME="i860-Dependent"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

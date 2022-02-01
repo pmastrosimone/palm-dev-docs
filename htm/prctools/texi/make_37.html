@@ -1,0 +1,209 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Phony Targets</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Phony Targets">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Phony Targets">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC41"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_36.html#SEC40"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_38.html#SEC42"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.6 Phony Targets </H2>
+<!--docid::SEC41::-->
+<P>
+
+A phony target is one that is not really the name of a file.  It is just a
+name for some commands to be executed when you make an explicit request.
+There are two reasons to use a phony target: to avoid a conflict with
+a file of the same name, and to improve performance.
+</P><P>
+
+If you write a rule whose commands will not create the target file, the
+commands will be executed every time the target comes up for remaking.
+Here is an example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>clean:
+        rm *.o temp
+</pre></td></tr></table></P><P>
+
+Because the <CODE>rm</CODE> command does not create a file named <TT>`clean'</TT>,
+probably no such file will ever exist.  Therefore, the <CODE>rm</CODE> command
+will be executed every time you say <SAMP>`make clean'</SAMP>.
+<A NAME="IDX111"></A>
+</P><P>
+
+<A NAME="IDX112"></A>
+The phony target will cease to work if anything ever does create a file
+named <TT>`clean'</TT> in this directory.  Since it has no prerequisites, the
+file <TT>`clean'</TT> would inevitably be considered up to date, and its
+commands would not be executed.  To avoid this problem, you can explicitly
+declare the target to be phony, using the special target <CODE>.PHONY</CODE>
+(see section <A HREF="make_40.html#SEC44">Special Built-in Target Names</A>) as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.PHONY : clean
+</pre></td></tr></table></P><P>
+
+Once this is done, <SAMP>`make clean'</SAMP> will run the commands regardless of
+whether there is a file named <TT>`clean'</TT>.
+</P><P>
+
+Since it knows that phony targets do not name actual files that could be
+remade from other files, <CODE>make</CODE> skips the implicit rule search for
+phony targets (see section <A HREF="make_99.html#SEC103">10. Using Implicit Rules</A>).  This is why declaring a target
+phony is good for performance, even if you are not worried about the
+actual file existing.
+</P><P>
+
+Thus, you first write the line that states that <CODE>clean</CODE> is a
+phony target, then you write the rule, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.PHONY: clean
+clean:
+        rm *.o temp
+</pre></td></tr></table></P><P>
+
+Another example of the usefulness of phony targets is in conjunction
+with recursive invocations of <CODE>make</CODE> (for more information, see
+<A HREF="make_54.html#SEC58">Recursive Use of <CODE>make</CODE></A>).  In this case the
+makefile will often contain a variable which lists a number of
+subdirectories to be built.  One way to handle this is with one rule
+whose command is a shell loop over the subdirectories, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>SUBDIRS = foo bar baz
+
+subdirs:
+        for dir in $(SUBDIRS); do \
+          $(MAKE) -C $$dir; \
+        done
+</pre></td></tr></table></P><P>
+
+There are a few problems with this method, however.  First, any error
+detected in a submake is not noted by this rule, so it will continue to
+build the rest of the directories even when one fails.  This can be
+overcome by adding shell commands to note the error and exit, but then
+it will do so even if <CODE>make</CODE> is invoked with the <CODE>-k</CODE> option,
+which is unfortunate.  Second, and perhaps more importantly, you cannot
+take advantage of the parallel build capabilities of make using this
+method, since there is only one rule.
+</P><P>
+
+By declaring the subdirectories as phony targets (you must do this as
+the subdirectory obviously always exists; otherwise it won't be built)
+you can remove these problems:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>SUBDIRS = foo bar baz
+
+.PHONY: subdirs $(SUBDIRS)
+
+subdirs: $(SUBDIRS)
+
+$(SUBDIRS):
+        $(MAKE) -C $@
+
+foo: baz
+</pre></td></tr></table></P><P>
+
+Here we've also declared that the <TT>`foo'</TT> subdirectory cannot be
+built until after the <TT>`baz'</TT> subdirectory is complete; this kind of
+relationship declaration is particularly important when attempting
+parallel builds.
+</P><P>
+
+A phony target should not be a prerequisite of a real target file; if it
+is, its commands are run every time <CODE>make</CODE> goes to update that
+file.  As long as a phony target is never a prerequisite of a real
+target, the phony target commands will be executed only when the phony
+target is a specified goal (see section <A HREF="make_93.html#SEC97">Arguments to Specify the Goals</A>).
+</P><P>
+
+Phony targets can have prerequisites.  When one directory contains multiple
+programs, it is most convenient to describe all of the programs in one
+makefile <TT>`./Makefile'</TT>.  Since the target remade by default will be the
+first one in the makefile, it is common to make this a phony target named
+<SAMP>`all'</SAMP> and give it, as prerequisites, all the individual programs.  For
+example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>all : prog1 prog2 prog3
+.PHONY : all
+
+prog1 : prog1.o utils.o
+        cc -o prog1 prog1.o utils.o
+
+prog2 : prog2.o
+        cc -o prog2 prog2.o
+
+prog3 : prog3.o sort.o utils.o
+        cc -o prog3 prog3.o sort.o utils.o
+</pre></td></tr></table></P><P>
+
+Now you can say just <SAMP>`make'</SAMP> to remake all three programs, or specify
+as arguments the ones to remake (as in <SAMP>`make prog1 prog3'</SAMP>).
+</P><P>
+
+When one phony target is a prerequisite of another, it serves as a subroutine
+of the other.  For example, here <SAMP>`make cleanall'</SAMP> will delete the
+object files, the difference files, and the file <TT>`program'</TT>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.PHONY: cleanall cleanobj cleandiff
+
+cleanall : cleanobj cleandiff
+        rm program
+
+cleanobj :
+        rm *.o
+
+cleandiff :
+        rm *.diff
+</pre></td></tr></table></P><P>
+
+<A NAME="Force Targets"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_36.html#SEC40"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_38.html#SEC42"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

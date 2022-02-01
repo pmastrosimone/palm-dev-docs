@@ -1,0 +1,238 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Running Protoize</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Running Protoize">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Running Protoize">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC45"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_44.html#SEC44"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.17 Running Protoize </H2>
+<!--docid::SEC45::-->
+<P>
+
+The program <CODE>protoize</CODE> is an optional part of GNU C.  You can use
+it to add prototypes to a program, thus converting the program to ANSI
+C in one respect.  The companion program <CODE>unprotoize</CODE> does the
+reverse: it removes argument types from any prototypes that are found.
+</P><P>
+
+When you run these programs, you must specify a set of source files as
+command line arguments.  The conversion programs start out by compiling
+these files to see what functions they define.  The information gathered
+about a file <VAR>foo</VAR> is saved in a file named <TT>`<VAR>foo</VAR>.X'</TT>.
+</P><P>
+
+After scanning comes actual conversion.  The specified files are all
+eligible to be converted; any files they include (whether sources or
+just headers) are eligible as well.
+</P><P>
+
+But not all the eligible files are converted.  By default,
+<CODE>protoize</CODE> and <CODE>unprotoize</CODE> convert only source and header
+files in the current directory.  You can specify additional directories
+whose files should be converted with the <SAMP>`-d <VAR>directory</VAR>'</SAMP>
+option.  You can also specify particular files to exclude with the
+<SAMP>`-x <VAR>file</VAR>'</SAMP> option.  A file is converted if it is eligible, its
+directory name matches one of the specified directory names, and its
+name within the directory has not been excluded.
+</P><P>
+
+Basic conversion with <CODE>protoize</CODE> consists of rewriting most
+function definitions and function declarations to specify the types of
+the arguments.  The only ones not rewritten are those for varargs
+functions.
+</P><P>
+
+<CODE>protoize</CODE> optionally inserts prototype declarations at the
+beginning of the source file, to make them available for any calls that
+precede the function's definition.  Or it can insert prototype
+declarations with block scope in the blocks where undeclared functions
+are called.
+</P><P>
+
+Basic conversion with <CODE>unprotoize</CODE> consists of rewriting most
+function declarations to remove any argument types, and rewriting
+function definitions to the old-style pre-ANSI form.
+</P><P>
+
+Both conversion programs print a warning for any function declaration or
+definition that they can't convert.  You can suppress these warnings
+with <SAMP>`-q'</SAMP>.
+</P><P>
+
+The output from <CODE>protoize</CODE> or <CODE>unprotoize</CODE> replaces the
+original source file.  The original file is renamed to a name ending
+with <SAMP>`.save'</SAMP>.  If the <SAMP>`.save'</SAMP> file already exists, then
+the source file is simply discarded.
+</P><P>
+
+<CODE>protoize</CODE> and <CODE>unprotoize</CODE> both depend on GCC itself to
+scan the program and collect information about the functions it uses.
+So neither of these programs will work until GCC is installed.
+</P><P>
+
+Here is a table of the options you can use with <CODE>protoize</CODE> and
+<CODE>unprotoize</CODE>.  Each option works with both programs unless
+otherwise stated.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-B <VAR>directory</VAR></CODE>
+<DD>Look for the file <TT>`SYSCALLS.c.X'</TT> in <VAR>directory</VAR>, instead of the
+usual directory (normally <TT>`/usr/local/lib'</TT>).  This file contains
+prototype information about standard system functions.  This option
+applies only to <CODE>protoize</CODE>.
+<P>
+
+<DT><CODE>-c <VAR>compilation-options</VAR></CODE>
+<DD>Use  <VAR>compilation-options</VAR> as the options when running <CODE>gcc</CODE> to
+produce the <SAMP>`.X'</SAMP> files.  The special option <SAMP>`-aux-info'</SAMP> is
+always passed in addition, to tell <CODE>gcc</CODE> to write a <SAMP>`.X'</SAMP> file.
+<P>
+
+Note that the compilation options must be given as a single argument to
+<CODE>protoize</CODE> or <CODE>unprotoize</CODE>.  If you want to specify several
+<CODE>gcc</CODE> options, you must quote the entire set of compilation options
+to make them a single word in the shell.
+</P><P>
+
+There are certain <CODE>gcc</CODE> arguments that you cannot use, because they
+would produce the wrong kind of output.  These include <SAMP>`-g'</SAMP>,
+<SAMP>`-O'</SAMP>, <SAMP>`-c'</SAMP>, <SAMP>`-S'</SAMP>, and <SAMP>`-o'</SAMP> If you include these in
+the <VAR>compilation-options</VAR>, they are ignored.
+</P><P>
+
+<DT><CODE>-C</CODE>
+<DD>Rename files to end in <SAMP>`.C'</SAMP> instead of <SAMP>`.c'</SAMP>.
+This is convenient if you are converting a C program to C++.
+This option applies only to <CODE>protoize</CODE>.
+<P>
+
+<DT><CODE>-g</CODE>
+<DD>Add explicit global declarations.  This means inserting explicit
+declarations at the beginning of each source file for each function
+that is called in the file and was not declared.  These declarations
+precede the first function definition that contains a call to an
+undeclared function.  This option applies only to <CODE>protoize</CODE>.
+<P>
+
+<DT><CODE>-i <VAR>string</VAR></CODE>
+<DD>Indent old-style parameter declarations with the string <VAR>string</VAR>.
+This option applies only to <CODE>protoize</CODE>.
+<P>
+
+<CODE>unprotoize</CODE> converts prototyped function definitions to old-style
+function definitions, where the arguments are declared between the
+argument list and the initial <SAMP>`{'</SAMP>.  By default, <CODE>unprotoize</CODE>
+uses five spaces as the indentation.  If you want to indent with just
+one space instead, use <SAMP>`-i " "'</SAMP>.
+</P><P>
+
+<DT><CODE>-k</CODE>
+<DD>Keep the <SAMP>`.X'</SAMP> files.  Normally, they are deleted after conversion
+is finished.
+<P>
+
+<DT><CODE>-l</CODE>
+<DD>Add explicit local declarations.  <CODE>protoize</CODE> with <SAMP>`-l'</SAMP> inserts
+a prototype declaration for each function in each block which calls the
+function without any declaration.  This option applies only to
+<CODE>protoize</CODE>.
+<P>
+
+<DT><CODE>-n</CODE>
+<DD>Make no real changes.  This mode just prints information about the conversions
+that would have been done without <SAMP>`-n'</SAMP>.
+<P>
+
+<DT><CODE>-N</CODE>
+<DD>Make no <SAMP>`.save'</SAMP> files.  The original files are simply deleted.
+Use this option with caution.
+<P>
+
+<DT><CODE>-p <VAR>program</VAR></CODE>
+<DD>Use the program <VAR>program</VAR> as the compiler.  Normally, the name
+<TT>`gcc'</TT> is used.
+<P>
+
+<DT><CODE>-q</CODE>
+<DD>Work quietly.  Most warnings are suppressed.
+<P>
+
+<DT><CODE>-v</CODE>
+<DD>Print the version number, just like <SAMP>`-v'</SAMP> for <CODE>gcc</CODE>.
+</DL>
+<P>
+
+If you need special compiler options to compile one of your program's
+source files, then you should generate that file's <SAMP>`.X'</SAMP> file
+specially, by running <CODE>gcc</CODE> on that source file with the
+appropriate options and the option <SAMP>`-aux-info'</SAMP>.  Then run
+<CODE>protoize</CODE> on the entire set of files.  <CODE>protoize</CODE> will use
+the existing <SAMP>`.X'</SAMP> file because it is newer than the source file.
+For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>gcc -Dfoo=bar file1.c -aux-info
+protoize *.c
+</pre></td></tr></table></P><P>
+
+You need to include the special files along with the rest in the
+<CODE>protoize</CODE> command, even though their <SAMP>`.X'</SAMP> files already
+exist, because otherwise they won't get converted.
+</P><P>
+
+See section <A HREF="gcc_137.html#SEC137">7.11 Caveats of using <CODE>protoize</CODE></A>, for more information on how to use
+<CODE>protoize</CODE> successfully.
+</P><P>
+
+Note most of this information is out of date and superceded by the EGCS
+install procedures.  It is provided for historical reference only.
+</P><P>
+
+<A NAME="Installation"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_44.html#SEC44"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

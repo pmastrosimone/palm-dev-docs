@@ -1,0 +1,981 @@
+<HTML>
+<HEAD>
+<TITLE>Palm OS:  &#160;3.&#160; Designing a Solution </TITLE>
+<META NAME="GENERATOR" CONTENT="Transit Central Station 3.2 by InfoAccess Inc. www.infoaccess.com">
+</HEAD>
+<BODY BACKGROUND="images/grnitbkg.gif"><A NAME="TopOfPage"> </A>
+<A HREF="http://www.oreilly.com/catalog/palmprog/"><IMG SRC="images/palm_comp_ani_ad.gif" ALT="Order the book from O'Reilly" BORDER=0 width="468" height="60"></A>
+<P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch02.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="part2.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P><P><I>In this chapter:</I></P>
+
+
+  <UL COMPACT><LI><A HREF="#P34_1111" NAME="LOC_P34_1111">User Interface Elements <BR>
+in an Application</A></LI>
+
+  <LI><A HREF="#P159_6608" NAME="LOC_P159_6608">General Design of a Palm Application</A></LI>
+
+  <LI><A HREF="#P199_11010" NAME="LOC_P199_11010">How the Sample Applications Are Useful</A></LI>
+
+  <LI><A HREF="#P206_12230" NAME="LOC_P206_12230">User Interface of the Sales Application</A></LI>
+
+  <LI><A HREF="#P440_21465" NAME="LOC_P440_21465">Developing a Prototype</A></LI>
+
+  <LI><A HREF="#P455_22751" NAME="LOC_P455_22751">Design Tradeoffs in the Sample Application</A></LI>
+
+  <LI><A HREF="#P529_28373" NAME="LOC_P529_28373">Designing for a Small Screen</A></LI>
+
+  <LI><A HREF="#P605_30953" NAME="LOC_P605_30953">Designing the Databases</A></LI>
+
+  <LI><A HREF="#P647_34471" NAME="LOC_P647_34471">Designing the Conduit</A></LI>
+
+  <LI><A HREF="#P693_40299" NAME="LOC_P693_40299">Design Summary</A></LI></UL>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=156>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+<H1 ALIGN=LEFT><I><FONT SIZE=+3>&#160;3.&#160; <A NAME="P16_357"></A>Designing a Solution</FONT></I></H1>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now that you know about the features of the Palm OS and you have figured out what development environment you are going to use, it is time to create a new application. To do this, you first need to know what the Palm OS provides in the way of user interface elements. Second, you need a description of the elements common to every application.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">From this general overview, we move to a concrete example. For this purpose, we discuss a sample application that we are going to create and then dissect in this book. We show you its design, what actions the user performs, how we prototyped it, and the design complications we encountered. Once we've covered the handheld portion of the application, we turn to a description of the conduit.</FONT></P>
+
+<P><A NAME="P34_1111"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">User Interface Elements <BR>
+in an Application</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P36_1152"></A>The Palm OS provides you with an abundance of user interface elements. The following is a description of these elements. We also show you some common examples of each type.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Alerts</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P41_1330"></A><A HREF="#P51_2566">Figure 3-1</A> contains an example of a typical alert. It is simply a modal dialog that displays a title, a message, an icon, and one or more buttons. You are responsible for setting the text of the title, the message, and the button(s). You also specify the type of alert. It can be any of the following types (ordered from mildest in consequence to most severe):</FONT></P>
+
+<P><I><FONT FACE="Times">Information</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P44_1701"></A>This has an &quot;i&quot; icon. The alert provides to the user some information (for example, that an action can't be completed). No data loss has occurred.</FONT></P>
+
+<P><I><FONT FACE="Times">Confirmation</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P46_1859"></A>This has a &quot;?&quot; icon. The alert asks the user a question, asking the user to confirm an action or to choose from possibilities. </FONT></P>
+
+<P><I><FONT FACE="Times">Warning</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P48_1993"></A>This has a &quot;!&quot; icon. You are asking the user if the action is really intentional. Data loss could occur if the action is completed. The Memo Pad uses a confirmation alert for deleting memos, since the user can choose to save an archive on the PC (thus the data is not lost). However, the system uses a warning dialog when the user chooses to delete an application, since after the delete, the application is completely gone. <A HREF="#P51_2566">Figure 3-1</A> is a warning alert.</FONT></P>
+
+<P><I><FONT FACE="Times">Error</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P50_2453"></A>This has a stop sign. This alert tells the user that an error occurred as a result of the last action.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 1</FONT></B><A NAME="P51_2566"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">A warning alert</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0301-1.gif" WIDTH=503 HEIGHT=88 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Forms</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P63_2586"></A>A form is a general purpose container for one or more other user interface elements. A form can contain buttons, lists, tables, controls, and icons. It can also have a menubar associated with it. Forms can be anything from modal dialogs to containers for lists or tables of data. Forms can be small or fill the entire screen of the handheld.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The look of a form, including the proper placement of buttons, is covered in the Palm OS documentation. You need to scrupulously follow placement guidelines for all elements in a form. <A HREF="#P66_3249">Figure 3-2</A> contains three different forms from the built-in applications to give you an idea of the variability they can have.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 2</FONT></B><A NAME="P66_3249"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Three forms containing various controls</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0302-2.gif" WIDTH=503 HEIGHT=177 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Menus, Menu Items, and Menubars</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P79_3319"></A>Menus, menu items, and menubars are related to one another. A menubar contains one or more menus. A menu contains one or more menu items. Menu items often have <A NAME="P79_3479"></A>Graffiti shortcuts associated with them. <A HREF="#P80_3751">Figure 3-3</A> contains an example of a menubar with two menus in it. One of the menus is open, and it contains six menu items (plus an additional separator bar item). We discuss these features in detail in Chapter&#160;7, <I>Menus</I>.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 3</FONT></B><A NAME="P80_3751"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">A menubar with two menus; the first menu has six items (plus a separator bar)</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0303-3.gif" WIDTH=503 HEIGHT=99 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"> </FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Tables and Lists</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P93_3845"></A>Tables and lists are used for similar purposes. Use a table when you want to displays multiple columns of data and use lists when you need to display a single column. We discuss this further in the section &quot;Tables&quot; in <A HREF="#P16_357">Chapter&#160;8, </A><I>Extras</I>. <A HREF="#P94_4245">Figure 3-4</A> contains an example of a list on the left and a table on the right. As you can see in <A HREF="#P94_4245">Figure 3-4</A>, tables can support different types of data.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 4</FONT></B><A NAME="P94_4245"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">A list (left) and a table (right)</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0304-4.gif" WIDTH=503 HEIGHT=109 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Miscellaneous User Interface Elements</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are a number of other user interface elements. These include buttons, checkboxes, bitmaps, fields, gadgets, labels, Graffiti shift indicators, pop-up triggers, push buttons, repeating buttons, scrollbars, and selectors. <A HREF="#P108_4796">Table 3-1</A> contains an example and a brief description of the typical use for each item. The Palm OS documentation describes in detail the attributes of each type of object and gives you information on where each item should be placed in a form.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Table 3- 1</FONT></B><A NAME="P108_4796"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Miscellaneous User Interface Elements</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=87><P><B><FONT FACE="Times" SIZE="-1">User Interface Element</FONT></B></P>
+</TD>
+<TD WIDTH=176><P><B><FONT FACE="Times" SIZE="-1">Typical Example</FONT></B></P>
+</TD>
+<TD WIDTH=216><P><B><FONT FACE="Times" SIZE="-1">Brief Description of Use</FONT></B></P>
+</TD></TR>
+<TR>
+<TD WIDTH=87><P><FONT FACE="Times" SIZE="-1">Button</FONT><A NAME="P117_4900"></A></P>
+</TD>
+<TD WIDTH=176><P><IMG SRC="images/ch03-plmp.T03.01-5.gif" WIDTH=34 HEIGHT=21></P>
+</TD>
+<TD WIDTH=216><P><FONT FACE="Times" SIZE="-1">A button is a tappable object with a label. An action occurs when it is tapped.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=87><P><FONT FACE="Times" SIZE="-1">Checkbox</FONT><A NAME="P120_4987"></A></P>
+</TD>
+<TD WIDTH=176><P></P>
+</TD>
+<TD WIDTH=216><P><FONT FACE="Times" SIZE="-1">A checkbox represents an on/off state.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=87><P><FONT FACE="Times" SIZE="-1">Field</FONT><A NAME="P123_5030"></A></P>
+</TD>
+<TD WIDTH=176><P></P>
+</TD>
+<TD WIDTH=216><P><FONT FACE="Times" SIZE="-1">This is for user data entry. It has one or more lines of editable text. It can also be used for text that isn't editable.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=87><P><FONT FACE="Times" SIZE="-1"><A NAME="P126_5151"></A>Form Bitmap</FONT></P>
+</TD>
+<TD WIDTH=176><P><IMG SRC="images/ch03-plmp.T03.04-6.gif" WIDTH=20 HEIGHT=21></P>
+</TD>
+<TD WIDTH=216><P><FONT FACE="Times" SIZE="-1">This is a bitmap object that is usually black and white. Look for grayscale and color support in the future.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=87><P><FONT FACE="Times" SIZE="-1"><A NAME="P129_5270"></A>Gadget</FONT></P>
+</TD>
+<TD WIDTH=176><P><IMG SRC="images/ch03-plmp.T03.05-7.gif" WIDTH=161 HEIGHT=131></P>
+</TD>
+<TD WIDTH=216><P><FONT FACE="Times" SIZE="-1">This is a custom UI object that is limited only by your imagination. You can create gadgets for simple or complicated uses. </FONT></P>
+<P><FONT FACE="Times" SIZE="-1">This example gadget comes from the Calendar application and was created to handle the display of custom appointment times.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=87><P><FONT FACE="Times" SIZE="-1"><A NAME="P133_5522"></A>Graffiti Shift Indicator</FONT></P>
+</TD>
+<TD WIDTH=176><P><IMG SRC="images/ch03-plmp.T03.06-8.gif" WIDTH=13 HEIGHT=17></P>
+</TD>
+<TD WIDTH=216><P><FONT FACE="Times" SIZE="-1">This shows the current Graffiti shift state (punctuation, symbol, uppercase shift, or uppercase lock). This indicator should be in any form that allows text entry and should be at the lower right of the form.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=87><P><FONT FACE="Times" SIZE="-1">Label</FONT><A NAME="P136_5759"></A></P>
+</TD>
+<TD WIDTH=176><P><IMG SRC="images/ch03-plmp.T03.07-9.gif" WIDTH=52 HEIGHT=13></P>
+</TD>
+<TD WIDTH=216><P><FONT FACE="Times" SIZE="-1">This is a noneditable text object. </FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=87><P><FONT FACE="Times" SIZE="-1">Pop-up Trigger</FONT><A NAME="P139_5808"></A></P>
+</TD>
+<TD WIDTH=176><P><IMG SRC="images/ch03-plmp.T03.08-10.gif" WIDTH=35 HEIGHT=13></P>
+</TD>
+<TD WIDTH=216><P><FONT FACE="Times" SIZE="-1">Tap on this to display a pop-up list. The pop-up trigger displays the currently selected text from the list.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=87><P><FONT FACE="Times" SIZE="-1"><A NAME="P142_5916"></A>Push Button</FONT></P>
+</TD>
+<TD WIDTH=176><P><IMG SRC="images/ch03-plmp.T03.09-11.gif" WIDTH=113 HEIGHT=17></P>
+</TD>
+<TD WIDTH=216><P><FONT FACE="Times" SIZE="-1">Push buttons represent an on/off state and, as a rule, are grouped so that only one of a group is selected at a time. </FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=87><P><FONT FACE="Times" SIZE="-1">Repeating Button </FONT><A NAME="P145_6062"></A></P>
+</TD>
+<TD WIDTH=176><P><IMG SRC="images/ch03-plmp.T03.10-12.gif" WIDTH=20 HEIGHT=20></P>
+</TD>
+<TD WIDTH=216><P><FONT FACE="Times" SIZE="-1">This works like a button but causes a repeating action while the button is held down.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=87><P><FONT FACE="Times" SIZE="-1">Scrollbar</FONT><A NAME="P148_6156"></A></P>
+</TD>
+<TD WIDTH=176><P><IMG SRC="images/ch03-plmp.T03.11-13.gif" WIDTH=13 HEIGHT=125></P>
+</TD>
+<TD WIDTH=216><P><FONT FACE="Times" SIZE="-1">This object is often used for scrolling text or tables. It allows one-line scrolling, page scrolling, and direct navigation to a particular location. Scrollbars are not available prior to Palm OS 2.0.</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">If you plan to support the 1.0 OS, your code will need to handle scrolling using the hardware scroll buttons.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=87><P><FONT FACE="Times" SIZE="-1">Selector Trigger</FONT><A NAME="P152_6481"></A></P>
+</TD>
+<TD WIDTH=176><P><IMG SRC="images/ch03-plmp.T03.12-14.gif" WIDTH=84 HEIGHT=18></P>
+</TD>
+<TD WIDTH=216><P><FONT FACE="Times" SIZE="-1">When a user taps this object, a dialog box pops up to allow the user to edit the value. A gray rectangle surrounds the trigger.</FONT><A NAME="P154_6608"></A></P>
+</TD></TR></TABLE></UL>
+
+<P><A NAME="P159_6608"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">General Design of a Palm Application</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P161_6644"></A>Most applications will contain a certain core number of user interface elements. Even the simplest application will, at the very least, need a form and some controls. Most applications go well beyond the minimal number of features and have multiple menus, forms, and dialogs as well.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">When you sit down to design your application, you'll need to ask yourself the following questions and come up with some reasonable answers to them:</FONT></P>
+
+<P><I><FONT FACE="Times">What tasks does the application accomplish?</FONT></I></P>
+
+<P><FONT FACE="Times">Obviously, this is a question one would ask about any application on any platform. That doesn't make it any less relevant here. You need to lay out as clearly as possible what the user can do with your application, what tasks the user can perform. Just as importantly, you should have a clear idea of possible tasks that the user can't do. </FONT></P>
+
+<P><FONT FACE="Times">The essence of the Palm OS and the handhelds is speed and accessibility. Putting a possible feature on the chopping block because it ruins either of these is something to be proud of and is terribly difficult to do in this era of &quot;kitchen sink&quot; applications. </FONT></P>
+
+<P><I><FONT FACE="Times">What forms does the application have?</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P169_7753"></A>There is minimally a startup form that the user sees when tapping the application icon. Every dialog (other than an alert) or other data view is also a new form. A good rule of thumb is that you will have one form for every view of data. Forms add up fast when you count this way. </FONT></P>
+
+<P><I><FONT FACE="Times">What menus does the application have?</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P171_8071"></A>Commonly, you will support the Record, Edit, and Option menus. They will be similar to those found in the built-in applications with the same menu items. Often custom menus are also a part of the application. </FONT></P>
+
+<P><I><FONT FACE="Times">What dialog boxes does the application have?</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P173_8324"></A>Alert dialog boxes give information, ask questions, issue warnings, and report errors.</FONT></P>
+
+<P><I><FONT FACE="Times">What is the structure of the application's database or databases?</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P175_8475"></A>The database is where you store information that is displayed on the handheld. You need to decide how many databases you will need, how the records are ordered, and what is stored in each record.</FONT></P>
+
+<P><I><FONT FACE="Times">What versions of the OS will you support?</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P177_8711"></A>You need to decide what versions of the Palm OS you are targeting. As we write this, there are three versions: 1.0, 2.0, and 3.0.</FONT></P>
+
+<P><FONT FACE="Times">A Palm study found that less than five percent of the Palm OS devices in use were running the 1.0 version of the OS. This number will only shrink as more post-1.0 OS devices are sold and users upgrade their 1.0 devices to the 3.0 OS.</FONT></P>
+
+<P><FONT FACE="Times">Our recommendation is not to worry about compatibility with the Palm 1.0 OS. Users can upgrade to the 3.0 OS (including IR support and 2MB of memory) for around $100 at the time of this writing. A user unwilling to spend that kind of money is probably unwilling to buy your software. Of course, your particular situation may dictate that you support the 1.0 version of the OS.</FONT></P>
+
+<P><FONT FACE="Times">Here are the major changes in the 2.0 and 3.0 operating systems:</FONT></P>
+
+  <UL><P><I><FONT FACE="Times">Palm OS 2.0</FONT></I></P>
+
+  <P><FONT FACE="Times">Many new APIs, some changed APIs. Support for TCP/IP (on _ 1MB devices), support for scrollbars, and support for IEEE Floating Point (32-bit floats, 64-bit doubles)</FONT></P>
+
+  <P><I><FONT FACE="Times">Palm OS 3.0</FONT></I></P>
+
+  <P><FONT FACE="Times">Added support for infrared (devices include an IR port), additional sound support, additional font support, progress manager, possible unique device ID</FONT></P>
+
+</UL><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">It's very easy to write an application that is intended to support the 1.0 OS and accidentally uses a post-1.0 call (like </FONT><FONT FACE="Courier New" SIZE="-1">EvtSysEventAvail</FONT><FONT FACE="Times" SIZE="-1">). To catch this type of error, include a header file that flags any calls to a 2.0-or-later routine. You can find this header on the CD-ROM. You can also test your applications with POSE using older ROMs.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">What does the conduit do?</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P188_10218"></A>If all you want to do is save the handheld data to the desktop as a backup, use the backup conduit. If the user needs to look at or edit the data on the desktop, or if the user needs to transfer data from the desktop to the handheld, then you need to design a conduit and determine what it can and can't do with data. You need to figure out what data is transferred, whether data will be uploaded, downloaded, or synchronized, and what application on the desktop the user will use to view the data.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">General Optimization</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P192_10736"></A>There are also some important ways to optimize when designing an application:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Minimize the number of taps to complete frequent actions</FONT></LI>
+
+  <LI><FONT FACE="Times">  Minimize screen clutter by hiding infrequent actions</FONT></LI>
+
+  <LI><FONT FACE="Times">  Provide command buttons for common multistep activities</FONT></LI>
+
+  <LI><FONT FACE="Times">  Minimize switching screens</FONT><A NAME="P197_11010"></A></LI></UL>
+
+<P><A NAME="P199_11010"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">How the Sample Applications Are Useful</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P201_11048"></A>Some of you may be wondering how useful the Sales application will be to you. Does it show you how to implement all the APIs? Does it contain the essential components of most Palm applications? Here are some answers. The Sales application uses most of the Palm API (except for Category UI) and to that extent offers a broad treatment. Because it isn't an exact clone of the built-in apps, you also see some new design issues and code. It also covers databases, beaming, menus, dialog boxes, and Find. Another crucial component is the detailed description of its conduit. We hope that much of what is mystifying about conduits is clarified in our descriptions and the code we create.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We also cover some Palm OS features in smaller sample applications. We handle tables, barcoding, serial, and TCP/IP in this manner. The bad news is that the Palm OS is so feature-rich that there are indeed some other areas we don't cover in this detail. We hope there are no glaring omissions. Our goal was not to cover every topic but only the most difficult or important ones. Our examples are created with this goal in mind. (If we goofed, let us know and we will try to correct it in the future.)</FONT></P>
+
+<P><A NAME="P206_12230"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">User Interface of the Sales Application</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P208_12269"></A>The sample application we are creating is a forms-based application that will be used to record orders. This application is for a person who sells toys to stores. </FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">This sample application will be used as a basis for our code discussions throughout the book. It and the source code are available on the CD-ROM.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">These are the activities we want the salesperson to be able to accomplish in the application:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Modify, delete, or create a new customer</FONT></LI>
+
+  <LI><FONT FACE="Times">  Create a new order for a customer</FONT></LI>
+
+  <LI><FONT FACE="Times">  Delete an order</FONT></LI>
+
+  <LI><FONT FACE="Times">  Delete or modify items in an order</FONT></LI>
+
+  <LI><FONT FACE="Times">  Beam a company to another device</FONT></LI></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">The Sales Application Customer List</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P222_12869"></A>The user starts the application and picks a customer from a list.</FONT></P>
+
+<P><I><FONT FACE="Times">The customer list</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This is the startup form of the application. It is a list of all the customers that our salesperson normally sells toys to during that selling period. The user can tell which customers already have orders because those without orders are in bold. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We admit that bolding an item to indicate status is a subtle, if not obscure, design element. Its presence is reasonable when you remember the audience of this application. The same user will use it day in and day out for taking orders. The bolding of an item in a constantly used application may be warranted, while it may not be in a more general purpose application. In any case, a user who doesn't know what the bold is for is not hurt-it's just a shortcut for the experienced user.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">When a name is selected from the customer list (see <A HREF="#P231_13800">Figure 3-5</A>), the individual Customer form is opened.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 3- 5</FONT></B><A NAME="P231_13800"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Picking a customer from a list</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0305-15.gif" WIDTH=503 HEIGHT=116 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P241_13830"></A>Occasionally the salesperson may want to create a new customer while out in the field, so we provide this capability on the handheld. On Palm devices with IR capability, the salesperson might also want to beam customer information. Both these actions are handled in this form as part of the Customer List Record menu (see <A HREF="#P242_14175">Figure 3-6</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 6</FONT></B><A NAME="P242_14175"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Customer Menu in the Customer List form</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0306-16.gif" WIDTH=503 HEIGHT=56 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">New Customer</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">When the user selects New Customer or performs the Graffiti shortcut, the <A NAME="P254_14300"></A>New Customer dialog you see in <A HREF="#P255_14362">Figure 3-7</A> is <A NAME="P254_14345"></A>shown.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 7</FONT></B><A NAME="P255_14362"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">New Customer dialog</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0307-17.gif" WIDTH=503 HEIGHT=178 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"> </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note that customer records can be labeled private. When a user selects this option and the preferences are set to view all records, we put up a dialog explaining why that customer is still visible (see <A HREF="#P266_14607">Figure 3-8</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 8</FONT></B><A NAME="P266_14607"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Explanation on private record checkbox</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0308-18.gif" WIDTH=503 HEIGHT=134 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The user clearly expects something to happen when selecting the private checkbox. If preferences have been set to hide private records, the record disappears from view when the user taps OK. We put up the dialog to prevent confusion on the user's part when all records are viewable. This is a good example of explaining logical, but unexpected, results.</FONT><A NAME="P276_14998"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Beam All Customers</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P281_15016"></A>If the <A NAME="P281_15023"></A>handheld has IR (infrared beaming) capabilities, this menu item provides a quick way for the salesperson to transfer all the customer information to another device. <A NAME="P281_15188"></A>When Beam All Customers is selected, the user get the message shown in <A HREF="#P282_15363">Figure 3-9</A>. The person receiving the customers also gets status information (see <A HREF="#P282_15363">Figure 3-9</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 9</FONT></B><A NAME="P282_15363"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">The status when beaming customers</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0309-19.gif" WIDTH=503 HEIGHT=177 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">If the Palm device is not IR capable, the user never sees the item in the Customer List menu. The built-in sample applications always show the Beam menu, but then tell users they can't beam on a non-IR-capable device-we like our way better.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">The Customer Order Form</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P297_15659"></A>Once a customer is tapped on, the user is shown the individual Customer form. Most of the activity in the application happens here.</FONT></P>
+
+<P><I><FONT FACE="Times">Creating an order</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The most important activity is the creation of an order. This is done by selecting toys and adding them to the customer's order. <A HREF="#P302_16025">Figure 3-10</A> shows an empty Order sheet and one that has several items in it. </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 10</FONT></B><A NAME="P302_16025"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">A new order and one containing several items</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0310-20.gif" WIDTH=503 HEIGHT=167 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A HREF="#P313_16236">Figure 3-11</A> shows the toys listed by category. First the user selects a category (if the current category is wrong) and then selects one of the toys in it.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 11</FONT></B><A NAME="P313_16236"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Selecting a category and toy</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0311-21.gif" WIDTH=503 HEIGHT=177 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Once an order is complete, the salesperson closes it and moves on to another customer. Orders can be revisited, if necessary. As there is only one order per customer, selecting that customer from the list automatically takes the user back to the order.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Ideally, a customer should be able to have more than one order associated with the customer form. In a shipping application, we would certainly add that functionality. For the purposes of this book, however, the extra programming doesn't add much new to our explanation of the Palm OS. We leave it as an additional exercise for eager readers.</FONT></P>
+
+<P><I><FONT FACE="Times">Modifying an item in an order</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The user can modify an item by tapping on the part of it that needs changing. If the toy is wrong, a new toy can be selected. When the item is changed, the item stock number automatically updates to reflect the new toy. If the number is wrong, that can be changed separately. </FONT></P>
+
+<P><I><FONT FACE="Times">Deleting an item in an order</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Deleting the item can be done in two ways. The quick way is to select <A NAME="P333_17261"></A>Delete Item in the Record menu (see <A HREF="#P334_17562">Figure 3-12</A>). If the user failed to first select an item, we give a dialog box reminder prompting an item's selection (see <A HREF="#P343_17604">Figure 3-13</A>). Otherwise, we show the user a confirmation dialog just to make sure the delete request was valid (see <A HREF="#P343_17604">Figure 3-13</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 3- 12</FONT></B><A NAME="P334_17562"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Deleting from the Record Menu</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0312-22.gif" WIDTH=503 HEIGHT=167 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"> </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 13</FONT></B><A NAME="P343_17604"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Deleting an item from an order</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0313-23.gif" WIDTH=503 HEIGHT=180 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">It is difficult to say whether it is better to require a user to constantly confirm deletion requests or to allow the accidental deletion of items instead. Two points that drove our decision here were the smallness of the Palm screen and the real likelihood that the user would be moving when selecting items. Remember, there are only a couple of pixels of space between <A NAME="P353_18005"></A>Delete Customer and Delete Item in the <A NAME="P353_18044"></A>Record menu. If you give the user no warning before deleting an item, you can easily turn a mistap into a terrible mistake.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Another way to delete an item is by selecting the Details button, which brings up the <A NAME="P355_18253"></A>Details dialog (see the right side of <A HREF="#P343_17604">Figure 3-13</A>). A deletion confirmation dialog is also shown. A third way is to set the quantity to 0, and then tap on a different <A NAME="P355_18420"></A>row.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Changing Customer Information</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To change information about a customer, the user selects <A NAME="P360_18510"></A>Customer Details in the Record menu (see <A HREF="#P415_21214">Figure 3-17</A>). Delete Customer is used to get rid of the customer entirely. (We talk more about why this information is handled here in <A HREF="#P455_22751">&quot;Design Tradeoffs in the Sample Application</A>,&quot; later in this chapter.) </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are two different details forms: one for the customer and one for the item. They have different user interfaces. When you follow the logic of the Palm UI, and look at the number of times a user is likely to do either of these tasks, you will understand our positioning of each of these choices.</FONT></P>
+
+<P><I><FONT FACE="Times">The Customer Details</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The Customer Details is the form in which you change information about the customer or, secondarily, delete the customer entirely (see <A HREF="#P367_19828">Figure 3-14</A>). This is not something we commonly expect the user to want to do. Indeed, this is information that is primarily entered and maintained on the desktop. We allow editing to give the user flexibility, not because we think this form will be edited very often. The user is more likely to look at this form to get the customer's telephone number than to change it. As access is through the Record menu, this form is difficult to get to, and it may be hard for the user to remember its location. This is okay if it allows better access for a more frequent activity. It does-to the Item Details form.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 14</FONT></B><A NAME="P367_19828"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Customer information</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0314-24.gif" WIDTH=503 HEIGHT=178 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">The Item Details</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P379_19864"></A>Every customer has an detail screen associated with the order, as well. In this form, the user can do three things (from most frequent to least): </FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Delete the item from the order</FONT></LI>
+
+  <LI><FONT FACE="Times">  Change the quantity of the item being ordered</FONT></LI>
+
+  <LI><FONT FACE="Times">  Change the type of item being ordered</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The activity most likely to occur is the deletion of an item, because the item amount or type can also be changed in the order itself (see <A HREF="#P385_20487">Figure 3-15</A>). But the salesperson can only delete an item from an order in this form. As this is a more common activity than viewing information about the customer, this form is easier to get to for the <A NAME="P384_20470"></A>user.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 15</FONT></B><A NAME="P385_20487"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">The Item Details screen</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0315-25.gif" WIDTH=503 HEIGHT=178 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Deleting the Customer</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P398_20531"></A>If the user selects the Delete Customer menu item, a confirmation dialog is shown (see <A HREF="#P399_20764">Figure 3-16</A>). A much slower way to delete an item is to select the Customer Details menu item and tap the Delete button in that form. </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 16</FONT></B><A NAME="P399_20764"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Deleting a customer</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0316-26.gif" WIDTH=503 HEIGHT=178 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">We provide the user with an option to archive the customer information on the PC, as opposed to deleting it completely from both the handheld and the PC.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Beaming the Customer</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P414_20956"></A>The user of an IR-capable device can also beam information about a single user. Selecting the menu item Beam Customer takes care of this. We make sure that non-IR-capable devices don't show the item in the menu (see <A HREF="#P415_21214">Figure 3-17</A> for a comparison).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 17</FONT></B><A NAME="P415_21214"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">The Record menu with beam present and not present</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0317-27.gif" WIDTH=503 HEIGHT=81 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Edit and Options Menus </FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Last, but not least, we offer <A NAME="P428_21316"></A>Edit and Options menus in our application with the standard Graffiti shortcuts<A NAME="P428_21394"></A> (see <A HREF="#P429_21425">Figure 3-18</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 18</FONT></B><A NAME="P429_21425"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Sales application Edit and Options menus</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0318-28.gif" WIDTH=503 HEIGHT=116 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><A NAME="P440_21465"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Developing a Prototype</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P442_21487"></A>Now that we've shown you the application in its final form, let's back up and show you the process and decisions we made to get there. First, let's look at how we prototyped it.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Clarify the Flow of Events</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P447_21690"></A>Our prototype design was a mock-up of the basic views that we wanted to have in the application. We came up with those views by listing the actions we wanted the user to be able to do and the order in which we thought they would occur; we discussed the flow of events. Our strategy was to optimize the application so that the more frequent the action the fewer steps it took to complete. We also wanted to emulate the design of the built-in applications wherever possible.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">The Start Screen</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P452_22178"></A>The first and most important view to create well is the start screen-what your user sees when the application is launched. In the <A NAME="P452_22308"></A>Sales application, the place to start seemed straightforward-with a list of the salesperson's customers. This is a list that can be modified on the handheld, but ordinarily would be created on the desktop. The desktop application should be clever about culling customers from the list if the salesperson isn't visiting them on this trip. It might also want to order the customers either alphabetically or by visit (as the salesperson prefers).</FONT></P>
+
+<P><A NAME="P455_22751"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Design Tradeoffs in the Sample Application</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P457_22793"></A>As with any design, we made some modifications that changed the look and functionality of this application. We think it will be useful to you to explain how we meandered about with these decisions.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Adding Items to an Order</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are a couple of things to notice about the design that we ended up with for this action (see <A HREF="#P463_23711">Figure 3-19</A>). When the user taps on the customer name, an order form immediately presents itself. As this is the most common action, we focused on minimizing the steps necessary to complete it. In our final design, we managed to reduce the number of steps required to take an order by one. Look at two possible designs in <A HREF="#P463_23711">Figure 3-19</A>, and you will see where we saved a step. The example on the left requires the user to first select the customer name and then tap the <A NAME="P462_23581"></A>New Order button below the list (two actions). The example on the right brings the order forward with one less action.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 19</FONT></B><A NAME="P463_23711"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Two ways to design the selection of a new order</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0319-29.gif" WIDTH=503 HEIGHT=199 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The tradeoff here affects two things. We can make an order easier to create (our solution) or make customers easier to create and edit. For us the choice is obvious; we assume that the salesperson rarely adds new customers or modifies old ones. This is the standard list of customers that our user always deals with when selling toys. In a world where customers came and went more often, we might have chosen differently.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Where to Put Customer Information</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P478_24212"></A>The next design issue we tackled was how the user accesses, modifies, and deletes customer information. Menu items or buttons could go either in the startup screen or in the order form. Both choices carry their own set of advantages and disadvantages. Before showing you the logic of our choices, back up and look again at what we want the user of the Palm device to be able to do:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Create a new customer</FONT></LI>
+
+  <LI><FONT FACE="Times">  Beam a customer list</FONT></LI>
+
+  <LI><FONT FACE="Times">  Beam a single customer</FONT></LI>
+
+  <LI><FONT FACE="Times">  Modify a customer</FONT></LI>
+
+  <LI><FONT FACE="Times">  Delete a customer</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">In a desktop application, we are certain that all of these activities would be put in the same menu. On the handheld, we weren't so sure they should be kept together. After some consideration, we chose to put creating a new customer and beaming a customer list in the startup view, because these are the only two general customer items. Every other action has to do with a particular customer, whether that is creating an order, changing the customer's information, or deleting the information from the unit. </FONT></P>
+
+<P><I><FONT FACE="Times">Creating a new customer</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P489_25232"></A>Clearly, the time when a user is going to create a new customer is in the startup screen while looking at the list of customers. The right user interface for this is a menu item, not a button. This is an infrequent action, so we don't want to waste valuable screen real estate with a button for it. In our solution, getting to the New Customer form takes two actions: pressing the built-in Menu button and selecting New Customer from the Customer menu.</FONT></P>
+
+<P><I><FONT FACE="Times">Beaming a list of customers</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P493_25711"></A>Our users might share customers with each other; we wanted to give them an easy way of sending customer information to each other (we chose not to support beaming orders, though). The menu item was our way of doing this. It takes two steps to accomplish this task. The user first pushes the built-in Menu button and then selects the item from the Customer menu.</FONT></P>
+
+<P><I><FONT FACE="Times">Deleting a customer</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P497_26091"></A>You could place this item in the startup Customer List form or in the Customer form. If you put it in the menu of the startup Customer List form, as we did in an earlier version of this application, you need a way for the user to select which customer to delete. The user selects Delete Customer from the Customer menu and a picklist is brought forth from which customers can be deleted one at a time or in group (see <A HREF="#P498_26534">Figure 3-20</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 20</FONT></B><A NAME="P498_26534"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">One way to delete customers</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0320-30.gif" WIDTH=503 HEIGHT=177 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">However, there's a faster way that requires fewer taps (and no new picklists). Within the Palm user interface model, you delete an item while you are viewing it. Look at the built-in Names and Memos applications (see <A HREF="#P509_26956">Figure 3-21</A>). Notice that you start with a list of items and select one. Only at this point can you use a Record menu item to delete the name or memo you are viewing.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 3- 21</FONT></B><A NAME="P509_26956"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">How the built-in Names and Memos applications handle actions</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch03-plmp.0321-31.gif" WIDTH=503 HEIGHT=180 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Likewise, in our application the customer is selected from a list and then, while viewing the customer form, the user can delete that client. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">A desktop application would not be designed this way. Single-clicking on a customer from the list would select it. At that point, the Delete menu item would delete it, while the Open menu item (or, as a shortcut, a double-click) would open the Order form for the customer. However, the Palm OS is not a desktop OS. Double-taps aren't part of the idiom. Users of a Palm OS device expect a single tap to make an action occur.</FONT><A NAME="P521_27581"></A></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You might ask why this model has been adopted. The design makes sense when you realize that the initial items in the startup list are &quot;hot.&quot; If you touch them, something happens immediately to switch you to another form. The Palm OS does not have a tap, double-tap model. The Palm model is attractive because it cuts down on the number of steps required to complete the most common actions. Each of these very common actions takes a smaller number of steps because picklist items are hot:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Viewing a name in the Names application requires pushing the built-in Names button and tapping the name in the list.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Opening a memo requires pushing the built-in Memo button and tapping the appropriate memo.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Creating a new order for a customer requires opening the application and tapping a customer.</FONT><A NAME="P527_28373"></A></LI></UL>
+
+<P><A NAME="P529_28373"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Designing for a Small Screen</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P531_28401"></A>One of the <A NAME="P531_28412"></A>biggest challenges you face as a handheld application designer is how to fit data in the screen space on a Palm device. In the Sales application, this challenge happens when we are trying to figure out the right way to select a toy. We assume that there are more toys than would fit on one list on the screen. One approach might have been to have one long scrolling list-the least favorable solution. Toys, like many other types of items, naturally fall into obvious groups. We chose to take advantage of this by first putting the toys into categories.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A HREF="#P538_30146">Table 3-2</A> contains three ways that we could have organized the items. Our solution was to go with a category organization. This makes things like special sales promotional items easy to handle. A fast-food restaurant might use a similar approach for taking orders. In both cases, the customer is going to go through categories in certain obvious groupings.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P535_29320"></A>Organizing things alphabetically is another possibility, but one that doesn't make as much sense for our application. Neither the customer nor the salesperson is likely to think about the toys in this way. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Organizing the items by <A NAME="P537_29550"></A>number might have been a good choice from the salesperson's point of view. It is not uncommon to memorize part numbers of items you work with all the time; however, where this organization strategy breaks down is from the customer's point of view. The customer is not necessarily going to request items by number. We imagine the customer thinks in terms of the store's shelves which are themselves organized by category. Our strategy is to match the customer's organizational model. Doing so minimizes the number of steps required to add an item to the order (less category switching).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Table 3- 2</FONT></B><A NAME="P538_30146"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Ways of Categorizing Toys</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=140><P><B><FONT FACE="Times" SIZE="-1">By Category</FONT></B></P>
+</TD>
+<TD WIDTH=160><P><B><FONT FACE="Times" SIZE="-1">Alphabetically</FONT></B></P>
+</TD>
+<TD WIDTH=179><P><B><FONT FACE="Times" SIZE="-1">By Item Number</FONT></B></P>
+</TD></TR>
+<TR>
+<TD WIDTH=140><P><B><FONT FACE="Times" SIZE="-1">Games</FONT></B></P>
+</TD>
+<TD WIDTH=160><P><B><FONT FACE="Times" SIZE="-1">A - C</FONT></B></P>
+</TD>
+<TD WIDTH=179><P><B><FONT FACE="Times" SIZE="-1">00199</FONT></B></P>
+  </TD></TR>
+<TR>
+<TD WIDTH=140><UL><P><FONT FACE="Times" SIZE="-1">&#183;  Acquire</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">&#183;  Mousetrap</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">&#183;  Monsterwalk</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">&#183;  Siege Towers</FONT></P></UL>
+</TD>
+<TD WIDTH=160><P><FONT FACE="Times" SIZE="-1">Absolute Terror Tim</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">Acquire</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">Aardvark Arnie</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">Chubby Bunny</FONT></P>
+</TD>
+<TD WIDTH=179><P><FONT FACE="Times" SIZE="-1">1Aardvark Arnie</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">2Jane Sit and Spit</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">3Pretty Patty</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">4Zebra with baby</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=140><P><B><FONT FACE="Times" SIZE="-1">Dolls</FONT></B></P>
+</TD>
+<TD WIDTH=160><P><B><FONT FACE="Times" SIZE="-1">D - H</FONT></B></P>
+</TD>
+<TD WIDTH=179><P><B><FONT FACE="Times" SIZE="-1">100199</FONT></B></P>
+  </TD></TR>
+<TR>
+<TD WIDTH=140><UL><P><FONT FACE="Times" SIZE="-1">&#183;  Aardvark Arnie</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">&#183;  Jane, Sit and Spit</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">&#183;  Zebra with baby</FONT></P></UL>
+</TD>
+<TD WIDTH=160><P><FONT FACE="Times" SIZE="-1">Glow in the Dark Pumpkin</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">Halloween-Princess</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">Happy Bunny PlayAlong</FONT></P>
+</TD>
+<TD WIDTH=179><P><FONT FACE="Times" SIZE="-1">101Marbles by the 100s</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">102Ball and Jacks</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">104Glowing Glop</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=140><P><B><FONT FACE="Times" SIZE="-1">Action Figures</FONT></B></P>
+</TD>
+<TD WIDTH=160><P><B><FONT FACE="Times" SIZE="-1">I - P</FONT></B></P>
+</TD>
+<TD WIDTH=179><P><B><FONT FACE="Times" SIZE="-1">200299</FONT></B></P>
+  </TD></TR>
+<TR>
+<TD WIDTH=140><UL><P><FONT FACE="Times" SIZE="-1">&#183;  Absolute Terror Tim</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">&#183;  Chubby Bunny</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">&#183;  Daredevil Dan</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">&#183;  Sissy Sunny</FONT></P></UL>
+</TD>
+<TD WIDTH=160><P><FONT FACE="Times" SIZE="-1">Jane, Sit and Spit</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">Monsterwalk</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">Mousetrap</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">Pretty Patty</FONT></P>
+</TD>
+<TD WIDTH=179><P><FONT FACE="Times" SIZE="-1">200Siege Towers</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">201Acquire</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">202Moustrap</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">203Monsterwalk</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=140><P><B><FONT FACE="Times" SIZE="-1">Promotional</FONT></B></P>
+</TD>
+<TD WIDTH=160><P><B><FONT FACE="Times" SIZE="-1">Q - Z</FONT></B></P>
+</TD>
+<TD WIDTH=179><P><B><FONT FACE="Times" SIZE="-1">900999</FONT></B></P>
+  </TD></TR>
+<TR>
+<TD WIDTH=140><UL><P><FONT FACE="Times" SIZE="-1">&#183;  Glow in the Dark Pumpkin</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">&#183;  Halloween-Princess</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">&#183;  Halloween-Pirate</FONT><A NAME="P594_30846"></A></P></UL>
+</TD>
+<TD WIDTH=160><P><FONT FACE="Times" SIZE="-1">Siege Towers</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">Sissy Sunny</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">Zooming Eyes</FONT></P>
+  </TD>
+<TD WIDTH=179><UL><P><FONT FACE="Times" SIZE="-1">900Glow in the Dark Pumpkin</FONT></P>
+</UL><P><FONT FACE="Times" SIZE="-1">901Halloween-Princess</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">903Happy Bunny PlayAlong</FONT></P>
+</TD></TR></TABLE></UL>
+
+<P><A NAME="P605_30953"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Designing the Databases</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P607_30976"></A>Once you have figured out how to organize the data, your next big decision is to determine the number of databases you should use. We settled on four databases in the Sales application; they are customers, products, orders, and categories.</FONT></P>
+
+<P><I><FONT FACE="Times">Customers</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P610_31224"></A>The customer database contains the information about the customers. Each customer record contains five items:</FONT></P>
+
+  <UL><P><I><FONT FACE="Times">Customer ID</FONT></I></P>
+
+  <P><FONT FACE="Times">A unique customer code assigned at corporate headquarters. If a new customer is created on the handheld, it is assigned a temporary negative customer ID. Corporate headquarters is responsible for assigning a permanent ID after a HotSync.</FONT></P>
+
+  <P><I><FONT FACE="Times">Name</FONT></I></P>
+
+  <P><FONT FACE="Times">A string.</FONT></P>
+
+  <P><I><FONT FACE="Times">Address</FONT></I></P>
+
+  <P><FONT FACE="Times">A string.</FONT></P>
+
+  <P><I><FONT FACE="Times">City</FONT></I></P>
+
+  <P><FONT FACE="Times">A string.</FONT></P>
+
+  <P><I><FONT FACE="Times">Phone</FONT></I></P>
+
+  <P><FONT FACE="Times">A string.</FONT></P>
+
+</UL><P><FONT FACE="Times">The order in the database is the order in which they are displayed in the list. New customers are added at the beginning. There are at least two possible ways to reasonably organize the customer database-alphabetically or by visit order (the first name is the first customer the salesperson visits, the second name is the second visit, and so on).</FONT></P>
+
+<P><I><FONT FACE="Times">Products</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P623_31992"></A>The product database contains information about each of the toys that can be ordered by the customer. Each product record contains:</FONT></P>
+
+  <UL><P><I><FONT FACE="Times">Product ID</FONT></I></P>
+
+  <P><FONT FACE="Times">An integer. This is assigned by corporate headquarters.</FONT></P>
+
+  <P><I><FONT FACE="Times">Price</FONT></I></P>
+
+  <P><FONT FACE="Times">A number. This is a cent amount that we can store as an integer rather than as a floating point number.</FONT></P>
+
+  <P><I><FONT FACE="Times">Name</FONT></I></P>
+
+  <P><FONT FACE="Times">A string.</FONT></P>
+
+  <P><I><FONT FACE="Times">Category number</FONT></I></P>
+
+  <P><FONT FACE="Times">A number. The value is from 0 to 15 and is stored as an index into the category database. </FONT></P>
+
+  <P><FONT FACE="Times">Instead of storing the category number as a separate piece of data directly in the record, we use the category feature of the database manager to store it (see <A HREF="#P16_357">Chapter&#160;6, </A><I>Databases</I>). Doing so saves a small amount of space and gives us a pedagogical excuse to discuss this feature of databases.</FONT></P>
+
+</UL><P><I><FONT FACE="Times">Orders</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P634_32713"></A>The order database contains records for each of the salesperson's orders. The order database does not contain records for customers with no orders. Each order record contains:</FONT></P>
+
+  <UL><P><I><FONT FACE="Times">Customer ID</FONT></I></P>
+
+  <P><FONT FACE="Times">In order to match a customer to an order, each order contains the customer ID.</FONT></P>
+
+  <P><I><FONT FACE="Times">Number items ordered</FONT></I></P>
+
+  <P><FONT FACE="Times">An integer. This is the quantity of each item that was ordered.</FONT></P>
+
+  <P><I><FONT FACE="Times">Items</FONT></I></P>
+
+  <P><FONT FACE="Times">An array of items where each item contains a product ID and a quantity.</FONT></P>
+
+</UL><P><FONT FACE="Times">We considered having the customer's order be part of the customer database, but decided to separate them as a precursor to providing multiple orders for each customer in the future.</FONT></P>
+
+<P><I><FONT FACE="Times">Categories</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P643_33327"></A>There's a Category UI that we don't implement in the Sales application. It is inappropriate to our application because it is a mechanism for allowing the storing of editable category names. The Category UI has folders at the top-right and items are stored within these categories. The Category UI also provides a mechanism for editing the category names. This is the feature we wish to restrict in our application-products come from the desktop and are unchangeable.</FONT></P>
+
+<P><FONT FACE="Times">We didn't want to hardcode the category names into the application, either, as product lists have been known to change on occasion. We chose instead to store the information in the application info block of the products database (see &quot;Creating the Application Info Block in a Database&quot; on page&#160;144). This way we can modify it during a HotSync. </FONT></P>
+
+<P><FONT FACE="Times">The categories are stored sequentially as null-terminated strings. The order of the categories matches the category numbers used in the products database-record 0 of this database contains the name of category 0. For example, if we want to know the name of category 4, we go to the fourth null-terminated string in the app info <A NAME="P645_34465"></A>block.</FONT><A NAME="P645_34471"></A></P>
+
+<P><A NAME="P647_34471"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Designing the Conduit</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P649_34492"></A>A conduit is a desktop application made in a desktop development environment. It uses HotSync synchronization to connect the desktop to the handheld; conduits are responsible for the transfer of data to and from the handheld and the desktop. The user views the data using some application (a spreadsheet, for example, for viewing expense report items). The conduit needs to make sure that this desktop application has the data it needs to handle processor-intensive tasks. Before looking at the design of the Sales application conduit, let's examine this issue of off-loading processor-intensive tasks.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Processor-Intensive Tasks</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P654_35119"></A>Using the conduit to transfer the data, move processor-intensive tasks onto the PC and off of the handheld. If you can't move tasks, you should almost always get rid of them.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Palm devices are noted for being both fast and cheap-two of the key features that have made them so popular. One of the reasons they are cheap is they have little bitty processors that don't have much horsepower. Your job as a good application designer is to avoid taxing the handheld's processing abilities. Don't turn it into a slow device-there are already plenty of those around. This means that you may end up making design decisions about your database that don't make sense from a desktop database designer's point of view, but do make sense when you take into account the desktop's superior processing abilities. Here is an example.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Recently, we were involved in porting an application from another handheld platform (with a fast processor) to the Palm platform. This is an application that keeps track of a bunch of vending machines: when they need filling, what products go in what slots, how much money is collected, and so on. The account screen provides a summary of the machines that belong in that account (an account could have many machines or just a few). The machine screen provides a summary of items for that particular machine. In the original platform, as we entered an account screen at runtime, we'd run through the database, summarizing and totalling (for instance, we'd total how many machines needed to be serviced for an account, along with how many total machines an account had). </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">When we began our port of the application to the Palm platform, this way of handling the task no longer made sense. The hit the user would endure when opening a machine or account screen was too long. So we bit the bullet and moved the summarizing and totalling to the desktop application. This information is now stored in the account database. The price we had to pay is duplicate data in every account (upping by a small amount the size of our databases). It was worth it, however, to have a zippy account screen that instantly displays information about machines.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The built-in <A NAME="P662_37283"></A>Expense application provides another useful example. Let's approach the issue from the point of view of a question.</FONT></P>
+
+<P><I><FONT FACE="Times">Q: What feature is missing from the Expense application?</FONT></I></P>
+
+<P><FONT FACE="Times"><I>A:</I> There is no expense total. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Why? you might ask. We think it is to avoid an unnecessary processing task that doesn't really provide the user with necessary information. Totals are things a user will care about back at the office when sitting calmly at a desktop computer, not when she or he is rushing from a cab through an airport to catch a flight.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The moral of the story is not to make users pay for processor-intensive tasks if there is any way to avoid it. Sometimes that means keeping functionality but moving the processing elsewhere (as in our ported vending machine application); sometimes that means not offering a feature in the first place (as in the Expense application with no total).</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P673_38150"></A>Tasks that may be fast on the handheld but can't be implemented well for other reasons should also be moved to the desktop. For example, think of subtotalling a list of figures in an expense report. This task is easy to do on a big screen using a mouse and a combination of keys to select and total the figures. It is much harder to do on a tiny screen (you can't see many of the items at one time), where data is close together (it's easy to hit the wrong figure), and selecting is complex (items are hot and tapping does something). Desktop applications and handheld ones should complement each other and extend functionality in ways that neither could handle alone-they should not duplicate features.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Design of the Sales Application Conduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P677_38892"></A>Our Sales application conduit handles the following tasks during a HotSync synchronization:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Opening and closing the sales, customer, and product databases on the Palm device.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Iterating through the records in the databases on the handheld.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Uploading customer orders from the handheld to the desktop.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Downloading the product database from the desktop to the handheld.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Comparing customer records so that only modified records are synced.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Appropriately adding, deleting, and modifying customer records on the handheld and on the desktop.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Reordering records in a database after new records have been added.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Public portions of data, such as product information, are kept in the application desktop folder; private portions of data, such as customer lists, are kept in user folders.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Converting the data in the application's database records to a text-delimited file that can be read into a database on the desktop computer. </FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The conduit also needs to be installed and uninstalled. With a commercial application, this <A NAME="P688_39910"></A>process should be handled automatically, invisible from the user.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P691_39975"></A>Use an installer program to automate the installation and uninstallation of the conduit; it is fairly straightforward (we tell you about this in &quot;Automatically Installing and Uninstalling a Conduit&quot; on page&#160;308). For information on manual installation, see &quot;Registering and Unregistering Manually Using CondCfg&quot; on page&#160;307.</FONT><A NAME="P691_40299"></A></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><A NAME="P693_40299"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Design Summary</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">By now, you should have a good feel for how to design a Palm application and conduit. You also know about the range and types of tools available to help you with this project. You should also have a good feeling for what types of applications will work well on a Palm device and the types of user interface elements you can easily add to them. Now it is time to turn away from design issues and to the code you need to write to create your application.</FONT></P>
+<HR ALIGN=LEFT SIZE=2 WIDTH=100% NOSHADE>
+<!-- TRANSIT - TEXTBAR -->
+
+<ADDRESS><FONT SIZE=-1>Palm Programming: The Developer's Guide
+<BR>Copyright &#169; 1999, O'Rielly and Associates, Inc.
+<BR>Published on the web by permission of O'Rielly and Associates, Inc. Contents modified for web display.</FONT></ADDRESS><P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch02.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="part2.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P>
+</BODY>
+</HTML>

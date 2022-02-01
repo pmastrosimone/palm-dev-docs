@@ -1,0 +1,108 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Rules</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Rules">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Rules">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC26"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_21.html#SEC22"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_23.html#SEC27"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H1> 4. Writing Rules </H1>
+<!--docid::SEC26::-->
+<P>
+
+A <EM>rule</EM> appears in the makefile and says when and how to remake
+certain files, called the rule's <EM>targets</EM> (most often only one per rule).
+It lists the other files that are the <EM>prerequisites</EM> of the target, and
+<EM>commands</EM> to use to create or update the target.
+</P><P>
+
+<A NAME="IDX74"></A>
+<A NAME="IDX75"></A>
+The order of rules is not significant, except for determining the
+<EM>default goal</EM>: the target for <CODE>make</CODE> to consider, if you do
+not otherwise specify one.  The default goal is the target of the first
+rule in the first makefile.  If the first rule has multiple targets,
+only the first target is taken as the default.  There are two
+exceptions: a target starting with a period is not a default unless it
+contains one or more slashes, <SAMP>`/'</SAMP>, as well; and, a target that
+defines a pattern rule has no effect on the default goal.
+(See section <A HREF="make_104.html#SEC108">Defining and Redefining Pattern Rules</A>.)
+</P><P>
+
+Therefore, we usually write the makefile so that the first rule is the
+one for compiling the entire program or all the programs described by
+the makefile (often with a target called <SAMP>`all'</SAMP>).
+See section <A HREF="make_93.html#SEC97">Arguments to Specify the Goals</A>.
+</P><P>
+
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_23.html#SEC27">4.1 Rule Example</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">An example explained.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_24.html#SEC28">4.2 Rule Syntax</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">General syntax explained.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_25.html#SEC29">4.3 Types of Prerequisites</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">There are two types of prerequisites.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_26.html#SEC30">4.4 Using Wildcard Characters in File Names</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Using wildcard characters such as `*'.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_30.html#SEC34">4.5 Searching Directories for Prerequisites</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Searching other directories for source files.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_37.html#SEC41">4.6 Phony Targets</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Using a target that is not a real file's name.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_38.html#SEC42">4.7 Rules without Commands or Prerequisites</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">You can use a target without commands
+                                  or prerequisites to mark other
+                                  targets as phony.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_39.html#SEC43">4.8 Empty Target Files to Record Events</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">When only the date matters and the
+                                  files are empty.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_40.html#SEC44">4.9 Special Built-in Target Names</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Targets with special built-in meanings.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_41.html#SEC45">4.10 Multiple Targets in a Rule</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">When to make use of several targets in a rule.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_42.html#SEC46">4.11 Multiple Rules for One Target</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to use several rules with the same target.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_43.html#SEC47">4.12 Static Pattern Rules</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Static pattern rules apply to multiple targets
+                                  and can vary the prerequisites according to
+                                  the target name.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_46.html#SEC50">4.13 Double-Colon Rules</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to use a special kind of rule to allow
+                                  several independent rules for one target.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_47.html#SEC51">4.14 Generating Prerequisites Automatically</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to automatically generate rules giving
+                                  prerequisites from source files themselves.</TD></TR>
+</TABLE></BLOCKQUOTE>
+<P>
+
+<A NAME="Rule Example"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_21.html#SEC22"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_23.html#SEC27"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

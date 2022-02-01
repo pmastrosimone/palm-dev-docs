@@ -1,0 +1,355 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Standard Targets</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Standard Targets">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Standard Targets">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC131"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_126.html#SEC130"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_128.html#SEC132"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_128.html#SEC132"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_122.html#SEC126"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_129.html#SEC133"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 14.5 Standard Targets for Users </H2>
+<!--docid::SEC131::-->
+<P>
+
+All GNU programs should have the following targets in their Makefiles:
+</P><P>
+
+<DL COMPACT>
+<DT><SAMP>`all'</SAMP>
+<DD>Compile the entire program.  This should be the default target.  This
+target need not rebuild any documentation files; Info files should
+normally be included in the distribution, and DVI files should be made
+only when explicitly asked for.
+<P>
+
+By default, the Make rules should compile and link with <SAMP>`-g'</SAMP>, so
+that executable programs have debugging symbols.  Users who don't mind
+being helpless can strip the executables later if they wish.
+</P><P>
+
+<DT><SAMP>`install'</SAMP>
+<DD>Compile the program and copy the executables, libraries, and so on to
+the file names where they should reside for actual use.  If there is a
+simple test to verify that a program is properly installed, this target
+should run that test.
+<P>
+
+Do not strip executables when installing them.  Devil-may-care users can
+use the <CODE>install-strip</CODE> target to do that.
+</P><P>
+
+If possible, write the <CODE>install</CODE> target rule so that it does not
+modify anything in the directory where the program was built, provided
+<SAMP>`make all'</SAMP> has just been done.  This is convenient for building the
+program under one user name and installing it under another.
+</P><P>
+
+The commands should create all the directories in which files are to be
+installed, if they don't already exist.  This includes the directories
+specified as the values of the variables <CODE>prefix</CODE> and
+<CODE>exec_prefix</CODE>, as well as all subdirectories that are needed.
+One way to do this is by means of an <CODE>installdirs</CODE> target
+as described below.
+</P><P>
+
+Use <SAMP>`-'</SAMP> before any command for installing a man page, so that
+<CODE>make</CODE> will ignore any errors.  This is in case there are systems
+that don't have the Unix man page documentation system installed.
+</P><P>
+
+The way to install Info files is to copy them into <TT>`$(infodir)'</TT>
+with <CODE>$(INSTALL_DATA)</CODE> (see section <A HREF="make_125.html#SEC129">14.3 Variables for Specifying Commands</A>), and then run
+the <CODE>install-info</CODE> program if it is present.  <CODE>install-info</CODE>
+is a program that edits the Info <TT>`dir'</TT> file to add or update the
+menu entry for the given Info file; it is part of the Texinfo package.
+Here is a sample rule to install an Info file:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$(DESTDIR)$(infodir)/foo.info: foo.info
+        $(POST_INSTALL)
+# There may be a newer info file in . than in srcdir.
+        -if test -f foo.info; then d=.; \
+         else d=$(srcdir); fi; \
+        $(INSTALL_DATA) $$d/foo.info $(DESTDIR)$@; \
+# Run install-info only if it exists.
+# Use `if' instead of just prepending `-' to the
+# line so we notice real errors from install-info.
+# We use `$(SHELL) -c' because some shells do not
+# fail gracefully when there is an unknown command.
+        if $(SHELL) -c 'install-info --version' \
+           &#62;/dev/null 2&#62;&#38;1; then \
+          install-info --dir-file=$(DESTDIR)$(infodir)/dir \
+                       $(DESTDIR)$(infodir)/foo.info; \
+        else true; fi
+</FONT></pre></td></tr></table></P><P>
+
+When writing the <CODE>install</CODE> target, you must classify all the
+commands into three categories: normal ones, <EM>pre-installation</EM>
+commands and <EM>post-installation</EM> commands.  See section <A HREF="make_128.html#SEC132">14.6 Install Command Categories</A>.
+</P><P>
+
+<DT><SAMP>`uninstall'</SAMP>
+<DD>Delete all the installed files--the copies that the <SAMP>`install'</SAMP>
+target creates.
+<P>
+
+This rule should not modify the directories where compilation is done,
+only the directories where files are installed.
+</P><P>
+
+The uninstallation commands are divided into three categories, just like
+the installation commands.  See section <A HREF="make_128.html#SEC132">14.6 Install Command Categories</A>.
+</P><P>
+
+<DT><SAMP>`install-strip'</SAMP>
+<DD>Like <CODE>install</CODE>, but strip the executable files while installing
+them.  In simple cases, this target can use the <CODE>install</CODE> target in
+a simple way:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>install-strip:
+        $(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' \
+                install
+</FONT></pre></td></tr></table></P><P>
+
+But if the package installs scripts as well as real executables, the
+<CODE>install-strip</CODE> target can't just refer to the <CODE>install</CODE>
+target; it has to strip the executables but not the scripts.
+</P><P>
+
+<CODE>install-strip</CODE> should not strip the executables in the build
+directory which are being copied for installation.  It should only strip
+the copies that are installed.
+</P><P>
+
+Normally we do not recommend stripping an executable unless you are sure
+the program has no bugs.  However, it can be reasonable to install a
+stripped executable for actual execution while saving the unstripped
+executable elsewhere in case there is a bug.
+</P><P>
+
+<DT><SAMP>`clean'</SAMP>
+<DD><P>
+
+Delete all files from the current directory that are normally created by
+building the program.  Don't delete the files that record the
+configuration.  Also preserve files that could be made by building, but
+normally aren't because the distribution comes with them.
+</P><P>
+
+Delete <TT>`.dvi'</TT> files here if they are not part of the distribution.
+</P><P>
+
+<DT><SAMP>`distclean'</SAMP>
+<DD>Delete all files from the current directory that are created by
+configuring or building the program.  If you have unpacked the source
+and built the program without creating any other files, <SAMP>`make
+distclean'</SAMP> should leave only the files that were in the distribution.
+<P>
+
+<DT><SAMP>`mostlyclean'</SAMP>
+<DD>Like <SAMP>`clean'</SAMP>, but may refrain from deleting a few files that people
+normally don't want to recompile.  For example, the <SAMP>`mostlyclean'</SAMP>
+target for GCC does not delete <TT>`libgcc.a'</TT>, because recompiling it
+is rarely necessary and takes a lot of time.
+<P>
+
+<DT><SAMP>`maintainer-clean'</SAMP>
+<DD>Delete almost everything from the current directory that can be
+reconstructed with this Makefile.  This typically includes everything
+deleted by <CODE>distclean</CODE>, plus more: C source files produced by
+Bison, tags tables, Info files, and so on.
+<P>
+
+The reason we say "almost everything" is that running the command
+<SAMP>`make maintainer-clean'</SAMP> should not delete <TT>`configure'</TT> even if
+<TT>`configure'</TT> can be remade using a rule in the Makefile.  More generally,
+<SAMP>`make maintainer-clean'</SAMP> should not delete anything that needs to
+exist in order to run <TT>`configure'</TT> and then begin to build the
+program.  This is the only exception; <CODE>maintainer-clean</CODE> should
+delete everything else that can be rebuilt.
+</P><P>
+
+The <SAMP>`maintainer-clean'</SAMP> target is intended to be used by a maintainer of
+the package, not by ordinary users.  You may need special tools to
+reconstruct some of the files that <SAMP>`make maintainer-clean'</SAMP> deletes.
+Since these files are normally included in the distribution, we don't
+take care to make them easy to reconstruct.  If you find you need to
+unpack the full distribution again, don't blame us.
+</P><P>
+
+To help make users aware of this, the commands for the special
+<CODE>maintainer-clean</CODE> target should start with these two:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>@echo 'This command is intended for maintainers to use; it'
+@echo 'deletes files that may need special tools to rebuild.'
+</FONT></pre></td></tr></table></P><P>
+
+<DT><SAMP>`TAGS'</SAMP>
+<DD>Update a tags table for this program.
+<P>
+
+<DT><SAMP>`info'</SAMP>
+<DD>Generate any Info files needed.  The best way to write the rules is as
+follows:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>info: foo.info
+
+foo.info: foo.texi chap1.texi chap2.texi
+        $(MAKEINFO) $(srcdir)/foo.texi
+</FONT></pre></td></tr></table></P><P>
+
+You must define the variable <CODE>MAKEINFO</CODE> in the Makefile.  It should
+run the <CODE>makeinfo</CODE> program, which is part of the Texinfo
+distribution.
+</P><P>
+
+Normally a GNU distribution comes with Info files, and that means the
+Info files are present in the source directory.  Therefore, the Make
+rule for an info file should update it in the source directory.  When
+users build the package, ordinarily Make will not update the Info files
+because they will already be up to date.
+</P><P>
+
+<DT><SAMP>`dvi'</SAMP>
+<DD>Generate DVI files for all Texinfo documentation.
+For example:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>dvi: foo.dvi
+
+foo.dvi: foo.texi chap1.texi chap2.texi
+        $(TEXI2DVI) $(srcdir)/foo.texi
+</FONT></pre></td></tr></table></P><P>
+
+You must define the variable <CODE>TEXI2DVI</CODE> in the Makefile.  It should
+run the program <CODE>texi2dvi</CODE>, which is part of the Texinfo
+distribution.<A NAME="DOCF3" HREF="make_fot.html#FOOT3">(3)</A>  Alternatively,
+write just the dependencies, and allow GNU <CODE>make</CODE> to provide the command.
+</P><P>
+
+<DT><SAMP>`dist'</SAMP>
+<DD>Create a distribution tar file for this program.  The tar file should be
+set up so that the file names in the tar file start with a subdirectory
+name which is the name of the package it is a distribution for.  This
+name can include the version number.
+<P>
+
+For example, the distribution tar file of GCC version 1.40 unpacks into
+a subdirectory named <TT>`gcc-1.40'</TT>.
+</P><P>
+
+The easiest way to do this is to create a subdirectory appropriately
+named, use <CODE>ln</CODE> or <CODE>cp</CODE> to install the proper files in it, and
+then <CODE>tar</CODE> that subdirectory.
+</P><P>
+
+Compress the tar file with <CODE>gzip</CODE>.  For example, the actual
+distribution file for GCC version 1.40 is called <TT>`gcc-1.40.tar.gz'</TT>.
+</P><P>
+
+The <CODE>dist</CODE> target should explicitly depend on all non-source files
+that are in the distribution, to make sure they are up to date in the
+distribution.
+See section `Making Releases' in <CITE>GNU Coding Standards</CITE>.
+</P><P>
+
+<DT><SAMP>`check'</SAMP>
+<DD>Perform self-tests (if any).  The user must build the program before
+running the tests, but need not install the program; you should write
+the self-tests so that they work when the program is built but not
+installed.
+</DL>
+<P>
+
+The following targets are suggested as conventional names, for programs
+in which they are useful.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>installcheck</CODE>
+<DD>Perform installation tests (if any).  The user must build and install
+the program before running the tests.  You should not assume that
+<TT>`$(bindir)'</TT> is in the search path.
+<P>
+
+<DT><CODE>installdirs</CODE>
+<DD>It's useful to add a target named <SAMP>`installdirs'</SAMP> to create the
+directories where files are installed, and their parent directories.
+There is a script called <TT>`mkinstalldirs'</TT> which is convenient for
+this; you can find it in the Texinfo package.
+You can use a rule like this:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre># Make sure all installation directories (e.g. $(bindir))
+# actually exist by making them if necessary.
+installdirs: mkinstalldirs
+        $(srcdir)/mkinstalldirs $(bindir) $(datadir) \
+                                $(libdir) $(infodir) \
+                                $(mandir)
+</FONT></pre></td></tr></table></P><P>
+
+or, if you wish to support <CODE>DESTDIR</CODE>,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre># Make sure all installation directories (e.g. $(bindir))
+# actually exist by making them if necessary.
+installdirs: mkinstalldirs
+        $(srcdir)/mkinstalldirs \
+            $(DESTDIR)$(bindir) $(DESTDIR)$(datadir) \
+            $(DESTDIR)$(libdir) $(DESTDIR)$(infodir) \
+            $(DESTDIR)$(mandir)
+</FONT></pre></td></tr></table></P><P>
+
+This rule should not modify the directories where compilation is done.
+It should do nothing but create installation directories.
+</DL>
+<P>
+
+<A NAME="Install Command Categories"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_126.html#SEC130"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_128.html#SEC132"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_128.html#SEC132"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_122.html#SEC126"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_129.html#SEC133"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

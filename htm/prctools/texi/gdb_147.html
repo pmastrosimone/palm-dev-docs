@@ -1,0 +1,131 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: VxWorks</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: VxWorks">
+<META NAME="keywords" CONTENT="Debugging with GDB: VxWorks">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC147"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_146.html#SEC146"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_148.html#SEC148"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_151.html#SEC151"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_146.html#SEC146"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_151.html#SEC151"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 18.2.1 Using GDB with VxWorks </H3>
+<!--docid::SEC147::-->
+<P>
+
+<A NAME="IDX674"></A>
+</P><P>
+
+<DL COMPACT>
+
+<A NAME="IDX675"></A>
+<DT><CODE>target vxworks <VAR>machinename</VAR></CODE>
+<DD>A VxWorks system, attached via TCP/IP.  The argument <VAR>machinename</VAR>
+is the target system's machine name or IP address.
+<P>
+
+</DL>
+<P>
+
+On VxWorks, <CODE>load</CODE> links <VAR>filename</VAR> dynamically on the
+current target system as well as adding its symbols in GDB.
+</P><P>
+
+GDB enables developers to spawn and debug tasks running on networked
+VxWorks targets from a Unix host.  Already-running tasks spawned from
+the VxWorks shell can also be debugged.  GDB uses code that runs on
+both the Unix host and on the VxWorks target.  The program
+<CODE>gdb</CODE> is installed and executed on the Unix host.  (It may be
+installed with the name <CODE>vxgdb</CODE>, to distinguish it from a
+GDB for debugging programs on the host itself.)
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>VxWorks-timeout <VAR>args</VAR></CODE>
+<DD><A NAME="IDX676"></A>
+All VxWorks-based targets now support the option <CODE>vxworks-timeout</CODE>.
+This option is set by the user, and  <VAR>args</VAR> represents the number of
+seconds GDB waits for responses to rpc's.  You might use this if
+your VxWorks target is a slow software simulator or is on the far side
+of a thin network line.
+</DL>
+<P>
+
+The following information on connecting to VxWorks was current when
+this manual was produced; newer releases of VxWorks may use revised
+procedures.
+</P><P>
+
+<A NAME="IDX677"></A>
+To use GDB with VxWorks, you must rebuild your VxWorks kernel
+to include the remote debugging interface routines in the VxWorks
+library <TT>`rdb.a'</TT>.  To do this, define <CODE>INCLUDE_RDB</CODE> in the
+VxWorks configuration file <TT>`configAll.h'</TT> and rebuild your VxWorks
+kernel.  The resulting kernel contains <TT>`rdb.a'</TT>, and spawns the
+source debugging task <CODE>tRdbTask</CODE> when VxWorks is booted.  For more
+information on configuring and remaking VxWorks, see the manufacturer's
+manual.
+</P><P>
+
+Once you have included <TT>`rdb.a'</TT> in your VxWorks system image and set
+your Unix execution search path to find GDB, you are ready to
+run GDB.  From your Unix host, run <CODE>gdb</CODE> (or
+<CODE>vxgdb</CODE>, depending on your installation).
+</P><P>
+
+GDB comes up showing the prompt:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(vxgdb)
+</FONT></pre></td></tr></table></P><P>
+
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_148.html#SEC148">18.2.1.1 Connecting to VxWorks</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_149.html#SEC149">18.2.1.2 VxWorks download</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_150.html#SEC150">18.2.1.3 Running tasks</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+</TABLE></BLOCKQUOTE>
+<P>
+
+<A NAME="VxWorks Connection"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_146.html#SEC146"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_148.html#SEC148"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_151.html#SEC151"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_146.html#SEC146"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_151.html#SEC151"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

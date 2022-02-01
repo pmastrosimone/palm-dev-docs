@@ -1,0 +1,146 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Selection</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Selection">
+<META NAME="keywords" CONTENT="Debugging with GDB: Selection">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC44"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_43.html#SEC43"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_45.html#SEC45"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_45.html#SEC45"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_41.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 6.3 Selecting a frame </H2>
+<!--docid::SEC44::-->
+<P>
+
+Most commands for examining the stack and other data in your program work on
+whichever stack frame is selected at the moment.  Here are the commands for
+selecting a stack frame; all of them finish by printing a brief description
+of the stack frame just selected.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX243"></A>
+<A NAME="IDX244"></A>
+<DT><CODE>frame <VAR>n</VAR></CODE>
+<DD><DT><CODE>f <VAR>n</VAR></CODE>
+<DD>Select frame number <VAR>n</VAR>.  Recall that frame zero is the innermost
+(currently executing) frame, frame one is the frame that called the
+innermost one, and so on.  The highest-numbered frame is the one for
+<CODE>main</CODE>.
+<P>
+
+<DT><CODE>frame <VAR>addr</VAR></CODE>
+<DD><DT><CODE>f <VAR>addr</VAR></CODE>
+<DD>Select the frame at address <VAR>addr</VAR>.  This is useful mainly if the
+chaining of stack frames has been damaged by a bug, making it
+impossible for GDB to assign numbers properly to all frames.  In
+addition, this can be useful when your program has multiple stacks and
+switches between them.
+<P>
+
+On the SPARC architecture, <CODE>frame</CODE> needs two addresses to
+select an arbitrary frame: a frame pointer and a stack pointer.
+</P><P>
+
+On the MIPS and Alpha architecture, it needs two addresses: a stack
+pointer and a program counter.
+</P><P>
+
+On the 29k architecture, it needs three addresses: a register stack
+pointer, a program counter, and a memory stack pointer.
+</P><P>
+
+<A NAME="IDX245"></A>
+<DT><CODE>up <VAR>n</VAR></CODE>
+<DD>Move <VAR>n</VAR> frames up the stack.  For positive numbers <VAR>n</VAR>, this
+advances toward the outermost frame, to higher frame numbers, to frames
+that have existed longer.  <VAR>n</VAR> defaults to one.
+<P>
+
+<A NAME="IDX246"></A>
+<A NAME="IDX247"></A>
+<DT><CODE>down <VAR>n</VAR></CODE>
+<DD>Move <VAR>n</VAR> frames down the stack.  For positive numbers <VAR>n</VAR>, this
+advances toward the innermost frame, to lower frame numbers, to frames
+that were created more recently.  <VAR>n</VAR> defaults to one.  You may
+abbreviate <CODE>down</CODE> as <CODE>do</CODE>.
+</DL>
+<P>
+
+All of these commands end by printing two lines of output describing the
+frame.  The first line shows the frame number, the function name, the
+arguments, and the source file and line number of execution in that
+frame.  The second line shows the text of that source line.
+</P><P>
+
+For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) up
+#1  0x22f0 in main (argc=1, argv=0xf7fffbf4, env=0xf7fffbfc)
+    at env.c:10
+10              read_input_file (argv[i]);
+</FONT></pre></td></tr></table></P><P>
+
+After such a printout, the <CODE>list</CODE> command with no arguments
+prints ten lines centered on the point of execution in the frame.
+See section <A HREF="gdb_47.html#SEC47">Printing source lines</A>.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX248"></A>
+<A NAME="IDX249"></A>
+<DT><CODE>up-silently <VAR>n</VAR></CODE>
+<DD><DT><CODE>down-silently <VAR>n</VAR></CODE>
+<DD>These two commands are variants of <CODE>up</CODE> and <CODE>down</CODE>,
+respectively; they differ in that they do their work silently, without
+causing display of the new frame.  They are intended primarily for use
+in GDB command scripts, where the output might be unnecessary and
+distracting.
+</DL>
+<P>
+
+<A NAME="Frame Info"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_43.html#SEC43"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_45.html#SEC45"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_45.html#SEC45"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_41.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

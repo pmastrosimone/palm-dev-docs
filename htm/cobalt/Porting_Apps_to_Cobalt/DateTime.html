@@ -1,0 +1,575 @@
+<html>
+<head>
+<title>(Protein) DateTime.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:19:26">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="DataMgr.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Day.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">27 &nbsp;&nbsp;
+DateTime.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="DateTime.html">27  DateTime.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424941">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424983">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="427578"> </a>The date/time APIs are largely unchanged in Palm OS Cobalt. The one real change is in the <code>TimeZoneToAscii()</code> function, where the way in which you specify the time zone has changed.</p>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425588"> </a><b>Table 27.1&nbsp;&nbsp;Deleted macros</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425592"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425594"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425596"> </a><code>TimeSeparator()</code></p>
+    </td>
+    <td><p class="tt"><a name="425598"> </a><code>TimeGetFormatSeparator()</code> function.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425600"> </a><code>Use24HourFormat()</code></p>
+    </td>
+    <td><p class="tt"><a name="425602"> </a><code>TimeIs24HourFormat()</code> function.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424941"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425683"> </a><b>Table 27.2&nbsp;&nbsp;Modified functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425687"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425689"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425711"> </a><code>void TimeZoneToAscii (const char *, char *)</code></p>
+    </td>
+    <td><p class="tt"><a name="425713"> </a>Rather than specifying the time zone as some amount of minutes east of GMT and a locale, this function now takes one of the time zone ID strings found in the UI Library's <code>TimeZoneSet.xrd</code> file.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425732"> </a><b>Table 27.3&nbsp;&nbsp;Modified structures </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425736"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425738"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425744"> </a><code>TimeType</code></p>
+    </td>
+    <td><p class="tt"><a name="425746"> </a>The individual fields are now 8 bits of a <code>uint16_t</code>, rather than simply being declared as an unsigned 8-bit integer.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="427359"> </a><b>Table 27.4&nbsp;&nbsp;Modified enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="427363"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="427365"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427367"> </a><code>DateFormatType</code></p>
+    </td>
+    <td><p class="tt"><a name="427394"> </a>Formerly an enum, this is now a typedef that takes a value defined by the <code>DateFormatTag</code> enum.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427375"> </a><code>DaylightSavingsTypes</code></p>
+    </td>
+    <td><p class="tt"><a name="427408"> </a>Formerly an enum, this is now a typedef that takes a value defined by the <code>DaylightSavingsTag</code> enum.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427379"> </a><code>DayOfMonthType</code></p>
+    </td>
+    <td><p class="tt"><a name="427400"> </a>Formerly an enum, this is now a typedef that takes a value defined by the <code>DayOfWeekTag</code> enum.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427383"> </a><code>TimeFormatType</code></p>
+    </td>
+    <td><p class="tt"><a name="427385"> </a>Formerly an enum, this is now a typedef that takes a value defined by the <code>TimeFormatTag</code> enum.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425749"> </a><b>Table 27.5&nbsp;&nbsp;Modified #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425753"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425755"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425757"> </a><code>#define dateStringLength 15</code></p>
+    </td>
+    <td><p class="tt"><a name="425759"> </a>Was 9.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425761"> </a><code>#define dowDateStringLength 31</code></p>
+    </td>
+    <td><p class="tt"><a name="425763"> </a>Was 19.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425765"> </a><code>#define dowLongDateStrLength 47</code></p>
+    </td>
+    <td><p class="tt"><a name="425767"> </a>Was 25.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425769"> </a><code>#define longDateStrLength 31</code></p>
+    </td>
+    <td><p class="tt"><a name="425771"> </a>Was 15.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425773"> </a><code>#define timeStringLength 15</code></p>
+    </td>
+    <td><p class="tt"><a name="425775"> </a>Was 9.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424983"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="426143"> </a><b>Table 27.6&nbsp;&nbsp;Unchanged functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="427305"> </a>DateAdjust()</p>
+    </td>
+    <td><p class="tt"><a name="427307"> </a>DateDaysToDate()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427312"> </a>DateSecondsToDate()</p>
+    </td>
+    <td><p class="tt"><a name="427336"> </a>DateTemplateToAscii()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427338"> </a>DateToAscii()</p>
+    </td>
+    <td><p class="tt"><a name="427340"> </a>DateToDays()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427342"> </a>DateToDOWDMFormat()</p>
+    </td>
+    <td><p class="tt"><a name="427344"> </a>DayOfMonth()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427346"> </a>DayOfWeek()</p>
+    </td>
+    <td><p class="tt"><a name="427348"> </a>DaysInMonth()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427316"> </a>TimAdjust()</p>
+    </td>
+    <td><p class="tt"><a name="427318"> </a>TimDateTimeToSeconds()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427330"> </a>TimeToAscii()</p>
+    </td>
+    <td><p class="tt"><a name="427325"> </a>TimSecondsToDateTime()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426163"> </a>TimTimeZoneToUTC()</p>
+    </td>
+    <td><p class="tt"><a name="426165"> </a>TimUTCToTimeZone()</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426171"> </a><b>Table 27.7&nbsp;&nbsp;Unchanged macros</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426175"> </a>DateToInt()</p>
+    </td>
+    <td><p class="tt"><a name="426177"> </a>TimeToInt()</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426197"> </a><b>Table 27.8&nbsp;&nbsp;Unchanged structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426201"> </a>DateTimeType</p>
+    </td>
+    <td><p class="tt"><a name="426203"> </a>DateType</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="427436"> </a><b>Table 27.9&nbsp;&nbsp;Unchanged types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="427440"> </a>DatePtr</p>
+    </td>
+    <td><p class="tt"><a name="427442"> </a>DateTimePtr</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427444"> </a>TimePtr</p>
+    </td>
+    <td><p class="tt"><a name="427446"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="427547"> </a><b>Table 27.10&nbsp;&nbsp;Unchanged enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="427555"> </a><code>DateTemplate</code><!-PS02-><span style="color: #000000;  font-style: italic; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">xxx</span> values enum</p>
+    </td>
+    <td><p class="tt"><a name="427557"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="427450"> </a><b>Table 27.11&nbsp;&nbsp;Unchanged #defines </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="427454"> </a>april</p>
+    </td>
+    <td><p class="tt"><a name="427456"> </a>august</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427458"> </a>dateTemplateChar</p>
+    </td>
+    <td><p class="tt"><a name="427460"> </a>dateTemplateLeadZeroModifier</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427462"> </a>dateTemplateLongModifier</p>
+    </td>
+    <td><p class="tt"><a name="427464"> </a>dateTemplateRegularModifier</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427466"> </a>dateTemplateShortModifier</p>
+    </td>
+    <td><p class="tt"><a name="427468"> </a>DayOfWeekType</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427470"> </a>daysInFourYears</p>
+    </td>
+    <td><p class="tt"><a name="427472"> </a>daysInLeapYear</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427474"> </a>daysInSeconds</p>
+    </td>
+    <td><p class="tt"><a name="427476"> </a>daysInWeek</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427478"> </a>daysInYear</p>
+    </td>
+    <td><p class="tt"><a name="427480"> </a>december</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427482"> </a>february</p>
+    </td>
+    <td><p class="tt"><a name="427484"> </a>firstYear</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427486"> </a>friday</p>
+    </td>
+    <td><p class="tt"><a name="427488"> </a>hoursInMinutes</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427490"> </a>hoursInSeconds</p>
+    </td>
+    <td><p class="tt"><a name="427492"> </a>hoursPerDay</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427494"> </a>january</p>
+    </td>
+    <td><p class="tt"><a name="427496"> </a>july</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427498"> </a>june</p>
+    </td>
+    <td><p class="tt"><a name="427500"> </a>lastYear</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427502"> </a>march</p>
+    </td>
+    <td><p class="tt"><a name="427504"> </a>maxDays</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427506"> </a>maxSeconds</p>
+    </td>
+    <td><p class="tt"><a name="427508"> </a>may</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427510"> </a>minutesInSeconds</p>
+    </td>
+    <td><p class="tt"><a name="427512"> </a>monday</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427514"> </a>monthsInYear</p>
+    </td>
+    <td><p class="tt"><a name="427516"> </a>noTime</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427518"> </a>november</p>
+    </td>
+    <td><p class="tt"><a name="427520"> </a>numberOfYears</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427522"> </a>october</p>
+    </td>
+    <td><p class="tt"><a name="427524"> </a>saturday</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427526"> </a>secondsInSeconds</p>
+    </td>
+    <td><p class="tt"><a name="427528"> </a>september</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427530"> </a>sunday</p>
+    </td>
+    <td><p class="tt"><a name="427532"> </a>thursday</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427534"> </a>timeZoneStringLength</p>
+    </td>
+    <td><p class="tt"><a name="427536"> </a>tuesday</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427538"> </a>wednesday</p>
+    </td>
+    <td><p class="tt"><a name="427540"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="425053"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="DataMgr.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Day.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

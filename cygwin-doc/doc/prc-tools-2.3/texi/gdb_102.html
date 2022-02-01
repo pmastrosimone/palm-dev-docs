@@ -1,0 +1,167 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: C plus plus expressions</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: C plus plus expressions">
+<META NAME="keywords" CONTENT="Debugging with GDB: C plus plus expressions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC102"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_101.html#SEC101"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_103.html#SEC103"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_103.html#SEC103"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_99.html#SEC99"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_107.html#SEC107"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 12.4.1.3 C<TT>++</TT> expressions </H4>
+<!--docid::SEC102::-->
+<P>
+
+<A NAME="IDX472"></A>
+GDB expression handling can interpret most C<TT>++</TT> expressions.
+</P><P>
+
+<A NAME="IDX473"></A>
+<A NAME="IDX474"></A>
+<A NAME="IDX475"></A>
+<A NAME="IDX476"></A>
+<A NAME="IDX477"></A>
+<A NAME="IDX478"></A>
+<A NAME="IDX479"></A>
+<A NAME="IDX480"></A>
+<A NAME="IDX481"></A>
+<BLOCKQUOTE>
+<EM>Warning:</EM> GDB can only debug C<TT>++</TT> code if you use the
+proper compiler.  Typically, C<TT>++</TT> debugging depends on the use of
+additional debugging information in the symbol table, and thus requires
+special support.  In particular, if your compiler generates a.out, MIPS
+ECOFF, RS/6000 XCOFF, or ELF with stabs extensions to the
+symbol table, these facilities are all available.  (With GNU CC,
+you can use the <SAMP>`-gstabs'</SAMP> option to request stabs debugging
+extensions explicitly.)  Where the object code format is standard
+COFF or DWARF in ELF, on the other hand, most of the C<TT>++</TT>
+support in GDB does <EM>not</EM> work.
+</BLOCKQUOTE>
+<P>
+
+<OL>
+
+<A NAME="IDX482"></A>
+<LI>
+Member function calls are allowed; you can use expressions like
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>count = aml-&#62;GetOriginal(x, y)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX483"></A>
+<A NAME="IDX484"></A>
+<LI>
+While a member function is active (in the selected stack frame), your
+expressions have the same namespace available as the member function;
+that is, GDB allows implicit references to the class instance
+pointer <CODE>this</CODE> following the same rules as C<TT>++</TT>.
+<P>
+
+<A NAME="IDX485"></A>
+<A NAME="IDX486"></A>
+<A NAME="IDX487"></A>
+<LI>
+You can call overloaded functions; GDB resolves the function
+call to the right definition, with some restrictions.  GDB does not
+perform overload resolution involving user-defined type conversions,
+calls to constructors, or instantiations of templates that do not exist
+in the program.  It also cannot handle ellipsis argument lists or
+default arguments.
+<P>
+
+It does perform integral conversions and promotions, floating-point
+promotions, arithmetic conversions, pointer conversions, conversions of
+class objects to base classes, and standard conversions such as those of
+functions or arrays to pointers; it requires an exact match on the
+number of function arguments.
+</P><P>
+
+Overload resolution is always performed, unless you have specified
+<CODE>set overload-resolution off</CODE>.  See section <A HREF="gdb_106.html#SEC106">GDB features for C<TT>++</TT></A>.
+</P><P>
+
+You must specify <CODE>set overload-resolution off</CODE> in order to use an
+explicit function signature to call an overloaded function, as in
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>p 'foo(char,int)'('x', 13)
+</FONT></pre></td></tr></table></P><P>
+
+The GDB command-completion facility can simplify this;
+see <A HREF="gdb_14.html#SEC14">Command completion</A>.
+</P><P>
+
+<A NAME="IDX488"></A>
+<LI>
+GDB understands variables declared as C<TT>++</TT> references; you can use
+them in expressions just as you do in C<TT>++</TT> source--they are automatically
+dereferenced.
+<P>
+
+In the parameter list shown when GDB displays a frame, the values of
+reference variables are not displayed (unlike other variables); this
+avoids clutter, since references are often used for large structures.
+The <EM>address</EM> of a reference variable is always shown, unless
+you have specified <SAMP>`set print address off'</SAMP>.
+</P><P>
+
+<LI>
+GDB supports the C<TT>++</TT> name resolution operator <CODE>::</CODE>---your
+expressions can use it just as expressions in your program do.  Since
+one scope may be defined in another, you can use <CODE>::</CODE> repeatedly if
+necessary, for example in an expression like
+<SAMP>`<VAR>scope1</VAR>::<VAR>scope2</VAR>::<VAR>name</VAR>'</SAMP>.  GDB also allows
+resolving name scope by reference to source files, in both C and C<TT>++</TT>
+debugging (see section <A HREF="gdb_53.html#SEC53">Program variables</A>).
+</OL>
+<P>
+
+In addition, when used with HP's C<TT>++</TT> compiler, GDB supports
+calling virtual functions correctly, printing out virtual bases of
+objects, calling functions in a base subobject, casting objects, and
+invoking user-defined operators.
+</P><P>
+
+<A NAME="C Defaults"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_101.html#SEC101"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_103.html#SEC103"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_103.html#SEC103"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_99.html#SEC99"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_107.html#SEC107"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

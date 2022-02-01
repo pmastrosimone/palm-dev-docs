@@ -1,0 +1,252 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: C Operators</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: C Operators">
+<META NAME="keywords" CONTENT="Debugging with GDB: C Operators">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC100"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_99.html#SEC99"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_101.html#SEC101"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_89.html#SEC89"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_99.html#SEC99"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_107.html#SEC107"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 12.4.1.1 C and C<TT>++</TT> operators </H4>
+<!--docid::SEC100::-->
+<P>
+
+<A NAME="IDX470"></A>
+</P><P>
+
+Operators must be defined on values of specific types.  For instance,
+<CODE>+</CODE> is defined on numbers, but not on structures.  Operators are
+often defined on groups of types.
+</P><P>
+
+For the purposes of C and C<TT>++</TT>, the following definitions hold:
+</P><P>
+
+<UL>
+
+<LI>
+<EM>Integral types</EM> include <CODE>int</CODE> with any of its storage-class
+specifiers; <CODE>char</CODE>; <CODE>enum</CODE>; and, for C<TT>++</TT>, <CODE>bool</CODE>.
+<P>
+
+<LI>
+<EM>Floating-point types</EM> include <CODE>float</CODE>, <CODE>double</CODE>, and
+<CODE>long double</CODE> (if supported by the target platform).
+<P>
+
+<LI>
+<EM>Pointer types</EM> include all types defined as <CODE>(<VAR>type</VAR> *)</CODE>.
+<P>
+
+<LI>
+<EM>Scalar types</EM> include all of the above.
+<P>
+
+</UL>
+<P>
+
+The following operators are supported.  They are listed here
+in order of increasing precedence:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>,</CODE>
+<DD>The comma or sequencing operator.  Expressions in a comma-separated list
+are evaluated from left to right, with the result of the entire
+expression being the last expression evaluated.
+<P>
+
+<DT><CODE>=</CODE>
+<DD>Assignment.  The value of an assignment expression is the value
+assigned.  Defined on scalar types.
+<P>
+
+<DT><CODE><VAR>op</VAR>=</CODE>
+<DD>Used in an expression of the form <CODE><VAR>a</VAR> <VAR>op</VAR>= <VAR>b</VAR></CODE>,
+and translated to <CODE><VAR>a</VAR> = <VAR>a op b</VAR></CODE>.
+<CODE><VAR>op</VAR>=</CODE> and <CODE>=</CODE> have the same precedence.
+<VAR>op</VAR> is any one of the operators <CODE>|</CODE>, <CODE>^</CODE>, <CODE>&#38;</CODE>,
+<CODE>&#60;&#60;</CODE>, <CODE>&#62;&#62;</CODE>, <CODE>+</CODE>, <CODE>-</CODE>, <CODE>*</CODE>, <CODE>/</CODE>, <CODE>%</CODE>.
+<P>
+
+<DT><CODE>?:</CODE>
+<DD>The ternary operator.  <CODE><VAR>a</VAR> ? <VAR>b</VAR> : <VAR>c</VAR></CODE> can be thought
+of as:  if <VAR>a</VAR> then <VAR>b</VAR> else <VAR>c</VAR>.  <VAR>a</VAR> should be of an
+integral type.
+<P>
+
+<DT><CODE>||</CODE>
+<DD>Logical OR.  Defined on integral types.
+<P>
+
+<DT><CODE>&#38;&#38;</CODE>
+<DD>Logical AND.  Defined on integral types.
+<P>
+
+<DT><CODE>|</CODE>
+<DD>Bitwise OR.  Defined on integral types.
+<P>
+
+<DT><CODE>^</CODE>
+<DD>Bitwise exclusive-OR.  Defined on integral types.
+<P>
+
+<DT><CODE>&#38;</CODE>
+<DD>Bitwise AND.  Defined on integral types.
+<P>
+
+<DT><CODE>==, !=</CODE>
+<DD>Equality and inequality.  Defined on scalar types.  The value of these
+expressions is 0 for false and non-zero for true.
+<P>
+
+<DT><CODE>&#60;, &#62;, &#60;=, &#62;=</CODE>
+<DD>Less than, greater than, less than or equal, greater than or equal.
+Defined on scalar types.  The value of these expressions is 0 for false
+and non-zero for true.
+<P>
+
+<DT><CODE>&#60;&#60;, &#62;&#62;</CODE>
+<DD>left shift, and right shift.  Defined on integral types.
+<P>
+
+<DT><CODE>@</CODE>
+<DD>The GDB "artificial array" operator (see section <A HREF="gdb_52.html#SEC52">Expressions</A>).
+<P>
+
+<DT><CODE>+, -</CODE>
+<DD>Addition and subtraction.  Defined on integral types, floating-point types and
+pointer types.
+<P>
+
+<DT><CODE>*, /, %</CODE>
+<DD>Multiplication, division, and modulus.  Multiplication and division are
+defined on integral and floating-point types.  Modulus is defined on
+integral types.
+<P>
+
+<DT><CODE>++, --</CODE>
+<DD>Increment and decrement.  When appearing before a variable, the
+operation is performed before the variable is used in an expression;
+when appearing after it, the variable's value is used before the
+operation takes place.
+<P>
+
+<DT><CODE>*</CODE>
+<DD>Pointer dereferencing.  Defined on pointer types.  Same precedence as
+<CODE>++</CODE>.
+<P>
+
+<DT><CODE>&#38;</CODE>
+<DD>Address operator.  Defined on variables.  Same precedence as <CODE>++</CODE>.
+<P>
+
+For debugging C<TT>++</TT>, GDB implements a use of <SAMP>`&#38;'</SAMP> beyond what is
+allowed in the C<TT>++</TT> language itself: you can use <SAMP>`&#38;(&#38;<VAR>ref</VAR>)'</SAMP>
+(or, if you prefer, simply <SAMP>`&#38;&#38;<VAR>ref</VAR>'</SAMP>) to examine the address
+where a C<TT>++</TT> reference variable (declared with <SAMP>`&#38;<VAR>ref</VAR>'</SAMP>) is
+stored.
+</P><P>
+
+<DT><CODE>-</CODE>
+<DD>Negative.  Defined on integral and floating-point types.  Same
+precedence as <CODE>++</CODE>.
+<P>
+
+<DT><CODE>!</CODE>
+<DD>Logical negation.  Defined on integral types.  Same precedence as
+<CODE>++</CODE>.
+<P>
+
+<DT><CODE>~</CODE>
+<DD>Bitwise complement operator.  Defined on integral types.  Same precedence as
+<CODE>++</CODE>.
+<P>
+
+<DT><CODE>., -&#62;</CODE>
+<DD>Structure member, and pointer-to-structure member.  For convenience,
+GDB regards the two as equivalent, choosing whether to dereference a
+pointer based on the stored type information.
+Defined on <CODE>struct</CODE> and <CODE>union</CODE> data.
+<P>
+
+<DT><CODE>.*, -&#62;*</CODE>
+<DD>Dereferences of pointers to members.
+<P>
+
+<DT><CODE>[]</CODE>
+<DD>Array indexing.  <CODE><VAR>a</VAR>[<VAR>i</VAR>]</CODE> is defined as
+<CODE>*(<VAR>a</VAR>+<VAR>i</VAR>)</CODE>.  Same precedence as <CODE>-&#62;</CODE>.
+<P>
+
+<DT><CODE>()</CODE>
+<DD>Function parameter list.  Same precedence as <CODE>-&#62;</CODE>.
+<P>
+
+<DT><CODE>::</CODE>
+<DD>C<TT>++</TT> scope resolution operator.  Defined on <CODE>struct</CODE>, <CODE>union</CODE>,
+and <CODE>class</CODE> types.
+<P>
+
+<DT><CODE>::</CODE>
+<DD>Doubled colons also represent the GDB scope operator
+(see section <A HREF="gdb_52.html#SEC52">Expressions</A>).  Same precedence as <CODE>::</CODE>,
+above.
+</DL>
+<P>
+
+If an operator is redefined in the user code, GDB usually
+attempts to invoke the redefined version instead of using the operator's
+predefined meaning.
+</P><P>
+
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_101.html#SEC101">12.4.1.2 C and C<TT>++</TT> constants</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+</TABLE></BLOCKQUOTE>
+<P>
+
+<A NAME="C Constants"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_99.html#SEC99"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_101.html#SEC101"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_89.html#SEC89"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_99.html#SEC99"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_107.html#SEC107"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

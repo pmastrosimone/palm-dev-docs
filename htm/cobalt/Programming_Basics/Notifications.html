@@ -1,0 +1,817 @@
+<html>
+<head>
+<title>(Protein) Notifications | Programming Basics</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:22:00">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="971704"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="ProgrammingBasicsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="EventLoop.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="ProgrammingBasics_Part2.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="ProgrammingBasicsIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">4 &nbsp;&nbsp;
+Notifications</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Programming Basics</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="ProgrammingBasics_Part1.html">Part I: Concepts</a> </h1>
+<h1 class="SideTOC1"><a href="Notifications.html">4  Notifications</a></h1>
+
+   <h2 class="SideTOC2"><a href="#986505">
+   Notification Overview</a></h2>
+
+   <h2 class="SideTOC2"><a href="#972155">
+   Registering for a Notification</a></h2>
+
+   <h2 class="SideTOC2"><a href="#972223">
+   Writing a Notification Handler</a></h2>
+
+   <h2 class="SideTOC2"><a href="#972268">
+   Sleep and Wake Notifications</a></h2>
+
+   <h2 class="SideTOC2"><a href="#972327">
+   Helper Notifications</a></h2>
+
+      <h3 class="SideTOC3"><a href="#972381">
+      When to Use the Helper API</a></h3>
+
+      <h3 class="SideTOC3"><a href="#972402">
+      Requesting a Helper Service</a></h3>
+
+      <h3 class="SideTOC3"><a href="#972479">
+      Implementing a Helper</a></h3>
+
+   <h2 class="SideTOC2"><a href="#972839">
+   Notification Summary</a></h2>
+
+   <h2 class="SideTOC2"><a href="#973073">
+   Notification Function Summary</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="972131"> </a>Applications can register for <b>notifications</b> that are sent when certain system-level events or application-level events occur. Notifications are similar to application launch codes, with one important difference: notifications are only sent to applications or code resources that have specifically registered to receive them, making them more efficient than launch codes.</p>
+
+<p><a name="986401"> </a>This chapter describes the Palm OS notification mechanism. It shows how to register for a notification and how to deal with the notifications that you then receive. It provides some detail on some of the more commonly-used notifications: those that signal when the device is about to go to sleep and those that indicate that it is waking up. This chapter then discusses a special class of notifications&#8212;helper notifications&#8212;that can be used to publish and request application services. Finally, it concludes with a complete list of all of the notifications defined by Palm OS.</p>
+   <blockquote class = "bq"><a name="986513"> </a><a href="Notifications.html#986505">Notification Overview</a></blockquote>
+   <blockquote class = "bq"><a name="986409"> </a><a href="Notifications.html#972155">Registering for a Notification</a></blockquote>
+   <blockquote class = "bq"><a name="986434"> </a><a href="Notifications.html#972223">Writing a Notification Handler</a></blockquote>
+   <blockquote class = "bq"><a name="986439"> </a><a href="Notifications.html#972268">Sleep and Wake Notifications</a></blockquote>
+   <blockquote class = "bq"><a name="986443"> </a><a href="Notifications.html#972327">Helper Notifications</a></blockquote>
+   <blockquote class = "bq"><a name="986464"> </a><a href="Notifications.html#972839">Notification Summary</a></blockquote>
+   <blockquote class = "bq"><a name="986468"> </a><a href="Notifications.html#973073">Notification Function Summary</a></blockquote>
+
+<p><a name="986799"> </a>Reference material for many of the APIs discussed in this chapter can be found in <a href="Notifications.html#971704">Chapter 4, "Notifications."</a></p>
+
+<h2 class="haH2">
+  <a name="986505"> </a>Notification Overview <a href="#971704"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="972136"> </a>The Palm OS system and the built-in applications send notifications when certain events occur. (For a complete list, see <a href="Notifications.html#972839">"Notification Summary"</a>.) It's also possible for your application to create and broadcast its own notifications. However, applications rarely do so. It's more likely that you'll want to register to receive the predefined notifications or that you'll broadcast the predefined <a href="Helper.html#995191"><code>sysNotifyHelperEvent</code></a> described under <a href="Notifications.html#972327">"Helper Notifications."</a></p>
+
+<p><a name="972147"> </a>A given notification is sent to each of the <b>notification clients</b> that register for it. Three general types of event flow are possible using the notification manager:</p>
+<ul type="disc">
+  <li><a name="972148"> </a>Single consumer 
+   <p><a name="972149"> </a>Each client is notified that the event has occurred and handles it in its own way without modifying any information in the parameter block. </p>
+  <li><a name="972150"> </a>Collaborative
+   <p><a name="972151"> </a>The notification's parameter block contains a <code>handled</code> flag. Clients can set this flag to communicate to other clients that the event has been handled, while still allowing them to receive the notification.</p>
+  <li><a name="972152"> </a>Collective
+   <p><a name="972153"> </a>Each client can add information to the notification's parameter block, allowing the data to be accumulated for all clients. This style of notification could be used, for example, to build a menu dynamically by letting each client add its own menu text. The <code>sysNotifyMenuCmdBarOpenEvent</code> is similar to this style of notification. </p>
+</ul>
+
+<h2 class="haH2">
+  <a name="972155"> </a>Registering for a Notification <a href="#971704"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="972156"> </a>To receive notification that an event has occurred, you must register for it using the <a href="NotifyMgr.html#996130"><code>SysNotifyRegister()</code></a> function. Once you register for a notification, you remain registered until the system is reset, the notification is deleted, or until you explicitly unregister for this notification using <a href="NotifyMgr.html#996330"><code>SysNotifyUnregister()</code></a>.</p>
+
+<p><a name="972165"> </a>To register an application for the HotSync<sup>&#174;</sup> notification, you'd use a function call similar to the one in <a href="Notifications.html#972170">Listing 4.1</a>.</p>
+<p class="CCodeCaption">
+  <a name="972170"> </a><b>Listing 4.1&nbsp;&nbsp;Registering for a notification</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+SysNotifyRegister(appDBID, sysNotifySyncStartEvent, NULL,
+   sysNotifyNormalPriority, myDataP, myDataSize);<a name="972171"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="972182"> </a>The parameters you pass to the <code>SysNotifyRegister()</code> function specify the following:</p>
+<ul type="disc">
+  <li><a name="972183"> </a>The database ID for the PRC file. Be sure you're not passing the local ID of the record database that your application accesses. You use the record database's local ID more frequently than you do the application's local ID, so this is a common mistake to make.
+  <li><a name="972185"> </a>The notification for which you are registering. In the above examples, <code>sysNotifySyncStartEvent</code> specifies that you want to be informed when a HotSync operation is about to start. (There is also a <code>sysNotifySyncFinishEvent</code> that specifies that a HotSync operation has ended.)
+  <li><a name="972187"> </a>The means by which the notification should be received. Applications should use <code>NULL</code> for this parameter to specify that they should be notified through the application launch code <a href="CmnLaunchCodes.html#994016"><code>sysAppLaunchCmdNotify</code></a>. As with all other launch codes, the system passes this to the application's <a href="AppMgr.html#994755"><code>PilotMain()</code></a> function. 
+  <li><a name="972205"> </a>The priority with which the notification should be sent. <code>sysNotifyNormalPriority</code> means that you don't want your code to receive any special consideration when receiving the notification. Notifications are broadcast synchronously in priority order. The lower the number you specify here, the earlier you receive the notification in the list. 
+   <p><a name="972206"> </a>In virtually all cases, you should use <code>sysNotifyNormalPriority</code>. If you absolutely must ensure that your code is notified in a certain order (either before most notifications or after most notifications), be sure to leave some space between priority values so that your code won't collide with the system's handling of notifications or with another application's handling of notifications. Never use the extreme maximum or minimum allowed value. In general, PalmSource recommends using a value whose least significant bits are 0 (such as 32, 64, 96, and so on). </p>
+  <li><a name="972207"> </a>Any data you want easy access to in your notification handler function.
+</ul>
+
+<p><a name="972215"> </a>After you've made the calls shown in <a href="Notifications.html#972170">Listing 4.1</a> and the system is about to begin a HotSync operation, it broadcasts the <code>sysNotifySyncStartEvent</code> notification to both clients. Along with the notification your code receives a <a href="NotifyMgr.html#994861"><code>SysNotifyParamType</code></a> structure containing the notification name, the broadcaster, and a pointer to your specific data (<code>myDataP</code> in the example above). Some notifications contain extra information in a <code>notifyDetailsP</code> field in this structure. (The HotSync notifications do not use the <code>notifyDetailsP</code> field.)</p>
+
+<h2 class="haH2">
+  <a name="972223"> </a>Writing a Notification Handler <a href="#971704"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="972224"> </a>The application's (or a library's) response to <code>sysAppLaunchCmdNotify</code> is called a <b>notification handler</b>. A notification handler may perform any processing necessary, including displaying a user interface or broadcasting other notifications. </p>
+
+<p><a name="972226"> </a>When displaying a user interface, consider the possibility that you may be blocking other applications from receiving the notification. For this reason, it's generally not a good idea to display a modal form or do anything else that requires waiting for the user to respond. Also, many of the notifications are broadcast during <a href="../System_Management/SystemMgr.html#994346"><code>SysHandleEvent()</code></a>, which means your application event loop may not have progressed to the point where it is possible for you to display a user interface, or that you may overflow the stack. </p>
+
+<p><a name="972230"> </a>If you need to perform some lengthy process in a notification handler, one way to ensure that you aren't blocking other events is to send yourself a deferred notification. For example, <a href="Notifications.html#972235">Listing 4.2</a> shows a notification handler for the <code>sysNotifyTimeChangeEvent</code> notification that performs no work other than setting up a deferred notification (<code>myDeferredNotifyEvent</code>--which is a custom notification) and scheduling it for broadcast. When the application receives the <code>myDeferredNotifyEvent</code>, it calls the <span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">MyNotifyHandler</span> function, which is where the application really handles the time change event.</p>
+<p class="CCodeCaption">
+  <a name="972235"> </a><b>Listing 4.2&nbsp;&nbsp;Deferring notification within a handler</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+case sysAppLaunchCmdNotify : <a name="972236"> </a>
+   if (cmdPBP-&gt;notify-&gt;notifyType == <code>sysNotifyTimeChangeEvent</code>) {<a name="972237"> </a>
+      SysNotifyParamType notifyParm;<a name="972238"> </a>
+      MyNotificationDataStruct myData;<a name="972239"> </a>
+ <a name="972240"> </a>
+      /* initialize myData here */<a name="972241"> </a>
+ <a name="972242"> </a>
+      /* Create the notification block. */<a name="972243"> </a>
+      notifyParam.notifyType = myDeferredNotifyEvent;<a name="972244"> </a>
+      notifyParam.broadcaster = myCreatorID;<a name="972245"> </a>
+      notifyParam.notifyDetailsP= NULL;<a name="972246"> </a>
+      notifyParam.handled = false;<a name="972247"> </a>
+ <a name="972248"> </a>
+      /* Register for my notification */<a name="972249"> </a>
+      SysNotifyRegister(myCardNo, appDBID, myDeferredNotifyEvent, NULL, 
+         sysNotifyNormalPriority, &amp;myData);<a name="972250"> </a>
+ <a name="972251"> </a>
+      /* Broadcast the notification */<a name="972252"> </a>
+      SysNotifyBroadcastDeferred(&amp;notifyParam, NULL);<a name="972253"> </a>
+ <a name="972254"> </a>
+   } else if (cmdPBP-&gt;notify-&gt;notifyType == myDeferredNotifyEvent)<a name="972255"> </a>
+      MyNotifyHandler(cmdPBP-&gt;notify);<a name="972256"> </a>
+break;<a name="972257"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="972261"> </a>The <a href="NotifyMgr.html#996056"><code>SysNotifyBroadcastDeferred()</code></a> function broadcasts the specified notification to all interested parties; however, it waits to do so until the current event has completed processing. Thus, by using a separate deferred notification, you can be sure that all other clients have had a chance to respond to the first notification. </p>
+
+<p><a name="972262"> </a>There are several functions that broadcast notifications. Notification handlers should use <code>SysNotifyBroadcastDeferred()</code> to avoid the possibility of overflowing the notification stack. </p>
+
+<p><a name="972263"> </a>A special case of dealing with lengthy computations in a notification handler occurs when the system is being put to sleep. See <a href="Notifications.html#972268">"Sleep and Wake Notifications"</a> below. </p>
+
+<h2 class="haH2">
+  <a name="972268"> </a>Sleep and Wake Notifications <a href="#971704"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="985922"> </a>Several notifications are broadcast at various stages when the system goes to sleep and when the system wakes up. These are: </p>
+
+<dl>
+<dt><a name="985927"> </a><a href="NotifyMgr.html#1001016"><code>sysNotifySleepRequestEvent</code></a> </dt>
+<dd><a name="985935"> </a>Broadcast during <a href="../System_Management/SystemMgr.html#994346"><code>SysHandleEvent()</code></a> processing when the system has decided to go to sleep. </dd>
+
+<dt><a name="985932"> </a><a href="NotifyMgr.html#1020251"><code>sysNotifySleepNotifyEvent</code></a> </dt>
+<dd><a name="985961"> </a>Broadcast during <code>SysHandleEvent()</code> immediately before the system is put to sleep. After the broadcast is complete, the system is put to sleep. </dd>
+
+<dt><a name="972284"> </a><a href="NotifyMgr.html#1014982"><code>sysNotifyEarlyWakeupEvent</code></a> </dt>
+<dd><a name="985974"> </a>Broadcast during <code>SysHandleEvent()</code> immediately after the system has finished sleeping. The screen may still be turned off, and the system may not fully wake up. It may simply handle an alarm or a battery charger event and go back to sleep.</dd>
+
+<dt><a name="972289"> </a><a href="NotifyMgr.html#1014830"><code>sysNotifyLateWakeupEvent</code></a></dt>
+<dd><a name="986000"> </a>Broadcast during <code>SysHandleEvent()</code> immediately after the device has finished waking up. </dd>
+
+</dl>
+
+<p><a name="972290"> </a>These notifications are <i>not</i> guaranteed to be broadcast. For example, if the system goes to sleep because the user removes the batteries, sleep notifications are not sent. Thus, these notifications are unsuitable for applications where external hardware must be shut off to conserve power before the system goes to sleep. </p>
+
+<p><a name="972291"> </a>If you want to know when the system is going to sleep because you have a small amount of cleanup that should occur beforehand, then register for <code>sysNotifySleepNotifyEvent</code>. </p>
+
+<p><a name="972292"> </a>It is recommended that you not perform any sort of prolonged activity, such as displaying an alert panel that requests confirmation, in response to a sleep notification. If you do, the alert might be displayed long enough to trigger another auto-off event, which could be detrimental to other handlers of the sleep notify event. </p>
+
+<p><a name="972293"> </a>In a few instances, you might need to prevent the system from going to sleep. For example, your code might be in the middle of performing some lengthy computation or in the middle of attempting a network connection. If so, register for the <code>sysNotifySleepRequestEvent</code> instead. This notification informs all clients that the system might go to sleep. If necessary, your handler can delay the sleep request by doing the following:</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+((SleepEventParamType *)
+  (notify-&gt;notifyDetailsP))-&gt;deferSleep++;<a name="972294"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="972295"> </a>The system checks the <code>deferSleep</code> value when each notification handler returns. If it is nonzero, it cancels the sleep event. </p>
+
+<p><a name="972296"> </a>After you defer sleep, your code is free to finish what it was doing. When it is finished, you must allow the system to continue with the sleep event. To do so, create a <a href="../Input_Services/In_LowEvents.html#993792"><code>keyDownEvent</code></a> with the <code>resumeSleepChr</code> and the command key bit set (to signal that the character is virtual) and add it to the event queue. When the system receives this event, it will again broadcast the <code>sysNotifySleepRequestEvent</code> to all clients. If <code>deferSleep</code> is 0 after all clients return, then the system knows it is safe to go to sleep, and it broadcasts the <code>sysNotifySleepNotifyEvent</code> to all of its clients. </p>
+
+<p><a name="972303"> </a>Notice that you may potentially receive the <code>sysNotifySleepRequestEvent</code> many times before the system actually goes to sleep, but you receive the <code>sysNotifySleepNotifyEvent</code> exactly once. </p>
+
+<p><a name="972304"> </a>During a wake-up event, the other two notifications listed above are broadcast. The <code>sysNotifyEarlyWakeupEvent</code> is broadcast very early on in the wake-up process, generally before the screen has turned on. At this stage, it is not guaranteed that the system will fully wake up. It may simply handle an alarm or a battery charger event and go back to sleep. Most applications that need notification of a wake-up event will probably want to register for <code>sysNotifyLateWakeupEvent</code> instead. At this stage, the screen has been turned on and the system is guaranteed to fully wake up. </p>
+
+<p><a name="972305"> </a>When the handheld receives the <code>sysNotifyLateWakeupEvent</code> notification, it may be locked and waiting for the user to enter the password. If this is the case, you must wait for the user to unlock the handheld before you display a user interface. Therefore, if you intend to display a user interface when the handheld wakes up, you should make sure the handheld is not locked. If the handheld is locked, you should register for <a href="NotifyMgr.html#1014750"><code>sysNotifyDeviceUnlocked</code></a> notification and display your user interface when it is received. See <a href="Notifications.html#972314">Listing 4.3</a>. </p>
+<p class="CCodeCaption">
+  <a name="972314"> </a><b>Listing 4.3&nbsp;&nbsp;Responding to Late Wake-up Notification</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+case sysNotifyLateWakeupEvent: <a name="972315"> </a>
+   if ((Boolean) PrefGetPreference(prefDeviceLocked)) {<a name="972316"> </a>
+      SysNotifyRegister(myDbID, sysNotifyDeviceUnlocked,<a name="972318"> </a>
+        NULL, sysNotifyNormalPriority, NULL);<a name="988513"> </a>
+   } else {<a name="972321"> </a>
+      HandleDeviceWakeup();<a name="972322"> </a>
+   }<a name="972323"> </a>
+case sysNotifyDeviceUnlocked: <a name="972324"> </a>
+   HandleDeviceWakeup();<a name="972325"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h2 class="haH2">
+  <a name="972327"> </a>Helper Notifications <a href="#971704"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="972331"> </a>The helper notification, <a href="Helper.html#995191"><code>sysNotifyHelperEvent</code></a>, is a way for one application to request a service from another application. Currently, the Dial application is the only application that performs a service through <code>sysNotifyHelperEvent</code>. Specifically, the Dial application dials a phone in response to this notification. The Address Book uses the Dial application to dial the phone number that the user has selected. You can use the Dial application in a similar way by broadcasting the <code>sysNotifyHelperEvent</code> from your application. You may also choose to write a provider of services. </p>
+
+<p><a name="972336"> </a>In this section, the application that responds to the <code>sysNotifyHelperEvent</code> notification is called the <b>helper</b>, and the application that broadcasts the notification is called the <b>broadcaster</b>.</p>
+
+<p><a name="972340"> </a>A helper registers for the <a href="Helper.html#995191"><code>sysNotifyHelperEvent</code></a> notification. In the notification handler, the helper responds to action requests pertaining to the <b>service</b> that it provides. </p>
+
+<p><a name="972341"> </a><b>Actions</b> are requests to provide information about the service or to perform the service. The details structure for <a href="Helper.html#995191"><code>sysNotifyHelperEvent</code></a> (a <a href="Helper.html#993181"><code>HelperNotifyEventType</code></a> structure) defines three possible actions: </p>
+<ul type="disc">
+  <li><a name="972351"> </a><code>kHelperNotifyActionCodeEnumerate</code> is a request for the helper to list the services that it can perform. 
+  <li><a name="972353"> </a><code>kHelperNotifyActionCodeValidate</code> is a request for the helper to make sure that it can perform the service. 
+  <li><a name="972355"> </a><code>kHelperNotifyActionCodeExecute</code> is a request to actually perform the service. 
+</ul>
+
+<p><a name="972357"> </a>The possible services are defined in <code>HelperServiceClass.h</code> and described in <a href="HelperServiceClass.html#992934">Chapter 10, "Helper Service Class."</a> These services are to dial a number, email a message, send an SMS message, or send a fax. If you want to define your own service, you must register a unique creator ID for that service. Alternatively, you can use the creator ID of your application. </p>
+<h3 class="hbH3">
+  <a name="972381"> </a>When to Use the Helper API <a href="#971704"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="972385"> </a>There are several means by which one application can communicate with another application on the same handheld. Specifically, an application can send a launch code to another application (see <a href="AppStartAndStop.html#972010">"Launching Applications Programmatically"</a>, can use the Exchange Manager and Local Exchange Library to send data to another application (see <a href="../High-Level_Communications/HLC_ExgMgrConcept.html#994958">Chapter 4, "Object Exchange,"</a> in <i>Exploring Palm OS: High-Level Communications</i>), or can use the helper API to request that a service be performed. </p>
+
+<p><a name="972392"> </a>The helper API is designed for use when you do not know anything about the receiving application. The helper API provides a means of communication where the sending and receiving application do not need to know anything about each other. This contrasts with the launch code mechanism, in which the sending application must know the local ID of the receiving database as well as which launch code to send. </p>
+<h3 class="hbH3">
+  <a name="972402"> </a>Requesting a Helper Service <a href="#971704"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="972406"> </a><a href="Notifications.html#972422">Listing 4.4</a> shows how an application should request the dial service. In general, you should do the following to request a service: </p>
+<ul type="disc">
+  <li><a name="972410"> </a>Broadcast a <a href="Helper.html#995191"><code>sysNotifyHelperEvent</code></a> with a <code>kHelperNotifyActionCodeValidate</code> action each time you want to verify that the service is available. 
+   <p><a name="972411"> </a>For example, when the Address Book initializes the List view form, it checks to see if the dial service is available by broadcasting the notification with the action code <code>kHelperNotifyActionCodeValidate</code>. The Dial application makes sure the Telephony Library is open. If so, it sets <code>handled</code> to <code>true</code> in the <a href="NotifyMgr.html#994861"><code>SysNotifyParamType</code></a> structure. If not, it sets <code>handled</code> to <code>false</code>. If <code>handled</code> is <code>false</code> after the notification is broadcast, the Address Book does not display the Dial menu item. </p>
+  <li><a name="972416"> </a>Broadcast a <code>sysNotifyHelperEvent</code> with a <code>kHelperNotifyActionCodeExecute</code> action when you want the service performed. See <a href="Notifications.html#972422">Listing 4.4</a>.
+  <li><a name="972420"> </a>If you want to obtain a list of all possible services, broadcast a <code>sysNotifyHelperEvent</code> with a <code>kHelperNotifyActionCodeEnumerate</code> action. You might do so when your application is launched, upon system reset, or any time the user performs a task where you might want to provide a service. 
+</ul>
+<p class="CCodeCaption">
+  <a name="972422"> </a><b>Listing 4.4&nbsp;&nbsp;Requesting a helper service</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+Boolean PrvDialListDialSelected(FormType* frmP) {<a name="972423"> </a>
+   SysNotifyParamType param;<a name="972424"> </a>
+   HelperNotifyEventType details;<a name="972425"> </a>
+   HelperNotifyExecuteType execute;<a name="972426"> </a>
+ <a name="972427"> </a>
+   param.notifyType = sysNotifyHelperEvent;<a name="972428"> </a>
+   param.broadcaster = sysFileCAddress;<a name="972429"> </a>
+   param.notifyDetailsP = &amp;details;<a name="972430"> </a>
+   param.handled = false;<a name="972431"> </a>
+ <a name="972432"> </a>
+   details.version = kHelperNotifyCurrentVersion;<a name="972433"> </a>
+   details.actionCode = kHelperNotifyActionCodeExecute;<a name="972434"> </a>
+   details.data.executeP = &amp;execute;<a name="972435"> </a>
+ <a name="972436"> </a>
+   execute.serviceClassID = kHelperServiceClassIDVoiceDial;<a name="972437"> </a>
+   execute.helperAppID = 0;<a name="972438"> </a>
+   execute.dataP = FldGetTextPtr(ToolsGetFrmObjectPtr(frmP, <a name="972439"> </a>
+      DialListNumberField));<a name="972440"> </a>
+   execute.displayedName = gDisplayName;<a name="972441"> </a>
+   execute.detailsP = 0;<a name="972442"> </a>
+   execute.err = errNone;<a name="972443"> </a>
+ <a name="972444"> </a>
+   SysNotifyBroadcast(&amp;param);<a name="972445"> </a>
+ <a name="972446"> </a>
+   // Check error code<a name="972447"> </a>
+   if (!param.handled)<a name="972448"> </a>
+   // Not handled so exit the list - Unexpected error<a name="972449"> </a>
+      return true;<a name="972450"> </a>
+   else<a name="972451"> </a>
+      return (execute.err == errNone);<a name="972452"> </a>
+}<a name="972453"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="987051"> </a>When you broadcast the <code>sysNotifyHelperEvent</code>, it's important to note the following: </p>
+<ul type="disc">
+  <li><a name="986109"> </a>Always use <a href="NotifyMgr.html#995673"><code>SysNotifyBroadcast()</code></a>, which broadcasts the notification synchronously. 
+  <li><a name="986110"> </a>The notification's <code class="par">notifyDetailsP</code> parameter points to a <a href="Helper.html#993181"><code>HelperNotifyEventType</code></a>. This structure allows the broadcaster to communicate with the helper. 
+  <li><a name="972465"> </a>The helper may allocate memory and add it to the <code>HelperNotifyEventType</code> structure. In particular, if the action code is <code>kHelperNotifyActionCodeEnumerate</code>, the helper allocates at least one structure of type <a href="Helper.html#992975"><code>HelperNotifyEnumerateListType</code></a> and adds it to the <code>data</code> field in the <code>HelperNotifyEventType</code> structure. The broadcaster must free this memory, even though the helper allocated it. 
+  <li><a name="972469"> </a>The broadcaster uses the <code>helperAppID</code> field to communicate directly with a particular provider of the requested service. For example, suppose two applications provide a dial service. The broadcaster might discover these two applications through the enumerate action and then allow the user to specify which application should dial the phone number. When broadcasting the enumerate action, no helper ID is specified, so all helpers respond. After the user has set the preferred helper, the broadcaster sets the <code>helperAppID</code> field for the validate and execute actions to that helper's creator ID. A helper must check the <code>helperAppID</code> field and only respond to the notification if its creator ID matches the value in that field or if that field is 0. 
+  <li><a name="972470"> </a>The <code>dataP</code> field contains the data required to perform the service. For the dial service, <code>dataP</code> contains the phone number to dial. If any extra information is required or desired, then it is provided in the <code>detailsP</code> field. If you're requesting the email or SMS service, you use <code>detailsP</code> to provide the message to be sent. See <a href="HelperServiceClass.html#992934">Chapter 10, "Helper Service Class,"</a> for more information. 
+  <li><a name="972477"> </a>The <code>handled</code> field of <code>SysNotifyParamType</code> and the <code>err</code> field of the <code>HelperNotifyEventType</code> structure are used to return the result. Always set <code>handled</code> to <code>false</code> and <code>err</code> to <code>errNone</code> before broadcasting and check their values after the broadcast is complete. The helper uses <code>handled</code> to indicate if it attempted to handle the service. If <code>handled</code> is <code>true</code>, it uses <code>err</code> to indicate the success or failure of performing that service. 
+</ul>
+<h3 class="hbH3">
+  <a name="972479"> </a>Implementing a Helper <a href="#971704"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="972480"> </a>To implement a helper, do the following: </p>
+<ul type="disc">
+  <li><a name="972485"> </a>Register to receive the <a href="Helper.html#995191"><code>sysNotifyHelperEvent</code></a>. It is best to register for this notification in response to the <a href="CmnLaunchCodes.html#993716"><code>sysAppLaunchCmdSyncNotify</code></a> and <a href="CmnLaunchCodes.html#993896"><code>sysAppLaunchCmdSystemReset</code></a> launch codes. This registers your helper when it is first installed and re-registers it upon each system reset. 
+  <li><a name="972494"> </a>In the notification handler, handle the three possible actions: enumerate, execute, and validate. Note that even though the enumerate action is optional and not currently used by Address Book, a helper must respond to this action in its handler because another third party application might send the enumerate action. 
+</ul>
+
+<p><a name="972501"> </a><a href="Notifications.html#972512">Listing 4.5</a> and <a href="Notifications.html#972558">Listing 4.6</a> show how the Dial application responds to the enumerate and validate actions. Note that the enumerate action requires the helper to allocate memory and add that memory to the <a href="Helper.html#993181"><code>HelperNotifyEventType</code></a> structure pointed to by <code>notifyDetailsP</code> in the <a href="NotifyMgr.html#994861"><code>SysNotifyParamType</code></a> parameter block. In this case, the <code>notifyDetailsP-&gt;dataP</code> field is a linked list of <a href="Helper.html#992975"><code>HelperNotifyEnumerateListType</code></a> structures. Each helper must allocate one of these structure per service and add it to the end of the list. The broadcaster is responsible for freeing all of these structures after the notification broadcast is complete. </p>
+<p class="CCodeCaption">
+  <a name="972512"> </a><b>Listing 4.5&nbsp;&nbsp;Enumerating services provided </b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+Boolean PrvAppEnumerate 
+(HelperNotifyEventType *helperNotifyEventP)<a name="972513"> </a>
+{<a name="972514"> </a>
+   HelperNotifyEnumerateListType* newNodeP;<a name="972515"> </a>
+   MemHandle handle;<a name="972516"> </a>
+   MemPtr stringP;<a name="972517"> </a>
+   <a name="972518"> </a>
+   newNodeP = MemPtrNew 
+      (sizeof(HelperNotifyEnumerateListType));<a name="972519"> </a>
+ <a name="972520"> </a>
+   // Get name to display in user interface. <a name="972521"> </a>
+   handle = DmGetResource(strRsc, HelperAppNameString);<a name="972522"> </a>
+   stringP = MemHandleLock(handle);<a name="972523"> </a>
+   StrCopy(newNodeP-&gt;helperAppName, stringP);<a name="972524"> </a>
+   MemHandleUnlock(handle);<a name="972525"> </a>
+   DmReleaseResource(handle);<a name="972526"> </a>
+ <a name="972527"> </a>
+   // Get name of service to display in UI. <a name="972528"> </a>
+   handle = DmGetResource(strRsc, HelperActionNameString);<a name="972529"> </a>
+   stringP = MemHandleLock(handle);<a name="972530"> </a>
+   StrCopy(newNodeP-&gt;actionName, stringP);<a name="972531"> </a>
+   MemHandleUnlock(handle);<a name="972532"> </a>
+   DmReleaseResource(handle);<a name="972533"> </a>
+ <a name="972534"> </a>
+   newNodeP-&gt;serviceClassID = kHelperServiceClassIDVoiceDial;<a name="972535"> </a>
+   newNodeP-&gt;helperAppID = kDialCreator;<a name="972536"> </a>
+   newNodeP-&gt;nextP = 0;<a name="972537"> </a>
+ <a name="972538"> </a>
+   // Add the new node.<a name="972539"> </a>
+   if (helperNotifyEventP-&gt;data.enumerateP == 0) {<a name="972540"> </a>
+      helperNotifyEventP-&gt;data.enumerateP = newNodeP;<a name="972541"> </a>
+   else {<a name="972542"> </a>
+      HelperNotifyEnumerateListType* nodeP;<a name="972543"> </a>
+      nodeP = helperNotifyEventP-&gt;data.enumerateP;<a name="972544"> </a>
+      //Look for the end of the list. <a name="972545"> </a>
+      while ( nodeP-&gt;nextP != 0 )<a name="972546"> </a>
+         nodeP = nodeP-&gt;nextP;<a name="972547"> </a>
+      nodeP-&gt;nextP = newNodeP;<a name="972548"> </a>
+   }<a name="972549"> </a>
+ <a name="972550"> </a>
+   return true;<a name="972551"> </a>
+}<a name="972552"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="972556"> </a><a href="Notifications.html#972558">Listing 4.6</a> show how the Dial application responds to the validate action. </p>
+<p class="CCodeCaption">
+  <a name="972558"> </a><b>Listing 4.6&nbsp;&nbsp;Responding to validate action</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+Boolean PrvAppValidate (SysNotifyParamType *sysNotifyParamP)<a name="972559"> </a>
+{<a name="972560"> </a>
+   HelperNotifyEventType* helperNotifyEvent;<a name="972561"> </a>
+   <a name="972562"> </a>
+   helperNotifyEvent = sysNotifyParamP-&gt;notifyDetailsP;<a name="972563"> </a>
+   // Check version<a name="972564"> </a>
+   if (helperNotifyEvent-&gt;version &lt; 1)<a name="972565"> </a>
+      return false;<a name="972566"> </a>
+      <a name="972567"> </a>
+   // Check service<a name="972568"> </a>
+   if (helperNotifyEvent-&gt; data.validateP-&gt;serviceClassID <a name="972569"> </a>
+         != kHelperServiceClassIDVoiceDial)<a name="972570"> </a>
+      return false;<a name="972571"> </a>
+      <a name="972572"> </a>
+   // check appId (either null or me)<a name="972573"> </a>
+   if ((helperNotifyEvent-&gt;data.validateP-&gt;helperAppID != 0) <a name="972574"> </a>
+      &amp;&amp; (helperNotifyEvent-&gt;data.validateP-&gt;helperAppID != <a name="972575"> </a>
+         kDialCreator))<a name="972576"> </a>
+      return false;<a name="972577"> </a>
+   <a name="972578"> </a>
+   // Check Telephony library presence<a name="972579"> </a>
+   if (!PrvAppCheckTelephony())<a name="972580"> </a>
+      return false;<a name="972581"> </a>
+ <a name="972582"> </a>
+   sysNotifyParamP-&gt;handled = true;<a name="972583"> </a>
+   return true;<a name="972584"> </a>
+}<a name="972585"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="972586"> </a>When writing a helper, it is also important to note the following: </p>
+<ul type="disc">
+  <li><a name="972587"> </a>Always check the <code>helperAppID</code> field and only respond if it is 0 or if it matches your creator ID. For the validate and execute actions, a broadcaster may use <code>helperAppID</code> to only communicate with the desired helper. 
+  <li><a name="972588"> </a>If you handle the action, set <code>handled</code> to <code>true</code>. If the handling of the service was unsuccessful, set the <code>err</code> field in <code>notifyDetailsP</code>. 
+  <li><a name="972589"> </a>Always check the <code>handled</code> field before performing the service. If any helper can perform the service, you must make sure that the service has not already been performed before you perform it. If <code>handled</code> is <code>true</code>, the service has already been performed. 
+</ul>
+
+<h2 class="haH2">
+  <a name="972839"> </a>Notification Summary <a href="#971704"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="972845"> </a><a href="Notifications.html#972856">Table 4.1</a> lists the standard notifications that are supported in Palm OS Cobalt. These notifications are declared in the header <code>NotifyMgr.h</code>. All the parameters for a notification are passed in a <a href="NotifyMgr.html#994861"><code>SysNotifyParamType</code></a> structure and the results are returned in that same structure. </p>
+
+<p class="caption"><a name="972856"> </a><b>Table 4.1&nbsp;&nbsp;Notification Constants </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="972860"> </a><b>Constant</b></p>
+    </th>
+    <th><p class="tt"><a name="972862"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="986130"> </a><a href="NotifyMgr.html#1046877"><code>cncNotifyConnectionStateEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="986132"> </a>Broadcast by the Connection Manager whenever a persistent profile is either connected or disconnected.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="986138"> </a>shortCutNotifyAddDbgMacrosEvent</p>
+    </td>
+    <td><p class="tt"><a name="986140"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972874"> </a><a href="NotifyMgr.html#1009494"><code>sysExternalConnectorAttachEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="972876"> </a>A device has been attached to an external connector. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972881"> </a><a href="NotifyMgr.html#1023178"><code>sysExternalConnectorDetachEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="972883"> </a>A device has been detached from an external connector. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="986150"> </a><a href="NotifyMgr.html#1010301"><code>sysNotifyAltInputSystemDisabled</code></a></p>
+    </td>
+    <td><p class="tt"><a name="986152"> </a>An alternative input system (such as an external keyboard) has become disabled.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="986154"> </a><a href="NotifyMgr.html#1010334"><code>sysNotifyAltInputSystemEnabled</code></a></p>
+    </td>
+    <td><p class="tt"><a name="986729"> </a>An alternative input system (such as an external keyboard) has been enabled.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972888"> </a><a href="NotifyMgr.html#996888"><code>sysNotifyAntennaRaisedEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="972890"> </a>The antenna has been raised on a Palm VII series handheld. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="986182"> </a><a href="NotifyMgr.html#1011711"><code>sysNotifyAppServicesEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="986184"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972895"> </a><a href="NotifyMgr.html#996555"><code>sysNotifyCardInsertedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="972897"> </a>An expansion card has been inserted into the expansion slot. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972902"> </a><a href="NotifyMgr.html#996613"><code>sysNotifyCardRemovedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="972904"> </a>An expansion card has been removed from the expansion slot. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="986210"> </a><a href="NotifyMgr.html#1012745"><code>sysNotifyDBAddedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="986212"> </a>A new database has been added to the device.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="986214"> </a><a href="NotifyMgr.html#1004026"><code>sysNotifyDBChangedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="986216"> </a>Database info has been set on a database, such as with <a href="../Memory_Databases_Files/DataMgr.html#1006265"><code>DmSetDatabaseInfo()</code></a>.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="981936"> </a><a href="NotifyMgr.html#1005022"><code>sysNotifyDBCreatedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="981938"> </a>A database has been created.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972909"> </a><a href="NotifyMgr.html#996752"><code>sysNotifyDBDeletedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="972911"> </a>A database has been deleted. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="981932"> </a><a href="NotifyMgr.html#1006592"><code>sysNotifyDBDirtyEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="981934"> </a>An overlay has been opened, a database has been opened for write, or another event has occurred which has made the database info "dirty."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972916"> </a><a href="NotifyMgr.html#1006749"><code>sysNotifyDeleteProtectedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="972918"> </a>The Launcher has attempted to delete a protected database. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972923"> </a><a href="NotifyMgr.html#1014750"><code>sysNotifyDeviceUnlocked</code></a></p>
+    </td>
+    <td><p class="tt"><a name="972925"> </a>The user has unlocked the handheld. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972930"> </a><a href="NotifyMgr.html#1007515"><code>sysNotifyDisplayChangeEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="972932"> </a>The color table or bit depth has changed. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972937"> </a><a href="NotifyMgr.html#1014982"><code>sysNotifyEarlyWakeupEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="972939"> </a>The system is starting to wake up.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="986256"> </a><code>sysNotifyEvtGotAttnEvent</code></p>
+    </td>
+    <td><p class="tt"><a name="986258"> </a>System use only.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972951"> </a><a href="NotifyMgr.html#1016229"><code>sysNotifyForgotPasswordEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="972953"> </a>The user has tapped the Lost Password button in the Security application. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972965"> </a><a href="Helper.html#995191"><code>sysNotifyHelperEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="972967"> </a>An application has requested that a particular service be performed. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="986272"> </a><a href="NotifyMgr.html#1016903"><code>sysNotifyHostFSInitDone</code></a></p>
+    </td>
+    <td><p class="tt"><a name="986274"> </a>System use only.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972976"> </a><a href="NotifyMgr.html#1014830"><code>sysNotifyLateWakeupEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="972978"> </a>The system has finished waking up.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972983"> </a><a href="NotifyMgr.html#1008331"><code>sysNotifyLocaleChangedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="972985"> </a>The system locale has changed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="972990"> </a><a href="NotifyMgr.html#1018613"><code>sysNotifyMenuCmdBarOpenEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="972992"> </a>The system is about to display the menu command toolbar. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="973001"> </a><a href="NotifyMgr.html#1019529"><code>sysNotifyPhoneEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="973003"> </a>Reserved for future use. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="973005"> </a><a href="NotifyMgr.html#1019695"><code>sysNotifyPOSEMountEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="973007"> </a>System use only. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="973012"> </a><a href="NotifyMgr.html#1019862"><code>sysNotifyResetFinishedEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="973014"> </a>The system has finished a reset. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="973019"> </a><a href="NotifyMgr.html#1019939"><code>sysNotifyRetryEnqueueKey</code></a></p>
+    </td>
+    <td><p class="tt"><a name="973021"> </a>The Attention Manager has failed to post a virtual character to the key queue. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="986332"> </a><a href="NotifyMgr.html#1020200"><code>sysNotifySecuritySettingEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="986334"> </a>The device security level has been changed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="973026"> </a><a href="NotifyMgr.html#1020251"><code>sysNotifySleepNotifyEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="973028"> </a>The system is about to go to sleep. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="973033"> </a><a href="NotifyMgr.html#1001016"><code>sysNotifySleepRequestEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="973035"> </a>The system has decided to go to sleep. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="973040"> </a><a href="NotifyMgr.html#1020571"><code>sysNotifySyncFinishEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="973042"> </a>A HotSync operation has just completed. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="973047"> </a><a href="NotifyMgr.html#1020723"><code>sysNotifySyncStartEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="973049"> </a>A HotSync operation is about to begin. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="973054"> </a><a href="NotifyMgr.html#1020882"><code>sysNotifyTimeChangeEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="973056"> </a>The system time has just changed. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="973061"> </a><a href="NotifyMgr.html#996627"><code>sysNotifyVolumeMountedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="973063"> </a>A file system has been mounted. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="973068"> </a><a href="NotifyMgr.html#996649"><code>sysNotifyVolumeUnmountedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="973070"> </a>A file system has been unmounted. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="986360"> </a>telNotifyEnterCodeEvent</p>
+    </td>
+    <td><p class="tt"><a name="986362"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="986356"> </a>telNotifyErrorEvent</p>
+    </td>
+    <td><p class="tt"><a name="986358"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="973073"> </a>Notification Function Summary <a href="#971704"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="973097"> </a><b>Notification Manager Functions</b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="973104"> </a><a href="NotifyMgr.html#995673"><code>SysNotifyBroadcast</code></a> <br><a href="NotifyMgr.html#996056"><code>SysNotifyBroadcastDeferred</code></a><br><a href="NotifyMgr.html#996130"><code>SysNotifyRegister</code></a><br><a href="NotifyMgr.html#1035231"><code>SysNotifyRegisterBackground</code></a></p>
+    </td>
+    <td><p class="tt"><a name="973112"> </a><a href="NotifyMgr.html#996216"><code>SysNotifyRegisterV40</code></a> <br><a href="NotifyMgr.html#996330"><code>SysNotifyUnregister</code></a> <br><a href="NotifyMgr.html#996380"><code>SysNotifyUnregisterV40</code></a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="ProgrammingBasics_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="ProgrammingBasicsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="EventLoop.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="ProgrammingBasics_Part2.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="ProgrammingBasicsIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

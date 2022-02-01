@@ -1,0 +1,189 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: AMD29K Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: AMD29K Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: AMD29K Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC21"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_20.html#SEC20"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_22.html#SEC22"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_22.html#SEC22"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 2.14.5 AMD29K Options </H3>
+<!--docid::SEC21::-->
+<P>
+
+These <SAMP>`-m'</SAMP> options are defined for the AMD Am29000:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-mdw</CODE>
+<DD><A NAME="IDX82"></A>
+<A NAME="IDX83"></A>
+Generate code that assumes the <CODE>DW</CODE> bit is set, i.e., that byte and
+halfword operations are directly supported by the hardware.  This is the
+default.
+<P>
+
+<DT><CODE>-mndw</CODE>
+<DD><A NAME="IDX84"></A>
+Generate code that assumes the <CODE>DW</CODE> bit is not set.
+<P>
+
+<DT><CODE>-mbw</CODE>
+<DD><A NAME="IDX85"></A>
+<A NAME="IDX86"></A>
+Generate code that assumes the system supports byte and halfword write
+operations.  This is the default.
+<P>
+
+<DT><CODE>-mnbw</CODE>
+<DD><A NAME="IDX87"></A>
+Generate code that assumes the systems does not support byte and
+halfword write operations.  <SAMP>`-mnbw'</SAMP> implies <SAMP>`-mndw'</SAMP>.
+<P>
+
+<DT><CODE>-msmall</CODE>
+<DD><A NAME="IDX88"></A>
+<A NAME="IDX89"></A>
+Use a small memory model that assumes that all function addresses are
+either within a single 256 KB segment or at an absolute address of less
+than 256k.  This allows the <CODE>call</CODE> instruction to be used instead
+of a <CODE>const</CODE>, <CODE>consth</CODE>, <CODE>calli</CODE> sequence.
+<P>
+
+<DT><CODE>-mnormal</CODE>
+<DD><A NAME="IDX90"></A>
+Use the normal memory model: Generate <CODE>call</CODE> instructions only when
+calling functions in the same file and <CODE>calli</CODE> instructions
+otherwise.  This works if each file occupies less than 256 KB but allows
+the entire executable to be larger than 256 KB.  This is the default.
+<P>
+
+<DT><CODE>-mlarge</CODE>
+<DD>Always use <CODE>calli</CODE> instructions.  Specify this option if you expect
+a single file to compile into more than 256 KB of code.
+<P>
+
+<DT><CODE>-m29050</CODE>
+<DD><A NAME="IDX91"></A>
+<A NAME="IDX92"></A>
+Generate code for the Am29050.
+<P>
+
+<DT><CODE>-m29000</CODE>
+<DD><A NAME="IDX93"></A>
+Generate code for the Am29000.  This is the default.
+<P>
+
+<DT><CODE>-mkernel-registers</CODE>
+<DD><A NAME="IDX94"></A>
+<A NAME="IDX95"></A>
+Generate references to registers <CODE>gr64-gr95</CODE> instead of to
+registers <CODE>gr96-gr127</CODE>.  This option can be used when compiling
+kernel code that wants a set of global registers disjoint from that used
+by user-mode code.
+<P>
+
+Note that when this option is used, register names in <SAMP>`-f'</SAMP> flags
+must use the normal, user-mode, names.
+</P><P>
+
+<DT><CODE>-muser-registers</CODE>
+<DD><A NAME="IDX96"></A>
+Use the normal set of global registers, <CODE>gr96-gr127</CODE>.  This is the
+default.
+<P>
+
+<DT><CODE>-mstack-check</CODE>
+<DD><DT><CODE>-mno-stack-check</CODE>
+<DD><A NAME="IDX97"></A>
+<A NAME="IDX98"></A>
+Insert (or do not insert) a call to <CODE>__msp_check</CODE> after each stack
+adjustment.  This is often used for kernel code.
+<P>
+
+<DT><CODE>-mstorem-bug</CODE>
+<DD><DT><CODE>-mno-storem-bug</CODE>
+<DD><A NAME="IDX99"></A>
+<A NAME="IDX100"></A>
+<SAMP>`-mstorem-bug'</SAMP> handles 29k processors which cannot handle the
+separation of a mtsrim insn and a storem instruction (most 29000 chips
+to date, but not the 29050).
+<P>
+
+<DT><CODE>-mno-reuse-arg-regs</CODE>
+<DD><DT><CODE>-mreuse-arg-regs</CODE>
+<DD><A NAME="IDX101"></A>
+<SAMP>`-mno-reuse-arg-regs'</SAMP> tells the compiler to only use incoming argument
+registers for copying out arguments.  This helps detect calling a function
+with fewer arguments than it was declared with.
+<P>
+
+<DT><CODE>-mno-impure-text</CODE>
+<DD><DT><CODE>-mimpure-text</CODE>
+<DD><A NAME="IDX102"></A>
+<SAMP>`-mimpure-text'</SAMP>, used in addition to <SAMP>`-shared'</SAMP>, tells the compiler to
+not pass <SAMP>`-assert pure-text'</SAMP> to the linker when linking a shared object.
+<P>
+
+<DT><CODE>-msoft-float</CODE>
+<DD><A NAME="IDX103"></A>
+Generate output containing library calls for floating point.
+<STRONG>Warning:</STRONG> the requisite libraries are not part of GCC.
+Normally the facilities of the machine's usual C compiler are used, but
+this can't be done directly in cross-compilation.  You must make your
+own arrangements to provide suitable library functions for
+cross-compilation.
+<P>
+
+<DT><CODE>-mno-multm</CODE>
+<DD><A NAME="IDX104"></A>
+Do not generate multm or multmu instructions.  This is useful for some embedded
+systems which do not have trap handlers for these instructions.
+</DL>
+<P>
+
+<A NAME="ARM Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_20.html#SEC20"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_22.html#SEC22"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_22.html#SEC22"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

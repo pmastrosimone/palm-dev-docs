@@ -1,0 +1,90 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Local Reg Vars</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Local Reg Vars">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Local Reg Vars">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC103"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_102.html#SEC102"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_104.html#SEC104"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_101.html#SEC101"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_104.html#SEC104"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 4.35.2 Specifying Registers for Local Variables </H3>
+<!--docid::SEC103::-->
+<P>
+
+You can define a local register variable with a specified register
+like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>register int *foo asm ("a5");
+</pre></td></tr></table></P><P>
+
+Here <CODE>a5</CODE> is the name of the register which should be used.  Note
+that this is the same syntax used for defining global register
+variables, but for a local variable it would appear within a function.
+</P><P>
+
+Naturally the register name is cpu-dependent, but this is not a
+problem, since specific registers are most often useful with explicit
+assembler instructions (see section <A HREF="gcc_93.html#SEC93">4.32 Assembler Instructions with C Expression Operands</A>).  Both of these things
+generally require that you conditionalize your program according to
+cpu type.
+</P><P>
+
+In addition, operating systems on one type of cpu may differ in how they
+name the registers; then you would need additional conditionals.  For
+example, some 68000 operating systems call this register <CODE>%a5</CODE>.
+</P><P>
+
+Defining such a register variable does not reserve the register; it
+remains available for other uses in places where flow control determines
+the variable's value is not live.  However, these registers are made
+unavailable for use in the reload pass; excessive use of this feature
+leaves the compiler too few available registers to compile certain
+functions.
+</P><P>
+
+This option does not guarantee that GNU CC will generate code that has
+this variable in the register you specify at all times.  You may not
+code an explicit reference to this register in an <CODE>asm</CODE> statement
+and assume it will always refer to this variable.
+</P><P>
+
+Stores into local register variables may be deleted when they appear to be dead
+according to dataflow analysis.  References to local register variables may
+be deleted or moved or simplified.
+</P><P>
+
+<A NAME="Alternate Keywords"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

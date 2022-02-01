@@ -1,0 +1,151 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Directory Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Directory Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Directory Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC14"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_13.html#SEC13"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_15.html#SEC15"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.12 Options for Directory Search </H2>
+<!--docid::SEC14::-->
+<P>
+
+These options specify directories to search for header files, for
+libraries and for parts of the compiler:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-I<VAR>dir</VAR></CODE>
+<DD>Add the directory <VAR>dir</VAR> to the head of the list of directories to be
+searched for header files.  This can be used to override a system header
+file, substituting your own version, since these directories are
+searched before the system header file directories.  If you use more
+than one <SAMP>`-I'</SAMP> option, the directories are scanned in left-to-right
+order; the standard system directories come after.
+<P>
+
+<DT><CODE>-I-</CODE>
+<DD>Any directories you specify with <SAMP>`-I'</SAMP> options before the <SAMP>`-I-'</SAMP>
+option are searched only for the case of <SAMP>`#include "<VAR>file</VAR>"'</SAMP>;
+they are not searched for <SAMP>`#include &#60;<VAR>file</VAR>&#62;'</SAMP>.
+<P>
+
+If additional directories are specified with <SAMP>`-I'</SAMP> options after
+the <SAMP>`-I-'</SAMP>, these directories are searched for all <SAMP>`#include'</SAMP>
+directives.  (Ordinarily <EM>all</EM> <SAMP>`-I'</SAMP> directories are used
+this way.)
+</P><P>
+
+In addition, the <SAMP>`-I-'</SAMP> option inhibits the use of the current
+directory (where the current input file came from) as the first search
+directory for <SAMP>`#include "<VAR>file</VAR>"'</SAMP>.  There is no way to
+override this effect of <SAMP>`-I-'</SAMP>.  With <SAMP>`-I.'</SAMP> you can specify
+searching the directory which was current when the compiler was
+invoked.  That is not exactly the same as what the preprocessor does
+by default, but it is often satisfactory.
+</P><P>
+
+<SAMP>`-I-'</SAMP> does not inhibit the use of the standard system directories
+for header files.  Thus, <SAMP>`-I-'</SAMP> and <SAMP>`-nostdinc'</SAMP> are
+independent.
+</P><P>
+
+<DT><CODE>-L<VAR>dir</VAR></CODE>
+<DD>Add directory <VAR>dir</VAR> to the list of directories to be searched
+for <SAMP>`-l'</SAMP>.
+<P>
+
+<DT><CODE>-B<VAR>prefix</VAR></CODE>
+<DD>This option specifies where to find the executables, libraries,
+include files, and data files of the compiler itself.
+<P>
+
+The compiler driver program runs one or more of the subprograms
+<TT>`cpp'</TT>, <TT>`cc1'</TT>, <TT>`as'</TT> and <TT>`ld'</TT>.  It tries
+<VAR>prefix</VAR> as a prefix for each program it tries to run, both with and
+without <SAMP>`<VAR>machine</VAR>/<VAR>version</VAR>/'</SAMP> (see section <A HREF="gcc_15.html#SEC15">2.13 Specifying Target Machine and Compiler Version</A>).
+</P><P>
+
+For each subprogram to be run, the compiler driver first tries the
+<SAMP>`-B'</SAMP> prefix, if any.  If that name is not found, or if <SAMP>`-B'</SAMP>
+was not specified, the driver tries two standard prefixes, which are
+<TT>`/usr/lib/gcc/'</TT> and <TT>`/usr/local/lib/gcc-lib/'</TT>.  If neither of
+those results in a file name that is found, the unmodified program
+name is searched for using the directories specified in your
+<SAMP>`PATH'</SAMP> environment variable.
+</P><P>
+
+<SAMP>`-B'</SAMP> prefixes that effectively specify directory names also apply
+to libraries in the linker, because the compiler translates these
+options into <SAMP>`-L'</SAMP> options for the linker.  They also apply to
+includes files in the preprocessor, because the compiler translates these
+options into <SAMP>`-isystem'</SAMP> options for the preprocessor.  In this case,
+the compiler appends <SAMP>`include'</SAMP> to the prefix.
+</P><P>
+
+The run-time support file <TT>`libgcc.a'</TT> can also be searched for using
+the <SAMP>`-B'</SAMP> prefix, if needed.  If it is not found there, the two
+standard prefixes above are tried, and that is all.  The file is left
+out of the link if it is not found by those means.
+</P><P>
+
+Another way to specify a prefix much like the <SAMP>`-B'</SAMP> prefix is to use
+the environment variable <CODE>GCC_EXEC_PREFIX</CODE>.  See section <A HREF="gcc_44.html#SEC44">2.16 Environment Variables Affecting GCC</A>.
+</P><P>
+
+<DT><CODE>-specs=<VAR>file</VAR></CODE>
+<DD>Process <VAR>file</VAR> after the compiler reads in the standard <TT>`specs'</TT>
+file, in order to override the defaults that the <TT>`gcc'</TT> driver
+program uses when determining what switches to pass to <TT>`cc1'</TT>,
+<TT>`cc1plus'</TT>, <TT>`as'</TT>, <TT>`ld'</TT>, etc.  More than one
+<SAMP>`-specs='</SAMP><VAR>file</VAR> can be specified on the command line, and they
+are processed in order, from left to right.
+</DL>
+<P>
+
+<A NAME="Target Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_13.html#SEC13"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_15.html#SEC15"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

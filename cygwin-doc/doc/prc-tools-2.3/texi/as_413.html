@@ -1,0 +1,104 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Xtensa Opcodes</TITLE>
+
+<META NAME="description" CONTENT="Using as: Xtensa Opcodes">
+<META NAME="keywords" CONTENT="Using as: Xtensa Opcodes">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC422"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_412.html#SEC421"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_414.html#SEC423"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_415.html#SEC424"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_412.html#SEC421"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_415.html#SEC424"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 8.33.2.1 Opcode Names </H4>
+<!--docid::SEC422::-->
+<P>
+
+See the <CITE>Xtensa Instruction Set Architecture (ISA) Reference
+Manual</CITE> for a complete list of opcodes and descriptions of their
+semantics.
+</P><P>
+
+<A NAME="IDX1540"></A>
+<A NAME="IDX1541"></A>
+<A NAME="IDX1542"></A>
+The Xtensa assembler distinguishes between <EM>generic</EM> and
+<EM>specific</EM> opcodes.  Specific opcodes correspond directly to Xtensa
+machine instructions.  Prefixing an opcode with an underscore character
+(<SAMP>`_'</SAMP>) identifies it as a specific opcode.  Opcodes without a
+leading underscore are generic, which means the assembler is required to
+preserve their semantics but may not translate them directly to the
+specific opcodes with the same names.  Instead, the assembler may
+optimize a generic opcode and select a better instruction to use in its
+place (see section <A HREF="as_415.html#SEC424">Xtensa Optimizations</A>), or the
+assembler may relax the instruction to handle operands that are out of
+range for the corresponding specific opcode (see section <A HREF="as_418.html#SEC427">Xtensa Relaxation</A>).
+</P><P>
+
+Only use specific opcodes when it is essential to select
+the exact machine instructions produced by the assembler.
+Using specific opcodes unnecessarily only makes the code less
+efficient, by disabling assembler optimization, and less flexible, by
+disabling relaxation.
+</P><P>
+
+Note that this special handling of underscore prefixes only applies to
+Xtensa opcodes, not to either built-in macros or user-defined macros.
+When an underscore prefix is used with a macro (e.g., <CODE>_NOP</CODE>), it
+refers to a different macro.  The assembler generally provides built-in
+macros both with and without the underscore prefix, where the underscore
+versions behave as if the underscore carries through to the instructions
+in the macros.  For example, <CODE>_NOP</CODE> expands to <CODE>_OR a1,a1,a1</CODE>.
+</P><P>
+
+The underscore prefix only applies to individual instructions, not to
+series of instructions.  For example, if a series of instructions have
+underscore prefixes, the assembler will not transform the individual
+instructions, but it may insert other instructions between them (e.g.,
+to align a <CODE>LOOP</CODE> instruction).  To prevent the assembler from
+modifying a series of instructions as a whole, use the
+<CODE>no-generics</CODE> directive.  See section <A HREF="as_426.html#SEC435">generics</A>.
+</P><P>
+
+<A NAME="Xtensa Registers"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_412.html#SEC421"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_414.html#SEC423"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_415.html#SEC424"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_412.html#SEC421"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_415.html#SEC424"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

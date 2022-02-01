@@ -1,0 +1,648 @@
+<html>
+<head>
+<title>(Protein) The Serial Manager | Low-Level Communications</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:13:41">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="997178"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="LowLevelCommsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_SerIntro.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_SerLink.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelCommsIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">2 &nbsp;&nbsp;
+The Serial Manager</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Low-Level Communications</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="LowLevelComms_Serial_Pt.html">Part I: Serial Communication</a> </h1>
+<h1 class="SideTOC1"><a href="LowLevelComms_SerMgr.html">2  The Serial Manager</a></h1>
+
+      <h3 class="SideTOC3"><a href="#997343">
+      Steps for Using the Serial Manager</a></h3>
+
+      <h3 class="SideTOC3"><a href="#997376">
+      Opening a Port</a></h3>
+
+      <h3 class="SideTOC3"><a href="#997492">
+      Closing a Port</a></h3>
+
+      <h3 class="SideTOC3"><a href="#997505">
+      Configuring the Port</a></h3>
+
+      <h3 class="SideTOC3"><a href="#997610">
+      Sending Data</a></h3>
+
+      <h3 class="SideTOC3"><a href="#997664">
+      Receiving Data</a></h3>
+
+      <h3 class="SideTOC3"><a href="#997912">
+      Serial Manager Tips and Tricks</a></h3>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="997209"> </a>The Palm OS<sup>&#174;</sup> Serial Manager is responsible for byte-level serial I/O and control of the RS-232, IR, Bluetooth, or USB signals. Under Palm OS Cobalt and later versions of the operating system, the Serial Manager is implemented as a STREAMS driver and a compatibility library that lets you continue to use the Serial Manager API.</p>
+
+<div><hr>
+  <a name="998157"> </a> <b>IMPORTANT: </b> The Palm OS Cobalt Serial Manager implements the API formerly known as the "New Serial Manager;" functions with names beginning with "<code>Srm</code>" are supported. The Old Serial Manager functions&#8212;those that begin with "<code>Ser</code>"&#8212;are not supported under Palm OS Cobalt, version 6, and later.
+<hr>
+</div>
+
+<p><a name="997215"> </a>Because the Serial Manager is now based on the Palm OS Cobalt I/O architecture, the concept of "virtual serial drivers" is no longer supported; instead, the Serial Manager works with the I/O Subsystem and the Connection Manager to support communication through any communications interface. The legacy Serial Manager ports, such as <code>serCradlePort</code>, <code>sysFileCVirtIrComm</code>, <code>sysFileCVirtRfComm</code>, and so on are still supported.</p>
+
+<p><a name="999084"> </a>To ensure that the Serial Manager does not slow down processing of user events, the Serial Manager receives data asynchronously. The Serial Manager API, however, executes synchronously; if a Serial Manager function blocks during execution, this does not affect the system's ability to keep receiving data.</p>
+
+<p><a name="999089"> </a>The Serial Manager functions that send data return as soon as they have handed off all the data to the lower-level IOS STREAMS write queue. The actual transmission of the data will be handled later, asynchronously.</p>
+
+<p><a name="997217"> </a>This chapter describes the Serial Manager. It covers the following topics:</p>
+<ul type="disc">
+  <li><a name="997225"> </a><a href="LowLevelComms_SerMgr.html#997343">Steps for Using the Serial Manager</a>
+  <li><a name="997229"> </a><a href="LowLevelComms_SerMgr.html#997376">Opening a Port</a>
+  <li><a name="997233"> </a><a href="LowLevelComms_SerMgr.html#997492">Closing a Port</a>
+  <li><a name="997237"> </a><a href="LowLevelComms_SerMgr.html#997505">Configuring the Port</a>
+  <li><a name="997241"> </a><a href="LowLevelComms_SerMgr.html#997610">Sending Data</a>
+  <li><a name="997245"> </a><a href="LowLevelComms_SerMgr.html#997664">Receiving Data</a>
+  <li><a name="997249"> </a><a href="LowLevelComms_SerMgr.html#997912">Serial Manager Tips and Tricks</a>
+</ul>
+
+<h4 class="hcH4">
+  <a name="997298"> </a>About the Serial Manager
+</h4>
+
+<p><a name="997299"> </a>The Serial Manager provides an interface to communications devices. These communications devices can include a serial port, cradle port, infrared port, USB, Bluetooth, and other devices that are accessible through the Connection Manager. This API provides a degree of compatibility with software written for previous versions of Palm OS.</p>
+
+<p><a name="998785"> </a>Once a port is opened, the Serial Manager allocates a structure for maintaining the current information and settings of the particular port. The task or application that opens the port is returned a port ID and must supply the port ID to refer to this port when other Serial Manager functions are called.</p>
+
+<p><a name="997337"> </a>Upon closing the port, the Serial Manager deallocates the open port structure and closes the underlying IOS connection.</p>
+
+<p><a name="997338"> </a>Note that applications can use the Connection Manager to obtain the proper port name and other serial port parameters that the user has stored in connection profiles for different connection types. For more information, see the book <i>Exploring Palm OS: High-Level Communications</i> for information on the Connection Manager.</p>
+<h3 class="hbH3">
+  <a name="997343"> </a>Steps for Using the Serial Manager <a href="#997178"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="997344"> </a>Regardless of which version of the API you use, the main steps to perform serial communication are the same. They are: </p>
+<ol type="1">
+  <li value="1"><a name="997345"> </a>Open a serial port. 
+   <p><a name="997346"> </a>To open a port , you specify which port to open and obtain a port ID that uniquely identifies this connection. You pass that port ID to every other Serial Manager call you make. </p>
+   <p><a name="997351"> </a>See <a href="LowLevelComms_SerMgr.html#997376">"Opening a Port"</a>.</p>
+  <li value="2"><a name="997352"> </a>If necessary, configure the connection.
+   <p><a name="997353"> </a>You might need to change the baud rate or increase the size of the receive queue before you use any other Serial Manager calls. See <a href="LowLevelComms_SerMgr.html#997505">"Configuring the Port"</a>.</p>
+  <li value="3"><a name="997357"> </a>Send or receive data.
+   <p><a name="997363"> </a>See <a href="LowLevelComms_SerMgr.html#997610">"Sending Data"</a> and <a href="LowLevelComms_SerMgr.html#997664">"Receiving Data"</a>.</p>
+  <li value="4"><a name="997365"> </a>Close the port. 
+   <p><a name="997369"> </a>See <a href="LowLevelComms_SerMgr.html#997492">"Closing a Port"</a>.</p>
+</ol>
+
+<p><a name="997370"> </a>The next several sections describe these steps in more detail.</p>
+
+<div><hr>
+  <a name="997374"> </a> <b>TIP: </b> See <a href="LowLevelComms_SerMgr.html#997912">"Serial Manager Tips and Tricks"</a> for debugging information and information on how to fix common errors. 
+<hr>
+</div>
+<h3 class="hbH3">
+  <a name="997376"> </a>Opening a Port <a href="#997178"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="997378"> </a>The Serial Manager is installed when the device is booted. Before you can use it, however, you must enable the serial hardware by opening a port. </p>
+
+<div><hr>
+  <a name="997380"> </a> <b>IMPORTANT: </b> Applications that open a serial port are responsible for closing it. Opening a serial port powers up the communications hardware and drains batteries. To conserve battery power, don't keep the port open longer than necessary. 
+<hr>
+</div>
+
+<p><a name="997381"> </a>When you attempt to open a serial port, you must check for errors upon return: </p>
+<ul type="disc">
+  <li><a name="997382"> </a>If <code>errNone</code> is returned, the port was opened successfully. The application can then perform its tasks and close the port when finished.
+  <li><a name="997384"> </a>If <code>serErrAlreadyOpen</code> is returned, the port was already open. This error is returned if one of the underlying drivers involved in the connection is already in use; for example, if an active PPP session is currently using the UART.
+  <li><a name="997385"> </a>If any error is returned, the port was not opened, and the application must <i>not</i> close it.
+</ul>
+
+<h4 class="hcH4">
+  <a name="997387"> </a>Opening a Port
+</h4>
+
+<p><a name="997393"> </a>To open a port , call the <a href="LowLevelComms_SerRef.html#994414"><code>SrmOpen()</code></a> function, specifying the port (see <a href="LowLevelComms_SerMgr.html#997429">"Specifying the Port"</a>) and the initial baud rate of the serial interface. <code>SrmOpen</code> returns a port ID that uniquely identifies this connection. You pass this port ID to all other Serial Manager calls. </p>
+
+<p><a name="997397"> </a>The Serial Manager supports USB and Bluetooth connections as well as RS-232 and IR connections. With the Bluetooth and USB protocols, it is often more important to specify the reason why the application is opening the port. The baud rate is unimportant as that is negotiated in USB and Bluetooth protocols. To open a USB or Bluetooth connection, use <a href="LowLevelComms_SerRef.html#994192"><code>SrmExtOpen()</code></a> instead of <code>SrmOpen()</code>. This function takes a <a href="LowLevelComms_SerRef.html#993424"><code>SrmOpenConfigType</code></a> structure, which allows you to specify the purpose of the connection instead of the baud rate. </p>
+
+<p><a name="997406"> </a>Once the <code>SrmOpen()</code> or <code>SrmExtOpen()</code> call is made successfully, it indicates that the Serial Manager has successfully allocated internal structures to maintain the port and has successfully loaded the serial driver for this port.</p>
+<p class="CCodeCaption">
+  <a name="997407"> </a><b>Listing 2.1  Opening the port</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+UInt16 portId;<a name="997408"> </a>
+Boolean serPortOpened = false;<a name="997409"> </a>
+ <a name="997410"> </a>
+err = SrmOpen(serPortCradlePort /* port */, 57600, /* baud */<a name="997411"> </a>
+  &amp;portId);<a name="997412"> </a>
+if (err) {<a name="997413"> </a>
+   // display error message here.<a name="997414"> </a>
+}<a name="997415"> </a>
+//record our open status in global.<a name="997416"> </a>
+serPortOpened = true;<a name="997417"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h4 class="hcH4">
+  <a name="997429"> </a>Specifying the Port
+</h4>
+
+<p><a name="997430"> </a>Ports are specified using a hardware-independent port ID. Palm OS will map them to the correct physical port by locating the appropriate port using the Connection Manager.</p>
+
+<p><a name="999158"> </a>See <a href="LowLevelComms_SerRef.html#993494">Chapter 4, "Port Constants,"</a> for a list of port IDs you can use when opening a serial connection.</p>
+<h3 class="hbH3">
+  <a name="997492"> </a>Closing a Port <a href="#997178"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="997493"> </a>Once an application is finished with the serial port, it must close the port using the <a href="LowLevelComms_SerRef.html#1003382"><code>SrmClose()</code></a> function. If <code>SrmClose()</code> returns no error, it indicates that the Serial Manager has successfully closed the driver and deallocated the data structures used for maintaining the port.</p>
+
+<p><a name="997503"> </a>To conserve battery power, it is important not to leave the serial port open longer than necessary. It is generally better to close and reopen the connection multiple times than it is to leave it open unnecessarily.</p>
+<h3 class="hbH3">
+  <a name="997505"> </a>Configuring the Port <a href="#997178"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="997506"> </a>A newly opened port has the default configuration. The default port configuration is:</p>
+<ul type="disc">
+  <li><a name="997507"> </a>A receive queue of 512 bytes
+  <li><a name="997508"> </a>CTS/RTS hardware flow control with a 5-second timeout on CTS low
+  <li><a name="997509"> </a>1 stop bit
+  <li><a name="997510"> </a>8 data bits
+  <li><a name="997513"> </a>For RS-232 connections, the baud rate you specified when you opened the port. 
+</ul>
+
+<p><a name="997514"> </a>You can change this configuration if necessary before sending or receiving data. </p>
+
+<h4 class="hcH4">
+  <a name="997515"> </a>Using a Custom Receive Queue
+</h4>
+
+<p><a name="997516"> </a>The default receive queue size is 512 bytes. If you wish to use a different size of buffer, you can do so by using a custom receive queue.</p>
+
+<p><a name="997517"> </a>To use a custom receive queue, an application must:</p>
+<ul type="disc">
+  <li><a name="997518"> </a>Allocate memory for the custom queue; this memory can be allocated using <code>malloc()</code>, or can be either a local or global variable. Be aware that the memory must remain in place as long as the buffer is in use.
+  <li><a name="997526"> </a>Call <a href="LowLevelComms_SerRef.html#995031"><code>SrmSetReceiveBuffer()</code></a> with the new buffer and the size of the new buffer as arguments. 
+  <li><a name="997527"> </a>Restore the default queue before closing the port. That way, any bits sent in have a place to go.
+  <li><a name="997528"> </a>Deallocate the custom queue after restoring the default queue. The system only deallocates the default queue. 
+</ul>
+
+<p><a name="997529"> </a>The following code fragment illustrates replacing the default queue with a custom queue. </p>
+<p class="CCodeCaption">
+  <a name="997530"> </a><b>Listing 2.2  Replacing the receive queue</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+#define myCustomSerQueueSize 1024<a name="997531"> </a>
+void *customSerQP;<a name="997532"> </a>
+// Allocate a dynamic memory chunk for our custom receive <a name="997533"> </a>
+// queue.<a name="997534"> </a>
+customSerQP = MemPtrNew(myCustomSerQueueSize);<a name="997535"> </a>
+// Replace the default receive queue.<a name="997536"> </a>
+if (customSerQP) {<a name="997537"> </a>
+  err = SrmSetReceiveBuffer(portId, customSerQP, <a name="997538"> </a>
+     myCustomSerQueueSize);<a name="997539"> </a>
+}<a name="997540"> </a>
+ <a name="997541"> </a>
+// ... do Serial Manager work<a name="997542"> </a>
+ <a name="997543"> </a>
+// Now restore default queue and delete custom queue.<a name="997544"> </a>
+// Pass NULL for the buffer and 0 for bufSize to restore the <a name="997545"> </a>
+// default queue.<a name="997546"> </a>
+err = SrmSetReceiveBuffer(portId, NULL, 0);<a name="997547"> </a>
+if(customSerQP) {<a name="997548"> </a>
+   MemPtrFree(customSerQP);<a name="997549"> </a>
+   customSerQP = NULL;<a name="997550"> </a>
+}<a name="997551"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h4 class="hcH4">
+  <a name="998460"> </a>Changing Other Configuration Settings 
+</h4>
+
+<p><a name="998465"> </a>To change the other serial port settings, use <a href="LowLevelComms_SerRef.html#993980"><code>SrmControl()</code></a> . </p>
+
+<p><a name="998469"> </a><a href="LowLevelComms_SerMgr.html#997569">Listing 2.3</a> configures the serial port for 19200 baud, 8 data bits, even parity, 1 stop bit, and full hardware handshake (input and output) with a CTS timeout of 0.5 seconds. The CTS timeout specifies the maximum number of system ticks the serial library will wait to send a byte when the CTS input is not asserted. The CTS timeout is ignored if <code>srmSettingsFlagCTSAutoM</code> is not set. </p>
+<p class="CCodeCaption">
+  <a name="997569"> </a><b>Listing 2.3  Changing the configuration</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+status_t err;<a name="997570"> </a>
+Int32 paramSize;<a name="997571"> </a>
+Int32 baudRate = 19200;<a name="997572"> </a>
+UInt32 flags = srmSettingsFlagBitsPerChar8 |
+srmSettingsFlagParityOnM | srmSettingsFlagParityEvenM |
+srmSettingsFlagStopBits1 | srmSettingsFlagRTSAutoM |
+srmSettingsFlagCTSAutoM;<a name="997573"> </a>
+Int32 ctsTimeout = SysTicksPerSecond() / 2;<a name="997574"> </a>
+ <a name="997575"> </a>
+paramSize = sizeof(baudRate);<a name="997576"> </a>
+err = SrmControl(portId, srmCtlSetBaudRate, &amp;baudRate, <a name="997577"> </a>
+   &amp;paramSize);<a name="997578"> </a>
+ <a name="997579"> </a>
+paramSize = sizeof(flags);<a name="997580"> </a>
+err = SrmControl(portId, srmCtlSetFlags, &amp;flags, &amp;paramSize);<a name="997581"> </a>
+ <a name="997582"> </a>
+paramSize = sizeof(ctsTimeout);<a name="997583"> </a>
+err = SrmControl(portId, srmCtlSetCtsTimeout, &amp;ctsTimeout, <a name="997584"> </a>
+   &amp;paramSize);<a name="997585"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="997605"> </a>If you want to find out what the current configuration is, pass one of the <code>srmCtlGet</code>... op codes to the <code>SrmControl()</code> function. For example, to find out the current baud rate, pass <code>srmCtlGetBaudRate</code>.</p>
+<h3 class="hbH3">
+  <a name="997610"> </a>Sending Data <a href="#997178"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="997620"> </a>To send data, use <a href="LowLevelComms_SerRef.html#994843"><code>SrmSend()</code></a>. Sending data is performed synchronously. To send data, the application only needs to have an open connection with a port that has been configured properly and then specify a buffer to send. The larger the buffer to send, the longer the send function operates before returning to the calling application. The send function returns the actual number of bytes that were placed in the UART's FIFO. This makes it possible to determine what was sent and what wasn't in case of an error. </p>
+
+<p><a name="997624"> </a><a href="LowLevelComms_SerMgr.html#997626">Listing 2.4</a> illustrates the use of <code>SrmSend()</code>.</p>
+<p class="CCodeCaption">
+  <a name="997626"> </a><b>Listing 2.4&nbsp;&nbsp;Sending data</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+UInt32 toSend, numSent;<a name="997627"> </a>
+status_t err;<a name="997628"> </a>
+Char msg[] = "logon\n";<a name="997629"> </a>
+toSend = StrLen(msg);<a name="997630"> </a>
+numSent = SrmSend(portId, msg, toSend, &amp;err);<a name="997631"> </a>
+if (err == serErrTimeOut) {<a name="997632"> </a>
+  //cts timeout detected<a name="997633"> </a>
+}<a name="997634"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="998551"> </a>If <code>SrmSend()</code> returns an error, or if you simply want to ensure that all data has been sent, you can use any of the following functions: </p>
+<ul type="disc">
+  <li><a name="997652"> </a>Use <a href="LowLevelComms_SerRef.html#994896"><code>SrmSendCheck()</code></a> to determine how many bytes are left in the FIFO. Note that not all serial devices support this feature. 
+   <p><a name="997653"> </a>If the hardware does not provide an exact reading, the function returns an approximate number: 8 means full, 4 means approximately half-full. If the function returns 0, the queue is empty.</p>
+  <li><a name="997662"> </a>The <a href="LowLevelComms_SerRef.html#994940"><code>SrmSendFlush()</code></a> function can be used to flush remaining bytes in the FIFO that have not been sent. 
+</ul>
+
+<p><a name="999269"> </a>Under Palm OS Cobalt, the <a href="LowLevelComms_SerRef.html#994982"><code>SrmSendWait()</code></a> function no longer waits to ensure that the data has been sent. There is no longer any way to ensure that the data has actually been transmitted. This function's use is discouraged.</p>
+<h3 class="hbH3">
+  <a name="997664"> </a>Receiving Data <a href="#997178"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="997665"> </a>Receiving data is a more involved process because it depends on the receiving application actually listening for data from the port. </p>
+
+<p><a name="997666"> </a>To receive data, an application must do the following: </p>
+<ul type="disc">
+  <li><a name="997667"> </a>Ensure that the code does not loop indefinitely waiting for data from the receive queue. 
+   <p><a name="997668"> </a>The most common way to do this is to pass a timeout value to <a href="../Programming_Basics/Event.html#996063"><code>EvtGetEvent()</code></a> or <a href="LowLevelComms_StdioRef.html#997909"><code>IOSPoll()</code></a> in your event loop.</p>
+   <p><a name="997674"> </a>If your code is outside of an event loop, you can use the <a href="../Programming_Basics/Event.html#995797"><code>EvtEventAvail()</code></a> function to see if the system has an event it needs to process, and if so, call <a href="../System_Management/SystemMgr.html#994346"><code>SysHandleEvent()</code></a>. </p>
+  <li><a name="997679"> </a>To avoid having the system go to sleep while it's waiting to receive data, an application should call <a href="../Programming_Basics/SysEvtMgr.html#993499"><code>EvtResetAutoOffTimer()</code></a> periodically (or call <a href="../Programming_Basics/SysEvtMgr.html#993539"><code>EvtSetAutoOffTimer()</code></a>). For example, the Serial Link Manager automatically calls <code>EvtResetAutoOffTimer()</code> each time a new packet is received.
+</ul>
+
+<div><hr>
+  <a name="997688"> </a> <b>TIP: </b> For many applications, the auto-off feature presents no problem. Use <code>EvtResetAutoOffTimer()</code> with discretion; applications that use it drain the battery.
+<hr>
+</div>
+<ul type="disc">
+  <li><a name="997697"> </a>To receive the data, call <a href="LowLevelComms_SerRef.html#994547"><code>SrmReceive()</code></a>. Pass a buffer, the number of bytes you want to receive, and the inter-byte timeout in system ticks. This call blocks until all the requested data have been received or an error occurs. This function returns the number of bytes actually received. (The error is returned in the last parameter that you pass to the function.) 
+  <li><a name="997698"> </a>If you want to wait until a certain amount of data is available before you receive it, call <a href="LowLevelComms_SerRef.html#994690"><code>SrmReceiveWait()</code></a> before you call <code>SrmReceive()</code>. Specify the number of bytes to wait for, which must be less than the current receive buffer size, and the amount of time to wait in milliseconds. If <code>SrmReceiveWait()</code> returns <code>errNone</code>, it means that the receive queue contains the specified number of bytes. If it returns anything other than <code>errNone</code>, that number of bytes is not available. 
+   <p><a name="997707"> </a><code>SrmReceiveWait()</code> is useful, for example, if you are receiving data packets. You can use <code>SrmReceiveWait()</code> to wait until an entire packet is available and then read that packet. </p>
+  <li><a name="997708"> </a>It's common to want to receive data only when the system is idle. In this case, have your event loop respond to the <code>nilEvent</code>, which is generated whenever <a href="../Programming_Basics/Event.html#996063"><code>EvtGetEvent()</code></a> times out and another event is not available. In response to this event, call <a href="LowLevelComms_SerRef.html#994602"><code>SrmReceiveCheck()</code></a> . Unlike <code>SrmReceiveWait()</code>, <code>SrmReceiveCheck()</code> does not block awaiting input. Instead, it immediately returns the number of bytes currently in the receive queue. If there is data in the receive queue, call <code>SrmReceive()</code> to receive it. If the queue has no data, your event handler can simply return and allow the system to perform other tasks. 
+  <li><a name="997718"> </a>Check for and handle error conditions returned by any of the receive function calls as described in <a href="LowLevelComms_SerMgr.html#997737">"Handling Errors"</a>.
+</ul>
+
+<div><hr>
+  <a name="997722"> </a> <b>IMPORTANT: </b> Always check for line errors. Due to unpredictable conditions, there is no guarantee of success. If a line error occurs, all other Serial Manager calls fail until you clear the error.
+<hr>
+</div>
+
+<p><a name="997725"> </a>For example code that shows how to receive data, see <a href="LowLevelComms_SerMgr.html#997816">"Receive Data Example"</a>.</p>
+
+<p><a name="998589"> </a>You can directly access the receive queue using the <a href="LowLevelComms_SerRef.html#994791"><code>SrmReceiveWindowOpen()</code></a> and <a href="LowLevelComms_SerRef.html#994754"><code>SrmReceiveWindowClose()</code></a> functions. These functions allow fast access to the buffer to reduce buffer copying.</p>
+
+<h4 class="hcH4">
+  <a name="997737"> </a>Handling Errors
+</h4>
+
+<p><a name="997738"> </a>If an error occurs on the line, all of the receive functions return the error condition <code>serErrLineErr</code>. This error will continue to be returned until you explicitly clear the error condition and continue. </p>
+
+<p><a name="997747"> </a>To clear line errors, call <a href="LowLevelComms_SerRef.html#1002430"><code>SrmClearErr()</code></a>. </p>
+
+<p><a name="997752"> </a>If you want more information about the error, call <a href="LowLevelComms_SerRef.html#994376"><code>SrmGetStatus()</code></a> before you clear the line. </p>
+
+<p><a name="997763"> </a><a href="LowLevelComms_SerMgr.html#997766">Listing 2.5</a> checks whether a framing or parity error has been returned and clears the line errors.</p>
+<p class="CCodeCaption">
+  <a name="997766"> </a><b>Listing 2.5  Handling line errors</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+void HandleSerReceiveErr(UInt16 portId, status_t err) {<a name="997767"> </a>
+   UInt32 lineStatus;<a name="997768"> </a>
+   UInt16 lineErrs;<a name="997769"> </a>
+ <a name="997770"> </a>
+   if (err == serErrLineErr) {<a name="997771"> </a>
+      SrmGetStatus(portId, &amp;lineStatus, &amp;lineErrs);<a name="997772"> </a>
+      // test for framing or parity error.<a name="997773"> </a>
+      if (lineErrs &amp; serLineErrorFraming | 
+serLineErrorParity) <a name="997774"> </a>
+      {<a name="997775"> </a>
+            //framing or parity error occurred. Do something.<a name="997776"> </a>
+      }<a name="997777"> </a>
+       SrmClearErr(portId);<a name="997778"> </a>
+   }<a name="997779"> </a>
+}<a name="997780"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<div><hr>
+  <a name="997804"> </a> <b>TIP: </b> See <a href="LowLevelComms_SerMgr.html#997928">"Common Errors"</a> for some common causes of line errors and how to fix them. 
+<hr>
+</div>
+
+<p><a name="997805"> </a>In some cases, you may want to discard any received data when an error occurs. For example, if your protocol is packet driven and you detect data corruption, you should flush the buffer before you continue. To do so, call <a href="LowLevelComms_SerRef.html#994646"><code>SrmReceiveFlush()</code></a>. This function flushes any bytes in the receive queue and then calls <code>SrmClearErr()</code> for you. </p>
+
+<p><a name="997814"> </a><code>SrmReceiveFlush()</code> takes a timeout value as a parameter. If you specify a timeout, it waits that period of time for any other data to be received in the queue and flushes it as well. If you pass 0 for the timeout, it simply flushes the data currently in the queue, clears the line errors, and returns. The flush timeout has to be large enough to flush out the noise but not so large that it flushes part of the next packet. </p>
+
+<h4 class="hcH4">
+  <a name="997816"> </a>Receive Data Example
+</h4>
+
+<p><a name="997820"> </a><a href="LowLevelComms_SerMgr.html#997822">Listing 2.6</a> shows how to receive large blocks of data using the Serial Manager.</p>
+<p class="CCodeCaption">
+  <a name="997822"> </a><b>Listing 2.6  Receiving data using the Serial Manager</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+#include &lt;PalmOS.h&gt; // all the system toolbox headers<a name="997823"> </a>
+#include &lt;SerialMgr.h&gt;<a name="997824"> </a>
+#define k2KBytes 2048<a name="997825"> </a>
+/************************************************************<a name="997826"> </a>
+*<a name="997827"> </a>
+* FUNCTION: RcvSerialData<a name="997828"> </a>
+*<a name="997829"> </a>
+* DESCRIPTION: An example of how to receive a large chunk of data<a name="997830"> </a>
+* from the Serial Manager. This function is useful if the app<a name="997831"> </a>
+* knows it must receive all this data before moving on. The<a name="997832"> </a>
+* YourDrainEventQueue() function is a chance for the application<a name="997833"> </a>
+* to call EvtGetEvent and handle other application events.<a name="997834"> </a>
+* Receiving data whenever it's available during idle events<a name="997835"> </a>
+* might be done differently than this sample.<a name="997836"> </a>
+*<a name="997837"> </a>
+* PARAMETERS: <a name="997838"> </a>
+* thePort -&gt; valid portID for an open serial port.<a name="997839"> </a>
+* rcvDataP -&gt; pointer to a buffer to put the received data.<a name="997840"> </a>
+* bufSize &lt;-&gt; pointer to the size of rcvBuffer and returns<a name="997841"> </a>
+*   the number of bytes read.<a name="997842"> </a>
+*<a name="997843"> </a>
+************************************************************/<a name="997844"> </a>
+status_t RcvSerialData(UInt16 thePort, UInt8 *rcvDataP, UInt32 *bufSizeP)<a name="997845"> </a>
+{<a name="997846"> </a>
+UInt32 bytesLeft, maxRcvBlkSize, bytesRcvd, waitTime, totalRcvBytes = 0;<a name="997847"> </a>
+UInt8 *newRcvBuffer;<a name="997848"> </a>
+UInt16 dataLen = sizeof(UInt32);<a name="997849"> </a>
+status_t* error;<a name="997850"> </a>
+ <a name="997851"> </a>
+   // The default receive buffer is only 512 bytes; increase it if <a name="997852"> </a>
+   // necessary. The following lines are just an example of how to <a name="997853"> </a>
+   // do it, but its necessity depends on the ability of the code<a name="997854"> </a>
+   // to retrieve data in a timely manner.<a name="997855"> </a>
+   newRcvBuffer = MemPtrNew(k2KBytes); // Allocate new rcv buffer.<a name="997856"> </a>
+   if (newRcvBuffer)<a name="997857"> </a>
+      // Set new rcv buffer.<a name="997858"> </a>
+      error = SrmSetReceiveBuffer(thePort, newRcvBuffer, k2KBytes);<a name="997859"> </a>
+      if (error)<a name="997860"> </a>
+         goto Exit;<a name="997861"> </a>
+   else<a name="997862"> </a>
+      return memErrNotEnoughSpace;<a name="997863"> </a>
+ <a name="997864"> </a>
+   // Initialize the maximum bytes to receive at one time.<a name="997865"> </a>
+   maxRcvBlkSize = k2KBytes;<a name="997866"> </a>
+   // Remember how many bytes are left to receive.<a name="997867"> </a>
+   bytesLeft = *bufSizeP;<a name="997868"> </a>
+   // Only wait 1/5 of a second for bytes to arrive.<a name="997869"> </a>
+   waitTime = 200;<a name="997870"> </a>
+   <a name="997871"> </a>
+   // Now loop while getting blocks of data and filling the buffer.<a name="997872"> </a>
+   do {<a name="997873"> </a>
+      // Is the max size larger then the number of bytes left?<a name="997874"> </a>
+      if (bytesLeft &lt; maxRcvBlkSize)<a name="997875"> </a>
+         // Yes, so change the rcv block amount.<a name="997876"> </a>
+    maxRcvBlkSize = bytesLeft; <a name="997877"> </a>
+      // Try to receive as much data as possible, <a name="997878"> </a>
+      // but wait only 1/5 second for it.<a name="997879"> </a>
+      bytesRcvd = SrmReceive(thePort,  rcvDataP, maxRcvBlkSize, waitTime, <a name="997880"> </a>
+         &amp;error);<a name="997881"> </a>
+      // Remember the total number of bytes received.<a name="997882"> </a>
+      totalRcvBytes += bytesRcvd;<a name="997883"> </a>
+      // Figure how many bytes are left to receive.<a name="997884"> </a>
+      bytesLeft -= bytesRcvd;<a name="997885"> </a>
+      rcvDataP += bytesRcvd; // Advance the rcvDataP.<a name="997886"> </a>
+      // If there was a timeout and no data came through...<a name="997887"> </a>
+      if ((error == serErrTimeOut) &amp;&amp; (bytesRcvd == 0))<a name="997888"> </a>
+         goto ReceiveError; // ...bail out and report the error.<a name="997889"> </a>
+      // If there's some other error, bail out.<a name="997890"> </a>
+      if ((error) &amp;&amp; (error != serErrTimeOut))<a name="997891"> </a>
+         goto ReceiveError;<a name="997892"> </a>
+ <a name="997893"> </a>
+      // Call a function to handle any pending events because<a name="997894"> </a>
+      // someone might press the cancel button.<a name="997895"> </a>
+      YourDrainEventQueue();<a name="997896"> </a>
+   // Continue receiving data until all data has been received.<a name="997897"> </a>
+   } while (bytesLeft);<a name="997898"> </a>
+   <a name="997899"> </a>
+   ReceiveError:<a name="997900"> </a>
+      // Clearing the receive buffer can also be done right before <a name="997901"> </a>
+      // the port is to be closed.<a name="997902"> </a>
+      // Set back the default buffer when we're done.<a name="997903"> </a>
+      SrmSetReceiveBuffer(thePort, 0L, 0);<a name="997904"> </a>
+ <a name="997905"> </a>
+   Exit:<a name="997906"> </a>
+      MemPtrFree(newRcvBuffer); // Free the space.<a name="997907"> </a>
+      *bufSizeP = totalRcvBytes;<a name="997908"> </a>
+      return error;<a name="997909"> </a>
+}<a name="997910"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h3 class="hbH3">
+  <a name="997912"> </a>Serial Manager Tips and Tricks <a href="#997178"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="997913"> </a>The following tips and tricks help you debug your serial application and help avoid errors in the first place. </p>
+
+<h4 class="hcH4">
+  <a name="997914"> </a>Debugging Tips
+</h4>
+
+<p><a name="997915"> </a>The following are some tips to help you track down errors while debugging.</p>
+<ul type="disc">
+  <li><a name="997916"> </a>Debug first using the Palm OS Simulator. Debug on the device last. 
+   <p><a name="997917"> </a>The Simulator supports all Serial Manager functions and lets you test applications that use the Serial Manager. You can use the desktop computer's serial port to connect to outside devices. For more information on how to set up and use the emulator to debug serial communications, see the Simulator documentation. </p>
+  <li><a name="997918"> </a>Track communication errors and the amount of data sent and received.
+   <p><a name="997919"> </a>In your debug build, maintain individual counts for the amount of data transferred and for each communication error of interest. This includes timeouts and retries for reliable protocols.</p>
+  <li><a name="997920"> </a>Use an easily recognizable start-of-frame signature. This helps during debugging of packet-based protocols.
+  <li><a name="997921"> </a>Implement developer back doors for debugging.
+   <p><a name="997922"> </a>Implement a mechanism to trigger one or more debugging features at runtime without recompiling. For example, you may want to create a back door to disable the receive timeout on one side to prevent it from timing out while you are debugging the other side. Another back door might print some debugging information to the display. For example, your application might look for a pen down event in the upper right corner of the digitizer while the page-up key is being pressed to trigger one of your back doors.</p>
+  <li><a name="997923"> </a>Use the HotSync log for debug-time error logging on the device.
+   <p><a name="997924"> </a>You may use <code>DlkSetLogEntry()</code> to write your debugging messages to the HotSync log on the device. The HotSync log will accept up to 2KB of text. You may then switch to the HotSync application to view the log. </p>
+</ul>
+
+<div><hr>
+  <a name="997925"> </a> <b>NOTE: </b> Restrict writing to the HotSync log to debugging. Users will not appreciate having your debugging messages in their HotSync log.
+<hr>
+</div>
+<ul type="disc">
+  <li><a name="997926"> </a>If you have a protocol analyzer, use it to examine the data that is actually sent and received. 
+</ul>
+
+<h4 class="hcH4">
+  <a name="997928"> </a>Common Errors
+</h4>
+
+<p><a name="997929"> </a>Even if you're careful, errors may crop up. Here are some frequently encountered problems and their solutions. </p>
+<ul type="disc">
+  <li><a name="997930"> </a>Nothing is being received
+   <p><a name="997931"> </a>Check for a broken or incorrectly wired connection and make sure the expected handshaking signals are received.</p>
+  <li><a name="997932"> </a>Garbage is received
+   <p><a name="997933"> </a>Check that baud rate, word length, and/or parity agree.</p>
+  <li><a name="997934"> </a>Baud rate mismatch
+   <p><a name="997935"> </a>If the two sides disagree on the baud rate, it may either show up as a framing error, or the number of received characters will be different from the number that was sent.</p>
+  <li><a name="997936"> </a>Parity error
+   <p><a name="997937"> </a>Parity errors indicate that the data has been damaged. They can also mean that the sender and receiver have not been configured to use the same parity or word length. </p>
+  <li><a name="997938"> </a>Word-length mismatch
+   <p><a name="997939"> </a>Word-length mismatches may show up as a framing error.</p>
+  <li><a name="997940"> </a>Framing error
+   <p><a name="997941"> </a>Framing errors indicate a mismatch in the number of bits and are reported when the stop bit is not received when it is expected. This could indicate damaged data, but frequently it signals a disagreement in common baud rate, word length, or parity setting. </p>
+  <li><a name="997942"> </a>Hardware overrun
+   <p><a name="997943"> </a>The Serial Manager's receive interrupt service routine cannot keep up with incoming data. Enable full hardware handshaking (see <a href="LowLevelComms_SerMgr.html#997505">"Configuring the Port"</a>).</p>
+  <li><a name="997947"> </a>Software overrun
+   <p><a name="997948"> </a>The application is not reading incoming data fast enough. Read data more frequently, or use hardware flow control. (see <a href="LowLevelComms_SerMgr.html#997505">"Configuring the Port"</a>). </p>
+</ul>
+
+<p><a name="993025"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 2004, PalmSource, Inc. and its affiliates.  All rights reserved. <br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="LowLevelComms_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="LowLevelCommsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_SerIntro.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_SerLink.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelCommsIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

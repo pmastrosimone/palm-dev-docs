@@ -1,0 +1,848 @@
+<html>
+<head>
+<title>(68K) Event Loop | Palm OS&#174; Programmer's Companion</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 10:43:07">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="1004923"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="CompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="AppStartupAndStop.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="UserInterface.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">3 &nbsp;&nbsp;
+Event Loop</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Palm OS&#174; Programmer's Companion</p>
+<p class="SubTitle">Volume I </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="EventLoop.html">3  Event Loop</a></h1>
+
+   <h2 class="SideTOC2"><a href="#1004955">
+   The Application Event Loop</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1005069">
+   Low-Level Event Management</a></h2>
+
+      <h3 class="SideTOC3"><a href="#1005108">
+      The Graffiti Manager</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1005177">
+      The Key Manager</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1005197">
+      The Pen Manager</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1005208">
+      The System Event Manager</a></h3>
+
+   <h2 class="SideTOC2"><a href="#1005344">
+   Creating and Handling Custom Events</a></h2>
+
+      <h3 class="SideTOC3"><a href="#1005389">
+      Custom Events and the Palm OS Event Queue</a></h3>
+
+   <h2 class="SideTOC2"><a href="#1005397">
+   System Event Manager Summary</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="1004925"> </a>This chapter discusses the Event Manager, the main interface between the Palm OS<sup>&#174;</sup> system software and the application. It discusses in some detail what an application does in response to user input, providing code fragments as examples where needed. The topics covered are:</p>
+<ul type="disc">
+  <li><a name="1004929"> </a><a href="EventLoop.html#1004955">The Application Event Loop</a>
+  <li><a name="1004933"> </a><a href="EventLoop.html#1005069">Low-Level Event Management</a>
+</ul>
+
+<p><a name="1004934"> </a>This chapter's focus is on how to write your applications main event loop. For more detailed information on events, consult the <i>Palm OS Programmer's API Reference</i>. Details for each event are given in <a href="../PalmOSReference/EventRef.html#995797">Chapter 2, "Palm OS Events."</a> In addition to the reference material, consult the chapter <a href="UserInterface.html#1007614">"User Interface"</a> in this book. It provides the event flow for each user interface element. </p>
+
+<p><a name="1004947"> </a><a href="EventLoop.html#1004949">Figure 3.1</a> illustrates control flow in a typical application.</p>
+
+<p class="FFigureCaption">
+  <a name="1004949"> </a><b>Figure 3.1&nbsp;&nbsp;Control flow in a typical application<div align="left"><img src="images/EventLoopc.gif" border="0" hspace="0" vspace="0">
+</div></b>
+</p>
+
+<h2 class="haH2">
+  <a name="1004955"> </a>The Application Event Loop <a href="#1004923"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1004959"> </a>As described in the previous chapter, <a href="AppStartupAndStop.html#997517">"Application Startup and Stop,"</a> an application performs a full startup when it receives the launch code <code>sysAppLaunchCmdNormalLaunch</code>. It begins with a startup routine, then goes into an event loop, and finally exits with a stop routine. </p>
+
+<p><a name="1004961"> </a>In the event loop, the application fetches events from the queue and dispatches them, taking advantage of the default system functionality as appropriate. </p>
+
+<p><a name="1004963"> </a>While in the loop, the application continuously checks for events in the event queue. If there are events in the queue, the application has to process them as determined in the event loop. As a rule, the events are passed on to the system, which knows how to handle them. For example, the system knows how to respond to pen taps on forms or menus. </p>
+
+<p><a name="1004964"> </a>The application typically remains in the event loop until the system tells it to shut itself down by sending an <a href="../PalmOSReference/EventRef.html#996172"><code>appStopEvent</code></a> (not a launch code) through the event queue. The application must detect this event and terminate. </p>
+<p class="CCodeCaption">
+  <a name="1004969"> </a><b>Listing 3.1&nbsp;&nbsp;Top-Level Event Loop Example from Datebook.c</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+static void EventLoop (void)<a name="1004970"> </a>
+{<a name="1004971"> </a>
+   UInt16 error;<a name="1004972"> </a>
+   EventType event;<a name="1004973"> </a>
+   do<a name="1004974"> </a>
+      {<a name="1004975"> </a>
+      EvtGetEvent (&amp;event, evtWaitForever);<a name="1004976"> </a>
+      <a name="1004977"> </a>
+      PreprocessEvent (&amp;event);<a name="1004978"> </a>
+      <a name="1004979"> </a>
+      if (! SysHandleEvent (&amp;event))<a name="1004980"> </a>
+         <a name="1004981"> </a>
+         if (! MenuHandleEvent (NULL, &amp;event, &amp;error))<a name="1004982"> </a>
+            <a name="1004983"> </a>
+            if (! ApplicationHandleEvent (&amp;event))<a name="1004984"> </a>
+               FrmDispatchEvent (&amp;event); <a name="1004985"> </a>
+ <a name="1004986"> </a>
+      #if  EMULATION_LEVEL != EMULATION_NONE<a name="1004987"> </a>
+         ECApptDBValidate (ApptDB);<a name="1004988"> </a>
+      #endif<a name="1004989"> </a>
+      }<a name="1004990"> </a>
+   while (event.eType != appStopEvent);<a name="1004991"> </a>
+}<a name="1004992"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1004993"> </a>In the event loop, the application iterates through these steps (see <a href="EventLoop.html#1004949">Figure 3.1</a> and <a href="EventLoop.html#1004969">Listing 3.1</a>)</p>
+<ol type="1">
+  <li value="1"><a name="1005000"> </a>Fetch an event from the event queue.
+  <li value="2"><a name="1005001"> </a>Call <code>PreprocessEvent </code>to allow the datebook event handler to see the command keys before any other event handler gets them. Some of the datebook views display UI that disappears automatically; this UI needs to be dismissed before the system event handler or the menu event handler display any UI objects. 
+   <p><a name="1005002"> </a>Note that not all applications need a <code>PreprocessEvent</code> function. It may be appropriate to call <code>SysHandleEvent</code> right away. </p>
+  <li value="3"><a name="1005006"> </a>Call <a href="../PalmOSReference/SystemManager.html#1076542"><code>SysHandleEvent</code></a> to give the system an opportunity to handle the event. 
+   <p><a name="1005007"> </a>The system handles events like power on/power off, Graffiti<sup>&#174;</sup> or Graffiti<sup>&#174;</sup> 2 input, tapping input area icons, or pressing buttons. During the call to <code>SysHandleEvent</code>, the user may also be informed about low-battery warnings or may find and search another application.</p>
+   <p><a name="1005008"> </a>Note that in the process of handling an event, <code>SysHandleEvent</code> may generate new events and put them on the queue. For example, the system handles Graffiti 2 input by translating the pen events to key events. Those, in turn, are put on the event queue and are eventually handled by the application. </p>
+   <p><a name="1005009"> </a><code>SysHandleEvent</code> returns <code>true</code> if the event was completely handled, that is, no further processing of the event is required. The application can then pick up the next event from the queue. </p>
+  <li value="4"><a name="1005010"> </a>If <code>SysHandleEvent</code> did not completely handle the event, the application calls <a href="../PalmOSReference/Menu.html#996804"><code>MenuHandleEvent</code></a>. <code>MenuHandleEvent</code> handles two types of events:
+  <ul type="disc">
+    <li><a name="1005014"> </a>If the user has tapped in the area that invokes a menu, <code>MenuHandleEvent</code> brings up the menu. 
+    <li><a name="1005015"> </a>If the user has tapped inside a menu to invoke a menu command, <code>MenuHandleEvent</code> removes the menu from the screen and puts the events that result from the command onto the event queue. 
+   <p><a name="1005016"> </a><code>MenuHandleEvent</code> returns <code>true</code> if the event was completely handled. </p>
+  </ul>
+  <li value="5"><a name="1005017"> </a>If <code>MenuHandleEvent</code> did not completely handle the event, the application calls <code>ApplicationHandleEvent</code>, a function your application has to provide itself. <code>ApplicationHandleEvent</code> handles only the <a href="../PalmOSReference/EventRef.html#996732"><code>frmLoadEvent</code></a> for that event; it loads and activates application form resources and sets the event handler for the active form by calling the function <a href="../PalmOSReference/Form.html#998914"><code>FrmSetEventHandler</code></a>. 
+  <li value="6"><a name="1005024"> </a>If <code>ApplicationHandleEvent</code> did not completely handle the event, the application calls <a href="../PalmOSReference/Form.html#1098450"><code>FrmDispatchEvent</code></a><code>. FrmDispatchEvent</code> first sends the event to the application's event handler for the active form. This is the event handler routine that was established in <code>ApplicationHandleEvent</code>. Thus the application's code is given the first opportunity to process events that pertain to the current form. The application's event handler may completely handle the event and return <code>true</code> to calls from <code>FrmDispatchEvent.</code>In that case, <code>FrmDispatchEvent</code> returns to the application's event loop. Otherwise, <code>FrmDispatchEvent</code> calls <a href="../PalmOSReference/Form.html#998041"><code>FrmHandleEvent</code></a> to provide the system's default processing for the event. 
+   <p><a name="1005031"> </a>For example, in the process of handling an event, an application frequently has to first close the current form and then open another one, as follows: </p>
+  <ul type="disc">
+    <li><a name="1005035"> </a>The application calls <a href="../PalmOSReference/Form.html#998001"><code>FrmGotoForm</code></a> to bring up another form. <code>FrmGotoForm</code> queues a <a href="../PalmOSReference/EventRef.html#996561"><code>frmCloseEvent</code></a> for the currently active form, then queues <a href="../PalmOSReference/EventRef.html#996732"><code>frmLoadEvent</code></a> and <a href="../PalmOSReference/EventRef.html#996834"><code>frmOpenEvent</code></a> for the new form. 
+    <li><a name="1005045"> </a>When the application gets the <code>frmCloseEvent,</code> it closes and erases the currently active form. 
+    <li><a name="1005046"> </a>When the application gets the <code>frmLoadEvent</code>, it loads and then activates the new form. Normally, the form remains active until it's closed. (Note that this wouldn't work if you preload all forms, but preloading is really discouraged. Applications don't need to be concerned with the overhead of loading forms; loading is so fast that applications can do it when they need it.) The application's event handler for the new form is also established.
+    <li><a name="1005047"> </a>When the application gets the <code>frmOpenEvent</code>, it performs any required initialization of the form, then draws the form on the display. 
+   <p><a name="1005048"> </a>After <code>FrmGotoForm</code> has been called, any further events that come through the main event loop and to <code>FrmDispatchEvent</code> are dispatched to the event handler for the form that's currently active. For each dialog or form, the event handler knows how it should respond to events, for example, it may open, close, highlight, or perform other actions in response to the event. <a href="../PalmOSReference/Form.html#998041"><code>FrmHandleEvent</code></a> invokes this default UI functionality. </p>
+   <p><a name="1005052"> </a>After the system has done all it can to handle the event for the specified form, the application finally calls the active form's own event handling function. For example, in the datebook application, it may call <code>DayViewHandleEvent</code> or <code>WeekViewHandleEvent</code>. </p>
+  </ul>
+</ol>
+
+<p><a name="1005053"> </a>Notice how the event flow allows your application to rely on system functionality as much as it wants. If your application wants to know whether a button is pressed, it has only to wait for <a href="../PalmOSReference/EventRef.html#996366"><code>ctlSelectEvent</code></a>. All the details of the event queue are handled by the system. </p>
+
+<p><a name="1005057"> </a>Some events are actually requests for the application to do something, for example, <a href="../PalmOSReference/EventRef.html#996834"><code>frmOpenEvent</code></a>. Typically, all the application does is draw its own interface, using the functions provided by the system, and then waits for events it can handle to arrive from the queue. </p>
+
+<p><a name="1005062"> </a>Only the active form should process events. </p>
+
+<h2 class="haH2">
+  <a name="1005069"> </a>Low-Level Event Management <a href="#1004923"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1005070"> </a>The five ways that a user interacts with an application are: </p>
+<ul type="disc">
+  <li><a name="1005071"> </a>by writing letters, numbers, or symbols in the input area
+  <li><a name="1005072"> </a>by pressing a hardware button on the handheld
+  <li><a name="1005073"> </a>by tapping the pen on a control in a form or dialog
+  <li><a name="1005074"> </a>by tapping on an onscreen keyboard in the keyboard dialog.
+  <li><a name="1005075"> </a>by tapping in the menu bar or in a particular menu.
+</ul>
+
+<p><a name="1005076"> </a>For the first three types of input, the Palm OS provides a dedicated manager: the Graffiti Manager, the Key Manager, and the Pen Manager, respectively. Most applications do not need to access these managers directly; instead, applications receive events from these managers and respond to the events. There are cases, however, where you might need to interact with one of these managers. The following pages describe each of these managers and when you might need to use them. To learn how to obtain user input from a UI object, refer to the section in <a href="UserInterface.html#1007614">Chapter 4, "User Interface,"</a> that covers that object.</p>
+
+<p><a name="1005080"> </a>The keyboard dialog allows users to input characters into a text field by tapping an onscreen keyboard. When the keyboard dialog is closed, the amended text is automatically displayed in the original field. As with the three managers just mentioned, you will probably not need to access the keyboard dialog directly. The user can open the keyboard from any text field. In certain limited circumstances, however, you may wish to display the keyboard dialog programmatically. For more information, see <a href="UserInterface.html#1008453">"The Keyboard Dialog"</a>.</p>
+
+<p><a name="1005084"> </a>The Menu Manager handles taps that display a menu and those that select an item from a menu. For details, see <a href="UserInterface.html#1009521">"Menus."</a></p>
+
+<p><a name="1005089"> </a>In addition to these managers, the System Event Manager is another manager involved in low-level event handling. Most applications have no need to call the System Event Manager directly because most of the functionality they need comes from the higher-level Event Manager or is automatically handled by the system. </p>
+
+<p><a name="1005090"> </a>This section provides information about the following managers: </p>
+<ul type="disc">
+  <li><a name="1005094"> </a><a href="EventLoop.html#1005108">The Graffiti Manager</a>
+  <li><a name="1005098"> </a><a href="EventLoop.html#1005177">The Key Manager</a>
+  <li><a name="1005102"> </a><a href="EventLoop.html#1005197">The Pen Manager</a>
+  <li><a name="1005106"> </a><a href="EventLoop.html#1005208">The System Event Manager</a>
+</ul>
+<h3 class="hbH3">
+  <a name="1005108"> </a>The Graffiti Manager <a href="#1004923"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1005110"> </a>The Graffiti Manager provides an API to the Palm OS Graffiti or Graffiti 2 recognizer. The recognizer converts pen strokes into key events, which are then fed to an application through the Event Manager. </p>
+
+<div><hr>
+  <a name="1005114"> </a> <b>IMPORTANT: </b> If the <a href="../PalmOSReference/CompatibilityApdx.html#1027145">Graffiti 2 Feature Set</a> is present, many of the Graffiti Manager API calls are deprecated or work differently. Avoid using the Graffiti Manager API. 
+<hr>
+</div>
+
+<p><a name="1005115"> </a>Most applications never need to call the Graffiti Manager directly because it's automatically called by the Event Manager whenever it detects pen strokes in the input area of the digitizer. </p>
+
+<p><a name="1005117"> </a>Special-purpose applications, such as a Graffiti tutorial, may want to call the Graffiti Manager directly to recognize strokes in other areas of the screen or to customize the Graffiti behavior.</p>
+
+<h4 class="hcH4">
+  <a name="1005119"> </a>Using GrfProcessStroke
+</h4>
+
+<p><a name="1005124"> </a><a href="../PalmOSReference/GraffitiManager.html#1006624"><code>GrfProcessStroke</code></a> is a high-level Graffiti Manager call used by the Event Manager for converting pen strokes into key events. The call </p>
+<ul type="disc">
+  <li><a name="1005125"> </a>Removes pen points from the pen queue 
+  <li><a name="1005126"> </a>Recognizes the stroke
+  <li><a name="1005127"> </a>Puts one or more key events into the key queue
+</ul>
+
+<p><a name="1005129"> </a><code>GrfProcessStroke</code> automatically handles shortcut strokes and calls the user interface as appropriate to display shift indicators in the current window. </p>
+
+<p><a name="1005130"> </a>An application can call <code>GrfProcessStroke</code> when it receives a <a href="../PalmOSReference/EventRef.html#997610"><code>penUpEvent</code></a> from the Event Manager if it wants to recognize strokes entered into its application area (in addition to the input area). </p>
+
+<h4 class="hcH4">
+  <a name="1005135"> </a>Using Other High-Level Graffiti Manager Calls
+</h4>
+
+<p><a name="1005136"> </a>Other high-level calls provided by the Graffiti Manager include routines for </p>
+<ul type="disc">
+  <li><a name="1005138"> </a>Getting and setting the current shift state (caps lock on/off, temporary shift state, etc.) 
+  <li><a name="1005139"> </a>Notifying the handwriting recognizer when the user selects a different field. The handwriting recognizer needs to be notified when a field change occurs so that it can cancel out of any partially entered shortcut and clear its temporary shift state if it's showing a potentially accented character. 
+</ul>
+
+<p><a name="1005143"> </a>Note that if the <a href="../PalmOSReference/CompatibilityApdx.html#1027145">Graffiti 2 Feature Set</a> is present, the caps lock state is not supported. In Graffiti 2 handwriting, users write uppercase letters by writing between the dividers that separate the letter area from the number area. Because users can easily write a succession of uppercase letters, the caps lock state is unnecessary. </p>
+
+<h4 class="hcH4">
+  <a name="1005144"> </a>Special-Purpose Graffiti Manager Calls
+</h4>
+
+<p><a name="1005145"> </a>The remainder of Graffiti Manager API routines are for special-purpose use. They are basically all the entry points into the Graffiti recognizer engine and are usually called only by <a href="../PalmOSReference/GraffitiManager.html#1006624"><code>GrfProcessStroke</code></a>. These special-purpose uses include calls to add pen points to the Graffiti recognizer's stroke buffer, to convert the stroke buffer into a Graffiti glyph ID, and to map a glyph into a string of one or more key strokes. </p>
+
+<div><hr>
+  <a name="1005153"> </a> <b>IMPORTANT: </b> If the <a href="../PalmOSReference/CompatibilityApdx.html#1027145">Graffiti 2 Feature Set</a> is present, the special-purpose Graffiti Manager calls are deprecated. 
+<hr>
+</div>
+
+<h4 class="hcH4">
+  <a name="1005154"> </a>Accessing Shortcuts 
+</h4>
+
+<p><a name="1005156"> </a>Other routines provide access to the Graffiti or Graffiti 2 Shortcuts database. This is a separate database owned and maintained by the Graffiti Manager that contains all of the shortcuts. In Palm OS version 3.5 and earlier releases, this database is opened by the Graffiti Manager when it initializes and stays open even after applications quit. Starting in Palm OS 4.0, the database is only opened when necessary and is closed when it is no longer needed. </p>
+
+<p><a name="1005157"> </a>The only way to modify this database is through the Graffiti Manager API. It provides calls for getting a list of all shortcuts, and for adding, editing, and removing shortcuts. The Shortcuts screen of the Preferences application provides a user interface for modifying this database. </p>
+
+<h4 class="hcH4">
+  <a name="1005160"> </a>Note on Auto Shifting
+</h4>
+
+<p><a name="1005161"> </a>Palm OS 2.0 and later automatically uses an upper-case letter under the following conditions: </p>
+<ul type="disc">
+  <li><a name="1005162"> </a>Period and space or Return.
+  <li><a name="1005163"> </a>Other sentence terminator (such as ? or !) and space
+</ul>
+
+<p><a name="1005164"> </a>This functionality requires no changes by the developer, but should be welcome to the end user. </p>
+
+<p><a name="1005165"> </a>Note that the auto-shifting rules are language-specific, since capitalization differs depending on the region. These rules depend on the version of the ROM, the market into which the handheld is being sold, and so on.</p>
+
+<h4 class="hcH4">
+  <a name="1005167"> </a>Note on Graffiti Help
+</h4>
+
+<p><a name="1005168"> </a>In Palm OS 2.0 and later, applications can pop up Graffiti help by calling <a href="../PalmOSReference/SystemDialogs.html#995849"><code>SysGraffitiReferenceDialog</code></a> or by putting a virtual character&#8212;<code>graffitiReferenceChr</code> from <code>Chars.h</code>&#8212;on the queue.</p>
+
+<p><a name="1005175"> </a>Graffiti help is also available through the system Edit menu. As a result, any application that includes the system Edit menu allows users to access Graffiti help that way. </p>
+<h3 class="hbH3">
+  <a name="1005177"> </a>The Key Manager <a href="#1004923"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1005179"> </a>The Key Manager manages the hardware buttons on the Palm Powered<sup>&#8482;</sup> handheld. It converts button presses into key events and implements auto-repeat of the buttons. Most applications never need to call the Key Manager directly except to change the key repeat rate or to poll the current state of the keys. </p>
+
+<p><a name="1005181"> </a>The Event Manager is the main interface to the keys; it returns a <a href="../PalmOSReference/EventRef.html#997089"><code>keyDownEvent</code></a> to an application whenever a button is pressed. Normally, applications are notified of key presses through the Event Manager. Whenever a hardware button is pressed, the application receives an event through the Event Manager with the appropriate key code stored in the event record. The state of the hardware buttons can also be queried by applications at any time through the <a href="../PalmOSReference/KeyManager.html#1012676"><code>KeyCurrentState</code></a> function call.</p>
+
+<p><a name="1005195"> </a>The <a href="../PalmOSReference/KeyManager.html#1012700"><code>KeyRates</code></a> call changes the auto-repeat rate of the hardware buttons. This might be useful to game applications that want to use the hardware buttons for control. The current key repeat rates are stored in the Key Manager globals and should be restored before the application exits. </p>
+<h3 class="hbH3">
+  <a name="1005197"> </a>The Pen Manager <a href="#1004923"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1005199"> </a>The Pen Manager manages the digitizer hardware and converts input from the digitizer into pen coordinates. The Palm Powered handheld has a built-in digitizer overlaid onto the LCD screen and extending about an inch below the screen. This digitizer is capable of sampling accurately to within 0.35 mm (.0138 in) with up to 50 accurate points/second. When the handheld is in doze mode, an interrupt is generated when the pen is first brought down on the screen. After a pen down is detected, the system software polls the pen location periodically (every 20 ms) until the pen is again raised.</p>
+
+<p><a name="1005202"> </a>Most applications never need to call the Pen Manager directly because any pen activity is automatically returned to the application in the form of events.</p>
+
+<p><a name="1005203"> </a>Pen coordinates are stored in the pen queue as raw, uncalibrated coordinates. When the System Event Manager routine for removing pen coordinates from the pen queue is called, it converts the pen coordinate into screen coordinates before returning. </p>
+
+<p><a name="1005206"> </a>The Preferences application provides a user interface for calibrating the digitizer. It uses the Pen Manager API to set up the calibration which is then saved into the Preferences database. The Pen Manager assumes that the digitizer is linear in both the x and y directions; the calibration is therefore a simple matter of adding an offset and scaling the x and y coordinates appropriately.</p>
+<h3 class="hbH3">
+  <a name="1005208"> </a>The System Event Manager <a href="#1004923"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1005209"> </a>The System Event Manager: </p>
+<ul type="disc">
+  <li><a name="1005210"> </a>manages the low-level pen and key event queues. 
+  <li><a name="1005211"> </a>translates taps on input area icons into key events.
+  <li><a name="1005212"> </a>sends pen strokes in the input area to the Graffiti or Graffiti 2 recognizer. 
+  <li><a name="1005213"> </a>puts the system into low-power doze mode when there is no user activity. 
+</ul>
+
+<p><a name="1005214"> </a>Most applications have no need to call the System Event Manager directly because most of the functionality they need comes from the higher-level Event Manager or is automatically handled by the system. </p>
+
+<p><a name="1005215"> </a>Applications that do use the System Event Manager directly might do so to enqueue key events into the key queue or to retrieve each of the pen points that comprise a pen stroke from the pen queue. </p>
+
+<h4 class="hcH4">
+  <a name="1005217"> </a>Event Translation: Pen Strokes to Key Events
+</h4>
+
+<p><a name="1005219"> </a>One of the higher-level functions provided by the System Event Manager is conversion of pen strokes on the digitizer to key events. For example, the System Event Manager sends any stroke in the input area of the digitizer automatically to the Graffiti or Graffiti 2 recognizer for conversion to a key event. Taps on input area icons, such as the Application button, Menu button, and Find button, are also intercepted by the System Event Manager and converted into the appropriate key events.</p>
+
+<p><a name="1005220"> </a>When the system converts a pen stroke to a key event, it:</p>
+<ul type="disc">
+  <li><a name="1005221"> </a>Retrieves all pen points that comprise the stroke from the pen queue
+  <li><a name="1005222"> </a>Converts the stroke into the matching key event
+  <li><a name="1005223"> </a>Enqueues that key event into the key queue
+</ul>
+
+<p><a name="1005224"> </a>Eventually, the system returns the key event to the application as a normal result of calling <a href="../PalmOSReference/SystemEventManager.html#1071061"><code>EvtGetEvent</code></a>. </p>
+
+<p><a name="1005228"> </a>Most applications rely on the following default behavior of the System Event Manager:</p>
+<ul type="disc">
+  <li><a name="1005230"> </a>All strokes in the predefined input area of the digitizer are converted to key events
+  <li><a name="1005231"> </a>All taps on the input area icons are convert to key events
+  <li><a name="1005232"> </a>All other strokes are passed on to the application for processing
+</ul>
+
+<p><a name="1005236"> </a>If the <a href="../PalmOSReference/CompatibilityApdx.html#1027145">Graffiti 2 Feature Set</a> is present, you should be careful when processing key events one at a time. Graffiti 2 contains several multi-stroke characters. If the first stroke matches the stroke for another letter, the Graffiti 2 engine first enqueues the single-stroke character followed by a backspace and the multi-stroke character. </p>
+
+<p><a name="1005237"> </a>For example, The first stroke of a "k" character matches the stroke for the "l" character. When the user draws the first stroke of the "k," the Graffiti 2 engine processes that stroke and sends the "l" character to the key queue. When the user draws the second stroke of the "k," the Graffiti 2 engine sends a backspace to erase the "l" and then sends the "k" character. If your application has processed the "l" in the meantime, it has done so in error. </p>
+
+<p><a name="1005238"> </a>If your application processes characters as they are received, you should be aware that the following characters could be the first stroke of a multi-stroke character: </p>
+<ul type="disc">
+  <li><a name="1005239"> </a>The letter l
+  <li><a name="1005240"> </a>The space character
+  <li><a name="1005241"> </a>The single quote
+  <li><a name="1005242"> </a>The minus sign
+</ul>
+
+<p><a name="1005243"> </a>When your application receives these characters, it should wait to see if the next character received is a backspace. </p>
+
+<h4 class="hcH4">
+  <a name="1005245"> </a>Pen Queue Management
+</h4>
+
+<p><a name="1005247"> </a>The pen queue is a preallocated area of system memory used for capturing the most recent pen strokes on the digitizer. It is a circular queue with a first-in, first-out method of storing and retrieving pen points. Points are usually enqueued by a low-level interrupt routine and dequeued by the System Event Manager or application.</p>
+
+<p><a name="1005252"> </a><a href="EventLoop.html#1005259">Table 3.1</a> summarizes pen management.</p>
+
+<p class="caption"><a name="1005259"> </a><b>Table 3.1&nbsp;&nbsp;Pen queue management </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1005263"> </a><b>The user...</b></p>
+    </th>
+    <th><p class="tt"><a name="1005265"> </a><b>The system...</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005267"> </a>Brings the pen down on the digitizer.</p>
+    </td>
+    <td><p class="tt"><a name="1005269"> </a>Stores a pen-down sequence in the pen queue and starts the stroke capture. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005271"> </a>Draws a character. </p>
+    </td>
+    <td><p class="tt"><a name="1005273"> </a>Stores additional points in the pen queue periodically. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005275"> </a>Lifts the pen.</p>
+    </td>
+    <td><p class="tt"><a name="1005277"> </a>Stores a pen-up sequence in the pen queue and turns off stroke capture. </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="1005280"> </a>The System Event Manager provides an API for initializing and flushing the pen queue and for queuing and dequeuing points. Some state information is stored in the queue itself: to dequeue a stroke, the caller must first make a call to dequeue the stroke information (<a href="../PalmOSReference/SystemEventManager.html#1070902"><code>EvtDequeuePenStrokeInfo</code></a>) before the points for the stroke can be dequeued. Once the last point is dequeued, another <code>EvtDequeuePenStrokeInfo</code> call must be made to get the next stroke.</p>
+
+<p><a name="1005284"> </a>Applications usually don't need to call <code>EvtDequeuePenStrokeInfo</code>  because the Event Manager calls this function automatically when it detects a complete pen stroke in the pen queue. After calling <code>EvtDequeuePenStrokeInfo</code>, the System Event Manager stores the stroke bounds into the event record and returns the pen-up event to the application. The application is then free to dequeue the stroke points from the pen queue, or to ignore them altogether. If the points for that stroke are not dequeued by the time <a href="../PalmOSReference/SystemEventManager.html#1071061"><code>EvtGetEvent</code></a> is called again, the System Event Manager automatically flushes them.</p>
+
+<h4 class="hcH4">
+  <a name="1005288"> </a>Key Queue Management
+</h4>
+
+<p><a name="1005290"> </a>The key queue is an area of system memory preallocated for capturing key events. Key events come from one of two occurrences: </p>
+<ul type="disc">
+  <li><a name="1005291"> </a>As a direct result of the user pressing one of the buttons on the case 
+  <li><a name="1005292"> </a>As a side effect of the user drawing a Graffiti or Graffiti 2 stroke on the digitizer, which is converted in software to a key event
+</ul>
+
+<p><a name="1005296"> </a><a href="EventLoop.html#1005303">Table 3.2</a> summarizes key management.</p>
+
+<p class="caption"><a name="1005303"> </a><b>Table 3.2&nbsp;&nbsp;Key queue management </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1005307"> </a><b>User action</b></p>
+    </th>
+    <th><p class="tt"><a name="1005309"> </a><b>System response</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005311"> </a>Hardware button press.</p>
+    </td>
+    <td><p class="tt"><a name="1005313"> </a>Interrupt routine enqueues the appropriate key event into the key queue, temporarily disables further hardware button interrupts, and sets up a timer task to run every 10 ms. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005315"> </a>Hold down key for extended time period. </p>
+    </td>
+    <td><p class="tt"><a name="1005318"> </a>Timer task supports auto-repeat of the key (timer task is also used to debounce the hardware). </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005320"> </a>Release key for certain amount of time.</p>
+    </td>
+    <td><p class="tt"><a name="1005322"> </a>Timer task reenables the hardware button interrupts.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005324"> </a>Pen stroke in input area of digitizer.</p>
+    </td>
+    <td><p class="tt"><a name="1005326"> </a>System Manager calls the Graffiti or Graffiti 2 recognizer, which then removes the stroke from the pen queue, converts the stroke into one or more key events, and finally enqueues these key events into the key queue. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005328"> </a>Pen stroke on silk-screened icons.</p>
+    </td>
+    <td><p class="tt"><a name="1005330"> </a>System Event Manager converts the stroke into the appropriate key event and enqueues it into the key queue.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="1005332"> </a>The System Event Manager provides an API for initializing and flushing the key queue and for enqueuing and dequeuing key events. Usually, applications have no need to dequeue key events; the Event Manager does this automatically if it detects a key in the queue and returns a <code>keyDownEvent</code> to the application through the <a href="../PalmOSReference/SystemEventManager.html#1071061"><code>EvtGetEvent</code></a> call.</p>
+
+<h4 class="hcH4">
+  <a name="1005337"> </a>Auto-Off Control
+</h4>
+
+<p><a name="1005338"> </a>Because the System Event Manager manages hardware events like pen taps and hardware button presses, it's responsible for resetting the auto-off timer on the handheld. Whenever the system detects a hardware event, it automatically resets the auto-off timer to 0. If an application needs to reset the auto-off timer manually, it can do so through the System Event Manager call <a href="../PalmOSReference/SystemEventManager.html#1071368"><code>EvtResetAutoOffTimer</code></a>.</p>
+
+<h2 class="haH2">
+  <a name="1005344"> </a>Creating and Handling Custom Events <a href="#1004923"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1005348"> </a>Palm OS defines a number of standard events; see the <a href="../PalmOSReference/EventRef.html#996031"><code>eventsEnum</code></a> for the complete list. The last two entries in this enum&#8212;<code>firstUserEvent</code> and <code>lastUserEvent</code>&#8212;aren't system events at all: they define the range of event types that are set aside for application-specific "custom" events. </p>
+
+<p><a name="1005349"> </a>Custom events are handled like any other event. You post a custom event using <a href="../PalmOSReference/SystemEventManager.html#1070796"><code>EvtAddEventToQueue()</code></a> or <a href="../PalmOSReference/SystemEventManager.html#1070814"><code>EvtAddUniqueEventToQueue()</code></a>, and you retrieve them by calling <a href="../PalmOSReference/SystemEventManager.html#1071061"><code>EvtGetEvent()</code></a>. Because of the way that Palm OS handles events, however, custom events posted to the standard Palm OS event queue don't always make their way to your application. See <a href="EventLoop.html#1005389">"Custom Events and the Palm OS Event Queue"</a> for more information.</p>
+
+<p><a name="1005362"> </a>To create a custom event, you need to:</p>
+<ul type="disc">
+  <li><a name="1005363"> </a>Define the event type. This should be a value in the range <code>firstUserEvent</code>...<code>lastUserEvent</code>.
+  <li><a name="1005364"> </a>Either use the "generic" event structure, or define your own event structure. The first part of any custom event structure must match those fields in the <a href="../PalmOSReference/EventRef.html#996098"><code>EventType</code></a> structure up to (but not including) the <code>data</code> union. The rest of the structure should be defined as appropriate to contain your event-specific data. Note, however, that the operating system assumes that all events are of a fixed size. Accordingly, your event structure must match the size of the Palm OS <code>EventType</code> structure. Perhaps the easiest way to do this is to declare the event-specific data portion of your structure as an enum, and add a <code>_GenericEventType</code> structure to your enum:
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+typedef struct {<a name="1005368"> </a>
+   eventsEnum eType;<a name="1005369"> </a>
+   Boolean penDown;<a name="1005370"> </a>
+   UInt8 tapCount;<a name="1005371"> </a>
+   Int16 screenX;<a name="1005372"> </a>
+   Int16 screenY;<a name="1005373"> </a>
+   union {<a name="1005374"> </a>
+      struct _GenericEventType generic; // sets size of union<a name="1005375"> </a>
+      struct {<a name="1005376"> </a>
+         // define your event-specific data here<a name="1005377"> </a>
+         // Must not exceed 16 bytes in length!<a name="1005378"> </a>
+      } myEventData;<a name="1005379"> </a>
+   } data;<a name="1005380"> </a>
+} MyCustomEventType;<a name="1005381"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+</ul>
+
+<div><hr>
+  <a name="1005382"> </a> <span class="warning">WARNING! </span> The size of your event-specific data must not exceed 16 bytes in length.
+<hr>
+</div>
+<ul type="disc">
+  <li><a name="1005383"> </a>When initializing your event structure, set the <code>eType</code> field to your event type.
+  <li><a name="1005387"> </a>Cast a pointer to your event structure to an <a href="../PalmOSReference/EventRef.html#996158"><code>EventPtr</code></a> when posting your custom event to the event queue. Cast the pointer retrieved from <code>EvtGetEvent()</code> to be a pointer to your custom event structure.
+</ul>
+<h3 class="hbH3">
+  <a name="1005389"> </a>Custom Events and the Palm OS Event Queue <a href="#1004923"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1005390"> </a>An application's UI thread is suspended by Palm OS at frequent intervals for significant periods of time. Any custom event that is in the queue when certain Palm OS components take over (such as the keyboard, or any Palm OS component that does more than look for a pen up event) may be consumed and never seen by your application.</p>
+
+<p><a name="1005391"> </a>If your application is using custom events primarily for quickly-consumed UI-related functionality, you may not see problems with "missing" custom events. Note, however, that the occasionally missing event can be a source of hard-to-identify support issues.</p>
+
+<p><a name="1005392"> </a>The one way to guarantee that you don't have problems of this type is to create your own event handler for your custom events. Simply create a queue (a fixed array with top and bottom pointers) and the necessary functions to post and retrieve events. A custom event handler gives you a couple of fairly large advantages:</p>
+<ul type="disc">
+  <li><a name="1005393"> </a>Your events will never be consumed by Palm OS.
+  <li><a name="1005394"> </a>Your event queue can be deeper than the Palm OS queue. 
+  <li><a name="1005395"> </a>You aren't bound by the Palm OS event structure and can create something that is more suitable for your needs.
+</ul>
+
+<h2 class="haH2">
+  <a name="1005397"> </a>System Event Manager Summary <a href="#1004923"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th colspan="2" rowspan="1"><p class="tt"><a name="1005400"> </a><b>System Event Manager Functions</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="1005404"> </a><b>Main Event Queue Management</b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005411"> </a><a href="../PalmOSReference/SystemEventManager.html#1071061">EvtGetEvent</a> </p>
+    </td>
+    <td><p class="tt"><a name="1005416"> </a><a href="../PalmOSReference/SystemEventManager.html#1070980">EvtEventAvail</a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005421"> </a><a href="../PalmOSReference/SystemEventManager.html#1071477">EvtSysEventAvail</a></p>
+    </td>
+    <td><p class="tt"><a name="1005426"> </a><a href="../PalmOSReference/SystemEventManager.html#1070796">EvtAddEventToQueue</a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005431"> </a><a href="../PalmOSReference/SystemEventManager.html#1070814">EvtAddUniqueEventToQueue</a></p>
+    </td>
+    <td><p class="tt"><a name="1005436"> </a><a href="../PalmOSReference/SystemEventManager.html#1070844">EvtCopyEvent</a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005441"> </a><a href="../PalmOSReference/SystemEventManager.html#1071456">EvtSetNullEventTick</a></p>
+    </td>
+    <td><p class="tt"><a name="1005443"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005445"> </a><b>Pen Queue Management</b></p>
+    </td>
+    <td><p class="tt"><a name="1005447"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005452"> </a><a href="../PalmOSReference/SystemEventManager.html#1071324">EvtPenQueueSize</a></p>
+    </td>
+    <td><p class="tt"><a name="1005457"> </a><a href="../PalmOSReference/SystemEventManager.html#1070881">EvtDequeuePenPoint</a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005462"> </a><a href="../PalmOSReference/SystemEventManager.html#1070902">EvtDequeuePenStrokeInfo</a></p>
+    </td>
+    <td><p class="tt"><a name="1005467"> </a><a href="../PalmOSReference/SystemEventManager.html#1071015">EvtFlushNextPenStroke</a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005472"> </a><a href="../PalmOSReference/SystemEventManager.html#1071039">EvtFlushPenQueue</a></p>
+    </td>
+    <td><p class="tt"><a name="1005477"> </a><a href="../PalmOSReference/SystemEventManager.html#1071085">EvtGetPen</a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005482"> </a><a href="../PalmOSReference/SystemEventManager.html#1071115">EvtGetPenBtnList</a></p>
+    </td>
+    <td><p class="tt"><a name="1005484"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="1005486"> </a><b>Key Queue Management</b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005493"> </a><a href="../PalmOSReference/SystemEventManager.html#1071307">EvtKeyQueueSize</a></p>
+    </td>
+    <td><p class="tt"><a name="1005498"> </a><a href="../PalmOSReference/SystemEventManager.html#1070953">EvtEnqueueKey</a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005503"> </a><a href="../PalmOSReference/SystemEventManager.html#1070999">EvtFlushKeyQueue</a></p>
+    </td>
+    <td><p class="tt"><a name="1005508"> </a><a href="../PalmOSReference/SystemEventManager.html#1071291">EvtKeyQueueEmpty</a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005513"> </a><a href="../PalmOSReference/SystemEventManager.html#1071257">EvtKeydownIsVirtual</a></p>
+    </td>
+    <td><p class="tt"><a name="1005515"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="1005517"> </a><b>Handling pen strokes and key strokes</b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005524"> </a><a href="../PalmOSReference/SystemEventManager.html#1070938">EvtEnableGraffiti</a></p>
+    </td>
+    <td><p class="tt"><a name="1005529"> </a><a href="../PalmOSReference/SystemEventManager.html#1071341">EvtProcessSoftKeyStroke</a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="1005531"> </a><b>Handling input area</b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005538"> </a><a href="../PalmOSReference/SystemEventManager.html#1071201">EvtGetSilkscreenAreaList</a></p>
+    </td>
+    <td><p class="tt"><a name="1005540"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="1005542"> </a><b>Handling power on and off events</b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005549"> </a><a href="../PalmOSReference/SystemEventManager.html#1071368">EvtResetAutoOffTimer</a></p>
+    </td>
+    <td><p class="tt"><a name="1005554"> </a><a href="../PalmOSReference/SystemEventManager.html#1071399">EvtSetAutoOffTimer</a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005559"> </a><a href="../PalmOSReference/SystemEventManager.html#1071503">EvtWakeup</a></p>
+    </td>
+    <td><p class="tt"><a name="1005565"> </a><a href="../PalmOSReference/SystemEventManager.html#1071529">EvtWakeupWithoutNilEvent</a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1005569"> </a><b>Graffiti Manager Functions</b></p>
+    </th>
+    <th><p class="tt"><a name="1005571"> </a><b></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="1005573"> </a><b>Translate a Stroke into Keyboard Events</b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005580"> </a><a href="../PalmOSReference/GraffitiManager.html#1006624">GrfProcessStroke</a></p>
+    </td>
+    <td><p class="tt"><a name="1005582"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005584"> </a><b>Shift State</b></p>
+    </td>
+    <td><p class="tt"><a name="1005586"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005591"> </a><a href="../PalmOSReference/GraffitiManager.html#1006532">GrfInitState</a><br><a href="../PalmOSReference/GraffitiManager.html#1006214">GrfCleanState</a><br><a href="../PalmOSReference/GraffitiManager.html#1006282">GrfFindBranch</a></p>
+    </td>
+    <td><p class="tt"><a name="1005602"> </a><a href="../PalmOSReference/GraffitiManager.html#1006497">GrfGetState</a><br><a href="../PalmOSReference/GraffitiManager.html#1006656">GrfSetState</a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005607"> </a><b>Point Buffer</b></p>
+    </td>
+    <td><p class="tt"><a name="1005609"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005614"> </a><a href="../PalmOSReference/GraffitiManager.html#1006442">GrfGetNumPoints</a><br><a href="../PalmOSReference/GraffitiManager.html#1006158">GrfAddPoint</a><br><a href="../PalmOSReference/GraffitiManager.html#1006310">GrfFlushPoints</a><br><a href="../PalmOSReference/GraffitiManager.html#1006559">GrfMatch</a></p>
+    </td>
+    <td><p class="tt"><a name="1005628"> </a><a href="../PalmOSReference/GraffitiManager.html#1006467">GrfGetPoint</a><br><a href="../PalmOSReference/GraffitiManager.html#1006258">GrfFilterPoints</a><br><a href="../PalmOSReference/GraffitiManager.html#1006361">GrfGetGlyphMapping</a><br><a href="../PalmOSReference/GraffitiManager.html#1006595">GrfMatchGlyph</a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005639"> </a><b>Working with Macros</b></p>
+    </td>
+    <td><p class="tt"><a name="1005641"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005646"> </a><a href="../PalmOSReference/GraffitiManager.html#1006334">GrfGetAndExpandMacro</a><br><a href="../PalmOSReference/GraffitiManager.html#1006238">GrfDeleteMacro</a><br><a href="../PalmOSReference/GraffitiManager.html#1006418">GrfGetMacroName</a></p>
+    </td>
+    <td><p class="tt"><a name="1005657"> </a><a href="../PalmOSReference/GraffitiManager.html#1006128">GrfAddMacro</a><br><a href="../PalmOSReference/GraffitiManager.html#1006394">GrfGetMacro</a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1005664"> </a><b>Key Manager Functions</b></p>
+    </th>
+    <th><p class="tt"><a name="1005666"> </a><b></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005671"> </a><a href="../PalmOSReference/KeyManager.html#1012676">KeyCurrentState</a><br><a href="../PalmOSReference/KeyManager.html#1012728">KeySetMask</a></p>
+    </td>
+    <td><p class="tt"><a name="1005679"> </a><a href="../PalmOSReference/KeyManager.html#1012700">KeyRates</a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1005683"> </a><b>Pen Manager Functions</b></p>
+    </th>
+    <th><p class="tt"><a name="1005685"> </a><b></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005690"> </a><a href="../PalmOSReference/PenManager.html#1029832">PenCalibrate</a> </p>
+    </td>
+    <td><p class="tt"><a name="1005695"> </a><a href="../PalmOSReference/PenManager.html#1029860">PenResetCalibration</a> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="1005698"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996-2004, PalmSource, Inc. and its affiliates.  All rights reserved. <br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="Companion_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="CompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="AppStartupAndStop.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="UserInterface.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,258 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: Entry points</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: Entry points">
+<META NAME="keywords" CONTENT="Using PRC-Tools: Entry points">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC11"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_10.html#SEC10"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_8.html#SEC8"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_8.html#SEC8"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.3 The <CODE>extralogue</CODE> attribute and entry points </H2>
+<!--docid::SEC11::-->
+<P>
+
+An <CODE>extralogue</CODE>
+attribute allows you to add arbitrary code to a
+function's prologue and epilogue.  Typically, it is used in conjunction with
+an <CODE>owngp</CODE> attribute to initialise a separate globals pointer for the
+duration of the function.  The <CODE>ENTRYPOINT</CODE> macro is defined in
+<TT>`EntryPoints.h'</TT> for precisely this purpose:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define ENTRYPOINT(EXTRAS)  \
+  __attribute__ ((__owngp__, __extralogue__ EXTRAS))
+</pre></td></tr></table></P><P>
+
+It takes between zero and eight parameters, each of which is a string with
+the same syntax as an <CODE>asm</CODE> template string (see section `Assembler Instructions with C Expression Operands' in <CITE>Using and Porting GCC</CITE>):
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>extralogue (<VAR>prologue</VAR>, <VAR>epilogue</VAR>, <VAR>single-epilogue</VAR>, <VAR>void-epilogue</VAR>,
+            <VAR>far-prologue</VAR>, <VAR>far-epilogue</VAR>, <VAR>far-single-epilogue</VAR>, <VAR>far-void-epilogue</VAR>)
+</pre></td></tr></table></P><P>
+
+This looks daunting, but often most of the parameters are unneeded.
+A replacement will be chosen, as described below, for each argument you
+leave empty (i.e., <TT>""</TT>).  If all arguments beyond a certain point would
+be empty, you can omit them entirely.  Generally you only need to specify
+one or two parameters because:
+</P><P>
+
+<UL>
+<LI>
+The <SAMP>`far-'</SAMP> variants are only used if functions in non-default
+sections need special treatment.  Such `special treatment' is likely to
+involve the global variables used to implement multiple sections.  Hence an
+<CODE>extralogue</CODE> used to arrange access to global variables had better not
+require such special treatment!
+<P>
+
+<LI>
+The main <CODE>epilogue</CODE> is capable of handling all epilogues.  The
+<SAMP>`single-'</SAMP> and <SAMP>`void-'</SAMP> variants allow you to supply more efficient
+code in most cases, but are not truly necessary.
+<P>
+
+<LI>
+In fact, you often won't need any special epilogue at all.
+</UL>
+<P>
+
+Thus, in practice, <CODE>extralogue</CODE> is often only used with one argument.
+For example, an <CODE>ENTRYPOINT</CODE> equivalent to the <CODE>CALLBACK_*</CODE> macros
+looks like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ENTRYPOINT (("move.l %%a5,%%a4; sub.l #edata,%%a4"))
+</pre></td></tr></table></P><P>
+
+Note that <CODE>ENTRYPOINT</CODE>, being a macro, requires two sets of parentheses
+to emulate varargs.
+</P><P>
+
+See <TT>`EntryPoints.h'</TT> for more examples of the use of this attribute.
+</P><P>
+
+<A NAME="SEC12"></A>
+<H4> Prologues </H4>
+<!--docid::SEC12::-->
+<P>
+
+The function prologue first emits code to save the current A4 value on
+the stack.  It then emits the first one of the following which is non-empty
+and whose condition, if any, is satisfied:
+</P><P>
+
+<TABLE>
+<TR><TD><VAR>far-prologue</VAR></TD>
+</TD><TD> if <VAR>function</VAR> has a <CODE>section</CODE> attribute
+</TR>
+<TR><TD><VAR>prologue</VAR></TD>
+</TD><TD>
+</TR></TABLE>
+<P>
+
+The string selected can use <CODE>%0</CODE> to refer to the address of the
+function's first parameter.  <CODE>%0</CODE> will be a Mode 5 EA of the form
+<CODE><VAR>offset</VAR>(fp)</CODE> or <CODE><VAR>offset</VAR>(sp)</CODE>.
+</P><P>
+
+Your prologue <STRONG>must not</STRONG> leave any extra data on the stack!  If your
+prologue and epilogue need to communicate with each other and their needs
+aren't satisfied by A4, your function should declare some local variables
+for storage space, and your templates may access them at appropriate offsets
+from FP.
+</P><P>
+
+However, if you use <SAMP>`-fomit-frame-pointer'</SAMP>, this won't work.  In this
+case, you would need to fake your extra epilogue with <CODE>asm</CODE>, thus letting
+the compiler figure out the correct offsets from SP.  As with the old
+<CODE>CALLBACK_EPILOGUE</CODE>, you would need to ensure that execution couldn't
+escape from your function without going through your `epilogue'.
+</P><P>
+
+<A NAME="SEC13"></A>
+<H4> Epilogues </H4>
+<!--docid::SEC13::-->
+<P>
+
+The function epilogue emits the first one of the following which is non-empty
+and whose condition, if any, is satisfied:
+</P><P>
+
+<TABLE>
+<TR><TD><VAR>far-void-epilogue</VAR></TD>
+</TD><TD> if <VAR>function</VAR> has a <CODE>section</CODE> attribute and needs no return
+register
+</TR>
+<TR><TD><VAR>far-single-epilogue</VAR></TD>
+</TD><TD> if <VAR>function</VAR> has a <CODE>section</CODE> attribute and needs at most a single
+return register
+</TR>
+<TR><TD><VAR>far-epilogue</VAR></TD>
+</TD><TD> if <VAR>function</VAR> has a <CODE>section</CODE> attribute
+</TR>
+<TR><TD><VAR>void-epilogue</VAR></TD>
+</TD><TD> if <VAR>function</VAR> needs no return register
+</TR>
+<TR><TD><VAR>single-epilogue</VAR></TD>
+</TD><TD> if <VAR>function</VAR> needs at most a single return register
+</TR>
+<TR><TD><VAR>epilogue</VAR></TD>
+</TD><TD>
+</TR></TABLE>
+<P>
+
+The string selected can use <CODE>%0</CODE> to refer to the function's return
+value, if any.  If the function requires several registers to return its
+value (e.g., long longs are returned in D0 and D1), then <CODE>%0</CODE>
+will be a register list suitable for a <CODE>movem</CODE> instruction.  If the
+function returns its value in a single register, then <CODE>%0</CODE> denotes
+that register, and is either <CODE>%%d0</CODE> or <CODE>%%a0</CODE> depending on whether
+the return type is a pointer.  Otherwise the function is either void or it
+returns a large struct; in this case, <CODE>%0</CODE> will always be <CODE>%%a0</CODE>.
+</P><P>
+
+The epilogue then emits code to restore the old value of A4 from
+the stack.
+</P><P>
+
+<A NAME="SEC14"></A>
+<H4> The <SAMP>`far-'</SAMP> variants </H4>
+<!--docid::SEC14::-->
+<P>
+
+You need to supply a <SAMP>`far-'</SAMP> variant when the normal template won't work
+properly when included in a function in a non-default section.  (This is not
+a question of optimization, as is the case for the <CODE>epilogue</CODE> variants,
+because the <SAMP>`far-'</SAMP> variants generally won't work for a single code
+resource executable.  Usually such variants are needed because they need to
+use the <CODE>__text__</CODE> symbols, which would lead to link errors in a single
+code resource executable.)
+</P><P>
+
+Two extra operands are available to <SAMP>`far-'</SAMP> templates: <CODE>%a1</CODE> is the
+function's section's <SAMP>`__text__<VAR>section</VAR>'</SAMP> symbol, and <CODE>%2</CODE>
+is the address of the main text section's base pointer global, i.e., it is
+<CODE>__text__(%%pic)</CODE>, where <CODE>%%pic</CODE> is either A4 or A5.
+(This shows dramatically why <SAMP>`far-'</SAMP> variants are unlikely to be used
+with <CODE>ENTRYPOINT</CODE>: it's not much use accessing the text section's
+base pointer via A4 when that register hasn't been set up yet!)
+</P><P>
+
+There are other possible uses of <CODE>extralogue</CODE> for which the <SAMP>`far-'</SAMP>
+variants are necessary.  For example, you could arrange for a profiling
+function to be called at the start of a function like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define CALL_PROFILER \
+  __attribute__ ((extralogue ("bsr.w __count", "", "", "",
+                              "move.l %2,%%a0; jsr __count(%%a0)")))
+int f() CALL_PROFILER;
+</pre></td></tr></table></P><P>
+
+If you couldn't tell the compiler to use a cross-section jump when needed,
+you would need to supply a separate version of the <CODE>CALL_PROFILER</CODE>
+macro for use with functions with <CODE>section</CODE> attributes.  This would
+lead to mysterious errors: the program would crash if the programmer used
+the wrong version.
+</P><P>
+
+Alternatively, you could just call the profiling function like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>int f() {
+  __count();
+  <small>...</small>
+  }
+</pre></td></tr></table></P><P>
+
+So this isn't a good example, but hopefully it serves to demonstrate the
+issues.  Perhaps someone will find a good use for all this flexibility!
+</P><P>
+
+<A NAME="Special projects"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_10.html#SEC10"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_8.html#SEC8"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_8.html#SEC8"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

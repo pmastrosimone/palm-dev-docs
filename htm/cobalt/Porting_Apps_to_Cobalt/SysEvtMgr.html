@@ -1,0 +1,455 @@
+<html>
+<head>
+<title>(Protein) SysEvtMgr.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:20:18">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SysEvent.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SystemMgr.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">113 &nbsp;&nbsp;
+SysEvtMgr.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="SysEvtMgr.html">113  SysEvtMgr.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424977">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424991">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="424917"> </a>The changes to the System Event Manager arise primarily from the following:</p>
+<ul type="disc">
+  <li><a name="428769"> </a>Palm OS Cobalt doesn't have "silkscreen buttons." The functionality provided by those buttons can be found in the Palm OS Cobalt status bar and in individual pinlets.
+  <li><a name="428776"> </a>Palm OS Cobalt doesn't have separate low-level event queues for key presses and digitizer strokes. To ease porting of existing applications, where reasonable it provides functions that emulate the functionality provided in earlier Palm OS releases.
+</ul>
+
+<p><a name="428780"> </a>As well, a handful of functions that have historically been documented as "system use only" are not supported in Palm OS Cobalt.</p>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425388"> </a><b>Table 113.1&nbsp;&nbsp;Deleted functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425392"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425394"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425396"> </a><code>EvtEnqueuePenPoint()</code></p>
+    </td>
+    <td><p class="tt"><a name="428715"> </a>Nothing. This function was documented as "system use only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425400"> </a><code>EvtGetPenBtnList()</code></p>
+    </td>
+    <td><p class="tt"><a name="428694"> </a>There is no direct counterpart to this in Palm OS Cobalt. The functionality provided in earlier Palm OS releases by the silkscreen buttons can, in Palm OS Cobalt, be found either on the status bar or in a pinlet. Third-party developers cannot examine or manipulate the contents of the status bar in Palm OS Cobalt version 6.0.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425404"> </a><code>EvtGetSilkscreenAreaList()</code></p>
+    </td>
+    <td><p class="tt"><a name="425406"> </a>Nothing. This function was documented as "system use only" in Palm OS Garnet.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425408"> </a><code>EvtGetSysEvent()</code></p>
+    </td>
+    <td><p class="tt"><a name="428717"> </a>Nothing. This function was documented as "system use only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425412"> </a><code>EvtKeyQueueSize()</code></p>
+    </td>
+    <td><p class="tt"><a name="428748"> </a>Nothing. In Palm OS Cobalt there isn't a separate queue for key events. (Functions that act upon the key queue&#8212;such as <span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">EvtFlushKeyQueue()</span>&#8212;merely emulate a key queue. In reality they act upon those events that are key events in the main event queue.)</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425416"> </a><code>EvtPenQueueSize()</code></p>
+    </td>
+    <td><p class="tt"><a name="428735"> </a>Nothing. In Palm OS Cobalt there isn't a separate queue for pen events. (Functions that act upon the pen queue&#8212;such as <span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">EvtDequeuePenPoint()</span>&#8212;merely emulate a pen queue. In reality they act upon those events that are pen events in the main event queue.)</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425420"> </a><code>EvtProcessSoftKeyStroke()</code></p>
+    </td>
+    <td><p class="tt"><a name="425422"> </a><code>HWRProcessStroke()</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425424"> </a><code>EvtSetKeyQueuePtr()</code></p>
+    </td>
+    <td><p class="tt"><a name="428711"> </a>Nothing. This function was documented as "system use only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425428"> </a><code>EvtSetPenQueuePtr()</code></p>
+    </td>
+    <td><p class="tt"><a name="425430"> </a>Nothing. This function was documented as "system use only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425432"> </a><code>EvtSysInit()</code></p>
+    </td>
+    <td><p class="tt"><a name="428713"> </a>Nothing. This function was documented as "system use only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425441"> </a><b>Table 113.2&nbsp;&nbsp;Deleted structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425445"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425447"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425449"> </a><code>PenBtnInfoType</code></p>
+    </td>
+    <td><p class="tt"><a name="425451"> </a>There is no direct counterpart to this in Palm OS Cobalt. The functionality provided in earlier Palm OS releases by the silkscreen buttons can, in Palm OS Cobalt, be found either on the status bar or in a pinlet. Third-party developers cannot examine or manipulate the contents of the status bar in Palm OS Cobalt version 6.0.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425453"> </a><code>PenBtnListType</code></p>
+    </td>
+    <td><p class="tt"><a name="428656"> </a>There is no direct counterpart to this in Palm OS Cobalt. The functionality provided in earlier Palm OS releases by the silkscreen buttons can, in Palm OS Cobalt, be found either on the status bar or in a pinlet. Third-party developers cannot examine or manipulate the contents of the status bar in Palm OS Cobalt version 6.0.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425457"> </a><code>SilkscreenAreaType</code></p>
+    </td>
+    <td><p class="tt"><a name="425459"> </a>Nothing. This structure was used only with the <code>EvtGetSilkscreenAreaList()</code> function, which was documented as "system use only" in Palm OS Garnet and is not supported in Palm OS Cobalt.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425472"> </a><b>Table 113.3&nbsp;&nbsp;Deleted types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425476"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425478"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425480"> </a><code>PenBtnInfoPtr</code></p>
+    </td>
+    <td><p class="tt"><a name="428671"> </a>There is no direct counterpart to this in Palm OS Cobalt. The functionality provided in earlier Palm OS releases by the silkscreen buttons can, in Palm OS Cobalt, be found either on the status bar or in a pinlet. Third-party developers cannot examine or manipulate the contents of the status bar in Palm OS Cobalt version 6.0.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425489"> </a><b>Table 113.4&nbsp;&nbsp;Deleted #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425493"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425495"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425497"> </a><code>alphaGraffitiSilkscreenArea</code></p>
+    </td>
+    <td><p class="tt"><a name="425499"> </a>Nothing. This constant was used only with the <code>SilkscreenAreaType</code> structure, which is not supported in Palm OS Cobalt.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425501"> </a><code>numericGraffitiSilkscreenArea</code></p>
+    </td>
+    <td><p class="tt"><a name="428124"> </a>Nothing. This constant was used only with the <code>SilkscreenAreaType</code> structure, which is not supported in Palm OS Cobalt.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425505"> </a><code>silkscreenRectGraffiti</code></p>
+    </td>
+    <td><p class="tt"><a name="428129"> </a>Nothing. This constant was used only with the <code>SilkscreenAreaType</code> structure, which is not supported in Palm OS Cobalt.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425509"> </a><code>silkscreenRectScreen</code></p>
+    </td>
+    <td><p class="tt"><a name="428134"> </a>Nothing. This constant was used only with the <code>SilkscreenAreaType</code> structure, which is not supported in Palm OS Cobalt.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425518"> </a><b>Table 113.5&nbsp;&nbsp;Deleted enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425522"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425524"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425526"> </a><code>EvtSetAutoOffCmd</code></p>
+    </td>
+    <td><p class="tt"><a name="425528"> </a>Formerly an enum, this is now a typedef that takes one of the values defined by the <code>EvtSetAutoOffTag</code> enum.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424977"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="428055"> </a><b>Table 113.6&nbsp;&nbsp;Modified functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="428059"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="428061"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428063"> </a><code>status_t EvtDequeueKeyEvent (EventType *, Boolean)</code></p>
+    </td>
+    <td><p class="tt"><a name="428065"> </a>The final parameter, <code class="par">peek</code>, which allows you to specify whether or not the key should be left in the key queue, was declared to be an unsigned 16-bit integer in Palm OS Garnet. Note that this function was documented as System Use Only.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428067"> </a><code>Boolean EvtSetNullEventTick (int64_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="428069"> </a>In Palm OS Garnet the <code>tick</code> parameter is a 32-bit unsigned integer.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424991"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425557"> </a><b>Table 113.7&nbsp;&nbsp;Unchanged functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425561"> </a>EvtDequeuePenPoint()</p>
+    </td>
+    <td><p class="tt"><a name="425563"> </a>EvtDequeuePenStrokeInfo()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425565"> </a>EvtEnableGraffiti()</p>
+    </td>
+    <td><p class="tt"><a name="425567"> </a>EvtEnqueueKey()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425569"> </a>EvtFlushKeyQueue()</p>
+    </td>
+    <td><p class="tt"><a name="425571"> </a><code>EvtFlushNextPenStroke()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428087"> </a>EvtFlushPenQueue()</p>
+    </td>
+    <td><p class="tt"><a name="428105"> </a>EvtKeyQueueEmpty()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428107"> </a>EvtResetAutoOffTimer()</p>
+    </td>
+    <td><p class="tt"><a name="428109"> </a>EvtSetAutoOffTimer()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428111"> </a>EvtSysEventAvail()</p>
+    </td>
+    <td><p class="tt"><a name="428113"> </a>EvtWakeup()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428115"> </a><code>EvtWakeupWithoutNilEvent()</code></p>
+    </td>
+    <td><p class="tt"><a name="425583"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425586"> </a><b>Table 113.8&nbsp;&nbsp;Unchanged #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425590"> </a>evtErrParamErr</p>
+    </td>
+    <td><p class="tt"><a name="425592"> </a>evtErrQueueEmpty</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425594"> </a>evtErrQueueFull</p>
+    </td>
+    <td><p class="tt"><a name="425596"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="425010"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SysEvent.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SystemMgr.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

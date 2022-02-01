@@ -1,0 +1,1507 @@
+This is gdb.info, produced by makeinfo version 4.3 from
+/netrel/src/gdb-20030919-1/gdb/doc/gdb.texinfo.
+
+INFO-DIR-SECTION Programming & development tools.
+START-INFO-DIR-ENTRY
+* Gdb: (gdb).                     The GNU debugger.
+END-INFO-DIR-ENTRY
+
+   This file documents the GNU debugger GDB.
+
+   This is the Ninth Edition, of `Debugging with GDB: the GNU
+Source-Level Debugger' for GDB Version 2003-09-20-cvs (cygwin-special).
+
+   Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996,
+1998,
+1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
+
+   Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs Free
+Documentation", with the Front-Cover Texts being "A GNU Manual," and
+with the Back-Cover Texts as in (a) below.
+
+   (a) The Free Software Foundation's Back-Cover Text is: "You have
+freedom to copy and modify this GNU Manual, like GNU software.  Copies
+published by the Free Software Foundation raise funds for GNU
+development."
+
+
+File: gdb.info,  Node: ABI,  Next: Messages/Warnings,  Prev: Numbers,  Up: Controlling GDB
+
+Configuring the current ABI
+===========================
+
+   GDB can determine the "ABI" (Application Binary Interface) of your
+application automatically.  However, sometimes you need to override its
+conclusions.  Use these commands to manage GDB's view of the current
+ABI.
+
+   One GDB configuration can debug binaries for multiple operating
+system targets, either via remote debugging or native emulation.  GDB
+will autodetect the "OS ABI" (Operating System ABI) in use, but you can
+override its conclusion using the `set osabi' command.  One example
+where this is useful is in debugging of binaries which use an alternate
+C library (e.g. UCLIBC for GNU/Linux) which does not have the same
+identifying marks that the standard C library for your platform
+provides.
+
+`show osabi'
+     Show the OS ABI currently in use.
+
+`set osabi'
+     With no argument, show the list of registered available OS ABI's.
+
+`set osabi ABI'
+     Set the current OS ABI to ABI.
+
+   Generally, the way that an argument of type `float' is passed to a
+function depends on whether the function is prototyped.  For a
+prototyped (i.e. ANSI/ISO style) function, `float' arguments are passed
+unchanged, according to the architecture's convention for `float'.  For
+unprototyped (i.e. K&R style) functions, `float' arguments are first
+promoted to type `double' and then passed.
+
+   Unfortunately, some forms of debug information do not reliably
+indicate whether a function is prototyped.  If GDB calls a function
+that is not marked as prototyped, it consults `set
+coerce-float-to-double'.
+
+`set coerce-float-to-double'
+`set coerce-float-to-double on'
+     Arguments of type `float' will be promoted to `double' when passed
+     to an unprototyped function.  This is the default setting.
+
+`set coerce-float-to-double off'
+     Arguments of type `float' will be passed directly to unprototyped
+     functions.
+
+   GDB needs to know the ABI used for your program's C++ objects.  The
+correct C++ ABI depends on which C++ compiler was used to build your
+application.  GDB only fully supports programs with a single C++ ABI;
+if your program contains code using multiple C++ ABI's or if GDB can
+not identify your program's ABI correctly, you can tell GDB which ABI
+to use.  Currently supported ABI's include "gnu-v2", for `g++' versions
+before 3.0, "gnu-v3", for `g++' versions 3.0 and later, and "hpaCC" for
+the HP ANSI C++ compiler.  Other C++ compilers may use the "gnu-v2" or
+"gnu-v3" ABI's as well.  The default setting is "auto".
+
+`show cp-abi'
+     Show the C++ ABI currently in use.
+
+`set cp-abi'
+     With no argument, show the list of supported C++ ABI's.
+
+`set cp-abi ABI'
+`set cp-abi auto'
+     Set the current C++ ABI to ABI, or return to automatic detection.
+
+
+File: gdb.info,  Node: Messages/Warnings,  Next: Debugging Output,  Prev: ABI,  Up: Controlling GDB
+
+Optional warnings and messages
+==============================
+
+   By default, GDB is silent about its inner workings.  If you are
+running on a slow machine, you may want to use the `set verbose'
+command.  This makes GDB tell you when it does a lengthy internal
+operation, so you will not think it has crashed.
+
+   Currently, the messages controlled by `set verbose' are those which
+announce that the symbol table for a source file is being read; see
+`symbol-file' in *Note Commands to specify files: Files.
+
+`set verbose on'
+     Enables GDB output of certain informational messages.
+
+`set verbose off'
+     Disables GDB output of certain informational messages.
+
+`show verbose'
+     Displays whether `set verbose' is on or off.
+
+   By default, if GDB encounters bugs in the symbol table of an object
+file, it is silent; but if you are debugging a compiler, you may find
+this information useful (*note Errors reading symbol files: Symbol
+Errors.).
+
+`set complaints LIMIT'
+     Permits GDB to output LIMIT complaints about each type of unusual
+     symbols before becoming silent about the problem.  Set LIMIT to
+     zero to suppress all complaints; set it to a large number to
+     prevent complaints from being suppressed.
+
+`show complaints'
+     Displays how many symbol complaints GDB is permitted to produce.
+
+   By default, GDB is cautious, and asks what sometimes seems to be a
+lot of stupid questions to confirm certain commands.  For example, if
+you try to run a program which is already running:
+
+     (gdb) run
+     The program being debugged has been started already.
+     Start it from the beginning? (y or n)
+
+   If you are willing to unflinchingly face the consequences of your own
+commands, you can disable this "feature":
+
+`set confirm off'
+     Disables confirmation requests.
+
+`set confirm on'
+     Enables confirmation requests (the default).
+
+`show confirm'
+     Displays state of confirmation requests.
+
+
+File: gdb.info,  Node: Debugging Output,  Prev: Messages/Warnings,  Up: Controlling GDB
+
+Optional messages about internal happenings
+===========================================
+
+`set debug arch'
+     Turns on or off display of gdbarch debugging info. The default is
+     off
+
+`show debug arch'
+     Displays the current state of displaying gdbarch debugging info.
+
+`set debug event'
+     Turns on or off display of GDB event debugging info. The default
+     is off.
+
+`show debug event'
+     Displays the current state of displaying GDB event debugging info.
+
+`set debug expression'
+     Turns on or off display of GDB expression debugging info. The
+     default is off.
+
+`show debug expression'
+     Displays the current state of displaying GDB expression debugging
+     info.
+
+`set debug frame'
+     Turns on or off display of GDB frame debugging info.  The default
+     is off.
+
+`show debug frame'
+     Displays the current state of displaying GDB frame debugging info.
+
+`set debug overload'
+     Turns on or off display of GDB C++ overload debugging info. This
+     includes info such as ranking of functions, etc. The default is
+     off.
+
+`show debug overload'
+     Displays the current state of displaying GDB C++ overload
+     debugging info.
+
+`set debug remote'
+     Turns on or off display of reports on all packets sent back and
+     forth across the serial line to the remote machine.  The info is
+     printed on the GDB standard output stream. The default is off.
+
+`show debug remote'
+     Displays the state of display of remote packets.
+
+`set debug serial'
+     Turns on or off display of GDB serial debugging info. The default
+     is off.
+
+`show debug serial'
+     Displays the current state of displaying GDB serial debugging info.
+
+`set debug target'
+     Turns on or off display of GDB target debugging info. This info
+     includes what is going on at the target level of GDB, as it
+     happens. The default is off.
+
+`show debug target'
+     Displays the current state of displaying GDB target debugging info.
+
+`set debug varobj'
+     Turns on or off display of GDB variable object debugging info. The
+     default is off.
+
+`show debug varobj'
+     Displays the current state of displaying GDB variable object
+     debugging info.
+
+
+File: gdb.info,  Node: Sequences,  Next: TUI,  Prev: Controlling GDB,  Up: Top
+
+Canned Sequences of Commands
+****************************
+
+   Aside from breakpoint commands (*note Breakpoint command lists:
+Break Commands.), GDB provides two ways to store sequences of commands
+for execution as a unit: user-defined commands and command files.
+
+* Menu:
+
+* Define::                      User-defined commands
+* Hooks::                       User-defined command hooks
+* Command Files::               Command files
+* Output::                      Commands for controlled output
+
+
+File: gdb.info,  Node: Define,  Next: Hooks,  Up: Sequences
+
+User-defined commands
+=====================
+
+   A "user-defined command" is a sequence of GDB commands to which you
+assign a new name as a command.  This is done with the `define'
+command.  User commands may accept up to 10 arguments separated by
+whitespace.  Arguments are accessed within the user command via
+$ARG0...$ARG9.  A trivial example:
+
+     define adder
+       print $arg0 + $arg1 + $arg2
+
+To execute the command use:
+
+     adder 1 2 3
+
+This defines the command `adder', which prints the sum of its three
+arguments.  Note the arguments are text substitutions, so they may
+reference variables, use complex expressions, or even perform inferior
+functions calls.
+
+`define COMMANDNAME'
+     Define a command named COMMANDNAME.  If there is already a command
+     by that name, you are asked to confirm that you want to redefine
+     it.
+
+     The definition of the command is made up of other GDB command
+     lines, which are given following the `define' command.  The end of
+     these commands is marked by a line containing `end'.
+
+`if'
+     Takes a single argument, which is an expression to evaluate.  It
+     is followed by a series of commands that are executed only if the
+     expression is true (nonzero).  There can then optionally be a line
+     `else', followed by a series of commands that are only executed if
+     the expression was false.  The end of the list is marked by a line
+     containing `end'.
+
+`while'
+     The syntax is similar to `if': the command takes a single argument,
+     which is an expression to evaluate, and must be followed by the
+     commands to execute, one per line, terminated by an `end'.  The
+     commands are executed repeatedly as long as the expression
+     evaluates to true.
+
+`document COMMANDNAME'
+     Document the user-defined command COMMANDNAME, so that it can be
+     accessed by `help'.  The command COMMANDNAME must already be
+     defined.  This command reads lines of documentation just as
+     `define' reads the lines of the command definition, ending with
+     `end'.  After the `document' command is finished, `help' on command
+     COMMANDNAME displays the documentation you have written.
+
+     You may use the `document' command again to change the
+     documentation of a command.  Redefining the command with `define'
+     does not change the documentation.
+
+`help user-defined'
+     List all user-defined commands, with the first line of the
+     documentation (if any) for each.
+
+`show user'
+`show user COMMANDNAME'
+     Display the GDB commands used to define COMMANDNAME (but not its
+     documentation).  If no COMMANDNAME is given, display the
+     definitions for all user-defined commands.
+
+`show max-user-call-depth'
+`set max-user-call-depth'
+     The value of `max-user-call-depth' controls how many recursion
+     levels are allowed in user-defined commands before GDB suspects an
+     infinite recursion and aborts the command.
+
+   When user-defined commands are executed, the commands of the
+definition are not printed.  An error in any command stops execution of
+the user-defined command.
+
+   If used interactively, commands that would ask for confirmation
+proceed without asking when used inside a user-defined command.  Many
+GDB commands that normally print messages to say what they are doing
+omit the messages when used in a user-defined command.
+
+
+File: gdb.info,  Node: Hooks,  Next: Command Files,  Prev: Define,  Up: Sequences
+
+User-defined command hooks
+==========================
+
+   You may define "hooks", which are a special kind of user-defined
+command.  Whenever you run the command `foo', if the user-defined
+command `hook-foo' exists, it is executed (with no arguments) before
+that command.
+
+   A hook may also be defined which is run after the command you
+executed.  Whenever you run the command `foo', if the user-defined
+command `hookpost-foo' exists, it is executed (with no arguments) after
+that command.  Post-execution hooks may exist simultaneously with
+pre-execution hooks, for the same command.
+
+   It is valid for a hook to call the command which it hooks.  If this
+occurs, the hook is not re-executed, thereby avoiding infinte recursion.
+
+   In addition, a pseudo-command, `stop' exists.  Defining
+(`hook-stop') makes the associated commands execute every time
+execution stops in your program: before breakpoint commands are run,
+displays are printed, or the stack frame is printed.
+
+   For example, to ignore `SIGALRM' signals while single-stepping, but
+treat them normally during normal execution, you could define:
+
+     define hook-stop
+     handle SIGALRM nopass
+     end
+     
+     define hook-run
+     handle SIGALRM pass
+     end
+     
+     define hook-continue
+     handle SIGLARM pass
+     end
+
+   As a further example, to hook at the begining and end of the `echo'
+command, and to add extra text to the beginning and end of the message,
+you could define:
+
+     define hook-echo
+     echo <<<---
+     end
+     
+     define hookpost-echo
+     echo --->>>\n
+     end
+     
+     (gdb) echo Hello World
+     <<<---Hello World--->>>
+     (gdb)
+
+   You can define a hook for any single-word command in GDB, but not
+for command aliases; you should define a hook for the basic command
+name, e.g.  `backtrace' rather than `bt'.  If an error occurs during
+the execution of your hook, execution of GDB commands stops and GDB
+issues a prompt (before the command that you actually typed had a
+chance to run).
+
+   If you try to define a hook which does not match any known command,
+you get a warning from the `define' command.
+
+
+File: gdb.info,  Node: Command Files,  Next: Output,  Prev: Hooks,  Up: Sequences
+
+Command files
+=============
+
+   A command file for GDB is a file of lines that are GDB commands.
+Comments (lines starting with `#') may also be included.  An empty line
+in a command file does nothing; it does not mean to repeat the last
+command, as it would from the terminal.
+
+   When you start GDB, it automatically executes commands from its
+"init files", normally called `.gdbinit'(1).  During startup, GDB does
+the following:
+
+  1. Reads the init file (if any) in your home directory(2).
+
+  2. Processes command line options and operands.
+
+  3. Reads the init file (if any) in the current working directory.
+
+  4. Reads command files specified by the `-x' option.
+
+   The init file in your home directory can set options (such as `set
+complaints') that affect subsequent processing of command line options
+and operands.  Init files are not executed if you use the `-nx' option
+(*note Choosing modes: Mode Options.).
+
+   On some configurations of GDB, the init file is known by a different
+name (these are typically environments where a specialized form of GDB
+may need to coexist with other forms, hence a different name for the
+specialized version's init file).  These are the environments with
+special init file names:
+
+   * VxWorks (Wind River Systems real-time OS): `.vxgdbinit'
+
+   * OS68K (Enea Data Systems real-time OS): `.os68gdbinit'
+
+   * ES-1800 (Ericsson Telecom AB M68000 emulator): `.esgdbinit'
+
+   You can also request the execution of a command file with the
+`source' command:
+
+`source FILENAME'
+     Execute the command file FILENAME.
+
+   The lines in a command file are executed sequentially.  They are not
+printed as they are executed.  An error in any command terminates
+execution of the command file and control is returned to the console.
+
+   Commands that would ask for confirmation if used interactively
+proceed without asking when used in a command file.  Many GDB commands
+that normally print messages to say what they are doing omit the
+messages when called from command files.
+
+   GDB also accepts command input from standard input.  In this mode,
+normal output goes to standard output and error output goes to standard
+error.  Errors in a command file supplied on standard input do not
+terminate execution of the command file -- execution continues with the
+next command.
+
+     gdb < cmds > log 2>&1
+
+   (The syntax above will vary depending on the shell used.) This
+example will execute commands from the file `cmds'. All output and
+errors would be directed to `log'.
+
+   ---------- Footnotes ----------
+
+   (1) The DJGPP port of GDB uses the name `gdb.ini' instead, due to the
+limitations of file names imposed by DOS filesystems.
+
+   (2) On DOS/Windows systems, the home directory is the one pointed to
+by the `HOME' environment variable.
+
+
+File: gdb.info,  Node: Output,  Prev: Command Files,  Up: Sequences
+
+Commands for controlled output
+==============================
+
+   During the execution of a command file or a user-defined command,
+normal GDB output is suppressed; the only output that appears is what is
+explicitly printed by the commands in the definition.  This section
+describes three commands useful for generating exactly the output you
+want.
+
+`echo TEXT'
+     Print TEXT.  Nonprinting characters can be included in TEXT using
+     C escape sequences, such as `\n' to print a newline.  *No newline
+     is printed unless you specify one.* In addition to the standard C
+     escape sequences, a backslash followed by a space stands for a
+     space.  This is useful for displaying a string with spaces at the
+     beginning or the end, since leading and trailing spaces are
+     otherwise trimmed from all arguments.  To print ` and foo = ', use
+     the command `echo \ and foo = \ '.
+
+     A backslash at the end of TEXT can be used, as in C, to continue
+     the command onto subsequent lines.  For example,
+
+          echo This is some text\n\
+          which is continued\n\
+          onto several lines.\n
+
+     produces the same output as
+
+          echo This is some text\n
+          echo which is continued\n
+          echo onto several lines.\n
+
+`output EXPRESSION'
+     Print the value of EXPRESSION and nothing but that value: no
+     newlines, no `$NN = '.  The value is not entered in the value
+     history either.  *Note Expressions: Expressions, for more
+     information on expressions.
+
+`output/FMT EXPRESSION'
+     Print the value of EXPRESSION in format FMT.  You can use the same
+     formats as for `print'.  *Note Output formats: Output Formats, for
+     more information.
+
+`printf STRING, EXPRESSIONS...'
+     Print the values of the EXPRESSIONS under the control of STRING.
+     The EXPRESSIONS are separated by commas and may be either numbers
+     or pointers.  Their values are printed as specified by STRING,
+     exactly as if your program were to execute the C subroutine
+
+          printf (STRING, EXPRESSIONS...);
+
+     For example, you can print two values in hex like this:
+
+          printf "foo, bar-foo = 0x%x, 0x%x\n", foo, bar-foo
+
+     The only backslash-escape sequences that you can use in the format
+     string are the simple ones that consist of backslash followed by a
+     letter.
+
+
+File: gdb.info,  Node: Interpreters,  Next: Emacs,  Prev: TUI,  Up: Top
+
+Command Interpreters
+********************
+
+   GDB supports multiple command interpreters, and some command
+infrastructure to allow users or user interface writers to switch
+between interpreters or run commands in other interpreters.
+
+   GDB currently supports two command interpreters, the console
+interpreter (sometimes called the command-line interpreter or CLI) and
+the machine interface interpreter (or GDB/MI).  This manual describes
+both of these interfaces in great detail.
+
+   By default, GDB will start with the console interpreter.  However,
+the user may choose to start GDB with another interpreter by specifying
+the `-i' or `--interpreter' startup options.  Defined interpreters
+include:
+
+`console'
+     The traditional console or command-line interpreter.  This is the
+     most often used interpreter with GDB. With no interpreter
+     specified at runtime, GDB will use this interpreter.
+
+`mi'
+     The newest GDB/MI interface (currently `mi2').  Used primarily by
+     programs wishing to use GDB as a backend for a debugger GUI or an
+     IDE.  For more information, see *Note The GDB/MI Interface: GDB/MI.
+
+`mi2'
+     The current GDB/MI interface.
+
+`mi1'
+     The GDB/MI interface included in GDB 5.1, 5.2, and 5.3.
+
+   The interpreter being used by GDB may not be dynamically switched at
+runtime.  Although possible, this could lead to a very precarious
+situation.  Consider an IDE using GDB/MI.  If a user enters the command
+"interpreter-set console" in a console view, GDB would switch to using
+the console interpreter, rendering the IDE inoperable!
+
+   Although you may only choose a single interpreter at startup, you
+may execute commands in any interpreter from the current interpreter
+using the appropriate command.  If you are running the console
+interpreter, simply use the `interpreter-exec' command:
+
+     interpreter-exec mi "-data-list-register-names"
+
+   GDB/MI has a similar command, although it is only available in
+versions of GDB which support GDB/MI version 2 (or greater).
+
+
+File: gdb.info,  Node: TUI,  Next: Interpreters,  Prev: Sequences,  Up: Top
+
+GDB Text User Interface
+***********************
+
+* Menu:
+
+* TUI Overview::                TUI overview
+* TUI Keys::                    TUI key bindings
+* TUI Single Key Mode::         TUI single key mode
+* TUI Commands::                TUI specific commands
+* TUI Configuration::           TUI configuration variables
+
+   The GDB Text User Interface, TUI in short, is a terminal interface
+which uses the `curses' library to show the source file, the assembly
+output, the program registers and GDB commands in separate text windows.
+The TUI is available only when GDB is configured with the
+`--enable-tui' configure option (*note Configure Options::).
+
+
+File: gdb.info,  Node: TUI Overview,  Next: TUI Keys,  Up: TUI
+
+TUI overview
+============
+
+   The TUI has two display modes that can be switched while GDB runs:
+
+   * A curses (or TUI) mode in which it displays several text windows
+     on the terminal.
+
+   * A standard mode which corresponds to the GDB configured without
+     the TUI.
+
+   In the TUI mode, GDB can display several text window on the terminal:
+
+_command_
+     This window is the GDB command window with the GDB prompt and the
+     GDB outputs.  The GDB input is still managed using readline but
+     through the TUI.  The _command_ window is always visible.
+
+_source_
+     The source window shows the source file of the program.  The
+     current line as well as active breakpoints are displayed in this
+     window.
+
+_assembly_
+     The assembly window shows the disassembly output of the program.
+
+_register_
+     This window shows the processor registers.  It detects when a
+     register is changed and when this is the case, registers that have
+     changed are highlighted.
+
+   The source and assembly windows show the current program position by
+highlighting the current line and marking them with the `>' marker.
+Breakpoints are also indicated with two markers.  A first one indicates
+the breakpoint type:
+
+`B'
+     Breakpoint which was hit at least once.
+
+`b'
+     Breakpoint which was never hit.
+
+`H'
+     Hardware breakpoint which was hit at least once.
+
+`h'
+     Hardware breakpoint which was never hit.
+
+   The second marker indicates whether the breakpoint is enabled or not:
+
+`+'
+     Breakpoint is enabled.
+
+`-'
+     Breakpoint is disabled.
+
+   The source, assembly and register windows are attached to the thread
+and the frame position.  They are updated when the current thread
+changes, when the frame changes or when the program counter changes.
+These three windows are arranged by the TUI according to several
+layouts.  The layout defines which of these three windows are visible.
+The following layouts are available:
+
+   * source
+
+   * assembly
+
+   * source and assembly
+
+   * source and registers
+
+   * assembly and registers
+
+
+   On top of the command window a status line gives various information
+concerning the current process begin debugged.  The status line is
+updated when the information it shows changes.  The following fields
+are displayed:
+
+_target_
+     Indicates the current gdb target (*note Specifying a Debugging
+     Target: Targets.).
+
+_process_
+     Gives information about the current process or thread number.
+     When no process is being debugged, this field is set to `No
+     process'.
+
+_function_
+     Gives the current function name for the selected frame.  The name
+     is demangled if demangling is turned on (*note Print Settings::).
+     When there is no symbol corresponding to the current program
+     counter the string `??' is displayed.
+
+_line_
+     Indicates the current line number for the selected frame.  When
+     the current line number is not known the string `??' is displayed.
+
+_pc_
+     Indicates the current program counter address.
+
+
+File: gdb.info,  Node: TUI Keys,  Next: TUI Single Key Mode,  Prev: TUI Overview,  Up: TUI
+
+TUI Key Bindings
+================
+
+   The TUI installs several key bindings in the readline keymaps (*note
+Command Line Editing::).  They allow to leave or enter in the TUI mode
+or they operate directly on the TUI layout and windows.  The TUI also
+provides a _SingleKey_ keymap which binds several keys directly to GDB
+commands.  The following key bindings are installed for both TUI mode
+and the GDB standard mode.
+
+`C-x C-a'
+`C-x a'
+`C-x A'
+     Enter or leave the TUI mode.  When the TUI mode is left, the
+     curses window management is left and GDB operates using its
+     standard mode writing on the terminal directly.  When the TUI mode
+     is entered, the control is given back to the curses windows.  The
+     screen is then refreshed.
+
+`C-x 1'
+     Use a TUI layout with only one window.  The layout will either be
+     `source' or `assembly'.  When the TUI mode is not active, it will
+     switch to the TUI mode.
+
+     Think of this key binding as the Emacs `C-x 1' binding.
+
+`C-x 2'
+     Use a TUI layout with at least two windows.  When the current
+     layout shows already two windows, a next layout with two windows
+     is used.  When a new layout is chosen, one window will always be
+     common to the previous layout and the new one.
+
+     Think of it as the Emacs `C-x 2' binding.
+
+`C-x o'
+     Change the active window.  The TUI associates several key bindings
+     (like scrolling and arrow keys) to the active window. This command
+     gives the focus to the next TUI window.
+
+     Think of it as the Emacs `C-x o' binding.
+
+`C-x s'
+     Use the TUI _SingleKey_ keymap that binds single key to gdb
+     commands (*note TUI Single Key Mode::).
+
+   The following key bindings are handled only by the TUI mode:
+
+<PgUp>
+     Scroll the active window one page up.
+
+<PgDn>
+     Scroll the active window one page down.
+
+<Up>
+     Scroll the active window one line up.
+
+<Down>
+     Scroll the active window one line down.
+
+<Left>
+     Scroll the active window one column left.
+
+<Right>
+     Scroll the active window one column right.
+
+<C-L>
+     Refresh the screen.
+
+   In the TUI mode, the arrow keys are used by the active window for
+scrolling.  This means they are available for readline when the active
+window is the command window.  When the command window does not have
+the focus, it is necessary to use other readline key bindings such as
+<C-p>, <C-n>, <C-b> and <C-f>.
+
+
+File: gdb.info,  Node: TUI Single Key Mode,  Next: TUI Commands,  Prev: TUI Keys,  Up: TUI
+
+TUI Single Key Mode
+===================
+
+   The TUI provides a _SingleKey_ mode in which it installs a particular
+key binding in the readline keymaps to connect single keys to some gdb
+commands.
+
+`c'
+     continue
+
+`d'
+     down
+
+`f'
+     finish
+
+`n'
+     next
+
+`q'
+     exit the _SingleKey_ mode.
+
+`r'
+     run
+
+`s'
+     step
+
+`u'
+     up
+
+`v'
+     info locals
+
+`w'
+     where
+
+   Other keys temporarily switch to the GDB command prompt.  The key
+that was pressed is inserted in the editing buffer so that it is
+possible to type most GDB commands without interaction with the TUI
+_SingleKey_ mode.  Once the command is entered the TUI _SingleKey_ mode
+is restored.  The only way to permanently leave this mode is by hitting
+<q> or `<C-x> <s>'.
+
+
+File: gdb.info,  Node: TUI Commands,  Next: TUI Configuration,  Prev: TUI Single Key Mode,  Up: TUI
+
+TUI specific commands
+=====================
+
+   The TUI has specific commands to control the text windows.  These
+commands are always available, that is they do not depend on the
+current terminal mode in which GDB runs.  When GDB is in the standard
+mode, using these commands will automatically switch in the TUI mode.
+
+`info win'
+     List and give the size of all displayed windows.
+
+`layout next'
+     Display the next layout.
+
+`layout prev'
+     Display the previous layout.
+
+`layout src'
+     Display the source window only.
+
+`layout asm'
+     Display the assembly window only.
+
+`layout split'
+     Display the source and assembly window.
+
+`layout regs'
+     Display the register window together with the source or assembly
+     window.
+
+`focus next | prev | src | asm | regs | split'
+     Set the focus to the named window.  This command allows to change
+     the active window so that scrolling keys can be affected to
+     another window.
+
+`refresh'
+     Refresh the screen.  This is similar to using <C-L> key.
+
+`update'
+     Update the source window and the current execution point.
+
+`winheight NAME +COUNT'
+`winheight NAME -COUNT'
+     Change the height of the window NAME by COUNT lines.  Positive
+     counts increase the height, while negative counts decrease it.
+
+
+File: gdb.info,  Node: TUI Configuration,  Prev: TUI Commands,  Up: TUI
+
+TUI configuration variables
+===========================
+
+   The TUI has several configuration variables that control the
+appearance of windows on the terminal.
+
+`set tui border-kind KIND'
+     Select the border appearance for the source, assembly and register
+     windows.  The possible values are the following:
+    `space'
+          Use a space character to draw the border.
+
+    `ascii'
+          Use ascii characters + - and | to draw the border.
+
+    `acs'
+          Use the Alternate Character Set to draw the border.  The
+          border is drawn using character line graphics if the terminal
+          supports them.
+
+`set tui active-border-mode MODE'
+     Select the attributes to display the border of the active window.
+     The possible values are `normal', `standout', `reverse', `half',
+     `half-standout', `bold' and `bold-standout'.
+
+`set tui border-mode MODE'
+     Select the attributes to display the border of other windows.  The
+     MODE can be one of the following:
+    `normal'
+          Use normal attributes to display the border.
+
+    `standout'
+          Use standout mode.
+
+    `reverse'
+          Use reverse video mode.
+
+    `half'
+          Use half bright mode.
+
+    `half-standout'
+          Use half bright and standout mode.
+
+    `bold'
+          Use extra bright or bold mode.
+
+    `bold-standout'
+          Use extra bright or bold and standout mode.
+
+
+File: gdb.info,  Node: Emacs,  Next: Annotations,  Prev: Interpreters,  Up: Top
+
+Using GDB under GNU Emacs
+*************************
+
+   A special interface allows you to use GNU Emacs to view (and edit)
+the source files for the program you are debugging with GDB.
+
+   To use this interface, use the command `M-x gdb' in Emacs.  Give the
+executable file you want to debug as an argument.  This command starts
+GDB as a subprocess of Emacs, with input and output through a newly
+created Emacs buffer.
+
+   Using GDB under Emacs is just like using GDB normally except for two
+things:
+
+   * All "terminal" input and output goes through the Emacs buffer.
+
+   This applies both to GDB commands and their output, and to the input
+and output done by the program you are debugging.
+
+   This is useful because it means that you can copy the text of
+previous commands and input them again; you can even use parts of the
+output in this way.
+
+   All the facilities of Emacs' Shell mode are available for interacting
+with your program.  In particular, you can send signals the usual
+way--for example, `C-c C-c' for an interrupt, `C-c C-z' for a stop.
+
+   * GDB displays source code through Emacs.
+
+   Each time GDB displays a stack frame, Emacs automatically finds the
+source file for that frame and puts an arrow (`=>') at the left margin
+of the current line.  Emacs uses a separate buffer for source display,
+and splits the screen to show both your GDB session and the source.
+
+   Explicit GDB `list' or search commands still produce output as
+usual, but you probably have no reason to use them from Emacs.
+
+   If you specify an absolute file name when prompted for the `M-x gdb'
+argument, then Emacs sets your current working directory to where your
+program resides.  If you only specify the file name, then Emacs sets
+your current working directory to to the directory associated with the
+previous buffer.  In this case, GDB may find your program by searching
+your environment's `PATH' variable, but on some operating systems it
+might not find the source.  So, although the GDB input and output
+session proceeds normally, the auxiliary buffer does not display the
+current source and line of execution.
+
+   The initial working directory of GDB is printed on the top line of
+the GDB I/O buffer and this serves as a default for the commands that
+specify files for GDB to operate on.  *Note Commands to specify files:
+Files.
+
+   By default, `M-x gdb' calls the program called `gdb'.  If you need
+to call GDB by a different name (for example, if you keep several
+configurations around, with different names) you can customize the
+Emacs variable `gud-gdb-command-name' to run the one you want.
+
+   In the GDB I/O buffer, you can use these special Emacs commands in
+addition to the standard Shell mode commands:
+
+`C-h m'
+     Describe the features of Emacs' GDB Mode.
+
+`C-c C-s'
+     Execute to another source line, like the GDB `step' command; also
+     update the display window to show the current file and location.
+
+`C-c C-n'
+     Execute to next source line in this function, skipping all function
+     calls, like the GDB `next' command.  Then update the display window
+     to show the current file and location.
+
+`C-c C-i'
+     Execute one instruction, like the GDB `stepi' command; update
+     display window accordingly.
+
+`C-c C-f'
+     Execute until exit from the selected stack frame, like the GDB
+     `finish' command.
+
+`C-c C-r'
+     Continue execution of your program, like the GDB `continue'
+     command.
+
+`C-c <'
+     Go up the number of frames indicated by the numeric argument
+     (*note Numeric Arguments: (Emacs)Arguments.), like the GDB `up'
+     command.
+
+`C-c >'
+     Go down the number of frames indicated by the numeric argument,
+     like the GDB `down' command.
+
+   In any source file, the Emacs command `C-x SPC' (`gud-break') tells
+GDB to set a breakpoint on the source line point is on.
+
+   If you type `M-x speedbar', then Emacs displays a separate frame
+which shows a backtrace when the GDB I/O buffer is current.  Move point
+to any frame in the stack and type <RET> to make it become the current
+frame and display the associated source in the source buffer.
+Alternatively, click `Mouse-2' to make the selected frame become the
+current one.
+
+   If you accidentally delete the source-display buffer, an easy way to
+get it back is to type the command `f' in the GDB buffer, to request a
+frame display; when you run under Emacs, this recreates the source
+buffer if necessary to show you the context of the current frame.
+
+   The source files displayed in Emacs are in ordinary Emacs buffers
+which are visiting the source files in the usual way.  You can edit the
+files with these buffers if you wish; but keep in mind that GDB
+communicates with Emacs in terms of line numbers.  If you add or delete
+lines from the text, the line numbers that GDB knows cease to
+correspond properly with the code.
+
+   The description given here is for GNU Emacs version 21.3 and a more
+detailed description of its interaction with GDB is given in the Emacs
+manual (*note Debuggers: (Emacs)Debuggers.).
+
+
+File: gdb.info,  Node: GDB/MI,  Next: GDB Bugs,  Prev: Annotations,  Up: Top
+
+The GDB/MI Interface
+********************
+
+Function and Purpose
+====================
+
+   GDB/MI is a line based machine oriented text interface to GDB.  It is
+specifically intended to support the development of systems which use
+the debugger as just one small component of a larger system.
+
+   This chapter is a specification of the GDB/MI interface.  It is
+written in the form of a reference manual.
+
+   Note that GDB/MI is still under construction, so some of the
+features described below are incomplete and subject to change.
+
+Notation and Terminology
+========================
+
+   This chapter uses the following notation:
+
+   * `|' separates two alternatives.
+
+   * `[ SOMETHING ]' indicates that SOMETHING is optional: it may or
+     may not be given.
+
+   * `( GROUP )*' means that GROUP inside the parentheses may repeat
+     zero or more times.
+
+   * `( GROUP )+' means that GROUP inside the parentheses may repeat
+     one or more times.
+
+   * `"STRING"' means a literal STRING.
+
+Acknowledgments
+===============
+
+   In alphabetic order: Andrew Cagney, Fernando Nasser, Stan Shebs and
+Elena Zannoni.
+
+* Menu:
+
+* GDB/MI Command Syntax::
+* GDB/MI Compatibility with CLI::
+* GDB/MI Output Records::
+* GDB/MI Command Description Format::
+* GDB/MI Breakpoint Table Commands::
+* GDB/MI Data Manipulation::
+* GDB/MI Program Control::
+* GDB/MI Miscellaneous Commands::
+* GDB/MI Stack Manipulation::
+* GDB/MI Symbol Query::
+* GDB/MI Target Manipulation::
+* GDB/MI Thread Commands::
+* GDB/MI Tracepoint Commands::
+* GDB/MI Variable Objects::
+
+
+File: gdb.info,  Node: GDB/MI Command Syntax,  Next: GDB/MI Compatibility with CLI,  Up: GDB/MI
+
+GDB/MI Command Syntax
+=====================
+
+* Menu:
+
+* GDB/MI Input Syntax::
+* GDB/MI Output Syntax::
+* GDB/MI Simple Examples::
+
+
+File: gdb.info,  Node: GDB/MI Input Syntax,  Next: GDB/MI Output Syntax,  Up: GDB/MI Command Syntax
+
+GDB/MI Input Syntax
+-------------------
+
+`COMMAND ==>'
+     `CLI-COMMAND | MI-COMMAND'
+
+`CLI-COMMAND ==>'
+     `[ TOKEN ] CLI-COMMAND NL', where CLI-COMMAND is any existing GDB
+     CLI command.
+
+`MI-COMMAND ==>'
+     `[ TOKEN ] "-" OPERATION ( " " OPTION )* `[' " --" `]' ( " "
+     PARAMETER )* NL'
+
+`TOKEN ==>'
+     "any sequence of digits"
+
+`OPTION ==>'
+     `"-" PARAMETER [ " " PARAMETER ]'
+
+`PARAMETER ==>'
+     `NON-BLANK-SEQUENCE | C-STRING'
+
+`OPERATION ==>'
+     _any of the operations described in this chapter_
+
+`NON-BLANK-SEQUENCE ==>'
+     _anything, provided it doesn't contain special characters such as
+     "-", NL, """ and of course " "_
+
+`C-STRING ==>'
+     `""" SEVEN-BIT-ISO-C-STRING-CONTENT """'
+
+`NL ==>'
+     `CR | CR-LF'
+
+Notes:
+
+   * The CLI commands are still handled by the MI interpreter; their
+     output is described below.
+
+   * The `TOKEN', when present, is passed back when the command
+     finishes.
+
+   * Some MI commands accept optional arguments as part of the parameter
+     list.  Each option is identified by a leading `-' (dash) and may be
+     followed by an optional argument parameter.  Options occur first
+     in the parameter list and can be delimited from normal parameters
+     using `--' (this is useful when some parameters begin with a dash).
+
+   Pragmatics:
+
+   * We want easy access to the existing CLI syntax (for debugging).
+
+   * We want it to be easy to spot a MI operation.
+
+
+File: gdb.info,  Node: GDB/MI Output Syntax,  Next: GDB/MI Simple Examples,  Prev: GDB/MI Input Syntax,  Up: GDB/MI Command Syntax
+
+GDB/MI Output Syntax
+--------------------
+
+   The output from GDB/MI consists of zero or more out-of-band records
+followed, optionally, by a single result record.  This result record is
+for the most recent command.  The sequence of output records is
+terminated by `(gdb)'.
+
+   If an input command was prefixed with a `TOKEN' then the
+corresponding output for that command will also be prefixed by that same
+TOKEN.
+
+`OUTPUT ==>'
+     `( OUT-OF-BAND-RECORD )* [ RESULT-RECORD ] "(gdb)" NL'
+
+`RESULT-RECORD ==>'
+     ` [ TOKEN ] "^" RESULT-CLASS ( "," RESULT )* NL'
+
+`OUT-OF-BAND-RECORD ==>'
+     `ASYNC-RECORD | STREAM-RECORD'
+
+`ASYNC-RECORD ==>'
+     `EXEC-ASYNC-OUTPUT | STATUS-ASYNC-OUTPUT | NOTIFY-ASYNC-OUTPUT'
+
+`EXEC-ASYNC-OUTPUT ==>'
+     `[ TOKEN ] "*" ASYNC-OUTPUT'
+
+`STATUS-ASYNC-OUTPUT ==>'
+     `[ TOKEN ] "+" ASYNC-OUTPUT'
+
+`NOTIFY-ASYNC-OUTPUT ==>'
+     `[ TOKEN ] "=" ASYNC-OUTPUT'
+
+`ASYNC-OUTPUT ==>'
+     `ASYNC-CLASS ( "," RESULT )* NL'
+
+`RESULT-CLASS ==>'
+     `"done" | "running" | "connected" | "error" | "exit"'
+
+`ASYNC-CLASS ==>'
+     `"stopped" | OTHERS' (where OTHERS will be added depending on the
+     needs--this is still in development).
+
+`RESULT ==>'
+     ` VARIABLE "=" VALUE'
+
+`VARIABLE ==>'
+     ` STRING '
+
+`VALUE ==>'
+     ` CONST | TUPLE | LIST '
+
+`CONST ==>'
+     `C-STRING'
+
+`TUPLE ==>'
+     ` "{}" | "{" RESULT ( "," RESULT )* "}" '
+
+`LIST ==>'
+     ` "[]" | "[" VALUE ( "," VALUE )* "]" | "[" RESULT ( "," RESULT )*
+     "]" '
+
+`STREAM-RECORD ==>'
+     `CONSOLE-STREAM-OUTPUT | TARGET-STREAM-OUTPUT | LOG-STREAM-OUTPUT'
+
+`CONSOLE-STREAM-OUTPUT ==>'
+     `"~" C-STRING'
+
+`TARGET-STREAM-OUTPUT ==>'
+     `"@" C-STRING'
+
+`LOG-STREAM-OUTPUT ==>'
+     `"&" C-STRING'
+
+`NL ==>'
+     `CR | CR-LF'
+
+`TOKEN ==>'
+     _any sequence of digits_.
+
+Notes:
+
+   * All output sequences end in a single line containing a period.
+
+   * The `TOKEN' is from the corresponding request.  If an execution
+     command is interrupted by the `-exec-interrupt' command, the TOKEN
+     associated with the `*stopped' message is the one of the original
+     execution command, not the one of the interrupt command.
+
+   * STATUS-ASYNC-OUTPUT contains on-going status information about the
+     progress of a slow operation.  It can be discarded.  All status
+     output is prefixed by `+'.
+
+   * EXEC-ASYNC-OUTPUT contains asynchronous state change on the target
+     (stopped, started, disappeared).  All async output is prefixed by
+     `*'.
+
+   * NOTIFY-ASYNC-OUTPUT contains supplementary information that the
+     client should handle (e.g., a new breakpoint information).  All
+     notify output is prefixed by `='.
+
+   * CONSOLE-STREAM-OUTPUT is output that should be displayed as is in
+     the console.  It is the textual response to a CLI command.  All
+     the console output is prefixed by `~'.
+
+   * TARGET-STREAM-OUTPUT is the output produced by the target program.
+     All the target output is prefixed by `@'.
+
+   * LOG-STREAM-OUTPUT is output text coming from GDB's internals, for
+     instance messages that should be displayed as part of an error
+     log.  All the log output is prefixed by `&'.
+
+   * New GDB/MI commands should only output LISTS containing VALUES.
+
+
+   *Note GDB/MI Stream Records: GDB/MI Stream Records, for more details
+about the various output records.
+
+
+File: gdb.info,  Node: GDB/MI Simple Examples,  Prev: GDB/MI Output Syntax,  Up: GDB/MI Command Syntax
+
+Simple Examples of GDB/MI Interaction
+-------------------------------------
+
+   This subsection presents several simple examples of interaction using
+the GDB/MI interface.  In these examples, `->' means that the following
+line is passed to GDB/MI as input, while `<-' means the output received
+from GDB/MI.
+
+Target Stop
+...........
+
+   Here's an example of stopping the inferior process:
+
+     -> -stop
+     <- (gdb)
+
+and later:
+
+     <- *stop,reason="stop",address="0x123",source="a.c:123"
+     <- (gdb)
+
+Simple CLI Command
+..................
+
+   Here's an example of a simple CLI command being passed through
+GDB/MI and on to the CLI.
+
+     -> print 1+2
+     <- &"print 1+2\n"
+     <- ~"$1 = 3\n"
+     <- ^done
+     <- (gdb)
+
+Command With Side Effects
+.........................
+
+     -> -symbol-file xyz.exe
+     <- *breakpoint,nr="3",address="0x123",source="a.c:123"
+     <- (gdb)
+
+A Bad Command
+.............
+
+   Here's what happens if you pass a non-existent command:
+
+     -> -rubbish
+     <- ^error,msg="Undefined MI command: rubbish"
+     <- (gdb)
+
+
+File: gdb.info,  Node: GDB/MI Compatibility with CLI,  Next: GDB/MI Output Records,  Prev: GDB/MI Command Syntax,  Up: GDB/MI
+
+GDB/MI Compatibility with CLI
+=============================
+
+   To help users familiar with GDB's existing CLI interface, GDB/MI
+accepts existing CLI commands.  As specified by the syntax, such
+commands can be directly entered into the GDB/MI interface and GDB will
+respond.
+
+   This mechanism is provided as an aid to developers of GDB/MI clients
+and not as a reliable interface into the CLI.  Since the command is
+being interpreteted in an environment that assumes GDB/MI behaviour,
+the exact output of such commands is likely to end up being an
+un-supported hybrid of GDB/MI and CLI output.
+
+
+File: gdb.info,  Node: GDB/MI Output Records,  Next: GDB/MI Command Description Format,  Prev: GDB/MI Compatibility with CLI,  Up: GDB/MI
+
+GDB/MI Output Records
+=====================
+
+* Menu:
+
+* GDB/MI Result Records::
+* GDB/MI Stream Records::
+* GDB/MI Out-of-band Records::
+
+
+File: gdb.info,  Node: GDB/MI Result Records,  Next: GDB/MI Stream Records,  Up: GDB/MI Output Records
+
+GDB/MI Result Records
+---------------------
+
+   In addition to a number of out-of-band notifications, the response
+to a GDB/MI command includes one of the following result indications:
+
+`"^done" [ "," RESULTS ]'
+     The synchronous operation was successful, `RESULTS' are the return
+     values.
+
+`"^running"'
+     The asynchronous operation was successfully started.  The target is
+     running.
+
+`"^error" "," C-STRING'
+     The operation failed.  The `C-STRING' contains the corresponding
+     error message.
+
+
+File: gdb.info,  Node: GDB/MI Stream Records,  Next: GDB/MI Out-of-band Records,  Prev: GDB/MI Result Records,  Up: GDB/MI Output Records
+
+GDB/MI Stream Records
+---------------------
+
+   GDB internally maintains a number of output streams: the console, the
+target, and the log.  The output intended for each of these streams is
+funneled through the GDB/MI interface using "stream records".
+
+   Each stream record begins with a unique "prefix character" which
+identifies its stream (*note GDB/MI Output Syntax: GDB/MI Output
+Syntax.).  In addition to the prefix, each stream record contains a
+`STRING-OUTPUT'.  This is either raw text (with an implicit new line)
+or a quoted C string (which does not contain an implicit newline).
+
+`"~" STRING-OUTPUT'
+     The console output stream contains text that should be displayed
+     in the CLI console window.  It contains the textual responses to
+     CLI commands.
+
+`"@" STRING-OUTPUT'
+     The target output stream contains any textual output from the
+     running target.
+
+`"&" STRING-OUTPUT'
+     The log stream contains debugging messages being produced by GDB's
+     internals.
+
+
+File: gdb.info,  Node: GDB/MI Out-of-band Records,  Prev: GDB/MI Stream Records,  Up: GDB/MI Output Records
+
+GDB/MI Out-of-band Records
+--------------------------
+
+   "Out-of-band" records are used to notify the GDB/MI client of
+additional changes that have occurred.  Those changes can either be a
+consequence of GDB/MI (e.g., a breakpoint modified) or a result of
+target activity (e.g., target stopped).
+
+   The following is a preliminary list of possible out-of-band records.
+
+`"*" "stop"'
+
+File: gdb.info,  Node: GDB/MI Command Description Format,  Next: GDB/MI Breakpoint Table Commands,  Prev: GDB/MI Output Records,  Up: GDB/MI
+
+GDB/MI Command Description Format
+=================================
+
+   The remaining sections describe blocks of commands.  Each block of
+commands is laid out in a fashion similar to this section.
+
+   Note the the line breaks shown in the examples are here only for
+readability.  They don't appear in the real output.  Also note that the
+commands with a non-available example (N.A.) are not yet implemented.
+
+Motivation
+----------
+
+   The motivation for this collection of commands.
+
+Introduction
+------------
+
+   A brief introduction to this collection of commands as a whole.
+
+Commands
+--------
+
+   For each command in the block, the following is described:
+
+Synopsis
+........
+
+      -command ARGS...
+
+GDB Command
+...........
+
+   The corresponding GDB CLI command.
+
+Result
+......
+
+Out-of-band
+...........
+
+Notes
+.....
+
+Example
+.......
+

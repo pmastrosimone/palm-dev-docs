@@ -1,0 +1,753 @@
+<HTML>
+<HEAD>
+<TITLE>Palm OS:  &#160;2.&#160; Development Environments and Languages </TITLE>
+<META NAME="GENERATOR" CONTENT="Transit Central Station 3.2 by InfoAccess Inc. www.infoaccess.com">
+</HEAD>
+<BODY BACKGROUND="images/grnitbkg.gif"><A NAME="TopOfPage"> </A>
+<A HREF="http://www.oreilly.com/catalog/palmprog/"><IMG SRC="images/palm_comp_ani_ad.gif" ALT="Order the book from O'Reilly" BORDER=0 width="468" height="60"></A>
+<P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch01.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch03.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P><P><I>In this chapter:</I></P>
+
+
+  <UL COMPACT><LI><A HREF="#P28_611" NAME="LOC_P28_611">Overview</A></LI>
+
+  <LI><A HREF="#P172_12008" NAME="LOC_P172_12008">Handheld Development</A></LI>
+
+  <LI><A HREF="#P302_21115" NAME="LOC_P302_21115">Alternative Development Environments</A></LI>
+
+  <LI><A HREF="#P339_23257" NAME="LOC_P339_23257">High-Level Forms Development</A></LI>
+
+  <LI><A HREF="#P485_33302" NAME="LOC_P485_33302">Conduit Development</A></LI>
+
+  <LI><A HREF="#P514_35431" NAME="LOC_P514_35431">Conclusion</A></LI></UL>
+<P><UL><UL><UL><UL><UL><UL><UL><UL><UL><UL>
+<TABLE>
+<TR>
+<TD WIDTH=156>
+</TD></TR></TABLE></UL></UL></UL></UL></UL></UL></UL></UL></UL></UL>
+
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+<H1 ALIGN=LEFT><I><FONT SIZE=+3>&#160;2.&#160; <A NAME="P12_172"></A>Development Environments and Languages</FONT></I></H1>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P25_210"></A>This chapter deals with the what and the how of things. First, we show you what you're programming for-the nuts and bolts of the Palm OS. Then we show you how to do it-the available development environments. By the time we are through, you should have a good idea of the range of applications you can create for the Palm OS, the coding requirements, and which development environment you want to use. </FONT></P>
+
+<P><A NAME="P28_611"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Overview</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P30_619"></A>Developing for the Palm OS is in some ways similar to other platforms and in other ways strikingly different. Two important similarities are: </FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Applications are event driven.</FONT></LI>
+
+  <LI><FONT FACE="Times">  You can use anything from standard C code to assembler to scripting.</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Differences tend to center around features crucial to the device size and purpose. These include how the Palm OS handles:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Memory requirements</FONT></LI>
+
+  <LI><FONT FACE="Times">  Application and data storage</FONT></LI>
+
+  <LI><FONT FACE="Times">  Connectivity of the device to the desktop</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Most important, you should remember that the relationship between the device and the OS is extremely tight. Everything has been built on the premise that the handheld is an extension of the desktop and that it must be responsive to the user. </FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Overview of the OS</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Let's look in more detail at this tight interaction of the OS and the applications on the handheld. The Palm OS runs on top of a preemptive multitasking kernel. One task runs the user interface. Other tasks handle things like monitoring input from the tablet.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The user interface permits only one application to be open at a time. Thus, when your application is open, it (more or less) has control of the entire screen.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Applications run within the single-user interface thread and therefore can't themselves be multithreaded.</FONT><BR>
+</P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">Memory</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P53_1866"></A>Memory is handled in an unusual fashion. The <A NAME="P53_1911"></A>RAM on a Palm OS device is used for two purposes:</FONT></P>
+
+<P><I><FONT FACE="Times">For dynamic memory allocation </FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P56_1990"></A>This is memory your application or the system needs while it is running. It also includes the stack your application requires. On a reset, this memory is cleared. This portion of memory is analogous to RAM in a traditional OS.</FONT></P>
+
+<P><I><FONT FACE="Times">For permanent storage</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P58_2237"></A>This includes downloaded applications as well as data that the user will view, create, and/or edit. To-dos, names and phone numbers, memos, and all the other data for built-in applications also use this memory. On a reset, it is not cleared. This portion of memory is analogous to files on a hard disk in a traditional OS.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">For both kinds of memory, allocation is done as chunks. The permanent storage holds databases, with related chunks kept in a single database. For example, all the memos are stored (each as a separate chunk, or database record) in a single database. Another database holds all records from the Address Book application. We cover this in detail in <A HREF="#P12_172">Chapter&#160;6, </A><I>Databases</I>.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Unlike in a traditional desktop operating system, data and code are not copied from permanent storage to dynamic memory but are used in place. For example, when your code executes, it is executing in-place from the permanent storage. Since the permanent store itself is RAM, it can be read by the CPU like any other RAM. Similarly, data can be read (and displayed) directly from storage.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">For more information on memory usage in a Palm application see &quot;Memory Is Extremely Limited&quot; in <A HREF="#P12_172">Chapter&#160;4, </A><I>Structure of an Application</I>.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Palm has been careful to ensure that permanent storage is protected against every programmer's ability to accidentally overwrite memory (bugs happen). Palm rightly reasoned that users would be unhappy if one bug in a single application caused all their data to be lost. Thus, while the permanent storage can be read like any other RAM, it is write-protected by the device. It won't allow that portion of RAM to be written. In order to write to specific chunks within permanent memory, you have to use the operating system's mechanism, and that includes a check against attempts to write to places outside the chunk.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">Resources</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P70_4072"></A>An application on the Palm OS is a resource database that contains many different resources. A resource is simply a database record that has a type and an ID. Stored within these resources are the guts and skin of your application. On the desktop, these resource databases have a <I>.PRC</I> extension. You'll find that they are often referred to as PRC files. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Examples of the types of things stored in resources are:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Your code</FONT></LI>
+
+  <LI><FONT FACE="Times">  User interface elements</FONT></LI>
+
+  <LI><FONT FACE="Times">  Text strings</FONT></LI>
+
+  <LI><FONT FACE="Times">  Forms</FONT></LI>
+
+  <LI><FONT FACE="Times">  Icons</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The <A NAME="P79_4550"></A>user interface elements that appear on the Palm device are initialized based on the contents found in these resources. Because the initialization is not embedded within your code, you can change the appearance of your application (for instance, to localize it for another language) without modifying the code itself. Another advantage is that you can use visual editors to display and edit the user interface portions of your application. Such editors allow you to easily tweak the look or presentation of data without recompiling and redownloading your application. We discuss resources in detail in Chapter&#160;5, <I>Forms and Form Objects</I>.</FONT></P>
+
+<P><I><FONT FACE="Times">Events</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P83_5191"></A>A Palm OS application is event-driven. Events arrive, like pen down or key down, and your application responds to them. Some events are handled by your application; others are handled by the operating system. Once your application begins, it enters an event loop, repeatedly getting, then handling an event. The loop continues until the user launches another application, which causes your application to quit. The event cycle of a Palm application is covered in depth in Chapter&#160;4.</FONT></P>
+
+<P><I><FONT FACE="Times">Forms and controls</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P87_5691"></A>The Palm OS has built-in support for various controls and for managing forms. Forms are similar to windows on a desktop operating system. Because of the simpler user interface on the Palm OS, only one form is active even though several forms may be displayed.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The Palm OS provides a rich API for forms that includes many user-interface elements. Some of these elements are:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Checkboxes</FONT></LI>
+
+  <LI><FONT FACE="Times">  Radio buttons</FONT></LI>
+
+  <LI><FONT FACE="Times">  Push buttons</FONT></LI>
+
+  <LI><FONT FACE="Times">  Lists (one-column)</FONT></LI>
+
+  <LI><FONT FACE="Times">  Pickers (pop-up lists)</FONT></LI>
+
+  <LI><FONT FACE="Times">  Tables (multicolumn)</FONT></LI>
+
+  <LI><FONT FACE="Times">  Scrollbars</FONT></LI>
+
+  <LI><FONT FACE="Times">  Static text labels</FONT></LI>
+
+  <LI><FONT FACE="Times">  Editable text fields</FONT></LI>
+
+  <LI><FONT FACE="Times">  Menus</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Because these elements are stored as resources rather than in your code, you can create a prototype of your application very quickly. The simplicity of adding the User Interface (UI) elements and the variety of them makes it easy to try out various application designs. Chapter&#160;5 contains a description of these. </FONT></P>
+
+<P><I><FONT FACE="Times">Communications</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P105_6558"></A>The Palm OS supports a variety of communication methods. As communicating is an essential aspect of the Palm's success, you should expect this area of the OS to be critical both in current and future applications. Current communication protocols are:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Serial communication.</FONT></LI>
+
+  <LI><FONT FACE="Times">  TCP/IP with a socket interface.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Infrared. Low-level infrared support is via IrDA (Infrared Data Assocation).</FONT></LI>
+
+  <LI><FONT FACE="Times">  A higher-level object exchange is provided that allows exchanging information between Palm devices and other devices using an industry-standard object exchange. This object exchange currently runs only over IRDA, although other ways of exchanging information may be provided in the future.</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A HREF="#P12_172">Chapter&#160;9, </A><I>Communications</I>, is devoted to a full discussion of communication features of the Palm OS. </FONT></P>
+
+<P><I><FONT FACE="Times">Palm 3.0 OS features</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P115_7354"></A>The 3.0 system added new features to the OS. The most important of these are:</FONT></P>
+
+<P><I><FONT FACE="Times">Grayscale</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P118_7440"></A>The Palm 3.0 OS supports limited grayscale in 2-bit mode. Your applications can switch between 1- and 2-bit mode with specific system routines. Later devices and OS versions will undoubtedly increase grayscale support.</FONT></P>
+
+<P><I><FONT FACE="Times">Fonts</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P120_7663"></A>An additional larger bold font has been added to the ROM. Applications also have system support for the use of custom fonts.</FONT></P>
+
+<P><I><FONT FACE="Times">Heaps</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P122_7792"></A>The dynamic heap is larger, and the storage area has been folded into a single large heap. We discuss heap size and manipulating memory chunks in &quot;Memory Is Extremely Limited&quot; in <A HREF="#P12_172">Chapter&#160;4</A>.</FONT></P>
+
+<P><I><FONT FACE="Times">Objects larger than 64K</FONT></I></P>
+
+<P><FONT FACE="Times">The system now allows you to manage objects that are larger than 64K with a new set of APIs.</FONT></P>
+
+<P><I><FONT FACE="Times">Sound</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P126_8101"></A>There is support for volume control, asynchronous tones, custom alert sounds, and Standard MIDI (Musical Instrument Digital Interface) Files (SMFs).</FONT></P>
+
+<P><I><FONT FACE="Times">Dynamic UI</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P128_8259"></A>New APIs are available that make it possible for you to create controls at runtime.</FONT></P>
+
+<P><I><FONT FACE="Times">Serial number</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P130_8355"></A>Many devices (including the Palm III) have a unique programmer-accessible serial number. This allows greater flexibility with security measures. (Note: future devices are not guaranteed have this type of identification.)</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Applications that use these new features should check the version of the OS on which they are running and either fail gracefully or not use 3.0-specific features.</FONT></P>
+
+<P><I><FONT FACE="Times">Miscellaneous</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The Palm OS has various other APIs for things like:</FONT></P>
+
+  <UL><LI><FONT FACE="Times"> <A NAME="P137_8803"> </A>Strings-searching within strings, copying, converting to/from numbers.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Date and time.</FONT></LI>
+
+  <LI><FONT FACE="Times"> <A NAME="P139_8891"> </A>Alarms-setting an alarm for a particular date and time. Your application is then notified when that date and time are reached (even though it may not be running at the moment).</FONT></LI>
+
+  <LI><FONT FACE="Times"> <A NAME="P140_9069"> </A>Find-the Palm OS provides a device-wide find that allows the user to search for a string anywhere within the device. Each application does its part by searching for the specified string within its own databases.</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">With all these features, you can see that the Palm OS provides for rich and varied applications. Text and the presentation of content are supported by a wide variety of tools that aid in the visual display of information.</FONT><A NAME="P141_9501"></A></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">The subsystems of the Palm OS are called managers, and the naming convention for functions designate the manager that they are in. For example, all memory manager routines begin with </FONT><FONT FACE="Courier New">Mem</FONT><FONT FACE="Times">. All database manager routines begin with </FONT><FONT FACE="Courier New">Dm</FONT><FONT FACE="Times">. All form manager routines begin with </FONT><FONT FACE="Courier New">Frm</FONT><FONT FACE="Times">.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Overview of Conduits</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P148_9795"></A>The second part of the Palm application is the desktop connection. Because Palm devices act as an extension of the desktop, it is crucial that information be easily exchanged. Conduits are the mechanism for doing this.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">A conduit is code on the desktop that is called during a HotSync <A NAME="P150_10078"></A>synchronization to manage the flow of information to and from databases on the handheld. Conduits register the database or databases for which they are responsible. Note that each database should have only one conduit responsible for it.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Conduits (<A HREF="#P153_10437">Figure 2-1</A>) are created using Conduit Development Kits for Windows (C/C++), Mac OS (C/C++), or Java.<A NAME="P152_10425"></A> </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 2- 1</FONT></B><A NAME="P153_10437"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Conduits control the exchange of information</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch02-plmp.0201-1.gif" WIDTH=503 HEIGHT=307 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P163_10481"></A>Applications that do not have a conduit portion use a system-provided one instead. This Palm-created conduit is used for backups and is part of HotSync. This backup conduit copies the application data or database from the device and stores it as a file. You specify the <A NAME="P163_10751"></A>backup conduit when you create a database. Think of this as the &quot;If you can't afford an attorney, one will be appointed for you at no charge&quot; conduit-the conduit of last resort. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">During a HotSync session, the backup conduit is called for databases that don't have another conduit and which have been marked as needing a backup. At this point, it copies each record from the database and copies database header information into a file. This file can then be used to restore the state of the device if necessary.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">More sophisticated conduits do more than this basic <A NAME="P167_11312"></A>copying of information. They can read/write specific information to or from the device. For example, a conduit for a sales application might handle the downloads of new price lists, overwriting any existing price list that has expired. It might also be responsible for uploading a database of sales orders.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The most sophisticated conduits are those that synchronize records on the handheld with information on the desktop. Good examples of these include conduits that synchronize the Date Book records with various desktop PIMs like Outlook or Lotus Organizer. These synchronization conduits usually work by assigning each record a unique ID and tracking when a particular record has been <A NAME="P169_12000"></A>changed.</FONT><A NAME="P169_12008"></A></P>
+
+<P><A NAME="P172_12008"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Handheld Development</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P174_12028"></A>Many different development tools are available for Palm programming. There is everything from a collection of tools that let you write C code to polished forms based packages that require only modest amounts of scripting. From this gamut of choices, you should be able to pick the right tool for the type of application you want to create. Before we discuss the advantages and disadvantages of each choice, however, it's worth looking at a description of each option.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">For the development of the handheld portion of your Palm application, you can write code on Windows 95/98/NT, Unix, or Macintosh platforms. Palm's official development environment, <A NAME="P176_12676"></A>CodeWarrior, is available for both Windows and Macintosh. Unix and Windows programmers have access to the free set of tools-GNU C compiler, or GCC-and there are two packages for Windows-based forms development. Last, but not least, Windows programmers can also program in 68K assembler or use a proprietary language called CASL.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">CodeWarrior for Palm OS</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The official development environment for the Palm OS is Metrowerks's CodeWarrior for Palm OS. This commercial development environment allows you to create ANSI <A NAME="P181_13187"></A>C and C++ programs on either Windows 95/98/NT or Macintosh systems. It currently includes Palm's Conduit Software Development Kit, and Palm's own documentation assumes that you are using it. CodeWarrior for Palm OS is available on a subscription basis with one year of free updates. It costs approximately $369. Here is a description of the tools that CodeWarrior gives you for Palm OS development:</FONT></P>
+
+<P><I><FONT FACE="Times">Metrowerks's Constructor</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P184_13609"></A>Constructor is a graphical resource editor (see <A HREF="#P187_13751">Figure 2-2</A>) that you use to create the user interface elements of your application.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 2- 2</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P187_13751"></A>Creating an application's resources using Metrowerks Constructor</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch02-plmp.0202-2.gif" WIDTH=500 HEIGHT=361 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">CodeWarrior Integrated Development Environment (IDE)</FONT></I></P>
+
+<P><FONT FACE="Times">This is a project-based IDE (see <A HREF="#P201_14131">Figure 2-3</A>) that includes:</FONT></P>
+
+  <UL><P><FONT FACE="Times">-  A Motorola 68000 C/C++ compiler</FONT></P>
+
+  <P><FONT FACE="Times">-  A linker</FONT></P>
+
+  <P><FONT FACE="Times">-  PalmRez (formerly called PilotRez), which creates PRC files from the compiled 68000 code and converts resources from Constructor format to PRC format</FONT></P>
+
+</UL><P><B><FONT FACE="Times" SIZE="-1">Figure 2- 3</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P201_14131"></A>CodeWarrior IDE editing a project</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch02-plmp.0203-3.gif" WIDTH=500 HEIGHT=406 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">CodeWarrior Debugger</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P209_14184"></A>This source-level debugger is used to debug Palm OS applications. It can debug an application running on a Palm device connected to your host computer via a serial cable, or an application running on the POSE. <A HREF="#P212_14445">Figure 2-4</A> shows the Debugger in action.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 2- 4</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P212_14445"></A>Metrowerks Debugger being used on a Palm OS application</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch02-plmp.0204-4.gif" WIDTH=500 HEIGHT=348 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times"><A NAME="P219_14500"></A>Palm Software Development Kit (SDK)</FONT></I></P>
+
+<P><FONT FACE="Times">Includes header files, documentation, a tutorial, and invaluable sample code. The samples include the source code to the built-in applications: Expense, Memo, Address Book, and To Do. </FONT></P>
+
+<P><I><FONT FACE="Times">Conduit SDK</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P222_14730"></A>This SDK is used to create conduits. The SDK is available separately, but is bundled as a courtesy. Note that the SDK requires Microsoft Visual C++ for Windows in order to create Windows conduits. Metrowerks's CodeWarrior for Mac OS can be used to create Macintosh conduits.</FONT></P>
+
+<P><I><FONT FACE="Times">Developing on the Macintosh</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P226_15031"></A>If you're already developing software on the Macintosh, you're probably using CodeWarrior and therefore have a good idea of what to expect from this product. For those Macintosh users who don't have CodeWarrior, you can assume that Metrowerks's reputation for creating quality development environments is deserved. Most users are very happy with its products.</FONT></P>
+
+<P><I><FONT FACE="Times">Developing on Windows</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P230_15411"></A>CodeWarrior was originally a Macintosh-only development environment that has been ported to Windows. While it works quite reliably, many Windows users find that the CodeWarrior IDE does not have a Windows look and feel. Because it looks more like a Macintosh product and some keystrokes don't work as expected, some Windows users find it annoying.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">You should assume that Metrowerks will fix the problems with the look of the Windows product. It is certainly worth your time to check out the most current version. CodeWarrior can be purchased from Palm Computing (</FONT><FONT FACE="Times" SIZE="-1"><A HREF="http://www.palmos.com/dev/tech/tools/cw"><I>http://www.palmos.com/dev/tech/tools/cw</I>)</A> or from mail-order houses such as PC Zone (<A HREF="http://www.pczone.com"><I>http://www.pczone.com</I>)</A>. A demo version of CodeWarrior for Palm OS (on Windows) is available from <I><A HREF="http://www.palmos.com/dev/tech/tools/cw">http://www.palmos.com/dev/tech/tools/cw</A></I>. </FONT><A NAME="P233_16178"></A></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times" SIZE="+1">GCC</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P237_16181"></A>There is a long and honored tradition within the software developer community that tools, including compilers, should be free. A towering figure in the quest for free programming tools is the Free Software Foundation. Volunteers for this organization have been responsible for creating some of the finest compilers around. One of the best to come out of this effort is GCC (the GNU C Compiler), a general C/C++ compiler. This compiler is one of the most widely used compilers on Unix, and it even enjoys broad use on Win32 platforms.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P240_16714"></A>Free Software Foundation volunteers create compilers for various platforms and give away the source on the condition that any modifications must also be distributed. You can find out more information about the foundation from its web site (</FONT><FONT FACE="Times" SIZE="-1"><A HREF="http://www.gnu.org/fsf"><I>http://www.gnu.org/fsf</I>)</A>.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">When the <A NAME="P241_16987"></A>Pilot 1000 first shipped, the only development environment was CodeWarrior running on Mac OS. Many Unix and Windows programmers wanted to develop applications for the Palm but were not willing to buy a Macintosh to do so. Some enterprising and helpful programmers took advantage of the presence of GCC and added a PalmPilot port of the compiler that creates Palm OS binaries. A collection of tools was put together in what is officially known as <A NAME="P241_17433"></A>GNU PalmPilot SDK-however, most folks just call the entire thing GCC.</FONT></P>
+
+<P><I><FONT FACE="Times">What is in GNU PalmPilot SDK</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This SDK is a collection of tools that allow you to create C/C++ Palm OS applications on Unix or Windows. The tools include:</FONT></P>
+
+<P><I><FONT FACE="Times">GCC</FONT></I></P>
+
+<P><FONT FACE="Times">The most important of these tools is the GNU C Compiler (GCC), which compiles C/C++ code to Motorola 68K. </FONT></P>
+
+<P><I><FONT FACE="Times">GDB</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P250_17766"></A>A source-level debugger.</FONT></P>
+
+<P><I><FONT FACE="Times">PilRC</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P252_17795"></A>This resource compiler creates Palm resources from textual descriptions of the resources. These text files contain resource descriptions and end in the extension <I>.<A NAME="P252_17958"></A>RCP</I>.</FONT></P>
+
+<P><I><FONT FACE="Times">PilrcUI</FONT></I> </P>
+
+<P><FONT FACE="Times"><A NAME="P254_17969"></A>This application displays RCP files graphically, previewing what they'll look like on the handheld. <A HREF="#P257_18119">Figure 2-5</A> shows an example of PilrcUI.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 2- 5</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P257_18119"></A>PilrcUI displaying the resources of an application</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch02-plmp.0205-5.gif" WIDTH=503 HEIGHT=205 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">Copilot</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P265_18176"></A>This application emulates the Palm device at the hardware level. It requires a ROM image from an actual Palm device and acts almost exactly like a Palm device. Further development of this has been taken over by Palm-see Chapter&#160;10, <I>Debugging Palm Applications</I>, for more details. </FONT></P>
+
+<P><I><FONT FACE="Times">Where to get GCC</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P269_18471"></A>There are several sources on the Net for GCC, depending on whether you want GCC for Unix or for Windows. As new places become available all the time, it is worth checking Palm's web site for more recent information. If you get all the parts at once, it is a big download (15MB), so make sure that you leave ample time for it. Our favorite place to acquire all of GCC at once is Ray's Software Archive (<A HREF="http://www.palmcentral.com"><I>http://www.palmcentral.com</I>)</A>.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you use GCC, you still need to figure out what to do for the conduit portion of your application. You have two choices. You can purchase the Conduit SDK Tool Kit from Palm for $99, or you can rely on the backup conduit that Palm supplies.</FONT><A NAME="P271_19142"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Tools Directly from Palm Computing</FONT></I></P>
+
+<P><FONT FACE="Times">Palm offers a lot of useful stuff as well. All of the following resources can be found at Palm's developer web site (<A HREF="http://www.palmos.com/dev"><I>http://www.palmos.com/dev</I>):</A></FONT></P>
+
+<P><I><FONT FACE="Times">POSE</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P279_19326"></A>This application is a further development of Copilot. It serves as a replacement for an actual Palm OS device while you do development. Because it can load a ROM image from disk, it usefully emulates different versions of the Palm OS. <A HREF="#P284_19779">Figure 2-6</A> shows how POSE appears on your monitor.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Of course, final testing of your application should take place with actual Palm OS devices. Do not ship an application having tested it only on the emulator.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 2- 6</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P284_19779"></A>POSE in a desktop window emulating a Palm III device</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch02-plmp.0206-6.gif" WIDTH=503 HEIGHT=288 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">Debug ROMs</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P292_19841"></A>There are 2.0 and 3.0 OS ROM images that you can use with POSE. They are not the version of the ROM used in production devices, as they have added, among other things, extra debugging code that does sanity checking of parameters.</FONT></P>
+
+<P><I><FONT FACE="Times">Palm OS documentation</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P294_20091"></A>All the documentation for the Palm OS can be found on Palm's web site. There are numerous FAQs, tech notes, and white papers. This documentation is updated frequently.</FONT></P>
+
+<P><I><FONT FACE="Times">Palm tutorial</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P296_20271"></A>This is a walkthrough that shows the building of an application from start to finish. The tutorial assumes you'll be using CodeWarrior for Palm OS. This very thorough tutorial is quite good in its description of the intricate details of application development (what buttons go where, how you add a button to a form, and so on). There are Windows and Macintosh versions of the tutorial that can be downloaded for free (<A HREF="http://www.palmos.com/dev"><I>http://www.palmos.com/dev</I>)</A>.</FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P297_20719"></A>Conduit Development Kit (CDK)</FONT></I></P>
+
+<P><FONT FACE="Times">This is the SDK for creating conduits for Mac OS and/or Windows using C or C++. This SDK costs $99, but is included as part of CodeWarrior for Palm OS. The Windows version requires Visual C++. The Macintosh version requires CodeWarrior for Mac OS.</FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P299_20995"></A>Conduit SDK, Java Edition</FONT></I></P>
+
+<P><FONT FACE="Times">This is the SDK for creating conduits for Mac OS and/or Windows using Java. This SDK costs $99.</FONT><A NAME="P300_21115"></A></P>
+
+<P><A NAME="P302_21115"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Alternative Development Environments</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P304_21151"></A>The following sections describe several useful alternative development environments for the Palm OS.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Assembler SDK (ASDK)</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P309_21271"></A>This SDK allows development of applications written in Motorola 68K assembler. It includes Pila (Pilot Assembler). To us this would be sheer agony, but apparently some developers enjoy writing applications in assembly language. To each their own poison. You certainly can't beat the price-it's free.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">For more information, see Darren Massena's web site (<A HREF="http://www.massena.com"><I>http://www.massena.com</I>),</A> which is an indispensable Palm developer resource in its own right.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Jump</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P316_21719"></A>This novel environment allows you to write your application in Java using a Palm class library and your favorite Java development environment. Jump then compiles the resulting Java <I>.class</I> files into Motorola 68K code. Jump includes a very small runtime library that provides crucial Java support like garbage collection.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The only disappointing aspect of Jump is that the Palm OS is not completely supported. For example, any calls that require a callback function as a parameter (such as </FONT><FONT FACE="Courier New">LstSetDrawFunction</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">FrmSetEventHandler</FONT><FONT FACE="Times">) won't work.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This development environment is free, and source code is provided. Jump is the brainchild of Greg Hewgill; you can get it from <I><A HREF="http://www.hewgill.com">http://www.hewgill.com</A></I>.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">CASL</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P325_22414"></A>This commercial package provides cross-platform support. You write an application once in the CASL language (a BASIC-like proprietary language) and then deploy it on Palm OS or on other operating systems. This approach offers you ease of cross-platform dispersion as you write your applications in one language for multiple platforms. The code is compiled into a p-code for a virtual machine. There is a virtual machine for Palm OS, and one will be available for Windows CE in 1998. You can test your applications under Windows, as well. <A HREF="#P330_23239">Figure 2-7</A> shows an example of application development using CASL. As you can see, development is simpler than directly using C or C++.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">CASL runs only on Windows and is currently priced at $64.95 (a free demo version is available). See<I> <A HREF="http://www.caslsoft.com">http://www.caslsoft.com</A></I> for more details.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 2- 7</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P330_23239"></A>Using the CASL IDE</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch02-plmp.0207-7.gif" WIDTH=500 HEIGHT=360 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><A NAME="P339_23257"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">High-Level Forms Development</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P341_23285"></A>Palm <A NAME="P341_23290"></A>devices are so numerous and applications so popular that there are even a couple of third-party development environments specifically for creating specialized forms-based Palm applications.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Pendragon Forms</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P346_23494"></A>This Windows application provides a very easy way to create simple multipage forms that contain text fields, checkboxes, radio buttons, etc. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Pendragon Forms also provides a conduit that automatically uploads information into comma-separated values (CSV) files. These files can then be easily imported into spreadsheet or database programs. Looking at <A HREF="#P351_23963">Figure 2-8</A>, you can see how simple it is to make the form being displayed on the Palm device in <A HREF="#P360_24013">Figure 2-9</A>.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 2- 8</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P351_23963"></A>Developing a form using Pendragon Forms</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch02-plmp.0208-8.gif" WIDTH=500 HEIGHT=399 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 2- 9</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P360_24013"></A>Running an application created with Pendragon Forms</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch02-plmp.0209-9.gif" WIDTH=503 HEIGHT=203 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Pendragon Forms is $50, and, nicely enough, there is no runtime fee necessary for deploying forms. See <I><A HREF="http://www.pendragon-software.com">http://www.pendragon-software.com</A></I> for further details.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Satellite Forms</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P373_24236"></A>Satellite Forms, by SoftMagic, is an environment for creating very sophisticated Palm OS applications. In Satellite Forms, your application consists of a number of database tables and forms. Each form is tied to a specific table and can display elements of that table. <A HREF="#P374_24661">Figure 2-10</A> shows an example table in Satellite Forms. <A HREF="#P385_24708">Figure 2-11</A> shows an example form. <A HREF="#P394_24754">Figure 2-12</A> shows the resulting form on a Palm device.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 2- 10</FONT></B><A NAME="P374_24661"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Creating a table in Satellite Forms</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch02-plmp.0210-10.gif" WIDTH=500 HEIGHT=338 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 2- 11</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P385_24708"></A>Creating a form in Satellite Forms</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch02-plmp.0211-11.gif" WIDTH=500 HEIGHT=332 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 2- 12</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P394_24754"></A>A running Satellite Forms application</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch02-plmp.0212-12.gif" WIDTH=503 HEIGHT=203 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Instead of using C/C++ code, you control the actions of the application in one of two ways:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  You specify a set of built-in actions that occur when the user taps a control. For instance, when a button is pressed, you could request (among many choices) that a new form be opened or that you return to the previous form.</FONT></LI>
+
+  <LI><FONT FACE="Times">  You specify custom code that you want executed. The code is created using a scripting language that is very similar to Visual Basic. </FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The application comes with a number of built-in controls as well as a library of routines. Satellite Forms also has an extension mechanism that allows you to write <A NAME="P406_25407"></A>C code for your own new controls and new libraries (imagine, for instance, a library of financial routines or a new user interface control).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Satellite Forms has an ActiveX control that is connected to a HotSync conduit. You can use the ActiveX control during HotSync to copy any table to, or from, the Palm device. The tables are stored on the desktop as DBX files, which can be easily integrated with any database.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">At the time of this writing, the price tag for Satellite Forms was $595 (making this the most expensive environment). You have a couple of requirements, as well. It only runs on Windows, and applications you create require a runtime library on the Palm device (the runtime is free). After you hand over the initial money, there is no additional cost to deploying applications built with Satellite Forms. There is a demo version (which limits the number and size of tables you create) available at the company's web site (<A HREF="http://www.pumatech.com/satforms_fam.html"><I>http://www.pumatech.com/satforms_fam.html</I>)</A>.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are certain things that can't be done in Satellite Forms. For example, you don't have direct control of events, you can't specify your own menu items, and text fields have a maximum length. It also may be quite difficult to create a very specialized user interface (although the extension mechanism does allow a lot of flexibility).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This is a very sophisticated package that can be used to create commercial-quality applications. The following commercial products have been built with Satellite Forms:</FONT></P>
+
+  <UL><LI><FONT FACE="Times"> <I><A NAME="P416_26876"> </A>Punch List</I> by Strata Systems. This is project management software for the construction industry.</FONT></LI>
+
+  <LI><FONT FACE="Times"> <I> Real Estate Companion</I> by <A NAME="P417_26999"></A>Mobile Generation Software. This is client and property information for real estate professionals.</FONT></LI>
+
+  <LI><FONT FACE="Times"> <I> Helpdesk on the Go </I>by Kerem <A NAME="P418_27127"></A>Krikpinar. This is a field service companion for technical support <A NAME="P418_27194"></A>desks.</FONT><A NAME="P418_27200"></A></LI></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Handheld Development Recommendations</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P422_27236"></A>Now that you have a good idea of the choices for creating applications for Palm devices, it's time to figure out which is the right one for you. As should not be surprising, Windows programmers have the most flexibility; Macintosh and Unix folks have none. Let's look at the Macintosh, Unix, and then Windows choices in order.</FONT></P>
+
+<P><I><FONT FACE="Times">Developing using Mac OS</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P426_27585"></A>CodeWarrior for Palm OS is the only way to do development at the current time. The good news is that CodeWarrior for Palm OS started life on Macintosh, so you can be assured that it's a robust, elegant product.</FONT></P>
+
+<P><I><FONT FACE="Times">Developing using Unix</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P430_27816"></A>You'll be using <A NAME="P430_27832"></A>GCC tools for your development environment. This isn't really a disadvantage, however. If you are accustomed to twiddling around with Unix in the first place, then the slightly more complex setup of GCC (the need to use makefiles) won't even get a twitch out of you. Plus, it's free.</FONT></P>
+
+<P><I><FONT FACE="Times">Developing using Windows</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P434_28139"></A>You've got quite a bit of choice, as every environment we have discussed is available on Windows. Let's try to eliminate some of the options by focusing on what might be a factor in your decisions:</FONT></P>
+
+<P><I><FONT FACE="Times">Assembly programming</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P437_28356"></A>If programming in assembly is your cup of tea, then ASDK is for you. </FONT></P>
+
+<P><I><FONT FACE="Times">C/C++ programming</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P439_28442"></A>If you are an ardent C programmer, you will be using CodeWarrior or GCC. If you are an occasional or hobbyist programmer, then GCC is probably your best choice, given its attractive sticker price. While it is more flexible, it is also more difficult to use (it requires familiarity with makefiles and command lines).<A HREF="#P440_28758">*</A></FONT></P>
+
+<P><FONT FACE="Times">For greater usability, we suggest that you go with CodeWarrior. The inclusion of Palm's Conduit SDK as part of the package, the documentation and source code provided by both Metrowerks and Palm, and Palm's support make this development environment the obvious winner.</FONT></P>
+
+<P><I><FONT FACE="Times">Forms-based script development</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P443_29176"></A>If price is an important factor, then we think Pendragon Forms is a good low-cost way to create simple forms for inputting data. If we were writing a simple survey-type application on a tight budget, this would be the tool of choice.</FONT></P>
+
+<P><I><FONT FACE="Times">The choice for rapid prototyping, fast development, and great usability</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P447_29480"></A>We are very excited about <A NAME="P447_29506"></A>Satellite Forms and view it as comparable to Visual Basic on Windows. If you can afford it, you should use it. Even if your final shipping application is based in C, this environment is great for rapid prototyping. It allows quick development of applications without forcing you to get involved in the low-level nuts and bolts of creating an application from scratch.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Let's put it this way-if we (veteran C/C++ programmers) were writing <I>any</I> application for the Palm OS, we'd first look to see whether we could use Satellite Forms. We give this strong a recommendation because of the experience we had with porting the sample application in this book to Satellite Forms. Don't be fooled by the simplicity of the environment. You can create quite sophisticated applications very quickly with little or no custom code. For example, consider the Sales application that we are developing in this book. Using C, this application has more than 2,000 lines of code and took weeks to write. <I>Using Satellite forms, we created an application with similar functionality in about three hours-this includes the time it took to learn how to use Satellite Forms.</I></FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">On the CD-ROM are versions of the Sales application. Compare the CodeWarrior/GCC version of it with the one we created using Satellite forms. We think you'll be amazed at the similarity. <A HREF="#P452_30932">Figure 2-13</A> shows the final Satellite Forms version running on the Palm handheld.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 2- 13</FONT></B><A NAME="P452_30932"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Sales application written using Satellite Forms</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch02-plmp.0213-13.gif" WIDTH=503 HEIGHT=203 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">Switching platforms</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P464_30998"></A>If you are changing development platforms, there are a few issues for you to consider. <A NAME="P464_31085"></A>CodeWarrior is compatible across platforms, as projects and files can be moved from Macintosh to Windows and vice versa.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You also have cross-platform compatibility between Windows and Unix if you are using GCC. The only thing to watch for is line break conventions-they are different on the two operating systems.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P469_31397"></A>Metrowerks Constructor uses Mac OS resource forks. (If you're not familiar with Mac OS resource forks, now is not the time to learn.) While this creates no problem for the Mac OS, Windows is another matter. A Windows project requires two separate files for your Constructor resource files, one for the data fork and one for the resource fork. This can cause some confusion on Windows, since both these files are visible. Additionally, in order to get these two separate files created, you have to copy Constructor files on a floppy-copying over the network won't work.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">This problem will go away in the future when Constructor is rewritten to use normal data files that provide true cross-platform compatibility.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">Switching development environments</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Switching from CodeWarrior to GCC or vice versa is possible but not easy. The source code is not much of a problem, even though there are some differences between the two C/C++ compilers. The resources are a different matter. If you are moving from GCC to CodeWarrior, you have to do the following:</FONT></P>
+
+<P><FONT FACE="Times"> 1. On a Mac OS machine, use </FONT><FONT FACE="Courier New">prc2rsrc</FONT><FONT FACE="Times"> to convert your PRC file to a Macintosh resource file. (That's right-you need a Macintosh to convert from Unix to Windows!)</FONT></P>
+
+<P><FONT FACE="Times"> 2. Next, use ResEdit to modify the </FONT><FONT FACE="Courier New">MBAR</FONT><FONT FACE="Times"> resource into an </FONT><FONT FACE="Courier New">MBAR</FONT><FONT FACE="Times"> resource and separate </FONT><FONT FACE="Courier New">MENU</FONT><FONT FACE="Times"> resources as required by Constructor.</FONT></P>
+
+<P><FONT FACE="Times">Going from CodeWarrior to GCC is much easier:</FONT></P>
+
+<P><FONT FACE="Times"> 1. Use PTools (which is written in Java and therefore available on any platform) to open your <I>.PRC</I> file. </FONT></P>
+
+<P><FONT FACE="Times"> 2. Next, display each resource in PilRC format. Copy each of the resources into one big <I>.RCP</I> file, and use this as input to PilRC.</FONT><A NAME="P481_33005"></A></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">The sample application in this book, Sales, compiles with both CodeWarrior and GCC and has both PilRC resource files and Metrowerks Constructor files. Thus, it can be built in either environment. Most of these tools (demo or complete versions), along with the sample code, are available on the CD.</FONT><A NAME="P483_33302"></A></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><A NAME="P485_33302"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Conduit Development</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P487_33321"></A>If you are creating a conduit for your Palm application, you need to do so on Macintosh or Windows using Palm's Conduit SDK. The Conduit SDK comes with:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Header files</FONT></LI>
+
+  <LI><FONT FACE="Times">  Debug and nondebug libraries</FONT></LI>
+
+  <LI><FONT FACE="Times">  Source code for sample conduits</FONT></LI></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">What Is a Conduit?</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P495_33568"></A>Under Windows, a conduit is a Dynamic Link Library (DLL) that is called as HotSync occurs. An install DLL is provided with which you register your conduit with HotSync. On Mac OS, a conduit is a shared library.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Conduits have access to databases on the Palm OS. The Conduit Manager handles the complexities of communication; it is not your concern. You simply call routines to read and write records in the database. The Conduit Manager handles the communication protocol.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Using C/C++</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P502_34049"></A>In order to develop conduits for Windows, you must use Visual C++ 5.0 (or later). For Mac OS, you can use any development environment that has the ability to create shared libraries (CodeWarrior for Mac OS is a likely candidate).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">C++ classes that simplify creating a synchronization conduit are provided by Palm (frequently referred to by the names <I><A NAME="P504_34397"></A>basemon</I> and <I>basetbl</I>). These C++ classes are the basis of the conduits for the built-in applications. If your application's synchronization needs are similar to those of the built-in applications, then these C++ classes work well. As your application's sync needs differ, the C++ classes become less useful, and you might wish to consider reverting to the underlying C/C++ Conduit Manager API to make things work properly. You do, however, have another alternative.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are other C++ classes recently provided by Palm to aid in the creation of conduits. These classes (called Generic Conduit) are not officially supported by Palm (at the time of this book's writing), but they do offer an alternative-in many ways easier-method of conduit creation.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Using Java</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Presently, <A NAME="P511_35166"></A>Java conduits work only on Windows. Conduits written in Java can take advantage of Java Database Classes (<A NAME="P511_35272"></A>JDBC) for easy interaction with database engines. The sample code that is part of the Conduit SDK, Java Edition, uses JDBC to interact with an Oracle database.</FONT><A NAME="P511_35431"></A></P>
+
+<P><A NAME="P514_35431"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Conclusion</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You should now have a good idea of which development environment you want to use to write your Palm OS applications. You should also know enough about the features in the Palm OS and of the devices to make intelligent decisions about the types of applications that you can create for Palm devices. Next, we discuss the sample application that we are developing throughout this book.</FONT><A NAME="P516_35823"></A></P>
+<HR ALIGN=LEFT SIZE=2 WIDTH=100% NOSHADE>
+
+<P><A NAME="P440_28758"></A>
+* <FONT FACE="Times" SIZE="-1">While we have never used any, we have heard that there are visual frontends to GCC that make it somewhat easier to use.</FONT></P>
+<!-- TRANSIT - TEXTBAR -->
+
+<ADDRESS><FONT SIZE=-1>Palm Programming: The Developer's Guide
+<BR>Copyright &#169; 1999, O'Rielly and Associates, Inc.
+<BR>Published on the web by permission of O'Rielly and Associates, Inc. Contents modified for web display.</FONT></ADDRESS><P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch01.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch03.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P>
+</BODY>
+</HTML>

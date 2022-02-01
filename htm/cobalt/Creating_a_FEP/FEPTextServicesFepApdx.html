@@ -1,0 +1,398 @@
+<html>
+<head>
+<title>(Protein) TextServicesFep.h | Creating a Front-End Processor</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:09:48">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="991416"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="FEPTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FEPTextServicesFep.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FEPIX.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FEPIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">A &nbsp;&nbsp;
+TextServicesFep.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Creating a Front-End Processor</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<div><hr>
+  <a name="991418"> </a> <span class="warning">WARNING! </span> This file is provided here for illustrative purposes  only. It is normally considered "private" because its contents are  subject to change. Subsequent releases of Palm OS<sup>&#174;</sup> make no  guarantee of compatibility; any code that depends on the contents  of this file is not guaranteed to work with future releases of the  OS.
+<hr>
+</div>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+/******************************************************************************<a name="991424"> </a>
+ *<a name="991476"> </a>
+ * Copyright (c) 1999-2003 PalmSource, Inc. All rights reserved.<a name="991478"> </a>
+ *<a name="991481"> </a>
+ * File: TextServicesFep.h<a name="991484"> </a>
+ *<a name="991487"> </a>
+ * Release: Palm OS 6.0<a name="991496"> </a>
+ * <a name="991503"> </a>
+ * Description:<a name="991506"> </a>
+ * Header file for calling the FEP or its associated user dictionary editor.  <a name="991508"> </a>
+ *<a name="991511"> </a>
+ *****************************************************************************/<a name="991512"> </a>
+<a name="991515"> </a>
+#ifndef _TEXTSERVICESFEP_H_ <a name="991517"> </a>
+#define _TEXTSERVICESFEP_H_ <a name="991518"> </a>
+<a name="991605"> </a>
+#include &lt;PalmTypes.h&gt; <a name="991519"> </a>
+#include &lt;Event.h&gt;  // EventType <a name="991520"> </a>
+#include &lt;SystemMgr.h&gt;  // sysAppLaunchCmdCustomBase <a name="991521"> </a>
+#include &lt;TextServicesMgr.h&gt;  // TsmFepModeType <a name="991522"> </a>
+#include &lt;TextMgr.h&gt;  // CharEncodingType <a name="991523"> </a>
+<a name="991524"> </a>
+<a name="991607"> </a>
+/***********************************************************************  <a name="991525"> </a>
+ * Public constants <a name="991526"> </a>
+ ***********************************************************************/ <a name="991527"> </a>
+<a name="991529"> </a>
+// Our uint32_t version number available in TsmFepInfoType.apiVersion <a name="991530"> </a>
+// 0xMMmfsbbb, where MM is major version, m is minor version <a name="991531"> </a>
+// f is bug fix, s is stage: 3-release,2-beta,1-alpha,0-development, <a name="991532"> </a>
+// bbb is build number for non-releases <a name="991533"> </a>
+// V1.12b3   would be: 0x01122003 <a name="991429"> </a>
+// V2.00a2   would be: 0x02001002 <a name="991544"> </a>
+// V1.01     would be: 0x01013000 <a name="991545"> </a>
+<a name="991546"> </a>
+#define tsmFepAPIVersion(sysMakeROMVersion(6, 0, 0, sysROMStageRelease, 0)) <a name="991547"> </a>
+<a name="991548"> </a>
+// Creator code used to indicate no FEP, for get/set of current/system FEP. 
+#define tsmInvalidFepCreator 0 <a name="991549"> </a>
+<a name="991550"> </a>
+// Possible values for the .buttonID field in a tsmFepButtonEvent event. 
+#define tsmFepButtonConvert 0 <a name="991551"> </a>
+#define tsmFepButtonConfirm 1 <a name="991552"> </a>
+#define tsmFepButtonMode 2  // Was tsmFepButtonKana <a name="991553"> </a>
+#define tsmFepButtonOnOff 3 <a name="991557"> </a>
+#define tsmFepButtonShorten 4 <a name="991558"> </a>
+#define tsmFepButtonLengthen 5 <a name="991559"> </a>
+<a name="991560"> </a>
+// Selector used with call to FtrGet(tsmFtrCreator, xxx) to get the <a name="991561"> </a>
+// max number of extra stack bytes required by the FEP. <a name="991562"> </a>
+#define tsmFtrNumFepStackExtra 128 <a name="991563"> </a>
+<a name="991564"> </a>
+// Selector used with call to FtrGet(tsmFtrCreator, xxx) to get the <a name="991565"> </a>
+// max number of extra field bytes required by the FEP. <a name="991566"> </a>
+#define tsmFtrNumFepFieldExtra129 <a name="991567"> </a>
+<a name="991568"> </a>
+// Errors specific to the Text Services Fep library.<a name="991569"> </a>
+#define tsmErrUnimplemented (tsmErrorClass | 0) <a name="991570"> </a>
+#define tsmErrFepNeedCommit (tsmErrorClass | 1) <a name="991572"> </a>
+#define tsmErrFepCantCommit (tsmErrorClass | 2) <a name="991573"> </a>
+#define tsmErrFepNotOpen (tsmErrorClass | 3)<a name="991574"> </a>
+#define tsmErrFepStillOpen (tsmErrorClass | 4)<a name="991575"> </a>
+#define tsmErrFepWrongAPI (tsmErrorClass | 5)<a name="991577"> </a>
+#define tsmErrFepWrongEncoding (tsmErrorClass | 6)<a name="991579"> </a>
+#define tsmErrFepWrongLanguage (tsmErrorClass | 7)<a name="991581"> </a>
+#define tsmErrFepReentrancy (tsmErrorClass | 8)<a name="991583"> </a>
+#define tsmErrFepCustom (tsmErrorClass | 128)<a name="991585"> </a>
+<a name="991587"> </a>
+/***********************************************************************<a name="991589"> </a>
+ * Public types <a name="991590"> </a>
+ ***********************************************************************/<a name="991593"> </a>
+<a name="991595"> </a>
+// Structure returned by TsmLibGetFepInfo routine. <a name="991597"> </a>
+typedef struct {<a name="991598"> </a>
+   uint32_tapiVersion;  // Tsm API implemented by library. <a name="991599"> </a>
+   uint32_tlibVersion;  // Custom API implemented by library.<a name="991600"> </a>
+   uint32_tlibMaker;  // Who made this input method (creator).<a name="991601"> </a>
+<a name="991604"> </a>
+   CharEncodingType encoding;  // e.g. charEncodingPalmLatin<a name="991603"> </a>
+   LmLanguageTypelanguage;  // e.g. lJapanese <a name="991434"> </a>
+<a name="991615"> </a>
+   size_t stackExtra;  // Extra stack space needed by FEP <a name="991616"> </a>
+   size_t fieldExtra;  // Extra field space needed by FEP. <a name="991617"> </a>
+} TsmFepInfoType; <a name="991618"> </a>
+<a name="991619"> </a>
+// Structure returned by TsmFepHandleEvent/TsmFepTerminate routines <a name="991620"> </a>
+// Note that the updateText and updateSelection flags are for efficiency <a name="991622"> </a>
+// only - the field code can use these to reduce the amount of redrawing  <a name="991625"> </a>
+// required. <a name="991626"> </a>
+typedef struct { <a name="991627"> </a>
+   size_t dumpLength;  // Length of text to dump (or zero) <a name="991628"> </a>
+   size_t primedLength;  // Length of priming text used by FEP<a name="991629"> </a>
+<a name="991630"> </a>
+   Boolean updateText;  // True -&gt; update inline text.<a name="991644"> </a>
+   Boolean updateSelection;  // True -&gt; update selection range.<a name="991632"> </a>
+   Boolean handledEvent;  // True -&gt; Fep handled event.<a name="991634"> </a>
+   Boolean reserved;<a name="991638"> </a>
+} TsmFepActionType; <a name="991642"> </a>
+<a name="991645"> </a>
+// Structure passed to TsmFepHandleEvent routine. <a name="991646"> </a>
+typedef struct { <a name="991647"> </a>
+   size_t penOffset;  // Offset (relative to start of inline text) <a name="991648"> </a>
+                      // of event's screenX/screenY location.<a name="991649"> </a>
+   Boolean penLeading;  // True -&gt; position is on leading edge of the <a name="991650"> </a>
+                        // character at penOffset. <a name="991652"> </a>
+   Boolean formEvent;  // True -&gt; caller is form code, thus NO CHANGES <a name="991653"> </a>
+                       // to TsmStatusRec are allowed. <a name="991654"> </a>
+   uint16_t padding;<a name="991655"> </a>
+   size_t maxInline;  // Max allowable size of inline, in bytes. <a name="991656"> </a>
+   char *primeText;  // ptr to selected text (if inline not active)<a name="991661"> </a>
+   size_t primeOffset;  // Offset to selected text. <a name="991662"> </a>
+   size_t primeLen;  // Length of selected text. <a name="991664"> </a>
+} TsmFepEventType; <a name="991665"> </a>
+<a name="991666"> </a>
+// Structure exchanged with many FEP routines. This is how <a name="991667"> </a>
+// the FEP tells the editing code what to display, and how <a name="991668"> </a>
+// to display it. Note that it's also the context record for the <a name="991669"> </a>
+// FEP, thus additional (private) conversion information will <a name="991670"> </a>
+// typically be appended by the FEP. <a name="991671"> </a>
+typedef struct { <a name="991672"> </a>
+   char *inlineText;  // ptr to inline text.<a name="991673"> </a>
+<a name="991686"> </a>
+   size_t convertedLen;  // Length of converted text. <a name="991674"> </a>
+   size_t pendingLen;  // Length of unconverted (pending) text.<a name="991675"> </a>
+<a name="991676"> </a>
+   size_t selectStart;  // Start of selection range. <a name="991687"> </a>
+   size_t selectEnd;  // End of selection range (can extend past<a name="991678"> </a>
+                      // end of inline text)<a name="991443"> </a>
+<a name="991688"> </a>
+   size_t clauseStart;  // Start of converted clause highlighting<a name="991685"> </a>
+   size_t clauseEnd;  // End of converted clause highlighting <a name="991689"> </a>
+} TsmFepStatusType;<a name="991691"> </a>
+<a name="991692"> </a>
+// Parameter block passed with the sysAppLaunchCmdFepPanelAddWord command, <a name="991694"> </a>
+// when the user selects "Add Word..." from the system edit menu. <a name="991698"> </a>
+typedef struct <a name="991699"> </a>
+{ <a name="991700"> </a>
+   const char* wordP;  // Ptr to word to add to FEP's user dictionary.<a name="991701"> </a>
+   size_t wordLen;  // Length of word. <a name="991702"> </a>
+} FepPanelAddWordParamsType; <a name="991704"> </a>
+<a name="991705"> </a>
+/***********************************************************************  <a name="991706"> </a>
+ * Public functions<a name="991707"> </a>
+ ***********************************************************************/<a name="991708"> </a>
+<a name="991711"> </a>
+#ifdef __cplusplus <a name="991713"> </a>
+extern "C" {<a name="991714"> </a>
+#endif <a name="991715"> </a>
+<a name="991717"> </a>
+// Get the creator of the system FEP. <a name="991718"> </a>
+Boolean TsmGetSystemFepCreator(uint32_t *oFepCreatorP); <a name="991719"> </a>
+<a name="991720"> </a>
+// Set the creator of the system FEP. <a name="991721"> </a>
+void TsmSetSystemFepCreator(uint32_t iFepCreator); <a name="991722"> </a>
+<a name="991723"> </a>
+// Get the creator of the current FEP. <a name="991724"> </a>
+Boolean TsmGetCurrentFepCreator(uint32_t *oFepCreatorP); <a name="991725"> </a>
+<a name="991726"> </a>
+// Set the creator of the current FEP, and make it active. <a name="991729"> </a>
+status_t TsmSetCurrentFepCreator(uint32_t iFepCreator); <a name="991734"> </a>
+<a name="991735"> </a>
+status_t TsmFepHandleEvent(const EventType* inEventP, <a name="991736"> </a>
+                           const TsmFepEventType* inTsmEventP, <a name="991737"> </a>
+                           TsmFepStatusType **ioStatusP, <a name="991738"> </a>
+                           TsmFepActionType *outActionP); <a name="991739"> </a>
+<a name="991740"> </a>
+Boolean TsmFepMapEvent(const EventType *inEventP); <a name="991741"> </a>
+<a name="991742"> </a>
+status_t TsmFepTerminate(TsmFepStatusType **ioStatusP, TsmFepActionType  
+*outActionP); <a name="991743"> </a>
+<a name="991744"> </a>
+status_t TsmFepReset(void); <a name="991745"> </a>
+<a name="991746"> </a>
+status_t TsmFepCommitAction(void);<a name="991747"> </a>
+<a name="991762"> </a>
+// Display a deferred options list. Used by native FEPs in 6.0 to display <a name="991448"> </a>
+// an options list at a later time, to avoid re-entrancy problems. <a name="991752"> </a>
+void TsmFepOptionsList(uint16_t iNumOptions, <a name="991757"> </a>
+                       uint16_t iCurOption, <a name="991763"> </a>
+                       uint16_t iMaxOptionWidth); <a name="991764"> </a>
+<a name="991765"> </a>
+<a name="991766"> </a>
+/***********************************************************************  <a name="991767"> </a>
+ * FEP Shared Library routines. These are the declarations of the  <a name="991768"> </a>
+ * functions inside of the current FEP library, which will be called by the  <a name="991769"> </a>
+ * cover routines above. <a name="991770"> </a>
+ ***********************************************************************/ <a name="991771"> </a>
+<a name="991773"> </a>
+// Open up an instance of the Fep. The Fep is responsible for allocating <a name="991774"> </a>
+// the TsmFepStatusType structure (to which it might append additional <a name="991775"> </a>
+// context information) and returning back a pointer to it. <a name="991776"> </a>
+status_t TsmLibFepOpen(TsmFepStatusType** outStatusP); <a name="991777"> </a>
+<a name="991778"> </a>
+// Close down an instance of the Fep. The Fep is responsible <a name="991779"> </a>
+// for disposing of the TsmFepStatusType which it allocated in TsmLibFepOpen().<a name="991780"> </a>
+status_t TsmLibFepClose(TsmFepStatusType* ioStatusP); <a name="991781"> </a>
+<a name="991783"> </a>
+// Return information about the Fep in the TsmFepInfoType structure. <a name="991784"> </a>
+status_t TsmLibGetFepInfo(TsmFepInfoType* outInfoP); <a name="991785"> </a>
+<a name="991786"> </a>
+// Handle an event passed in &lt;inEventP&gt;. Additional information about the event<a name="991787"> </a>
+// is passed in the TsmFepEventType structure. Update the inline text data in <a name="991789"> </a>
+// the TsmFepStatusType, and tell the caller what happened by setting up the <a name="991788"> </a>
+// TsmFepActionType structure (including whether the event was handled by the <a name="991791"> </a>
+// Fep). <a name="991792"> </a>
+status_t TsmLibFepHandleEvent(const EventType* inEventP, <a name="991793"> </a>
+                              const TsmFepEventType* inTsmEventP,<a name="991794"> </a>
+                              TsmFepStatusType* ioStatusP, <a name="991795"> </a>
+                              TsmFepActionType* outActionP); <a name="991797"> </a>
+<a name="991798"> </a>
+// Decide if &lt;inEvent&gt; should be remapped to some other event. If so, return<a name="991799"> </a>
+// true. If we return true, then go ahead and perform the remapping by posting<a name="991828"> </a>
+// a new  event with the remapped info. <a name="991835"> </a>
+Boolean TsmLibFepMapEvent(const TsmFepStatusType* inStatusP, <a name="991802"> </a>
+                          const EventType* inEventP); <a name="991803"> </a>
+<a name="991804"> </a>
+// Terminate an inline session. Typically this involves 'dumping' all of the <a name="991805"> </a>
+// converted text, and potentially deleting any untransliterated input text. <a name="991807"> </a>
+// As with TsmLibFepHandleEvent, update the inline text data in the<a name="991812"> </a>
+// TsmFepStatusType, and indicate what was done in the TsmFepActionType.<a name="991846"> </a>
+status_t TsmLibFepTerminate(TsmFepStatusType* ioStatusP, <a name="991457"> </a>
+                            TsmFepActionType*  outActionP); <a name="991857"> </a>
+<a name="991858"> </a>
+// Reset an inline session. The state of the Fep is reset to empty, raw <a name="991859"> </a>
+// text, nothing to dump, etc. This call should only be made when the <a name="991860"> </a>
+// conversion results are not required, otherwise TsmTerminate should be used.<a name="991861"> </a>
+status_t TsmLibFepReset(TsmFepStatusType* ioStatusP); <a name="991864"> </a>
+<a name="991866"> </a>
+// The caller has processed the action which was returned by either the <a name="991867"> </a>
+// TsmHandleEvent or TsmTerminate routine, so it is now safe to reset any <a name="991868"> </a>
+// temporary state information (e.g. dumped text) in &lt;ioStatus&gt;. <a name="991869"> </a>
+status_t TsmLibFepCommitAction(TsmFepStatusType* ioStatusP); <a name="991870"> </a>
+<a name="991871"> </a>
+// Draw the Fep mode indicator at location &lt;x,y&gt;. <a name="991872"> </a>
+Boolean TsmLibFepDrawModeIndicator(TsmFepModeType inFepMode, <a name="991873"> </a>
+                                   uint16_t gsiState, <a name="991874"> </a>
+                                   Coord x, <a name="991875"> </a>
+                                   Coord y);<a name="991876"> </a>
+<a name="991877"> </a>
+// Draw an option in the FEP options list. <a name="991879"> </a>
+void TsmLibFepDrawOption(const TsmFepStatusType *inStatusP,  <a name="991880"> </a>
+                         uint16_t iItemNumber,  <a name="991881"> </a>
+                         const RectangleType* iBounds); <a name="991882"> </a>
+<a name="991883"> </a>
+#ifdef __cplusplus <a name="991884"> </a>
+} <a name="991885"> </a>
+#endif <a name="991886"> </a>
+<a name="991466"> </a>
+#endif<a name="991887"> </a>
+</pre><div class="CodeRule"><hr></div>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="FEPFront.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="FEPTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FEPTextServicesFep.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FEPIX.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FEPIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

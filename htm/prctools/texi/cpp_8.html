@@ -1,0 +1,117 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Once-Only</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Once-Only">
+<META NAME="keywords" CONTENT="The C Preprocessor: Once-Only">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC8"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_7.html#SEC7"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_9.html#SEC9"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_4.html#SEC4"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 1.3.4 Once-Only Include Files </H3>
+<!--docid::SEC8::-->
+<P>
+
+Very often, one header file includes another.  It can easily result that a
+certain header file is included more than once.  This may lead to errors,
+if the header file defines structure types or typedefs, and is certainly
+wasteful.  Therefore, we often wish to prevent multiple inclusion of a
+header file.
+</P><P>
+
+The standard way to do this is to enclose the entire real contents of the
+file in a conditional, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#ifndef FILE_FOO_SEEN
+#define FILE_FOO_SEEN
+
+<VAR>the entire file</VAR>
+
+#endif /* FILE_FOO_SEEN */
+</pre></td></tr></table></P><P>
+
+The macro <CODE>FILE_FOO_SEEN</CODE> indicates that the file has been included
+once already.  In a user header file, the macro name should not begin
+with <SAMP>`_'</SAMP>.  In a system header file, this name should begin with
+<SAMP>`__'</SAMP> to avoid conflicts with user programs.  In any kind of header
+file, the macro name should contain the name of the file and some
+additional text, to avoid conflicts with other header files.
+</P><P>
+
+The GNU C preprocessor is programmed to notice when a header file uses
+this particular construct and handle it efficiently.  If a header file
+is contained entirely in a <SAMP>`#ifndef'</SAMP> conditional, then it records
+that fact.  If a subsequent <SAMP>`#include'</SAMP> specifies the same file,
+and the macro in the <SAMP>`#ifndef'</SAMP> is already defined, then the file
+is entirely skipped, without even reading it.
+</P><P>
+
+<A NAME="IDX7"></A>
+There is also an explicit directive to tell the preprocessor that it need
+not include a file more than once.  This is called <SAMP>`#pragma once'</SAMP>,
+and was used <EM>in addition to</EM> the <SAMP>`#ifndef'</SAMP> conditional around
+the contents of the header file.  <SAMP>`#pragma once'</SAMP> is now obsolete
+and should not be used at all.
+</P><P>
+
+<A NAME="IDX8"></A>
+In the Objective C language, there is a variant of <SAMP>`#include'</SAMP>
+called <SAMP>`#import'</SAMP> which includes a file, but does so at most once.
+If you use <SAMP>`#import'</SAMP> <EM>instead of</EM> <SAMP>`#include'</SAMP>, then you
+don't need the conditionals inside the header file to prevent multiple
+execution of the contents.
+</P><P>
+
+<SAMP>`#import'</SAMP> is obsolete because it is not a well designed feature.
+It requires the users of a header file--the applications
+programmers--to know that a certain header file should only be included
+once.  It is much better for the header file's implementor to write the
+file so that users don't need to know this.  Using <SAMP>`#ifndef'</SAMP>
+accomplishes this goal.
+</P><P>
+
+<A NAME="Inheritance"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_7.html#SEC7"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_9.html#SEC9"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_4.html#SEC4"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

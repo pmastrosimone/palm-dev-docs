@@ -1,0 +1,552 @@
+<HTML>
+<HEAD>
+<TITLE>Palm OS:  &#160;14.&#160; Debugging Conduits </TITLE>
+<META NAME="GENERATOR" CONTENT="Transit Central Station 3.2 by InfoAccess Inc. www.infoaccess.com">
+</HEAD>
+<BODY BACKGROUND="images/grnitbkg.gif"><A NAME="TopOfPage"> </A>
+<A HREF="http://www.oreilly.com/catalog/palmprog/"><IMG SRC="images/palm_comp_ani_ad.gif" ALT="Order the book from O'Reilly" BORDER=0 width="468" height="60"></A>
+<P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch13.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="appa.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P><P><I>In this chapter:</I></P>
+
+
+  <UL COMPACT><LI><A HREF="#P31_674" NAME="LOC_P31_674">HotSync Flags</A></LI>
+
+  <LI><A HREF="#P274_9571" NAME="LOC_P274_9571">Source-Level Debugging</A></LI>
+
+  <LI><A HREF="#P320_11685" NAME="LOC_P320_11685">Avoiding Timeouts While Debugging</A></LI>
+
+  <LI><A HREF="#P359_13887" NAME="LOC_P359_13887">Conduit Problems You Might Have</A></LI>
+
+  <LI><A HREF="#P402_17381" NAME="LOC_P402_17381">Test with POSE</A></LI>
+
+  <LI><A HREF="#P410_18422" NAME="LOC_P410_18422">Turn Off Other Conduits During Testing</A></LI>
+
+  <LI><A HREF="#P415_18731" NAME="LOC_P415_18731">Use the Log, Luke</A></LI></UL>
+<P><UL><UL><UL><UL><UL><UL><UL><UL><UL><UL>
+<TABLE>
+<TR>
+<TD WIDTH=156>
+</TD></TR></TABLE></UL></UL></UL></UL></UL></UL></UL></UL></UL></UL>
+
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+<H1 ALIGN=LEFT><I><FONT SIZE=+3>&#160;14.&#160; Debugging Conduits</FONT></I></H1>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P26_241"></A>Two of the most important tools you have in your debugging arsenal are a number of flags you can set during a sync and source-level debugging in CodeWarrior. After we discuss these, we give some advice on specific problems you might encounter. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Last but not least, we will look at how to clean things up. Mucking about in your conduit code is a good way to mess things up; we show you how to tidy up the registry when you are through.</FONT></P>
+
+<P><A NAME="P31_674"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">HotSync Flags</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P33_687"></A>You can launch a sync with several different flags that give you information on what is occurring. These useful flags are:</FONT></P>
+
+      <UL><UL><UL><P><FONT FACE="Courier New" SIZE="+0">-v</FONT></P>
+
+</UL></UL></UL><P><FONT FACE="Times">Verbose mode</FONT></P>
+
+      <UL><UL><UL><P><FONT FACE="Courier New" SIZE="+0">-L1</FONT></P>
+
+</UL></UL></UL><P><FONT FACE="Times">Different verbose mode</FONT></P>
+
+      <UL><UL><UL><P><FONT FACE="Courier New" SIZE="+0">-L2</FONT></P>
+
+</UL></UL></UL><P><FONT FACE="Times">Different verbose mode with packet information</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Besides these flags there is another flag, </FONT><FONT FACE="Courier New">-c</FONT><FONT FACE="Times">, that you can use to verify your connection. </FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Running HotSync in Verbose Mode with -v</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P46_1027"></A>If you want to run HotSync in verbose mode, you set the </FONT><FONT FACE="Courier New">-v</FONT><FONT FACE="Times"> flag by hand from the Run dialog:</FONT></P><PRE><FONT SIZE="-1">c:\</FONT><FONT FACE="Times" SIZE="-1"><I>PalmDesktopDir</I>\hotsync.exe -v</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you are already running HotSync, you need to exit before you can launch it by hand. Just choose Exit from the menu (see <A HREF="#P52_1300">Figure 14-1</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 14- 1</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P52_1300"></A>Exiting the running version of HotSync</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch14-plmp.1401-1.gif" WIDTH=503 HEIGHT=174 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Once you are in HotSync verbose mode, the log contains a great deal of additional information regarding its activities. Here's an example verbose log (abridged for space):</FONT></P><PRE><FONT SIZE="-1">---Initializing User Manager---</FONT>
+<FONT SIZE="-1">---Discovering Communication State---</FONT>
+<FONT SIZE="-1">---Identifying Viewer user---</FONT>
+<FONT SIZE="-1">Found user name</FONT>
+<FONT SIZE="-1">---Establishing Sync Locale---</FONT>
+<FONT SIZE="-1">---Performing HotSync---</FONT>
+<FONT SIZE="-1">   Validating User.</FONT>
+<FONT SIZE="-1">   User match exists.</FONT>
+<FONT SIZE="-1">HotSync started 07/31/98 11:52:13</FONT>
+<FONT SIZE="-1">Setting up local HotSync environment.</FONT>
+<FONT SIZE="-1">   User is  Fen Rhodes</FONT>
+<FONT SIZE="-1">ROM Listing</FONT>
+<FONT SIZE="-1">   System                         0001 70737973 02/20/1998 02/20/1998 0003</FONT>
+<FONT SIZE="-1">   AMX                            0001 70737973 02/20/1998 02/20/1998 0003</FONT>
+<FONT SIZE="-1">   UIAppShell                     0001 70737973 02/20/1998 02/20/1998 0003</FONT>
+<FONT SIZE="-1">...</FONT>
+<FONT SIZE="-1">   Mail                           0002 6D61696C 02/20/1998 02/20/1998 0003</FONT>
+<FONT SIZE="-1">   Expense                        0001 65787073 02/20/1998 02/20/1998 0003</FONT>
+<FONT SIZE="-1">RAM Listing</FONT>
+<FONT SIZE="-1">   Unsaved Preferences            0000 70737973 04/14/1998 07/30/1998 0001</FONT>
+<FONT SIZE="-1">   Net Prefs                      0000 6E65746C 04/14/1998 06/29/1998 0001</FONT>
+<FONT SIZE="-1">...</FONT>
+<FONT SIZE="-1">   Sales                          0001 536C6573 07/30/1998 07/30/1998 0001</FONT>
+<FONT SIZE="-1">   Sles_Customers                 0000 536C6573 07/30/1998 07/30/1998 0000</FONT>
+<FONT SIZE="-1">   Sles_Orders                    0000 536C6573 07/30/1998 07/30/1998 0000</FONT>
+<FONT SIZE="-1">   Sles_Products                  0000 536C6573 07/30/1998 07/30/1998 0000</FONT>
+<FONT SIZE="-1">Attempting to Sync with Conduit:  datcn20.dll</FONT>
+<FONT SIZE="-1">   Key is Software\U.S. Robotics\Pilot Desktop\Component0</FONT>
+<FONT SIZE="-1">   Sync type is Fast</FONT>
+<FONT SIZE="-1">Local path is C:\Pilot\RhodesF\datebook\</FONT>
+<FONT SIZE="-1">   Remote name 0 is DatebookDB</FONT>
+<FONT SIZE="-1">   Loading   datcn20.dll   conduit</FONT>
+<FONT SIZE="-1">OK Date Book</FONT>
+<FONT SIZE="-1">   Conduit successful</FONT>
+<FONT SIZE="-1">Attempting to Sync with Conduit:  addcn20.dll</FONT>
+<FONT SIZE="-1">   Key is Software\U.S. Robotics\Pilot Desktop\Component1</FONT>
+<FONT SIZE="-1">   Sync type is Fast</FONT>
+<FONT SIZE="-1">Local path is C:\Pilot\RhodesF\address\</FONT>
+<FONT SIZE="-1">   Remote name 0 is AddressDB</FONT>
+<FONT SIZE="-1">   Loading   addcn20.dll   conduit</FONT>
+<FONT SIZE="-1">OK Address Book</FONT>
+<FONT SIZE="-1">   Conduit successful</FONT>
+<FONT SIZE="-1">Attempting to Sync with Conduit:  d:\poscond\todcnd21\debug\todcn20d.dll</FONT>
+<FONT SIZE="-1">   Key is Software\U.S. Robotics\Pilot Desktop\Component2</FONT>
+<FONT SIZE="-1">   Sync type is Fast</FONT>
+<FONT SIZE="-1">Attempting to Sync with Conduit:  memcn20.dll</FONT>
+<FONT SIZE="-1">   Key is Software\U.S. Robotics\Pilot Desktop\Component3</FONT>
+<FONT SIZE="-1">   Sync type is Fast</FONT>
+<FONT SIZE="-1">Local path is C:\Pilot\RhodesF\memopad\</FONT>
+<FONT SIZE="-1">   Remote name 0 is MemoDB</FONT>
+<FONT SIZE="-1">   Loading   memcn20.dll   conduit</FONT>
+<FONT SIZE="-1">OK Memo Pad</FONT>
+<FONT SIZE="-1">   Conduit successful</FONT>
+<FONT SIZE="-1">Attempting to Sync with Conduit:  bakcn20.dll</FONT>
+<FONT SIZE="-1">   No Registry Key</FONT>
+<FONT SIZE="-1">   Sync type is Backup</FONT>
+<FONT SIZE="-1">Local path is C:\Pilot\RhodesF\Backup\</FONT>
+<FONT SIZE="-1">   Remote name 0 is System MIDI Sounds</FONT>
+<FONT SIZE="-1">   Remote name 1 is Saved Preferences</FONT>
+<FONT SIZE="-1">   Remote name 2 is Graffiti ShortCuts </FONT>
+<FONT SIZE="-1">   Remote name 3 is NetworkDB</FONT>
+<FONT SIZE="-1">   Remote name 4 is LauncherDB</FONT>
+<FONT SIZE="-1">   Loading   bakcn20.dll   conduit</FONT>
+<FONT SIZE="-1">OK System</FONT>
+<FONT SIZE="-1">   Set PC ID and last sync time on Palm organizer</FONT>
+<FONT SIZE="-1">Cleaning up local HotSync environment</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The log has two very useful pieces of information: </FONT></P>
+
+  <UL><LI><FONT FACE="Times">  A list of all the databases</FONT></LI>
+
+  <LI><FONT FACE="Times">  An entry whenever a conduit is about to be synced to</FONT><A NAME="P131_4129"></A></LI></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">A Different Verbose Mode with -L1</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P135_4162"></A>HotSync 3.0 and later versions have two additional verbose mode flags: </FONT><FONT FACE="Courier New">-L1</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">- L2</FONT><FONT FACE="Times">. Although some of the messages printed when using the </FONT><FONT FACE="Courier New">-v</FONT><FONT FACE="Times"> flag are printed when using either of these new flags, not all are. Therefore, you may want to use </FONT><FONT FACE="Courier New">- L1</FONT><FONT FACE="Times"> or </FONT><FONT FACE="Courier New">-L2</FONT><FONT FACE="Times"> in addition to the </FONT><FONT FACE="Courier New">-v</FONT><FONT FACE="Times"> flag.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">When you use the </FONT><FONT FACE="Courier New">-L1</FONT><FONT FACE="Times"> or </FONT><FONT FACE="Courier New">-L2</FONT><FONT FACE="Times"> flags, the <I>HotSync.log</I> file is located in the top-level directory. It is located with <I>HotSync.exe</I> (as opposed to its normal location within the user's directory).</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's an example output from using the </FONT><FONT FACE="Courier New">-L1</FONT><FONT FACE="Times"> flag:</FONT></P><PRE><FONT SIZE="-1">A Direct serial connection is pending  08/01/98 14:40:49</FONT>
+<FONT SIZE="-1">Establishing Connection with the Palm organizer</FONT>
+<FONT SIZE="-1">Direct Serial Connection: Baud rate = 57600 </FONT>
+
+<FONT SIZE="-1">Port speed is 57600 bps</FONT>
+<FONT SIZE="-1">Initialized Sync Manager Successfully </FONT>
+
+<FONT SIZE="-1">---Initializing User Manager---</FONT>
+<FONT SIZE="-1">---Discovering Communication State---</FONT>
+<FONT SIZE="-1">---Identifying Viewer user---</FONT>
+<FONT SIZE="-1"> An account is found for Palm organizer user: Fen Rhodes </FONT>
+
+<FONT SIZE="-1">The primary Hotsync PC for this user is unknown </FONT>
+
+<FONT SIZE="-1">---Establishing Sync Locale---</FONT>
+<FONT SIZE="-1">---Performing HotSync---</FONT>
+<FONT SIZE="-1">   Validating User.</FONT>
+<FONT SIZE="-1">   User match exists.</FONT>
+<FONT SIZE="-1">HotSync started 08/01/98 14:40:52</FONT>
+<FONT SIZE="-1">Setting up local HotSync environment.</FONT>
+<FONT SIZE="-1">   User is  Fen Rhodes</FONT>
+<FONT SIZE="-1">Attempting to Sync with Conduit:  datcn20.dll</FONT>
+<FONT SIZE="-1">   Key is Software\U.S. Robotics\Pilot Desktop\Component0</FONT>
+<FONT SIZE="-1">   Sync type is Fast</FONT>
+<FONT SIZE="-1">Local path is C:\Pilot\RhodesF\datebook\</FONT>
+<FONT SIZE="-1">   Remote name 0 is DatebookDB</FONT>
+<FONT SIZE="-1">   Loading   datcn20.dll   conduit</FONT>
+<FONT SIZE="-1">   Conduit failed</FONT>
+<FONT SIZE="-1">Attempting to Sync with Conduit:  addcn20.dll</FONT>
+<FONT SIZE="-1">   Key is Software\U.S. Robotics\Pilot Desktop\Component1</FONT>
+<FONT SIZE="-1">   Sync type is Fast</FONT>
+<FONT SIZE="-1">Local path is C:\Pilot\RhodesF\address\</FONT>
+<FONT SIZE="-1">   Remote name 0 is AddressDB</FONT>
+<FONT SIZE="-1">   Loading   addcn20.dll   conduit</FONT>
+<FONT SIZE="-1">   Conduit failed</FONT>
+<FONT SIZE="-1">Attempting to Sync with Conduit:  d:\poscond\todcnd21\debug\todcn20d.dll</FONT>
+<FONT SIZE="-1">   Key is Software\U.S. Robotics\Pilot Desktop\Component2</FONT>
+<FONT SIZE="-1">   Sync type is Fast</FONT>
+<FONT SIZE="-1">Local path is C:\Pilot\RhodesF\todo\</FONT>
+<FONT SIZE="-1">   Remote name 0 is ToDoDB</FONT>
+<FONT SIZE="-1">   Loading   d:\poscond\todcnd21\debug\todcn20d.dll   conduit</FONT>
+
+<FONT SIZE="-1">Trying to open database: ToDoDB </FONT>
+<FONT SIZE="-1"> 08/01/98 14:41:08</FONT>
+<FONT SIZE="-1">OK To Do List</FONT>
+<FONT SIZE="-1">   Conduit successful</FONT>
+<FONT SIZE="-1">Attempting to Sync with Conduit:  memcn20.dll</FONT>
+<FONT SIZE="-1">   Key is Software\U.S. Robotics\Pilot Desktop\Component3</FONT>
+<FONT SIZE="-1">   Sync type is Fast</FONT>
+<FONT SIZE="-1">Local path is C:\Pilot\RhodesF\memopad\</FONT>
+<FONT SIZE="-1">   Remote name 0 is MemoDB</FONT>
+<FONT SIZE="-1">   Loading   memcn20.dll   conduit</FONT>
+<FONT SIZE="-1">   Conduit failed</FONT>
+<FONT SIZE="-1">Attempting to Sync with Conduit:  C:\SalesCond\Debug\SalesCond.DLL</FONT>
+<FONT SIZE="-1">   Key is Software\U.S. Robotics\Pilot Desktop\Component4</FONT>
+<FONT SIZE="-1">   Sync type is Do Nothing</FONT>
+<FONT SIZE="-1">Local path is C:\Pilot\RhodesF\Sales\</FONT>
+<FONT SIZE="-1">   Remote name 0 is CustomerDB</FONT>
+<FONT SIZE="-1">   Invalid conduit version</FONT>
+<FONT SIZE="-1">   Loading   C:\SalesCond\Debug\SalesCond.DLL   conduit</FONT>
+<FONT SIZE="-1">Sales - sync configured to Do Nothing</FONT>
+<FONT SIZE="-1">   Conduit successful</FONT>
+<FONT SIZE="-1">Attempting to Sync with Conduit:  bakcn20.dll</FONT>
+<FONT SIZE="-1">   No Registry Key</FONT>
+<FONT SIZE="-1">   Sync type is Backup</FONT>
+<FONT SIZE="-1">Local path is C:\Pilot\RhodesF\Backup\</FONT>
+<FONT SIZE="-1">   Remote name 0 is System MIDI Sounds</FONT>
+<FONT SIZE="-1">   Remote name 1 is Saved Preferences</FONT>
+<FONT SIZE="-1">   Remote name 2 is Graffiti ShortCuts </FONT>
+<FONT SIZE="-1">   Remote name 3 is NetworkDB</FONT>
+<FONT SIZE="-1">   Remote name 4 is LauncherDB</FONT>
+<FONT SIZE="-1">   Loading   bakcn20.dll   conduit</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The </FONT><FONT FACE="Courier New">-L1</FONT><FONT FACE="Times"> flag includes, among other things, the baud rate at which the connection was made.</FONT><A NAME="P213_7129"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">A Different Verbose Mode with Packets Using -L2</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P218_7176"></A>The </FONT><FONT FACE="Courier New">-L2</FONT><FONT FACE="Times"> flag includes all the output from </FONT><FONT FACE="Courier New">-L1</FONT><FONT FACE="Times"> plus a trace of all the packets sent to and received from the handheld. Please note that the log becomes quite large. Here's a small excerpt of some output:</FONT></P><PRE><FONT SIZE="-1">A Direct serial connection is pending  08/01/98 14:47:38</FONT>
+<FONT SIZE="-1">Establishing Connection with the Palm organizer</FONT>
+<FONT SIZE="-1">Direct Serial Connection: Baud rate = 57600 </FONT>
+
+<FONT SIZE="-1">Port speed is 57600 bps</FONT>
+<FONT SIZE="-1">Sending Command ReadSysInfo . Packet size = 8</FONT>
+<FONT SIZE="-1">Packet Trace: </FONT>
+<FONT SIZE="-1">12 01 20 04 00 01 00 02                                | .. .....</FONT>
+
+<FONT SIZE="-1">Response Received. Packet size = 34</FONT>
+<FONT SIZE="-1">Packet Trace: </FONT>
+<FONT SIZE="-1">92 02 00 00 20 0E 03 00   30 00 00 01 00 00 00 04      | .... ...0.......</FONT>
+<FONT SIZE="-1">00 01 00 00 21 0C 00 01   00 02 00 03 00 00 00 00      | ....!...........</FONT>
+<FONT SIZE="-1"> </FONT>
+<FONT SIZE="-1">Initialized Sync Manager Successfully </FONT>
+
+<FONT SIZE="-1">---Initializing User Manager---</FONT>
+<FONT SIZE="-1">---Discovering Communication State---</FONT>
+<FONT SIZE="-1">Sending Command (null) . Packet size = 14</FONT>
+<FONT SIZE="-1">Packet Trace: </FONT>
+<FONT SIZE="-1">39 01 22 0A 00 80 68 74   61 6C 68 74 63 70            | 9.&quot;...htalhtcp</FONT>
+
+<FONT SIZE="-1">Response Received. Packet size = 4</FONT>
+<FONT SIZE="-1">Packet Trace: </FONT>
+<FONT SIZE="-1">B9 00 00 05                                            | ....</FONT>
+<FONT SIZE="-1"> </FONT>
+<FONT SIZE="-1">Sending Command ReadFeature . Packet size = 10</FONT>
+<FONT SIZE="-1">Packet Trace: </FONT>
+<FONT SIZE="-1">38 01 20 06 6E 65 74 6C   00 00                        | 8. .netl..</FONT>
+
+<FONT SIZE="-1">Response Received. Packet size = 10</FONT>
+<FONT SIZE="-1">Packet Trace: </FONT>
+<FONT SIZE="-1">B8 01 00 00 20 04 02 00   30 00                        | .... ...0.</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We can't think of a reason you'd need to see the packets going back and forth between HotSync and the handheld, but we've provided this option for completeness.</FONT><A NAME="P253_8613"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Quick-Connect Mode</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P258_8631"></A>HotSync 3.0 and later versions have a </FONT><FONT FACE="Courier New">-c</FONT><FONT FACE="Times"> flag that immediately disconnects from the Palm OS handheld after connecting and obtaining the user name. This is a handy way to verify your connection to the handheld.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Rebuilding the Registry</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P263_8863"></A>Occasionally, you may find that your Conduit Registry is totally fouled or that you've unregistered (or changed) one or more of the default conduits.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To repopulate the Conduit Registry with the default settings for each of the default conduits, first use </FONT><FONT FACE="Courier New">CondCfg</FONT><FONT FACE="Times"> to delete the entries for the default conduits and then use the </FONT><FONT FACE="Courier New">-r</FONT><FONT FACE="Times"> flag of HotSync, which adds back entries for each of the default conduits:</FONT></P><PRE><FONT SIZE="-1">hotsync.exe -r</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">You can accomplish the same thing while using the debug version of things. Simply use the </FONT><FONT FACE="Courier New">-r</FONT><FONT FACE="Times"> flag with the debug version of HotSync:</FONT></P><PRE><FONT SIZE="-1">hotsyncd.exe -r</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This repopulates the registry with entries for the debug versions of each of the built-in conduits rather than entries for the release versions.</FONT><A NAME="P271_9571"></A></P>
+
+<P><A NAME="P274_9571"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Source-Level Debugging</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P276_9593"></A>Source-level debugging can be an invaluable aid to finding problems in your code. It does require careful setup and building, however. First, you need to build and run a debug version (which requires special libraries). Next, you need to set your breakpoints. In the following sections, we describe how to do this.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Building a Debug Version</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P281_9931"></A>To build a debug version of your conduit, select <A NAME="P281_9980"></A>Set Active Configuration in the Build menu. This specifies the debug rather than the release version of the conduit. To complete the build of a debug version, you also need to link with debug versions of the libraries. These libraries end in <I>d.lib</I> (for example, <I>hotsyncd.lib</I> is the debugging version of <I>hotsync.lib</I>). You can specify the debug versions of your libraries in the Link panel of the Project Settings dialog.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Running a Debug Version</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To run a debug version of your conduit, you need to do a number of things:</FONT></P>
+
+<P><FONT FACE="Times"> 1. Run a debug version of HotSync (</FONT><FONT FACE="Courier New">hotsyncd.exe</FONT><FONT FACE="Times">).</FONT></P>
+
+<P><FONT FACE="Times"> 2. Debug versions of the DLLs need to be in the HotSync directory. A release version of HotSync won't load a conduit built to run with debug. The 3.0 Conduit SDK ships with debug versions of HotSync and the DLLs. Copy them to the directory, where they can reside with the nondebug versions.</FONT></P>
+
+<P><FONT FACE="Times"> 3. Run </FONT><FONT FACE="Courier New">CondCfg</FONT><FONT FACE="Times">, so that the entry for your conduit points to the debug directory rather than the release directory. Use <I>path\debug\MyConduit.DLL</I> rather than <I>path\release\MyConduit.DLL</I>.</FONT></P>
+
+<P><FONT FACE="Times"> 4. In the Debug panel of the Project Settings dialog, specify the full pathname to <I>hotsyncd.exe</I> as the executable<A NAME="P291_11132"></A> (see <A HREF="#P294_11163">Figure 14-2</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 14- 2</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P294_11163"></A>Specifying the application to run when debugging the conduit</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch14-plmp.1402-2.gif" WIDTH=503 HEIGHT=284 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Setting Breakpoints</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To set <A NAME="P304_11249"></A>breakpoints in your code, you right-click on a line and choose Insert/Remove Breakpoint, as shown in <A HREF="#P307_11374">Figure 14-3</A>.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 14- 3</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P307_11374"></A>Setting a breakpoint in your code at a particular line</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch14-plmp.1403-3.gif" WIDTH=503 HEIGHT=284 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Once you have gotten this far, you are almost ready to roll. You have just two more steps:</FONT></P>
+
+<P><FONT FACE="Times"> 1. Exit the HotSync Manager if it's currently running. </FONT></P>
+
+<P><FONT FACE="Times"> 2. Choose Go from the Start Debug submenu of the Build menu. You can also use the F5 function key as a shortcut.</FONT><A NAME="P318_11685"></A></P>
+
+<P><A NAME="P320_11685"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Avoiding Timeouts While Debugging</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P322_11718"></A>When you are debugging a conduit, there are two timeouts that you need to avoid. The first is an automatic-off timeout, the second a HotSync one. </FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Auto-off Timeout</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times" SIZE="+0"><A NAME="P327_11880"></A>There is a timeout that causes the handheld to go to sleep after a certain time (a power-saving feature). If you're in the middle of single-stepping through your conduit and the handheld goes to sleep, you'll have one thoroughly ruined debugging session. To avoid this problem, use the <IMG SRC="images/ch14-plmp.shortcut-4.gif" WIDTH=17 HEIGHT=18>..3 shortcut (see &quot;Device Reset&quot; on page&#160;284 for a full discussion). It stops the Palm OS handheld from going to sleep. </FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Until you do a reset, the Palm OS handheld won't go to sleep again automatically. Try not to wander away from your debugging to other things. If you do, when you come back to your debugging after a good night's sleep, your batteries will quite likely have expired.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times" SIZE="+1">HotSync Timeout</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P334_12565"></A>The other timeout you need to worry about is the timeout of the HotSync protocol. If you are stopped at a breakpoint while in the middle of a synchronization, the HotSync application is not sending information to the handheld. The handheld then thinks that the connection has been lost and ends the HotSync session.</FONT></P>
+
+<P><I><FONT FACE="Times">Opening the secret handheld option</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To convince the handheld not to give up, you need to use a secret option that lies hidden within the handheld HotSync application. To get to it, you open the HotSync application on the device. Next, carefully place the handheld in a brown paper bag and wave it over your head while screaming like a chicken-okay, just kidding. What you really do is:</FONT></P>
+
+<P><FONT FACE="Times"> 1. Hold down the scroll-up button on a Palm OS 3.0 device or both the scroll-up and scroll-down keys on a pre-3.0 device.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">In POSE (on Windows only), you can simulate pressing the scroll-up and scroll-down keys by holding down the keyboard Page Up and Page Down keys.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><FONT FACE="Times"> 2. While holding the key(s), tap in the top-right corner of the screen.</FONT></P>
+
+<P><I><FONT FACE="Times">The secret alert</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You should see an alert, as shown in <A HREF="#P350_13867">Figure 14-4</A>. Now HotSync is your dutiful servant, waiting forever and never timing out. If you quit the HotSync application and reopen it, this option is reset; the HotSync application can again<A NAME="P347_13846"></A> timeout.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 14- 4</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P350_13867"></A>HotSync secret alert</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch14-plmp.1404-5.gif" WIDTH=503 HEIGHT=88 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><A NAME="P359_13887"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Conduit Problems You Might Have</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P361_13918"></A>The following are two of the most common problems you may come across when debugging a conduit.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">When an Installed Conduit Doesn't Run</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">A problem that you might encounter is having a conduit that appears to be installed but doesn't get called during a sync session. First, check the presyncing setup by choosing the Custom menu of HotSync. If your conduit doesn't show up in the list, check the items in the following sections.</FONT></P>
+
+<P><I><FONT FACE="Times">A mismatched HotSync and conduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you use a release version of one with a debug version of the other, the conduit is not called. Make sure that a debug version of your conduit is linked with debug versions of the DLL and that release versions are linked with release versions.</FONT></P>
+
+<P><I><FONT FACE="Times">The DLL isn't where it's supposed to be</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you provide a full pathname for your conduit, make sure it's there. If you specify only the conduit name (<I>MyConduit.DLL</I>), the conduit must be in the DLL path (a common place to put it is in the same directory as <I>HotSync.exe</I>).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Select the conduit and press the Change... button to have your </FONT><FONT FACE="Courier New">ConfigureConduit</FONT><FONT FACE="Times"> routine called. If it doesn't work-you know because your </FONT><FONT FACE="Courier New">ConfigureConduit</FONT><FONT FACE="Times"> dialog doesn't appear-here are some possible reasons:</FONT></P>
+
+<P><I><FONT FACE="Times">Required functions not present</FONT></I></P>
+
+<P><FONT FACE="Times">Check that your </FONT><FONT FACE="Courier New">&#160;<A NAME="P379_15139"></A>ConfigureConduit</FONT><FONT FACE="Times"> (or, for HotSync 3.0, </FONT><FONT FACE="Courier New">CfgConduit</FONT><FONT FACE="Times">) routine is in your conduit and declared as </FONT><FONT FACE="Courier New">__declspec(dllexport)</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><FONT FACE="Times">Also, make sure that the following are present and exported:</FONT></P>
+
+  <UL><P><FONT FACE="Times">&#183; </FONT><FONT FACE="Courier New"> GetConduitName</FONT></P>
+
+  <P><FONT FACE="Times">&#183; </FONT><FONT FACE="Courier New"> GetConduitVersion</FONT></P>
+
+  <P><FONT FACE="Times">&#183; </FONT><FONT FACE="Courier New"> OpenConduit</FONT><FONT FACE="Times"> </FONT></P>
+
+</UL><P><I><FONT FACE="Times">HotSync hasn't been restarted</FONT></I></P>
+
+<P><FONT FACE="Times">After you make changes to the registry using </FONT><FONT FACE="Courier New">CfgCond.exe</FONT><FONT FACE="Times">, you should restart HotSync to make sure it rereads the registry.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Once you've got your configuration dialog up, you know that HotSync has found your DLL and called your code successfully. Now if you try to Sync and your conduit doesn't run, it's almost certainly because of one of the two following reasons:</FONT></P>
+
+<P><I><FONT FACE="Times">Your conduit requires a matching creator ID</FONT></I></P>
+
+<P><FONT FACE="Times">Run HotSync in verbose mode to check the Creator ID of your application. Check that ID against the creator registered for the conduit (in </FONT><FONT FACE="Courier New">CondCfg.exe</FONT><FONT FACE="Times">). They must match.</FONT></P>
+
+<P><I><FONT FACE="Times">Conduit configured to do nothing</FONT></I></P>
+
+<P><FONT FACE="Times">Your conduit may be configured to do nothing (check the Custom/Change dialog from the HotSync menu). Even if your conduit is configured to do nothing, the </FONT><FONT FACE="Courier New">OpenConduit</FONT><FONT FACE="Times"> entry point should still be called. You can set a breakpoint and see whether it is being called or alternatively check the verbose HotSync log.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">When the Handheld Crashes After Syncing</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Each application with an associated conduit that ran during a sync is sent the </FONT><FONT FACE="Courier New"><A NAME="P395_16427"></A>sysAppLaunchCmdSyncNotify</FONT><FONT FACE="Times"> launch code. When this launch code is sent, the application does not have any global variables available to it and therefore must not try to access them. If it does, it will most certainly crash in a large flaming wreck.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To ensure this doesn't happen to you, have your </FONT><FONT FACE="Courier New">PilotMain</FONT><FONT FACE="Times"> check the incoming launch code, and verify that it doesn't access global variables directly or indirectly.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">We had a problem when building the conduit: it kept crashing. Here is the story. Earlier in our code we had added the ability to keep track of what ROM version the application is running on. We did this by modifying </FONT><FONT FACE="Courier New">RomVersionCompatible</FONT><FONT FACE="Times"> to save the ROM version in a global. Now, much later on when we are trying to get our conduit up and working, we are crashing. It turns out that our </FONT><FONT FACE="Courier New">PilotMain</FONT><FONT FACE="Times"> was calling the </FONT><FONT FACE="Courier New">RomVersionCompatible</FONT><FONT FACE="Times"> first, before checking the launch code. The result: our application kept crashing. Don't make the same mistake.</FONT><A NAME="P400_17381"></A></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><A NAME="P402_17381"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Test with POSE</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P404_17395"></A>A good way to catch problems in your conduit code is by using POSE. It's possible to sync with POSE running on a different machine (in which case the cable is on the machine running your conduit) or on the same machine (in which case the cable is going out one serial port and in another). For example, this is how we debugged our handheld application that was crashing after a sync. We set a breakpoint in </FONT><FONT FACE="Courier New">PilotMain</FONT><FONT FACE="Times"> and waited for it to get called at the end of the sync process; single-stepping through the code finally showed the problem. If that wasn't enough to convince you, remember that it saves batteries and doesn't require a cradle, either.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Some laptops have only one serial port. Consider augmenting the built-in serial card with a serial PC card (we use a Socket serial card that costs about $125-see </FONT><I><FONT FACE="Times" SIZE="-1"><A HREF="http://www.socketcom.com">http://www.socketcom.com</A>.</FONT></I></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">If you're using the Mac OS version of POSE, make sure that the POSE window is frontmost while you are syncing. This gives the emulator more CPU time during the sync. Trust us, it needs it.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><A NAME="P410_18422"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Turn Off Other Conduits During Testing</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">It is also a very good idea to turn other conduits off during your test cycle. This gives you a much faster sync cycle. To do this, have the other conduits &quot;Do Nothing&quot; as their default sync action. That will make them very sleepy, and they won't wake up during the sync.</FONT></P>
+
+<P><A NAME="P415_18731"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Use the Log, Luke</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P417_18748"></A>The HotSync log is your friend. During your development, have your code log everything that's going on during the sync. It's one of the easiest ways to see what's happening and hence find out where problems are.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">That's it. You should now have a fully debugged conduit to go with your fully debugged Palm application. This is the end of the book, so that means you know everything you need to know. Have fun, and good Palm programming to you.</FONT><A NAME="P419_19188"></A></P>
+<HR ALIGN=LEFT SIZE=2 WIDTH=100% NOSHADE>
+<!-- TRANSIT - TEXTBAR -->
+
+<ADDRESS><FONT SIZE=-1>Palm Programming: The Developer's Guide
+<BR>Copyright &#169; 1999, O'Rielly and Associates, Inc.
+<BR>Published on the web by permission of O'Rielly and Associates, Inc. Contents modified for web display.</FONT></ADDRESS><P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch13.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="appa.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P>
+</BODY>
+</HTML>

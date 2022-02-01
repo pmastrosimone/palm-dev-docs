@@ -1,0 +1,504 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Function Attributes</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Function Attributes">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Function Attributes">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC84"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_83.html#SEC83"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_85.html#SEC85"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_64.html#SEC64"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.23 Declaring Attributes of Functions </H2>
+<!--docid::SEC84::-->
+<P>
+
+In GNU C, you declare certain things about functions called in your program
+which help the compiler optimize function calls and check your code more
+carefully.
+</P><P>
+
+The keyword <CODE>__attribute__</CODE> allows you to specify special
+attributes when making a declaration.  This keyword is followed by an
+attribute specification inside double parentheses.  Nine attributes,
+<CODE>noreturn</CODE>, <CODE>const</CODE>, <CODE>format</CODE>,
+<CODE>no_instrument_function</CODE>, <CODE>section</CODE>,
+<CODE>constructor</CODE>, <CODE>destructor</CODE>, <CODE>unused</CODE> and <CODE>weak</CODE> are
+currently defined for functions.  Other attributes, including
+<CODE>section</CODE> are supported for variables declarations (see section <A HREF="gcc_90.html#SEC90">4.29 Specifying Attributes of Variables</A>) and for types (see section <A HREF="gcc_91.html#SEC91">4.30 Specifying Attributes of Types</A>).
+</P><P>
+
+You may also specify attributes with <SAMP>`__'</SAMP> preceding and following
+each keyword.  This allows you to use them in header files without
+being concerned about a possible macro of the same name.  For example,
+you may use <CODE>__noreturn__</CODE> instead of <CODE>noreturn</CODE>.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX272"></A>
+<DT><CODE>noreturn</CODE>
+<DD>A few standard library functions, such as <CODE>abort</CODE> and <CODE>exit</CODE>,
+cannot return.  GNU CC knows this automatically.  Some programs define
+their own functions that never return.  You can declare them
+<CODE>noreturn</CODE> to tell the compiler this fact.  For example,
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>void fatal () __attribute__ ((noreturn));
+
+void
+fatal (<small>...</small>)
+{
+  <small>...</small> /* Print error message. */ <small>...</small>
+  exit (1);
+}
+</FONT></pre></td></tr></table></P><P>
+
+The <CODE>noreturn</CODE> keyword tells the compiler to assume that
+<CODE>fatal</CODE> cannot return.  It can then optimize without regard to what
+would happen if <CODE>fatal</CODE> ever did return.  This makes slightly
+better code.  More importantly, it helps avoid spurious warnings of
+uninitialized variables.
+</P><P>
+
+Do not assume that registers saved by the calling function are
+restored before calling the <CODE>noreturn</CODE> function.
+</P><P>
+
+It does not make sense for a <CODE>noreturn</CODE> function to have a return
+type other than <CODE>void</CODE>.
+</P><P>
+
+The attribute <CODE>noreturn</CODE> is not implemented in GNU C versions
+earlier than 2.5.  An alternative way to declare that a function does
+not return, which works in the current version and in some older
+versions, is as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>typedef void voidfn ();
+
+volatile voidfn fatal;
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX273"></A>
+<DT><CODE>const</CODE>
+<DD>Many functions do not examine any values except their arguments, and
+have no effects except the return value.  Such a function can be subject
+to common subexpression elimination and loop optimization just as an
+arithmetic operator would be.  These functions should be declared
+with the attribute <CODE>const</CODE>.  For example,
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>int square (int) __attribute__ ((const));
+</FONT></pre></td></tr></table></P><P>
+
+says that the hypothetical function <CODE>square</CODE> is safe to call
+fewer times than the program says.
+</P><P>
+
+The attribute <CODE>const</CODE> is not implemented in GNU C versions earlier
+than 2.5.  An alternative way to declare that a function has no side
+effects, which works in the current version and in some older versions,
+is as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>typedef int intfn ();
+
+extern const intfn square;
+</FONT></pre></td></tr></table></P><P>
+
+This approach does not work in GNU C++ from 2.6.0 on, since the language
+specifies that the <SAMP>`const'</SAMP> must be attached to the return value.
+</P><P>
+
+<A NAME="IDX274"></A>
+Note that a function that has pointer arguments and examines the data
+pointed to must <EM>not</EM> be declared <CODE>const</CODE>.  Likewise, a
+function that calls a non-<CODE>const</CODE> function usually must not be
+<CODE>const</CODE>.  It does not make sense for a <CODE>const</CODE> function to
+return <CODE>void</CODE>.
+</P><P>
+
+<DT><CODE>format (<VAR>archetype</VAR>, <VAR>string-index</VAR>, <VAR>first-to-check</VAR>)</CODE>
+<DD><A NAME="IDX275"></A>
+The <CODE>format</CODE> attribute specifies that a function takes <CODE>printf</CODE>,
+<CODE>scanf</CODE>, or <CODE>strftime</CODE> style arguments which should be type-checked
+against a format string.  For example, the declaration:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>extern int
+my_printf (void *my_object, const char *my_format, ...)
+      __attribute__ ((format (printf, 2, 3)));
+</FONT></pre></td></tr></table></P><P>
+
+causes the compiler to check the arguments in calls to <CODE>my_printf</CODE>
+for consistency with the <CODE>printf</CODE> style format string argument
+<CODE>my_format</CODE>.
+</P><P>
+
+The parameter <VAR>archetype</VAR> determines how the format string is
+interpreted, and should be either <CODE>printf</CODE>, <CODE>scanf</CODE>, or
+<CODE>strftime</CODE>.  The
+parameter <VAR>string-index</VAR> specifies which argument is the format
+string argument (starting from 1), while <VAR>first-to-check</VAR> is the
+number of the first argument to check against the format string.  For
+functions where the arguments are not available to be checked (such as
+<CODE>vprintf</CODE>), specify the third parameter as zero.  In this case the
+compiler only checks the format string for consistency.
+</P><P>
+
+In the example above, the format string (<CODE>my_format</CODE>) is the second
+argument of the function <CODE>my_print</CODE>, and the arguments to check
+start with the third argument, so the correct parameters for the format
+attribute are 2 and 3.
+</P><P>
+
+The <CODE>format</CODE> attribute allows you to identify your own functions
+which take format strings as arguments, so that GNU CC can check the
+calls to these functions for errors.  The compiler always checks formats
+for the ANSI library functions <CODE>printf</CODE>, <CODE>fprintf</CODE>,
+<CODE>sprintf</CODE>, <CODE>scanf</CODE>, <CODE>fscanf</CODE>, <CODE>sscanf</CODE>, <CODE>strftime</CODE>,
+<CODE>vprintf</CODE>, <CODE>vfprintf</CODE> and <CODE>vsprintf</CODE> whenever such
+warnings are requested (using <SAMP>`-Wformat'</SAMP>), so there is no need to
+modify the header file <TT>`stdio.h'</TT>.
+</P><P>
+
+<DT><CODE>format_arg (<VAR>string-index</VAR>)</CODE>
+<DD><A NAME="IDX276"></A>
+The <CODE>format_arg</CODE> attribute specifies that a function takes
+<CODE>printf</CODE> or <CODE>scanf</CODE> style arguments, modifies it (for example,
+to translate it into another language), and passes it to a <CODE>printf</CODE>
+or <CODE>scanf</CODE> style function.  For example, the declaration:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>extern char *
+my_dgettext (char *my_domain, const char *my_format)
+      __attribute__ ((format_arg (2)));
+</FONT></pre></td></tr></table></P><P>
+
+causes the compiler to check the arguments in calls to
+<CODE>my_dgettext</CODE> whose result is passed to a <CODE>printf</CODE>,
+<CODE>scanf</CODE>, or <CODE>strftime</CODE> type function for consistency with the
+<CODE>printf</CODE> style format string argument <CODE>my_format</CODE>.
+</P><P>
+
+The parameter <VAR>string-index</VAR> specifies which argument is the format
+string argument (starting from 1).
+</P><P>
+
+The <CODE>format-arg</CODE> attribute allows you to identify your own
+functions which modify format strings, so that GNU CC can check the
+calls to <CODE>printf</CODE>, <CODE>scanf</CODE>, or <CODE>strftime</CODE> function whose
+operands are a call to one of your own function.  The compiler always
+treats <CODE>gettext</CODE>, <CODE>dgettext</CODE>, and <CODE>dcgettext</CODE> in this
+manner.
+</P><P>
+
+<DT><CODE>no_instrument_function</CODE>
+<DD><A NAME="IDX277"></A>
+If <SAMP>`-finstrument-functions'</SAMP> is given, profiling function calls will
+be generated at entry and exit of most user-compiled functions.
+Functions with this attribute will not be so instrumented.
+<P>
+
+<DT><CODE>section ("section-name")</CODE>
+<DD><A NAME="IDX278"></A>
+Normally, the compiler places the code it generates in the <CODE>text</CODE> section.
+Sometimes, however, you need additional sections, or you need certain
+particular functions to appear in special sections.  The <CODE>section</CODE>
+attribute specifies that a function lives in a particular section.
+For example, the declaration:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>extern void foobar (void) __attribute__ ((section ("bar")));
+</FONT></pre></td></tr></table></P><P>
+
+puts the function <CODE>foobar</CODE> in the <CODE>bar</CODE> section.
+</P><P>
+
+Some file formats do not support arbitrary sections so the <CODE>section</CODE>
+attribute is not available on all platforms.
+If you need to map the entire contents of a module to a particular
+section, consider using the facilities of the linker instead.
+</P><P>
+
+<DT><CODE>constructor</CODE>
+<DD><DT><CODE>destructor</CODE>
+<DD><A NAME="IDX279"></A>
+<A NAME="IDX280"></A>
+The <CODE>constructor</CODE> attribute causes the function to be called
+automatically before execution enters <CODE>main ()</CODE>.  Similarly, the
+<CODE>destructor</CODE> attribute causes the function to be called
+automatically after <CODE>main ()</CODE> has completed or <CODE>exit ()</CODE> has
+been called.  Functions with these attributes are useful for
+initializing data that will be used implicitly during the execution of
+the program.
+<P>
+
+These attributes are not currently implemented for Objective C.
+</P><P>
+
+<DT><CODE>unused</CODE>
+<DD>This attribute, attached to a function, means that the function is meant
+to be possibly unused.  GNU CC will not produce a warning for this
+function.  GNU C++ does not currently support this attribute as
+definitions without parameters are valid in C++.
+<P>
+
+<DT><CODE>weak</CODE>
+<DD><A NAME="IDX281"></A>
+The <CODE>weak</CODE> attribute causes the declaration to be emitted as a weak
+symbol rather than a global.  This is primarily useful in defining
+library functions which can be overridden in user code, though it can
+also be used with non-function declarations.  Weak symbols are supported
+for ELF targets, and also for a.out targets when using the GNU assembler
+and linker.
+<P>
+
+<DT><CODE>alias ("target")</CODE>
+<DD><A NAME="IDX282"></A>
+The <CODE>alias</CODE> attribute causes the declaration to be emitted as an
+alias for another symbol, which must be specified.  For instance,
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>void __f () { /* do something */; }
+void f () __attribute__ ((weak, alias ("__f")));
+</FONT></pre></td></tr></table></P><P>
+
+declares <SAMP>`f'</SAMP> to be a weak alias for <SAMP>`__f'</SAMP>.  In C++, the
+mangled name for the target must be used.
+</P><P>
+
+Not all target machines support this attribute.
+</P><P>
+
+<DT><CODE>no_check_memory_usage</CODE>
+<DD><A NAME="IDX283"></A>
+If <SAMP>`-fcheck-memory-usage'</SAMP> is given, calls to support routines will
+be generated before most memory accesses, to permit support code to
+record usage and detect uses of uninitialized or unallocated storage.
+Since the compiler cannot handle them properly, <CODE>asm</CODE> statements
+are not allowed.  Declaring a function with this attribute disables the
+memory checking code for that function, permitting the use of <CODE>asm</CODE>
+statements without requiring separate compilation with different
+options, and allowing you to write support routines of your own if you
+wish, without getting infinite recursion if they get compiled with this
+option.
+<P>
+
+<DT><CODE>regparm (<VAR>number</VAR>)</CODE>
+<DD><A NAME="IDX284"></A>
+On the Intel 386, the <CODE>regparm</CODE> attribute causes the compiler to
+pass up to <VAR>number</VAR> integer arguments in registers <VAR>EAX</VAR>,
+<VAR>EDX</VAR>, and <VAR>ECX</VAR> instead of on the stack.  Functions that take a
+variable number of arguments will continue to be passed all of their
+arguments on the stack.
+<P>
+
+<DT><CODE>stdcall</CODE>
+<DD><A NAME="IDX285"></A>
+On the Intel 386, the <CODE>stdcall</CODE> attribute causes the compiler to
+assume that the called function will pop off the stack space used to
+pass arguments, unless it takes a variable number of arguments.
+<P>
+
+The PowerPC compiler for Windows NT currently ignores the <CODE>stdcall</CODE>
+attribute.
+</P><P>
+
+<DT><CODE>cdecl</CODE>
+<DD><A NAME="IDX286"></A>
+On the Intel 386, the <CODE>cdecl</CODE> attribute causes the compiler to
+assume that the calling function will pop off the stack space used to
+pass arguments.  This is
+useful to override the effects of the <SAMP>`-mrtd'</SAMP> switch.
+<P>
+
+The PowerPC compiler for Windows NT currently ignores the <CODE>cdecl</CODE>
+attribute.
+</P><P>
+
+<DT><CODE>longcall</CODE>
+<DD><A NAME="IDX287"></A>
+On the RS/6000 and PowerPC, the <CODE>longcall</CODE> attribute causes the
+compiler to always call the function via a pointer, so that functions
+which reside further than 64 megabytes (67,108,864 bytes) from the
+current location can be called.
+<P>
+
+<DT><CODE>dllimport</CODE>
+<DD><A NAME="IDX288"></A>
+On the PowerPC running Windows NT, the <CODE>dllimport</CODE> attribute causes
+the compiler to call the function via a global pointer to the function
+pointer that is set up by the Windows NT dll library.  The pointer name
+is formed by combining <CODE>__imp_</CODE> and the function name.
+<P>
+
+<DT><CODE>dllexport</CODE>
+<DD><A NAME="IDX289"></A>
+On the PowerPC running Windows NT, the <CODE>dllexport</CODE> attribute causes
+the compiler to provide a global pointer to the function pointer, so
+that it can be called with the <CODE>dllimport</CODE> attribute.  The pointer
+name is formed by combining <CODE>__imp_</CODE> and the function name.
+<P>
+
+<DT><CODE>exception (<VAR>except-func</VAR> [, <VAR>except-arg</VAR>])</CODE>
+<DD><A NAME="IDX290"></A>
+On the PowerPC running Windows NT, the <CODE>exception</CODE> attribute causes
+the compiler to modify the structured exception table entry it emits for
+the declared function.  The string or identifier <VAR>except-func</VAR> is
+placed in the third entry of the structured exception table.  It
+represents a function, which is called by the exception handling
+mechanism if an exception occurs.  If it was specified, the string or
+identifier <VAR>except-arg</VAR> is placed in the fourth entry of the
+structured exception table.
+<P>
+
+<DT><CODE>function_vector</CODE>
+<DD><A NAME="IDX291"></A>
+Use this option on the H8/300 and H8/300H to indicate that the specified
+function should be called through the function vector.  Calling a
+function through the function vector will reduce code size, however;
+the function vector has a limited size (maximum 128 entries on the H8/300
+and 64 entries on the H8/300H) and shares space with the interrupt vector.
+<P>
+
+You must use GAS and GLD from GNU binutils version 2.7 or later for
+this option to work correctly.
+</P><P>
+
+<DT><CODE>interrupt_handler</CODE>
+<DD><A NAME="IDX292"></A>
+Use this option on the H8/300 and H8/300H to indicate that the specified
+function is an interrupt handler.  The compiler will generate function
+entry and exit sequences suitable for use in an interrupt handler when this
+attribute is present.
+<P>
+
+<DT><CODE>eightbit_data</CODE>
+<DD><A NAME="IDX293"></A>
+Use this option on the H8/300 and H8/300H to indicate that the specified
+variable should be placed into the eight bit data section.
+The compiler will generate more efficient code for certain operations
+on data in the eight bit data area.  Note the eight bit data area is limited to
+256 bytes of data.
+<P>
+
+You must use GAS and GLD from GNU binutils version 2.7 or later for
+this option to work correctly.
+</P><P>
+
+<DT><CODE>tiny_data</CODE>
+<DD><A NAME="IDX294"></A>
+Use this option on the H8/300H to indicate that the specified
+variable should be placed into the tiny data section.
+The compiler will generate more efficient code for loads and stores
+on data in the tiny data section.  Note the tiny data area is limited to
+slightly under 32kbytes of data.
+<P>
+
+<DT><CODE>interrupt</CODE>
+<DD><A NAME="IDX295"></A>
+Use this option on the M32R/D to indicate that the specified
+function is an interrupt handler.  The compiler will generate function
+entry and exit sequences suitable for use in an interrupt handler when this
+attribute is present.
+<P>
+
+<DT><CODE>model (<VAR>model-name</VAR>)</CODE>
+<DD><A NAME="IDX296"></A>
+Use this attribute on the M32R/D to set the addressability of an object,
+and the code generated for a function.
+The identifier <VAR>model-name</VAR> is one of <CODE>small</CODE>, <CODE>medium</CODE>,
+or <CODE>large</CODE>, representing each of the code models.
+<P>
+
+Small model objects live in the lower 16MB of memory (so that their
+addresses can be loaded with the <CODE>ld24</CODE> instruction), and are
+callable with the <CODE>bl</CODE> instruction.
+</P><P>
+
+Medium model objects may live anywhere in the 32 bit address space (the
+compiler will generate <CODE>seth/add3</CODE> instructions to load their addresses),
+and are callable with the <CODE>bl</CODE> instruction.
+</P><P>
+
+Large model objects may live anywhere in the 32 bit address space (the
+compiler will generate <CODE>seth/add3</CODE> instructions to load their addresses),
+and may not be reachable with the <CODE>bl</CODE> instruction (the compiler will
+generate the much slower <CODE>seth/add3/jl</CODE> instruction sequence).
+</P><P>
+
+</DL>
+<P>
+
+You can specify multiple attributes in a declaration by separating them
+by commas within the double parentheses or by immediately following an
+attribute declaration with another attribute declaration.
+</P><P>
+
+<A NAME="IDX297"></A>
+<A NAME="IDX298"></A>
+Some people object to the <CODE>__attribute__</CODE> feature, suggesting that ANSI C's
+<CODE>#pragma</CODE> should be used instead.  There are two reasons for not
+doing this.
+</P><P>
+
+<OL>
+<LI>
+It is impossible to generate <CODE>#pragma</CODE> commands from a macro.
+<P>
+
+<LI>
+There is no telling what the same <CODE>#pragma</CODE> might mean in another
+compiler.
+</OL>
+<P>
+
+These two reasons apply to almost any application that might be proposed
+for <CODE>#pragma</CODE>.  It is basically a mistake to use <CODE>#pragma</CODE> for
+<EM>anything</EM>.
+</P><P>
+
+<A NAME="Function Prototypes"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_83.html#SEC83"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_85.html#SEC85"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_64.html#SEC64"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

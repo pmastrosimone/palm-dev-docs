@@ -1,0 +1,127 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Rule Syntax</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Rule Syntax">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Rule Syntax">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC28"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_23.html#SEC27"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_25.html#SEC29"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.2 Rule Syntax </H2>
+<!--docid::SEC28::-->
+<P>
+
+<A NAME="IDX76"></A>
+<A NAME="IDX77"></A>
+In general, a rule looks like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>targets</VAR> : <VAR>prerequisites</VAR>
+        <VAR>command</VAR>
+        <small>...</small>
+</pre></td></tr></table></P><P>
+
+or like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>targets</VAR> : <VAR>prerequisites</VAR> ; <VAR>command</VAR>
+        <VAR>command</VAR>
+        <small>...</small>
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX78"></A>
+<A NAME="IDX79"></A>
+The <VAR>targets</VAR> are file names, separated by spaces.  Wildcard
+characters may be used (see section <A HREF="make_26.html#SEC30">Using Wildcard Characters in File Names</A>) and a name of the form <TT>`<VAR>a</VAR>(<VAR>m</VAR>)'</TT>
+represents member <VAR>m</VAR> in archive file <VAR>a</VAR>
+(see section <A HREF="make_115.html#SEC119">Archive Members as Targets</A>).
+Usually there is only one
+target per rule, but occasionally there is a reason to have more
+(see section <A HREF="make_41.html#SEC45">Multiple Targets in a Rule</A>).</P><P>
+
+<A NAME="IDX80"></A>
+<A NAME="IDX81"></A>
+The <VAR>command</VAR> lines start with a tab character.  The first command may
+appear on the line after the prerequisites, with a tab character, or may
+appear on the same line, with a semicolon.  Either way, the effect is the
+same.  See section <A HREF="make_48.html#SEC52">Writing the Commands in Rules</A>.
+</P><P>
+
+<A NAME="IDX82"></A>
+<A NAME="IDX83"></A>
+<A NAME="IDX84"></A>
+Because dollar signs are used to start variable references, if you really
+want a dollar sign in a rule you must write two of them, <SAMP>`$$'</SAMP>
+(see section <A HREF="make_61.html#SEC65">How to Use Variables</A>).
+You may split a long line by inserting a backslash
+followed by a newline, but this is not required, as <CODE>make</CODE> places no
+limit on the length of a line in a makefile.
+</P><P>
+
+A rule tells <CODE>make</CODE> two things: when the targets are out of date,
+and how to update them when necessary.
+</P><P>
+
+<A NAME="IDX85"></A>
+<A NAME="IDX86"></A>
+The criterion for being out of date is specified in terms of the
+<VAR>prerequisites</VAR>, which consist of file names separated by spaces.
+(Wildcards and archive members (see section <A HREF="make_114.html#SEC118">11. Using <CODE>make</CODE> to Update Archive Files</A>) are allowed here too.)
+A target is out of date if it does not exist or if it is older than any
+of the prerequisites (by comparison of last-modification times).  The
+idea is that the contents of the target file are computed based on
+information in the prerequisites, so if any of the prerequisites changes,
+the contents of the existing target file are no longer necessarily
+valid.
+</P><P>
+
+How to update is specified by <VAR>commands</VAR>.  These are lines to be
+executed by the shell (normally <SAMP>`sh'</SAMP>), but with some extra features
+(see section <A HREF="make_48.html#SEC52">Writing the Commands in Rules</A>).
+</P><P>
+
+<A NAME="Prerequisite Types"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_23.html#SEC27"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_25.html#SEC29"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

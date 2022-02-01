@@ -1,0 +1,301 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Automatic</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Automatic">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Automatic">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC111"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_106.html#SEC110"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_108.html#SEC112"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_103.html#SEC107"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_104.html#SEC108"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_111.html#SEC115"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 10.5.3 Automatic Variables </H3>
+<!--docid::SEC111::-->
+<P>
+
+Suppose you are writing a pattern rule to compile a <SAMP>`.c'</SAMP> file into a
+<SAMP>`.o'</SAMP> file: how do you write the <SAMP>`cc'</SAMP> command so that it operates
+on the right source file name?  You cannot write the name in the command,
+because the name is different each time the implicit rule is applied.
+</P><P>
+
+What you do is use a special feature of <CODE>make</CODE>, the <EM>automatic
+variables</EM>.  These variables have values computed afresh for each rule that
+is executed, based on the target and prerequisites of the rule.  In this
+example, you would use <SAMP>`$@'</SAMP> for the object file name and <SAMP>`$&#60;'</SAMP>
+for the source file name.
+</P><P>
+
+Here is a table of automatic variables:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX575"></A>
+<A NAME="IDX576"></A>
+<DT><CODE>$@</CODE>
+<DD>The file name of the target of the rule.  If the target is an archive
+member, then <SAMP>`$@'</SAMP> is the name of the archive file.  In a pattern
+rule that has multiple targets (see section <A HREF="make_105.html#SEC109">Introduction to Pattern Rules</A>), <SAMP>`$@'</SAMP> is the name of whichever target caused the
+rule's commands to be run.
+<P>
+
+<A NAME="IDX577"></A>
+<A NAME="IDX578"></A>
+<DT><CODE>$%</CODE>
+<DD>The target member name, when the target is an archive member.
+See section <A HREF="make_114.html#SEC118">11. Using <CODE>make</CODE> to Update Archive Files</A>.  For example, if the target is <TT>`foo.a(bar.o)'</TT> then
+<SAMP>`$%'</SAMP> is <TT>`bar.o'</TT> and <SAMP>`$@'</SAMP> is <TT>`foo.a'</TT>.  <SAMP>`$%'</SAMP> is
+empty when the target is not an archive member.
+<P>
+
+<A NAME="IDX579"></A>
+<A NAME="IDX580"></A>
+<DT><CODE>$&#60;</CODE>
+<DD>The name of the first prerequisite.  If the target got its commands from
+an implicit rule, this will be the first prerequisite added by the
+implicit rule (see section <A HREF="make_99.html#SEC103">10. Using Implicit Rules</A>).
+<P>
+
+<A NAME="IDX581"></A>
+<A NAME="IDX582"></A>
+<DT><CODE>$?</CODE>
+<DD>The names of all the prerequisites that are newer than the target, with
+spaces between them.  For prerequisites which are archive members, only
+the member named is used (see section <A HREF="make_114.html#SEC118">11. Using <CODE>make</CODE> to Update Archive Files</A>).
+<A NAME="IDX583"></A>
+<A NAME="IDX584"></A>
+<P>
+
+<A NAME="IDX585"></A>
+<A NAME="IDX586"></A>
+<DT><CODE>$^</CODE>
+<DD>The names of all the prerequisites, with spaces between them.  For
+prerequisites which are archive members, only the member named is used
+(see section <A HREF="make_114.html#SEC118">11. Using <CODE>make</CODE> to Update Archive Files</A>).  A target has only one prerequisite on each other file
+it depends on, no matter how many times each file is listed as a
+prerequisite.  So if you list a prerequisite more than once for a target,
+the value of <CODE>$^</CODE> contains just one copy of the name.
+<A NAME="IDX587"></A>
+<A NAME="IDX588"></A>
+<P>
+
+<A NAME="IDX589"></A>
+<A NAME="IDX590"></A>
+<DT><CODE>$+</CODE>
+<DD>This is like <SAMP>`$^'</SAMP>, but prerequisites listed more than once are
+duplicated in the order they were listed in the makefile.  This is
+primarily useful for use in linking commands where it is meaningful to
+repeat library file names in a particular order.
+<P>
+
+<A NAME="IDX591"></A>
+<A NAME="IDX592"></A>
+<DT><CODE>$*</CODE>
+<DD>The stem with which an implicit rule matches (see section <A HREF="make_108.html#SEC112">How Patterns Match</A>).  If the target is <TT>`dir/a.foo.b'</TT> and the target
+pattern is <TT>`a.%.b'</TT> then the stem is <TT>`dir/foo'</TT>.  The stem is
+useful for constructing names of related files.<A NAME="IDX593"></A>
+<P>
+
+In a static pattern rule, the stem is part of the file name that matched
+the <SAMP>`%'</SAMP> in the target pattern.
+</P><P>
+
+In an explicit rule, there is no stem; so <SAMP>`$*'</SAMP> cannot be determined
+in that way.  Instead, if the target name ends with a recognized suffix
+(see section <A HREF="make_112.html#SEC116">Old-Fashioned Suffix Rules</A>), <SAMP>`$*'</SAMP> is set to
+the target name minus the suffix.  For example, if the target name is
+<SAMP>`foo.c'</SAMP>, then <SAMP>`$*'</SAMP> is set to <SAMP>`foo'</SAMP>, since <SAMP>`.c'</SAMP> is a
+suffix.  GNU <CODE>make</CODE> does this bizarre thing only for compatibility
+with other implementations of <CODE>make</CODE>.  You should generally avoid
+using <SAMP>`$*'</SAMP> except in implicit rules or static pattern rules.</P><P>
+
+If the target name in an explicit rule does not end with a recognized
+suffix, <SAMP>`$*'</SAMP> is set to the empty string for that rule.
+</DL>
+<P>
+
+<SAMP>`$?'</SAMP> is useful even in explicit rules when you wish to operate on only
+the prerequisites that have changed.  For example, suppose that an archive
+named <TT>`lib'</TT> is supposed to contain copies of several object files.
+This rule copies just the changed object files into the archive:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>lib: foo.o bar.o lose.o win.o
+        ar r lib $?
+</pre></td></tr></table></P><P>
+
+Of the variables listed above, four have values that are single file
+names, and three have values that are lists of file names.  These seven
+have variants that get just the file's directory name or just the file
+name within the directory.  The variant variables' names are formed by
+appending <SAMP>`D'</SAMP> or <SAMP>`F'</SAMP>, respectively.  These variants are
+semi-obsolete in GNU <CODE>make</CODE> since the functions <CODE>dir</CODE> and
+<CODE>notdir</CODE> can be used to get a similar effect (see section <A HREF="make_82.html#SEC86">Functions for File Names</A>).  Note, however, that the
+<SAMP>`D'</SAMP> variants all omit the trailing slash which always appears in
+the output of the <CODE>dir</CODE> function.  Here is a table of the variants:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX594"></A>
+<A NAME="IDX595"></A>
+<DT><SAMP>`$(@D)'</SAMP>
+<DD>The directory part of the file name of the target, with the trailing
+slash removed.  If the value of <SAMP>`$@'</SAMP> is <TT>`dir/foo.o'</TT> then
+<SAMP>`$(@D)'</SAMP> is <TT>`dir'</TT>.  This value is <TT>`.'</TT> if <SAMP>`$@'</SAMP> does
+not contain a slash.
+<P>
+
+<A NAME="IDX596"></A>
+<A NAME="IDX597"></A>
+<DT><SAMP>`$(@F)'</SAMP>
+<DD>The file-within-directory part of the file name of the target.  If the
+value of <SAMP>`$@'</SAMP> is <TT>`dir/foo.o'</TT> then <SAMP>`$(@F)'</SAMP> is
+<TT>`foo.o'</TT>.  <SAMP>`$(@F)'</SAMP> is equivalent to <SAMP>`$(notdir $@)'</SAMP>.
+<P>
+
+<A NAME="IDX598"></A>
+<A NAME="IDX599"></A>
+<DT><SAMP>`$(*D)'</SAMP>
+<DD><A NAME="IDX600"></A>
+<A NAME="IDX601"></A>
+<DT><SAMP>`$(*F)'</SAMP>
+<DD>The directory part and the file-within-directory
+part of the stem; <TT>`dir'</TT> and <TT>`foo'</TT> in this example.
+<P>
+
+<A NAME="IDX602"></A>
+<A NAME="IDX603"></A>
+<DT><SAMP>`$(%D)'</SAMP>
+<DD><A NAME="IDX604"></A>
+<A NAME="IDX605"></A>
+<DT><SAMP>`$(%F)'</SAMP>
+<DD>The directory part and the file-within-directory part of the target
+archive member name.  This makes sense only for archive member targets
+of the form <TT>`<VAR>archive</VAR>(<VAR>member</VAR>)'</TT> and is useful only when
+<VAR>member</VAR> may contain a directory name.  (See section <A HREF="make_115.html#SEC119">Archive Members as Targets</A>.)
+<P>
+
+<A NAME="IDX606"></A>
+<A NAME="IDX607"></A>
+<DT><SAMP>`$(&#60;D)'</SAMP>
+<DD><A NAME="IDX608"></A>
+<A NAME="IDX609"></A>
+<DT><SAMP>`$(&#60;F)'</SAMP>
+<DD>The directory part and the file-within-directory
+part of the first prerequisite.
+<P>
+
+<A NAME="IDX610"></A>
+<A NAME="IDX611"></A>
+<DT><SAMP>`$(^D)'</SAMP>
+<DD><A NAME="IDX612"></A>
+<A NAME="IDX613"></A>
+<DT><SAMP>`$(^F)'</SAMP>
+<DD>Lists of the directory parts and the file-within-directory
+parts of all prerequisites.
+<P>
+
+<A NAME="IDX614"></A>
+<A NAME="IDX615"></A>
+<DT><SAMP>`$(+D)'</SAMP>
+<DD><A NAME="IDX616"></A>
+<A NAME="IDX617"></A>
+<DT><SAMP>`$(+F)'</SAMP>
+<DD>Lists of the directory parts and the file-within-directory
+parts of all prerequisites, including multiple instances of duplicated
+prerequisites.
+<P>
+
+<A NAME="IDX618"></A>
+<A NAME="IDX619"></A>
+<DT><SAMP>`$(?D)'</SAMP>
+<DD><A NAME="IDX620"></A>
+<A NAME="IDX621"></A>
+<DT><SAMP>`$(?F)'</SAMP>
+<DD>Lists of the directory parts and the file-within-directory parts of
+all prerequisites that are newer than the target.
+</DL>
+<P>
+
+Note that we use a special stylistic convention when we talk about these
+automatic variables; we write "the value of <SAMP>`$<'</SAMP>", rather than
+"the variable <CODE><</CODE>" as we would write for ordinary variables
+such as <CODE>objects</CODE> and <CODE>CFLAGS</CODE>.  We think this convention
+looks more natural in this special case.  Please do not assume it has a
+deep significance; <SAMP>`$&#60;'</SAMP> refers to the variable named <CODE>&#60;</CODE> just
+as <SAMP>`$(CFLAGS)'</SAMP> refers to the variable named <CODE>CFLAGS</CODE>.
+You could just as well use <SAMP>`$(&#60;)'</SAMP> in place of <SAMP>`$&#60;'</SAMP>.
+</P><P>
+
+<A NAME="IDX622"></A>
+<A NAME="IDX623"></A>
+<A NAME="IDX624"></A>
+<A NAME="IDX625"></A>
+GNU <CODE>make</CODE> provides support for the SysV <CODE>make</CODE> feature that
+allows special variable references <CODE>$$@</CODE>, <CODE>$$(@D)</CODE>, and
+<CODE>$$(@F)</CODE> (note the required double-"$"!) to appear with the
+<EM>prerequisites list</EM> (normal automatic variables are available
+only within a command script).  When appearing in a prerequisites
+list, these variables are expanded to the name of the target, the
+directory component of the target, and the file component of the
+target, respectively.
+</P><P>
+
+Note that these variables are available only within explicit and
+static pattern (see section <A HREF="make_43.html#SEC47">Static Pattern Rules</A>) rules;
+they have no special significance within implicit (suffix or pattern)
+rules.  Also note that while SysV <CODE>make</CODE> actually expands its
+entire prerequisite list <EM>twice</EM>, GNU <CODE>make</CODE> does not behave
+this way: instead it simply expands these special variables without
+re-expanding any other part of the prerequisites list.
+</P><P>
+
+This somewhat bizarre feature is included only to provide some
+compatibility with SysV makefiles.  In a native GNU <CODE>make</CODE> file
+there are other ways to accomplish the same results.  This feature is
+disabled if the special pseudo target <CODE>.POSIX</CODE> is defined.
+</P><P>
+
+<A NAME="Pattern Match"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_106.html#SEC110"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_108.html#SEC112"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_103.html#SEC107"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_104.html#SEC108"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_111.html#SEC115"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,107 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: TIC54X-Subsyms</TITLE>
+
+<META NAME="description" CONTENT="Using as: TIC54X-Subsyms">
+<META NAME="keywords" CONTENT="Using as: TIC54X-Subsyms">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC388"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_378.html#SEC387"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_380.html#SEC389"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_380.html#SEC389"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_374.html#SEC383"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_386.html#SEC395"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.29.5 String Substitution </H3>
+<!--docid::SEC388::-->
+A subset of allowable symbols (which we'll call subsyms) may be assigned
+arbitrary string values.  This is roughly equivalent to C preprocessor
+#define macros.  When <CODE>as</CODE> encounters one of these
+symbols, the symbol is replaced in the input stream by its string value.
+Subsym names <STRONG>must</STRONG> begin with a letter. 
+<P>
+
+Subsyms may be defined using the <CODE>.asg</CODE> and <CODE>.eval</CODE> directives
+(See section <A HREF="as_383.html#SEC392"><CODE>.asg</CODE></A>,
+See section <A HREF="as_383.html#SEC392"><CODE>.eval</CODE></A>. 
+</P><P>
+
+Expansion is recursive until a previously encountered symbol is seen, at
+which point substitution stops.  
+</P><P>
+
+In this example, x is replaced with SYM2; SYM2 is replaced with SYM1, and SYM1
+is replaced with x.  At this point, x has already been encountered
+and the substitution stops.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre> .asg   "x",SYM1 
+ .asg   "SYM1",SYM2
+ .asg   "SYM2",x
+ add    x,a             ; final code assembled is "add  x, a"
+</FONT></pre></td></tr></table></P><P>
+
+Macro parameters are converted to subsyms; a side effect of this is the normal
+<CODE>as</CODE> '\ARG' dereferencing syntax is unnecessary.  Subsyms
+defined within a macro will have global scope, unless the <CODE>.var</CODE>
+directive is used to identify the subsym as a local macro variable
+see section <A HREF="as_383.html#SEC392"><CODE>.var</CODE></A>.
+</P><P>
+
+Substitution may be forced in situations where replacement might be
+ambiguous by placing colons on either side of the subsym.  The following
+code: 
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre> .eval  "10",x
+LAB:X:  add     #x, a
+</FONT></pre></td></tr></table></P><P>
+
+When assembled becomes:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>LAB10  add     #10, a
+</FONT></pre></td></tr></table></P><P>
+
+Smaller parts of the string assigned to a subsym may be accessed with
+the following syntax:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE><CODE>:<VAR>symbol</VAR>(<VAR>char_index</VAR>):</CODE></CODE>
+<DD>Evaluates to a single-character string, the character at <VAR>char_index</VAR>.
+<DT><CODE><CODE>:<VAR>symbol</VAR>(<VAR>start</VAR>,<VAR>length</VAR>):</CODE></CODE>
+<DD>Evaluates to a substring of <VAR>symbol</VAR> beginning at <VAR>start</VAR> with
+length <VAR>length</VAR>.
+</DL>
+<P>
+
+<A NAME="TIC54X-Locals"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

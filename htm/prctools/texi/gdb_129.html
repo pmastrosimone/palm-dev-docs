@@ -1,0 +1,205 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Target Commands</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Target Commands">
+<META NAME="keywords" CONTENT="Debugging with GDB: Target Commands">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC129"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_128.html#SEC128"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_130.html#SEC130"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_130.html#SEC130"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_127.html#SEC127"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 16.2 Commands for managing targets </H2>
+<!--docid::SEC129::-->
+<P>
+
+<DL COMPACT>
+<DT><CODE>target <VAR>type</VAR> <VAR>parameters</VAR></CODE>
+<DD>Connects the GDB host environment to a target machine or
+process.  A target is typically a protocol for talking to debugging
+facilities.  You use the argument <VAR>type</VAR> to specify the type or
+protocol of the target machine.
+<P>
+
+Further <VAR>parameters</VAR> are interpreted by the target protocol, but
+typically include things like device names or host names to connect
+with, process numbers, and baud rates.
+</P><P>
+
+The <CODE>target</CODE> command does not repeat if you press <KBD>RET</KBD> again
+after executing the command.
+</P><P>
+
+<A NAME="IDX585"></A>
+<DT><CODE>help target</CODE>
+<DD>Displays the names of all targets available.  To display targets
+currently selected, use either <CODE>info target</CODE> or <CODE>info files</CODE>
+(see section <A HREF="gdb_125.html#SEC125">Commands to specify files</A>).
+<P>
+
+<DT><CODE>help target <VAR>name</VAR></CODE>
+<DD>Describe a particular target, including any parameters necessary to
+select it.
+<P>
+
+<A NAME="IDX586"></A>
+<DT><CODE>set gnutarget <VAR>args</VAR></CODE>
+<DD>GDB uses its own library BFD to read your files.  GDB
+knows whether it is reading an <EM>executable</EM>,
+a <EM>core</EM>, or a <EM>.o</EM> file; however, you can specify the file format
+with the <CODE>set gnutarget</CODE> command.  Unlike most <CODE>target</CODE> commands,
+with <CODE>gnutarget</CODE> the <CODE>target</CODE> refers to a program, not a machine.
+<P>
+
+<BLOCKQUOTE>
+<EM>Warning:</EM> To specify a file format with <CODE>set gnutarget</CODE>,
+you must know the actual BFD name.
+</BLOCKQUOTE>
+<P>
+
+See section <A HREF="gdb_125.html#SEC125">Commands to specify files</A>.
+</P><P>
+
+<A NAME="IDX587"></A>
+<DT><CODE>show gnutarget</CODE>
+<DD>Use the <CODE>show gnutarget</CODE> command to display what file format
+<CODE>gnutarget</CODE> is set to read.  If you have not set <CODE>gnutarget</CODE>,
+GDB will determine the file format for each file automatically,
+and <CODE>show gnutarget</CODE> displays <SAMP>`The current BDF target is "auto"'</SAMP>.
+</DL>
+<P>
+
+Here are some common targets (available, or not, depending on the GDB
+configuration):
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX588"></A>
+<DT><CODE>target exec <VAR>program</VAR></CODE>
+<DD>An executable file.  <SAMP>`target exec <VAR>program</VAR>'</SAMP> is the same as
+<SAMP>`exec-file <VAR>program</VAR>'</SAMP>.
+<P>
+
+<A NAME="IDX589"></A>
+<DT><CODE>target core <VAR>filename</VAR></CODE>
+<DD>A core dump file.  <SAMP>`target core <VAR>filename</VAR>'</SAMP> is the same as
+<SAMP>`core-file <VAR>filename</VAR>'</SAMP>.
+<P>
+
+<A NAME="IDX590"></A>
+<DT><CODE>target remote <VAR>dev</VAR></CODE>
+<DD>Remote serial target in GDB-specific protocol.  The argument <VAR>dev</VAR>
+specifies what serial device to use for the connection (e.g.
+<TT>`/dev/ttya'</TT>). See section <A HREF="gdb_131.html#SEC131">Remote debugging</A>.  <CODE>target remote</CODE>
+supports the <CODE>load</CODE> command.  This is only useful if you have
+some other way of getting the stub to the target system, and you can put
+it somewhere in memory where it won't get clobbered by the download.
+<P>
+
+<A NAME="IDX591"></A>
+<DT><CODE>target sim</CODE>
+<DD>Builtin CPU simulator.  GDB includes simulators for most architectures.
+In general,
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>        target sim
+        load
+        run
+</FONT></pre></td></tr></table>works; however, you cannot assume that a specific memory map, device
+drivers, or even basic I/O is available, although some simulators do
+provide these.  For info about any processor-specific simulator details,
+see the appropriate section in <A HREF="gdb_151.html#SEC151">Embedded Processors</A>.
+<P>
+
+</DL>
+<P>
+
+Some configurations may include these targets as well:
+</P><P>
+
+<DL COMPACT>
+
+<A NAME="IDX592"></A>
+<DT><CODE>target nrom <VAR>dev</VAR></CODE>
+<DD>NetROM ROM emulator.  This target only supports downloading.
+<P>
+
+</DL>
+<P>
+
+Different targets are available on different configurations of GDB;
+your configuration may have more or fewer targets.
+</P><P>
+
+Many remote targets require you to download the executable's code
+once you've successfully established a connection.
+</P><P>
+
+<DL COMPACT>
+
+<A NAME="IDX593"></A>
+<DT><CODE>load <VAR>filename</VAR></CODE>
+<DD>Depending on what remote debugging facilities are configured into
+GDB, the <CODE>load</CODE> command may be available.  Where it exists, it
+is meant to make <VAR>filename</VAR> (an executable) available for debugging
+on the remote system--by downloading, or dynamic linking, for example.
+<CODE>load</CODE> also records the <VAR>filename</VAR> symbol table in GDB, like
+the <CODE>add-symbol-file</CODE> command.
+<P>
+
+If your GDB does not have a <CODE>load</CODE> command, attempting to
+execute it gets the error message "<CODE>You can't do that when your
+target is <small>...</small></CODE>"
+</P><P>
+
+The file is loaded at whatever address is specified in the executable.
+For some object file formats, you can specify the load address when you
+link the program; for other formats, like a.out, the object file format
+specifies a fixed address.
+</P><P>
+
+<CODE>load</CODE> does not repeat if you press <KBD>RET</KBD> again after using it.
+</DL>
+<P>
+
+<A NAME="Byte Order"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_128.html#SEC128"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_130.html#SEC130"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_130.html#SEC130"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_127.html#SEC127"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

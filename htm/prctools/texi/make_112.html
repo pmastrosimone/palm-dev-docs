@@ -1,0 +1,155 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Suffix Rules</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Suffix Rules">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Suffix Rules">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC116"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_111.html#SEC115"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_113.html#SEC117"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 10.7 Old-Fashioned Suffix Rules </H2>
+<!--docid::SEC116::-->
+<P>
+
+<EM>Suffix rules</EM> are the old-fashioned way of defining implicit rules for
+<CODE>make</CODE>.  Suffix rules are obsolete because pattern rules are more
+general and clearer.  They are supported in GNU <CODE>make</CODE> for
+compatibility with old makefiles.  They come in two kinds:
+<EM>double-suffix</EM> and <EM>single-suffix</EM>.</P><P>
+
+A double-suffix rule is defined by a pair of suffixes: the target suffix
+and the source suffix.  It matches any file whose name ends with the
+target suffix.  The corresponding implicit prerequisite is made by
+replacing the target suffix with the source suffix in the file name.  A
+two-suffix rule whose target and source suffixes are <SAMP>`.o'</SAMP> and
+<SAMP>`.c'</SAMP> is equivalent to the pattern rule <SAMP>`%.o : %.c'</SAMP>.
+</P><P>
+
+A single-suffix rule is defined by a single suffix, which is the source
+suffix.  It matches any file name, and the corresponding implicit
+prerequisite name is made by appending the source suffix.  A single-suffix
+rule whose source suffix is <SAMP>`.c'</SAMP> is equivalent to the pattern rule
+<SAMP>`% : %.c'</SAMP>.
+</P><P>
+
+Suffix rule definitions are recognized by comparing each rule's target
+against a defined list of known suffixes.  When <CODE>make</CODE> sees a rule
+whose target is a known suffix, this rule is considered a single-suffix
+rule.  When <CODE>make</CODE> sees a rule whose target is two known suffixes
+concatenated, this rule is taken as a double-suffix rule.
+</P><P>
+
+For example, <SAMP>`.c'</SAMP> and <SAMP>`.o'</SAMP> are both on the default list of
+known suffixes.  Therefore, if you define a rule whose target is
+<SAMP>`.c.o'</SAMP>, <CODE>make</CODE> takes it to be a double-suffix rule with source
+suffix <SAMP>`.c'</SAMP> and target suffix <SAMP>`.o'</SAMP>.  Here is the old-fashioned
+way to define the rule for compiling a C source file:</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.c.o:
+        $(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $&#60;
+</pre></td></tr></table></P><P>
+
+Suffix rules cannot have any prerequisites of their own.  If they have any,
+they are treated as normal files with funny names, not as suffix rules.
+Thus, the rule:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.c.o: foo.h
+        $(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $&#60;
+</pre></td></tr></table></P><P>
+
+tells how to make the file <TT>`.c.o'</TT> from the prerequisite file
+<TT>`foo.h'</TT>, and is not at all like the pattern rule:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>%.o: %.c foo.h
+        $(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $&#60;
+</pre></td></tr></table></P><P>
+
+which tells how to make <SAMP>`.o'</SAMP> files from <SAMP>`.c'</SAMP> files, and makes all
+<SAMP>`.o'</SAMP> files using this pattern rule also depend on <TT>`foo.h'</TT>.
+</P><P>
+
+Suffix rules with no commands are also meaningless.  They do not remove
+previous rules as do pattern rules with no commands (see section <A HREF="make_110.html#SEC114">Canceling Implicit Rules</A>).  They simply enter the suffix or pair of suffixes concatenated as
+a target in the data base.</P><P>
+
+<A NAME="IDX630"></A>
+The known suffixes are simply the names of the prerequisites of the special
+target <CODE>.SUFFIXES</CODE>.  You can add your own suffixes by writing a rule
+for <CODE>.SUFFIXES</CODE> that adds more prerequisites, as in:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.SUFFIXES: .hack .win
+</pre></td></tr></table></P><P>
+
+which adds <SAMP>`.hack'</SAMP> and <SAMP>`.win'</SAMP> to the end of the list of suffixes.
+</P><P>
+
+If you wish to eliminate the default known suffixes instead of just adding
+to them, write a rule for <CODE>.SUFFIXES</CODE> with no prerequisites.  By
+special dispensation, this eliminates all existing prerequisites of
+<CODE>.SUFFIXES</CODE>.  You can then write another rule to add the suffixes you
+want.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.SUFFIXES:            # Delete the default suffixes
+.SUFFIXES: .c .o .h   # Define our suffix list
+</pre></td></tr></table></P><P>
+
+The <SAMP>`-r'</SAMP> or <SAMP>`--no-builtin-rules'</SAMP> flag causes the default
+list of suffixes to be empty.
+</P><P>
+
+<A NAME="IDX631"></A>
+The variable <CODE>SUFFIXES</CODE> is defined to the default list of suffixes
+before <CODE>make</CODE> reads any makefiles.  You can change the list of suffixes
+with a rule for the special target <CODE>.SUFFIXES</CODE>, but that does not alter
+this variable.
+</P><P>
+
+<A NAME="Implicit Rule Search"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_111.html#SEC115"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_113.html#SEC117"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

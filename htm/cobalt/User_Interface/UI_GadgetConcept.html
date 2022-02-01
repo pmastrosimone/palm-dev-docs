@@ -1,0 +1,197 @@
+<html>
+<head>
+<title>(Protein) Creating Custom UI Elements (Gadgets) | User Interface </title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:54:11">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="1005083"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="UI_TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="UI_TableConcept.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="UI_Drawing.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="UI_IX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">7 &nbsp;&nbsp;
+Creating Custom UI Elements (Gadgets)</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">User Interface </p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="UI_PartConcept.html">Part I: Concepts</a> </h1>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="1008167"> </a>A gadget resource lets you implement a custom UI element. A <b>gadget</b> is best thought of as simply a reserved rectangle at a set location on the form. You must provide all drawing and event handling code. There is no default behavior for a gadget. </p>
+
+<p><a name="1026197"> </a>If the gadget is an extended gadget, you can write a callback function (<a href="UI_Form.html#1004659"><code>FormGadgetHandlerType()</code></a>) to provide drawing and event handling code for the gadget. A pointer to the gadget is passed to the callback, so you can use the same function for multiple gadgets. Use <a href="UI_Form.html#1003245"><code>FrmSetGadgetHandler()</code></a> to set the callback function. </p>
+
+<p><a name="1026289"> </a>When the form receives certain requests to draw itself, delete itself, or to hide or show a gadget, it calls the gadget handler function you provide. When the form receives events intended for the gadget, it passes those to the gadget handler function as well. </p>
+
+<p><a name="1008185"> </a><a href="UI_GadgetConcept.html#1008231">Listing 7.1</a> shows an example of a gadget handler function. </p>
+<p class="CCodeCaption">
+  <a name="1008231"> </a><b>Listing 7.1&nbsp;&nbsp;Example gadget</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+Boolean GadgetHandler (struct FormGadgetType *gadgetP,
+uint16_t cmd, void *paramP)<a name="1008232"> </a>
+{<a name="1008233"> </a>
+   Boolean handled = false;<a name="1008234"> </a>
+ <a name="1008235"> </a>
+   switch (cmd) {<a name="1008236"> </a>
+      case formGadgetDrawCmd:<a name="1008238"> </a>
+      // Sent to active gadgets any time form is drawn or <a name="1008239"> </a>
+      // redrawn.<a name="1026319"> </a>
+         DrawGadget();<a name="1008241"> </a>
+         gadgetP-&gt;attr.visible = true;<a name="1008242"> </a>
+         handled = true;<a name="1008243"> </a>
+         break;<a name="1008244"> </a>
+      <a name="1008245"> </a>
+      case formGadgetHandleEventCmd:<a name="1008247"> </a>
+      //Sent when form receives a gadget event. <a name="1008248"> </a>
+      //paramP points to EventType structure. <a name="1008249"> </a>
+         if (paramP-&gt;eType == frmGadgetEnterEvent) {<a name="1008251"> </a>
+         // penDown in gadget's bounds. <a name="1008252"> </a>
+            GadgetTapped ();<a name="1008253"> </a>
+            handled = true;<a name="1008254"> </a>
+         }<a name="1008255"> </a>
+         if (paramP-&gt;eType == frmGadgetMiscEvent) {<a name="1008257"> </a>
+            //This event is sent by your application<a name="1008258"> </a>
+            //when it needs to send info to the gadget<a name="1008259"> </a>
+         }<a name="1008260"> </a>
+         break;<a name="1008261"> </a>
+      case formGadgetDeleteCmd: <a name="1008263"> </a>
+         //Perform any cleanup prior to deletion.<a name="1008264"> </a>
+         break;<a name="1008265"> </a>
+      case formGadgetEraseCmd: <a name="1008267"> </a>
+        //FrmHideObject() takes care of this event if you <a name="1008268"> </a>
+        //return false. <a name="1008269"> </a>
+         handled = false;<a name="1008270"> </a>
+         break;<a name="1008271"> </a>
+   }<a name="1008272"> </a>
+   return handled;<a name="1008273"> </a>
+}<a name="1008274"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1003252"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 2003&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="UI_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="UI_TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="UI_TableConcept.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="UI_Drawing.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="UI_IX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

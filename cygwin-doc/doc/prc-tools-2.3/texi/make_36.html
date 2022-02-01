@@ -1,0 +1,109 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Libraries/Search</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Libraries/Search">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Libraries/Search">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC40"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_35.html#SEC39"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_37.html#SEC41"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_26.html#SEC30"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_37.html#SEC41"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 4.5.6 Directory Search for Link Libraries </H3>
+<!--docid::SEC40::-->
+<P>
+
+Directory search applies in a special way to libraries used with the
+linker.  This special feature comes into play when you write a prerequisite
+whose name is of the form <SAMP>`-l<VAR>name</VAR>'</SAMP>.  (You can tell something
+strange is going on here because the prerequisite is normally the name of a
+file, and the <EM>file name</EM> of a library generally looks like
+<TT>`lib<VAR>name</VAR>.a'</TT>, not like <SAMP>`-l<VAR>name</VAR>'</SAMP>.)</P><P>
+
+When a prerequisite's name has the form <SAMP>`-l<VAR>name</VAR>'</SAMP>, <CODE>make</CODE>
+handles it specially by searching for the file <TT>`lib<VAR>name</VAR>.so'</TT> in
+the current directory, in directories specified by matching <CODE>vpath</CODE>
+search paths and the <CODE>VPATH</CODE> search path, and then in the
+directories <TT>`/lib'</TT>, <TT>`/usr/lib'</TT>, and <TT>`<VAR>prefix</VAR>/lib'</TT>
+(normally <TT>`/usr/local/lib'</TT>, but MS-DOS/MS-Windows versions of
+<CODE>make</CODE> behave as if <VAR>prefix</VAR> is defined to be the root of the
+DJGPP installation tree).
+</P><P>
+
+If that file is not found, then the file <TT>`lib<VAR>name</VAR>.a'</TT> is
+searched for, in the same directories as above.
+</P><P>
+
+For example, if there is a <TT>`/usr/lib/libcurses.a'</TT> library on your
+system (and no <TT>`/usr/lib/libcurses.so'</TT> file), then
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo : foo.c -lcurses
+        cc $^ -o $@
+</pre></td></tr></table></P><P>
+
+would cause the command <SAMP>`cc foo.c /usr/lib/libcurses.a -o foo'</SAMP> to
+be executed when <TT>`foo'</TT> is older than <TT>`foo.c'</TT> or than
+<TT>`/usr/lib/libcurses.a'</TT>.</P><P>
+
+Although the default set of files to be searched for is
+<TT>`lib<VAR>name</VAR>.so'</TT> and <TT>`lib<VAR>name</VAR>.a'</TT>, this is customizable
+via the <CODE>.LIBPATTERNS</CODE> variable.  Each word in the value of this
+variable is a pattern string.  When a prerequisite like
+<SAMP>`-l<VAR>name</VAR>'</SAMP> is seen, <CODE>make</CODE> will replace the percent in
+each pattern in the list with <VAR>name</VAR> and perform the above directory
+searches using that library filename.  If no library is found, the next
+word in the list will be used.
+</P><P>
+
+The default value for <CODE>.LIBPATTERNS</CODE> is "<SAMP>`lib%.so lib%.a'</SAMP>",
+which provides the default behavior described above.
+</P><P>
+
+You can turn off link library expansion completely by setting this
+variable to an empty value.
+</P><P>
+
+<A NAME="Phony Targets"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_35.html#SEC39"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_37.html#SEC41"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_26.html#SEC30"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_37.html#SEC41"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

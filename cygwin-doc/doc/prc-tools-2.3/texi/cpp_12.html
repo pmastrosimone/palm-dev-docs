@@ -1,0 +1,212 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Argument Macros</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Argument Macros">
+<META NAME="keywords" CONTENT="The C Preprocessor: Argument Macros">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC12"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_11.html#SEC11"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_13.html#SEC13"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 1.4.2 Macros with Arguments </H3>
+<!--docid::SEC12::-->
+<P>
+
+A simple macro always stands for exactly the same text, each time it is
+used.  Macros can be more flexible when they accept <EM>arguments</EM>.
+Arguments are fragments of code that you supply each time the macro is
+used.  These fragments are included in the expansion of the macro
+according to the directions in the macro definition.  A macro that
+accepts arguments is called a <EM>function-like macro</EM> because the
+syntax for using it looks like a function call.
+</P><P>
+
+<A NAME="IDX10"></A>
+To define a macro that uses arguments, you write a <SAMP>`#define'</SAMP> directive
+with a list of <EM>argument names</EM> in parentheses after the name of the
+macro.  The argument names may be any valid C identifiers, separated by
+commas and optionally whitespace.  The open-parenthesis must follow the
+macro name immediately, with no space in between.
+</P><P>
+
+For example, here is a macro that computes the minimum of two numeric
+values, as it is defined in many C programs:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define min(X, Y)  ((X) &#60; (Y) ? (X) : (Y))
+</pre></td></tr></table></P><P>
+
+(This is not the best way to define a "minimum" macro in GNU C.
+See section <A HREF="cpp_24.html#SEC24">1.4.8.4 Duplication of Side Effects</A>, for more information.)
+</P><P>
+
+To use a macro that expects arguments, you write the name of the macro
+followed by a list of <EM>actual arguments</EM> in parentheses, separated by
+commas.  The number of actual arguments you give must match the number of
+arguments the macro expects.   Examples of use of the macro <SAMP>`min'</SAMP>
+include <SAMP>`min (1, 2)'</SAMP> and <SAMP>`min (x + 28, *p)'</SAMP>.
+</P><P>
+
+The expansion text of the macro depends on the arguments you use.
+Each of the argument names of the macro is replaced, throughout the
+macro definition, with the corresponding actual argument.  Using the
+same macro <SAMP>`min'</SAMP> defined above, <SAMP>`min (1, 2)'</SAMP> expands into
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>((1) &#60; (2) ? (1) : (2))
+</pre></td></tr></table></P><P>
+
+where <SAMP>`1'</SAMP> has been substituted for <SAMP>`X'</SAMP> and <SAMP>`2'</SAMP> for <SAMP>`Y'</SAMP>.
+</P><P>
+
+Likewise, <SAMP>`min (x + 28, *p)'</SAMP> expands into
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>((x + 28) &#60; (*p) ? (x + 28) : (*p))
+</pre></td></tr></table></P><P>
+
+Parentheses in the actual arguments must balance; a comma within
+parentheses does not end an argument.  However, there is no requirement
+for brackets or braces to balance, and they do not prevent a comma from
+separating arguments.  Thus,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>macro (array[x = y, x + 1])
+</pre></td></tr></table></P><P>
+
+passes two arguments to <CODE>macro</CODE>: <SAMP>`array[x = y'</SAMP> and <SAMP>`x +
+1]'</SAMP>.  If you want to supply <SAMP>`array[x = y, x + 1]'</SAMP> as an argument,
+you must write it as <SAMP>`array[(x = y, x + 1)]'</SAMP>, which is equivalent C
+code.
+</P><P>
+
+After the actual arguments are substituted into the macro body, the entire
+result is appended to the front of the remaining input, and the check for
+macro calls continues.  Therefore, the actual arguments can contain calls
+to other macros, either with or without arguments, or even to the same
+macro.  The macro body can also contain calls to other macros.  For
+example, <SAMP>`min (min (a, b), c)'</SAMP> expands into this text:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>((((a) &#60; (b) ? (a) : (b))) &#60; (c)
+ ? (((a) &#60; (b) ? (a) : (b)))
+ : (c))
+</pre></td></tr></table></P><P>
+
+(Line breaks shown here for clarity would not actually be generated.)
+</P><P>
+
+<A NAME="IDX11"></A>
+<A NAME="IDX12"></A>
+If a macro <CODE>foo</CODE> takes one argument, and you want to supply an
+empty argument, you must write at least some whitespace between the
+parentheses, like this: <SAMP>`foo ( )'</SAMP>.  Just <SAMP>`foo ()'</SAMP> is providing
+no arguments, which is an error if <CODE>foo</CODE> expects an argument.  But
+<SAMP>`foo0 ()'</SAMP> is the correct way to call a macro defined to take zero
+arguments, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define foo0() <small>...</small>
+</pre></td></tr></table></P><P>
+
+If you use the macro name followed by something other than an
+open-parenthesis (after ignoring any spaces, tabs and comments that
+follow), it is not a call to the macro, and the preprocessor does not
+change what you have written.  Therefore, it is possible for the same name
+to be a variable or function in your program as well as a macro, and you
+can choose in each instance whether to refer to the macro (if an actual
+argument list follows) or the variable or function (if an argument list
+does not follow).
+</P><P>
+
+Such dual use of one name could be confusing and should be avoided
+except when the two meanings are effectively synonymous: that is, when the
+name is both a macro and a function and the two have similar effects.  You
+can think of the name simply as a function; use of the name for purposes
+other than calling it (such as, to take the address) will refer to the
+function, while calls will expand the macro and generate better but
+equivalent code.  For example, you can use a function named <SAMP>`min'</SAMP> in
+the same source file that defines the macro.  If you write <SAMP>`&#38;min'</SAMP> with
+no argument list, you refer to the function.  If you write <SAMP>`min (x,
+bb)'</SAMP>, with an argument list, the macro is expanded.  If you write
+<SAMP>`(min) (a, bb)'</SAMP>, where the name <SAMP>`min'</SAMP> is not followed by an
+open-parenthesis, the macro is not expanded, so you wind up with a call to
+the function <SAMP>`min'</SAMP>.
+</P><P>
+
+You may not define the same name as both a simple macro and a macro with
+arguments.
+</P><P>
+
+In the definition of a macro with arguments, the list of argument names
+must follow the macro name immediately with no space in between.  If there
+is a space after the macro name, the macro is defined as taking no
+arguments, and all the rest of the line is taken to be the expansion.  The
+reason for this is that it is often useful to define a macro that takes no
+arguments and whose definition begins with an identifier in parentheses.
+This rule about spaces makes it possible for you to do either this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define FOO(x) - 1 / (x)
+</pre></td></tr></table></P><P>
+
+(which defines <SAMP>`FOO'</SAMP> to take an argument and expand into minus the
+reciprocal of that argument) or this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define BAR (x) - 1 / (x)
+</pre></td></tr></table></P><P>
+
+(which defines <SAMP>`BAR'</SAMP> to take no argument and always expand into
+<SAMP>`(x) - 1 / (x)'</SAMP>).
+</P><P>
+
+Note that the <EM>uses</EM> of a macro with arguments can have spaces before
+the left parenthesis; it's the <EM>definition</EM> where it matters whether
+there is a space.
+</P><P>
+
+<A NAME="Predefined"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_11.html#SEC11"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_13.html#SEC13"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,86 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Sun Install</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Sun Install">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Sun Install">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC57"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_56.html#SEC56"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_58.html#SEC58"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_58.html#SEC58"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.5 Installing GNU CC on the Sun </H2>
+<!--docid::SEC57::-->
+<P>
+
+On Solaris, do not use the linker or other tools in
+<TT>`/usr/ucb'</TT> to build GNU CC.  Use <CODE>/usr/ccs/bin</CODE>.
+</P><P>
+
+If the assembler reports <SAMP>`Error: misaligned data'</SAMP> when bootstrapping,
+you are probably using an obsolete version of the GNU assembler.  Upgrade
+to the latest version of GNU <CODE>binutils</CODE>, or use the Solaris assembler.
+</P><P>
+
+Make sure the environment variable <CODE>FLOAT_OPTION</CODE> is not set when
+you compile <TT>`libgcc.a'</TT>.  If this option were set to <CODE>f68881</CODE>
+when <TT>`libgcc.a'</TT> is compiled, the resulting code would demand to be
+linked with a special startup file and would not link properly without
+special pains.
+</P><P>
+
+<A NAME="IDX252"></A>
+There is a bug in <CODE>alloca</CODE> in certain versions of the Sun library.
+To avoid this bug, install the binaries of GNU CC that were compiled by
+GNU CC.  They use <CODE>alloca</CODE> as a built-in function and never the one
+in the library.
+</P><P>
+
+Some versions of the Sun compiler crash when compiling GNU CC.  The
+problem is a segmentation fault in cpp.  This problem seems to be due to
+the bulk of data in the environment variables.  You may be able to avoid
+it by using the following command to compile GNU CC with Sun CC:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>make CC="TERMCAP=x OBJS=x LIBFUNCS=x STAGESTUFF=x cc"
+</pre></td></tr></table></P><P>
+
+SunOS 4.1.3 and 4.1.3_U1 have bugs that can cause intermittent core
+dumps when compiling GNU CC.  A common symptom is an
+internal compiler error which does not recur if you run it again.
+To fix the problem, install Sun recommended patch 100726 (for SunOS 4.1.3)
+or 101508 (for SunOS 4.1.3_U1), or upgrade to a later SunOS release.
+</P><P>
+
+<A NAME="VMS Install"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

@@ -1,0 +1,130 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Stringification</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Stringification">
+<META NAME="keywords" CONTENT="The C Preprocessor: Stringification">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC16"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_15.html#SEC15"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_17.html#SEC17"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_13.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 1.4.4 Stringification </H3>
+<!--docid::SEC16::-->
+<P>
+
+<A NAME="IDX44"></A>
+<EM>Stringification</EM> means turning a code fragment into a string constant
+whose contents are the text for the code fragment.  For example,
+stringifying <SAMP>`foo (z)'</SAMP> results in <SAMP>`"foo (z)"'</SAMP>.
+</P><P>
+
+In the C preprocessor, stringification is an option available when macro
+arguments are substituted into the macro definition.  In the body of the
+definition, when an argument name appears, the character <SAMP>`#'</SAMP> before
+the name specifies stringification of the corresponding actual argument
+when it is substituted at that point in the definition.  The same argument
+may be substituted in other places in the definition without
+stringification if the argument name appears in those places with no
+<SAMP>`#'</SAMP>.
+</P><P>
+
+Here is an example of a macro definition that uses stringification:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>#define WARN_IF(EXP) \
+do { if (EXP) \
+        fprintf (stderr, "Warning: " #EXP "\n"); } \
+while (0)
+</FONT></pre></td></tr></table></P><P>
+
+Here the actual argument for <SAMP>`EXP'</SAMP> is substituted once as given,
+into the <SAMP>`if'</SAMP> statement, and once as stringified, into the
+argument to <SAMP>`fprintf'</SAMP>.  The <SAMP>`do'</SAMP> and <SAMP>`while (0)'</SAMP> are
+a kludge to make it possible to write <SAMP>`WARN_IF (<VAR>arg</VAR>);'</SAMP>,
+which the resemblance of <SAMP>`WARN_IF'</SAMP> to a function would make
+C programmers want to do; see <A HREF="cpp_23.html#SEC23">1.4.8.3 Swallowing the Semicolon</A>.
+</P><P>
+
+The stringification feature is limited to transforming one macro argument
+into one string constant: there is no way to combine the argument with
+other text and then stringify it all together.  But the example above shows
+how an equivalent result can be obtained in ANSI Standard C using the
+feature that adjacent string constants are concatenated as one string
+constant.  The preprocessor stringifies the actual value of <SAMP>`EXP'</SAMP> 
+into a separate string constant, resulting in text like
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>do { if (x == 0) \
+        fprintf (stderr, "Warning: " "x == 0" "\n"); } \
+while (0)
+</FONT></pre></td></tr></table></P><P>
+
+but the C compiler then sees three consecutive string constants and
+concatenates them into one, producing effectively
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>do { if (x == 0) \
+        fprintf (stderr, "Warning: x == 0\n"); } \
+while (0)
+</FONT></pre></td></tr></table></P><P>
+
+Stringification in C involves more than putting doublequote characters
+around the fragment; it is necessary to put backslashes in front of all
+doublequote characters, and all backslashes in string and character
+constants, in order to get a valid C string constant with the proper
+contents.  Thus, stringifying <SAMP>`p = "foo\n";'</SAMP> results in <SAMP>`"p =
+\"foo\\n\";"'</SAMP>.  However, backslashes that are not inside of string or
+character constants are not duplicated: <SAMP>`\n'</SAMP> by itself stringifies to
+<SAMP>`"\n"'</SAMP>.
+</P><P>
+
+Whitespace (including comments) in the text being stringified is handled
+according to precise rules.  All leading and trailing whitespace is ignored.
+Any sequence of whitespace in the middle of the text is converted to
+a single space in the stringified result.
+</P><P>
+
+<A NAME="Concatenation"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_15.html#SEC15"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_17.html#SEC17"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_13.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

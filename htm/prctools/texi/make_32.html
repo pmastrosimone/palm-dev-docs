@@ -1,0 +1,156 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Selective Search</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Selective Search">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Selective Search">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC36"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_31.html#SEC35"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_33.html#SEC37"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_26.html#SEC30"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_37.html#SEC41"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 4.5.2 The <CODE>vpath</CODE> Directive </H3>
+<!--docid::SEC36::-->
+<P>
+
+Similar to the <CODE>VPATH</CODE> variable, but more selective, is the
+<CODE>vpath</CODE> directive (note lower case), which allows you to specify a
+search path for a particular class of file names: those that match a
+particular pattern.  Thus you can supply certain search directories for
+one class of file names and other directories (or none) for other file
+names.
+</P><P>
+
+There are three forms of the <CODE>vpath</CODE> directive:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>vpath <VAR>pattern</VAR> <VAR>directories</VAR></CODE>
+<DD>Specify the search path <VAR>directories</VAR> for file names that match
+<VAR>pattern</VAR>.
+<P>
+
+The search path, <VAR>directories</VAR>, is a list of directories to be
+searched, separated by colons (semi-colons on MS-DOS and MS-Windows) or
+blanks, just like the search path used in the <CODE>VPATH</CODE> variable.
+</P><P>
+
+<DT><CODE>vpath <VAR>pattern</VAR></CODE>
+<DD>Clear out the search path associated with <VAR>pattern</VAR>.
+<P>
+
+<DT><CODE>vpath</CODE>
+<DD><P>
+
+Clear all search paths previously specified with <CODE>vpath</CODE> directives.
+</DL>
+<P>
+
+A <CODE>vpath</CODE> pattern is a string containing a <SAMP>`%'</SAMP> character.  The
+string must match the file name of a prerequisite that is being searched
+for, the <SAMP>`%'</SAMP> character matching any sequence of zero or more
+characters (as in pattern rules; see section <A HREF="make_104.html#SEC108">Defining and Redefining Pattern Rules</A>).  For example, <CODE>%.h</CODE> matches files that
+end in <CODE>.h</CODE>.  (If there is no <SAMP>`%'</SAMP>, the pattern must match the
+prerequisite exactly, which is not useful very often.)
+</P><P>
+
+<A NAME="IDX103"></A>
+<A NAME="IDX104"></A>
+<A NAME="IDX105"></A>
+<A NAME="IDX106"></A>
+<A NAME="IDX107"></A>
+<SAMP>`%'</SAMP> characters in a <CODE>vpath</CODE> directive's pattern can be quoted
+with preceding backslashes (<SAMP>`\'</SAMP>).  Backslashes that would otherwise
+quote <SAMP>`%'</SAMP> characters can be quoted with more backslashes.
+Backslashes that quote <SAMP>`%'</SAMP> characters or other backslashes are
+removed from the pattern before it is compared to file names.  Backslashes
+that are not in danger of quoting <SAMP>`%'</SAMP> characters go unmolested.</P><P>
+
+When a prerequisite fails to exist in the current directory, if the
+<VAR>pattern</VAR> in a <CODE>vpath</CODE> directive matches the name of the
+prerequisite file, then the <VAR>directories</VAR> in that directive are searched
+just like (and before) the directories in the <CODE>VPATH</CODE> variable.
+</P><P>
+
+For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>vpath %.h ../headers
+</pre></td></tr></table></P><P>
+
+tells <CODE>make</CODE> to look for any prerequisite whose name ends in <TT>`.h'</TT>
+in the directory <TT>`../headers'</TT> if the file is not found in the current
+directory.
+</P><P>
+
+If several <CODE>vpath</CODE> patterns match the prerequisite file's name, then
+<CODE>make</CODE> processes each matching <CODE>vpath</CODE> directive one by one,
+searching all the directories mentioned in each directive.  <CODE>make</CODE>
+handles multiple <CODE>vpath</CODE> directives in the order in which they
+appear in the makefile; multiple directives with the same pattern are
+independent of each other.
+</P><P>
+
+Thus,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>vpath %.c foo
+vpath %   blish
+vpath %.c bar
+</pre></td></tr></table></P><P>
+
+will look for a file ending in <SAMP>`.c'</SAMP> in <TT>`foo'</TT>, then
+<TT>`blish'</TT>, then <TT>`bar'</TT>, while
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>vpath %.c foo:bar
+vpath %   blish
+</pre></td></tr></table></P><P>
+
+will look for a file ending in <SAMP>`.c'</SAMP> in <TT>`foo'</TT>, then
+<TT>`bar'</TT>, then <TT>`blish'</TT>.
+</P><P>
+
+<A NAME="Search Algorithm"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_31.html#SEC35"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_33.html#SEC37"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_26.html#SEC30"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_37.html#SEC41"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

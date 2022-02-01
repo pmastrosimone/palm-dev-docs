@@ -1,0 +1,323 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Incompatibilities</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Incompatibilities">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Incompatibilities">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC129"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_128.html#SEC128"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_130.html#SEC130"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_130.html#SEC130"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.6 Incompatibilities of GCC </H2>
+<!--docid::SEC129::-->
+<P>
+
+There are several noteworthy incompatibilities between GNU C and most
+existing (non-ANSI) versions of C.  The <SAMP>`-traditional'</SAMP> option
+eliminates many of these incompatibilities, <EM>but not all</EM>, by
+telling GNU C to behave like the other C compilers.
+</P><P>
+
+<UL>
+<A NAME="IDX410"></A>
+<A NAME="IDX411"></A>
+<A NAME="IDX412"></A>
+<LI>
+GCC normally makes string constants read-only.  If several
+identical-looking string constants are used, GCC stores only one
+copy of the string.
+<P>
+
+<A NAME="IDX413"></A>
+One consequence is that you cannot call <CODE>mktemp</CODE> with a string
+constant argument.  The function <CODE>mktemp</CODE> always alters the
+string its argument points to.
+</P><P>
+
+<A NAME="IDX414"></A>
+<A NAME="IDX415"></A>
+<A NAME="IDX416"></A>
+Another consequence is that <CODE>sscanf</CODE> does not work on some systems
+when passed a string constant as its format control string or input.
+This is because <CODE>sscanf</CODE> incorrectly tries to write into the string
+constant.  Likewise <CODE>fscanf</CODE> and <CODE>scanf</CODE>.
+</P><P>
+
+The best solution to these problems is to change the program to use
+<CODE>char</CODE>-array variables with initialization strings for these
+purposes instead of string constants.  But if this is not possible,
+you can use the <SAMP>`-fwritable-strings'</SAMP> flag, which directs GCC
+to handle string constants the same way most C compilers do.
+<SAMP>`-traditional'</SAMP> also has this effect, among others.
+</P><P>
+
+<LI>
+<CODE>-2147483648</CODE> is positive.
+<P>
+
+This is because 2147483648 cannot fit in the type <CODE>int</CODE>, so
+(following the ANSI C rules) its data type is <CODE>unsigned long int</CODE>.
+Negating this value yields 2147483648 again.
+</P><P>
+
+<LI>
+GCC does not substitute macro arguments when they appear inside of
+string constants.  For example, the following macro in GCC
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define foo(a) "a"
+</pre></td></tr></table></P><P>
+
+will produce output <CODE>"a"</CODE> regardless of what the argument <VAR>a</VAR> is.
+</P><P>
+
+The <SAMP>`-traditional'</SAMP> option directs GCC to handle such cases
+(among others) in the old-fashioned (non-ANSI) fashion.
+</P><P>
+
+<A NAME="IDX417"></A>
+<A NAME="IDX418"></A>
+<LI>
+When you use <CODE>setjmp</CODE> and <CODE>longjmp</CODE>, the only automatic
+variables guaranteed to remain valid are those declared
+<CODE>volatile</CODE>.  This is a consequence of automatic register
+allocation.  Consider this function:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>jmp_buf j;
+
+foo ()
+{
+  int a, b;
+
+  a = fun1 ();
+  if (setjmp (j))
+    return a;
+
+  a = fun2 ();
+  /* <CODE>longjmp (j)</CODE> may occur in <CODE>fun3</CODE>. */
+  return a + fun3 ();
+}
+</pre></td></tr></table></P><P>
+
+Here <CODE>a</CODE> may or may not be restored to its first value when the
+<CODE>longjmp</CODE> occurs.  If <CODE>a</CODE> is allocated in a register, then
+its first value is restored; otherwise, it keeps the last value stored
+in it.
+</P><P>
+
+If you use the <SAMP>`-W'</SAMP> option with the <SAMP>`-O'</SAMP> option, you will
+get a warning when GCC thinks such a problem might be possible.
+</P><P>
+
+The <SAMP>`-traditional'</SAMP> option directs GNU C to put variables in
+the stack by default, rather than in registers, in functions that
+call <CODE>setjmp</CODE>.  This results in the behavior found in
+traditional C compilers.
+</P><P>
+
+<LI>
+Programs that use preprocessing directives in the middle of macro
+arguments do not work with GCC.  For example, a program like this
+will not work:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foobar (
+#define luser
+        hack)
+</pre></td></tr></table></P><P>
+
+ANSI C does not permit such a construct.  It would make sense to support
+it when <SAMP>`-traditional'</SAMP> is used, but it is too much work to
+implement.
+</P><P>
+
+<A NAME="IDX419"></A>
+<A NAME="IDX420"></A>
+<A NAME="IDX421"></A>
+<LI>
+Declarations of external variables and functions within a block apply
+only to the block containing the declaration.  In other words, they
+have the same scope as any other declaration in the same place.
+<P>
+
+In some other C compilers, a <CODE>extern</CODE> declaration affects all the
+rest of the file even if it happens within a block.
+</P><P>
+
+The <SAMP>`-traditional'</SAMP> option directs GNU C to treat all <CODE>extern</CODE>
+declarations as global, like traditional compilers.
+</P><P>
+
+<LI>
+In traditional C, you can combine <CODE>long</CODE>, etc., with a typedef name,
+as shown here:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>typedef int foo;
+typedef long foo bar;
+</pre></td></tr></table></P><P>
+
+In ANSI C, this is not allowed: <CODE>long</CODE> and other type modifiers
+require an explicit <CODE>int</CODE>.  Because this criterion is expressed
+by Bison grammar rules rather than C code, the <SAMP>`-traditional'</SAMP>
+flag cannot alter it.
+</P><P>
+
+<A NAME="IDX422"></A>
+<LI>
+PCC allows typedef names to be used as function parameters.  The
+difficulty described immediately above applies here too.
+<P>
+
+<A NAME="IDX423"></A>
+<LI>
+PCC allows whitespace in the middle of compound assignment operators
+such as <SAMP>`+='</SAMP>.  GCC, following the ANSI standard, does not
+allow this.  The difficulty described immediately above applies here
+too.
+<P>
+
+<A NAME="IDX424"></A>
+<A NAME="IDX425"></A>
+<LI>
+GCC complains about unterminated character constants inside of
+preprocessing conditionals that fail.  Some programs have English
+comments enclosed in conditionals that are guaranteed to fail; if these
+comments contain apostrophes, GCC will probably report an error.  For
+example, this code would produce an error:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#if 0
+You can't expect this to work.
+#endif
+</pre></td></tr></table></P><P>
+
+The best solution to such a problem is to put the text into an actual
+C comment delimited by <SAMP>`/*<small>...</small>*/'</SAMP>.  However,
+<SAMP>`-traditional'</SAMP> suppresses these error messages.
+</P><P>
+
+<LI>
+Many user programs contain the declaration <SAMP>`long time ();'</SAMP>.  In the
+past, the system header files on many systems did not actually declare
+<CODE>time</CODE>, so it did not matter what type your program declared it to
+return.  But in systems with ANSI C headers, <CODE>time</CODE> is declared to
+return <CODE>time_t</CODE>, and if that is not the same as <CODE>long</CODE>, then
+<SAMP>`long time ();'</SAMP> is erroneous.
+<P>
+
+The solution is to change your program to use <CODE>time_t</CODE> as the return
+type of <CODE>time</CODE>.
+</P><P>
+
+<A NAME="IDX426"></A>
+<LI>
+When compiling functions that return <CODE>float</CODE>, PCC converts it to
+a double.  GCC actually returns a <CODE>float</CODE>.  If you are concerned
+with PCC compatibility, you should declare your functions to return
+<CODE>double</CODE>; you might as well say what you mean.
+<P>
+
+<A NAME="IDX427"></A>
+<A NAME="IDX428"></A>
+<LI>
+When compiling functions that return structures or unions, GCC
+output code normally uses a method different from that used on most
+versions of Unix.  As a result, code compiled with GCC cannot call
+a structure-returning function compiled with PCC, and vice versa.
+<P>
+
+The method used by GCC is as follows: a structure or union which is
+1, 2, 4 or 8 bytes long is returned like a scalar.  A structure or union
+with any other size is stored into an address supplied by the caller
+(usually in a special, fixed register, but on some machines it is passed
+on the stack).  The machine-description macros <CODE>STRUCT_VALUE</CODE> and
+<CODE>STRUCT_INCOMING_VALUE</CODE> tell GCC where to pass this address.
+</P><P>
+
+By contrast, PCC on most target machines returns structures and unions
+of any size by copying the data into an area of static storage, and then
+returning the address of that storage as if it were a pointer value.
+The caller must copy the data from that memory area to the place where
+the value is wanted.  GCC does not use this method because it is
+slower and nonreentrant.
+</P><P>
+
+On some newer machines, PCC uses a reentrant convention for all
+structure and union returning.  GCC on most of these machines uses a
+compatible convention when returning structures and unions in memory,
+but still returns small structures and unions in registers.
+</P><P>
+
+You can tell GCC to use a compatible convention for all structure and
+union returning with the option <SAMP>`-fpcc-struct-return'</SAMP>.
+</P><P>
+
+<A NAME="IDX429"></A>
+<A NAME="IDX430"></A>
+<LI>
+GNU C complains about program fragments such as <SAMP>`0x74ae-0x4000'</SAMP>
+which appear to be two hexadecimal constants separated by the minus
+operator.  Actually, this string is a single <EM>preprocessing token</EM>.
+Each such token must correspond to one token in C.  Since this does not,
+GNU C prints an error message.  Although it may appear obvious that what
+is meant is an operator and two values, the ANSI C standard specifically
+requires that this be treated as erroneous.
+<P>
+
+A <EM>preprocessing token</EM> is a <EM>preprocessing number</EM> if it
+begins with a digit and is followed by letters, underscores, digits,
+periods and <SAMP>`e+'</SAMP>, <SAMP>`e-'</SAMP>, <SAMP>`E+'</SAMP>, or <SAMP>`E-'</SAMP> character
+sequences.
+</P><P>
+
+To make the above program fragment valid, place whitespace in front of
+the minus sign.  This whitespace will end the preprocessing number.
+</UL>
+<P>
+
+<A NAME="Fixed Headers"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_128.html#SEC128"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_130.html#SEC130"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_130.html#SEC130"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,79 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Newlines in Args</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Newlines in Args">
+<META NAME="keywords" CONTENT="The C Preprocessor: Newlines in Args">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC28"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_27.html#SEC27"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_20.html#SEC20"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 1.4.9 Newlines in Macro Arguments </H3>
+<!--docid::SEC28::-->
+<P>
+
+Traditional macro processing carries forward all newlines in macro
+arguments into the expansion of the macro.  This means that, if some of
+the arguments are substituted more than once, or not at all, or out of
+order, newlines can be duplicated, lost, or moved around within the
+expansion.  If the expansion consists of multiple statements, then the
+effect is to distort the line numbers of some of these statements.  The
+result can be incorrect line numbers, in error messages or displayed in
+a debugger.
+</P><P>
+
+The GNU C preprocessor operating in ANSI C mode adjusts appropriately
+for multiple use of an argument--the first use expands all the
+newlines, and subsequent uses of the same argument produce no newlines.
+But even in this mode, it can produce incorrect line numbering if
+arguments are used out of order, or not used at all.
+</P><P>
+
+Here is an example illustrating this problem:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define ignore_second_arg(a,b,c) a; c
+
+ignore_second_arg (foo (),
+                   ignored (),
+                   syntax error);
+</pre></td></tr></table></P><P>
+
+The syntax error triggered by the tokens <SAMP>`syntax error'</SAMP> results
+in an error message citing line four, even though the statement text
+comes from line five.
+</P><P>
+
+<A NAME="Conditionals"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

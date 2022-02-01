@@ -1,0 +1,102 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Input/Output</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Input/Output">
+<META NAME="keywords" CONTENT="Debugging with GDB: Input/Output">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC22"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_21.html#SEC21"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_23.html#SEC23"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_23.html#SEC23"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.6 Your program's input and output </H2>
+<!--docid::SEC22::-->
+<P>
+
+<A NAME="IDX95"></A>
+<A NAME="IDX96"></A>
+<A NAME="IDX97"></A>
+By default, the program you run under GDB does input and output to
+the same terminal that GDB uses.  GDB switches the terminal
+to its own terminal modes to interact with you, but it records the terminal
+modes your program was using and switches back to them when you continue
+running your program.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX98"></A>
+<DT><CODE>info terminal</CODE>
+<DD>Displays information recorded by GDB about the terminal modes your
+program is using.
+</DL>
+<P>
+
+You can redirect your program's input and/or output using shell
+redirection with the <CODE>run</CODE> command.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>run &#62; outfile
+</FONT></pre></td></tr></table></P><P>
+
+starts your program, diverting its output to the file <TT>`outfile'</TT>.
+</P><P>
+
+<A NAME="IDX99"></A>
+<A NAME="IDX100"></A>
+Another way to specify where your program should do input and output is
+with the <CODE>tty</CODE> command.  This command accepts a file name as
+argument, and causes this file to be the default for future <CODE>run</CODE>
+commands.  It also resets the controlling terminal for the child
+process, for future <CODE>run</CODE> commands.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>tty /dev/ttyb
+</FONT></pre></td></tr></table></P><P>
+
+directs that processes started with subsequent <CODE>run</CODE> commands
+default to do input and output on the terminal <TT>`/dev/ttyb'</TT> and have
+that as their controlling terminal.
+</P><P>
+
+An explicit redirection in <CODE>run</CODE> overrides the <CODE>tty</CODE> command's
+effect on the input/output device, but not its effect on the controlling
+terminal.
+</P><P>
+
+When you use the <CODE>tty</CODE> command or redirect input in the <CODE>run</CODE>
+command, only the input <EM>for your program</EM> is affected.  The input
+for GDB still comes from your terminal.
+</P><P>
+
+<A NAME="Attach"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

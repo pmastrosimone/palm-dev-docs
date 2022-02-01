@@ -1,0 +1,530 @@
+<html>
+<head>
+<title>(Protein) Table.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:20:25">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SysUtils.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="TelephonyMgr.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">118 &nbsp;&nbsp;
+Table.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="Table.html">118  Table.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424943">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424957">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="424917"> </a>Palm OS Cobalt adds support for additional table item styles.</p>
+
+<p><a name="426577"> </a>The Table APIs have been cleaned up, in that the internals of the <code>TableType</code> structure, formerly exposed for debugging purposes only, are now private, and declarations of other structures which only supported the <code>TableType</code> structure have been removed.</p>
+
+<p><a name="426879"> </a>Tables in Palm OS Cobalt behave a bit differently than in previous Palm OS releases:</p>
+<ul type="disc">
+  <li><a name="426810"> </a>When table goes into edit mode, all columns that are edit indicators are highlighted. In version of Palm OS prior to Palm OS Cobalt, only contiguous edit indicators were highlighted. That is, if there are 5 columns and columns 0, 1, 2 and 4 are edit indicators, only columns 0, 1, and 2 were highlighted.
+  <li><a name="426812"> </a>There is no need for <code>tallCustomTableItem</code>. In Palm OS Cobalt the entire row is always highlighted when necessary. In prior Palm OS releases, only the top 11 pixels were highlighted.
+  <li><a name="426814"> </a>For custom table items, the table code formerly used <code>winSwap</code> to reverse the foreground and background colors if the item was to be drawn highlighted. This occurred <i>after</i> the custom drawing callback returned. In Palm OS Cobalt, <code>winSwap</code> is not supported and there's no way to change a color after the custom draw callback. Therefore, if you use nonstandard colors in your custom drawing callback for a table item, you need to check to see if you are drawing the current selection and update your colors accordingly. If you're just using the normal colors in the drawing callback, you don't need to worry about it.
+</ul>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425350"> </a><b>Table 118.1&nbsp;&nbsp;Deleted structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425354"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425356"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425358"> </a><code>TableAttrType</code></p>
+    </td>
+    <td><p class="tt"><a name="425360"> </a>Nothing. This structure was only used in the definition of the <code>TableType</code> structure, the internals of which are now private. Developers were warned never to access the contents of either of these structures directly.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425362"> </a><code>TableColumnAttrType</code></p>
+    </td>
+    <td><p class="tt"><a name="426558"> </a>Nothing. This structure was only used in the definition of the <code>TableType</code> structure, the internals of which are now private. Developers were warned never to access the contents of either of these structures directly.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425366"> </a><code>TableItemType</code></p>
+    </td>
+    <td><p class="tt"><a name="426579"> </a>Nothing. This structure was only used in the definition of the <code>TableType</code> structure, the internals of which are now private. Developers were warned never to access the contents of either of these structures directly.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425370"> </a><code>TableRowAttrType</code></p>
+    </td>
+    <td><p class="tt"><a name="426567"> </a>Nothing. This structure was only used in the definition of the <code>TableType</code> structure, the internals of which are now private. Developers were warned never to access the contents of either of these structures directly.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425375"> </a><b>Table 118.2&nbsp;&nbsp;Deleted types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425379"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425381"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425383"> </a><code>TableItemPtr</code></p>
+    </td>
+    <td><p class="tt"><a name="426542"> </a>Nothing. In the most recent Palm OS Garnet SDK, this type was defined to a pointer to a <code>TableItemType</code>, which was declared but never used by any of the other APIs.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424943"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425411"> </a><b>Table 118.3&nbsp;&nbsp;Modified structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425415"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425417"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425419"> </a><code>TableType</code></p>
+    </td>
+    <td><p class="tt"><a name="425421"> </a>The contents of this structure have been made private.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425426"> </a><b>Table 118.4&nbsp;&nbsp;Modified enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425430"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425432"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425434"> </a><code>tableItemStyles</code></p>
+    </td>
+    <td><p class="tt"><a name="425436"> </a>Two new table item types have been added: <code>labelNoColonTableItem</code> and <code>popupTriggerNoColonTableItem</code>.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426522"> </a><code>TableItemStyleType</code></p>
+    </td>
+    <td><p class="tt"><a name="426524"> </a>Formerly an enum, this is now a typedef that accepts one of the values defined by the <code>tableItemStyles</code> enum.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424957"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425535"> </a><b>Table 118.5&nbsp;&nbsp;Unchanged functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425539"> </a>TblDrawTable()</p>
+    </td>
+    <td><p class="tt"><a name="425541"> </a>TblEditing()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425543"> </a>TblEraseTable()</p>
+    </td>
+    <td><p class="tt"><a name="425545"> </a>TblFindRowData()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425547"> </a>TblFindRowID()</p>
+    </td>
+    <td><p class="tt"><a name="425549"> </a>TblGetBounds()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425551"> </a>TblGetColumnSpacing()</p>
+    </td>
+    <td><p class="tt"><a name="425553"> </a>TblGetColumnWidth()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425555"> </a>TblGetCurrentField()</p>
+    </td>
+    <td><p class="tt"><a name="425557"> </a>TblGetItemBounds()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425559"> </a>TblGetItemFont()</p>
+    </td>
+    <td><p class="tt"><a name="425561"> </a>TblGetItemInt()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425563"> </a>TblGetItemPtr()</p>
+    </td>
+    <td><p class="tt"><a name="425565"> </a>TblGetLastUsableRow()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425567"> </a>TblGetNumberOfColumns()</p>
+    </td>
+    <td><p class="tt"><a name="425569"> </a>TblGetNumberOfRows()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425571"> </a>TblGetRowData()</p>
+    </td>
+    <td><p class="tt"><a name="425573"> </a>TblGetRowHeight()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425575"> </a>TblGetRowID()</p>
+    </td>
+    <td><p class="tt"><a name="425577"> </a>TblGetSelection()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425579"> </a>TblGetTopRow()</p>
+    </td>
+    <td><p class="tt"><a name="425581"> </a>TblGrabFocus()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425583"> </a>TblHandleEvent()</p>
+    </td>
+    <td><p class="tt"><a name="425585"> </a>TblHasScrollBar()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425587"> </a>TblInsertRow()</p>
+    </td>
+    <td><p class="tt"><a name="425589"> </a>TblMarkRowInvalid()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425591"> </a>TblMarkTableInvalid()</p>
+    </td>
+    <td><p class="tt"><a name="425593"> </a>TblRedrawTable()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425595"> </a>TblReleaseFocus()</p>
+    </td>
+    <td><p class="tt"><a name="425597"> </a>TblRemoveRow()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425599"> </a>TblRowInvalid()</p>
+    </td>
+    <td><p class="tt"><a name="425601"> </a>TblRowMasked()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425603"> </a>TblRowSelectable()</p>
+    </td>
+    <td><p class="tt"><a name="425605"> </a>TblRowUsable()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425607"> </a>TblSelectItem()</p>
+    </td>
+    <td><p class="tt"><a name="425609"> </a>TblSetBounds()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425611"> </a>TblSetColumnEditIndicator()</p>
+    </td>
+    <td><p class="tt"><a name="425613"> </a>TblSetColumnMasked()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425615"> </a>TblSetColumnSpacing()</p>
+    </td>
+    <td><p class="tt"><a name="425617"> </a>TblSetColumnUsable()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425619"> </a>TblSetColumnWidth()</p>
+    </td>
+    <td><p class="tt"><a name="425621"> </a>TblSetCustomDrawProcedure()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425623"> </a>TblSetItemFont()</p>
+    </td>
+    <td><p class="tt"><a name="425625"> </a>TblSetItemInt()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425627"> </a>TblSetItemPtr()</p>
+    </td>
+    <td><p class="tt"><a name="425629"> </a>TblSetItemStyle()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425631"> </a>TblSetLoadDataProcedure()</p>
+    </td>
+    <td><p class="tt"><a name="425633"> </a>TblSetRowData()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425635"> </a>TblSetRowHeight()</p>
+    </td>
+    <td><p class="tt"><a name="425637"> </a>TblSetRowID()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425639"> </a>TblSetRowMasked()</p>
+    </td>
+    <td><p class="tt"><a name="425641"> </a>TblSetRowSelectable()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425643"> </a>TblSetRowStaticHeight()</p>
+    </td>
+    <td><p class="tt"><a name="425645"> </a>TblSetRowUsable()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425647"> </a>TblSetSaveDataProcedure()</p>
+    </td>
+    <td><p class="tt"><a name="425649"> </a>TblSetSelection()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425651"> </a>TblUnhighlightSelection()</p>
+    </td>
+    <td><p class="tt"><a name="425653"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425659"> </a><b>Table 118.6&nbsp;&nbsp;Unchanged types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425663"> </a>TableDrawItemFuncPtr</p>
+    </td>
+    <td><p class="tt"><a name="425665"> </a>TableLoadDataFuncPtr</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425667"> </a>TablePtr</p>
+    </td>
+    <td><p class="tt"><a name="425669"> </a>TableSaveDataFuncPtr</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425672"> </a><b>Table 118.7&nbsp;&nbsp;Unchanged #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425676"> </a>tableDefaultColumnSpacing</p>
+    </td>
+    <td><p class="tt"><a name="425678"> </a>tableMaxTextItemSize</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425680"> </a>tableNoteIndicatorHeight</p>
+    </td>
+    <td><p class="tt"><a name="425682"> </a>tableNoteIndicatorWidth</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425684"> </a>tblUnusableRow</p>
+    </td>
+    <td><p class="tt"><a name="425686"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425689"> </a><b>Table 118.8&nbsp;&nbsp;Unchanged application-defined functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425693"> </a>TableDrawItemFuncType()</p>
+    </td>
+    <td><p class="tt"><a name="425695"> </a>TableLoadDataFuncType()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425697"> </a>TableSaveDataFuncType()</p>
+    </td>
+    <td><p class="tt"><a name="425699"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="425035"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SysUtils.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="TelephonyMgr.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

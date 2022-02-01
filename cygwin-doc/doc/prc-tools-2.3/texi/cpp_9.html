@@ -1,0 +1,116 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Inheritance</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Inheritance">
+<META NAME="keywords" CONTENT="The C Preprocessor: Inheritance">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC9"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_8.html#SEC8"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_4.html#SEC4"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 1.3.5 Inheritance and Header Files </H3>
+<!--docid::SEC9::-->
+<P>
+
+<EM>Inheritance</EM> is what happens when one object or file derives some
+of its contents by virtual copying from another object or file.  In
+the case of C header files, inheritance means that one header file 
+includes another header file and then replaces or adds something.
+</P><P>
+
+If the inheriting header file and the base header file have different
+names, then inheritance is straightforward: simply write <SAMP>`#include
+"<VAR>base</VAR>"'</SAMP> in the inheriting file.
+</P><P>
+
+Sometimes it is necessary to give the inheriting file the same name as
+the base file.  This is less straightforward.
+</P><P>
+
+For example, suppose an application program uses the system header
+<TT>`sys/signal.h'</TT>, but the version of <TT>`/usr/include/sys/signal.h'</TT>
+on a particular system doesn't do what the application program expects.
+It might be convenient to define a "local" version, perhaps under the
+name <TT>`/usr/local/include/sys/signal.h'</TT>, to override or add to the
+one supplied by the system.
+</P><P>
+
+You can do this by compiling with the option <SAMP>`-I.'</SAMP>, and
+writing a file <TT>`sys/signal.h'</TT> that does what the application
+program expects.  But making this file include the standard
+<TT>`sys/signal.h'</TT> is not so easy--writing <SAMP>`#include
+&#60;sys/signal.h&#62;'</SAMP> in that file doesn't work, because it includes your own
+version of the file, not the standard system version.  Used in that file
+itself, this leads to an infinite recursion and a fatal error in
+compilation.
+</P><P>
+
+<SAMP>`#include &#60;/usr/include/sys/signal.h&#62;'</SAMP> would find the proper file,
+but that is not clean, since it makes an assumption about where the
+system header file is found.  This is bad for maintenance, since it
+means that any change in where the system's header files are kept
+requires a change somewhere else.
+</P><P>
+
+<A NAME="IDX9"></A>
+The clean way to solve this problem is to use 
+<SAMP>`#include_next'</SAMP>, which means, "Include the <EM>next</EM> file with
+this name."  This directive works like <SAMP>`#include'</SAMP> except in
+searching for the specified file: it starts searching the list of header
+file directories <EM>after</EM> the directory in which the current file
+was found.
+</P><P>
+
+Suppose you specify <SAMP>`-I /usr/local/include'</SAMP>, and the list of
+directories to search also includes <TT>`/usr/include'</TT>; and suppose
+both directories contain <TT>`sys/signal.h'</TT>.  Ordinary
+<SAMP>`#include &#60;sys/signal.h&#62;'</SAMP> finds the file under
+<TT>`/usr/local/include'</TT>.  If that file contains <SAMP>`#include_next
+&#60;sys/signal.h&#62;'</SAMP>, it starts searching after that directory, and finds the
+file in <TT>`/usr/include'</TT>.
+</P><P>
+
+<A NAME="Macros"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_8.html#SEC8"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_4.html#SEC4"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

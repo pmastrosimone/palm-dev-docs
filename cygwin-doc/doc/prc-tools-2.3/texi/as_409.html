@@ -1,0 +1,232 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: V850 Opcodes</TITLE>
+
+<META NAME="description" CONTENT="Using as: V850 Opcodes">
+<META NAME="keywords" CONTENT="Using as: V850 Opcodes">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC418"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_408.html#SEC417"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_410.html#SEC419"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_187.html#SEC196"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_402.html#SEC411"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_410.html#SEC419"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.32.5 Opcodes </H3>
+<!--docid::SEC418::-->
+<P>
+
+<A NAME="IDX1513"></A>
+<A NAME="IDX1514"></A>
+<CODE>as</CODE> implements all the standard V850 opcodes.
+</P><P>
+
+<CODE>as</CODE> also implements the following pseudo ops:
+</P><P>
+
+<DL COMPACT>
+
+<A NAME="IDX1515"></A>
+<DT><CODE>hi0()</CODE>
+<DD>Computes the higher 16 bits of the given expression and stores it into
+the immediate operand field of the given instruction.  For example:
+<P>
+
+    <SAMP>`mulhi hi0(here - there), r5, r6'</SAMP>
+</P><P>
+
+computes the difference between the address of labels 'here' and
+'there', takes the upper 16 bits of this difference, shifts it down 16
+bits and then mutliplies it by the lower 16 bits in register 5, putting
+the result into register 6. 
+</P><P>
+
+<A NAME="IDX1516"></A>
+<DT><CODE>lo()</CODE>
+<DD>Computes the lower 16 bits of the given expression and stores it into
+the immediate operand field of the given instruction.  For example:
+<P>
+
+    <SAMP>`addi lo(here - there), r5, r6'</SAMP>
+</P><P>
+
+computes the difference between the address of labels 'here' and
+'there', takes the lower 16 bits of this difference and adds it to
+register 5, putting the result into register 6.
+</P><P>
+
+<A NAME="IDX1517"></A>
+<DT><CODE>hi()</CODE>
+<DD>Computes the higher 16 bits of the given expression and then adds the
+value of the most significant bit of the lower 16 bits of the expression
+and stores the result into the immediate operand field of the given
+instruction.  For example the following code can be used to compute the
+address of the label 'here' and store it into register 6:
+<P>
+
+    <SAMP>`movhi hi(here), r0, r6'</SAMP>
+    <SAMP>`movea lo(here), r6, r6'</SAMP>
+</P><P>
+
+The reason for this special behaviour is that movea performs a sign
+extension on its immediate operand.  So for example if the address of
+'here' was 0xFFFFFFFF then without the special behaviour of the hi()
+pseudo-op the movhi instruction would put 0xFFFF0000 into r6, then the
+movea instruction would takes its immediate operand, 0xFFFF, sign extend
+it to 32 bits, 0xFFFFFFFF, and then add it into r6 giving 0xFFFEFFFF
+which is wrong (the fifth nibble is E).  With the hi() pseudo op adding
+in the top bit of the lo() pseudo op, the movhi instruction actually
+stores 0 into r6 (0xFFFF + 1 = 0x0000), so that the movea instruction
+stores 0xFFFFFFFF into r6 - the right value.
+</P><P>
+
+<A NAME="IDX1518"></A>
+<DT><CODE>hilo()</CODE>
+<DD>Computes the 32 bit value of the given expression and stores it into
+the immediate operand field of the given instruction (which must be a
+mov instruction).  For example:
+<P>
+
+    <SAMP>`mov hilo(here), r6'</SAMP>
+</P><P>
+
+computes the absolute address of label 'here' and puts the result into
+register 6.  
+</P><P>
+
+<A NAME="IDX1519"></A>
+<DT><CODE>sdaoff()</CODE>
+<DD>Computes the offset of the named variable from the start of the Small
+Data Area (whoes address is held in register 4, the GP register) and
+stores the result as a 16 bit signed value in the immediate operand
+field of the given instruction.  For example: 
+<P>
+
+      <SAMP>`ld.w sdaoff(_a_variable)[gp],r6'</SAMP>
+</P><P>
+
+loads the contents of the location pointed to by the label '_a_variable'
+into register 6, provided that the label is located somewhere within +/-
+32K of the address held in the GP register.  [Note the linker assumes
+that the GP register contains a fixed address set to the address of the
+label called '__gp'.  This can either be set up automatically by the
+linker, or specifically set by using the <SAMP>`--defsym __gp=&#60;value&#62;'</SAMP>
+command line option].
+</P><P>
+
+<A NAME="IDX1520"></A>
+<DT><CODE>tdaoff()</CODE>
+<DD>Computes the offset of the named variable from the start of the Tiny
+Data Area (whoes address is held in register 30, the EP register) and
+stores the result as a 4,5, 7 or 8 bit unsigned value in the immediate
+operand field of the given instruction.  For example:
+<P>
+
+      <SAMP>`sld.w tdaoff(_a_variable)[ep],r6'</SAMP>
+</P><P>
+
+loads the contents of the location pointed to by the label '_a_variable'
+into register 6, provided that the label is located somewhere within +256
+bytes of the address held in the EP register.  [Note the linker assumes
+that the EP register contains a fixed address set to the address of the
+label called '__ep'.  This can either be set up automatically by the
+linker, or specifically set by using the <SAMP>`--defsym __ep=&#60;value&#62;'</SAMP>
+command line option].
+</P><P>
+
+<A NAME="IDX1521"></A>
+<DT><CODE>zdaoff()</CODE>
+<DD>Computes the offset of the named variable from address 0 and stores the
+result as a 16 bit signed value in the immediate operand field of the
+given instruction.  For example:
+<P>
+
+      <SAMP>`movea zdaoff(_a_variable),zero,r6'</SAMP>
+</P><P>
+
+puts the address of the label '_a_variable' into register 6, assuming
+that the label is somewhere within the first 32K of memory.  (Strictly
+speaking it also possible to access the last 32K of memory as well, as
+the offsets are signed).
+</P><P>
+
+<A NAME="IDX1522"></A>
+<DT><CODE>ctoff()</CODE>
+<DD>Computes the offset of the named variable from the start of the Call
+Table Area (whoes address is helg in system register 20, the CTBP
+register) and stores the result a 6 or 16 bit unsigned value in the
+immediate field of then given instruction or piece of data.  For
+example:
+<P>
+
+     <SAMP>`callt ctoff(table_func1)'</SAMP>
+</P><P>
+
+will put the call the function whoes address is held in the call table
+at the location labeled 'table_func1'.
+</P><P>
+
+<A NAME="IDX1523"></A>
+<DT><CODE>.longcall <CODE>name</CODE></CODE>
+<DD>Indicates that the following sequence of instructions is a long call
+to function <CODE>name</CODE>.  The linker will attempt to shorten this call
+sequence if <CODE>name</CODE> is within a 22bit offset of the call.  Only
+valid if the <CODE>-mrelax</CODE> command line switch has been enabled.
+<P>
+
+<A NAME="IDX1524"></A>
+<DT><CODE>.longjump <CODE>name</CODE></CODE>
+<DD>Indicates that the following sequence of instructions is a long jump
+to label <CODE>name</CODE>.  The linker will attempt to shorten this code
+sequence if <CODE>name</CODE> is within a 22bit offset of the jump.  Only
+valid if the <CODE>-mrelax</CODE> command line switch has been enabled.
+<P>
+
+</DL>
+<P>
+
+For information on the V850 instruction set, see <CITE>V850
+Family 32-/16-Bit single-Chip Microcontroller Architecture Manual</CITE> from NEC.
+Ltd.
+</P><P>
+
+<A NAME="Xtensa-Dependent"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_408.html#SEC417"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_410.html#SEC419"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_187.html#SEC196"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_402.html#SEC411"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_410.html#SEC419"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

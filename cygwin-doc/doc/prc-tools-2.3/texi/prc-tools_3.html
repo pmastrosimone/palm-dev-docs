@@ -1,0 +1,149 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: Function attributes</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: Function attributes">
+<META NAME="keywords" CONTENT="Using PRC-Tools: Function attributes">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC3"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_2.html#SEC2"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_4.html#SEC4"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_1.html#SEC1"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_8.html#SEC8"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 1.2 Function attributes </H2>
+<!--docid::SEC3::-->
+<P>
+
+You specify a function attribute in the declaration of the function.
+In addition to the standard ones (see section `Declaring Attributes of Functions' in <CITE>Using and Porting GCC</CITE>), Palm OS
+defines the following function attributes:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>callseq (<VAR>insns</VAR>)</CODE>
+<DD>A function with a <CODE>callseq</CODE> attribute is called using the assembly
+language instructions in <VAR>insns</VAR>, which may implement a Palm OS systrap
+or something more esoteric.  The argument <VAR>insns</VAR> must be a string
+literal.
+<P>
+
+Generally you won't use the <CODE>callseq</CODE> attribute directly; instead, there
+are macros defined in <TT>`PalmTypes.h'</TT>.
+</P><P>
+
+<DT><CODE>systrap (<VAR>vector</VAR>)</CODE>
+<DD>The <CODE>systrap</CODE> attribute specifies that the function should be called
+using the Palm OS systrap mechanism.  The integer <VAR>vector</VAR> may be either
+a literal such as <SAMP>`0xa000'</SAMP> or a constant value such as an enumeration
+constant.  More complicated expressions are not permitted.
+<P>
+
+This attribute is deprecated and will be removed from a future version of
+prc-tools.  New code should use callseq instead.
+</P><P>
+
+You shouldn't use the <CODE>systrap</CODE> attribute directly; instead, you should
+use the <CODE>SYS_TRAP</CODE> macro defined in <TT>`CoreTraps.h'</TT>.
+</P><P>
+
+<DT><CODE>owngp</CODE>
+<DD>When <SAMP>`-mown-gp'</SAMP> is used, the <CODE>owngp</CODE> attribute causes the function
+to save the A4 register on entry, and restore it on exit.
+<P>
+
+You shouldn't use <CODE>owngp</CODE> directly; instead, you should use the macros
+defined in <TT>`EntryPoints.h'</TT>.
+</P><P>
+
+<DT><CODE>extralogue (<VAR>prologue</VAR>, <VAR>epilogue</VAR>,<small>...</small>)</CODE>
+<DD>When <SAMP>`-mextralogues'</SAMP> is used, the <CODE>extralogue</CODE> attribute causes
+the function to add code to its prologue and epilogue according to the
+arguments given.  See section <A HREF="prc-tools_11.html#SEC11">2.3 The <CODE>extralogue</CODE> attribute and entry points</A>, for details.
+<P>
+
+You shouldn't use <CODE>extralogue</CODE> directly; instead, you should use the
+macros defined in <TT>`EntryPoints.h'</TT>.
+</P><P>
+
+<DT><CODE>section (<VAR>section-name</VAR>)</CODE>
+<DD>This attribute is a standard one, and is used on Palm OS to indicate
+functions which should be placed in a code resource other than the default
+<SAMP>`code #1'</SAMP>.
+<P>
+
+</DL>
+<P>
+
+In theory, the commonly used attributes differ in their "required
+visibilities":
+</P><P>
+
+<UL>
+<LI>
+A <CODE>systrap</CODE> or <CODE>callseq</CODE> attribute is only important to anyone
+calling the function.  (You don't usually define such functions yourself
+anyway.)
+<P>
+
+<LI>
+Callers don't care that a function has an <CODE>extralogue</CODE> or saves its
+<CODE>owngp</CODE>; these really only have effects when the code for that function
+is generated.
+<P>
+
+<LI>
+On Palm OS, a function's <CODE>section</CODE> is important both to itself (it
+determines what section the code is put in) and to other functions calling
+it (it can cause a special cross-section calling sequence to be emitted).
+</UL>
+<P>
+
+In practice, probably the best policy is to have exactly one declaration
+for each function that needs one, in a header file somewhere, and to use
+<SAMP>`-Wimplicit'</SAMP> (which is implied by <SAMP>`-Wall'</SAMP>), and possibly also
+<SAMP>`-Wmissing-declarations'</SAMP>, to ensure that the declaration is visible
+when it needs to be (see section `Options to Request or Suppress Warnings' in <CITE>Using and Porting GCC</CITE>).
+</P><P>
+
+<A NAME="Unsupported GCC features"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_2.html#SEC2"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_4.html#SEC4"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_1.html#SEC1"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_8.html#SEC8"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,261 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: build-prc</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: build-prc">
+<META NAME="keywords" CONTENT="Using PRC-Tools: build-prc">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC33"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_27.html#SEC32"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_29.html#SEC34"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_27.html#SEC32"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 6.1 build-prc </H2>
+<!--docid::SEC33::-->
+<P>
+
+<A NAME="IDX11"></A>
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>build-prc [ -l ] [ -L ] [ -t <VAR>type</VAR> ] <VAR>prcfile</VAR> <VAR>app-name</VAR> <VAR>crid</VAR> <VAR>file</VAR><small>...</small>
+
+build-prc [ -o <VAR>file</VAR> | --output <VAR>file</VAR> ]
+          [ -a <VAR>file</VAR> | --appinfo <VAR>file</VAR> ]
+          [ -s <VAR>file</VAR> | --sortinfo <VAR>file</VAR> ]
+          [ -l ] [ -L ] [ -H | --hack ]
+          [ -t <VAR>type</VAR> | --type <VAR>type</VAR> ]
+          [ -c <VAR>crid</VAR> | --creator <VAR>crid</VAR> ]
+          [ -n <VAR>name</VAR> | --name <VAR>name</VAR> ]
+          [ -m <VAR>num</VAR> | --modification-number <VAR>num</VAR> ]
+          [ -v <VAR>num</VAR> | --version-number <VAR>num</VAR> ]
+          [ --read-only ] [ --appinfo-dirty ] [ --backup ]
+          [ --ok-to-install-newer ] [ --reset-after-install ]
+          [ --copy-prevention ] [ --stream ] [ --hidden ]
+          [ --launchable-data ] [ --recyclable ] [ --bundle ]
+          [ -z <VAR>n</VAR> | --compress-data <VAR>n</VAR> ]
+          [ --no-check-header ] [ --no-check-resources ]
+          [ --no-check ]
+          <VAR>file</VAR><small>...</small>
+</pre></td></tr></table></P><P>
+
+<CODE>build-prc</CODE> reads resources from the input files given and
+combines them into one output Palm OS .prc resource data file.  There are
+two styles of build-prc command line:  in the old style, the first three
+non-option arguments describe the output file, and input files don't start
+until the fourth argument.  In the new style, all non-option arguments
+are input files.  An invocation is new-style if the first file argument
+does not have a .prc extension or if the <CODE>-o</CODE> option is used.
+</P><P>
+
+Input files are identified by their extension:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE><VAR>fname</VAR>.def</CODE>
+<DD>A project definition file, which controls the post-linking process.
+If your project uses a definition file, there can be only one and it
+must be first in the list of input files.  (Hence definition files can
+only be used in a new-style invocation.)
+<P>
+
+<DT><CODE><VAR>type</VAR><VAR>nnnn</VAR>.bin</CODE>
+<DD><DT><CODE><VAR>type</VAR><VAR>nnnn</VAR>.<VAR>progname</VAR>.grc</CODE>
+<DD>A raw binary resource file (the .grc style filename is produced
+by obj-res).  The contents of a raw file are added to the output as
+a <CODE><VAR>type</VAR> #<VAR>nnnn</VAR></CODE> resource, where <VAR>nnnn</VAR> is in hexadecimal.
+<P>
+
+<DT><CODE><VAR>fname</VAR>.prc</CODE>
+<DD><DT><CODE><VAR>fname</VAR>.ro</CODE>
+<DD>A resource database in <CODE>.prc</CODE> format.  The contents of all the
+resources in a resource database are copied to the output database.
+(The information in the input database's header--name, creator, flags,
+etc--is entirely ignored.)
+<P>
+
+<DT><CODE><VAR>progname</VAR></CODE>
+<DD>Files with no extensions are treated as bfd executables.  If a bfd
+executable contains either a <CODE>.disposn</CODE> or a <CODE>.trap</CODE> section,
+its <CODE>.text</CODE> section is converted to a stand-alone code resource
+accordingly (see section <A HREF="prc-tools_18.html#SEC22">3.4 Stand-alone code resources</A>).  Otherwise, its code and data
+sections are converted to resources according to a definition
+file, or, if there is no definition file, as if the <CODE>application</CODE>
+project kind was specified.
+</DL>
+<P>
+
+By default, <CODE>build-prc</CODE> uses its first non-option argument as
+the filename for its output .prc file.  In an old-style command line,
+<VAR>prcfile</VAR> is used as is.  In a new-style command line, the output
+filename is formed by removing the extension, if any, from the first
+file argument and appending `.prc'.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-o <VAR>file</VAR></CODE>
+<DD><DT><CODE>--output <VAR>file</VAR></CODE>
+<DD>Write the .prc output to <VAR>file</VAR>.  It is an error to use this
+option in an old-style command line, as it conflicts with the mandatory
+<VAR>prcfile</VAR> argument.
+<P>
+
+<DT><CODE>-a <VAR>file</VAR></CODE>
+<DD><DT><CODE>--appinfo <VAR>file</VAR></CODE>
+<DD>Add an AppInfo block with the contents of <VAR>file</VAR> to the database.
+<P>
+
+<DT><CODE>-s <VAR>file</VAR></CODE>
+<DD><DT><CODE>--sortinfo <VAR>file</VAR></CODE>
+<DD>Add a SortInfo block with the contents of <VAR>file</VAR> to the database.
+<P>
+
+<DT><CODE>-l</CODE>
+<DD>Build a GLib shared library; this is equivalent to specifying a project
+kind of "glib" in a definition file.  In particular, it changes the
+default database type and the disposition of code and data sections in
+the bfd executable, and influences resource checking.
+<P>
+
+<DT><CODE>-L</CODE>
+<DD>Build a system shared library; this is equivalent to specifying a project
+kind of "syslib" in a definition file.  In particular, it changes the
+default database type and the disposition of code (and data) sections in
+the bfd executable, and influences resource checking.
+<P>
+
+<DT><CODE>-H</CODE>
+<DD><DT><CODE>--hack</CODE>
+<DD>Build a HackMaster hack; this is equivalent to specifying a project kind
+of "hack" in a definition file.  In particular, it changes the default
+database type, requires all bfd executables to be marked as stand-alone,
+and influences resource checking.
+<P>
+
+<DT><CODE>-t <VAR>type</VAR></CODE>
+<DD><DT><CODE>--type <VAR>type</VAR></CODE>
+<DD>Set the database's type to <VAR>type</VAR>, overriding any type it may get from
+a definition file or elsewhere.
+<P>
+
+Note that this affects <EM>only</EM> the type recorded in the database
+header; in particular, it does not change build-prc's notion of the kind
+of project being generated (see section <A HREF="prc-tools_19.html#SEC24">project kinds</A>), nor
+does it influence resource checking.  If you do not want the database to
+be checked as if it is an application, you must either tell build-prc what
+it <EM>really</EM> is, by using a definition file or one of the options
+listed above, or, as a last resort, suppress resource checking entirely.
+</P><P>
+
+<DT><CODE>-c <VAR>crid</VAR></CODE>
+<DD><DT><CODE>--creator <VAR>crid</VAR></CODE>
+<DD>Set the database's creator ID to <VAR>crid</VAR>, overriding any ID it may get
+from a definition file.  It is an error to use this option in an old-style
+command line, as it conflicts with the mandatory <VAR>crid</VAR> argument.
+<P>
+
+<DT><CODE>-n <VAR>name</VAR></CODE>
+<DD><DT><CODE>--name <VAR>name</VAR></CODE>
+<DD>Set the database's name to <VAR>name</VAR>, overriding any name it may get from
+a definition file.  It is an error to use this option in an old-style command
+line, as it conflicts with the mandatory <VAR>app-name</VAR> argument.
+<P>
+
+<DT><CODE>-m <VAR>num</VAR></CODE>
+<DD><DT><CODE>--modification-number <VAR>num</VAR></CODE>
+<DD>Set the modification number in the database header to <VAR>num</VAR>.
+<P>
+
+<DT><CODE>-v <VAR>num</VAR></CODE>
+<DD><DT><CODE>--version-number <VAR>num</VAR></CODE>
+<DD>Set the database header version number to <VAR>num</VAR>.
+<P>
+
+<DT><CODE>--read-only</CODE>
+<DD><DT><CODE>--appinfo-dirty</CODE>
+<DD><DT><CODE>--backup</CODE>
+<DD><DT><CODE>--ok-to-install-newer</CODE>
+<DD><DT><CODE>--reset-after-install</CODE>
+<DD><DT><CODE>--copy-prevention</CODE>
+<DD><DT><CODE>--stream</CODE>
+<DD><DT><CODE>--hidden</CODE>
+<DD><DT><CODE>--launchable-data</CODE>
+<DD><DT><CODE>--recyclable</CODE>
+<DD><DT><CODE>--bundle</CODE>
+<DD>Set the corresponding database header attribute, adding to any attributes
+set in a definition file.  These options may also be spelt without the
+internal hyphens (<CODE>--readonly</CODE>, etc).
+<P>
+
+<DT><CODE>-z <VAR>N</VAR></CODE>
+<DD><DT><CODE>--compress-data <VAR>N</VAR></CODE>
+<DD>Compress the data resource, `data #0'.  Compression ranges from 0, no
+compression, to 7, full (and somewhat experimental!) compression.
+<P>
+
+<DT><CODE>--no-check-header</CODE>
+<DD>Suppress warnings related to invalid database header fields, such as a blank
+database name or creator ID.  If the database being generated is only for
+use as a temporary file, for example, these warnings may not be of interest.
+<P>
+
+<DT><CODE>--no-check-resources</CODE>
+<DD>Suppress checking for the presence of vital resources.  Databases
+corresponding to particular kinds of project are malformed if they do not
+contain certain resources:  for example, an application without a `code #1'
+resource cannot be launched correctly, and a Hack requires `TRAP' resources
+to be numbered consecutively and to have corresponding `code' resources.
+<P>
+
+By default, build-prc will check for these resources and emit diagnostics
+accordingly, which helps you detect mistakes such as the omission of a bfd
+executable from the build-prc invocation.
+</P><P>
+
+<DT><CODE>--no-check</CODE>
+<DD>Suppress all checking of the generated database; this is equivalent to using
+all of the <CODE>--no-check-<VAR>foo</VAR></CODE> options listed above.
+</DL>
+<P>
+
+<A NAME="multigen"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_27.html#SEC32"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_29.html#SEC34"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_27.html#SEC32"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

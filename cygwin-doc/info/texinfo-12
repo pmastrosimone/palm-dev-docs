@@ -1,0 +1,826 @@
+This is texinfo, produced by makeinfo version 4.2 from texinfo.txi.
+
+This manual is for GNU Texinfo (version 4.2, 28 March 2002), a
+documentation system that can produce both online information and a
+printed manual from a single source.
+
+  Copyright (C) 1988, 90, 91, 92, 93, 95, 96, 97, 98, 99, 2000, 01, 02
+Free Software Foundation, Inc.
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.1 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with the Front-Cover texts
+     being "A GNU Manual," and with the Back-Cover Texts as in (a)
+     below.  A copy of the license is included in the section entitled
+     "GNU Free Documentation License."
+
+     (a) The FSF's Back-Cover Text is: "You have freedom to copy and
+     modify this GNU Manual, like GNU software.  Copies published by
+     the Free Software Foundation raise funds for GNU development."
+  
+INFO-DIR-SECTION Texinfo documentation system
+START-INFO-DIR-ENTRY
+* Texinfo: (texinfo).           The GNU documentation format.
+* install-info: (texinfo)Invoking install-info. Update info/dir entries.
+* texi2dvi: (texinfo)Format with texi2dvi.      Print Texinfo documents.
+* texindex: (texinfo)Format with tex/texindex.  Sort Texinfo index files.
+* makeinfo: (texinfo)Invoking makeinfo.         Translate Texinfo source.
+END-INFO-DIR-ENTRY
+
+
+File: texinfo,  Node: Using texinfo-show-structure,  Next: Using occur,  Prev: Debugging with TeX,  Up: Catching Mistakes
+
+Using `texinfo-show-structure'
+==============================
+
+  It is not always easy to keep track of the nodes, chapters, sections,
+and subsections of a Texinfo file.  This is especially true if you are
+revising or adding to a Texinfo file that someone else has written.
+
+  In GNU Emacs, in Texinfo mode, the `texinfo-show-structure' command
+lists all the lines that begin with the @-commands that specify the
+structure: `@chapter', `@section', `@appendix', and so on.  With an
+argument (`C-u' as prefix argument, if interactive), the command also
+shows the `@node' lines.  The `texinfo-show-structure' command is bound
+to `C-c C-s' in Texinfo mode, by default.
+
+  The lines are displayed in a buffer called the `*Occur*' buffer,
+indented by hierarchical level.  For example, here is a part of what was
+produced by running `texinfo-show-structure' on this manual:
+
+      Lines matching "^@\\(chapter \\|sect\\|subs\\|subh\\|
+      unnum\\|major\\|chapheading \\|heading \\|appendix\\)"
+      in buffer texinfo.texi.
+      ...
+      4177:@chapter Nodes
+      4198:    @heading Two Paths
+      4231:    @section Node and Menu Illustration
+      4337:    @section The @code{@@node} Command
+      4393:        @subheading Choosing Node and Pointer Names
+      4417:        @subsection How to Write an @code{@@node} Line
+      4469:        @subsection @code{@@node} Line Tips
+      ...
+
+  This says that lines 4337, 4393, and 4417 of `texinfo.texi' begin
+with the `@section', `@subheading', and `@subsection' commands
+respectively.  If you move your cursor into the `*Occur*' window, you
+can position the cursor over one of the lines and use the `C-c C-c'
+command (`occur-mode-goto-occurrence'), to jump to the corresponding
+spot in the Texinfo file.  *Note Using Occur: (emacs)Other Repeating
+Search, for more information about `occur-mode-goto-occurrence'.
+
+  The first line in the `*Occur*' window describes the "regular
+expression" specified by TEXINFO-HEADING-PATTERN.  This regular
+expression is the pattern that `texinfo-show-structure' looks for.
+*Note Using Regular Expressions: (emacs)Regexps, for more information.
+
+  When you invoke the `texinfo-show-structure' command, Emacs will
+display the structure of the whole buffer.  If you want to see the
+structure of just a part of the buffer, of one chapter, for example,
+use the `C-x n n' (`narrow-to-region') command to mark the region.
+(*Note Narrowing: (emacs)Narrowing.)  This is how the example used
+above was generated.  (To see the whole buffer again, use `C-x n w'
+(`widen').)
+
+  If you call `texinfo-show-structure' with a prefix argument by typing
+`C-u C-c C-s', it will list lines beginning with `@node' as well as the
+lines beginning with the @-sign commands for `@chapter', `@section',
+and the like.
+
+  You can remind yourself of the structure of a Texinfo file by looking
+at the list in the `*Occur*' window; and if you have mis-named a node
+or left out a section, you can correct the mistake.
+
+
+File: texinfo,  Node: Using occur,  Next: Running Info-Validate,  Prev: Using texinfo-show-structure,  Up: Catching Mistakes
+
+Using `occur'
+=============
+
+  Sometimes the `texinfo-show-structure' command produces too much
+information.  Perhaps you want to remind yourself of the overall
+structure of a Texinfo file, and are overwhelmed by the detailed list
+produced by `texinfo-show-structure'.  In this case, you can use the
+`occur' command directly.  To do this, type
+
+     M-x occur
+
+and then, when prompted, type a "regexp", a regular expression for the
+pattern you want to match.  (*Note Regular Expressions:
+(emacs)Regexps.)  The `occur' command works from the current location
+of the cursor in the buffer to the end of the buffer.  If you want to
+run `occur' on the whole buffer, place the cursor at the beginning of
+the buffer.
+
+  For example, to see all the lines that contain the word `@chapter' in
+them, just type `@chapter'.  This will produce a list of the chapters.
+It will also list all the sentences with `@chapter' in the middle of
+the line.
+
+  If you want to see only those lines that start with the word
+`@chapter', type `^@chapter' when prompted by `occur'.  If you want to
+see all the lines that end with a word or phrase, end the last word
+with a `$'; for example, `catching mistakes$'.  This can be helpful
+when you want to see all the nodes that are part of the same chapter or
+section and therefore have the same `Up' pointer.
+
+  *Note Using Occur: (emacs)Other Repeating Search, for more
+information.
+
+
+File: texinfo,  Node: Running Info-Validate,  Prev: Using occur,  Up: Catching Mistakes
+
+Finding Badly Referenced Nodes
+==============================
+
+  You can use the `Info-validate' command to check whether any of the
+`Next', `Previous', `Up' or other node pointers fail to point to a
+node.  This command checks that every node pointer points to an
+existing node.  The `Info-validate' command works only on Info files,
+not on Texinfo files.
+
+  The `makeinfo' program validates pointers automatically, so you do
+not need to use the `Info-validate' command if you are using
+`makeinfo'.  You only may need to use `Info-validate' if you are unable
+to run `makeinfo' and instead must create an Info file using
+`texinfo-format-region' or `texinfo-format-buffer', or if you write an
+Info file from scratch.
+
+* Menu:
+
+* Using Info-validate::         How to run `Info-validate'.
+* Unsplit::                     How to create an unsplit file.
+* Tagifying::                   How to tagify a file.
+* Splitting::                   How to split a file manually.
+
+
+File: texinfo,  Node: Using Info-validate,  Next: Unsplit,  Prev: Running Info-Validate,  Up: Running Info-Validate
+
+Running `Info-validate'
+-----------------------
+
+  To use `Info-validate', visit the Info file you wish to check and
+type:
+
+     M-x Info-validate
+
+Note that the `Info-validate' command requires an upper case `I'.  You
+may also need to create a tag table before running `Info-validate'.
+*Note Tagifying::.
+
+  If your file is valid, you will receive a message that says "File
+appears valid".  However, if you have a pointer that does not point to
+a node, error messages will be displayed in a buffer called `*problems
+in info file*'.
+
+  For example, `Info-validate' was run on a test file that contained
+only the first node of this manual.  One of the messages said:
+
+     In node "Overview", invalid Next: Texinfo Mode
+
+This meant that the node called `Overview' had a `Next' pointer that
+did not point to anything (which was true in this case, since the test
+file had only one node in it).
+
+  Now suppose we add a node named `Texinfo Mode' to our test case but
+we do not specify a `Previous' for this node.  Then we will get the
+following error message:
+
+     In node "Texinfo Mode", should have Previous: Overview
+
+This is because every `Next' pointer should be matched by a `Previous'
+(in the node where the `Next' points) which points back.
+
+  `Info-validate' also checks that all menu entries and cross references
+point to actual nodes.
+
+  `Info-validate' requires a tag table and does not work with files
+that have been split.  (The `texinfo-format-buffer' command
+automatically splits large files.)  In order to use `Info-validate' on
+a large file, you must run `texinfo-format-buffer' with an argument so
+that it does not split the Info file; and you must create a tag table
+for the unsplit file.
+
+
+File: texinfo,  Node: Unsplit,  Next: Tagifying,  Prev: Using Info-validate,  Up: Running Info-Validate
+
+Creating an Unsplit File
+------------------------
+
+  You can run `Info-validate' only on a single Info file that has a tag
+table.  The command will not work on the indirect subfiles that are
+generated when a master file is split.  If you have a large file
+(longer than 70,000 bytes or so), you need to run the
+`texinfo-format-buffer' or `makeinfo-buffer' command in such a way that
+it does not create indirect subfiles.  You will also need to create a
+tag table for the Info file.  After you have done this, you can run
+`Info-validate' and look for badly referenced nodes.
+
+  The first step is to create an unsplit Info file.  To prevent
+`texinfo-format-buffer' from splitting a Texinfo file into smaller Info
+files, give a prefix to the `M-x texinfo-format-buffer' command:
+
+     C-u M-x texinfo-format-buffer
+
+or else
+
+     C-u C-c C-e C-b
+
+When you do this, Texinfo will not split the file and will not create a
+tag table for it.
+
+
+File: texinfo,  Node: Tagifying,  Next: Splitting,  Prev: Unsplit,  Up: Running Info-Validate
+
+Tagifying a File
+----------------
+
+  After creating an unsplit Info file, you must create a tag table for
+it.  Visit the Info file you wish to tagify and type:
+
+     M-x Info-tagify
+
+(Note the upper case `I' in `Info-tagify'.)  This creates an Info file
+with a tag table that you can validate.
+
+  The third step is to validate the Info file:
+
+     M-x Info-validate
+
+(Note the upper case `I' in `Info-validate'.)  In brief, the steps are:
+
+     C-u M-x texinfo-format-buffer
+     M-x Info-tagify
+     M-x Info-validate
+
+  After you have validated the node structure, you can rerun
+`texinfo-format-buffer' in the normal way so it will construct a tag
+table and split the file automatically, or you can make the tag table
+and split the file manually.
+
+
+File: texinfo,  Node: Splitting,  Prev: Tagifying,  Up: Running Info-Validate
+
+Splitting a File Manually
+-------------------------
+
+  You should split a large file or else let the `texinfo-format-buffer'
+or `makeinfo-buffer' command do it for you automatically.  (Generally
+you will let one of the formatting commands do this job for you.  *Note
+Creating an Info File::.)
+
+  The split-off files are called the indirect subfiles.
+
+  Info files are split to save memory.  With smaller files, Emacs does
+not have make such a large buffer to hold the information.
+
+  If an Info file has more than 30 nodes, you should also make a tag
+table for it. *Note Using Info-validate::, for information about
+creating a tag table.  (Again, tag tables are usually created
+automatically by the formatting command; you only need to create a tag
+table yourself if you are doing the job manually.  Most likely, you
+will do this for a large, unsplit file on which you have run
+`Info-validate'.)
+
+  Visit the Info file you wish to tagify and split and type the two
+commands:
+
+     M-x Info-tagify
+     M-x Info-split
+
+(Note that the `I' in `Info' is upper case.)
+
+  When you use the `Info-split' command, the buffer is modified into a
+(small) Info file which lists the indirect subfiles.  This file should
+be saved in place of the original visited file.  The indirect subfiles
+are written in the same directory the original file is in, with names
+generated by appending `-' and a number to the original file name.
+
+  The primary file still functions as an Info file, but it contains just
+the tag table and a directory of subfiles.
+
+
+File: texinfo,  Node: Refilling Paragraphs,  Next: Command Syntax,  Prev: Catching Mistakes,  Up: Top
+
+Refilling Paragraphs
+********************
+
+  The `@refill' command refills and, optionally, indents the first line
+of a paragraph.(1) (*note Refilling Paragraphs-Footnote-1::) The
+`@refill' command is no longer important, but we describe it here
+because you once needed it.  You will see it in many old Texinfo files.
+
+  Without refilling, paragraphs containing long @-constructs may look
+bad after formatting because the formatter removes @-commands and
+shortens some lines more than others.  In the past, neither the
+`texinfo-format-region' command nor the `texinfo-format-buffer' command
+refilled paragraphs automatically.  The `@refill' command had to be
+written at the end of every paragraph to cause these formatters to fill
+them.  (Both TeX and `makeinfo' have always refilled paragraphs
+automatically.)  Now, all the Info formatters automatically fill and
+indent those paragraphs that need to be filled and indented.
+
+  The `@refill' command causes `texinfo-format-region' and
+`texinfo-format-buffer' to refill a paragraph in the Info file _after_
+all the other processing has been done.  For this reason, you can not
+use `@refill' with a paragraph containing either `@*' or `@w{ ... }'
+since the refilling action will override those two commands.
+
+  The `texinfo-format-region' and `texinfo-format-buffer' commands now
+automatically append `@refill' to the end of each paragraph that should
+be filled.  They do not append `@refill' to the ends of paragraphs that
+contain `@*' or `@w{ ...}' and therefore do not refill or indent them.
+
+
+File: texinfo,  Node: Refilling Paragraphs-Footnotes,  Up: Refilling Paragraphs
+
+  (1) Perhaps the command should have been called the
+`@refillandindent' command, but `@refill' is shorter and the name was
+chosen before indenting was possible.
+
+
+File: texinfo,  Node: Command Syntax,  Next: Obtaining TeX,  Prev: Refilling Paragraphs,  Up: Top
+
+@-Command Syntax
+****************
+
+  The character `@' is used to start special Texinfo commands.  (It has
+the same meaning that `\' has in plain TeX.)  Texinfo has four types of
+@-command:
+
+1. Non-alphabetic commands.
+     These commands consist of an @ followed by a punctuation mark or
+     other character that is not part of the alphabet.  Non-alphabetic
+     commands are almost always part of the text within a paragraph,
+     and never take any argument.  The two characters (@ and the other
+     one) are complete in themselves; none is followed by braces.  The
+     non-alphabetic commands are: `@.', `@:', `@*', `@SPACE', `@TAB',
+     `@NL', `@@', `@{', and `@}'.
+
+2. Alphabetic commands that do not require arguments.
+     These commands start with @ followed by a word followed by left-
+     and right-hand braces.  These commands insert special symbols in
+     the document; they do not require arguments.  For example,
+     `@dots{}' => `...', `@equiv{}' => `==', `@TeX{}' => `TeX', and
+     `@bullet{}' => `*'.
+
+3. Alphabetic commands that require arguments within braces.
+     These commands start with @ followed by a letter or a word,
+     followed by an argument within braces.  For example, the command
+     `@dfn' indicates the introductory or defining use of a term; it is
+     used as follows: `In Texinfo, @@-commands are @dfn{mark-up}
+     commands.'
+
+4. Alphabetic commands that occupy an entire line.
+     These commands occupy an entire line.  The line starts with @,
+     followed by the name of the command (a word); for example,
+     `@center' or `@cindex'.  If no argument is needed, the word is
+     followed by the end of the line.  If there is an argument, it is
+     separated from the command name by a space.  Braces are not used.
+
+  Thus, the alphabetic commands fall into classes that have different
+argument syntaxes.  You cannot tell to which class a command belongs by
+the appearance of its name, but you can tell by the command's meaning:
+if the command stands for a glyph, it is in class 2 and does not
+require an argument; if it makes sense to use the command together with
+other text as part of a paragraph, the command is in class 3 and must
+be followed by an argument in braces; otherwise, it is in class 4 and
+uses the rest of the line as its argument.
+
+  The purpose of having a different syntax for commands of classes 3 and
+4 is to make Texinfo files easier to read, and also to help the GNU
+Emacs paragraph and filling commands work properly.  There is only one
+exception to this rule: the command `@refill', which is always used at
+the end of a paragraph immediately following the final period or other
+punctuation character.  `@refill' takes no argument and does _not_
+require braces.  `@refill' never confuses the Emacs paragraph commands
+because it cannot appear at the beginning of a line.
+
+
+File: texinfo,  Node: Obtaining TeX,  Next: Copying This Manual,  Prev: Command Syntax,  Up: Top
+
+How to Obtain TeX
+*****************
+
+  TeX is freely redistributable.  You can obtain TeX for Unix systems
+via anonymous ftp or on physical media.  The core material consists of
+the Web2c TeX distribution (`http://tug.org/web2c').
+
+  Instructions for retrieval by anonymous ftp and information on other
+available distributions:
+     `ftp://tug.org/tex/unixtex.ftp'
+     `http://tug.org/unixtex.ftp'
+
+  The Free Software Foundation provides a core distribution on its
+Source Code CD-ROM suitable for printing Texinfo manuals.  To order it,
+contact:
+
+     Free Software Foundation, Inc.
+     59 Temple Place Suite 330
+     Boston, MA   02111-1307
+     USA
+     Telephone: +1-617-542-5942
+     Fax: (including Japan) +1-617-542-2652
+     Free Dial Fax (in Japan):
+           0031-13-2473 (KDD)
+           0066-3382-0158 (IDC)
+     Electronic mail: `gnu@gnu.org'
+
+  Many other TeX distributions are available; see `http://tug.org/'.
+
+
+File: texinfo,  Node: Copying This Manual,  Next: Command and Variable Index,  Prev: Obtaining TeX,  Up: Top
+
+Copying This Manual
+*******************
+
+* Menu:
+
+* GNU Free Documentation License::  License for copying this manual.
+
+
+File: texinfo,  Node: GNU Free Documentation License,  Up: Copying This Manual
+
+GNU Free Documentation License
+==============================
+
+                        Version 1.1, March 2000
+     Copyright (C) 2000 Free Software Foundation, Inc.
+     59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
+     
+     Everyone is permitted to copy and distribute verbatim copies
+     of this license document, but changing it is not allowed.
+
+  0. PREAMBLE
+
+     The purpose of this License is to make a manual, textbook, or other
+     written document "free" in the sense of freedom: to assure everyone
+     the effective freedom to copy and redistribute it, with or without
+     modifying it, either commercially or noncommercially.  Secondarily,
+     this License preserves for the author and publisher a way to get
+     credit for their work, while not being considered responsible for
+     modifications made by others.
+
+     This License is a kind of "copyleft", which means that derivative
+     works of the document must themselves be free in the same sense.
+     It complements the GNU General Public License, which is a copyleft
+     license designed for free software.
+
+     We have designed this License in order to use it for manuals for
+     free software, because free software needs free documentation: a
+     free program should come with manuals providing the same freedoms
+     that the software does.  But this License is not limited to
+     software manuals; it can be used for any textual work, regardless
+     of subject matter or whether it is published as a printed book.
+     We recommend this License principally for works whose purpose is
+     instruction or reference.
+
+  1. APPLICABILITY AND DEFINITIONS
+
+     This License applies to any manual or other work that contains a
+     notice placed by the copyright holder saying it can be distributed
+     under the terms of this License.  The "Document", below, refers to
+     any such manual or work.  Any member of the public is a licensee,
+     and is addressed as "you".
+
+     A "Modified Version" of the Document means any work containing the
+     Document or a portion of it, either copied verbatim, or with
+     modifications and/or translated into another language.
+
+     A "Secondary Section" is a named appendix or a front-matter
+     section of the Document that deals exclusively with the
+     relationship of the publishers or authors of the Document to the
+     Document's overall subject (or to related matters) and contains
+     nothing that could fall directly within that overall subject.
+     (For example, if the Document is in part a textbook of
+     mathematics, a Secondary Section may not explain any mathematics.)
+     The relationship could be a matter of historical connection with
+     the subject or with related matters, or of legal, commercial,
+     philosophical, ethical or political position regarding them.
+
+     The "Invariant Sections" are certain Secondary Sections whose
+     titles are designated, as being those of Invariant Sections, in
+     the notice that says that the Document is released under this
+     License.
+
+     The "Cover Texts" are certain short passages of text that are
+     listed, as Front-Cover Texts or Back-Cover Texts, in the notice
+     that says that the Document is released under this License.
+
+     A "Transparent" copy of the Document means a machine-readable copy,
+     represented in a format whose specification is available to the
+     general public, whose contents can be viewed and edited directly
+     and straightforwardly with generic text editors or (for images
+     composed of pixels) generic paint programs or (for drawings) some
+     widely available drawing editor, and that is suitable for input to
+     text formatters or for automatic translation to a variety of
+     formats suitable for input to text formatters.  A copy made in an
+     otherwise Transparent file format whose markup has been designed
+     to thwart or discourage subsequent modification by readers is not
+     Transparent.  A copy that is not "Transparent" is called "Opaque".
+
+     Examples of suitable formats for Transparent copies include plain
+     ASCII without markup, Texinfo input format, LaTeX input format,
+     SGML or XML using a publicly available DTD, and
+     standard-conforming simple HTML designed for human modification.
+     Opaque formats include PostScript, PDF, proprietary formats that
+     can be read and edited only by proprietary word processors, SGML
+     or XML for which the DTD and/or processing tools are not generally
+     available, and the machine-generated HTML produced by some word
+     processors for output purposes only.
+
+     The "Title Page" means, for a printed book, the title page itself,
+     plus such following pages as are needed to hold, legibly, the
+     material this License requires to appear in the title page.  For
+     works in formats which do not have any title page as such, "Title
+     Page" means the text near the most prominent appearance of the
+     work's title, preceding the beginning of the body of the text.
+
+  2. VERBATIM COPYING
+
+     You may copy and distribute the Document in any medium, either
+     commercially or noncommercially, provided that this License, the
+     copyright notices, and the license notice saying this License
+     applies to the Document are reproduced in all copies, and that you
+     add no other conditions whatsoever to those of this License.  You
+     may not use technical measures to obstruct or control the reading
+     or further copying of the copies you make or distribute.  However,
+     you may accept compensation in exchange for copies.  If you
+     distribute a large enough number of copies you must also follow
+     the conditions in section 3.
+
+     You may also lend copies, under the same conditions stated above,
+     and you may publicly display copies.
+
+  3. COPYING IN QUANTITY
+
+     If you publish printed copies of the Document numbering more than
+     100, and the Document's license notice requires Cover Texts, you
+     must enclose the copies in covers that carry, clearly and legibly,
+     all these Cover Texts: Front-Cover Texts on the front cover, and
+     Back-Cover Texts on the back cover.  Both covers must also clearly
+     and legibly identify you as the publisher of these copies.  The
+     front cover must present the full title with all words of the
+     title equally prominent and visible.  You may add other material
+     on the covers in addition.  Copying with changes limited to the
+     covers, as long as they preserve the title of the Document and
+     satisfy these conditions, can be treated as verbatim copying in
+     other respects.
+
+     If the required texts for either cover are too voluminous to fit
+     legibly, you should put the first ones listed (as many as fit
+     reasonably) on the actual cover, and continue the rest onto
+     adjacent pages.
+
+     If you publish or distribute Opaque copies of the Document
+     numbering more than 100, you must either include a
+     machine-readable Transparent copy along with each Opaque copy, or
+     state in or with each Opaque copy a publicly-accessible
+     computer-network location containing a complete Transparent copy
+     of the Document, free of added material, which the general
+     network-using public has access to download anonymously at no
+     charge using public-standard network protocols.  If you use the
+     latter option, you must take reasonably prudent steps, when you
+     begin distribution of Opaque copies in quantity, to ensure that
+     this Transparent copy will remain thus accessible at the stated
+     location until at least one year after the last time you
+     distribute an Opaque copy (directly or through your agents or
+     retailers) of that edition to the public.
+
+     It is requested, but not required, that you contact the authors of
+     the Document well before redistributing any large number of
+     copies, to give them a chance to provide you with an updated
+     version of the Document.
+
+  4. MODIFICATIONS
+
+     You may copy and distribute a Modified Version of the Document
+     under the conditions of sections 2 and 3 above, provided that you
+     release the Modified Version under precisely this License, with
+     the Modified Version filling the role of the Document, thus
+     licensing distribution and modification of the Modified Version to
+     whoever possesses a copy of it.  In addition, you must do these
+     things in the Modified Version:
+
+       A. Use in the Title Page (and on the covers, if any) a title
+          distinct from that of the Document, and from those of
+          previous versions (which should, if there were any, be listed
+          in the History section of the Document).  You may use the
+          same title as a previous version if the original publisher of
+          that version gives permission.
+
+       B. List on the Title Page, as authors, one or more persons or
+          entities responsible for authorship of the modifications in
+          the Modified Version, together with at least five of the
+          principal authors of the Document (all of its principal
+          authors, if it has less than five).
+
+       C. State on the Title page the name of the publisher of the
+          Modified Version, as the publisher.
+
+       D. Preserve all the copyright notices of the Document.
+
+       E. Add an appropriate copyright notice for your modifications
+          adjacent to the other copyright notices.
+
+       F. Include, immediately after the copyright notices, a license
+          notice giving the public permission to use the Modified
+          Version under the terms of this License, in the form shown in
+          the Addendum below.
+
+       G. Preserve in that license notice the full lists of Invariant
+          Sections and required Cover Texts given in the Document's
+          license notice.
+
+       H. Include an unaltered copy of this License.
+
+       I. Preserve the section entitled "History", and its title, and
+          add to it an item stating at least the title, year, new
+          authors, and publisher of the Modified Version as given on
+          the Title Page.  If there is no section entitled "History" in
+          the Document, create one stating the title, year, authors,
+          and publisher of the Document as given on its Title Page,
+          then add an item describing the Modified Version as stated in
+          the previous sentence.
+
+       J. Preserve the network location, if any, given in the Document
+          for public access to a Transparent copy of the Document, and
+          likewise the network locations given in the Document for
+          previous versions it was based on.  These may be placed in
+          the "History" section.  You may omit a network location for a
+          work that was published at least four years before the
+          Document itself, or if the original publisher of the version
+          it refers to gives permission.
+
+       K. In any section entitled "Acknowledgments" or "Dedications",
+          preserve the section's title, and preserve in the section all
+          the substance and tone of each of the contributor
+          acknowledgments and/or dedications given therein.
+
+       L. Preserve all the Invariant Sections of the Document,
+          unaltered in their text and in their titles.  Section numbers
+          or the equivalent are not considered part of the section
+          titles.
+
+       M. Delete any section entitled "Endorsements".  Such a section
+          may not be included in the Modified Version.
+
+       N. Do not retitle any existing section as "Endorsements" or to
+          conflict in title with any Invariant Section.
+
+     If the Modified Version includes new front-matter sections or
+     appendices that qualify as Secondary Sections and contain no
+     material copied from the Document, you may at your option
+     designate some or all of these sections as invariant.  To do this,
+     add their titles to the list of Invariant Sections in the Modified
+     Version's license notice.  These titles must be distinct from any
+     other section titles.
+
+     You may add a section entitled "Endorsements", provided it contains
+     nothing but endorsements of your Modified Version by various
+     parties--for example, statements of peer review or that the text
+     has been approved by an organization as the authoritative
+     definition of a standard.
+
+     You may add a passage of up to five words as a Front-Cover Text,
+     and a passage of up to 25 words as a Back-Cover Text, to the end
+     of the list of Cover Texts in the Modified Version.  Only one
+     passage of Front-Cover Text and one of Back-Cover Text may be
+     added by (or through arrangements made by) any one entity.  If the
+     Document already includes a cover text for the same cover,
+     previously added by you or by arrangement made by the same entity
+     you are acting on behalf of, you may not add another; but you may
+     replace the old one, on explicit permission from the previous
+     publisher that added the old one.
+
+     The author(s) and publisher(s) of the Document do not by this
+     License give permission to use their names for publicity for or to
+     assert or imply endorsement of any Modified Version.
+
+  5. COMBINING DOCUMENTS
+
+     You may combine the Document with other documents released under
+     this License, under the terms defined in section 4 above for
+     modified versions, provided that you include in the combination
+     all of the Invariant Sections of all of the original documents,
+     unmodified, and list them all as Invariant Sections of your
+     combined work in its license notice.
+
+     The combined work need only contain one copy of this License, and
+     multiple identical Invariant Sections may be replaced with a single
+     copy.  If there are multiple Invariant Sections with the same name
+     but different contents, make the title of each such section unique
+     by adding at the end of it, in parentheses, the name of the
+     original author or publisher of that section if known, or else a
+     unique number.  Make the same adjustment to the section titles in
+     the list of Invariant Sections in the license notice of the
+     combined work.
+
+     In the combination, you must combine any sections entitled
+     "History" in the various original documents, forming one section
+     entitled "History"; likewise combine any sections entitled
+     "Acknowledgments", and any sections entitled "Dedications".  You
+     must delete all sections entitled "Endorsements."
+
+  6. COLLECTIONS OF DOCUMENTS
+
+     You may make a collection consisting of the Document and other
+     documents released under this License, and replace the individual
+     copies of this License in the various documents with a single copy
+     that is included in the collection, provided that you follow the
+     rules of this License for verbatim copying of each of the
+     documents in all other respects.
+
+     You may extract a single document from such a collection, and
+     distribute it individually under this License, provided you insert
+     a copy of this License into the extracted document, and follow
+     this License in all other respects regarding verbatim copying of
+     that document.
+
+  7. AGGREGATION WITH INDEPENDENT WORKS
+
+     A compilation of the Document or its derivatives with other
+     separate and independent documents or works, in or on a volume of
+     a storage or distribution medium, does not as a whole count as a
+     Modified Version of the Document, provided no compilation
+     copyright is claimed for the compilation.  Such a compilation is
+     called an "aggregate", and this License does not apply to the
+     other self-contained works thus compiled with the Document, on
+     account of their being thus compiled, if they are not themselves
+     derivative works of the Document.
+
+     If the Cover Text requirement of section 3 is applicable to these
+     copies of the Document, then if the Document is less than one
+     quarter of the entire aggregate, the Document's Cover Texts may be
+     placed on covers that surround only the Document within the
+     aggregate.  Otherwise they must appear on covers around the whole
+     aggregate.
+
+  8. TRANSLATION
+
+     Translation is considered a kind of modification, so you may
+     distribute translations of the Document under the terms of section
+     4.  Replacing Invariant Sections with translations requires special
+     permission from their copyright holders, but you may include
+     translations of some or all Invariant Sections in addition to the
+     original versions of these Invariant Sections.  You may include a
+     translation of this License provided that you also include the
+     original English version of this License.  In case of a
+     disagreement between the translation and the original English
+     version of this License, the original English version will prevail.
+
+  9. TERMINATION
+
+     You may not copy, modify, sublicense, or distribute the Document
+     except as expressly provided for under this License.  Any other
+     attempt to copy, modify, sublicense or distribute the Document is
+     void, and will automatically terminate your rights under this
+     License.  However, parties who have received copies, or rights,
+     from you under this License will not have their licenses
+     terminated so long as such parties remain in full compliance.
+
+ 10. FUTURE REVISIONS OF THIS LICENSE
+
+     The Free Software Foundation may publish new, revised versions of
+     the GNU Free Documentation License from time to time.  Such new
+     versions will be similar in spirit to the present version, but may
+     differ in detail to address new problems or concerns.  See
+     `http://www.gnu.org/copyleft/'.
+
+     Each version of the License is given a distinguishing version
+     number.  If the Document specifies that a particular numbered
+     version of this License "or any later version" applies to it, you
+     have the option of following the terms and conditions either of
+     that specified version or of any later version that has been
+     published (not as a draft) by the Free Software Foundation.  If
+     the Document does not specify a version number of this License,
+     you may choose any version ever published (not as a draft) by the
+     Free Software Foundation.
+
+ADDENDUM: How to use this License for your documents
+----------------------------------------------------
+
+  To use this License in a document you have written, include a copy of
+the License in the document and put the following copyright and license
+notices just after the title page:
+
+       Copyright (C)  YEAR  YOUR NAME.
+       Permission is granted to copy, distribute and/or modify this document
+       under the terms of the GNU Free Documentation License, Version 1.1
+       or any later version published by the Free Software Foundation;
+       with the Invariant Sections being LIST THEIR TITLES, with the
+       Front-Cover Texts being LIST, and with the Back-Cover Texts being LIST.
+       A copy of the license is included in the section entitled ``GNU
+       Free Documentation License''.
+
+  If you have no Invariant Sections, write "with no Invariant Sections"
+instead of saying which ones are invariant.  If you have no Front-Cover
+Texts, write "no Front-Cover Texts" instead of "Front-Cover Texts being
+LIST"; likewise for Back-Cover Texts.
+
+  If your document contains nontrivial examples of program code, we
+recommend releasing these examples in parallel under your choice of
+free software license, such as the GNU General Public License, to
+permit their use in free software.
+

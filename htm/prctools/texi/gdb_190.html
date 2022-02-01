@@ -1,0 +1,136 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Hooks</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Hooks">
+<META NAME="keywords" CONTENT="Debugging with GDB: Hooks">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC190"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_189.html#SEC189"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_191.html#SEC191"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_191.html#SEC191"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_188.html#SEC188"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_193.html#SEC193"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 20.2 User-defined command hooks </H2>
+<!--docid::SEC190::-->
+<P>
+
+<A NAME="IDX837"></A>
+<A NAME="IDX838"></A>
+You may define <EM>hooks</EM>, which are a special kind of user-defined
+command.  Whenever you run the command <SAMP>`foo'</SAMP>, if the user-defined
+command <SAMP>`hook-foo'</SAMP> exists, it is executed (with no arguments)
+before that command.
+</P><P>
+
+<A NAME="IDX839"></A>
+<A NAME="IDX840"></A>
+<A NAME="IDX841"></A>
+A hook may also be defined which is run after the command you executed.
+Whenever you run the command <SAMP>`foo'</SAMP>, if the user-defined command
+<SAMP>`hookpost-foo'</SAMP> exists, it is executed (with no arguments) after
+that command.  Post-execution hooks may exist simultaneously with
+pre-execution hooks, for the same command.
+</P><P>
+
+It is valid for a hook to call the command which it hooks.  If this
+occurs, the hook is not re-executed, thereby avoiding infinte recursion.
+</P><P>
+
+<A NAME="IDX842"></A>
+In addition, a pseudo-command, <SAMP>`stop'</SAMP> exists.  Defining
+(<SAMP>`hook-stop'</SAMP>) makes the associated commands execute every time
+execution stops in your program: before breakpoint commands are run,
+displays are printed, or the stack frame is printed.
+</P><P>
+
+For example, to ignore <CODE>SIGALRM</CODE> signals while
+single-stepping, but treat them normally during normal execution,
+you could define:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>define hook-stop
+handle SIGALRM nopass
+end
+
+define hook-run
+handle SIGALRM pass
+end
+
+define hook-continue
+handle SIGLARM pass
+end
+</FONT></pre></td></tr></table></P><P>
+
+As a further example, to hook at the begining and end of the <CODE>echo</CODE>
+command, and to add extra text to the beginning and end of the message, 
+you could define:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>define hook-echo
+echo &#60;&#60;&#60;---
+end
+
+define hookpost-echo
+echo ---&#62;&#62;&#62;\n
+end
+
+(gdb) echo Hello World
+&#60;&#60;&#60;---Hello World---&#62;&#62;&#62;
+(gdb)
+
+</FONT></pre></td></tr></table></P><P>
+
+You can define a hook for any single-word command in GDB, but
+not for command aliases; you should define a hook for the basic command
+name, e.g.  <CODE>backtrace</CODE> rather than <CODE>bt</CODE>.
+If an error occurs during the execution of your hook, execution of
+GDB commands stops and GDB issues a prompt
+(before the command that you actually typed had a chance to run).
+</P><P>
+
+If you try to define a hook which does not match any known command, you
+get a warning from the <CODE>define</CODE> command.
+</P><P>
+
+<A NAME="Command Files"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_189.html#SEC189"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_191.html#SEC191"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_191.html#SEC191"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_188.html#SEC188"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_193.html#SEC193"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,92 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: 1.4.1 NewTypes.h</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: 1.4.1 NewTypes.h">
+<META NAME="keywords" CONTENT="Using PRC-Tools: 1.4.1 NewTypes.h">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC6"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_5.html#SEC5"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_7.html#SEC7"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_5.html#SEC5"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_8.html#SEC8"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 1.4.1 NewTypes.h </H3>
+<!--docid::SEC6::-->
+<P>
+
+<A NAME="IDX1"></A>
+</P><P>
+
+With Palm OS SDKs prior to the 3.5 SDK, programmers were encouraged to use
+typedefs such as <CODE>DWord</CODE> and <CODE>VoidHand</CODE> rather than the built-in
+types.  In the 3.5 SDK, the names of these typedefs have been changed to
+the somewhat more mnemonic <CODE>UInt32</CODE> (etc) and the rather more
+functional <CODE>MemHandle</CODE>.  (Previously there were two "handle"
+datatypes, <CODE>VoidHand</CODE> and <CODE>Handle</CODE>, with no real reason for a
+distinction between them, and programmers were continually casting between
+them.  <CODE>MemHandle</CODE> corrects this historical accident.)
+</P><P>
+
+People wanting to write library header files capable of interacting with
+any SDK have a dilemma:  which to use, old- or new-style type names?
+</P><P>
+
+You can use old-style names by instructing developers to include
+<TT>`PalmCompatibility.h'</TT> before including your header file if they are
+using the 3.5 SDK.  But this is not very satisfactory:  the onus shouldn't
+be on developers to get this right, and you might prefer to use new-style
+names.
+</P><P>
+
+You can ensure new-style names are available simply by including
+<TT>`NewTypes.h'</TT> at the top of your header file, and instructing developers
+to include at least <TT>`Common.h'</TT>/<TT>`PalmTypes.h'</TT> before your header.
+(They are probably including <TT>`Pilot.h'</TT>/<TT>`PalmOS.h'</TT> anyway.)
+</P><P>
+
+Including <TT>`NewTypes.h'</TT> provides the following:
+</P><P>
+
+<UL>
+<LI>
+The identifiers <CODE>UInt8</CODE>, <CODE>Int8</CODE>, <CODE>UInt16</CODE>, <CODE>Int16</CODE>,
+<CODE>UInt32</CODE>, <CODE>Int32</CODE>, <CODE>MemPtr</CODE>, and <CODE>MemHandle</CODE> are
+all typedeffed appropriately.
+<P>
+
+<LI>
+The macro <CODE>SDK_VERSION</CODE> is defined to one of 10, 20, 30, 31, 35, 40,
+and so on, indicating the SDK version which is in use.
+</UL>
+<P>
+
+<HR SIZE=1>
+
+</BODY>
+</HTML>

@@ -1,0 +1,157 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Assignment</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Assignment">
+<META NAME="keywords" CONTENT="Debugging with GDB: Assignment">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC118"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_117.html#SEC117"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_119.html#SEC119"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_117.html#SEC117"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_117.html#SEC117"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_124.html#SEC124"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 14.1 Assignment to variables </H2>
+<!--docid::SEC118::-->
+<P>
+
+<A NAME="IDX528"></A>
+<A NAME="IDX529"></A>
+To alter the value of a variable, evaluate an assignment expression.
+See section <A HREF="gdb_52.html#SEC52">Expressions</A>.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>print x=4
+</FONT></pre></td></tr></table></P><P>
+
+stores the value 4 into the variable <CODE>x</CODE>, and then prints the
+value of the assignment expression (which is 4).
+See section <A HREF="gdb_89.html#SEC89">Using GDB with Different Languages</A>, for more
+information on operators in supported languages.
+</P><P>
+
+<A NAME="IDX530"></A>
+<A NAME="IDX531"></A>
+If you are not interested in seeing the value of the assignment, use the
+<CODE>set</CODE> command instead of the <CODE>print</CODE> command.  <CODE>set</CODE> is
+really the same as <CODE>print</CODE> except that the expression's value is
+not printed and is not put in the value history (see section <A HREF="gdb_59.html#SEC59">Value history</A>).  The expression is evaluated only for its effects.
+</P><P>
+
+If the beginning of the argument string of the <CODE>set</CODE> command
+appears identical to a <CODE>set</CODE> subcommand, use the <CODE>set
+variable</CODE> command instead of just <CODE>set</CODE>.  This command is identical
+to <CODE>set</CODE> except for its lack of subcommands.  For example, if your
+program has a variable <CODE>width</CODE>, you get an error if you try to set
+a new value with just <SAMP>`set width=13'</SAMP>, because GDB has the
+command <CODE>set width</CODE>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) whatis width
+type = double
+(gdb) p width
+$4 = 13
+(gdb) set width=47
+Invalid syntax in expression.
+</FONT></pre></td></tr></table></P><P>
+
+The invalid expression, of course, is <SAMP>`=47'</SAMP>.  In
+order to actually set the program's variable <CODE>width</CODE>, use
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) set var width=47
+</FONT></pre></td></tr></table></P><P>
+
+Because the <CODE>set</CODE> command has many subcommands that can conflict
+with the names of program variables, it is a good idea to use the
+<CODE>set variable</CODE> command instead of just <CODE>set</CODE>.  For example, if
+your program has a variable <CODE>g</CODE>, you run into problems if you try
+to set a new value with just <SAMP>`set g=4'</SAMP>, because GDB has
+the command <CODE>set gnutarget</CODE>, abbreviated <CODE>set g</CODE>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) whatis g
+type = double
+(gdb) p g
+$1 = 1
+(gdb) set g=4
+(gdb) p g
+$2 = 1
+(gdb) r
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/smith/cc_progs/a.out
+"/home/smith/cc_progs/a.out": can't open to read symbols:
+                                 Invalid bfd target.
+(gdb) show g
+The current BFD target is "=4".
+</FONT></pre></td></tr></table></P><P>
+
+The program variable <CODE>g</CODE> did not change, and you silently set the
+<CODE>gnutarget</CODE> to an invalid value.  In order to set the variable
+<CODE>g</CODE>, use
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) set var g=4
+</FONT></pre></td></tr></table></P><P>
+
+GDB allows more implicit conversions in assignments than C; you can
+freely store an integer value into a pointer variable or vice versa,
+and you can convert any structure to any other structure that is the
+same length or shorter.
+</P><P>
+
+To store values into arbitrary places in memory, use the <SAMP>`{<small>...</small>}'</SAMP>
+construct to generate a value of specified type at a specified address
+(see section <A HREF="gdb_52.html#SEC52">Expressions</A>).  For example, <CODE>{int}0x83040</CODE> refers
+to memory location <CODE>0x83040</CODE> as an integer (which implies a certain size
+and representation in memory), and
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>set {int}0x83040 = 4
+</FONT></pre></td></tr></table></P><P>
+
+stores the value 4 into that memory location.
+</P><P>
+
+<A NAME="Jumping"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_117.html#SEC117"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_119.html#SEC119"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_117.html#SEC117"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_117.html#SEC117"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_124.html#SEC124"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

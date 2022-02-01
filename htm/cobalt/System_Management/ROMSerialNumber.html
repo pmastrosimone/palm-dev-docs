@@ -1,0 +1,203 @@
+<html>
+<head>
+<title>(Protein) The ROM Serial Number | System Management</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:27:25">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="608590"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="SysMgt_TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PowerManagement.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="TimesAndDates.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SysMgt_IX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">10 &nbsp;&nbsp;
+The ROM Serial Number</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">System Management</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="SysMgt_Part1.html">Part I: Concepts</a> </h1>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="992926"> </a>Some Palm<sup>&#8482;</sup> devices hold a 12-digit serial number that uniquely identifies the device. The serial number is held in a displayable text buffer with no null terminator. The user can view the serial number in the Application Launcher application. The Application Launcher also displays to the user a checksum digit that you can use to validate user entry of the serial number. </p>
+
+<p><a name="992930"> </a>To retrieve the ROM serial number programmatically, pass the <code>sysROMTokenSnum</code> selector to the <a href="SystemMgr.html#993498"><code>SysGetROMToken()</code></a><!-PS02-><span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline"> </span>function. If the <code>SysGetROMToken() </code>function returns an error, or if the returned pointer to the buffer is <code>NULL</code>, or if the first byte of the text buffer is <code>0xFF</code>, then no serial number is available.</p>
+
+<p><a name="992940"> </a>The <code>DrawSerialNumOrMessage()</code> function shown in <a href="ROMSerialNumber.html#992943">Listing 10.1</a> retrieves the ROM serial number, calculates the checksum, and draws both on the screen at a specified location. If the device has no serial number, this function draws a message you specify. This function accepts as its input a pair of coordinates at which it draws output, and a pointer to the message it draws when a serial number is not available. </p>
+<p class="CCodeCaption">
+  <a name="992943"> </a><b>Listing 10.1&nbsp;&nbsp;DrawSerialNumOrMessage</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+static void DrawSerialNumOrMessage(Int16 x, Int16 y, Char*
+noNumberMessage)<a name="992944"> </a>
+{<a name="992945"> </a>
+   Char* bufP;<a name="992946"> </a>
+   UInt16* bufLen;<a name="992947"> </a>
+   Err retval;<a name="992948"> </a>
+   Int16    count;<a name="992949"> </a>
+   UInt8    checkSum;<a name="992950"> </a>
+   Char    checksumStr[2];<a name="992951"> </a>
+      // holds the dash and the checksum digit<a name="992952"> </a>
+ <a name="992953"> </a>
+   retval = SysGetROMToken (0, sysROMTokenSnum, 
+      (UInt8**) &amp;bufP, &amp;bufLen);<a name="992954"> </a>
+   if ((!retval) &amp;&amp; (bufP) &amp;&amp; ((UInt8) *bufP != 0xFF)) { 
+      // there's a valid serial number!<a name="992955"> </a>
+      // Calculate the checksum:  Start with zero, add each<a name="992956"> </a>
+      // digit, then rotate the result one bit to the left
+      // and repeat.<a name="993390"> </a>
+         checkSum = 0;<a name="992957"> </a>
+         for (count=0; count&lt;bufLen; count++) {<a name="992958"> </a>
+            checkSum += bufP[count];<a name="992959"> </a>
+            checkSum = (checkSum&lt;&lt;1) | ((checkSum&amp;0x80)&gt;&gt;7);<a name="992960"> </a>
+         }<a name="992961"> </a>
+      // Add the two hex digits (nibbles) together, +2 
+      // (range: 2 - 31 ==&gt; 2-9, A-W)<a name="992962"> </a>
+      // By adding 2 before converting to ascii,
+      // we eliminate the numbers 0 and 1, which can be
+      // difficult to distinguish from the letters O and I.
+      checkSum = ((checkSum&gt;&gt;4) &amp; 0x0F)+(checkSum &amp; 0x0F)+2;<a name="992963"> </a>
+ <a name="992964"> </a>
+      // draw the serial number and find out how wide it was
+      WinDrawChars(bufP, bufLen, x, y);
+      x += FntCharsWidth(bufP, bufLen);<a name="992965"> </a>
+ <a name="992966"> </a>
+      // draw the dash and the checksum digit right after it
+      checksumStr[0] = '-';
+      checksumStr[1] = 
+         ((checkSum &lt; 10) ? (checkSum +'0') :<a name="992967"> </a>
+         (checkSum -10 +'A'));
+      WinDrawChars (checksumStr, 2, x, y);
+   } else // there's no serial number
+      // draw a status message if the caller provided one
+      if (noNumberMessage)
+         WinDrawChars(noNumberMessage, 
+   StrLen(noNumberMessage),x, y);<a name="993398"> </a>
+}<a name="992970"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="986245"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="SysMgt_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="SysMgt_TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PowerManagement.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="TimesAndDates.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SysMgt_IX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

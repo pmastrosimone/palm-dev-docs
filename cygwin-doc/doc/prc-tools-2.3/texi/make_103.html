@@ -1,0 +1,151 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Chained Rules</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Chained Rules">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Chained Rules">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC107"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_102.html#SEC106"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_104.html#SEC108"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 10.4 Chains of Implicit Rules </H2>
+<!--docid::SEC107::-->
+<P>
+
+<A NAME="IDX559"></A>
+<A NAME="IDX560"></A>
+Sometimes a file can be made by a sequence of implicit rules.  For example,
+a file <TT>`<VAR>n</VAR>.o'</TT> could be made from <TT>`<VAR>n</VAR>.y'</TT> by running
+first Yacc and then <CODE>cc</CODE>.  Such a sequence is called a <EM>chain</EM>.
+</P><P>
+
+If the file <TT>`<VAR>n</VAR>.c'</TT> exists, or is mentioned in the makefile, no
+special searching is required: <CODE>make</CODE> finds that the object file can
+be made by C compilation from <TT>`<VAR>n</VAR>.c'</TT>; later on, when considering
+how to make <TT>`<VAR>n</VAR>.c'</TT>, the rule for running Yacc is
+used.  Ultimately both <TT>`<VAR>n</VAR>.c'</TT> and <TT>`<VAR>n</VAR>.o'</TT> are
+updated.</P><P>
+
+<A NAME="IDX561"></A>
+<A NAME="IDX562"></A>
+However, even if <TT>`<VAR>n</VAR>.c'</TT> does not exist and is not mentioned,
+<CODE>make</CODE> knows how to envision it as the missing link between
+<TT>`<VAR>n</VAR>.o'</TT> and <TT>`<VAR>n</VAR>.y'</TT>!  In this case, <TT>`<VAR>n</VAR>.c'</TT> is
+called an <EM>intermediate file</EM>.  Once <CODE>make</CODE> has decided to use the
+intermediate file, it is entered in the data base as if it had been
+mentioned in the makefile, along with the implicit rule that says how to
+create it.</P><P>
+
+Intermediate files are remade using their rules just like all other
+files.  But intermediate files are treated differently in two ways.
+</P><P>
+
+The first difference is what happens if the intermediate file does not
+exist.  If an ordinary file <VAR>b</VAR> does not exist, and <CODE>make</CODE>
+considers a target that depends on <VAR>b</VAR>, it invariably creates
+<VAR>b</VAR> and then updates the target from <VAR>b</VAR>.  But if <VAR>b</VAR> is an
+intermediate file, then <CODE>make</CODE> can leave well enough alone.  It
+won't bother updating <VAR>b</VAR>, or the ultimate target, unless some
+prerequisite of <VAR>b</VAR> is newer than that target or there is some other
+reason to update that target.
+</P><P>
+
+The second difference is that if <CODE>make</CODE> <EM>does</EM> create <VAR>b</VAR>
+in order to update something else, it deletes <VAR>b</VAR> later on after it
+is no longer needed.  Therefore, an intermediate file which did not
+exist before <CODE>make</CODE> also does not exist after <CODE>make</CODE>.
+<CODE>make</CODE> reports the deletion to you by printing a <SAMP>`rm -f'</SAMP>
+command showing which file it is deleting.
+</P><P>
+
+Ordinarily, a file cannot be intermediate if it is mentioned in the
+makefile as a target or prerequisite.  However, you can explicitly mark a
+file as intermediate by listing it as a prerequisite of the special target
+<CODE>.INTERMEDIATE</CODE>.  This takes effect even if the file is mentioned
+explicitly in some other way.
+</P><P>
+
+<A NAME="IDX563"></A>
+<A NAME="IDX564"></A>
+<A NAME="IDX565"></A>
+You can prevent automatic deletion of an intermediate file by marking it
+as a <EM>secondary</EM> file.  To do this, list it as a prerequisite of the
+special target <CODE>.SECONDARY</CODE>.  When a file is secondary, <CODE>make</CODE>
+will not create the file merely because it does not already exist, but
+<CODE>make</CODE> does not automatically delete the file.  Marking a file as
+secondary also marks it as intermediate.
+</P><P>
+
+You can list the target pattern of an implicit rule (such as <SAMP>`%.o'</SAMP>)
+as a prerequisite of the special target <CODE>.PRECIOUS</CODE> to preserve
+intermediate files made by implicit rules whose target patterns match
+that file's name; see <A HREF="make_53.html#SEC57">5.5 Interrupting or Killing <CODE>make</CODE></A>.<A NAME="IDX566"></A>
+<A NAME="IDX567"></A>
+</P><P>
+
+A chain can involve more than two implicit rules.  For example, it is
+possible to make a file <TT>`foo'</TT> from <TT>`RCS/foo.y,v'</TT> by running RCS,
+Yacc and <CODE>cc</CODE>.  Then both <TT>`foo.y'</TT> and <TT>`foo.c'</TT> are
+intermediate files that are deleted at the end.</P><P>
+
+No single implicit rule can appear more than once in a chain.  This means
+that <CODE>make</CODE> will not even consider such a ridiculous thing as making
+<TT>`foo'</TT> from <TT>`foo.o.o'</TT> by running the linker twice.  This
+constraint has the added benefit of preventing any infinite loop in the
+search for an implicit rule chain.
+</P><P>
+
+There are some special implicit rules to optimize certain cases that would
+otherwise be handled by rule chains.  For example, making <TT>`foo'</TT> from
+<TT>`foo.c'</TT> could be handled by compiling and linking with separate
+chained rules, using <TT>`foo.o'</TT> as an intermediate file.  But what
+actually happens is that a special rule for this case does the compilation
+and linking with a single <CODE>cc</CODE> command.  The optimized rule is used in
+preference to the step-by-step chain because it comes earlier in the
+ordering of rules.
+</P><P>
+
+<A NAME="Pattern Rules"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_102.html#SEC106"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_104.html#SEC108"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

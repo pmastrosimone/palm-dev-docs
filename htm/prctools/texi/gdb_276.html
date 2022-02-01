@@ -1,0 +1,275 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: General Query Packets</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: General Query Packets">
+<META NAME="keywords" CONTENT="Debugging with GDB: General Query Packets">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC630"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_275.html#SEC629"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_277.html#SEC631"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_277.html#SEC631"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_272.html#SEC626"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_279.html#SEC633"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> D.4 General Query Packets </H2>
+<!--docid::SEC630::-->
+<P>
+
+The following set and query packets have already been defined.
+</P><P>
+
+<DL COMPACT>
+
+<DT><CODE>q</CODE><CODE>C</CODE> -- current thread
+<DD><P>
+
+Return the current thread id.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`<CODE>QC</CODE><VAR>pid</VAR>'</SAMP>
+<DD>Where <VAR>pid</VAR> is a HEX encoded 16 bit process id.
+<DT><SAMP>`*'</SAMP>
+<DD>Any other reply implies the old pid.
+</DL>
+<P>
+
+<DT><CODE>q</CODE><CODE>fThreadInfo</CODE> -- all thread ids
+<DD><P>
+
+<CODE>q</CODE><CODE>sThreadInfo</CODE>
+</P><P>
+
+Obtain a list of active thread ids from the target (OS).  Since there
+may be too many active threads to fit into one reply packet, this query
+works iteratively: it may require more than one query/reply sequence to
+obtain the entire list of threads.  The first query of the sequence will
+be the <CODE>qf</CODE><CODE>ThreadInfo</CODE> query; subsequent queries in the
+sequence will be the <CODE>qs</CODE><CODE>ThreadInfo</CODE> query.
+</P><P>
+
+NOTE: replaces the <CODE>qL</CODE> query (see below).
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`<CODE>m</CODE><VAR>id</VAR>'</SAMP>
+<DD>A single thread id
+<DT><SAMP>`<CODE>m</CODE><VAR>id</VAR>,<VAR>id</VAR><small>...</small>'</SAMP>
+<DD>a comma-separated list of thread ids
+<DT><SAMP>`<CODE>l</CODE>'</SAMP>
+<DD>(lower case 'el') denotes end of list.
+</DL>
+<P>
+
+In response to each query, the target will reply with a list of one or
+more thread ids, in big-endian hex, separated by commas.  GDB
+will respond to each reply with a request for more thread ids (using the
+<CODE>qs</CODE> form of the query), until the target responds with <CODE>l</CODE>
+(lower-case el, for <CODE>'last'</CODE>).
+</P><P>
+
+<DT><CODE>q</CODE><CODE>ThreadExtraInfo</CODE><CODE>,</CODE><VAR>id</VAR> -- extra thread info
+<DD><P>
+
+Where <VAR>id</VAR> is a thread-id in big-endian hex.  Obtain a printable
+string description of a thread's attributes from the target OS.  This
+string may contain anything that the target OS thinks is interesting for
+GDB to tell the user about the thread.  The string is displayed
+in GDB's <SAMP>`info threads'</SAMP> display.  Some examples of
+possible thread extra info strings are "Runnable", or "Blocked on
+Mutex".
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`<VAR>XX<small>...</small></VAR>'</SAMP>
+<DD>Where <VAR>XX<small>...</small></VAR> is a hex encoding of ASCII data, comprising
+the printable string containing the extra information about the thread's
+attributes.
+</DL>
+<P>
+
+<DT><CODE>q</CODE><CODE>L</CODE><VAR>startflag</VAR><VAR>threadcount</VAR><VAR>nextthread</VAR> -- query <VAR>LIST</VAR> or <VAR>threadLIST</VAR> <STRONG>(deprecated)</STRONG>
+<DD><P>
+
+Obtain thread information from RTOS.  Where: <VAR>startflag</VAR> (one hex
+digit) is one to indicate the first query and zero to indicate a
+subsequent query; <VAR>threadcount</VAR> (two hex digits) is the maximum
+number of threads the response packet can contain; and <VAR>nextthread</VAR>
+(eight hex digits), for subsequent queries (<VAR>startflag</VAR> is zero), is
+returned in the response as <VAR>argthread</VAR>.
+</P><P>
+
+NOTE: this query is replaced by the <CODE>q</CODE><CODE>fThreadInfo</CODE> query
+(see above).
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`<CODE>q</CODE><CODE>M</CODE><VAR>count</VAR><VAR>done</VAR><VAR>argthread</VAR><VAR>thread<small>...</small></VAR>'</SAMP>
+<DD>Where: <VAR>count</VAR> (two hex digits) is the number of threads being
+returned; <VAR>done</VAR> (one hex digit) is zero to indicate more threads
+and one indicates no further threads; <VAR>argthreadid</VAR> (eight hex
+digits) is <VAR>nextthread</VAR> from the request packet; <VAR>thread<small>...</small></VAR>
+is a sequence of thread IDs from the target.  <VAR>threadid</VAR> (eight hex
+digits).  See <CODE>remote.c:parse_threadlist_response()</CODE>.
+</DL>
+<P>
+
+<DT><CODE>q</CODE><CODE>CRC:</CODE><VAR>addr</VAR><CODE>,</CODE><VAR>length</VAR> -- compute CRC of memory block
+<DD><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`<CODE>E</CODE><VAR>NN</VAR>'</SAMP>
+<DD>An error (such as memory fault)
+<DT><SAMP>`<CODE>C</CODE><VAR>CRC32</VAR>'</SAMP>
+<DD>A 32 bit cyclic redundancy check of the specified memory region.
+</DL>
+<P>
+
+<DT><CODE>q</CODE><CODE>Offsets</CODE> -- query sect offs
+<DD><P>
+
+Get section offsets that the target used when re-locating the downloaded
+image.  <EM>Note: while a <CODE>Bss</CODE> offset is included in the
+response, GDB ignores this and instead applies the <CODE>Data</CODE>
+offset to the <CODE>Bss</CODE> section.</EM>
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`<CODE>Text=</CODE><VAR>xxx</VAR><CODE>;Data=</CODE><VAR>yyy</VAR><CODE>;Bss=</CODE><VAR>zzz</VAR>'</SAMP>
+<DD></DL>
+<P>
+
+<DT><CODE>q</CODE><CODE>P</CODE><VAR>mode</VAR><VAR>threadid</VAR> -- thread info request
+<DD><P>
+
+Returns information on <VAR>threadid</VAR>.  Where: <VAR>mode</VAR> is a hex
+encoded 32 bit mode; <VAR>threadid</VAR> is a hex encoded 64 bit thread ID.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`*'</SAMP>
+<DD></DL>
+<P>
+
+See <CODE>remote.c:remote_unpack_thread_info_response()</CODE>.
+</P><P>
+
+<DT><CODE>q</CODE><CODE>Rcmd,</CODE><VAR>command</VAR> -- remote command
+<DD><P>
+
+<VAR>command</VAR> (hex encoded) is passed to the local interpreter for
+execution.  Invalid commands should be reported using the output string.
+Before the final result packet, the target may also respond with a
+number of intermediate <CODE>O</CODE><VAR>output</VAR> console output packets.
+<EM>Implementors should note that providing access to a stubs's
+interpreter may have security implications</EM>.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`OK'</SAMP>
+<DD>A command response with no output.
+<DT><SAMP>`<VAR>OUTPUT</VAR>'</SAMP>
+<DD>A command response with the hex encoded output string <VAR>OUTPUT</VAR>.
+<DT><SAMP>`<CODE>E</CODE><VAR>NN</VAR>'</SAMP>
+<DD>Indicate a badly formed request.
+<DT><SAMP>`<SAMP>`'</SAMP>'</SAMP>
+<DD>When <SAMP>`q'</SAMP><SAMP>`Rcmd'</SAMP> is not recognized.
+</DL>
+<P>
+
+<DT><CODE>qSymbol::</CODE> -- symbol lookup
+<DD><P>
+
+Notify the target that GDB is prepared to serve symbol lookup
+requests.  Accept requests from the target for the values of symbols.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`<CODE>OK</CODE>'</SAMP>
+<DD>The target does not need to look up any (more) symbols.
+<DT><SAMP>`<CODE>qSymbol:</CODE><VAR>sym_name</VAR>'</SAMP>
+<DD>The target requests the value of symbol <VAR>sym_name</VAR> (hex encoded).
+GDB may provide the value by using the
+<CODE>qSymbol:</CODE><VAR>sym_value</VAR>:<VAR>sym_name</VAR> message, described below.
+</DL>
+<P>
+
+<DT><CODE>qSymbol:</CODE><VAR>sym_value</VAR>:<VAR>sym_name</VAR> -- symbol value
+<DD><P>
+
+Set the value of <VAR>sym_name</VAR> to <VAR>sym_value</VAR>.
+</P><P>
+
+<VAR>sym_name</VAR> (hex encoded) is the name of a symbol whose value the
+target has previously requested.
+</P><P>
+
+<VAR>sym_value</VAR> (hex) is the value for symbol <VAR>sym_name</VAR>.  If
+GDB cannot supply a value for <VAR>sym_name</VAR>, then this field
+will be empty.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`<CODE>OK</CODE>'</SAMP>
+<DD>The target does not need to look up any (more) symbols.
+<DT><SAMP>`<CODE>qSymbol:</CODE><VAR>sym_name</VAR>'</SAMP>
+<DD>The target requests the value of a new symbol <VAR>sym_name</VAR> (hex
+encoded).  GDB will continue to supply the values of symbols
+(if available), until the target ceases to request them.
+</DL>
+<P>
+
+</DL>
+<P>
+
+<A NAME="Register Packet Format"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_275.html#SEC629"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_277.html#SEC631"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_277.html#SEC631"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_272.html#SEC626"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_279.html#SEC633"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

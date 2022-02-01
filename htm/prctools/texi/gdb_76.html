@@ -1,0 +1,156 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Tracepoint Actions</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Tracepoint Actions">
+<META NAME="keywords" CONTENT="Debugging with GDB: Tracepoint Actions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC76"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_75.html#SEC75"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_77.html#SEC77"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_77.html#SEC77"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_72.html#SEC72"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_79.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 10.1.4 Tracepoint Action Lists </H3>
+<!--docid::SEC76::-->
+<P>
+
+<DL COMPACT>
+<A NAME="IDX412"></A>
+<A NAME="IDX413"></A>
+<DT><CODE>actions [<VAR>num</VAR>]</CODE>
+<DD>This command will prompt for a list of actions to be taken when the
+tracepoint is hit.  If the tracepoint number <VAR>num</VAR> is not
+specified, this command sets the actions for the one that was most
+recently defined (so that you can define a tracepoint and then say
+<CODE>actions</CODE> without bothering about its number).  You specify the
+actions themselves on the following lines, one action at a time, and
+terminate the actions list with a line containing just <CODE>end</CODE>.  So
+far, the only defined actions are <CODE>collect</CODE> and
+<CODE>while-stepping</CODE>.
+<P>
+
+<A NAME="IDX414"></A>
+To remove all actions from a tracepoint, type <SAMP>`actions <VAR>num</VAR>'</SAMP>
+and follow it immediately with <SAMP>`end'</SAMP>.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) <B>collect <VAR>data</VAR></B> // collect some data
+
+(gdb) <B>while-stepping 5</B> // single-step 5 times, collect data
+
+(gdb) <B>end</B>              // signals the end of actions.
+</FONT></pre></td></tr></table></P><P>
+
+In the following example, the action list begins with <CODE>collect</CODE>
+commands indicating the things to be collected when the tracepoint is
+hit.  Then, in order to single-step and collect additional data
+following the tracepoint, a <CODE>while-stepping</CODE> command is used,
+followed by the list of things to be collected while stepping.  The
+<CODE>while-stepping</CODE> command is terminated by its own separate
+<CODE>end</CODE> command.  Lastly, the action list is terminated by an
+<CODE>end</CODE> command.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) <B>trace foo</B>
+(gdb) <B>actions</B>
+Enter actions for tracepoint 1, one per line:
+&#62; collect bar,baz
+&#62; collect $regs
+&#62; while-stepping 12
+  &#62; collect $fp, $sp
+  &#62; end
+end
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX415"></A>
+<DT><CODE>collect <VAR>expr1</VAR>, <VAR>expr2</VAR>, <small>...</small></CODE>
+<DD>Collect values of the given expressions when the tracepoint is hit.
+This command accepts a comma-separated list of any valid expressions.
+In addition to global, static, or local variables, the following
+special arguments are supported:
+<P>
+
+<DL COMPACT>
+<DT><CODE>$regs</CODE>
+<DD>collect all registers
+<P>
+
+<DT><CODE>$args</CODE>
+<DD>collect all function arguments
+<P>
+
+<DT><CODE>$locals</CODE>
+<DD>collect all local variables.
+</DL>
+<P>
+
+You can give several consecutive <CODE>collect</CODE> commands, each one
+with a single argument, or one <CODE>collect</CODE> command with several
+arguments separated by commas: the effect is the same.
+</P><P>
+
+The command <CODE>info scope</CODE> (see section <A HREF="gdb_116.html#SEC116">info scope</A>) is
+particularly useful for figuring out what data to collect.
+</P><P>
+
+<A NAME="IDX416"></A>
+<DT><CODE>while-stepping <VAR>n</VAR></CODE>
+<DD>Perform <VAR>n</VAR> single-step traces after the tracepoint, collecting
+new data at each step.  The <CODE>while-stepping</CODE> command is
+followed by the list of what to collect while stepping (followed by
+its own <CODE>end</CODE> command):
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>&#62; while-stepping 12
+  &#62; collect $regs, myglobal
+  &#62; end
+&#62;
+</FONT></pre></td></tr></table></P><P>
+
+You may abbreviate <CODE>while-stepping</CODE> as <CODE>ws</CODE> or
+<CODE>stepping</CODE>.
+</DL>
+<P>
+
+<A NAME="Listing Tracepoints"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_75.html#SEC75"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_77.html#SEC77"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_77.html#SEC77"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_72.html#SEC72"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_79.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

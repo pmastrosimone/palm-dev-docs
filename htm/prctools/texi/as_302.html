@@ -1,0 +1,165 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: M68HC11-Syntax</TITLE>
+
+<META NAME="description" CONTENT="Using as: M68HC11-Syntax">
+<META NAME="keywords" CONTENT="Using as: M68HC11-Syntax">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC311"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_301.html#SEC310"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_303.html#SEC312"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_303.html#SEC312"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_300.html#SEC309"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_308.html#SEC317"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.18.2 Syntax </H3>
+<!--docid::SEC311::-->
+<P>
+
+<A NAME="IDX932"></A>
+<A NAME="IDX933"></A>
+</P><P>
+
+In the M68HC11 syntax, the instruction name comes first and it may
+be followed by one or several operands (up to three). Operands are
+separated by comma (<SAMP>`,'</SAMP>). In the normal mode,
+<CODE>as</CODE> will complain if too many operands are specified for
+a given instruction. In the MRI mode (turned on with <SAMP>`-M'</SAMP> option),
+it will treat them as comments. Example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>inx
+lda  #23
+bset 2,x #4
+brclr *bot #8 foo
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX934"></A>
+<A NAME="IDX935"></A>
+The following addressing modes are understood for 68HC11 and 68HC12:
+<DL COMPACT>
+<DT><EM>Immediate</EM>
+<DD><SAMP>`#<VAR>number</VAR>'</SAMP>
+<P>
+
+<DT><EM>Address Register</EM>
+<DD><SAMP>`<VAR>number</VAR>,X'</SAMP>, <SAMP>`<VAR>number</VAR>,Y'</SAMP>
+<P>
+
+The <VAR>number</VAR> may be omitted in which case 0 is assumed.
+</P><P>
+
+<DT><EM>Direct Addressing mode</EM>
+<DD><SAMP>`*<VAR>symbol</VAR>'</SAMP>, or <SAMP>`*<VAR>digits</VAR>'</SAMP>
+<P>
+
+<DT><EM>Absolute</EM>
+<DD><SAMP>`<VAR>symbol</VAR>'</SAMP>, or <SAMP>`<VAR>digits</VAR>'</SAMP>
+</DL>
+<P>
+
+The M68HC12 has other more complex addressing modes. All of them
+are supported and they are represented below:
+</P><P>
+
+<DL COMPACT>
+<DT><EM>Constant Offset Indexed Addressing Mode</EM>
+<DD><SAMP>`<VAR>number</VAR>,<VAR>reg</VAR>'</SAMP>
+<P>
+
+The <VAR>number</VAR> may be omitted in which case 0 is assumed.
+The register can be either <SAMP>`X'</SAMP>, <SAMP>`Y'</SAMP>, <SAMP>`SP'</SAMP> or
+<SAMP>`PC'</SAMP>.  The assembler will use the smaller post-byte definition
+according to the constant value (5-bit constant offset, 9-bit constant
+offset or 16-bit constant offset).  If the constant is not known by
+the assembler it will use the 16-bit constant offset post-byte and the value
+will be resolved at link time.
+</P><P>
+
+<DT><EM>Offset Indexed Indirect</EM>
+<DD><SAMP>`[<VAR>number</VAR>,<VAR>reg</VAR>]'</SAMP>
+<P>
+
+The register can be either <SAMP>`X'</SAMP>, <SAMP>`Y'</SAMP>, <SAMP>`SP'</SAMP> or <SAMP>`PC'</SAMP>.
+</P><P>
+
+<DT><EM>Auto Pre-Increment/Pre-Decrement/Post-Increment/Post-Decrement</EM>
+<DD><SAMP>`<VAR>number</VAR>,-<VAR>reg</VAR>'</SAMP>
+<SAMP>`<VAR>number</VAR>,+<VAR>reg</VAR>'</SAMP>
+<SAMP>`<VAR>number</VAR>,<VAR>reg</VAR>-'</SAMP>
+<SAMP>`<VAR>number</VAR>,<VAR>reg</VAR>+'</SAMP>
+<P>
+
+The number must be in the range <SAMP>`-8'</SAMP>..<SAMP>`+8'</SAMP> and must not be 0.
+The register can be either <SAMP>`X'</SAMP>, <SAMP>`Y'</SAMP>, <SAMP>`SP'</SAMP> or <SAMP>`PC'</SAMP>.
+</P><P>
+
+<DT><EM>Accumulator Offset</EM>
+<DD><SAMP>`<VAR>acc</VAR>,<VAR>reg</VAR>'</SAMP>
+<P>
+
+The accumulator register can be either <SAMP>`A'</SAMP>, <SAMP>`B'</SAMP> or <SAMP>`D'</SAMP>.
+The register can be either <SAMP>`X'</SAMP>, <SAMP>`Y'</SAMP>, <SAMP>`SP'</SAMP> or <SAMP>`PC'</SAMP>.
+</P><P>
+
+<DT><EM>Accumulator D offset indexed-indirect</EM>
+<DD><SAMP>`[D,<VAR>reg</VAR>]'</SAMP>
+<P>
+
+The register can be either <SAMP>`X'</SAMP>, <SAMP>`Y'</SAMP>, <SAMP>`SP'</SAMP> or <SAMP>`PC'</SAMP>.
+</P><P>
+
+</DL>
+<P>
+
+For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>ldab 1024,sp
+ldd [10,x]
+orab 3,+x
+stab -2,y-
+ldx a,pc
+sty [d,sp]
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="M68HC11-Modifiers"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_301.html#SEC310"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_303.html#SEC312"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_303.html#SEC312"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_300.html#SEC309"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_308.html#SEC317"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

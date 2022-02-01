@@ -1,0 +1,132 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: M32R-Warnings</TITLE>
+
+<META NAME="description" CONTENT="Using as: M32R-Warnings">
+<META NAME="keywords" CONTENT="Using as: M32R-Warnings">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC299"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_289.html#SEC298"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_291.html#SEC300"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_169.html#SEC178"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_288.html#SEC297"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_291.html#SEC300"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.16.2 M32R Warnings </H3>
+<!--docid::SEC299::-->
+<P>
+
+<A NAME="IDX866"></A>
+<A NAME="IDX867"></A>
+</P><P>
+
+There are several warning and error messages that can be produced by
+<CODE>as</CODE> which are specific to the M32R:
+</P><P>
+
+<DL COMPACT>
+
+<DT><CODE>output of 1st instruction is the same as an input to 2nd instruction - is this intentional ?</CODE>
+<DD>This message is only produced if warnings for explicit parallel
+conflicts have been enabled.  It indicates that the assembler has
+encountered a parallel instruction in which the destination register of
+the left hand instruction is used as an input register in the right hand
+instruction.  For example in this code fragment
+<SAMP>`mv r1, r2 || neg r3, r1'</SAMP> register r1 is the destination of the
+move instruction and the input to the neg instruction.
+<P>
+
+<DT><CODE>output of 2nd instruction is the same as an input to 1st instruction - is this intentional ?</CODE>
+<DD>This message is only produced if warnings for explicit parallel
+conflicts have been enabled.  It indicates that the assembler has
+encountered a parallel instruction in which the destination register of
+the right hand instruction is used as an input register in the left hand
+instruction.  For example in this code fragment
+<SAMP>`mv r1, r2 || neg r2, r3'</SAMP> register r2 is the destination of the
+neg instruction and the input to the move instruction.
+<P>
+
+<DT><CODE>instruction <SAMP>`...'</SAMP> is for the M32RX only</CODE>
+<DD>This message is produced when the assembler encounters an instruction
+which is only supported by the M32Rx processor, and the <SAMP>`-m32rx'</SAMP>
+command line flag has not been specified to allow assembly of such
+instructions. 
+<P>
+
+<DT><CODE>unknown instruction <SAMP>`...'</SAMP></CODE>
+<DD>This message is produced when the assembler encounters an instruction
+which it doe snot recognise.
+<P>
+
+<DT><CODE>only the NOP instruction can be issued in parallel on the m32r</CODE>
+<DD>This message is produced when the assembler encounters a parallel
+instruction which does not involve a NOP instruction and the
+<SAMP>`-m32rx'</SAMP> command line flag has not been specified.  Only the M32Rx
+processor is able to execute two instructions in parallel.
+<P>
+
+<DT><CODE>instruction <SAMP>`...'</SAMP> cannot be executed in parallel.</CODE>
+<DD>This message is produced when the assembler encounters a parallel
+instruction which is made up of one or two instructions which cannot be
+executed in parallel.
+<P>
+
+<DT><CODE>Instructions share the same execution pipeline</CODE>
+<DD>This message is produced when the assembler encounters a parallel
+instruction whoes components both use the same execution pipeline.
+<P>
+
+<DT><CODE>Instructions write to the same destination register.</CODE>
+<DD>This message is produced when the assembler encounters a parallel
+instruction where both components attempt to modify the same register.
+For example these code fragments will produce this message:
+<SAMP>`mv r1, r2 || neg r1, r3'</SAMP>
+<SAMP>`jl r0 || mv r14, r1'</SAMP>
+<SAMP>`st r2, @-r1 || mv r1, r3'</SAMP> 
+<SAMP>`mv r1, r2 || ld r0, @r1+'</SAMP> 
+<SAMP>`cmp r1, r2 || addx r3, r4'</SAMP> (Both write to the condition bit)
+<P>
+
+</DL>
+<P>
+
+<A NAME="M68K-Dependent"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_289.html#SEC298"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_291.html#SEC300"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_169.html#SEC178"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_288.html#SEC297"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_291.html#SEC300"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,141 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Target Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Target Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Target Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC15"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_14.html#SEC14"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.13 Specifying Target Machine and Compiler Version </H2>
+<!--docid::SEC15::-->
+<P>
+
+By default, GCC compiles code for the same type of machine that you
+are using.  However, it can also be installed as a cross-compiler, to
+compile for some other type of machine.  In fact, several different
+configurations of GCC, for different target machines, can be
+installed side by side.  Then you specify which one to use with the
+<SAMP>`-b'</SAMP> option.
+</P><P>
+
+In addition, older and newer versions of GCC can be installed side
+by side.  One of them (probably the newest) will be the default, but
+you may sometimes wish to use another.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-b <VAR>machine</VAR></CODE>
+<DD>The argument <VAR>machine</VAR> specifies the target machine for compilation.
+This is useful when you have installed GCC as a cross-compiler.
+<P>
+
+The value to use for <VAR>machine</VAR> is the same as was specified as the
+machine type when configuring GCC as a cross-compiler.  For
+example, if a cross-compiler was configured with <SAMP>`configure
+i386v'</SAMP>, meaning to compile for an 80386 running System V, then you
+would specify <SAMP>`-b i386v'</SAMP> to run that cross compiler.
+</P><P>
+
+When you do not specify <SAMP>`-b'</SAMP>, it normally means to compile for
+the same type of machine that you are using.
+</P><P>
+
+<DT><CODE>-V <VAR>version</VAR></CODE>
+<DD>The argument <VAR>version</VAR> specifies which version of GCC to run.
+This is useful when multiple versions are installed.  For example,
+<VAR>version</VAR> might be <SAMP>`2.0'</SAMP>, meaning to run GCC version 2.0.
+<P>
+
+The default version, when you do not specify <SAMP>`-V'</SAMP>, is the last
+version of GCC that you installed.
+</DL>
+<P>
+
+The <SAMP>`-b'</SAMP> and <SAMP>`-V'</SAMP> options actually work by controlling part of
+the file name used for the executable files and libraries used for
+compilation.  A given version of GCC, for a given target machine, is
+normally kept in the directory <TT>`/usr/local/lib/gcc-lib/<VAR>machine</VAR>/<VAR>version</VAR>'</TT>.</P><P>
+
+Thus, sites can customize the effect of <SAMP>`-b'</SAMP> or <SAMP>`-V'</SAMP> either by
+changing the names of these directories or adding alternate names (or
+symbolic links).  If in directory <TT>`/usr/local/lib/gcc-lib/'</TT> the
+file <TT>`80386'</TT> is a link to the file <TT>`i386v'</TT>, then <SAMP>`-b
+80386'</SAMP> becomes an alias for <SAMP>`-b i386v'</SAMP>.
+</P><P>
+
+In one respect, the <SAMP>`-b'</SAMP> or <SAMP>`-V'</SAMP> do not completely change
+to a different compiler: the top-level driver program <CODE>gcc</CODE>
+that you originally invoked continues to run and invoke the other
+executables (preprocessor, compiler per se, assembler and linker)
+that do the real work.  However, since no real work is done in the
+driver program, it usually does not matter that the driver program
+in use is not the one for the specified target and version.
+</P><P>
+
+The only way that the driver program depends on the target machine is
+in the parsing and handling of special machine-specific options.
+However, this is controlled by a file which is found, along with the
+other executables, in the directory for the specified version and
+target machine.  As a result, a single installed driver program adapts
+to any specified target machine and compiler version.
+</P><P>
+
+The driver program executable does control one significant thing,
+however: the default version and target machine.  Therefore, you can
+install different instances of the driver program, compiled for
+different targets or versions, under different names.
+</P><P>
+
+For example, if the driver for version 2.0 is installed as <CODE>ogcc</CODE>
+and that for version 2.1 is installed as <CODE>gcc</CODE>, then the command
+<CODE>gcc</CODE> will use version 2.1 by default, while <CODE>ogcc</CODE> will use
+2.0 by default.  However, you can choose either version with either
+command with the <SAMP>`-V'</SAMP> option.
+</P><P>
+
+<A NAME="Submodel Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_14.html#SEC14"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

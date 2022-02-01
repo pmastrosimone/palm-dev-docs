@@ -1,0 +1,107 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Other Dir</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Other Dir">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Other Dir">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC49"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_48.html#SEC48"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_50.html#SEC50"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_50.html#SEC50"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.3 Compilation in a Separate Directory </H2>
+<!--docid::SEC49::-->
+<P>
+
+If you wish to build the object files and executables in a directory
+other than the one containing the source files, here is what you must
+do differently:
+</P><P>
+
+<OL>
+<LI>
+Make sure you have a version of Make that supports the <CODE>VPATH</CODE>
+feature.  (GNU Make supports it, as do Make versions on most BSD
+systems.)
+<P>
+
+<LI>
+If you have ever run <TT>`configure'</TT> in the source directory, you must undo
+the configuration.  Do this by running:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>make distclean
+</pre></td></tr></table></P><P>
+
+<LI>
+Go to the directory in which you want to build the compiler before
+running <TT>`configure'</TT>:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>mkdir gcc-sun3
+cd gcc-sun3
+</pre></td></tr></table></P><P>
+
+On systems that do not support symbolic links, this directory must be
+on the same file system as the source code directory.
+</P><P>
+
+<LI>
+Specify where to find <TT>`configure'</TT> when you run it:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>../gcc/configure <small>...</small>
+</pre></td></tr></table></P><P>
+
+This also tells <CODE>configure</CODE> where to find the compiler sources;
+<CODE>configure</CODE> takes the directory from the file name that was used to
+invoke it.  But if you want to be sure, you can specify the source
+directory with the <SAMP>`--srcdir'</SAMP> option, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>../gcc/configure --srcdir=../gcc <VAR>other options</VAR>
+</pre></td></tr></table></P><P>
+
+The directory you specify with <SAMP>`--srcdir'</SAMP> need not be the same
+as the one that <CODE>configure</CODE> is found in.
+</OL>
+<P>
+
+Now, you can run <CODE>make</CODE> in that directory.  You need not repeat the
+configuration steps shown above, when ordinary source files change.  You
+must, however, run <CODE>configure</CODE> again when the configuration files
+change, if your system does not support symbolic links.
+</P><P>
+
+<A NAME="Cross-Compiler"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

@@ -1,0 +1,95 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Archive Members</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Archive Members">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Archive Members">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC119"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_116.html#SEC120"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_120.html#SEC124"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 11.1 Archive Members as Targets </H2>
+<!--docid::SEC119::-->
+<P>
+
+An individual member of an archive file can be used as a target or
+prerequisite in <CODE>make</CODE>.  You specify the member named <VAR>member</VAR> in
+archive file <VAR>archive</VAR> as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>archive</VAR>(<VAR>member</VAR>)
+</pre></td></tr></table></P><P>
+
+This construct is available only in targets and prerequisites, not in
+commands!  Most programs that you might use in commands do not support this
+syntax and cannot act directly on archive members.  Only <CODE>ar</CODE> and
+other programs specifically designed to operate on archives can do so.
+Therefore, valid commands to update an archive member target probably must
+use <CODE>ar</CODE>.  For example, this rule says to create a member
+<TT>`hack.o'</TT> in archive <TT>`foolib'</TT> by copying the file <TT>`hack.o'</TT>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foolib(hack.o) : hack.o
+        ar cr foolib hack.o
+</pre></td></tr></table></P><P>
+
+In fact, nearly all archive member targets are updated in just this way
+and there is an implicit rule to do it for you.  <STRONG>Note:</STRONG> The
+<SAMP>`c'</SAMP> flag to <CODE>ar</CODE> is required if the archive file does not
+already exist.
+</P><P>
+
+To specify several members in the same archive, you can write all the
+member names together between the parentheses.  For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foolib(hack.o kludge.o)
+</pre></td></tr></table></P><P>
+
+is equivalent to:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foolib(hack.o) foolib(kludge.o)
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX632"></A>
+You can also use shell-style wildcards in an archive member reference.
+See section <A HREF="make_26.html#SEC30">Using Wildcard Characters in File Names</A>.  For
+example, <SAMP>`foolib(*.o)'</SAMP> expands to all existing members of the
+<TT>`foolib'</TT> archive whose names end in <SAMP>`.o'</SAMP>; perhaps
+<SAMP>`foolib(hack.o) foolib(kludge.o)'</SAMP>.
+</P><P>
+
+<A NAME="Archive Update"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

@@ -1,0 +1,155 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: 4.2 Specifying the kind of project</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: 4.2 Specifying the kind of project">
+<META NAME="keywords" CONTENT="Using PRC-Tools: 4.2 Specifying the kind of project">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC26"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_20.html#SEC25"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_22.html#SEC27"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_22.html#SEC27"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_19.html#SEC24"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_24.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.2 Specifying the kind of project </H2>
+<!--docid::SEC26::-->
+<P>
+
+You can specify the database header attributes which appeared in an
+old-style build-prc command line along with the kind of project being
+built in this clause:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>project-kind</VAR> [ <VAR>type</VAR> ] { <VAR>dbname</VAR> <VAR>crid</VAR> <VAR>miscellaneous</VAR><small>...</small> }
+</pre></td></tr></table></P><P>
+
+This clause must appear exactly once, and must be first in the file,
+before any other clauses.  <VAR>dbname</VAR>, <VAR>crid</VAR>, and <VAR>type</VAR>
+specify the database's name, creator id, and type.  Except when
+<VAR>project-kind</VAR> is <CODE>database</CODE>, type can be omitted and a type
+suitable for the project kind will be used.  <VAR>project-kind</VAR> controls
+the processing of the bfd executable, and should be one of the following:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>app</CODE>
+<DD><DT><CODE>application</CODE>
+<DD>Build a Palm OS application, with a default type of <CODE>appl</CODE>.
+Code and data sections in the bfd executable are converted into Palm OS
+<CODE>code</CODE>, <CODE>data</CODE>, and <CODE>rloc</CODE> resources, and <CODE>code #0</CODE>
+and <CODE>pref #0</CODE> resources are synthesised.
+<P>
+
+<DT><CODE>glib</CODE>
+<DD>Build a GLib shared library, with a default type of <CODE>GLib</CODE>.  Code and
+data sections in the bfd executable are converted into GLib <CODE>code</CODE>,
+<CODE>data</CODE>, and <CODE>rloc</CODE> resources.
+<P>
+
+<DT><CODE>syslib</CODE>
+<DD>Build a system shared library, with a default type of <CODE>libr</CODE>.
+Code sections in the bfd executable are converted into <CODE>libr</CODE>
+code resources.  Since system libraries typically don't have their
+own global data, data sections in the bfd executable will produce a
+warning rather than being converted, unless you also use the <CODE>data</CODE>
+miscellaneous flag.
+<P>
+
+<DT><CODE>hack</CODE>
+<DD>Build a HackMaster hack, with a default type of <CODE>HACK</CODE>.  All bfd
+executables given should be marked as stand-alone code sections, and any
+data sections or extra code sections present will elicit warnings from
+build-prc (see section <A HREF="prc-tools_18.html#SEC22">3.4 Stand-alone code resources</A>).
+<P>
+
+<DT><CODE>database</CODE>
+<DD>This implies no special handling of the bfd executable, and so builds a
+generic database.  In this case, <VAR>type</VAR> must not be omitted.
+</DL>
+<P>
+
+The database name and creator id must come first within the braces,
+and may be followed by any number of the following, in any order:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>read-only</CODE>
+<DD><DT><CODE>appinfo-dirty</CODE>
+<DD><DT><CODE>backup</CODE>
+<DD><DT><CODE>ok-to-install-newer</CODE>
+<DD><DT><CODE>reset-after-install</CODE>
+<DD><DT><CODE>copy-prevention</CODE>
+<DD><DT><CODE>stream</CODE>
+<DD><DT><CODE>hidden</CODE>
+<DD><DT><CODE>launchable-data</CODE>
+<DD><DT><CODE>recyclable</CODE>
+<DD><DT><CODE>bundle</CODE>
+<DD>Set the corresponding database header attribute, adding to any attributes
+specified as options to build-prc.  These may also be spelt with the
+hyphens replaced by underscores or omitted altogether (<SAMP>`readonly'</SAMP>,
+<SAMP>`appinfo_dirty'</SAMP>, etc).
+<P>
+
+<DT><CODE>modification=<VAR>num</VAR></CODE>
+<DD><DT><CODE>modnum=<VAR>num</VAR></CODE>
+<DD><DT><CODE>modno=<VAR>num</VAR></CODE>
+<DD>Set the modification number in the database header to <VAR>num</VAR>.
+<P>
+
+<DT><CODE>version=<VAR>num</VAR></CODE>
+<DD>Set the database header version number to <VAR>num</VAR>.
+<P>
+
+<DT><CODE>stack=<VAR>size</VAR></CODE>
+<DD>For an application, make the <CODE>pref #0</CODE> resource request <VAR>size</VAR>
+bytes of stack space.  By default, 4K is requested.
+<P>
+
+<DT><CODE>data</CODE>
+<DD>For a system shared library, convert any data sections in input bfd
+executables into Palm OS data resources.  Without this flag, when
+build-prc is building a system shared library, any data sections will
+cause warnings instead of being converted.
+</DL>
+<P>
+
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_20.html#SEC25"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_22.html#SEC27"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_22.html#SEC27"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_19.html#SEC24"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_24.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

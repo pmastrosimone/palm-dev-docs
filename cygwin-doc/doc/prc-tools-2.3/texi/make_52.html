@@ -1,0 +1,154 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Errors</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Errors">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Errors">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC56"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_51.html#SEC55"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_53.html#SEC57"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.4 Errors in Commands </H2>
+<!--docid::SEC56::-->
+<P>
+
+After each shell command returns, <CODE>make</CODE> looks at its exit status.
+If the command completed successfully, the next command line is executed
+in a new shell; after the last command line is finished, the rule is
+finished.
+</P><P>
+
+If there is an error (the exit status is nonzero), <CODE>make</CODE> gives up on
+the current rule, and perhaps on all rules.
+</P><P>
+
+Sometimes the failure of a certain command does not indicate a problem.
+For example, you may use the <CODE>mkdir</CODE> command to ensure that a
+directory exists.  If the directory already exists, <CODE>mkdir</CODE> will
+report an error, but you probably want <CODE>make</CODE> to continue regardless.
+</P><P>
+
+<A NAME="IDX182"></A>
+To ignore errors in a command line, write a <SAMP>`-'</SAMP> at the beginning of
+the line's text (after the initial tab).  The <SAMP>`-'</SAMP> is discarded before
+the command is passed to the shell for execution.
+</P><P>
+
+For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>clean:
+        -rm -f *.o
+</pre></td></tr></table><A NAME="IDX183"></A>
+</P><P>
+
+This causes <CODE>rm</CODE> to continue even if it is unable to remove a file.
+</P><P>
+
+<A NAME="IDX184"></A>
+<A NAME="IDX185"></A>
+<A NAME="IDX186"></A>
+When you run <CODE>make</CODE> with the <SAMP>`-i'</SAMP> or <SAMP>`--ignore-errors'</SAMP>
+flag, errors are ignored in all commands of all rules.  A rule in the
+makefile for the special target <CODE>.IGNORE</CODE> has the same effect, if
+there are no prerequisites.  These ways of ignoring errors are obsolete
+because <SAMP>`-'</SAMP> is more flexible.
+</P><P>
+
+When errors are to be ignored, because of either a <SAMP>`-'</SAMP> or the
+<SAMP>`-i'</SAMP> flag, <CODE>make</CODE> treats an error return just like success,
+except that it prints out a message that tells you the status code
+the command exited with, and says that the error has been ignored.
+</P><P>
+
+When an error happens that <CODE>make</CODE> has not been told to ignore,
+it implies that the current target cannot be correctly remade, and neither
+can any other that depends on it either directly or indirectly.  No further
+commands will be executed for these targets, since their preconditions
+have not been achieved.
+</P><P>
+
+<A NAME="IDX187"></A>
+<A NAME="IDX188"></A>
+Normally <CODE>make</CODE> gives up immediately in this circumstance, returning a
+nonzero status.  However, if the <SAMP>`-k'</SAMP> or <SAMP>`--keep-going'</SAMP>
+flag is specified, <CODE>make</CODE>
+continues to consider the other prerequisites of the pending targets,
+remaking them if necessary, before it gives up and returns nonzero status.
+For example, after an error in compiling one object file, <SAMP>`make -k'</SAMP>
+will continue compiling other object files even though it already knows
+that linking them will be impossible.  See section <A HREF="make_98.html#SEC102">Summary of Options</A>.
+</P><P>
+
+The usual behavior assumes that your purpose is to get the specified
+targets up to date; once <CODE>make</CODE> learns that this is impossible, it
+might as well report the failure immediately.  The <SAMP>`-k'</SAMP> option says
+that the real purpose is to test as many of the changes made in the
+program as possible, perhaps to find several independent problems so
+that you can correct them all before the next attempt to compile.  This
+is why Emacs' <CODE>compile</CODE> command passes the <SAMP>`-k'</SAMP> flag by
+default.
+<A NAME="IDX189"></A>
+</P><P>
+
+<A NAME="IDX190"></A>
+<A NAME="IDX191"></A>
+<A NAME="IDX192"></A>
+<A NAME="IDX193"></A>
+Usually when a command fails, if it has changed the target file at all,
+the file is corrupted and cannot be used--or at least it is not
+completely updated.  Yet the file's time stamp says that it is now up to
+date, so the next time <CODE>make</CODE> runs, it will not try to update that
+file.  The situation is just the same as when the command is killed by a
+signal; see section <A HREF="make_53.html#SEC57">5.5 Interrupting or Killing <CODE>make</CODE></A>.  So generally the right thing to do is to
+delete the target file if the command fails after beginning to change
+the file.  <CODE>make</CODE> will do this if <CODE>.DELETE_ON_ERROR</CODE> appears
+as a target.  This is almost always what you want <CODE>make</CODE> to do, but
+it is not historical practice; so for compatibility, you must explicitly
+request it.
+</P><P>
+
+<A NAME="Interrupts"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_51.html#SEC55"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_53.html#SEC57"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

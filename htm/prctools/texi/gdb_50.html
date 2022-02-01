@@ -1,0 +1,155 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Machine Code</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Machine Code">
+<META NAME="keywords" CONTENT="Debugging with GDB: Machine Code">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC50"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_49.html#SEC49"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.4 Source and machine code </H2>
+<!--docid::SEC50::-->
+<P>
+
+You can use the command <CODE>info line</CODE> to map source lines to program
+addresses (and vice versa), and the command <CODE>disassemble</CODE> to display
+a range of addresses as machine instructions.  When run under GNU Emacs
+mode, the <CODE>info line</CODE> command causes the arrow to point to the
+line specified.  Also, <CODE>info line</CODE> prints addresses in symbolic form as
+well as hex.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX278"></A>
+<DT><CODE>info line <VAR>linespec</VAR></CODE>
+<DD>Print the starting and ending addresses of the compiled code for
+source line <VAR>linespec</VAR>.  You can specify source lines in any of
+the ways understood by the <CODE>list</CODE> command (see section <A HREF="gdb_47.html#SEC47">Printing source lines</A>).
+</DL>
+<P>
+
+For example, we can use <CODE>info line</CODE> to discover the location of
+the object code for the first line of function
+<CODE>m4_changequote</CODE>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) info line m4_changequote
+Line 895 of "builtin.c" starts at pc 0x634c and ends at 0x6350.
+</FONT></pre></td></tr></table></P><P>
+
+We can also inquire (using <CODE>*<VAR>addr</VAR></CODE> as the form for
+<VAR>linespec</VAR>) what source line covers a particular address:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) info line *0x63ff
+Line 926 of "builtin.c" starts at pc 0x63e4 and ends at 0x6404.
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX279"></A>
+<A NAME="IDX280"></A>
+After <CODE>info line</CODE>, the default address for the <CODE>x</CODE> command
+is changed to the starting address of the line, so that <SAMP>`x/i'</SAMP> is
+sufficient to begin examining the machine code (see section <A HREF="gdb_56.html#SEC56">Examining memory</A>).  Also, this address is saved as the value of the
+convenience variable <CODE>$_</CODE> (see section <A HREF="gdb_60.html#SEC60">Convenience variables</A>).
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX281"></A>
+<A NAME="IDX282"></A>
+<A NAME="IDX283"></A>
+<A NAME="IDX284"></A>
+<A NAME="IDX285"></A>
+<DT><CODE>disassemble</CODE>
+<DD>This specialized command dumps a range of memory as machine
+instructions.  The default memory range is the function surrounding the
+program counter of the selected frame.  A single argument to this
+command is a program counter value; GDB dumps the function
+surrounding this value.  Two arguments specify a range of addresses
+(first inclusive, second exclusive) to dump.
+</DL>
+<P>
+
+The following example shows the disassembly of a range of addresses of
+HP PA-RISC 2.0 code:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) disas 0x32c4 0x32e4
+Dump of assembler code from 0x32c4 to 0x32e4:
+0x32c4 &#60;main+204&#62;:      addil 0,dp
+0x32c8 &#60;main+208&#62;:      ldw 0x22c(sr0,r1),r26
+0x32cc &#60;main+212&#62;:      ldil 0x3000,r31
+0x32d0 &#60;main+216&#62;:      ble 0x3f8(sr4,r31)
+0x32d4 &#60;main+220&#62;:      ldo 0(r31),rp
+0x32d8 &#60;main+224&#62;:      addil -0x800,dp
+0x32dc &#60;main+228&#62;:      ldo 0x588(r1),r26
+0x32e0 &#60;main+232&#62;:      ldil 0x3000,r31
+End of assembler dump.
+</FONT></pre></td></tr></table></P><P>
+
+Some architectures have more than one commonly-used set of instruction
+mnemonics or other syntax.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX286"></A>
+<A NAME="IDX287"></A>
+<A NAME="IDX288"></A>
+<A NAME="IDX289"></A>
+<A NAME="IDX290"></A>
+<A NAME="IDX291"></A>
+<A NAME="IDX292"></A>
+<DT><CODE>set disassembly-flavor <VAR>instruction-set</VAR></CODE>
+<DD>Select the instruction set to use when disassembling the
+program via the <CODE>disassemble</CODE> or <CODE>x/i</CODE> commands.
+<P>
+
+Currently this command is only defined for the Intel x86 family.  You
+can set <VAR>instruction-set</VAR> to either <CODE>intel</CODE> or <CODE>att</CODE>.
+The default is <CODE>att</CODE>, the AT&#38;T flavor used by default by Unix
+assemblers for x86-based targets.
+</DL>
+<P>
+
+<A NAME="Data"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_49.html#SEC49"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

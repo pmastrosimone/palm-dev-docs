@@ -1,0 +1,263 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Set Breaks</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Set Breaks">
+<META NAME="keywords" CONTENT="Debugging with GDB: Set Breaks">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC29"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_30.html#SEC30"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 5.1.1 Setting breakpoints </H3>
+<!--docid::SEC29::-->
+<P>
+
+<A NAME="IDX139"></A>
+<A NAME="IDX140"></A>
+<A NAME="IDX141"></A>
+<A NAME="IDX142"></A>
+Breakpoints are set with the <CODE>break</CODE> command (abbreviated
+<CODE>b</CODE>).  The debugger convenience variable <SAMP>`$bpnum'</SAMP> records the
+number of the breakpoint you've set most recently; see <A HREF="gdb_60.html#SEC60">Convenience variables</A>, for a discussion of what you can do with
+convenience variables.
+</P><P>
+
+You have several ways to say where the breakpoint should go.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>break <VAR>function</VAR></CODE>
+<DD>Set a breakpoint at entry to function <VAR>function</VAR>.
+When using source languages that permit overloading of symbols, such as
+C<TT>++</TT>, <VAR>function</VAR> may refer to more than one possible place to break.
+See section <A HREF="gdb_36.html#SEC36">Breakpoint menus</A>, for a discussion of that situation.
+<P>
+
+<DT><CODE>break +<VAR>offset</VAR></CODE>
+<DD><DT><CODE>break -<VAR>offset</VAR></CODE>
+<DD>Set a breakpoint some number of lines forward or back from the position
+at which execution stopped in the currently selected <EM>stack frame</EM>.
+(See section <A HREF="gdb_42.html#SEC42">Frames</A>, for a description of stack frames.)
+<P>
+
+<DT><CODE>break <VAR>linenum</VAR></CODE>
+<DD>Set a breakpoint at line <VAR>linenum</VAR> in the current source file.
+The current source file is the last file whose source text was printed.
+The breakpoint will stop your program just before it executes any of the
+code on that line.
+<P>
+
+<DT><CODE>break <VAR>filename</VAR>:<VAR>linenum</VAR></CODE>
+<DD>Set a breakpoint at line <VAR>linenum</VAR> in source file <VAR>filename</VAR>.
+<P>
+
+<DT><CODE>break <VAR>filename</VAR>:<VAR>function</VAR></CODE>
+<DD>Set a breakpoint at entry to function <VAR>function</VAR> found in file
+<VAR>filename</VAR>.  Specifying a file name as well as a function name is
+superfluous except when multiple files contain similarly named
+functions.
+<P>
+
+<DT><CODE>break *<VAR>address</VAR></CODE>
+<DD>Set a breakpoint at address <VAR>address</VAR>.  You can use this to set
+breakpoints in parts of your program which do not have debugging
+information or source files.
+<P>
+
+<DT><CODE>break</CODE>
+<DD>When called without any arguments, <CODE>break</CODE> sets a breakpoint at
+the next instruction to be executed in the selected stack frame
+(see section <A HREF="gdb_41.html#SEC41">Examining the Stack</A>).  In any selected frame but the
+innermost, this makes your program stop as soon as control
+returns to that frame.  This is similar to the effect of a
+<CODE>finish</CODE> command in the frame inside the selected frame--except
+that <CODE>finish</CODE> does not leave an active breakpoint.  If you use
+<CODE>break</CODE> without an argument in the innermost frame, GDB stops
+the next time it reaches the current location; this may be useful
+inside loops.
+<P>
+
+GDB normally ignores breakpoints when it resumes execution, until at
+least one instruction has been executed.  If it did not do this, you
+would be unable to proceed past a breakpoint without first disabling the
+breakpoint.  This rule applies whether or not the breakpoint already
+existed when your program stopped.
+</P><P>
+
+<DT><CODE>break <small>...</small> if <VAR>cond</VAR></CODE>
+<DD>Set a breakpoint with condition <VAR>cond</VAR>; evaluate the expression
+<VAR>cond</VAR> each time the breakpoint is reached, and stop only if the
+value is nonzero--that is, if <VAR>cond</VAR> evaluates as true.
+<SAMP>`<small>...</small>'</SAMP> stands for one of the possible arguments described
+above (or no argument) specifying where to break.  See section <A HREF="gdb_34.html#SEC34">Break conditions</A>, for more information on breakpoint conditions.
+<P>
+
+<A NAME="IDX143"></A>
+<DT><CODE>tbreak <VAR>args</VAR></CODE>
+<DD>Set a breakpoint enabled only for one stop.  <VAR>args</VAR> are the
+same as for the <CODE>break</CODE> command, and the breakpoint is set in the same
+way, but the breakpoint is automatically deleted after the first time your
+program stops there.  See section <A HREF="gdb_33.html#SEC33">Disabling breakpoints</A>.
+<P>
+
+<A NAME="IDX144"></A>
+<DT><CODE>hbreak <VAR>args</VAR></CODE>
+<DD>Set a hardware-assisted breakpoint.  <VAR>args</VAR> are the same as for the
+<CODE>break</CODE> command and the breakpoint is set in the same way, but the
+breakpoint requires hardware support and some target hardware may not
+have this support.  The main purpose of this is EPROM/ROM code
+debugging, so you can set a breakpoint at an instruction without
+changing the instruction.  This can be used with the new trap-generation
+provided by SPARClite DSU and some x86-based targets.  These targets
+will generate traps when a program accesses some data or instruction
+address that is assigned to the debug registers.  However the hardware
+breakpoint registers can take a limited number of breakpoints.  For
+example, on the DSU, only two data breakpoints can be set at a time, and
+GDB will reject this command if more than two are used.  Delete
+or disable unused hardware breakpoints before setting new ones
+(see section <A HREF="gdb_33.html#SEC33">Disabling</A>).  See section <A HREF="gdb_34.html#SEC34">Break conditions</A>.
+<P>
+
+<A NAME="IDX145"></A>
+<DT><CODE>thbreak <VAR>args</VAR></CODE>
+<DD>Set a hardware-assisted breakpoint enabled only for one stop.  <VAR>args</VAR>
+are the same as for the <CODE>hbreak</CODE> command and the breakpoint is set in
+the same way.  However, like the <CODE>tbreak</CODE> command,
+the breakpoint is automatically deleted after the
+first time your program stops there.  Also, like the <CODE>hbreak</CODE>
+command, the breakpoint requires hardware support and some target hardware
+may not have this support.  See section <A HREF="gdb_33.html#SEC33">Disabling breakpoints</A>.
+See also <A HREF="gdb_34.html#SEC34">Break conditions</A>.
+<P>
+
+<A NAME="IDX146"></A>
+<A NAME="IDX147"></A>
+<DT><CODE>rbreak <VAR>regex</VAR></CODE>
+<DD>Set breakpoints on all functions matching the regular expression
+<VAR>regex</VAR>.  This command sets an unconditional breakpoint on all
+matches, printing a list of all breakpoints it set.  Once these
+breakpoints are set, they are treated just like the breakpoints set with
+the <CODE>break</CODE> command.  You can delete them, disable them, or make
+them conditional the same way as any other breakpoint.
+<P>
+
+The syntax of the regular expression is the standard one used with tools
+like <TT>`grep'</TT>.  Note that this is different from the syntax used by
+shells, so for instance <CODE>foo*</CODE> matches all functions that include
+an <CODE>fo</CODE> followed by zero or more <CODE>o</CODE>s.  There is an implicit
+<CODE>.*</CODE> leading and trailing the regular expression you supply, so to
+match only functions that begin with <CODE>foo</CODE>, use <CODE>^foo</CODE>.
+</P><P>
+
+When debugging C<TT>++</TT> programs, <CODE>rbreak</CODE> is useful for setting
+breakpoints on overloaded functions that are not members of any special
+classes.
+</P><P>
+
+<A NAME="IDX148"></A>
+<A NAME="IDX149"></A>
+<DT><CODE>info breakpoints [<VAR>n</VAR>]</CODE>
+<DD><DT><CODE>info break [<VAR>n</VAR>]</CODE>
+<DD><DT><CODE>info watchpoints [<VAR>n</VAR>]</CODE>
+<DD>Print a table of all breakpoints, watchpoints, and catchpoints set and
+not deleted, with the following columns for each breakpoint:
+<P>
+
+<DL COMPACT>
+<DT><EM>Breakpoint Numbers</EM>
+<DD><DT><EM>Type</EM>
+<DD>Breakpoint, watchpoint, or catchpoint.
+<DT><EM>Disposition</EM>
+<DD>Whether the breakpoint is marked to be disabled or deleted when hit.
+<DT><EM>Enabled or Disabled</EM>
+<DD>Enabled breakpoints are marked with <SAMP>`y'</SAMP>.  <SAMP>`n'</SAMP> marks breakpoints
+that are not enabled.
+<DT><EM>Address</EM>
+<DD>Where the breakpoint is in your program, as a memory address.
+<DT><EM>What</EM>
+<DD>Where the breakpoint is in the source for your program, as a file and
+line number.
+</DL>
+<P>
+
+If a breakpoint is conditional, <CODE>info break</CODE> shows the condition on
+the line following the affected breakpoint; breakpoint commands, if any,
+are listed after that.
+</P><P>
+
+<CODE>info break</CODE> with a breakpoint
+number <VAR>n</VAR> as argument lists only that breakpoint.  The
+convenience variable <CODE>$_</CODE> and the default examining-address for
+the <CODE>x</CODE> command are set to the address of the last breakpoint
+listed (see section <A HREF="gdb_56.html#SEC56">Examining memory</A>).
+</P><P>
+
+<CODE>info break</CODE> displays a count of the number of times the breakpoint
+has been hit.  This is especially useful in conjunction with the
+<CODE>ignore</CODE> command.  You can ignore a large number of breakpoint
+hits, look at the breakpoint info to see how many times the breakpoint
+was hit, and then run again, ignoring one less than that number.  This
+will get you quickly to the last hit of that breakpoint.
+</DL>
+<P>
+
+GDB allows you to set any number of breakpoints at the same place in
+your program.  There is nothing silly or meaningless about this.  When
+the breakpoints are conditional, this is even useful
+(see section <A HREF="gdb_34.html#SEC34">Break conditions</A>).
+</P><P>
+
+<A NAME="IDX150"></A>
+<A NAME="IDX151"></A>
+GDB itself sometimes sets breakpoints in your program for
+special purposes, such as proper handling of <CODE>longjmp</CODE> (in C
+programs).  These internal breakpoints are assigned negative numbers,
+starting with <CODE>-1</CODE>; <SAMP>`info breakpoints'</SAMP> does not display them.
+You can see these breakpoints with the GDB maintenance command
+<SAMP>`maint info breakpoints'</SAMP> (see  <A HREF="gdb_271.html#maint info breakpoints">maint info breakpoints</A>).
+</P><P>
+
+<A NAME="Set Watchpoints"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_30.html#SEC30"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

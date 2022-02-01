@@ -1,0 +1,213 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: TUI Overview</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: TUI Overview">
+<META NAME="keywords" CONTENT="Debugging with GDB: TUI Overview">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC194"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_193.html#SEC193"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_195.html#SEC195"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_193.html#SEC193"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_193.html#SEC193"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_199.html#SEC199"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 21.1 TUI overview </H2>
+<!--docid::SEC194::-->
+<P>
+
+The TUI has two display modes that can be switched while
+GDB runs:
+</P><P>
+
+<UL>
+<LI>
+A curses (or TUI) mode in which it displays several text
+windows on the terminal.
+<P>
+
+<LI>
+A standard mode which corresponds to the GDB configured without
+the TUI.
+</UL>
+<P>
+
+In the TUI mode, GDB can display several text window
+on the terminal:
+</P><P>
+
+<DL COMPACT>
+<DT><EM>command</EM>
+<DD>This window is the GDB command window with the GDB
+prompt and the GDB outputs.  The GDB input is still
+managed using readline but through the TUI.  The <EM>command</EM>
+window is always visible.
+<P>
+
+<DT><EM>source</EM>
+<DD>The source window shows the source file of the program.  The current
+line as well as active breakpoints are displayed in this window.
+<P>
+
+<DT><EM>assembly</EM>
+<DD>The assembly window shows the disassembly output of the program.
+<P>
+
+<DT><EM>register</EM>
+<DD>This window shows the processor registers.  It detects when
+a register is changed and when this is the case, registers that have
+changed are highlighted.
+<P>
+
+</DL>
+<P>
+
+The source and assembly windows show the current program position
+by highlighting the current line and marking them with the <SAMP>`&#62;'</SAMP> marker.
+Breakpoints are also indicated with two markers.  A first one
+indicates the breakpoint type:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>B</CODE>
+<DD>Breakpoint which was hit at least once.
+<P>
+
+<DT><CODE>b</CODE>
+<DD>Breakpoint which was never hit.
+<P>
+
+<DT><CODE>H</CODE>
+<DD>Hardware breakpoint which was hit at least once.
+<P>
+
+<DT><CODE>h</CODE>
+<DD>Hardware breakpoint which was never hit.
+<P>
+
+</DL>
+<P>
+
+The second marker indicates whether the breakpoint is enabled or not:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>+</CODE>
+<DD>Breakpoint is enabled.
+<P>
+
+<DT><CODE>-</CODE>
+<DD>Breakpoint is disabled.
+<P>
+
+</DL>
+<P>
+
+The source, assembly and register windows are attached to the thread
+and the frame position.  They are updated when the current thread
+changes, when the frame changes or when the program counter changes.
+These three windows are arranged by the TUI according to several
+layouts.  The layout defines which of these three windows are visible.
+The following layouts are available:
+</P><P>
+
+<UL>
+<LI>
+source
+<P>
+
+<LI>
+assembly
+<P>
+
+<LI>
+source and assembly
+<P>
+
+<LI>
+source and registers
+<P>
+
+<LI>
+assembly and registers
+<P>
+
+</UL>
+<P>
+
+On top of the command window a status line gives various information
+concerning the current process begin debugged.  The status line is
+updated when the information it shows changes.  The following fields
+are displayed:
+</P><P>
+
+<DL COMPACT>
+<DT><EM>target</EM>
+<DD>Indicates the current gdb target
+(see section <A HREF="gdb_127.html#SEC127">Specifying a Debugging Target</A>).
+<P>
+
+<DT><EM>process</EM>
+<DD>Gives information about the current process or thread number.
+When no process is being debugged, this field is set to <CODE>No process</CODE>.
+<P>
+
+<DT><EM>function</EM>
+<DD>Gives the current function name for the selected frame.
+The name is demangled if demangling is turned on (see section <A HREF="gdb_58.html#SEC58">8.7 Print settings</A>).
+When there is no symbol corresponding to the current program counter
+the string <CODE>??</CODE> is displayed.
+<P>
+
+<DT><EM>line</EM>
+<DD>Indicates the current line number for the selected frame.
+When the current line number is not known the string <CODE>??</CODE> is displayed.
+<P>
+
+<DT><EM>pc</EM>
+<DD>Indicates the current program counter address.
+<P>
+
+</DL>
+<P>
+
+<A NAME="TUI Keys"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_193.html#SEC193"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_195.html#SEC195"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_193.html#SEC193"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_193.html#SEC193"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_199.html#SEC199"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

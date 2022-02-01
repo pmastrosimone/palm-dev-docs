@@ -1,0 +1,140 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Typeof</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Typeof">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Typeof">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC68"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_67.html#SEC67"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_69.html#SEC69"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_69.html#SEC69"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.7 Referring to a Type with <CODE>typeof</CODE> </H2>
+<!--docid::SEC68::-->
+<P>
+
+Another way to refer to the type of an expression is with <CODE>typeof</CODE>.
+The syntax of using of this keyword looks like <CODE>sizeof</CODE>, but the
+construct acts semantically like a type name defined with <CODE>typedef</CODE>.
+</P><P>
+
+There are two ways of writing the argument to <CODE>typeof</CODE>: with an
+expression or with a type.  Here is an example with an expression:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>typeof (x[0](1))
+</pre></td></tr></table></P><P>
+
+This assumes that <CODE>x</CODE> is an array of functions; the type described
+is that of the values of the functions.
+</P><P>
+
+Here is an example with a typename as the argument:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>typeof (int *)
+</pre></td></tr></table></P><P>
+
+Here the type described is that of pointers to <CODE>int</CODE>.
+</P><P>
+
+If you are writing a header file that must work when included in ANSI C
+programs, write <CODE>__typeof__</CODE> instead of <CODE>typeof</CODE>.
+See section <A HREF="gcc_104.html#SEC104">4.36 Alternate Keywords</A>.
+</P><P>
+
+A <CODE>typeof</CODE>-construct can be used anywhere a typedef name could be
+used.  For example, you can use it in a declaration, in a cast, or inside
+of <CODE>sizeof</CODE> or <CODE>typeof</CODE>.
+</P><P>
+
+<UL>
+<LI>
+This declares <CODE>y</CODE> with the type of what <CODE>x</CODE> points to.
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>typeof (*x) y;
+</pre></td></tr></table></P><P>
+
+<LI>
+This declares <CODE>y</CODE> as an array of such values.
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>typeof (*x) y[4];
+</pre></td></tr></table></P><P>
+
+<LI>
+This declares <CODE>y</CODE> as an array of pointers to characters:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>typeof (typeof (char *)[4]) y;
+</pre></td></tr></table></P><P>
+
+It is equivalent to the following traditional C declaration:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>char *y[4];
+</pre></td></tr></table></P><P>
+
+To see the meaning of the declaration using <CODE>typeof</CODE>, and why it
+might be a useful way to write, let's rewrite it with these macros:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define pointer(T)  typeof(T *)
+#define array(T, N) typeof(T [N])
+</pre></td></tr></table></P><P>
+
+Now the declaration can be rewritten this way:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>array (pointer (char), 4) y;
+</pre></td></tr></table></P><P>
+
+Thus, <CODE>array (pointer (char), 4)</CODE> is the type of arrays of 4
+pointers to <CODE>char</CODE>.
+</UL>
+<P>
+
+<A NAME="Lvalues"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_67.html#SEC67"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_69.html#SEC69"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_69.html#SEC69"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

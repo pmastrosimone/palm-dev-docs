@@ -1,0 +1,176 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: M68K-Branch</TITLE>
+
+<META NAME="description" CONTENT="Using as: M68K-Branch">
+<META NAME="keywords" CONTENT="Using as: M68K-Branch">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC307"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_297.html#SEC306"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_299.html#SEC308"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_169.html#SEC178"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_297.html#SEC306"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_300.html#SEC309"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 8.17.6.1 Branch Improvement </H4>
+<!--docid::SEC307::-->
+<P>
+
+<A NAME="IDX906"></A>
+<A NAME="IDX907"></A>
+<A NAME="IDX908"></A>
+<A NAME="IDX909"></A>
+Certain pseudo opcodes are permitted for branch instructions.
+They expand to the shortest branch instruction that reach the
+target.  Generally these mnemonics are made by substituting <SAMP>`j'</SAMP> for
+<SAMP>`b'</SAMP> at the start of a Motorola mnemonic.
+</P><P>
+
+The following table summarizes the pseudo-operations.  A <CODE>*</CODE> flags
+cases that are more fully described after the table:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>          Displacement
+          +------------------------------------------------------------
+          |                68020           68000/10, not PC-relative OK
+Pseudo-Op |BYTE    WORD    LONG            ABSOLUTE LONG JUMP    **
+          +------------------------------------------------------------
+     jbsr |bsrs    bsrw    bsrl            jsr
+      jra |bras    braw    bral            jmp
+*     jXX |bXXs    bXXw    bXXl            bNXs;jmp
+*    dbXX | N/A    dbXXw   dbXX;bras;bral  dbXX;bras;jmp
+     fjXX | N/A    fbXXw   fbXXl            N/A
+
+XX: condition
+NX: negative of condition XX
+
+</FONT></pre></td></tr></table><center>
+ <CODE>*</CODE>---see full description below
+</center>
+<center>
+ <CODE>**</CODE>---this expansion mode is disallowed by <SAMP>`--pcrel'</SAMP>
+</center>
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>jbsr</CODE>
+<DD><DT><CODE>jra</CODE>
+<DD>These are the simplest jump pseudo-operations; they always map to one
+particular machine instruction, depending on the displacement to the
+branch target.  This instruction will be a byte or word branch is that
+is sufficient.  Otherwise, a long branch will be emitted if available.
+If no long branches are available and the <SAMP>`--pcrel'</SAMP> option is not
+given, an absolute long jump will be emitted instead.  If no long
+branches are available, the <SAMP>`--pcrel'</SAMP> option is given, and a word
+branch cannot reach the target, an error message is generated.
+<P>
+
+In addition to standard branch operands, <CODE>as</CODE> allows these
+pseudo-operations to have all operands that are allowed for jsr and jmp,
+substituting these instructions if the operand given is not valid for a
+branch instruction.
+</P><P>
+
+<DT><CODE>j<VAR>XX</VAR></CODE>
+<DD>Here, <SAMP>`j<VAR>XX</VAR>'</SAMP> stands for an entire family of pseudo-operations,
+where <VAR>XX</VAR> is a conditional branch or condition-code test.  The full
+list of pseudo-ops in this family is:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre> jhi   jls   jcc   jcs   jne   jeq   jvc
+ jvs   jpl   jmi   jge   jlt   jgt   jle
+</FONT></pre></td></tr></table><P>
+
+Usually, each of these pseudo-operations expands to a single branch
+instruction.  However, if a word branch is not sufficient, no long branches
+are available, and the <SAMP>`--pcrel'</SAMP> option is not given, <CODE>as</CODE>
+issues a longer code fragment in terms of <VAR>NX</VAR>, the opposite condition
+to <VAR>XX</VAR>.  For example, under these conditions:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    j<VAR>XX</VAR> foo
+</FONT></pre></td></tr></table>gives
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>     b<VAR>NX</VAR>s oof
+     jmp foo
+ oof:
+</FONT></pre></td></tr></table></P><P>
+
+<DT><CODE>db<VAR>XX</VAR></CODE>
+<DD>The full family of pseudo-operations covered here is
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre> dbhi   dbls   dbcc   dbcs   dbne   dbeq   dbvc
+ dbvs   dbpl   dbmi   dbge   dblt   dbgt   dble
+ dbf    dbra   dbt
+</FONT></pre></td></tr></table><P>
+
+Motorola <SAMP>`db<VAR>XX</VAR>'</SAMP> instructions allow word displacements only.  When
+a word displacement is sufficient, each of these pseudo-operations expands
+to the corresponding Motorola instruction.  When a word displacement is not
+sufficient and long branches are available, when the source reads
+<SAMP>`db<VAR>XX</VAR> foo'</SAMP>, <CODE>as</CODE> emits
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>     db<VAR>XX</VAR> oo1
+     bras oo2
+ oo1:bral foo
+ oo2:
+</FONT></pre></td></tr></table></P><P>
+
+If, however, long branches are not available and the <SAMP>`--pcrel'</SAMP> option is
+not given, <CODE>as</CODE> emits
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>     db<VAR>XX</VAR> oo1
+     bras oo2
+ oo1:jmp foo
+ oo2:
+</FONT></pre></td></tr></table></P><P>
+
+<DT><CODE>fj<VAR>XX</VAR></CODE>
+<DD>This family includes
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre> fjne   fjeq   fjge   fjlt   fjgt   fjle   fjf
+ fjt    fjgl   fjgle  fjnge  fjngl  fjngle fjngt
+ fjnle  fjnlt  fjoge  fjogl  fjogt  fjole  fjolt
+ fjor   fjseq  fjsf   fjsne  fjst   fjueq  fjuge
+ fjugt  fjule  fjult  fjun
+</FONT></pre></td></tr></table><P>
+
+Each of these pseudo-operations always expands to a single Motorola
+coprocessor branch instruction, word or long.  All Motorola coprocessor
+branch instructions allow both word and long displacements.
+</P><P>
+
+</DL>
+<P>
+
+<A NAME="M68K-Chars"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_297.html#SEC306"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_299.html#SEC308"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_169.html#SEC178"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_297.html#SEC306"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_300.html#SEC309"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

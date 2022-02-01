@@ -1,0 +1,78 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: MMIX-Expand</TITLE>
+
+<META NAME="description" CONTENT="Using as: MMIX-Expand">
+<META NAME="keywords" CONTENT="Using as: MMIX-Expand">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC330"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_320.html#SEC329"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_322.html#SEC331"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_322.html#SEC331"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_319.html#SEC328"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_328.html#SEC337"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.21.2 Instruction expansion </H3>
+<!--docid::SEC330::-->
+<P>
+
+<A NAME="IDX1019"></A>
+When <CODE>as</CODE> encounters an instruction with an operand that is
+either not known or does not fit the operand size of the instruction,
+<CODE>as</CODE> (and <CODE>ld</CODE>) will expand the instruction into
+a sequence of instructions semantically equivalent to the operand fitting
+the instruction.  Expansion will take place for the following
+instructions:
+</P><P>
+
+<DL COMPACT>
+<DT><SAMP>`GETA'</SAMP>
+<DD>Expands to a sequence of four instructions: <CODE>SETL</CODE>, <CODE>INCML</CODE>,
+<CODE>INCMH</CODE> and <CODE>INCH</CODE>.  The operand must be a multiple of four.
+<DT>Conditional branches
+<DD>A branch instruction is turned into a branch with the complemented
+condition and prediction bit over five instructions; four instructions
+setting <CODE>$255</CODE> to the operand value, which like with <CODE>GETA</CODE> must
+be a multiple of four, and a final <CODE>GO $255,$255,0</CODE>.
+<DT><SAMP>`PUSHJ'</SAMP>
+<DD>Similar to expansion for conditional branches; four instructions set
+<CODE>$255</CODE> to the operand value, followed by a <CODE>PUSHGO $255,$255,0</CODE>.
+<DT><SAMP>`JMP'</SAMP>
+<DD>Similar to conditional branches and <CODE>PUSHJ</CODE>.  The final instruction
+is <CODE>GO $255,$255,0</CODE>.
+</DL>
+<P>
+
+The linker <CODE>ld</CODE> is expected to shrink these expansions for
+code assembled with <SAMP>`--relax'</SAMP> (though not currently implemented).
+</P><P>
+
+<A NAME="MMIX-Syntax"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

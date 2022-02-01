@@ -1,0 +1,240 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: H8/300 Opcodes</TITLE>
+
+<META NAME="description" CONTENT="Using as: H8/300 Opcodes">
+<META NAME="keywords" CONTENT="Using as: H8/300 Opcodes">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC242"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_232.html#SEC241"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_234.html#SEC243"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_234.html#SEC243"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_225.html#SEC234"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_234.html#SEC243"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.8.5 Opcodes </H3>
+<!--docid::SEC242::-->
+<P>
+
+<A NAME="IDX636"></A>
+<A NAME="IDX637"></A>
+<A NAME="IDX638"></A>
+<A NAME="IDX639"></A>
+For detailed information on the H8/300 machine instruction set, see
+<CITE>H8/300 Series Programming Manual</CITE>.  For information specific to
+the H8/300H, see <CITE>H8/300H Series Programming Manual</CITE> (Renesas).
+</P><P>
+
+<CODE>as</CODE> implements all the standard H8/300 opcodes.  No additional
+pseudo-instructions are needed on this family.
+</P><P>
+
+The following table summarizes the H8/300 opcodes, and their arguments.
+Entries marked <SAMP>`*'</SAMP> are opcodes used only on the H8/300H.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>         <I>Legend:</I>
+            Rs   source register
+            Rd   destination register
+            abs  absolute address
+            imm  immediate data
+         disp:N  N-bit displacement from a register
+        pcrel:N  N-bit displacement relative to program counter
+
+   add.b #imm,rd              *  andc #imm,ccr
+   add.b rs,rd                   band #imm,rd
+   add.w rs,rd                   band #imm,@rd
+*  add.w #imm,rd                 band #imm,@abs:8
+*  add.l rs,rd                   bra  pcrel:8
+*  add.l #imm,rd              *  bra  pcrel:16
+   adds #imm,rd                  bt   pcrel:8
+   addx #imm,rd               *  bt   pcrel:16
+   addx rs,rd                    brn  pcrel:8
+   and.b #imm,rd              *  brn  pcrel:16
+   and.b rs,rd                   bf   pcrel:8
+*  and.w rs,rd                *  bf   pcrel:16
+*  and.w #imm,rd                 bhi  pcrel:8
+*  and.l #imm,rd              *  bhi  pcrel:16
+*  and.l rs,rd                   bls  pcrel:8
+*  bls  pcrel:16                 bld  #imm,rd
+   bcc  pcrel:8                  bld  #imm,@rd
+*  bcc  pcrel:16                 bld  #imm,@abs:8
+   bhs  pcrel:8                  bnot #imm,rd
+*  bhs  pcrel:16                 bnot #imm,@rd
+   bcs  pcrel:8                  bnot #imm,@abs:8
+*  bcs  pcrel:16                 bnot rs,rd
+   blo  pcrel:8                  bnot rs,@rd
+*  blo  pcrel:16                 bnot rs,@abs:8
+   bne  pcrel:8                  bor  #imm,rd
+*  bne  pcrel:16                 bor  #imm,@rd
+   beq  pcrel:8                  bor  #imm,@abs:8
+*  beq  pcrel:16                 bset #imm,rd
+   bvc  pcrel:8                  bset #imm,@rd
+*  bvc  pcrel:16                 bset #imm,@abs:8
+   bvs  pcrel:8                  bset rs,rd
+*  bvs  pcrel:16                 bset rs,@rd
+   bpl  pcrel:8                  bset rs,@abs:8
+*  bpl  pcrel:16                 bsr  pcrel:8
+   bmi  pcrel:8                  bsr  pcrel:16
+*  bmi  pcrel:16                 bst  #imm,rd
+   bge  pcrel:8                  bst  #imm,@rd
+*  bge  pcrel:16                 bst  #imm,@abs:8
+   blt  pcrel:8                  btst #imm,rd
+*  blt  pcrel:16                 btst #imm,@rd
+   bgt  pcrel:8                  btst #imm,@abs:8
+*  bgt  pcrel:16                 btst rs,rd
+   ble  pcrel:8                  btst rs,@rd
+*  ble  pcrel:16                 btst rs,@abs:8
+   bclr #imm,rd                  bxor #imm,rd
+   bclr #imm,@rd                 bxor #imm,@rd
+   bclr #imm,@abs:8              bxor #imm,@abs:8
+   bclr rs,rd                    cmp.b #imm,rd
+   bclr rs,@rd                   cmp.b rs,rd
+   bclr rs,@abs:8                cmp.w rs,rd
+   biand #imm,rd                 cmp.w rs,rd
+   biand #imm,@rd             *  cmp.w #imm,rd
+   biand #imm,@abs:8          *  cmp.l #imm,rd
+   bild #imm,rd               *  cmp.l rs,rd
+   bild #imm,@rd                 daa  rs
+   bild #imm,@abs:8              das  rs
+   bior #imm,rd                  dec.b rs
+   bior #imm,@rd              *  dec.w #imm,rd
+   bior #imm,@abs:8           *  dec.l #imm,rd
+   bist #imm,rd                  divxu.b rs,rd
+   bist #imm,@rd              *  divxu.w rs,rd
+   bist #imm,@abs:8           *  divxs.b rs,rd
+   bixor #imm,rd              *  divxs.w rs,rd
+   bixor #imm,@rd                eepmov
+   bixor #imm,@abs:8          *  eepmovw
+*  exts.w rd                     mov.w rs,@abs:16
+*  exts.l rd                  *  mov.l #imm,rd
+*  extu.w rd                  *  mov.l rs,rd
+*  extu.l rd                  *  mov.l @rs,rd
+   inc  rs                    *  mov.l @(disp:16,rs),rd
+*  inc.w #imm,rd              *  mov.l @(disp:24,rs),rd
+*  inc.l #imm,rd              *  mov.l @rs+,rd
+   jmp  @rs                   *  mov.l @abs:16,rd
+   jmp  abs                   *  mov.l @abs:24,rd
+   jmp  @@abs:8               *  mov.l rs,@rd
+   jsr  @rs                   *  mov.l rs,@(disp:16,rd)
+   jsr  abs                   *  mov.l rs,@(disp:24,rd)
+   jsr  @@abs:8               *  mov.l rs,@-rd
+   ldc  #imm,ccr              *  mov.l rs,@abs:16
+   ldc  rs,ccr                *  mov.l rs,@abs:24
+*  ldc  @abs:16,ccr              movfpe @abs:16,rd
+*  ldc  @abs:24,ccr              movtpe rs,@abs:16
+*  ldc  @(disp:16,rs),ccr        mulxu.b rs,rd
+*  ldc  @(disp:24,rs),ccr     *  mulxu.w rs,rd
+*  ldc  @rs+,ccr              *  mulxs.b rs,rd
+*  ldc  @rs,ccr               *  mulxs.w rs,rd
+*  mov.b @(disp:24,rs),rd        neg.b rs
+*  mov.b rs,@(disp:24,rd)     *  neg.w rs
+   mov.b @abs:16,rd           *  neg.l rs
+   mov.b rs,rd                   nop
+   mov.b @abs:8,rd               not.b rs
+   mov.b rs,@abs:8            *  not.w rs
+   mov.b rs,rd                *  not.l rs
+   mov.b #imm,rd                 or.b #imm,rd
+   mov.b @rs,rd                  or.b rs,rd
+   mov.b @(disp:16,rs),rd     *  or.w #imm,rd
+   mov.b @rs+,rd              *  or.w rs,rd
+   mov.b @abs:8,rd            *  or.l #imm,rd
+   mov.b rs,@rd               *  or.l rs,rd
+   mov.b rs,@(disp:16,rd)        orc  #imm,ccr
+   mov.b rs,@-rd                 pop.w rs
+   mov.b rs,@abs:8            *  pop.l rs
+   mov.w rs,@rd                  push.w rs
+*  mov.w @(disp:24,rs),rd     *  push.l rs
+*  mov.w rs,@(disp:24,rd)        rotl.b rs
+*  mov.w @abs:24,rd           *  rotl.w rs
+*  mov.w rs,@abs:24           *  rotl.l rs
+   mov.w rs,rd                   rotr.b rs
+   mov.w #imm,rd              *  rotr.w rs
+   mov.w @rs,rd               *  rotr.l rs
+   mov.w @(disp:16,rs),rd        rotxl.b rs
+   mov.w @rs+,rd              *  rotxl.w rs
+   mov.w @abs:16,rd           *  rotxl.l rs
+   mov.w rs,@(disp:16,rd)        rotxr.b rs
+   mov.w rs,@-rd              *  rotxr.w rs
+*  rotxr.l rs                 *  stc  ccr,@(disp:24,rd)
+   bpt                        *  stc  ccr,@-rd
+   rte                        *  stc  ccr,@abs:16
+   rts                        *  stc  ccr,@abs:24
+   shal.b rs                     sub.b rs,rd
+*  shal.w rs                     sub.w rs,rd
+*  shal.l rs                  *  sub.w #imm,rd
+   shar.b rs                  *  sub.l rs,rd
+*  shar.w rs                  *  sub.l #imm,rd
+*  shar.l rs                     subs #imm,rd
+   shll.b rs                     subx #imm,rd
+*  shll.w rs                     subx rs,rd
+*  shll.l rs                  *  trapa #imm
+   shlr.b rs                     xor  #imm,rd
+*  shlr.w rs                     xor  rs,rd
+*  shlr.l rs                  *  xor.w #imm,rd
+   sleep                      *  xor.w rs,rd
+   stc  ccr,rd                *  xor.l #imm,rd
+*  stc  ccr,@rs               *  xor.l rs,rd
+*  stc  ccr,@(disp:16,rd)        xorc #imm,ccr
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX640"></A>
+<A NAME="IDX641"></A>
+Four H8/300 instructions (<CODE>add</CODE>, <CODE>cmp</CODE>, <CODE>mov</CODE>,
+<CODE>sub</CODE>) are defined with variants using the suffixes <SAMP>`.b'</SAMP>,
+<SAMP>`.w'</SAMP>, and <SAMP>`.l'</SAMP> to specify the size of a memory operand.
+<CODE>as</CODE> supports these suffixes, but does not require them;
+since one of the operands is always a register, <CODE>as</CODE> can
+deduce the correct size.
+</P><P>
+
+For example, since <CODE>r0</CODE> refers to a 16-bit register,
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>mov    r0,@foo
+is equivalent to
+mov.w  r0,@foo
+</pre></td></tr></table></P><P>
+
+If you use the size suffixes, <CODE>as</CODE> issues a warning when
+the suffix and the register size do not match.
+</P><P>
+
+<A NAME="H8/500-Dependent"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_232.html#SEC241"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_234.html#SEC243"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_234.html#SEC243"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_225.html#SEC234"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_234.html#SEC243"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,133 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Output</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Output">
+<META NAME="keywords" CONTENT="Debugging with GDB: Output">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC192"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_191.html#SEC191"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_193.html#SEC193"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_188.html#SEC188"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_188.html#SEC188"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_193.html#SEC193"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 20.4 Commands for controlled output </H2>
+<!--docid::SEC192::-->
+<P>
+
+During the execution of a command file or a user-defined command, normal
+GDB output is suppressed; the only output that appears is what is
+explicitly printed by the commands in the definition.  This section
+describes three commands useful for generating exactly the output you
+want.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX852"></A>
+<DT><CODE>echo <VAR>text</VAR></CODE>
+<DD>Print <VAR>text</VAR>.  Nonprinting characters can be included in
+<VAR>text</VAR> using C escape sequences, such as <SAMP>`\n'</SAMP> to print a
+newline.  <STRONG>No newline is printed unless you specify one.</STRONG>
+In addition to the standard C escape sequences, a backslash followed
+by a space stands for a space.  This is useful for displaying a
+string with spaces at the beginning or the end, since leading and
+trailing spaces are otherwise trimmed from all arguments.
+To print <SAMP>` and foo = '</SAMP>, use the command
+<SAMP>`echo \ and foo = \ '</SAMP>.
+<P>
+
+A backslash at the end of <VAR>text</VAR> can be used, as in C, to continue
+the command onto subsequent lines.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>echo This is some text\n\
+which is continued\n\
+onto several lines.\n
+</FONT></pre></td></tr></table></P><P>
+
+produces the same output as
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>echo This is some text\n
+echo which is continued\n
+echo onto several lines.\n
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX853"></A>
+<DT><CODE>output <VAR>expression</VAR></CODE>
+<DD>Print the value of <VAR>expression</VAR> and nothing but that value: no
+newlines, no <SAMP>`$<VAR>nn</VAR> = '</SAMP>.  The value is not entered in the
+value history either.  See section <A HREF="gdb_52.html#SEC52">Expressions</A>, for more information
+on expressions.
+<P>
+
+<DT><CODE>output/<VAR>fmt</VAR> <VAR>expression</VAR></CODE>
+<DD>Print the value of <VAR>expression</VAR> in format <VAR>fmt</VAR>.  You can use
+the same formats as for <CODE>print</CODE>.  See section <A HREF="gdb_55.html#SEC55">Output formats</A>, for more information.
+<P>
+
+<A NAME="IDX854"></A>
+<DT><CODE>printf <VAR>string</VAR>, <VAR>expressions</VAR><small>...</small></CODE>
+<DD>Print the values of the <VAR>expressions</VAR> under the control of
+<VAR>string</VAR>.  The <VAR>expressions</VAR> are separated by commas and may be
+either numbers or pointers.  Their values are printed as specified by
+<VAR>string</VAR>, exactly as if your program were to execute the C
+subroutine
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>printf (<VAR>string</VAR>, <VAR>expressions</VAR><small>...</small>);
+</FONT></pre></td></tr></table></P><P>
+
+For example, you can print two values in hex like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>printf "foo, bar-foo = 0x%x, 0x%x\n", foo, bar-foo
+</FONT></pre></td></tr></table></P><P>
+
+The only backslash-escape sequences that you can use in the format
+string are the simple ones that consist of backslash followed by a
+letter.
+</DL>
+<P>
+
+<A NAME="TUI"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_191.html#SEC191"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_193.html#SEC193"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_188.html#SEC188"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_188.html#SEC188"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_193.html#SEC193"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

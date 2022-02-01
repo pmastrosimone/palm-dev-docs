@@ -1,0 +1,481 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Installation Problems</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Installation Problems">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Installation Problems">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC125"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_124.html#SEC124"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_126.html#SEC126"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_126.html#SEC126"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.2 Installation Problems </H2>
+<!--docid::SEC125::-->
+<P>
+
+This is a list of problems (and some apparent problems which don't
+really mean anything is wrong) that show up during installation of GNU
+CC.
+</P><P>
+
+<UL>
+<LI>
+On certain systems, defining certain environment variables such as
+<CODE>CC</CODE> can interfere with the functioning of <CODE>make</CODE>.
+<P>
+
+<LI>
+If you encounter seemingly strange errors when trying to build the
+compiler in a directory other than the source directory, it could be
+because you have previously configured the compiler in the source
+directory.  Make sure you have done all the necessary preparations.
+See section <A HREF="gcc_49.html#SEC49">3.3 Compilation in a Separate Directory</A>.
+<P>
+
+<LI>
+If you build GCC on a BSD system using a directory stored in a System
+V file system, problems may occur in running <CODE>fixincludes</CODE> if the
+System V file system doesn't support symbolic links.  These problems
+result in a failure to fix the declaration of <CODE>size_t</CODE> in
+<TT>`sys/types.h'</TT>.  If you find that <CODE>size_t</CODE> is a signed type and
+that type mismatches occur, this could be the cause.
+<P>
+
+The solution is not to use such a directory for building GCC.
+</P><P>
+
+<LI>
+In previous versions of GCC, the <CODE>gcc</CODE> driver program looked for
+<CODE>as</CODE> and <CODE>ld</CODE> in various places; for example, in files
+beginning with <TT>`/usr/local/lib/gcc-'</TT>.  GCC version 2 looks for
+them in the directory
+<TT>`/usr/local/lib/gcc-lib/<VAR>target</VAR>/<VAR>version</VAR>'</TT>.
+<P>
+
+Thus, to use a version of <CODE>as</CODE> or <CODE>ld</CODE> that is not the system
+default, for example <CODE>gas</CODE> or GNU <CODE>ld</CODE>, you must put them in
+that directory (or make links to them from that directory).
+</P><P>
+
+<LI>
+Some commands executed when making the compiler may fail (return a
+non-zero status) and be ignored by <CODE>make</CODE>.  These failures, which
+are often due to files that were not found, are expected, and can safely
+be ignored.
+<P>
+
+<LI>
+It is normal to have warnings in compiling certain files about
+unreachable code and about enumeration type clashes.  These files' names
+begin with <SAMP>`insn-'</SAMP>.  Also, <TT>`real.c'</TT> may get some warnings that
+you can ignore.
+<P>
+
+<LI>
+Sometimes <CODE>make</CODE> recompiles parts of the compiler when installing
+the compiler.  In one case, this was traced down to a bug in
+<CODE>make</CODE>.  Either ignore the problem or switch to GNU Make.
+<P>
+
+<LI>
+If you have installed a program known as purify, you may find that it
+causes errors while linking <CODE>enquire</CODE>, which is part of building
+GCC.  The fix is to get rid of the file <CODE>real-ld</CODE> which purify
+installs--so that GCC won't try to use it.
+<P>
+
+<LI>
+On GNU/Linux SLS 1.01, there is a problem with <TT>`libc.a'</TT>: it does not
+contain the obstack functions.  However, GCC assumes that the obstack
+functions are in <TT>`libc.a'</TT> when it is the GNU C library.  To work
+around this problem, change the <CODE>__GNU_LIBRARY__</CODE> conditional
+around line 31 to <SAMP>`#if 1'</SAMP>.
+<P>
+
+<LI>
+On some 386 systems, building the compiler never finishes because
+<CODE>enquire</CODE> hangs due to a hardware problem in the motherboard--it
+reports floating point exceptions to the kernel incorrectly.  You can
+install GCC except for <TT>`float.h'</TT> by patching out the command to
+run <CODE>enquire</CODE>.  You may also be able to fix the problem for real by
+getting a replacement motherboard.  This problem was observed in
+Revision E of the Micronics motherboard, and is fixed in Revision F.
+It has also been observed in the MYLEX MXA-33 motherboard.
+<P>
+
+If you encounter this problem, you may also want to consider removing
+the FPU from the socket during the compilation.  Alternatively, if you
+are running SCO Unix, you can reboot and force the FPU to be ignored.
+To do this, type <SAMP>`hd(40)unix auto ignorefpu'</SAMP>.
+</P><P>
+
+<LI>
+On some 386 systems, GCC crashes trying to compile <TT>`enquire.c'</TT>.
+This happens on machines that don't have a 387 FPU chip.  On 386
+machines, the system kernel is supposed to emulate the 387 when you
+don't have one.  The crash is due to a bug in the emulator.
+<P>
+
+One of these systems is the Unix from Interactive Systems: 386/ix.
+On this system, an alternate emulator is provided, and it does work.
+To use it, execute this command as super-user:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ln /etc/emulator.rel1 /etc/emulator
+</pre></td></tr></table></P><P>
+
+and then reboot the system.  (The default emulator file remains present
+under the name <TT>`emulator.dflt'</TT>.)
+</P><P>
+
+Try using <TT>`/etc/emulator.att'</TT>, if you have such a problem on the
+SCO system.
+</P><P>
+
+Another system which has this problem is Esix.  We don't know whether it
+has an alternate emulator that works.
+</P><P>
+
+On NetBSD 0.8, a similar problem manifests itself as these error messages:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>enquire.c: In function `fprop':
+enquire.c:2328: floating overflow
+</pre></td></tr></table></P><P>
+
+<LI>
+On SCO systems, when compiling GCC with the system's compiler,
+do not use <SAMP>`-O'</SAMP>.  Some versions of the system's compiler miscompile
+GCC with <SAMP>`-O'</SAMP>.
+<P>
+
+<A NAME="IDX403"></A>
+<LI>
+Sometimes on a Sun 4 you may observe a crash in the program
+<CODE>genflags</CODE> or <CODE>genoutput</CODE> while building GCC.  This is said to
+be due to a bug in <CODE>sh</CODE>.  You can probably get around it by running
+<CODE>genflags</CODE> or <CODE>genoutput</CODE> manually and then retrying the
+<CODE>make</CODE>.
+<P>
+
+<LI>
+On Solaris 2, executables of GCC version 2.0.2 are commonly
+available, but they have a bug that shows up when compiling current
+versions of GCC: undefined symbol errors occur during assembly if you
+use <SAMP>`-g'</SAMP>.
+<P>
+
+The solution is to compile the current version of GCC without
+<SAMP>`-g'</SAMP>.  That makes a working compiler which you can use to recompile
+with <SAMP>`-g'</SAMP>.
+</P><P>
+
+<LI>
+Solaris 2 comes with a number of optional OS packages.  Some of these
+packages are needed to use GCC fully.  If you did not install all
+optional packages when installing Solaris, you will need to verify that
+the packages that GCC needs are installed.
+<P>
+
+To check whether an optional package is installed, use
+the <CODE>pkginfo</CODE> command.  To add an optional package, use the
+<CODE>pkgadd</CODE> command.  For further details, see the Solaris
+documentation.
+</P><P>
+
+For Solaris 2.0 and 2.1, GCC needs six packages: <SAMP>`SUNWarc'</SAMP>,
+<SAMP>`SUNWbtool'</SAMP>, <SAMP>`SUNWesu'</SAMP>, <SAMP>`SUNWhea'</SAMP>, <SAMP>`SUNWlibm'</SAMP>, and
+<SAMP>`SUNWtoo'</SAMP>.
+</P><P>
+
+For Solaris 2.2, GCC needs an additional seventh package: <SAMP>`SUNWsprot'</SAMP>.
+</P><P>
+
+<LI>
+On Solaris 2, trying to use the linker and other tools in
+<TT>`/usr/ucb'</TT> to install GCC has been observed to cause trouble.
+For example, the linker may hang indefinitely.  The fix is to remove
+<TT>`/usr/ucb'</TT> from your <CODE>PATH</CODE>.
+<P>
+
+<LI>
+If you use the 1.31 version of the MIPS assembler (such as was shipped
+with Ultrix 3.1), you will need to use the -fno-delayed-branch switch
+when optimizing floating point code.  Otherwise, the assembler will
+complain when the GCC compiler fills a branch delay slot with a
+floating point instruction, such as <CODE>add.d</CODE>.
+<P>
+
+<LI>
+If on a MIPS system you get an error message saying "does not have gp
+sections for all it's [sic] sectons [sic]", don't worry about it.  This
+happens whenever you use GAS with the MIPS linker, but there is not
+really anything wrong, and it is okay to use the output file.  You can
+stop such warnings by installing the GNU linker.
+<P>
+
+It would be nice to extend GAS to produce the gp tables, but they are
+optional, and there should not be a warning about their absence.
+</P><P>
+
+<LI>
+In Ultrix 4.0 on the MIPS machine, <TT>`stdio.h'</TT> does not work with GNU
+CC at all unless it has been fixed with <CODE>fixincludes</CODE>.  This causes
+problems in building GCC.  Once GCC is installed, the problems go
+away.
+<P>
+
+To work around this problem, when making the stage 1 compiler, specify
+this option to Make:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>GCC_FOR_TARGET="./xgcc -B./ -I./include"
+</pre></td></tr></table></P><P>
+
+When making stage 2 and stage 3, specify this option:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>CFLAGS="-g -I./include"
+</pre></td></tr></table></P><P>
+
+<LI>
+Users have reported some problems with version 2.0 of the MIPS
+compiler tools that were shipped with Ultrix 4.1.  Version 2.10
+which came with Ultrix 4.2 seems to work fine.
+<P>
+
+Users have also reported some problems with version 2.20 of the
+MIPS compiler tools that were shipped with RISC/os 4.x.  The earlier
+version 2.11 seems to work fine.
+</P><P>
+
+<LI>
+Some versions of the MIPS linker will issue an assertion failure
+when linking code that uses <CODE>alloca</CODE> against shared
+libraries on RISC-OS 5.0, and DEC's OSF/1 systems.  This is a bug
+in the linker, that is supposed to be fixed in future revisions.
+To protect against this, GCC passes <SAMP>`-non_shared'</SAMP> to the
+linker unless you pass an explicit <SAMP>`-shared'</SAMP> or
+<SAMP>`-call_shared'</SAMP> switch.
+<P>
+
+<LI>
+On System V release 3, you may get this error message
+while linking:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>ld fatal: failed to write symbol name <VAR>something</VAR>
+ in strings table for file <VAR>whatever</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+This probably indicates that the disk is full or your ULIMIT won't allow
+the file to be as large as it needs to be.
+</P><P>
+
+This problem can also result because the kernel parameter <CODE>MAXUMEM</CODE>
+is too small.  If so, you must regenerate the kernel and make the value
+much larger.  The default value is reported to be 1024; a value of 32768
+is said to work.  Smaller values may also work.
+</P><P>
+
+<LI>
+On System V, if you get an error like this,
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>/usr/local/lib/bison.simple: In function `yyparse':
+/usr/local/lib/bison.simple:625: virtual memory exhausted
+</pre></td></tr></table></P><P>
+
+that too indicates a problem with disk space, ULIMIT, or <CODE>MAXUMEM</CODE>.
+</P><P>
+
+<LI>
+Current GCC versions probably do not work on version 2 of the NeXT
+operating system.
+<P>
+
+<LI>
+On NeXTStep 3.0, the Objective C compiler does not work, due,
+apparently, to a kernel bug that it happens to trigger.  This problem
+does not happen on 3.1.
+<P>
+
+<LI>
+On the Tower models 4<VAR>n</VAR>0 and 6<VAR>n</VAR>0, by default a process is not
+allowed to have more than one megabyte of memory.  GCC cannot compile
+itself (or many other programs) with <SAMP>`-O'</SAMP> in that much memory.
+<P>
+
+To solve this problem, reconfigure the kernel adding the following line
+to the configuration file:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>MAXUMEM = 4096
+</FONT></pre></td></tr></table></P><P>
+
+<LI>
+On HP 9000 series 300 or 400 running HP-UX release 8.0, there is a bug
+in the assembler that must be fixed before GCC can be built.  This
+bug manifests itself during the first stage of compilation, while
+building <TT>`libgcc2.a'</TT>:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>_floatdisf
+cc1: warning: `-g' option not supported on this version of GCC
+cc1: warning: `-g1' option not supported on this version of GCC
+./xgcc: Internal compiler error: program as got fatal signal 11
+</FONT></pre></td></tr></table></P><P>
+
+A patched version of the assembler is available by anonymous ftp from
+<CODE>altdorf.ai.mit.edu</CODE> as the file
+<TT>`archive/cph/hpux-8.0-assembler'</TT>.  If you have HP software support,
+the patch can also be obtained directly from HP, as described in the
+following note:
+</P><P>
+
+<BLOCKQUOTE>
+This is the patched assembler, to patch SR#1653-010439, where the
+assembler aborts on floating point constants.
+<P>
+
+The bug is not really in the assembler, but in the shared library
+version of the function "cvtnum(3c)".  The bug on "cvtnum(3c)" is
+SR#4701-078451.  Anyway, the attached assembler uses the archive
+library version of "cvtnum(3c)" and thus does not exhibit the bug.
+</BLOCKQUOTE>
+<P>
+
+This patch is also known as PHCO_4484.
+</P><P>
+
+<LI>
+On HP-UX version 8.05, but not on 8.07 or more recent versions,
+the <CODE>fixproto</CODE> shell script triggers a bug in the system shell.
+If you encounter this problem, upgrade your operating system or
+use BASH (the GNU shell) to run <CODE>fixproto</CODE>.
+<P>
+
+<LI>
+Some versions of the Pyramid C compiler are reported to be unable to
+compile GCC.  You must use an older version of GCC for
+bootstrapping.  One indication of this problem is if you get a crash
+when GCC compiles the function <CODE>muldi3</CODE> in file <TT>`libgcc2.c'</TT>.
+<P>
+
+You may be able to succeed by getting GCC version 1, installing it,
+and using it to compile GCC version 2.  The bug in the Pyramid C
+compiler does not seem to affect GCC version 1.
+</P><P>
+
+<LI>
+There may be similar problems on System V Release 3.1 on 386 systems.
+<P>
+
+<LI>
+On the Intel Paragon (an i860 machine), if you are using operating
+system version 1.0, you will get warnings or errors about redefinition
+of <CODE>va_arg</CODE> when you build GCC.
+<P>
+
+If this happens, then you need to link most programs with the library
+<TT>`iclib.a'</TT>.  You must also modify <TT>`stdio.h'</TT> as follows: before
+the lines
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#if     defined(__i860__) &#38;&#38; !defined(_VA_LIST)
+#include &#60;va_list.h&#62;
+</pre></td></tr></table></P><P>
+
+insert the line
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#if __PGC__
+</pre></td></tr></table></P><P>
+
+and after the lines
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>extern int  vprintf(const char *, va_list );
+extern int  vsprintf(char *, const char *, va_list );
+#endif
+</pre></td></tr></table></P><P>
+
+insert the line
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#endif /* __PGC__ */
+</pre></td></tr></table></P><P>
+
+These problems don't exist in operating system version 1.1.
+</P><P>
+
+<LI>
+On the Altos 3068, programs compiled with GCC won't work unless you
+fix a kernel bug.  This happens using system versions V.2.2 1.0gT1 and
+V.2.2 1.0e and perhaps later versions as well.  See the file
+<TT>`README.ALTOS'</TT>.
+<P>
+
+<LI>
+You will get several sorts of compilation and linking errors on the
+we32k if you don't follow the special instructions.  See section <A HREF="gcc_48.html#SEC48">3.2 Configurations Supported by GNU CC</A>.
+<P>
+
+<LI>
+A bug in the HP-UX 8.05 (and earlier) shell will cause the fixproto
+program to report an error of the form:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>./fixproto: sh internal 1K buffer overflow
+</pre></td></tr></table></P><P>
+
+To fix this, change the first line of the fixproto script to look like:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#!/bin/ksh
+</pre></td></tr></table></UL>
+<P>
+
+<A NAME="Cross-Compiler Problems"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_124.html#SEC124"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_126.html#SEC126"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_126.html#SEC126"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

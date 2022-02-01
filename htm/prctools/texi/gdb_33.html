@@ -1,0 +1,134 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Disabling</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Disabling">
+<META NAME="keywords" CONTENT="Debugging with GDB: Disabling">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC33"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_32.html#SEC32"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_34.html#SEC34"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_34.html#SEC34"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 5.1.5 Disabling breakpoints </H3>
+<!--docid::SEC33::-->
+<P>
+
+<A NAME="IDX176"></A>
+<A NAME="IDX177"></A>
+Rather than deleting a breakpoint, watchpoint, or catchpoint, you might
+prefer to <EM>disable</EM> it.  This makes the breakpoint inoperative as if
+it had been deleted, but remembers the information on the breakpoint so
+that you can <EM>enable</EM> it again later.
+</P><P>
+
+You disable and enable breakpoints, watchpoints, and catchpoints with
+the <CODE>enable</CODE> and <CODE>disable</CODE> commands, optionally specifying one
+or more breakpoint numbers as arguments.  Use <CODE>info break</CODE> or
+<CODE>info watch</CODE> to print a list of breakpoints, watchpoints, and
+catchpoints if you do not know which numbers to use.
+</P><P>
+
+A breakpoint, watchpoint, or catchpoint can have any of four different
+states of enablement:
+</P><P>
+
+<UL>
+<LI>
+Enabled.  The breakpoint stops your program.  A breakpoint set
+with the <CODE>break</CODE> command starts out in this state.
+<LI>
+Disabled.  The breakpoint has no effect on your program.
+<LI>
+Enabled once.  The breakpoint stops your program, but then becomes
+disabled.
+<LI>
+Enabled for deletion.  The breakpoint stops your program, but
+immediately after it does so it is deleted permanently.  A breakpoint
+set with the <CODE>tbreak</CODE> command starts out in this state.
+</UL>
+<P>
+
+You can use the following commands to enable or disable breakpoints,
+watchpoints, and catchpoints:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX178"></A>
+<A NAME="IDX179"></A>
+<A NAME="IDX180"></A>
+<DT><CODE>disable [breakpoints] [<VAR>range</VAR><small>...</small>]</CODE>
+<DD>Disable the specified breakpoints--or all breakpoints, if none are
+listed.  A disabled breakpoint has no effect but is not forgotten.  All
+options such as ignore-counts, conditions and commands are remembered in
+case the breakpoint is enabled again later.  You may abbreviate
+<CODE>disable</CODE> as <CODE>dis</CODE>.
+<P>
+
+<A NAME="IDX181"></A>
+<A NAME="IDX182"></A>
+<DT><CODE>enable [breakpoints] [<VAR>range</VAR><small>...</small>]</CODE>
+<DD>Enable the specified breakpoints (or all defined breakpoints).  They
+become effective once again in stopping your program.
+<P>
+
+<DT><CODE>enable [breakpoints] once <VAR>range</VAR><small>...</small></CODE>
+<DD>Enable the specified breakpoints temporarily.  GDB disables any
+of these breakpoints immediately after stopping your program.
+<P>
+
+<DT><CODE>enable [breakpoints] delete <VAR>range</VAR><small>...</small></CODE>
+<DD>Enable the specified breakpoints to work once, then die.  GDB
+deletes any of these breakpoints as soon as your program stops there.
+</DL>
+<P>
+
+Except for a breakpoint set with <CODE>tbreak</CODE> (see section <A HREF="gdb_29.html#SEC29">Setting breakpoints</A>), breakpoints that you set are initially enabled;
+subsequently, they become disabled or enabled only when you use one of
+the commands above.  (The command <CODE>until</CODE> can set and delete a
+breakpoint of its own, but it does not change the state of your other
+breakpoints; see <A HREF="gdb_38.html#SEC38">Continuing and stepping</A>.)
+</P><P>
+
+<A NAME="Conditions"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_32.html#SEC32"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_34.html#SEC34"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_34.html#SEC34"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

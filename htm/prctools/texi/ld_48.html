@@ -1,0 +1,248 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Builtin Functions</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Builtin Functions">
+<META NAME="keywords" CONTENT="Untitled Document: Builtin Functions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC48"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_47.html#SEC47"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_49.html#SEC49"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_8.html#SEC8"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_41.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_49.html#SEC49"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.10.7 Builtin Functions </H3>
+<!--docid::SEC48::-->
+The linker script language includes a number of builtin functions for
+use in linker script expressions.
+<P>
+
+<DL COMPACT>
+<DT><CODE>ABSOLUTE(<VAR>exp</VAR>)</CODE>
+<DD><A NAME="IDX340"></A>
+<A NAME="IDX341"></A>
+Return the absolute (non-relocatable, as opposed to non-negative) value
+of the expression <VAR>exp</VAR>.  Primarily useful to assign an absolute
+value to a symbol within a section definition, where symbol values are
+normally section relative.  See section <A HREF="ld_47.html#SEC47">3.10.6 The Section of an Expression</A>.
+<P>
+
+<DT><CODE>ADDR(<VAR>section</VAR>)</CODE>
+<DD><A NAME="IDX342"></A>
+<A NAME="IDX343"></A>
+Return the absolute address (the VMA) of the named <VAR>section</VAR>.  Your
+script must previously have defined the location of that section.  In
+the following example, <CODE>symbol_1</CODE> and <CODE>symbol_2</CODE> are assigned
+identical values:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS { <small>...</small>
+  .output1 :
+    {
+    start_of_output_1 = ABSOLUTE(.);
+    <small>...</small>
+    }
+  .output :
+    {
+    symbol_1 = ADDR(.output1);
+    symbol_2 = start_of_output_1;
+    }
+<small>...</small> }
+</FONT></pre></td></tr></table><P>
+
+<DT><CODE>ALIGN(<VAR>exp</VAR>)</CODE>
+<DD><A NAME="IDX344"></A>
+<A NAME="IDX345"></A>
+<A NAME="IDX346"></A>
+Return the location counter (<CODE>.</CODE>) aligned to the next <VAR>exp</VAR>
+boundary.
+<CODE>ALIGN</CODE> doesn't change the value of the location counter--it just
+does arithmetic on it.  Here is an example which aligns the output
+<CODE>.data</CODE> section to the next <CODE>0x2000</CODE> byte boundary after the
+preceding section and sets a variable within the section to the next
+<CODE>0x8000</CODE> boundary after the input sections:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS { <small>...</small>
+  .data ALIGN(0x2000): {
+    *(.data)
+    variable = ALIGN(0x8000);
+  }
+<small>...</small> }
+</FONT></pre></td></tr></table>The first use of <CODE>ALIGN</CODE> in this example specifies the location of
+a section because it is used as the optional <VAR>address</VAR> attribute of
+a section definition (see section <A HREF="ld_21.html#SEC21">3.6.3 Output Section Description</A>).  The second use
+of <CODE>ALIGN</CODE> is used to defines the value of a symbol.
+<P>
+
+The builtin function <CODE>NEXT</CODE> is closely related to <CODE>ALIGN</CODE>.
+</P><P>
+
+<DT><CODE>BLOCK(<VAR>exp</VAR>)</CODE>
+<DD><A NAME="IDX347"></A>
+This is a synonym for <CODE>ALIGN</CODE>, for compatibility with older linker
+scripts.  It is most often seen when setting the address of an output
+section.
+<P>
+
+<DT><CODE>DATA_SEGMENT_ALIGN(<VAR>maxpagesize</VAR>, <VAR>commonpagesize</VAR>)</CODE>
+<DD><A NAME="IDX348"></A>
+This is equivalent to either
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(ALIGN(<VAR>maxpagesize</VAR>) + (. &#38; (<VAR>maxpagesize</VAR> - 1)))
+</FONT></pre></td></tr></table>or
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(ALIGN(<VAR>maxpagesize</VAR>) + (. &#38; (<VAR>maxpagesize</VAR> - <VAR>commonpagesize</VAR>)))
+</FONT></pre></td></tr></table>depending on whether the latter uses fewer <VAR>commonpagesize</VAR> sized pages
+for the data segment (area between the result of this expression and
+<CODE>DATA_SEGMENT_END</CODE>) than the former or not.
+If the latter form is used, it means <VAR>commonpagesize</VAR> bytes of runtime
+memory will be saved at the expense of up to <VAR>commonpagesize</VAR> wasted
+bytes in the on-disk file.
+<P>
+
+This expression can only be used directly in <CODE>SECTIONS</CODE> commands, not in
+any output section descriptions and only once in the linker script.
+<VAR>commonpagesize</VAR> should be less or equal to <VAR>maxpagesize</VAR> and should
+be the system page size the object wants to be optimized for (while still
+working on system page sizes up to <VAR>maxpagesize</VAR>).
+</P><P>
+
+Example:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>  . = DATA_SEGMENT_ALIGN(0x10000, 0x2000);
+</FONT></pre></td></tr></table></P><P>
+
+<DT><CODE>DATA_SEGMENT_END(<VAR>exp</VAR>)</CODE>
+<DD><A NAME="IDX349"></A>
+This defines the end of data segment for <CODE>DATA_SEGMENT_ALIGN</CODE>
+evaluation purposes.
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>  . = DATA_SEGMENT_END(.);
+</FONT></pre></td></tr></table></P><P>
+
+<DT><CODE>DEFINED(<VAR>symbol</VAR>)</CODE>
+<DD><A NAME="IDX350"></A>
+<A NAME="IDX351"></A>
+Return 1 if <VAR>symbol</VAR> is in the linker global symbol table and is
+defined, otherwise return 0.  You can use this function to provide
+default values for symbols.  For example, the following script fragment
+shows how to set a global symbol <SAMP>`begin'</SAMP> to the first location in
+the <SAMP>`.text'</SAMP> section--but if a symbol called <SAMP>`begin'</SAMP> already
+existed, its value is preserved:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS { <small>...</small>
+  .text : {
+    begin = DEFINED(begin) ? begin : . ;
+    <small>...</small>
+  }
+  <small>...</small>
+}
+</FONT></pre></td></tr></table></P><P>
+
+<DT><CODE>LOADADDR(<VAR>section</VAR>)</CODE>
+<DD><A NAME="IDX352"></A>
+<A NAME="IDX353"></A>
+Return the absolute LMA of the named <VAR>section</VAR>.  This is normally
+the same as <CODE>ADDR</CODE>, but it may be different if the <CODE>AT</CODE>
+attribute is used in the output section definition (see section <A HREF="ld_33.html#SEC33">3.6.8.2 Output Section LMA</A>).
+<P>
+
+<A NAME="IDX354"></A>
+<DT><CODE>MAX(<VAR>exp1</VAR>, <VAR>exp2</VAR>)</CODE>
+<DD>Returns the maximum of <VAR>exp1</VAR> and <VAR>exp2</VAR>.
+<P>
+
+<A NAME="IDX355"></A>
+<DT><CODE>MIN(<VAR>exp1</VAR>, <VAR>exp2</VAR>)</CODE>
+<DD>Returns the minimum of <VAR>exp1</VAR> and <VAR>exp2</VAR>.
+<P>
+
+<DT><CODE>NEXT(<VAR>exp</VAR>)</CODE>
+<DD><A NAME="IDX356"></A>
+<A NAME="IDX357"></A>
+Return the next unallocated address that is a multiple of <VAR>exp</VAR>.
+This function is closely related to <CODE>ALIGN(<VAR>exp</VAR>)</CODE>; unless you
+use the <CODE>MEMORY</CODE> command to define discontinuous memory for the
+output file, the two functions are equivalent.
+<P>
+
+<DT><CODE>SIZEOF(<VAR>section</VAR>)</CODE>
+<DD><A NAME="IDX358"></A>
+<A NAME="IDX359"></A>
+Return the size in bytes of the named <VAR>section</VAR>, if that section has
+been allocated.  If the section has not been allocated when this is
+evaluated, the linker will report an error.  In the following example,
+<CODE>symbol_1</CODE> and <CODE>symbol_2</CODE> are assigned identical values:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS{ <small>...</small>
+  .output {
+    .start = . ;
+    <small>...</small>
+    .end = . ;
+    }
+  symbol_1 = .end - .start ;
+  symbol_2 = SIZEOF(.output);
+<small>...</small> }
+</FONT></pre></td></tr></table><P>
+
+<DT><CODE>SIZEOF_HEADERS</CODE>
+<DD><DT><CODE>sizeof_headers</CODE>
+<DD><A NAME="IDX360"></A>
+<A NAME="IDX361"></A>
+Return the size in bytes of the output file's headers.  This is
+information which appears at the start of the output file.  You can use
+this number when setting the start address of the first section, if you
+choose, to facilitate paging.
+<P>
+
+<A NAME="IDX362"></A>
+<A NAME="IDX363"></A>
+When producing an ELF output file, if the linker script uses the
+<CODE>SIZEOF_HEADERS</CODE> builtin function, the linker must compute the
+number of program headers before it has determined all the section
+addresses and sizes.  If the linker later discovers that it needs
+additional program headers, it will report an error <SAMP>`not enough
+room for program headers'</SAMP>.  To avoid this error, you must avoid using
+the <CODE>SIZEOF_HEADERS</CODE> function, or you must rework your linker
+script to avoid forcing the linker to use additional program headers, or
+you must define the program headers yourself using the <CODE>PHDRS</CODE>
+command (see section <A HREF="ld_39.html#SEC39">3.8 PHDRS Command</A>).
+</DL>
+<P>
+
+<A NAME="Implicit Linker Scripts"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_47.html#SEC47"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_49.html#SEC49"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_8.html#SEC8"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_41.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_49.html#SEC49"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

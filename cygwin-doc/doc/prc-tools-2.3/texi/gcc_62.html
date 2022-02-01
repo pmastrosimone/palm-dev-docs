@@ -1,0 +1,114 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Statement Exprs</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Statement Exprs">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Statement Exprs">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC62"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_63.html#SEC63"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.1 Statements and Declarations in Expressions </H2>
+<!--docid::SEC62::-->
+<P>
+
+A compound statement enclosed in parentheses may appear as an expression
+in GNU C.  This allows you to use loops, switches, and local variables
+within an expression.
+</P><P>
+
+Recall that a compound statement is a sequence of statements surrounded
+by braces; in this construct, parentheses go around the braces.  For
+example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>({ int y = foo (); int z;
+   if (y &#62; 0) z = y;
+   else z = - y;
+   z; })
+</pre></td></tr></table></P><P>
+
+is a valid (though slightly more complex than necessary) expression
+for the absolute value of <CODE>foo ()</CODE>.
+</P><P>
+
+The last thing in the compound statement should be an expression
+followed by a semicolon; the value of this subexpression serves as the
+value of the entire construct.  (If you use some other kind of statement
+last within the braces, the construct has type <CODE>void</CODE>, and thus
+effectively no value.)
+</P><P>
+
+This feature is especially useful in making macro definitions "safe" (so
+that they evaluate each operand exactly once).  For example, the
+"maximum" function is commonly defined as a macro in standard C as
+follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define max(a,b) ((a) &#62; (b) ? (a) : (b))
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX255"></A>
+But this definition computes either <VAR>a</VAR> or <VAR>b</VAR> twice, with bad
+results if the operand has side effects.  In GNU C, if you know the
+type of the operands (here let's assume <CODE>int</CODE>), you can define
+the macro safely as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define maxint(a,b) \
+  ({int _a = (a), _b = (b); _a &#62; _b ? _a : _b; })
+</pre></td></tr></table></P><P>
+
+Embedded statements are not allowed in constant expressions, such as
+the value of an enumeration constant, the width of a bit field, or
+the initial value of a static variable.
+</P><P>
+
+If you don't know the type of the operand, you can still do this, but you
+must use <CODE>typeof</CODE> (see section <A HREF="gcc_68.html#SEC68">4.7 Referring to a Type with <CODE>typeof</CODE></A>) or type naming (see section <A HREF="gcc_67.html#SEC67">4.6 Naming an Expression's Type</A>).
+</P><P>
+
+<A NAME="Local Labels"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_63.html#SEC63"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

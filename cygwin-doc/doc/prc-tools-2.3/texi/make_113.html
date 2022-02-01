@@ -1,0 +1,173 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Implicit Rule Search</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Implicit Rule Search">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Implicit Rule Search">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC117"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_112.html#SEC116"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 10.8 Implicit Rule Search Algorithm </H2>
+<!--docid::SEC117::-->
+<P>
+
+Here is the procedure <CODE>make</CODE> uses for searching for an implicit rule
+for a target <VAR>t</VAR>.  This procedure is followed for each double-colon
+rule with no commands, for each target of ordinary rules none of which have
+commands, and for each prerequisite that is not the target of any rule.  It
+is also followed recursively for prerequisites that come from implicit
+rules, in the search for a chain of rules.
+</P><P>
+
+Suffix rules are not mentioned in this algorithm because suffix rules are
+converted to equivalent pattern rules once the makefiles have been read in.
+</P><P>
+
+For an archive member target of the form
+<SAMP>`<VAR>archive</VAR>(<VAR>member</VAR>)'</SAMP>, the following algorithm is run
+twice, first using the entire target name <VAR>t</VAR>, and second using
+<SAMP>`(<VAR>member</VAR>)'</SAMP> as the target <VAR>t</VAR> if the first run found no
+rule.</P><P>
+
+<OL>
+<LI>
+Split <VAR>t</VAR> into a directory part, called <VAR>d</VAR>, and the rest,
+called <VAR>n</VAR>.  For example, if <VAR>t</VAR> is <SAMP>`src/foo.o'</SAMP>, then
+<VAR>d</VAR> is <SAMP>`src/'</SAMP> and <VAR>n</VAR> is <SAMP>`foo.o'</SAMP>.<P>
+
+<LI>
+Make a list of all the pattern rules one of whose targets matches
+<VAR>t</VAR> or <VAR>n</VAR>.  If the target pattern contains a slash, it is
+matched against <VAR>t</VAR>; otherwise, against <VAR>n</VAR>.
+<P>
+
+<LI>
+If any rule in that list is <EM>not</EM> a match-anything rule, then
+remove all nonterminal match-anything rules from the list.
+<P>
+
+<LI>
+Remove from the list all rules with no commands.
+<P>
+
+<LI>
+For each pattern rule in the list:
+<P>
+
+<OL>
+<LI>
+Find the stem <VAR>s</VAR>, which is the nonempty part of <VAR>t</VAR> or <VAR>n</VAR>
+matched by the <SAMP>`%'</SAMP> in the target pattern.<P>
+
+<LI>
+Compute the prerequisite names by substituting <VAR>s</VAR> for <SAMP>`%'</SAMP>; if
+the target pattern does not contain a slash, append <VAR>d</VAR> to
+the front of each prerequisite name.<P>
+
+<LI>
+Test whether all the prerequisites exist or ought to exist.  (If a
+file name is mentioned in the makefile as a target or as an explicit
+prerequisite, then we say it ought to exist.)
+<P>
+
+If all prerequisites exist or ought to exist, or there are no prerequisites,
+then this rule applies.
+</OL>
+<P>
+
+<LI>
+If no pattern rule has been found so far, try harder.
+For each pattern rule in the list:
+<P>
+
+<OL>
+<LI>
+If the rule is terminal, ignore it and go on to the next rule.
+<P>
+
+<LI>
+Compute the prerequisite names as before.
+<P>
+
+<LI>
+Test whether all the prerequisites exist or ought to exist.
+<P>
+
+<LI>
+For each prerequisite that does not exist, follow this algorithm
+recursively to see if the prerequisite can be made by an implicit
+rule.
+<P>
+
+<LI>
+If all prerequisites exist, ought to exist, or can be
+made by implicit rules, then this rule applies.
+</OL>
+<P>
+
+<LI>
+If no implicit rule applies, the rule for <CODE>.DEFAULT</CODE>, if any,
+applies.  In that case, give <VAR>t</VAR> the same commands that
+<CODE>.DEFAULT</CODE> has.  Otherwise, there are no commands for <VAR>t</VAR>.
+</OL>
+<P>
+
+Once a rule that applies has been found, for each target pattern of the
+rule other than the one that matched <VAR>t</VAR> or <VAR>n</VAR>, the <SAMP>`%'</SAMP> in
+the pattern is replaced with <VAR>s</VAR> and the resultant file name is stored
+until the commands to remake the target file <VAR>t</VAR> are executed.  After
+these commands are executed, each of these stored file names are entered
+into the data base and marked as having been updated and having the same
+update status as the file <VAR>t</VAR>.
+</P><P>
+
+When the commands of a pattern rule are executed for <VAR>t</VAR>, the automatic
+variables are set corresponding to the target and prerequisites.
+See section <A HREF="make_107.html#SEC111">Automatic Variables</A>.
+</P><P>
+
+<A NAME="Archives"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_112.html#SEC116"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

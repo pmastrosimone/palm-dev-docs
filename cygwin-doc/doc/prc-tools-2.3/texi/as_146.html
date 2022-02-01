@@ -1,0 +1,104 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Symver</TITLE>
+
+<META NAME="description" CONTENT="Using as: Symver">
+<META NAME="keywords" CONTENT="Using as: Symver">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC153"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_145.html#SEC152"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_147.html#SEC154"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_76.html#SEC79"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_68.html#SEC71"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_159.html#SEC168"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.78 <CODE>.symver</CODE> </H2>
+<!--docid::SEC153::-->
+Use the <CODE>.symver</CODE> directive to bind symbols to specific version nodes
+within a source file.  This is only supported on ELF platforms, and is
+typically used when assembling files to be linked into a shared library.
+There are cases where it may make sense to use this in objects to be bound
+into an application itself so as to override a versioned symbol from a
+shared library.
+<P>
+
+For ELF targets, the <CODE>.symver</CODE> directive can be used like this:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>.symver <VAR>name</VAR>, <VAR>name2@nodename</VAR>
+</FONT></pre></td></tr></table>If the symbol <VAR>name</VAR> is defined within the file
+being assembled, the <CODE>.symver</CODE> directive effectively creates a symbol
+alias with the name <VAR>name2@nodename</VAR>, and in fact the main reason that we
+just don't try and create a regular alias is that the <VAR>@</VAR> character isn't
+permitted in symbol names.  The <VAR>name2</VAR> part of the name is the actual name
+of the symbol by which it will be externally referenced.  The name <VAR>name</VAR>
+itself is merely a name of convenience that is used so that it is possible to
+have definitions for multiple versions of a function within a single source
+file, and so that the compiler can unambiguously know which version of a
+function is being mentioned.  The <VAR>nodename</VAR> portion of the alias should be
+the name of a node specified in the version script supplied to the linker when
+building a shared library.  If you are attempting to override a versioned
+symbol from a shared library, then <VAR>nodename</VAR> should correspond to the
+nodename of the symbol you are trying to override.
+</P><P>
+
+If the symbol <VAR>name</VAR> is not defined within the file being assembled, all
+references to <VAR>name</VAR> will be changed to <VAR>name2@nodename</VAR>.  If no
+reference to <VAR>name</VAR> is made, <VAR>name2@nodename</VAR> will be removed from the
+symbol table.
+</P><P>
+
+Another usage of the <CODE>.symver</CODE> directive is:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>.symver <VAR>name</VAR>, <VAR>name2@@nodename</VAR>
+</FONT></pre></td></tr></table>In this case, the symbol <VAR>name</VAR> must exist and be defined within
+the file being assembled. It is similar to <VAR>name2@nodename</VAR>. The
+difference is <VAR>name2@@nodename</VAR> will also be used to resolve
+references to <VAR>name2</VAR> by the linker.
+</P><P>
+
+The third usage of the <CODE>.symver</CODE> directive is:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>.symver <VAR>name</VAR>, <VAR>name2@@@nodename</VAR>
+</FONT></pre></td></tr></table>When <VAR>name</VAR> is not defined within the
+file being assembled, it is treated as <VAR>name2@nodename</VAR>. When
+<VAR>name</VAR> is defined within the file being assembled, the symbol
+name, <VAR>name</VAR>, will be changed to <VAR>name2@@nodename</VAR>.
+</P><P>
+
+<A NAME="Tag"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_145.html#SEC152"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_147.html#SEC154"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_76.html#SEC79"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_68.html#SEC71"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_159.html#SEC168"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

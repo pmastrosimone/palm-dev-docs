@@ -1,0 +1,102 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Labels as Values</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Labels as Values">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Labels as Values">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC64"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_63.html#SEC63"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.3 Labels as Values </H2>
+<!--docid::SEC64::-->
+<P>
+
+You can get the address of a label defined in the current function
+(or a containing function) with the unary operator <SAMP>`&#38;&#38;'</SAMP>.  The
+value has type <CODE>void *</CODE>.  This value is a constant and can be used
+wherever a constant of that type is valid.  For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>void *ptr;
+<small>...</small>
+ptr = &#38;&#38;foo;
+</pre></td></tr></table></P><P>
+
+To use these values, you need to be able to jump to one.  This is done
+with the computed goto statement<A NAME="DOCF1" HREF="gcc_fot.html#FOOT1">(1)</A>, <CODE>goto *<VAR>exp</VAR>;</CODE>.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>goto *ptr;
+</pre></td></tr></table></P><P>
+
+Any expression of type <CODE>void *</CODE> is allowed.
+</P><P>
+
+One way of using these constants is in initializing a static array that
+will serve as a jump table:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>static void *array[] = { &#38;&#38;foo, &#38;&#38;bar, &#38;&#38;hack };
+</pre></td></tr></table></P><P>
+
+Then you can select a label with indexing, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>goto *array[i];
+</pre></td></tr></table></P><P>
+
+Note that this does not check whether the subscript is in bounds--array
+indexing in C never does that.
+</P><P>
+
+Such an array of label values serves a purpose much like that of the
+<CODE>switch</CODE> statement.  The <CODE>switch</CODE> statement is cleaner, so
+use that rather than an array unless the problem does not fit a
+<CODE>switch</CODE> statement very well.
+</P><P>
+
+Another use of label values is in an interpreter for threaded code.
+The labels within the interpreter function can be stored in the
+threaded code for super-fast dispatching.
+</P><P>
+
+You can use this mechanism to jump to code in a different function.  If
+you do that, totally unpredictable things will happen.  The best way to
+avoid this is to store the label address only in automatic variables and
+never pass it as an argument.
+</P><P>
+
+<A NAME="Nested Functions"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

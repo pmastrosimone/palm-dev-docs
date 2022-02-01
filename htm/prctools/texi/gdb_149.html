@@ -1,0 +1,90 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: VxWorks Download</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: VxWorks Download">
+<META NAME="keywords" CONTENT="Debugging with GDB: VxWorks Download">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC149"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_148.html#SEC148"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_150.html#SEC150"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_150.html#SEC150"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_147.html#SEC147"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_151.html#SEC151"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 18.2.1.2 VxWorks download </H4>
+<!--docid::SEC149::-->
+<P>
+
+<A NAME="IDX678"></A>
+If you have connected to the VxWorks target and you want to debug an
+object that has not yet been loaded, you can use the GDB
+<CODE>load</CODE> command to download a file from Unix to VxWorks
+incrementally.  The object file given as an argument to the <CODE>load</CODE>
+command is actually opened twice: first by the VxWorks target in order
+to download the code, then by GDB in order to read the symbol
+table.  This can lead to problems if the current working directories on
+the two systems differ.  If both systems have NFS mounted the same
+filesystems, you can avoid these problems by using absolute paths.
+Otherwise, it is simplest to set the working directory on both systems
+to the directory in which the object file resides, and then to reference
+the file by its name, without any path.  For instance, a program
+<TT>`prog.o'</TT> may reside in <TT>`<VAR>vxpath</VAR>/vw/demo/rdb'</TT> in VxWorks
+and in <TT>`<VAR>hostpath</VAR>/vw/demo/rdb'</TT> on the host.  To load this
+program, type this on VxWorks:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>-&#62; cd "<VAR>vxpath</VAR>/vw/demo/rdb"
+</FONT></pre></td></tr></table></P><P>
+
+Then, in GDB, type:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(vxgdb) cd <VAR>hostpath</VAR>/vw/demo/rdb
+(vxgdb) load prog.o
+</FONT></pre></td></tr></table></P><P>
+
+GDB displays a response similar to this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>Reading symbol data from wherever/vw/demo/rdb/prog.o... done.
+</FONT></pre></td></tr></table></P><P>
+
+You can also use the <CODE>load</CODE> command to reload an object module
+after editing and recompiling the corresponding source file.  Note that
+this makes GDB delete all currently-defined breakpoints,
+auto-displays, and convenience variables, and to clear the value
+history.  (This is necessary in order to preserve the integrity of
+debugger's data structures that reference the target system's symbol
+table.)
+</P><P>
+
+<A NAME="VxWorks Attach"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

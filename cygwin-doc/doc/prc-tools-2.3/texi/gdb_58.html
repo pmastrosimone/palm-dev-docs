@@ -1,0 +1,451 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Print Settings</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Print Settings">
+<META NAME="keywords" CONTENT="Debugging with GDB: Print Settings">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC58"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_57.html#SEC57"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_59.html#SEC59"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_59.html#SEC59"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.7 Print settings </H2>
+<!--docid::SEC58::-->
+<P>
+
+<A NAME="IDX323"></A>
+<A NAME="IDX324"></A>
+GDB provides the following ways to control how arrays, structures,
+and symbols are printed.
+</P><P>
+
+These settings are useful for debugging programs in any language:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX325"></A>
+<DT><CODE>set print address</CODE>
+<DD><DT><CODE>set print address on</CODE>
+<DD>GDB prints memory addresses showing the location of stack
+traces, structure values, pointer values, breakpoints, and so forth,
+even when it also displays the contents of those addresses.  The default
+is <CODE>on</CODE>.  For example, this is what a stack frame display looks like with
+<CODE>set print address on</CODE>:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) f
+#0  set_quotes (lq=0x34c78 "&#60;&#60;", rq=0x34c88 ">&#62;")
+    at input.c:530
+530         if (lquote != def_lquote)
+</FONT></pre></td></tr></table></P><P>
+
+<DT><CODE>set print address off</CODE>
+<DD>Do not print addresses when displaying their contents.  For example,
+this is the same stack frame displayed with <CODE>set print address off</CODE>:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) set print addr off
+(gdb) f
+#0  set_quotes (lq="&#60;&#60;", rq=">&#62;") at input.c:530
+530         if (lquote != def_lquote)
+</FONT></pre></td></tr></table></P><P>
+
+You can use <SAMP>`set print address off'</SAMP> to eliminate all machine
+dependent displays from the GDB interface.  For example, with
+<CODE>print address off</CODE>, you should get the same text for backtraces on
+all machines--whether or not they involve pointer arguments.
+</P><P>
+
+<A NAME="IDX326"></A>
+<DT><CODE>show print address</CODE>
+<DD>Show whether or not addresses are to be printed.
+</DL>
+<P>
+
+When GDB prints a symbolic address, it normally prints the
+closest earlier symbol plus an offset.  If that symbol does not uniquely
+identify the address (for example, it is a name whose scope is a single
+source file), you may need to clarify.  One way to do this is with
+<CODE>info line</CODE>, for example <SAMP>`info line *0x4537'</SAMP>.  Alternately,
+you can set GDB to print the source file and line number when
+it prints a symbolic address:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX327"></A>
+<DT><CODE>set print symbol-filename on</CODE>
+<DD>Tell GDB to print the source file name and line number of a
+symbol in the symbolic form of an address.
+<P>
+
+<DT><CODE>set print symbol-filename off</CODE>
+<DD>Do not print source file name and line number of a symbol.  This is the
+default.
+<P>
+
+<A NAME="IDX328"></A>
+<DT><CODE>show print symbol-filename</CODE>
+<DD>Show whether or not GDB will print the source file name and
+line number of a symbol in the symbolic form of an address.
+</DL>
+<P>
+
+Another situation where it is helpful to show symbol filenames and line
+numbers is when disassembling code; GDB shows you the line
+number and source file that corresponds to each instruction.
+</P><P>
+
+Also, you may wish to see the symbolic form only if the address being
+printed is reasonably close to the closest earlier symbol:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX329"></A>
+<DT><CODE>set print max-symbolic-offset <VAR>max-offset</VAR></CODE>
+<DD>Tell GDB to only display the symbolic form of an address if the
+offset between the closest earlier symbol and the address is less than
+<VAR>max-offset</VAR>.  The default is 0, which tells GDB
+to always print the symbolic form of an address if any symbol precedes it.
+<P>
+
+<A NAME="IDX330"></A>
+<DT><CODE>show print max-symbolic-offset</CODE>
+<DD>Ask how large the maximum offset is that GDB prints in a
+symbolic address.
+</DL>
+<P>
+
+<A NAME="IDX331"></A>
+<A NAME="IDX332"></A>
+If you have a pointer and you are not sure where it points, try
+<SAMP>`set print symbol-filename on'</SAMP>.  Then you can determine the name
+and source file location of the variable where it points, using
+<SAMP>`p/a <VAR>pointer</VAR>'</SAMP>.  This interprets the address in symbolic form.
+For example, here GDB shows that a variable <CODE>ptt</CODE> points
+at another variable <CODE>t</CODE>, defined in <TT>`hi2.c'</TT>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) set print symbol-filename on
+(gdb) p/a ptt
+$4 = 0xe008 &#60;t in hi2.c&#62;
+</FONT></pre></td></tr></table></P><P>
+
+<BLOCKQUOTE>
+<EM>Warning:</EM> For pointers that point to a local variable, <SAMP>`p/a'</SAMP>
+does not show the symbol name and filename of the referent, even with
+the appropriate <CODE>set print</CODE> options turned on.
+</BLOCKQUOTE>
+<P>
+
+Other settings control how different kinds of objects are printed:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX333"></A>
+<DT><CODE>set print array</CODE>
+<DD><DT><CODE>set print array on</CODE>
+<DD>Pretty print arrays.  This format is more convenient to read,
+but uses more space.  The default is off.
+<P>
+
+<DT><CODE>set print array off</CODE>
+<DD>Return to compressed format for arrays.
+<P>
+
+<A NAME="IDX334"></A>
+<DT><CODE>show print array</CODE>
+<DD>Show whether compressed or pretty format is selected for displaying
+arrays.
+<P>
+
+<A NAME="IDX335"></A>
+<DT><CODE>set print elements <VAR>number-of-elements</VAR></CODE>
+<DD>Set a limit on how many elements of an array GDB will print.
+If GDB is printing a large array, it stops printing after it has
+printed the number of elements set by the <CODE>set print elements</CODE> command.
+This limit also applies to the display of strings.
+When GDB starts, this limit is set to 200.
+Setting  <VAR>number-of-elements</VAR> to zero means that the printing is unlimited.
+<P>
+
+<A NAME="IDX336"></A>
+<DT><CODE>show print elements</CODE>
+<DD>Display the number of elements of a large array that GDB will print.
+If the number is 0, then the printing is unlimited.
+<P>
+
+<A NAME="IDX337"></A>
+<DT><CODE>set print null-stop</CODE>
+<DD>Cause GDB to stop printing the characters of an array when the first
+NULL is encountered.  This is useful when large arrays actually
+contain only short strings.
+The default is off.
+<P>
+
+<A NAME="IDX338"></A>
+<DT><CODE>set print pretty on</CODE>
+<DD>Cause GDB to print structures in an indented format with one member
+per line, like this:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$1 = {
+  next = 0x0,
+  flags = {
+    sweet = 1,
+    sour = 1
+  },
+  meat = 0x54 "Pork"
+}
+</FONT></pre></td></tr></table></P><P>
+
+<DT><CODE>set print pretty off</CODE>
+<DD>Cause GDB to print structures in a compact format, like this:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$1 = {next = 0x0, flags = {sweet = 1, sour = 1}, \
+meat = 0x54 "Pork"}
+</FONT></pre></td></tr></table></P><P>
+
+This is the default format.
+</P><P>
+
+<A NAME="IDX339"></A>
+<DT><CODE>show print pretty</CODE>
+<DD>Show which format GDB is using to print structures.
+<P>
+
+<A NAME="IDX340"></A>
+<DT><CODE>set print sevenbit-strings on</CODE>
+<DD>Print using only seven-bit characters; if this option is set,
+GDB displays any eight-bit characters (in strings or
+character values) using the notation <CODE>\</CODE><VAR>nnn</VAR>.  This setting is
+best if you are working in English (ASCII) and you use the
+high-order bit of characters as a marker or "meta" bit.
+<P>
+
+<DT><CODE>set print sevenbit-strings off</CODE>
+<DD>Print full eight-bit characters.  This allows the use of more
+international character sets, and is the default.
+<P>
+
+<A NAME="IDX341"></A>
+<DT><CODE>show print sevenbit-strings</CODE>
+<DD>Show whether or not GDB is printing only seven-bit characters.
+<P>
+
+<A NAME="IDX342"></A>
+<DT><CODE>set print union on</CODE>
+<DD>Tell GDB to print unions which are contained in structures.  This
+is the default setting.
+<P>
+
+<DT><CODE>set print union off</CODE>
+<DD>Tell GDB not to print unions which are contained in structures.
+<P>
+
+<A NAME="IDX343"></A>
+<DT><CODE>show print union</CODE>
+<DD>Ask GDB whether or not it will print unions which are contained in
+structures.
+<P>
+
+For example, given the declarations
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>typedef enum {Tree, Bug} Species;
+typedef enum {Big_tree, Acorn, Seedling} Tree_forms;
+typedef enum {Caterpillar, Cocoon, Butterfly}
+              Bug_forms;
+
+struct thing {
+  Species it;
+  union {
+    Tree_forms tree;
+    Bug_forms bug;
+  } form;
+};
+
+struct thing foo = {Tree, {Acorn}};
+</FONT></pre></td></tr></table></P><P>
+
+with <CODE>set print union on</CODE> in effect <SAMP>`p foo'</SAMP> would print
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$1 = {it = Tree, form = {tree = Acorn, bug = Cocoon}}
+</FONT></pre></td></tr></table></P><P>
+
+and with <CODE>set print union off</CODE> in effect it would print
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$1 = {it = Tree, form = {...}}
+</FONT></pre></td></tr></table></DL>
+<P>
+
+These settings are of interest when debugging C<TT>++</TT> programs:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX344"></A>
+<A NAME="IDX345"></A>
+<DT><CODE>set print demangle</CODE>
+<DD><DT><CODE>set print demangle on</CODE>
+<DD>Print C<TT>++</TT> names in their source form rather than in the encoded
+("mangled") form passed to the assembler and linker for type-safe
+linkage.  The default is on.
+<P>
+
+<A NAME="IDX346"></A>
+<DT><CODE>show print demangle</CODE>
+<DD>Show whether C<TT>++</TT> names are printed in mangled or demangled form.
+<P>
+
+<A NAME="IDX347"></A>
+<DT><CODE>set print asm-demangle</CODE>
+<DD><DT><CODE>set print asm-demangle on</CODE>
+<DD>Print C<TT>++</TT> names in their source form rather than their mangled form, even
+in assembler code printouts such as instruction disassemblies.
+The default is off.
+<P>
+
+<A NAME="IDX348"></A>
+<DT><CODE>show print asm-demangle</CODE>
+<DD>Show whether C<TT>++</TT> names in assembly listings are printed in mangled
+or demangled form.
+<P>
+
+<A NAME="IDX349"></A>
+<A NAME="IDX350"></A>
+<A NAME="IDX351"></A>
+<DT><CODE>set demangle-style <VAR>style</VAR></CODE>
+<DD>Choose among several encoding schemes used by different compilers to
+represent C<TT>++</TT> names.  The choices for <VAR>style</VAR> are currently:
+<P>
+
+<DL COMPACT>
+<DT><CODE>auto</CODE>
+<DD>Allow GDB to choose a decoding style by inspecting your program.
+<P>
+
+<DT><CODE>gnu</CODE>
+<DD>Decode based on the GNU C<TT>++</TT> compiler (<CODE>g++</CODE>) encoding algorithm.
+This is the default.
+<P>
+
+<DT><CODE>hp</CODE>
+<DD>Decode based on the HP ANSI C<TT>++</TT> (<CODE>aCC</CODE>) encoding algorithm.
+<P>
+
+<DT><CODE>lucid</CODE>
+<DD>Decode based on the Lucid C<TT>++</TT> compiler (<CODE>lcc</CODE>) encoding algorithm.
+<P>
+
+<DT><CODE>arm</CODE>
+<DD>Decode using the algorithm in the <CITE>C<TT>++</TT> Annotated Reference Manual</CITE>.
+<STRONG>Warning:</STRONG> this setting alone is not sufficient to allow
+debugging <CODE>cfront</CODE>-generated executables.  GDB would
+require further enhancement to permit that.
+<P>
+
+</DL>
+If you omit <VAR>style</VAR>, you will see a list of possible formats.
+<P>
+
+<A NAME="IDX352"></A>
+<DT><CODE>show demangle-style</CODE>
+<DD>Display the encoding style currently in use for decoding C<TT>++</TT> symbols.
+<P>
+
+<A NAME="IDX353"></A>
+<DT><CODE>set print object</CODE>
+<DD><DT><CODE>set print object on</CODE>
+<DD>When displaying a pointer to an object, identify the <EM>actual</EM>
+(derived) type of the object rather than the <EM>declared</EM> type, using
+the virtual function table.
+<P>
+
+<DT><CODE>set print object off</CODE>
+<DD>Display only the declared type of objects, without reference to the
+virtual function table.  This is the default setting.
+<P>
+
+<A NAME="IDX354"></A>
+<DT><CODE>show print object</CODE>
+<DD>Show whether actual, or declared, object types are displayed.
+<P>
+
+<A NAME="IDX355"></A>
+<DT><CODE>set print static-members</CODE>
+<DD><DT><CODE>set print static-members on</CODE>
+<DD>Print static members when displaying a C<TT>++</TT> object.  The default is on.
+<P>
+
+<DT><CODE>set print static-members off</CODE>
+<DD>Do not print static members when displaying a C<TT>++</TT> object.
+<P>
+
+<A NAME="IDX356"></A>
+<DT><CODE>show print static-members</CODE>
+<DD>Show whether C<TT>++</TT> static members are printed, or not.
+<P>
+
+<A NAME="IDX357"></A>
+<DT><CODE>set print vtbl</CODE>
+<DD><DT><CODE>set print vtbl on</CODE>
+<DD>Pretty print C<TT>++</TT> virtual function tables.  The default is off.
+(The <CODE>vtbl</CODE> commands do not work on programs compiled with the HP
+ANSI C<TT>++</TT> compiler (<CODE>aCC</CODE>).)
+<P>
+
+<DT><CODE>set print vtbl off</CODE>
+<DD>Do not pretty print C<TT>++</TT> virtual function tables.
+<P>
+
+<A NAME="IDX358"></A>
+<DT><CODE>show print vtbl</CODE>
+<DD>Show whether C<TT>++</TT> virtual function tables are pretty printed, or not.
+</DL>
+<P>
+
+<A NAME="Value History"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_57.html#SEC57"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_59.html#SEC59"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_59.html#SEC59"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

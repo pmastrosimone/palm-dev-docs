@@ -1,0 +1,546 @@
+<html>
+<head>
+<title>(Protein) ExgMgr.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:19:33">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="ExgLocalLib.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="ExpansionMgr.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">38 &nbsp;&nbsp;
+ExgMgr.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="ExgMgr.html">38  ExgMgr.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424925">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424971">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="424917"> </a><span style="color: #000000;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline"> </span></p>
+
+<div><hr>
+  <a name="426345"> </a> <b>NOTE: </b> Early in the porting process you may want to <code>#include ExgMgrCompatibility.h</code> (after the <code>#include</code> for <code>PalmOS.h</code>). This header file defines a number of APIs and macros that allow applications calling certain deleted functions and functions with modified prototypes to compile and run. This compatibility header should not be counted on long-term, however, so later in the porting process you should remove the <code>#include</code> and fix any problems that result.
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425508"> </a><b>Table 38.1&nbsp;&nbsp;Deleted types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425512"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425514"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425516"> </a><code>ExgSocketPtr</code></p>
+    </td>
+    <td><p class="tt"><a name="425518"> </a> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424925"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425521"> </a><b>Table 38.2&nbsp;&nbsp;Modified functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425525"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425527"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425529"> </a><code>status_t ExgAccept (ExgSocketPtr)</code></p>
+    </td>
+    <td><p class="tt"><a name="425531"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425533"> </a><code>status_t ExgConnect (ExgSocketPtr)</code></p>
+    </td>
+    <td><p class="tt"><a name="425535"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425537"> </a><code>status_t ExgDBRead (ExgDBReadProcPtr, ExgDBDeleteProcPtr, void *, DatabaseID *, Boolean *, Boolean)</code></p>
+    </td>
+    <td><p class="tt"><a name="425539"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425541"> </a><code>status_t ExgDBWrite (ExgDBWriteProcPtr, void *, const char *, DatabaseID)</code></p>
+    </td>
+    <td><p class="tt"><a name="425543"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425545"> </a><code>status_t ExgDisconnect (ExgSocketPtr, status_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="425547"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425549"> </a><code>status_t ExgGet (ExgSocketPtr)</code></p>
+    </td>
+    <td><p class="tt"><a name="425551"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425553"> </a><code>status_t ExgPut (ExgSocketPtr)</code></p>
+    </td>
+    <td><p class="tt"><a name="425555"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425557"> </a><code>uint32_t ExgReceive (ExgSocketPtr, void *, uint32_t, status_t *)</code></p>
+    </td>
+    <td><p class="tt"><a name="425559"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425561"> </a><code>uint32_t ExgSend (ExgSocketPtr, const void *const, uint32_t, status_t *)</code></p>
+    </td>
+    <td><p class="tt"><a name="425563"> </a> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425572"> </a><b>Table 38.3&nbsp;&nbsp;Modified structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425576"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425578"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425580"> </a><code>ExgAskParamType</code></p>
+    </td>
+    <td><p class="tt"><a name="425582"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425584"> </a><code>ExgCtlGetURLType</code></p>
+    </td>
+    <td><p class="tt"><a name="425586"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425588"> </a><code>ExgDialogInfoType</code></p>
+    </td>
+    <td><p class="tt"><a name="425590"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425592"> </a><code>ExgGoToType</code></p>
+    </td>
+    <td><p class="tt"><a name="425594"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425596"> </a><code>ExgPreviewInfoType</code></p>
+    </td>
+    <td><p class="tt"><a name="425598"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425600"> </a><code>ExgSocketType</code></p>
+    </td>
+    <td><p class="tt"><a name="425602"> </a> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425609"> </a><b>Table 38.4&nbsp;&nbsp;Modified application-defined functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425613"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425615"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425617"> </a><code>Boolean (*ExgDBDeleteProcPtr) (const char *, uint16_t, DatabaseID, void *)</code></p>
+    </td>
+    <td><p class="tt"><a name="425619"> </a> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424971"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425928"> </a><b>Table 38.5&nbsp;&nbsp;Unchanged functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425932"> </a>ExgControl()</p>
+    </td>
+    <td><p class="tt"><a name="425934"> </a>ExgDoDialog()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425936"> </a>ExgGetDefaultApplication()</p>
+    </td>
+    <td><p class="tt"><a name="425938"> </a>ExgGetRegisteredApplications()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425940"> </a>ExgGetRegisteredTypes()</p>
+    </td>
+    <td><p class="tt"><a name="425942"> </a>ExgGetTargetApplication()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425944"> </a>ExgInit()</p>
+    </td>
+    <td><p class="tt"><a name="425946"> </a>ExgNotifyGoto()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425948"> </a>ExgNotifyPreview()</p>
+    </td>
+    <td><p class="tt"><a name="425950"> </a>ExgNotifyReceive()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425952"> </a>ExgNotifyReceiveV35()</p>
+    </td>
+    <td><p class="tt"><a name="425954"> </a>ExgRegisterData()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425956"> </a>ExgRegisterDatatype()</p>
+    </td>
+    <td><p class="tt"><a name="425958"> </a>ExgRequest()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425960"> </a>ExgSetDefaultApplication()</p>
+    </td>
+    <td><p class="tt"><a name="425962"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425965"> </a><b>Table 38.6&nbsp;&nbsp;Unchanged types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425969"> </a>ExgAskParamPtr</p>
+    </td>
+    <td><p class="tt"><a name="425971"> </a>ExgGoToPtr</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425978"> </a><b>Table 38.7&nbsp;&nbsp;Unchanged #defines </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425982"> </a>exgBeamPrefix</p>
+    </td>
+    <td><p class="tt"><a name="425984"> </a>exgBeamScheme</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425986"> </a>exgDataPrefVersion</p>
+    </td>
+    <td><p class="tt"><a name="425988"> </a>exgErr...</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426022"> </a>exgGet</p>
+    </td>
+    <td><p class="tt"><a name="426024"> </a>exgGetPrefix</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426026"> </a>exgGetScheme</p>
+    </td>
+    <td><p class="tt"><a name="426028"> </a>exgLibAPIVersion</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426030"> </a>exgLibCtlGetPreview</p>
+    </td>
+    <td><p class="tt"><a name="426032"> </a>exgLibCtlGetTitle</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426034"> </a>exgLibCtlGetURL</p>
+    </td>
+    <td><p class="tt"><a name="426036"> </a>exgLibCtlGetVersion</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426038"> </a>exgLibCtlSpecificOp</p>
+    </td>
+    <td><p class="tt"><a name="426040"> </a>exgLocalPrefix</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426042"> </a>exgMaxDescriptionLength</p>
+    </td>
+    <td><p class="tt"><a name="426044"> </a>exgMaxTitleLen</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426046"> </a>exgMaxTypeLength</p>
+    </td>
+    <td><p class="tt"><a name="426048"> </a>exgMemError</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426050"> </a>exgNoAsk</p>
+    </td>
+    <td><p class="tt"><a name="426052"> </a>exgPreviewDialog</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426054"> </a>exgPreviewDraw</p>
+    </td>
+    <td><p class="tt"><a name="426056"> </a>exgPreviewFirstUser</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426058"> </a>exgPreviewLastUser</p>
+    </td>
+    <td><p class="tt"><a name="426060"> </a>exgPreviewLongString</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426062"> </a>exgPreviewQuery</p>
+    </td>
+    <td><p class="tt"><a name="426064"> </a>exgPreviewShortString</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426066"> </a>exgRegCreatorID</p>
+    </td>
+    <td><p class="tt"><a name="426068"> </a>exgRegExtensionID</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426070"> </a>exgRegSchemeID</p>
+    </td>
+    <td><p class="tt"><a name="426072"> </a>exgRegTypeID</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426074"> </a>exgSendBeamPrefix</p>
+    </td>
+    <td><p class="tt"><a name="426076"> </a>exgSendPrefix</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426078"> </a>exgSendScheme</p>
+    </td>
+    <td><p class="tt"><a name="426080"> </a>exgSeparatorChar</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426082"> </a>exgTitleBufferSize</p>
+    </td>
+    <td><p class="tt"><a name="426084"> </a>exgUnwrap</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426089"> </a><b>Table 38.8&nbsp;&nbsp;Unchanged enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426093"> </a>ExgAskResultType</p>
+    </td>
+    <td><p class="tt"><a name="426095"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426098"> </a><b>Table 38.9&nbsp;&nbsp;Unchanged application-defined functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426102"> </a>ExgDBReadProcPtr()</p>
+    </td>
+    <td><p class="tt"><a name="426104"> </a>ExgDBWriteProcPtr()</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="425054"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="ExgLocalLib.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="ExpansionMgr.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

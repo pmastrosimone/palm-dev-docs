@@ -1,0 +1,115 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Constructing Calls</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Constructing Calls">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Constructing Calls">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC66"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_67.html#SEC67"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_67.html#SEC67"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.5 Constructing Function Calls </H2>
+<!--docid::SEC66::-->
+<P>
+
+Using the built-in functions described below, you can record
+the arguments a function received, and call another function
+with the same arguments, without knowing the number or types
+of the arguments.
+</P><P>
+
+You can also record the return value of that function call,
+and later return that value, without knowing what data type
+the function tried to return (as long as your caller expects
+that data type).
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX256"></A>
+<DT><CODE>__builtin_apply_args ()</CODE>
+<DD>This built-in function returns a pointer of type <CODE>void *</CODE> to data
+describing how to perform a call with the same arguments as were passed
+to the current function.
+<P>
+
+The function saves the arg pointer register, structure value address,
+and all registers that might be used to pass arguments to a function
+into a block of memory allocated on the stack.  Then it returns the
+address of that block.
+</P><P>
+
+<A NAME="IDX257"></A>
+<DT><CODE>__builtin_apply (<VAR>function</VAR>, <VAR>arguments</VAR>, <VAR>size</VAR>)</CODE>
+<DD>This built-in function invokes <VAR>function</VAR> (type <CODE>void (*)()</CODE>)
+with a copy of the parameters described by <VAR>arguments</VAR> (type
+<CODE>void *</CODE>) and <VAR>size</VAR> (type <CODE>int</CODE>).
+<P>
+
+The value of <VAR>arguments</VAR> should be the value returned by
+<CODE>__builtin_apply_args</CODE>.  The argument <VAR>size</VAR> specifies the size
+of the stack argument data, in bytes.
+</P><P>
+
+This function returns a pointer of type <CODE>void *</CODE> to data describing
+how to return whatever value was returned by <VAR>function</VAR>.  The data
+is saved in a block of memory allocated on the stack.
+</P><P>
+
+It is not always simple to compute the proper value for <VAR>size</VAR>.  The
+value is used by <CODE>__builtin_apply</CODE> to compute the amount of data
+that should be pushed on the stack and copied from the incoming argument
+area.
+</P><P>
+
+<A NAME="IDX258"></A>
+<DT><CODE>__builtin_return (<VAR>result</VAR>)</CODE>
+<DD>This built-in function returns the value described by <VAR>result</VAR> from
+the containing function.  You should specify, for <VAR>result</VAR>, a value
+returned by <CODE>__builtin_apply</CODE>.
+</DL>
+<P>
+
+<A NAME="Naming Types"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_67.html#SEC67"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_67.html#SEC67"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,161 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: MMIX-mmixal</TITLE>
+
+<META NAME="description" CONTENT="Using as: MMIX-mmixal">
+<META NAME="keywords" CONTENT="Using as: MMIX-mmixal">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC336"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_326.html#SEC335"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_328.html#SEC337"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_179.html#SEC188"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_319.html#SEC328"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_328.html#SEC337"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.21.4 Differences to <CODE>mmixal</CODE> </H3>
+<!--docid::SEC336::-->
+<P>
+
+The binutils <CODE>as</CODE> and <CODE>ld</CODE> combination has a few
+differences in function compared to <CODE>mmixal</CODE> (see  <A HREF="as_322.html#mmixsite">mmixsite</A>).
+</P><P>
+
+The replacement of a symbol with a GREG-allocated register
+(see  <A HREF="as_326.html#GREG-base">GREG-base</A>) is not handled the exactly same way in
+<CODE>as</CODE> as in <CODE>mmixal</CODE>.  This is apparent in the
+<CODE>mmixal</CODE> example file <CODE>inout.mms</CODE>, where different registers
+with different offsets, eventually yielding the same address, are used in
+the first instruction.  This type of difference should however not affect
+the function of any program unless it has specific assumptions about the
+allocated register number.
+</P><P>
+
+Line numbers (in the <SAMP>`mmo'</SAMP> object format) are currently not
+supported.
+</P><P>
+
+Expression operator precedence is not that of mmixal: operator precedence
+is that of the C programming language.  It's recommended to use
+parentheses to explicitly specify wanted operator precedence whenever more
+than one type of operators are used.
+</P><P>
+
+The serialize unary operator <CODE>&#38;</CODE>, the fractional division operator
+<SAMP>`//'</SAMP>, the logical not operator <CODE>!</CODE> and the modulus operator
+<SAMP>`%'</SAMP> are not available.
+</P><P>
+
+Symbols are not global by default, unless the option
+<SAMP>`--globalize-symbols'</SAMP> is passed.  Use the <SAMP>`.global'</SAMP> directive to
+globalize symbols (see section <A HREF="as_99.html#SEC102">7.31 <CODE>.global <VAR>symbol</VAR></CODE>, <CODE>.globl <VAR>symbol</VAR></CODE></A>).
+</P><P>
+
+Operand syntax is a bit stricter with <CODE>as</CODE> than
+<CODE>mmixal</CODE>.  For example, you can't say <CODE>addu 1,2,3</CODE>, instead you
+must write <CODE>addu $1,$2,3</CODE>.
+</P><P>
+
+You can't LOC to a lower address than those already visited
+(i.e. "backwards").
+</P><P>
+
+A LOC directive must come before any emitted code.
+</P><P>
+
+Predefined symbols are visible as file-local symbols after use.  (In the
+ELF file, that is--the linked mmo file has no notion of a file-local
+symbol.)
+</P><P>
+
+Some mapping of constant expressions to sections in LOC expressions is
+attempted, but that functionality is easily confused and should be avoided
+unless compatibility with <CODE>mmixal</CODE> is required.  A LOC expression to
+<SAMP>`0x2000000000000000'</SAMP> or higher, maps to the <SAMP>`.data'</SAMP> section and
+lower addresses map to the <SAMP>`.text'</SAMP> section (see  <A HREF="as_326.html#MMIX-loc">MMIX-loc</A>).
+</P><P>
+
+The code and data areas are each contiguous.  Sparse programs with
+far-away LOC directives will take up the same amount of space as a
+contiguous program with zeros filled in the gaps between the LOC
+directives.  If you need sparse programs, you might try and get the wanted
+effect with a linker script and splitting up the code parts into sections
+(see section <A HREF="as_134.html#SEC137">7.66 <CODE>.section <VAR>name</VAR></CODE></A>).  Assembly code for this, to be compatible with
+<CODE>mmixal</CODE>, would look something like:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre> .if 0
+ LOC away_expression
+ .else
+ .section away,"ax"
+ .fi
+</FONT></pre></td></tr></table><CODE>as</CODE> will not execute the LOC directive and <CODE>mmixal</CODE>
+ignores the lines with <CODE>.</CODE>.  This construct can be used generally to
+help compatibility.
+</P><P>
+
+Symbols can't be defined twice--not even to the same value.
+</P><P>
+
+Instruction mnemonics are recognized case-insensitive, though the
+<SAMP>`IS'</SAMP> and <SAMP>`GREG'</SAMP> pseudo-operations must be specified in
+upper-case characters.
+</P><P>
+
+There's no unicode support.
+</P><P>
+
+The following is a list of programs in <SAMP>`mmix.tar.gz'</SAMP>, available at
+<A HREF="http://www-cs-faculty.stanford.edu/~knuth/mmix-news.html">http://www-cs-faculty.stanford.edu/~knuth/mmix-news.html</A>, last
+checked with the version dated 2001-08-25 (md5sum
+c393470cfc86fac040487d22d2bf0172) that assemble with <CODE>mmixal</CODE> but do
+not assemble with <CODE>as</CODE>:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>silly.mms</CODE>
+<DD>LOC to a previous address.
+<DT><CODE>sim.mms</CODE>
+<DD>Redefines symbol <SAMP>`Done'</SAMP>.
+<DT><CODE>test.mms</CODE>
+<DD>Uses the serial operator <SAMP>`&#38;'</SAMP>.
+</DL>
+<P>
+
+<A NAME="MSP430-Dependent"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_326.html#SEC335"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_328.html#SEC337"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_179.html#SEC188"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_319.html#SEC328"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_328.html#SEC337"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

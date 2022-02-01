@@ -1,0 +1,122 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Location Counter</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Location Counter">
+<META NAME="keywords" CONTENT="Untitled Document: Location Counter">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC44"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_43.html#SEC43"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_45.html#SEC45"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_45.html#SEC45"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_41.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_49.html#SEC49"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.10.3 The Location Counter </H3>
+<!--docid::SEC44::-->
+The special linker variable <EM>dot</EM> <SAMP>`.'</SAMP> always contains the
+current output location counter.  Since the <CODE>.</CODE> always refers to a
+location in an output section, it may only appear in an expression
+within a <CODE>SECTIONS</CODE> command.  The <CODE>.</CODE> symbol may appear
+anywhere that an ordinary symbol is allowed in an expression.
+<P>
+
+<A NAME="IDX338"></A>
+Assigning a value to <CODE>.</CODE> will cause the location counter to be
+moved.  This may be used to create holes in the output section.  The
+location counter may never be moved backwards.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS
+{
+  output :
+    {
+      file1(.text)
+      . = . + 1000;
+      file2(.text)
+      . += 1000;
+      file3(.text)
+    } = 0x12345678;
+}
+</FONT></pre></td></tr></table>In the previous example, the <SAMP>`.text'</SAMP> section from <TT>`file1'</TT> is
+located at the beginning of the output section <SAMP>`output'</SAMP>.  It is
+followed by a 1000 byte gap.  Then the <SAMP>`.text'</SAMP> section from
+<TT>`file2'</TT> appears, also with a 1000 byte gap following before the
+<SAMP>`.text'</SAMP> section from <TT>`file3'</TT>.  The notation <SAMP>`= 0x12345678'</SAMP>
+specifies what data to write in the gaps (see section <A HREF="ld_36.html#SEC36">3.6.8.5 Output Section Fill</A>).
+</P><P>
+
+<A NAME="IDX339"></A>
+Note: <CODE>.</CODE> actually refers to the byte offset from the start of the
+current containing object.  Normally this is the <CODE>SECTIONS</CODE>
+statement, whose start address is 0, hence <CODE>.</CODE> can be used as an
+absolute address.  If <CODE>.</CODE> is used inside a section description
+however, it refers to the byte offset from the start of that section,
+not an absolute address.  Thus in a script like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS
+{
+    . = 0x100
+    .text: {
+      *(.text)
+      . = 0x200
+    }
+    . = 0x500
+    .data: {
+      *(.data)
+      . += 0x600
+    }
+}
+</FONT></pre></td></tr></table></P><P>
+
+The <SAMP>`.text'</SAMP> section will be assigned a starting address of 0x100
+and a size of exactly 0x200 bytes, even if there is not enough data in
+the <SAMP>`.text'</SAMP> input sections to fill this area.  (If there is too
+much data, an error will be produced because this would be an attempt to
+move <CODE>.</CODE> backwards).  The <SAMP>`.data'</SAMP> section will start at 0x500
+and it will have an extra 0x600 bytes worth of space after the end of
+the values from the <SAMP>`.data'</SAMP> input sections and before the end of
+the <SAMP>`.data'</SAMP> output section itself.
+</P><P>
+
+<A NAME="Operators"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_43.html#SEC43"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_45.html#SEC45"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_45.html#SEC45"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_41.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_49.html#SEC49"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

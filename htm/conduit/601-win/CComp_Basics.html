@@ -1,0 +1,396 @@
+<html>
+<head>
+<title>Introducing C API-based Conduits | C/C++ Sync Suite Companion</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="KEYWORDS" CONTENT="C, C++, C/C++ Sync Suite, basics, introduction, architecture, register, CDK, C API, conduit, conduits, Windows">
+<META NAME="DESCRIPTION" CONTENT="Introduces C API-based conduits created with the C/C++ Sync Suite for Windows.">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource HTML 20040609">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="LASTUPDATED" CONTENT="06/28/04 08:29:31">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="995934"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncCompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_GettingStarted.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_EntryPoints.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncCompanionIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">2 &nbsp;&nbsp;
+Introducing C API-based Conduits</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">C/C++ Sync Suite Companion</p>
+<p class="SubTitle">Palm OS&#174; Conduit Development Kit for  Windows, Version 6.0.1 </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="CComp_Basics.html">2  Introducing C API-based Conduits</a></h1>
+
+   <h2 class="SideTOC2"><a href="#995963">
+   How the C/C++ Sync Suite Supports Conduits </a></h2>
+
+      <h3 class="SideTOC3"><a href="#995983">
+      Conduit Architecture</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996049">
+      Conduit Entry Points</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996087">
+      Sync Manager API</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996097">
+      Generic Conduit Framework</a></h3>
+
+   <h2 class="SideTOC2"><a href="#996105">
+   Registering C API-based Conduits with HotSync Manager</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996129">
+   Conduit Design Decisions</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996158">
+   Outline of Conduit Development</a></h2>
+
+      <h3 class="SideTOC3"><a href="#996163">
+      A. Install Conduit Development Tools</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996175">
+      B. Generate a Sample Conduit to Use as a Shell </a></h3>
+
+      <h3 class="SideTOC3"><a href="#996196">
+      C. Take a Trial Run</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1000516">
+      D. Implement the Conduit Entry Points</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996250">
+      E. Create an Install Program for Your Conduit</a></h3>
+
+</div>
+</td>
+<!--END SIDETOC-->
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="995940"> </a>This chapter introduces C API-based conduits. When you design a conduit, it is essential that you understand how your synchronization process works and which part of the system is responsible for each corresponding synchronization action. Therefore, if you are new to conduit development, read the <a href="Intro_Front.html#1008710">Introduction to Conduit Development</a> before proceeding. </p>
+
+<p><a name="995944"> </a>The sections in this chapter are: </p>
+   <blockquote class = "bq"><a name="995948"> </a><a href="CComp_Basics.html#995963">How the C/C++ Sync Suite Supports Conduits</a> </blockquote>
+   <blockquote class = "bq"><a name="995952"> </a><a href="CComp_Basics.html#996105">Registering C API-based Conduits with HotSync Manager</a> </blockquote>
+   <blockquote class = "bq"><a name="995956"> </a><a href="CComp_Basics.html#996129">Conduit Design Decisions</a> </blockquote>
+   <blockquote class = "bq"><a name="995960"> </a><a href="CComp_Basics.html#996158">Outline of Conduit Development</a> </blockquote>
+
+<h2 class="haH2">
+  <a name="995963"> </a>How the C/C++ Sync Suite Supports Conduits  <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="995964"> </a>This section provides an overview of how the C/C++ Sync Suite supports C API-based conduits:</p>
+   <blockquote class = "bq"><a name="995968"> </a><a href="CComp_Basics.html#995983">Conduit Architecture</a> </blockquote>
+   <blockquote class = "bq"><a name="995972"> </a><a href="CComp_Basics.html#996049">Conduit Entry Points</a> </blockquote>
+   <blockquote class = "bq"><a name="995976"> </a><a href="CComp_Basics.html#996087">Sync Manager API</a> </blockquote>
+   <blockquote class = "bq"><a name="995980"> </a><a href="CComp_Basics.html#996097">Generic Conduit Framework</a> </blockquote>
+<h3 class="hbH3">
+  <a name="995983"> </a>Conduit Architecture <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="995984"> </a>HotSync Manager communicates with a conduit by calling its several required entry points. A conduit accesses databases on the handheld by calling the Sync Manager API. <a href="CComp_Basics.html#995989">Figure 2.1</a> shows the relationship between a conduit, HotSync Manager, the Sync Manager API, and the desktop application. </p>
+
+<p class="FFigureCaption">
+  <a name="995989"> </a><b>Figure 2.1&nbsp;&nbsp;C/C++ Sync architecture</b>
+</p>
+<div align="left"><img src="images/CComp_Basicsa.gif" height="317" width="595" border="0" hspace="0" vspace="0">
+</div>
+
+<h3 class="hbH3">
+  <a name="996049"> </a>Conduit Entry Points <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996050"> </a>HotSync Manager calls several entry points in a conduit, including the <a href="CRef_CnAPI.html#996737"><code>OpenConduit()</code></a> function, which allows the conduit to perform its tasks. A conduit must provide some of these entry points and can optionally provide others. </p>
+
+<p><a name="996054"> </a>The easiest way to create a new conduit is to use the Conduit Wizard in Visual C++, as described in <a href="Util_Wizard.html#995937">Chapter 2, "Conduit Wizard,"</a> in the <i>Conduit Development Utilities Guide</i>. The Conduit Wizard is installed with the C/C++ Sync Suite for Windows. </p>
+
+<p><a name="996061"> </a>Once you have used the wizard to create a functional conduit shell, you need to customize the conduit that has been generated. Modify the entry points described below:</p>
+<ul type="disc">
+  <li><a name="996065"> </a>modify the <a href="CRef_CnAPI.html#1013446"><code>GetConduitInfo()</code></a> function to return information about your conduit
+  <li><a name="996069"> </a>modify <a href="CRef_CnAPI.html#996679"><code>GetConduitVersion()</code></a> to return the version number of your conduit
+  <li><a name="996073"> </a>add code to the <a href="CRef_CnAPI.html#996737"><code>OpenConduit()</code></a> function to perform your actual synchronization operations
+  <li><a name="996080"> </a>modify the <a href="CRef_CnAPI.html#996369"><code>CfgConduit()</code></a>, <a href="CRef_CnAPI.html#996417"><code>ConfigureConduit()</code></a>, or both functions to allow users to modify how your conduit behaves. Note that these functions are not required for a functional conduit, but PalmSource, Inc. strongly recommends including them.
+</ul>
+
+<p><a name="996081"> </a>For more information about the required and optional entry point functions, see <a href="CComp_EntryPoints.html#995934">Chapter 3, "Implementing Conduit Entry Points."</a> </p>
+<h3 class="hbH3">
+  <a name="996087"> </a>Sync Manager API <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996088"> </a>The Sync Manager API is the low-level programmatic interface for communicating with the handheld. Conduits call Sync Manager functions to send data to and receive data from the handheld. If your conduit uses the Generic Conduit Framework, you may not need to use the Sync Manager API directly. </p>
+
+<p><a name="996094"> </a>For more information about the Sync Manager API, see <a href="CComp_SyncMgr.html#995934">Chapter 4, "Using the Classic Sync Manager API."</a> </p>
+<h3 class="hbH3">
+  <a name="996097"> </a>Generic Conduit Framework <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996098"> </a>Rather than relying directly on the Sync Manager API, you can develop your conduit using the C++ Generic Conduit Framework provided in the C/C++ Sync Suite. These C++ classes manage a conduit's tasks at a higher level and provide some base functionality for you; specifically, reconciliation of changes on both the handheld and desktop computer. The Conduit Wizard can create conduit class objects for you, and you then override certain methods to create the implementation of your conduit. </p>
+
+<h2 class="haH2">
+  <a name="996105"> </a>Registering C API-based Conduits with HotSync Manager <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996106"> </a>As with all types of conduits for Windows, you must register a C API-based conduit before HotSync Manager can run it. This topic is covered primarily in <a href="Intro_Registering.html#995934">Chapter 6, "Registering Conduits and Notifiers with HotSync Manager,"</a> in <i>Introduction to Conduit Development</i>. </p>
+
+<p><a name="996113"> </a>Because you must register a conduit even during development and testing, before you have written an installer to deploy your conduit, you have two options for quickly and easily registering your conduit on your development system:</p>
+<ul type="disc">
+  <li><a name="1001744"> </a>Implement a folder-registered conduit. Registration is then simply a matter of copying your conduit it to a <code>Conduits</code> folder. This method is supported by HotSync Manager versions 6.0 and later. For details, see <a href="CComp_Install.html#1004408">"Registering a Conduit by Folder."</a> 
+  <li><a name="1001745"> </a>Conventionally register your conduit using the Conduit Configuration (CondCfg) utility provided in the CDK. CondCfg is a Windows application that allows you to register your conduit using a graphical user interface on your development machine. CondCfg is in the <code>&lt;CDK&gt;\Common\Bin</code> directory. For more information, see <a href="Util_CondCfg.html#995934">Chapter 3, "Conduit Configuration Utility,"</a> in the <i>Conduit Development Utilities Guide</i>.
+</ul>
+<div class="NINoteImportant"><hr>
+  <a name="996122"> </a> <b>IMPORTANT: </b> CondCfg enables you to conventionally register your conduit during development and testing without writing code to call Conduit Manager. However, CondCfg is not an end-user utility, so PalmSource does not permit you to redistribute it with your conduit.
+<hr>
+</div>
+
+<p><a name="996123"> </a>When you are ready to develop an installer to deploy your conduit on end-user machines, see <a href="CComp_Install.html#995937">Chapter 9, "Writing an Installer,"</a> for details on calling the Conduit Manager API at install time to register a C API-based conduit.</p>
+
+<h2 class="haH2">
+  <a name="996129"> </a>Conduit Design Decisions <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996130"> </a>This section provides information that you can use to make decisions regarding the top-level design of your conduit.</p>
+<div class="NINoteImportant"><hr>
+  <a name="997950"> </a> <b>IMPORTANT: </b> If your design only needs to convert between handheld and desktop data formats, then you may be able to use the HotSync Exchange feature of HotSync Manager versions 6.0 and later; if so, you do not need to develop a conduit at all. See <a href="Intro_HotSyncExch.html#608590">Chapter 3, "Using HotSync Exchange,"</a> in the <i>Introduction to Conduit Development</i>.
+<hr>
+</div>
+
+<p><a name="999518"> </a>If your conduit needs to do more than simple text-based synchronization, you can either decide to take advantage of the Generic Conduit Framework or write a conduit from scratch. To understand whether you may want to use the Generic Conduit Framework, first answer these questions: </p>
+<ul type="disc">
+  <li><a name="996134"> </a>Will the conduit synchronize data such that both sides result in mirror-image data?
+   <p><a name="996135"> </a>If yes, you may want to use the Generic Conduit Framework because it implements logic to reconcile modifications made on both the desktop and handheld. You may need only to implement methods to read and write your desktop data format. </p>
+</ul>
+
+<p><a name="996137"> </a>The most important considerations when designing your conduit are:</p>
+<ul type="disc">
+  <li><a name="996138"> </a>how the data is stored on both platforms
+  <li><a name="996139"> </a>whether synchronization will be one-directional, mirror-image, or transaction-based
+</ul>
+
+<p><a name="996140"> </a>Your answers to the following questions will help determine the type of conduit you need to implement:</p>
+<ul type="disc">
+  <li><a name="996141"> </a>Do the existing desktop computer databases offer a public application programming interface for record I/O? If so, is this API packaged as a stand-alone library?
+  <li><a name="996142"> </a>Does each record have a unique record ID field? If so, can the conduit perform keyed look-ups by Record ID? If so, can the conduit re-assign the record ID to a record? Is the record ID format on the desktop computer compatible with the record ID format on the handheld? PalmSource, Inc. strongly recommends that record IDs get assigned only on the handheld.
+  <li><a name="996143"> </a>Does each record maintain a status flag field? If so, are the available status values Add, Modify, and Delete? How will you clear the status flags at the end of synchronization operations?
+  <li><a name="996144"> </a>Is there an easy way to detect modified records? A time stamp indicating the last modified date (with hours, minutes, and seconds) will work for this purpose. Your conduit needs this capability to support fast sync.
+  <li><a name="996145"> </a>Is the concept of categories supported in the existing databases? If so, what is the limit on number of categories allowed? Will category information be synchronized? How will the desktop categories be mapped to the categories on the handheld?
+  <li><a name="996146"> </a>Is the possibility of downloading only a subset of field data to the handheld acceptable? If so, consider how to retain that data on the desktop computer during the synchronization process. 
+  <li><a name="996147"> </a>Will the conduit need to synchronize more than one database on the handheld to one or more database(s) on the desktop computer (multi-database synchronization)? 
+  <li><a name="996148"> </a>Is one-way database copying desired? 
+  <li><a name="996149"> </a>Will the conduit behave differently during a fast sync than during a slow sync? 
+  <li><a name="996150"> </a>Is the data to be synchronized at the record level, so that each record that has changed is updated on both sides? 
+  <li><a name="996151"> </a>If record-level synchronization is desired, do you want to use the synchronization logic implemented in the Generic Conduit Framework? 
+  <li><a name="996152"> </a>Will the conduit need to synchronize one database on the handheld to one database on the desktop computer (single database synchronization)? 
+  <li><a name="996153"> </a>How well do the desktop computer record fields and handheld records map to each other?
+  <li><a name="996154"> </a>Do your desktop and handheld applications support the concept of multiple databases or multiple users? 
+  <li><a name="996155"> </a>Will archiving be supported?
+  <li><a name="996156"> </a>Can you pre-process data for efficiency, to keep the synchronization time to a minimum, and to avoid time-outs? For example, if your conduit accesses information over the Internet, it is best to access that information prior to beginning the synchronization.
+</ul>
+
+<h2 class="haH2">
+  <a name="996158"> </a>Outline of Conduit Development <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996159"> </a>These five steps outline the process of creating a conduit with the CDK. For a more detailed description of how to set up your system and get started, see <a href="CComp_QStart_VC.html#991584">Appendix A, "Quick Start: Using Visual C++ .NET to Build a Conduit."</a> </p>
+<h3 class="hbH3">
+  <a name="996163"> </a>A. Install Conduit Development Tools <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996164"> </a>You need to install the following software on your Windows desktop computer:</p>
+<ol type="1">
+  <li value="1"><a name="996165"> </a>Install a development environment supported by the CDK. For a list, see <a href="Intro_WhatsNew.html#995934">Chapter 1, "What's New in the Palm OS CDK."</a> 
+  <li value="2"><a name="996169"> </a>Install the C/C++ Sync Suite, part of the CDK for Windows. 
+</ol>
+
+<p><a name="996171"> </a>For more information about tools available to help you create and debug a conduit, see the <a href="Util_Front.html#1008477"><i>Conduit Development Utilities Guide</i></a>. </p>
+<h3 class="hbH3">
+  <a name="996175"> </a>B. Generate a Sample Conduit to Use as a Shell  <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996176"> </a>The easiest way to get started is to generate sample code included with the C/C++ Sync Suite. This code is for a fully functional and syntactically correct conduit that you can use as a shell. </p>
+
+<p><a name="996177"> </a>In Visual C++ .NET: </p>
+<ol type="1">
+  <li value="1"><a name="996178"> </a>Run the Conduit Wizard that is installed in VC++ .NET when you install the C/C++ Sync Suite. (The Conduit Wizard is available only in Visual C++ .NET.) 
+  <li value="2"><a name="996179"> </a>The first and most basic choice you need to make is which of the following you want the wizard to use when it generates your code: 
+  <ul type="disc">
+    <li><a name="996180"> </a>Generic Conduit Framework 
+    <li><a name="996181"> </a>Conduit entry points only (no synchronization logic)
+   <p><a name="1001628"> </a>If you choose the Generic Conduit Framework, follow <a href="CComp_QStart_VC.html#991584">Appendix A, "Quick Start: Using Visual C++ .NET to Build a Conduit."</a> If instead you choose to write your own synchronization logic and use the lower-level Sync Manager API, use the wizard to generate entry points only, without any synchronization logic. </p>
+  </ul>
+  <li value="3"><a name="996187"> </a>Use the wizard to generate a solution file and the code you specified.
+</ol>
+
+<p><a name="1001633"> </a>The quick-start guide steps you through the process to create a conduit for the Memo Port application provided in the CDK. </p>
+
+<p><a name="996189"> </a>For more information specifically about using the Conduit Wizard, see <a href="Util_Wizard.html#995937">Chapter 2, "Conduit Wizard,"</a> in the <i>Conduit Development Utilities Guide</i>. </p>
+<h3 class="hbH3">
+  <a name="996196"> </a>C. Take a Trial Run <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996197"> </a>Test drive your sample conduit to verify that you can build and register it, and that the HotSync Manager application can run it:</p>
+<ol type="1">
+  <li value="1"><a name="996198"> </a>Build the conduit as generated by the wizard without making any changes to the source files.
+  <li value="2"><a name="996199"> </a>Register your conduit. If you implement a folder-registered conduit as done in the quick-start guide, then you need only to put your conduit in the <code>Conduits</code> folder&#8212which the Conduit Wizard does automatically. However, if you are conventionally registering your conduit, then you can use the Conduit Configuration (<code>CondCfg.exe</code>) utility. (This utility is not intended for end users to use to install your conduit. You will still need to ship an installer as described in <a href="CComp_Basics.html#996250">"E. Create an Install Program for Your Conduit."</a>)
+  <li value="3"><a name="996203"> </a>Run your conduit by performing a standard HotSync operation. View the HotSync log to verify that your conduit ran.
+</ol>
+
+<p><a name="996204"> </a>This is where the quick-start guide ends. It helps you confirm that your system is set up correctly and that you can build and run a sample conduit. </p>
+<div class="NINoteImportant"><hr>
+  <a name="1000515"> </a> <b>IMPORTANT: </b> Be sure that HotSync Manager can run the conduit you generated with the Conduit Wizard before you begin modifying any of the code. If it does not run, review the quick-start guide again to be sure you have built and registered the conduit correctly.
+<hr>
+</div>
+<h3 class="hbH3">
+  <a name="1000516"> </a>D. Implement the Conduit Entry Points <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1000517"> </a>The sample code you generated with the Conduit Wizard provides complete implementations for the <a href="CRef_CnAPI.html#996679"><code>GetConduitVersion()</code></a>, <a href="CRef_CnAPI.html#996635"><code>GetConduitName()</code></a>, and <a href="CRef_CnAPI.html#1013446"><code>GetConduitInfo()</code></a> entry points. Change these only if you decide to change the name that you assigned to the conduit in the wizard. </p>
+
+<p><a name="996220"> </a>You need to add code to the <a href="CRef_CnAPI.html#996737"><code>OpenConduit()</code></a> entry point, which is where the interesting work of your conduit is done. The HotSync Manager application calls this entry point to have your conduit exchange data between the desktop computer and handheld. Most conduits perform the following basic steps:</p>
+<ol type="1">
+  <li value="1"><a name="996221"> </a>Open the database on the handheld and open the data source on the desktop computer.
+  <li value="2"><a name="996222"> </a>Use the Sync Manager API to read data from the handheld, and use the desktop application's native API to read data from the desktop data source. Sync Manager is the lowest-level way your conduit can communicate with the handheld. If you use the Generic Conduit Framework, the methods specified in these classes make the appropriate Sync Manager calls for you. 
+  <li value="3"><a name="996223"> </a>Exchange or synchronize the data as required.
+  <li value="4"><a name="996224"> </a>Write the resulting data back to the handheld database and desktop data source.
+  <li value="5"><a name="996225"> </a>Clear the handheld's record status flags.
+  <li value="6"><a name="996226"> </a>Close the handheld database and the desktop data source.
+</ol>
+
+<p><a name="996229"> </a>For debugging and troubleshooting assistance, see <a href="CComp_Debug.html#995937">Chapter 7, "Debugging Conduits."</a> </p>
+
+<p><a name="996234"> </a>The Conduit Wizard generates a version of the <a href="CRef_CnAPI.html#996369"><code>CfgConduit()</code></a> and <a href="CRef_CnAPI.html#996417"><code>ConfigureConduit()</code></a> entry points, which display a default configuration dialog box for your conduit. The default dialog box includes basic configuration options for the user: Synchronize the files, Desktop overwrites handheld, Handheld overwrites desktop, Do nothing. If you need to provide different options for users of your conduit, modify these entry points.</p>
+
+<p><a name="996238"> </a>For more information about these and other, optional conduit entry points, see <a href="CComp_EntryPoints.html#995934">Chapter 3, "Implementing Conduit Entry Points,"</a> in this document or <a href="CRef_CnAPI.html#995935">Chapter 6, "Conduit Entry Point API,"</a> in the <i>C/C++ Sync Suite Reference</i>. </p>
+<h3 class="hbH3">
+  <a name="996250"> </a>E. Create an Install Program for Your Conduit <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996251"> </a>You need to make it easy for end users to install your conduit on their computers. The Conduit Configuration developer utility is not appropriate for users, so you must create an installer program. </p>
+
+<p><a name="996253"> </a>You must also remember to test both the installation and removal (uninstallation) of your conduit on user systems, including verification that the HotSync Manager application continues to run properly after the user installs or uninstalls your conduit.</p>
+
+<p><a name="996254"> </a>Your installer can make calls to the Conduit Manager, Install Aide, and User Data APIs to register your conduit, install your handheld application, and modify desktop user information. For more information about these APIs, see <a href="CComp_Install.html#995937">Chapter 9, "Writing an Installer."</a> </p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1999-2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="CComp_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncCompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_GettingStarted.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_EntryPoints.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncCompanionIX.html">Index</a>
+</p>
+</td>
+</tr>
+<!-- END FOOTER -->
+
+</body>
+</html>

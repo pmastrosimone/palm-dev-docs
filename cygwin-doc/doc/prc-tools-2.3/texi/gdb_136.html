@@ -1,0 +1,180 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: remote stub</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: remote stub">
+<META NAME="keywords" CONTENT="Debugging with GDB: remote stub">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC136"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_135.html#SEC135"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_137.html#SEC137"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 17.3 Implementing a remote stub </H2>
+<!--docid::SEC136::-->
+<P>
+
+<A NAME="IDX605"></A>
+<A NAME="IDX606"></A>
+<A NAME="IDX607"></A>
+The stub files provided with GDB implement the target side of the
+communication protocol, and the GDB side is implemented in the
+GDB source file <TT>`remote.c'</TT>.  Normally, you can simply allow
+these subroutines to communicate, and ignore the details.  (If you're
+implementing your own stub file, you can still ignore the details: start
+with one of the existing stub files.  <TT>`sparc-stub.c'</TT> is the best
+organized, and therefore the easiest to read.)
+</P><P>
+
+<A NAME="IDX608"></A>
+To debug a program running on another machine (the debugging
+<EM>target</EM> machine), you must first arrange for all the usual
+prerequisites for the program to run by itself.  For example, for a C
+program, you need:
+</P><P>
+
+<OL>
+<LI>
+A startup routine to set up the C runtime environment; these usually
+have a name like <TT>`crt0'</TT>.  The startup routine may be supplied by
+your hardware supplier, or you may have to write your own.
+<P>
+
+<LI>
+A C subroutine library to support your program's
+subroutine calls, notably managing input and output.
+<P>
+
+<LI>
+A way of getting your program to the other machine--for example, a
+download program.  These are often supplied by the hardware
+manufacturer, but you may have to write your own from hardware
+documentation.
+</OL>
+<P>
+
+The next step is to arrange for your program to use a serial port to
+communicate with the machine where GDB is running (the <EM>host</EM>
+machine).  In general terms, the scheme looks like this:
+</P><P>
+
+<DL COMPACT>
+<DT><EM>On the host,</EM>
+<DD>GDB already understands how to use this protocol; when everything
+else is set up, you can simply use the <SAMP>`target remote'</SAMP> command
+(see section <A HREF="gdb_127.html#SEC127">Specifying a Debugging Target</A>).
+<P>
+
+<DT><EM>On the target,</EM>
+<DD>you must link with your program a few special-purpose subroutines that
+implement the GDB remote serial protocol.  The file containing these
+subroutines is called  a <EM>debugging stub</EM>.
+<P>
+
+On certain remote targets, you can use an auxiliary program
+<CODE>gdbserver</CODE> instead of linking a stub into your program.
+See section <A HREF="gdb_134.html#SEC134">Using the <CODE>gdbserver</CODE> program</A>, for details.
+</DL>
+<P>
+
+The debugging stub is specific to the architecture of the remote
+machine; for example, use <TT>`sparc-stub.c'</TT> to debug programs on
+SPARC boards.
+</P><P>
+
+<A NAME="IDX609"></A>
+These working remote stubs are distributed with GDB:
+</P><P>
+
+<DL COMPACT>
+
+<DT><CODE>i386-stub.c</CODE>
+<DD><A NAME="IDX610"></A>
+<A NAME="IDX611"></A>
+<A NAME="IDX612"></A>
+For Intel 386 and compatible architectures.
+<P>
+
+<DT><CODE>m68k-stub.c</CODE>
+<DD><A NAME="IDX613"></A>
+<A NAME="IDX614"></A>
+<A NAME="IDX615"></A>
+For Motorola 680x0 architectures.
+<P>
+
+<DT><CODE>sh-stub.c</CODE>
+<DD><A NAME="IDX616"></A>
+<A NAME="IDX617"></A>
+<A NAME="IDX618"></A>
+For Hitachi SH architectures.
+<P>
+
+<DT><CODE>sparc-stub.c</CODE>
+<DD><A NAME="IDX619"></A>
+<A NAME="IDX620"></A>
+For SPARC architectures.
+<P>
+
+<DT><CODE>sparcl-stub.c</CODE>
+<DD><A NAME="IDX621"></A>
+<A NAME="IDX622"></A>
+<A NAME="IDX623"></A>
+For Fujitsu SPARCLITE architectures.
+<P>
+
+</DL>
+<P>
+
+The <TT>`README'</TT> file in the GDB distribution may list other
+recently added stubs.
+</P><P>
+
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_137.html#SEC137">17.3.1 What the stub can do for you</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_138.html#SEC138">17.3.2 What you must do for the stub</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_139.html#SEC139">17.3.3 Putting it all together</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+</TABLE></BLOCKQUOTE>
+<P>
+
+<A NAME="Stub Contents"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_135.html#SEC135"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_137.html#SEC137"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

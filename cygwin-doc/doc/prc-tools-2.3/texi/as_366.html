@@ -1,0 +1,83 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: SH64-Addressing</TITLE>
+
+<META NAME="description" CONTENT="Using as: SH64-Addressing">
+<META NAME="keywords" CONTENT="Using as: SH64-Addressing">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC375"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_365.html#SEC374"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_367.html#SEC376"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_367.html#SEC376"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_363.html#SEC372"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_367.html#SEC376"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 8.27.2.3 Addressing Modes </H4>
+<!--docid::SEC375::-->
+<P>
+
+<A NAME="IDX1219"></A>
+<A NAME="IDX1220"></A>
+</P><P>
+
+SH64 operands consist of either a register or immediate value.  The
+immediate value can be a constant or label reference (or portion of a
+label reference), as in this example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>	movi	4,r2
+	pt	function, tr4
+	movi	(function &#62;&#62; 16) &#38; 65535,r0
+	shori	function &#38; 65535, r0
+	ld.l	r0,4,r0
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX1221"></A>
+Instruction label references can reference labels in either SHmedia or
+SHcompact.  To differentiate between the two, labels in SHmedia sections
+will always have the least significant bit set (i.e. they will be odd),
+which SHcompact labels will have the least significant bit reset
+(i.e. they will be even).  If you need to reference the actual address
+of a label, you can use the <CODE>datalabel</CODE> modifier, as in this
+example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>	.long	function
+	.long	datalabel function
+</pre></td></tr></table></P><P>
+
+In that example, the first longword may or may not have the least
+significant bit set depending on whether the label is an SHmedia label
+or an SHcompact label.  The second longword will be the actual address
+of the label, regardless of what type of label it is.
+</P><P>
+
+<A NAME="SH64 Directives"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

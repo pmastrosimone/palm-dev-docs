@@ -1,0 +1,82 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Alignment</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Alignment">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Alignment">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC89"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_88.html#SEC88"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_90.html#SEC90"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_64.html#SEC64"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.28 Inquiring on Alignment of Types or Variables </H2>
+<!--docid::SEC89::-->
+<P>
+
+The keyword <CODE>__alignof__</CODE> allows you to inquire about how an object
+is aligned, or the minimum alignment usually required by a type.  Its
+syntax is just like <CODE>sizeof</CODE>.
+</P><P>
+
+For example, if the target machine requires a <CODE>double</CODE> value to be
+aligned on an 8-byte boundary, then <CODE>__alignof__ (double)</CODE> is 8.
+This is true on many RISC machines.  On more traditional machine
+designs, <CODE>__alignof__ (double)</CODE> is 4 or even 2.
+</P><P>
+
+Some machines never actually require alignment; they allow reference to any
+data type even at an odd addresses.  For these machines, <CODE>__alignof__</CODE>
+reports the <EM>recommended</EM> alignment of a type.
+</P><P>
+
+When the operand of <CODE>__alignof__</CODE> is an lvalue rather than a type, the
+value is the largest alignment that the lvalue is known to have.  It may
+have this alignment as a result of its data type, or because it is part of
+a structure and inherits alignment from that structure.  For example, after
+this declaration:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>struct foo { int x; char y; } foo1;
+</pre></td></tr></table></P><P>
+
+the value of <CODE>__alignof__ (foo1.y)</CODE> is probably 2 or 4, the same as
+<CODE>__alignof__ (int)</CODE>, even though the data type of <CODE>foo1.y</CODE>
+does not itself demand any alignment.</P><P>
+
+A related feature which lets you specify the alignment of an object is
+<CODE>__attribute__ ((aligned (<VAR>alignment</VAR>)))</CODE>; see the following
+section.
+</P><P>
+
+<A NAME="Variable Attributes"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

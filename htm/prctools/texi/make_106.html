@@ -1,0 +1,93 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Pattern Examples</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Pattern Examples">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Pattern Examples">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC110"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_105.html#SEC109"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_107.html#SEC111"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_103.html#SEC107"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_104.html#SEC108"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_111.html#SEC115"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 10.5.2 Pattern Rule Examples </H3>
+<!--docid::SEC110::-->
+<P>
+
+Here are some examples of pattern rules actually predefined in
+<CODE>make</CODE>.  First, the rule that compiles <SAMP>`.c'</SAMP> files into <SAMP>`.o'</SAMP>
+files:</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>%.o : %.c
+        $(CC) -c $(CFLAGS) $(CPPFLAGS) $&#60; -o $@
+</pre></td></tr></table></P><P>
+
+defines a rule that can make any file <TT>`<VAR>x</VAR>.o'</TT> from
+<TT>`<VAR>x</VAR>.c'</TT>.  The command uses the automatic variables <SAMP>`$@'</SAMP> and
+<SAMP>`$&#60;'</SAMP> to substitute the names of the target file and the source file
+in each case where the rule applies (see section <A HREF="make_107.html#SEC111">Automatic Variables</A>).</P><P>
+
+Here is a second built-in rule:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>% :: RCS/%,v
+        $(CO) $(COFLAGS) $&#60;
+</pre></td></tr></table></P><P>
+
+defines a rule that can make any file <TT>`<VAR>x</VAR>'</TT> whatsoever from a
+corresponding file <TT>`<VAR>x</VAR>,v'</TT> in the subdirectory <TT>`RCS'</TT>.  Since
+the target is <SAMP>`%'</SAMP>, this rule will apply to any file whatever, provided
+the appropriate prerequisite file exists.  The double colon makes the rule
+<EM>terminal</EM>, which means that its prerequisite may not be an intermediate
+file (see section <A HREF="make_109.html#SEC113">Match-Anything Pattern Rules</A>).</P><P>
+
+This pattern rule has two targets:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>%.tab.c %.tab.h: %.y
+        bison -d $&#60;
+</pre></td></tr></table></P><P>
+
+This tells <CODE>make</CODE> that the command <SAMP>`bison -d <VAR>x</VAR>.y'</SAMP> will
+make both <TT>`<VAR>x</VAR>.tab.c'</TT> and <TT>`<VAR>x</VAR>.tab.h'</TT>.  If the file
+<TT>`foo'</TT> depends on the files <TT>`parse.tab.o'</TT> and <TT>`scan.o'</TT>
+and the file <TT>`scan.o'</TT> depends on the file <TT>`parse.tab.h'</TT>,
+when <TT>`parse.y'</TT> is changed, the command <SAMP>`bison -d parse.y'</SAMP>
+will be executed only once, and the prerequisites of both
+<TT>`parse.tab.o'</TT> and <TT>`scan.o'</TT> will be satisfied.  (Presumably
+the file <TT>`parse.tab.o'</TT> will be recompiled from <TT>`parse.tab.c'</TT>
+and the file <TT>`scan.o'</TT> from <TT>`scan.c'</TT>, while <TT>`foo'</TT> is
+linked from <TT>`parse.tab.o'</TT>, <TT>`scan.o'</TT>, and its other
+prerequisites, and it will execute happily ever after.)</P><P>
+
+<A NAME="Automatic"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

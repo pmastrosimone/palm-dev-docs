@@ -1,0 +1,120 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: Single code resource</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: Single code resource">
+<META NAME="keywords" CONTENT="Using PRC-Tools: Single code resource">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC16"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_14.html#SEC17"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_19.html#SEC24"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.1 Size limitations for a single code resource </H2>
+<!--docid::SEC16::-->
+<P>
+
+Even though the processor is unable to make a relative jump directly between
+the extremities of a code section larger than 32K, it is still possible to
+use such a code section if you are willing to indulge in manual heroics to
+help the compiler avoid needing to make such an extreme function call.
+</P><P>
+
+Note that a code section corresponds to a <CODE>code</CODE> resource in your
+project's final Palm OS database, and the maximum size for any kind of
+resource is still limited to approximately 64K by the Palm OS memory manager
+and the HotSync protocol.
+</P><P>
+
+Some of the heroic techniques are:
+</P><P>
+
+<UL>
+<LI>
+Rearrange functions within source codes and object files on the link command
+line so that function calls are only between "nearby" functions.
+<P>
+
+<LI>
+When rearrangements are insufficient, insert "jump islands":  proxy
+functions <CODE>foo_aux()</CODE> that just call the real function <CODE>foo()</CODE>
+with the same arguments and which can be placed anywhere, thus effectively
+giving each such <CODE>foo()</CODE> two entry points and loosening the constraints
+on the arrangement problem.  Or use the assembly language equivalent of a
+proxy function, which can avoid remarshalling the arguments and really be
+a jump.
+<P>
+
+<LI>
+Others are up to your imagination.
+</UL>
+<P>
+
+The maximum size of the main code section is specified in the linker
+script and enforced during linking (see section `Linker Scripts' in <CITE>Using ld</CITE>).  You can override the default script's
+32K size by using the <CODE>-T <VAR>script</VAR></CODE> linker option.
+Two suitable linker scripts, which can be used as is or copied and modified,
+are already provided, both allowing a <CODE>.text</CODE> section of up to
+approximately 64K:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-T text_64k</CODE>
+<DD>Up to 64720 bytes, the maximum resource size supported by all versions of
+Palm OS to date.
+<P>
+
+<DT><CODE>-T text_64k_palmos3</CODE>
+<DD>Up to 65505 bytes, the maximum supported by Palm OS version 3.0 and higher.
+</DL>
+<P>
+
+There is, of course, some risk in going right up to the maximum resource
+size limits.  In practice, the limit has typically been increasing with
+each new version of Palm OS, and has never decreased.  Nonetheless, it may
+be wise to use <CODE>text_64k</CODE> even if you plan to target only Palm OS 3.0
+and higher devices.
+</P><P>
+
+<A NAME="Multiple code resources"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_14.html#SEC17"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_19.html#SEC24"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

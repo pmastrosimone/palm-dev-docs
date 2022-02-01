@@ -1,0 +1,138 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Tools and Libraries</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Tools and Libraries">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Tools and Libraries">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC53"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_52.html#SEC52"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_54.html#SEC54"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_54.html#SEC54"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_50.html#SEC50"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_57.html#SEC57"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.4.3 Tools and Libraries for a Cross-Compiler </H3>
+<!--docid::SEC53::-->
+<P>
+
+If you have a cross-assembler and cross-linker available, you should
+install them now.  Put them in the directory
+<TT>`/usr/local/<VAR>target</VAR>/bin'</TT>.  Here is a table of the tools
+you should put in this directory:
+</P><P>
+
+<DL COMPACT>
+<DT><TT>`as'</TT>
+<DD>This should be the cross-assembler.
+<P>
+
+<DT><TT>`ld'</TT>
+<DD>This should be the cross-linker.
+<P>
+
+<DT><TT>`ar'</TT>
+<DD>This should be the cross-archiver: a program which can manipulate
+archive files (linker libraries) in the target machine's format.
+<P>
+
+<DT><TT>`ranlib'</TT>
+<DD>This should be a program to construct a symbol table in an archive file.
+</DL>
+<P>
+
+The installation of GNU CC will find these programs in that directory,
+and copy or link them to the proper place to for the cross-compiler to
+find them when run later.
+</P><P>
+
+The easiest way to provide these files is to build the Binutils package
+and GAS.  Configure them with the same <SAMP>`--host'</SAMP> and <SAMP>`--target'</SAMP>
+options that you use for configuring GNU CC, then build and install
+them.  They install their executables automatically into the proper
+directory.  Alas, they do not support all the targets that GNU CC
+supports.
+</P><P>
+
+If you want to install libraries to use with the cross-compiler, such as
+a standard C library, put them in the directory
+<TT>`/usr/local/<VAR>target</VAR>/lib'</TT>; installation of GNU CC copies
+all the files in that subdirectory into the proper place for GNU CC to
+find them and link with them.  Here's an example of copying some
+libraries from a target machine:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ftp <VAR>target-machine</VAR>
+lcd /usr/local/<VAR>target</VAR>/lib
+cd /lib
+get libc.a
+cd /usr/lib
+get libg.a
+get libm.a
+quit
+</pre></td></tr></table></P><P>
+
+The precise set of libraries you'll need, and their locations on
+the target machine, vary depending on its operating system.
+</P><P>
+
+<A NAME="IDX251"></A>
+Many targets require "start files" such as <TT>`crt0.o'</TT> and
+<TT>`crtn.o'</TT> which are linked into each executable; these too should be
+placed in <TT>`/usr/local/<VAR>target</VAR>/lib'</TT>.  There may be several
+alternatives for <TT>`crt0.o'</TT>, for use with profiling or other
+compilation options.  Check your target's definition of
+<CODE>STARTFILE_SPEC</CODE> to find out what start files it uses.
+Here's an example of copying these files from a target machine:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ftp <VAR>target-machine</VAR>
+lcd /usr/local/<VAR>target</VAR>/lib
+prompt
+cd /lib
+mget *crt*.o
+cd /usr/lib
+mget *crt*.o
+quit
+</pre></td></tr></table></P><P>
+
+<A NAME="Cross Runtime"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_52.html#SEC52"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_54.html#SEC54"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_54.html#SEC54"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_50.html#SEC50"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_57.html#SEC57"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

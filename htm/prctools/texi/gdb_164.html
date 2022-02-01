@@ -1,0 +1,212 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: MIPS Embedded</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: MIPS Embedded">
+<META NAME="keywords" CONTENT="Debugging with GDB: MIPS Embedded">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC164"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_163.html#SEC163"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_165.html#SEC165"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_165.html#SEC165"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_151.html#SEC151"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_176.html#SEC176"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 18.3.7 MIPS Embedded </H3>
+<!--docid::SEC164::-->
+<P>
+
+<A NAME="IDX714"></A>
+GDB can use the MIPS remote debugging protocol to talk to a
+MIPS board attached to a serial line.  This is available when
+you configure GDB with <SAMP>`--target=mips-idt-ecoff'</SAMP>.
+</P><P>
+
+Use these GDB commands to specify the connection to your target board:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>target mips <VAR>port</VAR></CODE>
+<DD><A NAME="IDX715"></A>
+To run a program on the board, start up <CODE>gdb</CODE> with the
+name of your program as the argument.  To connect to the board, use the
+command <SAMP>`target mips <VAR>port</VAR>'</SAMP>, where <VAR>port</VAR> is the name of
+the serial port connected to the board.  If the program has not already
+been downloaded to the board, you may use the <CODE>load</CODE> command to
+download it.  You can then use all the usual GDB commands.
+<P>
+
+For example, this sequence connects to the target board through a serial
+port, and loads and runs a program called <VAR>prog</VAR> through the
+debugger:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>host$ gdb <VAR>prog</VAR>
+GDB is free software and <small>...</small>
+(gdb) target mips /dev/ttyb
+(gdb) load <VAR>prog</VAR>
+(gdb) run
+</FONT></pre></td></tr></table></P><P>
+
+<DT><CODE>target mips <VAR>hostname</VAR>:<VAR>portnumber</VAR></CODE>
+<DD>On some GDB host configurations, you can specify a TCP
+connection (for instance, to a serial line managed by a terminal
+concentrator) instead of a serial port, using the syntax
+<SAMP>`<VAR>hostname</VAR>:<VAR>portnumber</VAR>'</SAMP>.
+<P>
+
+<DT><CODE>target pmon <VAR>port</VAR></CODE>
+<DD><A NAME="IDX716"></A>
+PMON ROM monitor.
+<P>
+
+<DT><CODE>target ddb <VAR>port</VAR></CODE>
+<DD><A NAME="IDX717"></A>
+NEC's DDB variant of PMON for Vr4300.
+<P>
+
+<DT><CODE>target lsi <VAR>port</VAR></CODE>
+<DD><A NAME="IDX718"></A>
+LSI variant of PMON.
+<P>
+
+<A NAME="IDX719"></A>
+<DT><CODE>target r3900 <VAR>dev</VAR></CODE>
+<DD>Densan DVE-R3900 ROM monitor for Toshiba R3900 Mips.
+<P>
+
+<A NAME="IDX720"></A>
+<DT><CODE>target array <VAR>dev</VAR></CODE>
+<DD>Array Tech LSI33K RAID controller board.
+<P>
+
+</DL>
+<P>
+
+GDB also supports these special commands for MIPS targets:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>set processor <VAR>args</VAR></CODE>
+<DD><DT><CODE>show processor</CODE>
+<DD><A NAME="IDX721"></A>
+<A NAME="IDX722"></A>
+Use the <CODE>set processor</CODE> command to set the type of MIPS
+processor when you want to access processor-type-specific registers.
+For example, <CODE>set processor <VAR>r3041</VAR></CODE> tells GDB
+to use the CPU registers appropriate for the 3041 chip.
+Use the <CODE>show processor</CODE> command to see what MIPS processor GDB
+is using.  Use the <CODE>info reg</CODE> command to see what registers
+GDB is using.
+<P>
+
+<DT><CODE>set mipsfpu double</CODE>
+<DD><DT><CODE>set mipsfpu single</CODE>
+<DD><DT><CODE>set mipsfpu none</CODE>
+<DD><DT><CODE>show mipsfpu</CODE>
+<DD><A NAME="IDX723"></A>
+<A NAME="IDX724"></A>
+<A NAME="IDX725"></A>
+<A NAME="IDX726"></A>
+If your target board does not support the MIPS floating point
+coprocessor, you should use the command <SAMP>`set mipsfpu none'</SAMP> (if you
+need this, you may wish to put the command in your GDB init
+file).  This tells GDB how to find the return value of
+functions which return floating point values.  It also allows
+GDB to avoid saving the floating point registers when calling
+functions on the board.  If you are using a floating point coprocessor
+with only single precision floating point support, as on the R4650
+processor, use the command <SAMP>`set mipsfpu single'</SAMP>.  The default
+double precision floating point coprocessor may be selected using
+<SAMP>`set mipsfpu double'</SAMP>.
+<P>
+
+In previous versions the only choices were double precision or no
+floating point, so <SAMP>`set mipsfpu on'</SAMP> will select double precision
+and <SAMP>`set mipsfpu off'</SAMP> will select no floating point.
+</P><P>
+
+As usual, you can inquire about the <CODE>mipsfpu</CODE> variable with
+<SAMP>`show mipsfpu'</SAMP>.
+</P><P>
+
+<DT><CODE>set remotedebug <VAR>n</VAR></CODE>
+<DD><DT><CODE>show remotedebug</CODE>
+<DD><A NAME="IDX727"></A>
+<A NAME="IDX728"></A>
+<A NAME="IDX729"></A>
+<A NAME="IDX730"></A>
+You can see some debugging information about communications with the board
+by setting the <CODE>remotedebug</CODE> variable.  If you set it to <CODE>1</CODE> using
+<SAMP>`set remotedebug 1'</SAMP>, every packet is displayed.  If you set it
+to <CODE>2</CODE>, every character is displayed.  You can check the current value
+at any time with the command <SAMP>`show remotedebug'</SAMP>.
+<P>
+
+<DT><CODE>set timeout <VAR>seconds</VAR></CODE>
+<DD><DT><CODE>set retransmit-timeout <VAR>seconds</VAR></CODE>
+<DD><DT><CODE>show timeout</CODE>
+<DD><DT><CODE>show retransmit-timeout</CODE>
+<DD><A NAME="IDX731"></A>
+<A NAME="IDX732"></A>
+<A NAME="IDX733"></A>
+<A NAME="IDX734"></A>
+<A NAME="IDX735"></A>
+<A NAME="IDX736"></A>
+You can control the timeout used while waiting for a packet, in the MIPS
+remote protocol, with the <CODE>set timeout <VAR>seconds</VAR></CODE> command.  The
+default is 5 seconds.  Similarly, you can control the timeout used while
+waiting for an acknowledgement of a packet with the <CODE>set
+retransmit-timeout <VAR>seconds</VAR></CODE> command.  The default is 3 seconds.
+You can inspect both values with <CODE>show timeout</CODE> and <CODE>show
+retransmit-timeout</CODE>.  (These commands are <EM>only</EM> available when
+GDB is configured for <SAMP>`--target=mips-idt-ecoff'</SAMP>.)
+<P>
+
+The timeout set by <CODE>set timeout</CODE> does not apply when GDB
+is waiting for your program to stop.  In that case, GDB waits
+forever because it has no way of knowing how long the program is going
+to run before stopping.
+</DL>
+<P>
+
+<A NAME="PowerPC"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_163.html#SEC163"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_165.html#SEC165"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_165.html#SEC165"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_151.html#SEC151"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_176.html#SEC176"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

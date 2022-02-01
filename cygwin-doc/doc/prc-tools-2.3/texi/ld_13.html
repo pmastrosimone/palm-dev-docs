@@ -1,0 +1,93 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Format Commands</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Format Commands">
+<META NAME="keywords" CONTENT="Untitled Document: Format Commands">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC13"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_12.html#SEC12"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_14.html#SEC14"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_14.html#SEC14"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_10.html#SEC10"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_15.html#SEC15"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.4.3 Commands Dealing with Object File Formats </H3>
+<!--docid::SEC13::-->
+A couple of linker script commands deal with object file formats.
+<P>
+
+<DL COMPACT>
+<DT><CODE>OUTPUT_FORMAT(<VAR>bfdname</VAR>)</CODE>
+<DD><DT><CODE>OUTPUT_FORMAT(<VAR>default</VAR>, <VAR>big</VAR>, <VAR>little</VAR>)</CODE>
+<DD><A NAME="IDX288"></A>
+<A NAME="IDX289"></A>
+The <CODE>OUTPUT_FORMAT</CODE> command names the BFD format to use for the
+output file (see section <A HREF="ld_60.html#SEC60">5. BFD</A>).  Using <CODE>OUTPUT_FORMAT(<VAR>bfdname</VAR>)</CODE> is
+exactly like using <SAMP>`--oformat <VAR>bfdname</VAR>'</SAMP> on the command line
+(see section <A HREF="ld_3.html#SEC3">Command Line Options</A>).  If both are used, the command
+line option takes precedence.
+<P>
+
+You can use <CODE>OUTPUT_FORMAT</CODE> with three arguments to use different
+formats based on the <SAMP>`-EB'</SAMP> and <SAMP>`-EL'</SAMP> command line options.
+This permits the linker script to set the output format based on the
+desired endianness.
+</P><P>
+
+If neither <SAMP>`-EB'</SAMP> nor <SAMP>`-EL'</SAMP> are used, then the output format
+will be the first argument, <VAR>default</VAR>.  If <SAMP>`-EB'</SAMP> is used, the
+output format will be the second argument, <VAR>big</VAR>.  If <SAMP>`-EL'</SAMP> is
+used, the output format will be the third argument, <VAR>little</VAR>.
+</P><P>
+
+For example, the default linker script for the MIPS ELF target uses this
+command:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>OUTPUT_FORMAT(elf32-bigmips, elf32-bigmips, elf32-littlemips)
+</FONT></pre></td></tr></table>This says that the default format for the output file is
+<SAMP>`elf32-bigmips'</SAMP>, but if the user uses the <SAMP>`-EL'</SAMP> command line
+option, the output file will be created in the <SAMP>`elf32-littlemips'</SAMP>
+format.
+</P><P>
+
+<DT><CODE>TARGET(<VAR>bfdname</VAR>)</CODE>
+<DD><A NAME="IDX290"></A>
+<A NAME="IDX291"></A>
+The <CODE>TARGET</CODE> command names the BFD format to use when reading input
+files.  It affects subsequent <CODE>INPUT</CODE> and <CODE>GROUP</CODE> commands.
+This command is like using <SAMP>`-b <VAR>bfdname</VAR>'</SAMP> on the command line
+(see section <A HREF="ld_3.html#SEC3">Command Line Options</A>).  If the <CODE>TARGET</CODE> command
+is used but <CODE>OUTPUT_FORMAT</CODE> is not, then the last <CODE>TARGET</CODE>
+command is also used to set the format for the output file.  See section <A HREF="ld_60.html#SEC60">5. BFD</A>.
+</DL>
+<P>
+
+<A NAME="Miscellaneous Commands"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

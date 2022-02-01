@@ -1,0 +1,166 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Overview</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Overview">
+<META NAME="keywords" CONTENT="Debugging with GDB: Overview">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC627"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_272.html#SEC626"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_274.html#SEC628"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_272.html#SEC626"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_272.html#SEC626"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_279.html#SEC633"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> D.1 Overview </H2>
+<!--docid::SEC627::-->
+<P>
+
+There may be occasions when you need to know something about the
+protocol--for example, if there is only one serial port to your target
+machine, you might want your program to do something special if it
+recognizes a packet meant for GDB.
+</P><P>
+
+In the examples below, <SAMP>`-&#62;'</SAMP> and <SAMP>`&#60;-'</SAMP> are used to indicate
+transmitted and received data respectfully.
+</P><P>
+
+<A NAME="IDX1179"></A>
+<A NAME="IDX1180"></A>
+<A NAME="IDX1181"></A>
+All GDB commands and responses (other than acknowledgments) are
+sent as a <VAR>packet</VAR>.  A <VAR>packet</VAR> is introduced with the character
+<SAMP>`$'</SAMP>, the actual <VAR>packet-data</VAR>, and the terminating character
+<SAMP>`#'</SAMP> followed by a two-digit <VAR>checksum</VAR>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre><CODE>$</CODE><VAR>packet-data</VAR><CODE>#</CODE><VAR>checksum</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX1182"></A>
+The two-digit <VAR>checksum</VAR> is computed as the modulo 256 sum of all
+characters between the leading <SAMP>`$'</SAMP> and the trailing <SAMP>`#'</SAMP> (an
+eight bit unsigned checksum).
+</P><P>
+
+Implementors should note that prior to GDB 5.0 the protocol
+specification also included an optional two-digit <VAR>sequence-id</VAR>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre><CODE>$</CODE><VAR>sequence-id</VAR><CODE>:</CODE><VAR>packet-data</VAR><CODE>#</CODE><VAR>checksum</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX1183"></A>
+That <VAR>sequence-id</VAR> was appended to the acknowledgment.  GDB
+has never output <VAR>sequence-id</VAR>s.  Stubs that handle packets added
+since GDB 5.0 must not accept <VAR>sequence-id</VAR>.
+</P><P>
+
+<A NAME="IDX1184"></A>
+When either the host or the target machine receives a packet, the first
+response expected is an acknowledgment: either <SAMP>`+'</SAMP> (to indicate
+the package was received correctly) or <SAMP>`-'</SAMP> (to request
+retransmission):
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>-&#62; <CODE>$</CODE><VAR>packet-data</VAR><CODE>#</CODE><VAR>checksum</VAR>
+&#60;- <CODE>+</CODE>
+</FONT></pre></td></tr></table></P><P>
+
+The host (GDB) sends <VAR>command</VAR>s, and the target (the
+debugging stub incorporated in your program) sends a <VAR>response</VAR>.  In
+the case of step and continue <VAR>command</VAR>s, the response is only sent
+when the operation has completed (the target has again stopped).
+</P><P>
+
+<VAR>packet-data</VAR> consists of a sequence of characters with the
+exception of <SAMP>`#'</SAMP> and <SAMP>`$'</SAMP> (see <SAMP>`X'</SAMP> packet for additional
+exceptions).
+</P><P>
+
+Fields within the packet should be separated using <SAMP>`,'</SAMP> <SAMP>`;'</SAMP> or
+<A NAME="IDX1185"></A>
+<SAMP>`:'</SAMP>.  Except where otherwise noted all numbers are represented in
+HEX with leading zeros suppressed.
+</P><P>
+
+Implementors should note that prior to GDB 5.0, the character
+<SAMP>`:'</SAMP> could not appear as the third character in a packet (as it
+would potentially conflict with the <VAR>sequence-id</VAR>).
+</P><P>
+
+Response <VAR>data</VAR> can be run-length encoded to save space.  A <SAMP>`*'</SAMP>
+means that the next character is an ASCII encoding giving a repeat count
+which stands for that many repetitions of the character preceding the
+<SAMP>`*'</SAMP>.  The encoding is <CODE>n+29</CODE>, yielding a printable character
+where <CODE>n &#62;=3</CODE> (which is where rle starts to win).  The printable
+characters <SAMP>`$'</SAMP>, <SAMP>`#'</SAMP>, <SAMP>`+'</SAMP> and <SAMP>`-'</SAMP> or with a numeric
+value greater than 126 should not be used.
+</P><P>
+
+Some remote systems have used a different run-length encoding mechanism
+loosely refered to as the cisco encoding.  Following the <SAMP>`*'</SAMP>
+character are two hex digits that indicate the size of the packet.
+</P><P>
+
+So:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>"<CODE>0* </CODE>"
+</FONT></pre></td></tr></table>means the same as "0000".
+</P><P>
+
+The error response returned for some packets includes a two character
+error number.  That number is not well defined.
+</P><P>
+
+For any <VAR>command</VAR> not supported by the stub, an empty response
+(<SAMP>`$#00'</SAMP>) should be returned.  That way it is possible to extend the
+protocol.  A newer GDB can tell if a packet is supported based
+on that response.
+</P><P>
+
+A stub is required to support the <SAMP>`g'</SAMP>, <SAMP>`G'</SAMP>, <SAMP>`m'</SAMP>, <SAMP>`M'</SAMP>, 
+<SAMP>`c'</SAMP>, and <SAMP>`s'</SAMP> <VAR>command</VAR>s.  All other <VAR>command</VAR>s are 
+optional.
+</P><P>
+
+<A NAME="Packets"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_272.html#SEC626"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_274.html#SEC628"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_272.html#SEC626"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_272.html#SEC626"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_279.html#SEC633"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

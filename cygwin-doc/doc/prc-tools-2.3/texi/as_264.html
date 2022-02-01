@@ -1,0 +1,75 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: i386-Jumps</TITLE>
+
+<META NAME="description" CONTENT="Using as: i386-Jumps">
+<META NAME="keywords" CONTENT="Using as: i386-Jumps">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC273"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_263.html#SEC272"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_265.html#SEC274"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_265.html#SEC274"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.12.7 Handling of Jump Instructions </H3>
+<!--docid::SEC273::-->
+<P>
+
+<A NAME="IDX761"></A>
+<A NAME="IDX762"></A>
+<A NAME="IDX763"></A>
+<A NAME="IDX764"></A>
+Jump instructions are always optimized to use the smallest possible
+displacements.  This is accomplished by using byte (8-bit) displacement
+jumps whenever the target is sufficiently close.  If a byte displacement
+is insufficient a long displacement is used.  We do not support
+word (16-bit) displacement jumps in 32-bit mode (i.e. prefixing the jump
+instruction with the <SAMP>`data16'</SAMP> instruction prefix), since the 80386
+insists upon masking <SAMP>`%eip'</SAMP> to 16 bits after the word displacement
+is added. (See also see section <A HREF="as_269.html#SEC278">8.12.12 Specifying CPU Architecture</A>)
+</P><P>
+
+Note that the <SAMP>`jcxz'</SAMP>, <SAMP>`jecxz'</SAMP>, <SAMP>`loop'</SAMP>, <SAMP>`loopz'</SAMP>,
+<SAMP>`loope'</SAMP>, <SAMP>`loopnz'</SAMP> and <SAMP>`loopne'</SAMP> instructions only come in byte
+displacements, so that if you use these instructions (<CODE>gcc</CODE> does
+not use them) you may get an error message (and incorrect code).  The AT&#38;T
+80386 assembler tries to get around this problem by expanding <SAMP>`jcxz foo'</SAMP>
+to
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>         jcxz cx_zero
+         jmp cx_nonzero
+cx_zero: jmp foo
+cx_nonzero:
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="i386-Float"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

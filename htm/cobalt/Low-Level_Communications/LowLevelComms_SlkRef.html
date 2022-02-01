@@ -1,0 +1,690 @@
+<html>
+<head>
+<title>(Protein) Serial Link Manager | Low-Level Communications</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:13:57">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="996709"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="LowLevelCommsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_SerRef.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_IR_Pt.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelCommsIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">5 &nbsp;&nbsp;
+Serial Link Manager</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Low-Level Communications</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="LowLevelComms_Serial_Pt.html">Part I: Serial Communication</a> </h1>
+<h1 class="SideTOC1"><a href="LowLevelComms_SlkRef.html">5  Serial Link Manager</a></h1>
+
+   <h2 class="SideTOC2"><a href="#995936">
+   Serial Link Manager Functions</a></h2>
+
+      <h3 class="SideTOC3"><a href="#995939">
+      SlkClose</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995957">
+      SlkCloseSocket</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995990">
+      SlkFlushSocket</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996007">
+      SlkOpen</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996029">
+      SlkOpenSocket</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996058">
+      SlkReceivePacket</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996094">
+      SlkSendPacket</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996116">
+      SlkSetSocketListener</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996154">
+      SlkSocketPortID</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996190">
+      SlkSocketSetTimeout</a></h3>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="996710"> </a>This chapter provides reference material for the Serial Link Manager API. The header file <code>SerialLinkMgr.h</code> declares the Serial Link Manager API. For more information on the Serial Link Manager, see <a href="LowLevelComms_SerLink.html#608590">Chapter 3, "The Serial Link Protocol."</a></p>
+
+<p><a name="996787"> </a>This API is defined in the header file <code>SerialLinkMgr.h</code>.</p>
+
+<h2 class="haH2">
+  <a name="995936"> </a>Serial Link Manager Functions <a href="#996709"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<h3 class="hbH3">
+  <a name="995939"> </a>SlkClose Function <a href="#996709"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995940"> </a>Purpose 
+</h4>
+
+<p><a name="995941"> </a>Close down the Serial Link Manager.</p>
+<h4>
+  <a name="995944"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995946"></a>status_t SlkClose (
+   void
+)
+</pre>
+<h4>
+  <a name="995947"> </a>Parameters 
+</h4>
+
+<p><a name="995948"> </a>None.</p>
+<h4>
+  <a name="995949"> </a>Returns 
+</h4>
+
+<dl>
+<dt><a name="995950"> </a><code>errNone</code></dt>
+<dd><a name="996608"> </a>No error.</dd>
+
+<dt><a name="995952"> </a><code>slkErrNotOpen</code></dt>
+<dd><a name="996649"> </a>The Serial Link Manager was not open.</dd>
+
+</dl>
+<h4>
+  <a name="995953"> </a>Comments 
+</h4>
+
+<p><a name="995954"> </a>When the open count reaches zero, this routine frees resources allocated by Serial Link Manager.</p>
+
+<h3 class="hbH3">
+  <a name="995957"> </a>SlkCloseSocket Function <a href="#996709"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995958"> </a>Purpose 
+</h4>
+
+<p><a name="995962"> </a>Closes a socket previously opened with <a href="LowLevelComms_SlkRef.html#996029"><code>SlkOpenSocket()</code></a>.</p>
+
+<p><a name="995963"> </a>The caller is responsible for closing the communications library used by this socket, if necessary.</p>
+<h4>
+  <a name="995966"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995968"></a>status_t<span style="color: #000000;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline"> </span>SlkCloseSocket (
+   UInt16 socket
+)
+</pre>
+<h4>
+  <a name="995969"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="995970"> </a><code>&rarr;  <i><code>socket</code></i></code></dt>
+<dd><a name="996933"> </a>The socket ID to close.</dd>
+
+</dl>
+<h4>
+  <a name="995971"> </a>Returns 
+</h4>
+
+<dl>
+<dt><a name="995972"> </a><code>errNone</code></dt>
+<dd><a name="996850"> </a>No error.</dd>
+
+<dt><a name="995974"> </a><code>slkErrSocketNotOpen</code></dt>
+<dd><a name="996873"> </a>The socket was not open.</dd>
+
+</dl>
+<h4>
+  <a name="995975"> </a>Comments 
+</h4>
+
+<p><a name="995976"> </a><code>SlkCloseSocket()</code> frees system resources the Serial Link Manager allocated for the socket. It does not free resources allocated and passed by the client, such as the buffers passed to <a href="LowLevelComms_SlkRef.html#996116"><code>SlkSetSocketListener()</code></a>; this is the client's responsibility. The caller is also responsible for closing the communications library used by this socket.</p>
+<h4>
+  <a name="995980"> </a>See Also 
+</h4>
+
+<p><a name="995984"> </a><a href="LowLevelComms_SlkRef.html#996029"><code>SlkOpenSocket()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="995990"> </a>SlkFlushSocket Function <a href="#996709"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995991"> </a>Purpose 
+</h4>
+
+<p><a name="995992"> </a>Flush the receive queue of the communications library associated with the given socket.</p>
+<h4>
+  <a name="995995"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995997"></a>status_t SlkFlushSocket (
+   UInt16 socket,
+   Int32 timeout
+)
+</pre>
+<h4>
+  <a name="995998"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="995999"> </a><code>&rarr;  <i><code>socket</code></i></code></dt>
+<dd><a name="997193"> </a>Socket ID.</dd>
+
+<dt><a name="996000"> </a><code>&rarr;  <i><code>timeout</code></i></code></dt>
+<dd><a name="997210"> </a>Interbyte timeout in system milliseconds.</dd>
+
+</dl>
+<h4>
+  <a name="996001"> </a>Returns 
+</h4>
+
+<dl>
+<dt><a name="996002"> </a><code>errNone</code></dt>
+<dd><a name="997229"> </a>No error.</dd>
+
+<dt><a name="996004"> </a><code>slkErrSocketNotOpen</code></dt>
+<dd><a name="997246"> </a>The socket wasn't open.</dd>
+
+</dl>
+
+<h3 class="hbH3">
+  <a name="996007"> </a>SlkOpen Function <a href="#996709"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996008"> </a>Purpose 
+</h4>
+
+<p><a name="996009"> </a>Initialize the Serial Link Manager.</p>
+<h4>
+  <a name="996012"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996014"></a>status_t SlkOpen (
+   void
+)
+</pre>
+<h4>
+  <a name="996015"> </a>Parameters 
+</h4>
+
+<p><a name="996016"> </a>None.</p>
+<h4>
+  <a name="996017"> </a>Returns 
+</h4>
+
+<dl>
+<dt><a name="996018"> </a><code>errNone</code></dt>
+<dd><a name="997500"> </a>No error.</dd>
+
+<dt><a name="996020"> </a><code>slkErrAlreadyOpen</code></dt>
+<dd><a name="997513"> </a>No error.</dd>
+
+</dl>
+<h4>
+  <a name="996021"> </a>Comments 
+</h4>
+
+<p><a name="996022"> </a>Initializes the Serial Link Manager, allocating necessary resources. Return codes of 0 (zero) and <span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">slkErrAlreadyOpen</span> both indicate success. Any other return code indicates failure. The <span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">slkErrAlreadyOpen</span> function informs the client that someone else is also using the Serial Link Manager. If the Serial Link Manager was successfully opened by the client, the client needs to call <a href="LowLevelComms_SlkRef.html#995939"><code>SlkClose()</code></a> when it finishes using the Serial Link Manager.</p>
+
+<h3 class="hbH3">
+  <a name="996029"> </a>SlkOpenSocket Function <a href="#996709"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996030"> </a>Purpose 
+</h4>
+
+<p><a name="996031"> </a>Open a serial link socket and associate it with a communications library. The socket may be a known static socket or a dynamically assigned socket.</p>
+<h4>
+  <a name="996034"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996036"></a>status_t SlkOpenSocket (
+   UInt16 portID,
+   UInt16 *socketP,
+   Boolean staticSocket
+)
+</pre>
+<h4>
+  <a name="996037"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996038"> </a><code>&rarr;  <i><code>portID</code></i></code></dt>
+<dd><a name="997540"> </a>Comm library reference number for socket.</dd>
+
+<dt><a name="996039"> </a><code>&harr;  <i><code>socketP</code></i></code></dt>
+<dd><a name="997614"> </a>Pointer to location for returning the socket ID. If <code class="par">staticSocket</code> is <code>true</code>, then on entry this contains the desired static socket number to open.</dd>
+
+<dt><a name="996040"> </a><code>&rarr;  <i><code>staticSocket</code></i></code></dt>
+<dd><a name="997663"> </a>If <code>true</code>, <code class="par">socketP</code> contains the desired static socket number to open. If <code>false</code>, any free socket number is assigned dynamically and opened.</dd>
+
+</dl>
+<h4>
+  <a name="996041"> </a>Returns 
+</h4>
+
+<dl>
+<dt><a name="996042"> </a><code>errNone</code></dt>
+<dd><a name="997768"> </a>No error.</dd>
+
+<dt><a name="996044"> </a><code>slkErrOutOfSockets</code></dt>
+<dd><a name="997837"> </a>No more sockets can be opened.</dd>
+
+</dl>
+<h4>
+  <a name="996045"> </a>Comments 
+</h4>
+
+<p><a name="996046"> </a>The communications library must already be initialized and opened (see <a href="LowLevelComms_SerRef.html#994414"><code>SrmOpen()</code></a>). When finished using the socket, the caller must call <a href="LowLevelComms_SlkRef.html#995957"><code>SlkCloseSocket()</code></a> to free system resources allocated for the socket. For information about well-known static socket IDs, see <a href="LowLevelComms_SerLink.html#608590">Chapter 3, "The Serial Link Protocol,"</a>.</p>
+
+<h3 class="hbH3">
+  <a name="996058"> </a>SlkReceivePacket Function <a href="#996709"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996059"> </a>Purpose 
+</h4>
+
+<p><a name="996060"> </a>Receive and validate a packet for a particular socket or for any socket. Check for format and checksum errors.</p>
+<h4>
+  <a name="996063"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996065"></a>status_t SlkReceivePacket (
+   UInt16 socket,
+   Boolean andOtherSockets,
+   SlkPktHeaderPtr headerP,
+   void *bodyP,
+   UInt16 bodySize,
+   Int32 timeout
+)
+</pre>
+<h4>
+  <a name="996066"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996067"> </a><code>&rarr;  <i><code>socket</code></i></code></dt>
+<dd><a name="998023"> </a>The socket ID.</dd>
+
+<dt><a name="996068"> </a><code>&rarr;  <i><code>andOtherSockets</code></i></code></dt>
+<dd><a name="998082"> </a>If <code>true</code>, ignore destination in packet header.</dd>
+
+<dt><a name="996069"> </a><code>&harr;  <i><code>headerP</code></i></code></dt>
+<dd><a name="998085"> </a>Pointer to the packet header buffer (size of <code>SlkPktHeaderType</code>). Note that the header is in big-endian byte order.</dd>
+
+<dt><a name="996070"> </a><code>&harr;  <i><code>bodyP</code></i></code></dt>
+<dd><a name="998086"> </a>Pointer to the packet client data buffer.</dd>
+
+<dt><a name="996071"> </a><code>&rarr;  <i><code>bodySize</code></i></code></dt>
+<dd><a name="998091"> </a>Size of the client data buffer (maximum client data size which can be accommodated).</dd>
+
+<dt><a name="996072"> </a><code>&rarr;  <i><code>timeout</code></i></code></dt>
+<dd><a name="998092"> </a>Maximum number of system ticks to wait for beginning of a packet; -1 means wait forever.</dd>
+
+</dl>
+<h4>
+  <a name="996073"> </a>Returns 
+</h4>
+
+<dl>
+<dt><a name="996074"> </a><code>errNone</code></dt>
+<dd><a name="998093"> </a>No error.</dd>
+
+<dt><a name="996076"> </a><code><code>slkErrSocketNotOpen</code></code></dt>
+<dd><a name="998122"> </a>The socket was not open.</dd>
+
+<dt><a name="996078"> </a><code><code>slkErrTimeOut</code></code></dt>
+<dd><a name="998123"> </a>Timed out waiting for a packet.</dd>
+
+<dt><a name="996080"> </a><code><code>slkErrWrongDestSocket</code></code></dt>
+<dd><a name="998152"> </a>The packet being received had an unexpected destination.</dd>
+
+<dt><a name="996082"> </a><code><code>slkErrChecksum</code></code></dt>
+<dd><a name="998163"> </a>Invalid header checksum or packet CRC-16.</dd>
+
+<dt><a name="996084"> </a><code><code>slkErrBuffer</code></code></dt>
+<dd><a name="998164"> </a>Client data buffer was too small for packet's client data.</dd>
+
+</dl>
+
+<p><a name="996085"> </a>If <code class="par">andOtherSockets</code> is <code>false</code>, this routine returns with an error code unless it gets a packet for the specific socket.</p>
+
+<p><a name="996086"> </a>If <code class="par">andOtherSockets</code> is <code>true</code>, this routine returns successfully if it sees any incoming packet from the communications library used by <code>socket</code>.</p>
+<h4>
+  <a name="999642"> </a>Comments 
+</h4>
+
+<p><a name="999644"> </a>You may request to receive a packet for the passed socket ID only, or for any open socket which does not have a socket listener. The parameters also specify buffers for the packet header and client data, and a timeout. The timeout indicates how long the receiver should wait for a packet to begin arriving before timing out. If a packet is received for a socket with a registered socket listener, it will be dispatched via its socket listener procedure. On success, the packet header buffer and packet client data buffer is filled in with the actual size of the packet's client data in the packet header's <code>bodySize</code> field.</p>
+
+<h3 class="hbH3">
+  <a name="996094"> </a>SlkSendPacket Function <a href="#996709"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996095"> </a>Purpose 
+</h4>
+
+<p><a name="996096"> </a>Send a serial link packet via the serial output driver. </p>
+<h4>
+  <a name="996099"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996101"></a>status_t<span style="color: #000000;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline"> </span>SlkSendPacket (
+   SlkPktHeaderPtr headerP,
+   SlkWriteDataPtr writeList
+)
+</pre>
+<h4>
+  <a name="996102"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996103"> </a><code>&harr;  <i><code>headerP</code></i></code></dt>
+<dd><a name="998238"> </a>Pointer to the packet header structure with client information filled in (see Comments).</dd>
+
+<dt><a name="996104"> </a><code>&rarr;  <i><code>writeList</code></i></code></dt>
+<dd><a name="998251"> </a>List of packet client data blocks (see Comments).</dd>
+
+</dl>
+<h4>
+  <a name="996105"> </a>Returns 
+</h4>
+
+<dl>
+<dt><a name="996106"> </a><code>errNone</code></dt>
+<dd><a name="998260"> </a>No error.</dd>
+
+<dt><a name="996108"> </a><code>slkErrSocketNotOpen</code></dt>
+<dd><a name="998293"> </a>The socket was not open.</dd>
+
+<dt><a name="996110"> </a><code>slkErrTimeOut</code></dt>
+<dd><a name="998304"> </a>Handshake timeout.</dd>
+
+</dl>
+<h4>
+  <a name="996111"> </a>Comments 
+</h4>
+
+<p><a name="996112"> </a><span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">SlkSendPacket()</span> stuffs the signature, client data size, and the checksum fields of the packet header. The caller must fill in all other packet header fields. If the transaction ID field is set to 0 (zero), the Serial Link Manager automatically generates and stuffs a new non-zero transaction ID. The array of <span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">SlkWriteDataType</span> structures enables the caller to specify the client data part of the packet as a list of noncontiguous blocks. The end of list is indicated by an array element with the <code>size</code> field set to 0 (zero). This call blocks until the entire packet is sent out or until an error occurs.</p>
+
+<h3 class="hbH3">
+  <a name="996116"> </a>SlkSetSocketListener Function <a href="#996709"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996117"> </a>Purpose 
+</h4>
+
+<p><a name="996118"> </a>Register a socket listener for a particular socket. </p>
+<h4>
+  <a name="996121"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996123"></a>status_t SlkSetSocketListener (
+   UInt16 socket,
+   SlkSocketListenPtr socketP
+)
+</pre>
+<h4>
+  <a name="996124"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996125"> </a><code>&rarr;  <i><code>socket</code></i></code></dt>
+<dd><a name="998335"> </a>Socket ID.</dd>
+
+<dt><a name="996126"> </a><code>&rarr;  <i><code>socketP</code></i></code></dt>
+<dd><a name="998363"> </a>Pointer to a <code>SlkSocketListenType</code> structure.</dd>
+
+</dl>
+<h4>
+  <a name="996127"> </a>Returns 
+</h4>
+
+<dl>
+<dt><a name="996128"> </a><code>errNone</code></dt>
+<dd><a name="998365"> </a>No error.</dd>
+
+<dt><a name="996130"> </a><code><code>slkErrBadParam</code></code></dt>
+<dd><a name="998370"> </a>Invalid parameter.</dd>
+
+<dt><a name="996132"> </a><code><code>slkErrSocketNotOpen</code></code></dt>
+<dd><a name="998371"> </a>The socket was not open.</dd>
+
+</dl>
+<h4>
+  <a name="996133"> </a>Comments 
+</h4>
+
+<p><a name="996134"> </a>Called by applications to set up a socket listener.</p>
+
+<p><a name="996135"> </a>Since the Serial Link Manager does not make a copy of the <code>SlkSocketListenType</code> structure, but instead saves the passed pointer to it, the structure </p>
+<ul type="disc">
+  <li><a name="996136"> </a>must <span style="color: #000000;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">not</span> be an automatic variable (that is, local variable allocated on the stack) 
+  <li><a name="996137"> </a>may be a global variable in an application
+  <li><a name="996138"> </a>may be a locked chunk allocated from the dynamic heap 
+</ul>
+
+<p><a name="996140"> </a>The <code>SlkSocketListenType</code> structure specifies pointers to the socket listener procedure and the data buffers for dispatching packets destined for this socket. Pointers to two buffers must be specified: the packet header buffer (size of <code>SlkPktHeaderType</code>), and the packet body (client data) buffer. The packet body buffer must be large enough for the largest expected client data size. Both buffers may be application global variables or locked chunks allocated from the dynamic heap. </p>
+
+<p><a name="996144"> </a>The socket listener procedure is called when a valid packet is received for the socket. Pointers to the packet header buffer and the packet body buffer are passed as parameters to the socket listener procedure. </p>
+
+<div><hr>
+  <a name="996145"> </a> <b>NOTE: </b> The application is responsible for freeing the <code>SlkSocketListenType</code> structure or the allocated buffers when the socket is closed. The Serial Link Manager doesn't do it. 
+<hr>
+</div>
+
+<h3 class="hbH3">
+  <a name="996154"> </a>SlkSocketPortID Function <a href="#996709"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996155"> </a>Purpose 
+</h4>
+
+<p><a name="996156"> </a>Get the port ID associated with a particular socket; for use with the new serial manager.</p>
+<h4>
+  <a name="996159"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996160"></a>status_t<span style="color: #000000;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline"></span>SlkSocketPortID (
+   UInt16 socket,
+   UInt16 *portIDP
+)
+</pre>
+<h4>
+  <a name="996161"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996162"> </a><code>&rarr;  <i><code>socket</code></i></code></dt>
+<dd><a name="998399"> </a>The socket ID.</dd>
+
+<dt><a name="996163"> </a><code>&harr;  <i><code>portIDP</code></i></code></dt>
+<dd><a name="998420"> </a>Pointer to location for returning the port ID.</dd>
+
+</dl>
+<h4>
+  <a name="996164"> </a>Returns 
+</h4>
+
+<dl>
+<dt><a name="996165"> </a><code>errNone</code></dt>
+<dd><a name="998421"> </a>No error.</dd>
+
+<dt><a name="996167"> </a><code>slkErrSocketNotOpen</code></dt>
+<dd><a name="998422"> </a>The socket was not open.</dd>
+
+</dl>
+
+<h3 class="hbH3">
+  <a name="996190"> </a>SlkSocketSetTimeout Function <a href="#996709"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996191"> </a>Purpose 
+</h4>
+
+<p><a name="996192"> </a>Set the interbyte packet receive-timeout for a particular socket.</p>
+<h4>
+  <a name="996193"> </a>Declared In 
+</h4>
+<code>SerialLinkMgr.h<a name="996194"> </a></code><h4>
+  <a name="996195"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996197"></a>status_t<span style="color: #000000;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline"> </span>SlkSocketSetTimeout (
+   UInt16 socket,
+   Int32 timeout
+)
+</pre>
+<h4>
+  <a name="996198"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996199"> </a><code>&rarr;  <i><code>socket</code></i></code></dt>
+<dd><a name="996547"> </a>Socket ID.</dd>
+
+<dt><a name="996200"> </a><code>&rarr;  <i><code>timeout</code></i></code></dt>
+<dd><a name="996556"> </a>Interbyte packet receive-timeout in system ticks.</dd>
+
+</dl>
+<h4>
+  <a name="996201"> </a>Returns 
+</h4>
+
+<dl>
+<dt><a name="996202"> </a><code>errNone</code></dt>
+<dd><a name="996557"> </a>No error.</dd>
+
+<dt><a name="996204"> </a><code>slkErrSocketNotOpen</code></dt>
+<dd><a name="996558"> </a>The socket was not open.</dd>
+
+</dl>
+
+<p><a name="995794"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 2004, PalmSource, Inc. and its affiliates.  All rights reserved. <br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="LowLevelComms_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="LowLevelCommsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_SerRef.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_IR_Pt.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelCommsIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

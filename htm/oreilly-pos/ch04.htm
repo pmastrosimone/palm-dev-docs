@@ -1,0 +1,1053 @@
+<HTML>
+<HEAD>
+<TITLE>Palm OS:  &#160;4.&#160; Structure of an Application  </TITLE>
+<META NAME="GENERATOR" CONTENT="Transit Central Station 3.2 by InfoAccess Inc. www.infoaccess.com">
+</HEAD>
+<BODY BACKGROUND="images/grnitbkg.gif"><A NAME="TopOfPage"> </A>
+<A HREF="http://www.oreilly.com/catalog/palmprog/"><IMG SRC="images/palm_comp_ani_ad.gif" ALT="Order the book from O'Reilly" BORDER=0 width="468" height="60"></A>
+<P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="part2.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch05.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P><P><I>In this chapter:</I></P>
+
+
+  <UL COMPACT><LI><A HREF="#P33_703" NAME="LOC_P33_703">Terminology</A></LI>
+
+  <LI><A HREF="#P65_3767" NAME="LOC_P65_3767">A Simple Application</A></LI>
+
+  <LI><A HREF="#P542_23533" NAME="LOC_P542_23533">Scenarios</A></LI>
+
+  <LI><A HREF="#P679_30509" NAME="LOC_P679_30509">Memory Is Extremely Limited</A></LI>
+
+  <LI><A HREF="#P811_37976" NAME="LOC_P811_37976">Other Times Your Application Is Called</A></LI>
+
+  <LI><A HREF="#P890_42722" NAME="LOC_P890_42722">Summary</A></LI></UL>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=156>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+<H1 ALIGN=LEFT><I><FONT SIZE=+3>&#160;4.&#160; <A NAME="P12_161"></A>Structure of an Application </FONT></I></H1>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P25_189"></A>The overall flow and content of a Palm OS application is the subject of this chapter. You will learn:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  The standard code routines found in every Palm application</FONT></LI>
+
+  <LI><FONT FACE="Times">  All about the application's lifecycle-its starting, running, and closing</FONT></LI>
+
+  <LI><FONT FACE="Times">  How the application processes each event and hands it off to the appropriate manager</FONT></LI>
+
+  <LI><FONT FACE="Times">  How memory is organized on a Palm device; how the application can use it</FONT></LI>
+
+  <LI><FONT FACE="Times">  All the times that an application needs to be available to the system and how these instances are handled in the code</FONT></LI></UL>
+
+<P><A NAME="P33_703"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Terminology</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Like every operating system and coding interaction, the Palm OS has it own set of necessary terminology for you to learn. Much of it may already be familiar to you from other applications you have written. We suggest that you skim through this list and concentrate on the items that are new to you. New and unique terminology is listed first.</FONT></P>
+
+<P><I><FONT FACE="Times">Form</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P38_1060"></A>An application window (what many people would think of as a view) that usually covers the entire screen. A form optionally contains controls, text areas, and menus. <I>In a Palm OS application, there is only one active form allowed at a time.</I> Chapter&#160;5, <I>Forms and Form Objects</I>, covers forms in detail.</FONT></P>
+
+<P><I><FONT FACE="Times">Window</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P40_1364"></A>A rectangular area in which things like dialogs, forms, and menus are drawn by the application. The Window Manager makes sure that windows properly display relative to each other (for example, it has the ability to restore the old contents when a window is closed). Note in a rather Shakespearian twist of logic that all forms are windows, even though all windows are not forms.</FONT></P>
+
+<P><I><FONT FACE="Times">Database</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P42_1750"></A>A collection of persistent memory chunks. There are two kinds: resource and record databases.</FONT></P>
+
+<P><I><FONT FACE="Times">Resource</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P44_1851"></A>A piece of data stored in a resource database. Each resource is identified by a resource type and number. A Palm application is a collection of resources. Chapter&#160;5 covers resources in more detail.</FONT></P>
+
+<P><I><FONT FACE="Times">Record</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P46_2054"></A>A data structure identified by a unique record ID. Applications typically store data in record databases.</FONT></P>
+
+<P><I><FONT FACE="Times">Event</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P48_2164"></A>A data structure that describes things that happen in an application. Events can be low-level hardware events like a pen down, pen up, or hardware key press. They can also be higher-level events like a character entered, a menu item selected, or a software button pressed. </FONT></P>
+
+<P><FONT FACE="Times"><I>The Palm OS is an event-driven system. </I>Only one application is open at a time. When that application is running, it runs an event loop that retrieves events and continues to handle them until the user starts another application.</FONT></P>
+
+<P><I><FONT FACE="Times">Main event loop</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P51_2680"></A>The main loop of execution in an application, which repeatedly retrieves events and then acts on them.</FONT></P>
+
+<P><I><FONT FACE="Times">Launch code</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P53_2793"></A>A parameter passed to an application that specifies what the application should do when that particular launch code is executed. An application typically handles more than one launch code. This is the communication method used between the OS and an application and between applications.</FONT></P>
+
+<P><I><FONT FACE="Times">Menu</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P55_3083"></A>Menus are stored in resources grouped together into menubars and are displayed when the user taps the menu area. See Chapter&#160;7, <I>Menus</I>, for more details. </FONT></P>
+
+<P><I><FONT FACE="Times">Menubar</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P57_3243"></A>A collection of menus stored in a resource. Each form can have a menubar associated with it.</FONT></P>
+
+<P><I><FONT FACE="Times">Dialog</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P59_3341"></A>A window containing controls that require the user to make a decision. In other words, the dialog must be dismissed (usually by tapping on one of its buttons) before the application can continue.</FONT></P>
+
+<P><I><FONT FACE="Times">Alert</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P61_3541"></A>A warning or information dialog that needs to be dismissed by the user.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">These brief descriptions cover the most important terminology. In the following section, we look at the basic elements of a very small Palm OS application.</FONT></P>
+
+<P><A NAME="P65_3767"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">A Simple Application</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P67_3787"></A>Creating a small application before tackling a more complex one is a good way to gain familiarity with a new coding challenge. First, we tell you what our little application does and show you the code for it. After that we do a code walkthrough and point out important elements.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">What the Application Does</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Our Hello World application displays the words &quot;Hello World&quot; and provides a button to press. Pressing the button displays an alert, as shown in <A HREF="#P73_4446">Figure 4-1</A>, which is dismissed by tapping OK. There are two menus, each with one menu item (see <A HREF="#P82_4494">Figure 4-2</A>). As this is a very simple application, you just get a beep when you choose either menu item.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 4- 1</FONT></B><A NAME="P73_4446"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Dialog shown after tapping the button</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch04-plmp.0401-1.gif" WIDTH=503 HEIGHT=178 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 4- 2</FONT></B><A NAME="P82_4494"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">The menus of Hello World</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch04-plmp.0402-2.gif" WIDTH=503 HEIGHT=55 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">The Hello World Source Code</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now that you have an idea of what the application can do, look at <A HREF="#P97_4738">Example&#160;4-1</A> to see the code that produces it. Once you have looked through it for yourself, we will discuss it. </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">&#160;-Example&#160; 4- 1</FONT></B><A NAME="P97_4738"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">The Hello World Source Code</FONT></B></P><PRE><FONT SIZE="-1">#include &lt;Pilot.h&gt;  </FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">#include &quot;Callback.h&quot;</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">#include &quot;HelloWorldRsc.h&quot;    </FONT>
+
+<FONT SIZE="-1">static Err StartApplication(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">  FrmGotoForm(HelloWorldForm);</FONT>
+<FONT SIZE="-1">  return 0;</FONT>
+<FONT SIZE="-1">}</FONT>
+
+<FONT SIZE="-1">static void StopApplication(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">}</FONT>
+
+<FONT SIZE="-1">static Boolean MyFormHandleEvent(EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">  Boolean    handled = false;</FONT>
+
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_PROLOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   switch (event-&gt;eType) {</FONT>
+<FONT SIZE="-1">   case ctlSelectEvent:  // A control button was pressed and released.</FONT>
+<FONT SIZE="-1">      FrmAlert(GoodnightMoonAlert);</FONT>
+<FONT SIZE="-1">      handled = true;</FONT>
+<FONT SIZE="-1">      break;</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">   case frmOpenEvent:  </FONT>
+<FONT SIZE="-1">      FrmDrawForm(FrmGetActiveForm());</FONT>
+<FONT SIZE="-1">      handled = true;</FONT>
+<FONT SIZE="-1">      break;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   case menuEvent:    </FONT>
+<FONT SIZE="-1">      if (event-&gt;data.menu.itemID == FirstBeep)</FONT>
+<FONT SIZE="-1">         SndPlaySystemSound(sndInfo);</FONT>
+<FONT SIZE="-1">      else</FONT>
+<FONT SIZE="-1">         SndPlaySystemSound(sndStartUp);</FONT>
+<FONT SIZE="-1">      handled = true;</FONT>
+<FONT SIZE="-1">      break;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_EPILOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   return handled;</FONT>
+<FONT SIZE="-1">}</FONT>
+
+<FONT SIZE="-1">static Boolean ApplicationHandleEvent(EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr  frm;</FONT>
+<FONT SIZE="-1">   Int    formId;</FONT>
+<FONT SIZE="-1">   Boolean  handled = false;</FONT>
+
+<FONT SIZE="-1">   if (event-&gt;eType == frmLoadEvent) {</FONT>
+<FONT SIZE="-1">      //Load the form resource specified in the event then activate it</FONT>
+<FONT SIZE="-1">      formId = event-&gt;data.frmLoad.formID;</FONT>
+<FONT SIZE="-1">      frm = FrmInitForm(formId);</FONT>
+<FONT SIZE="-1">      FrmSetActiveForm(frm);</FONT>
+
+<FONT SIZE="-1">      // Set the event handler for the form.  The handler of the currently </FONT>
+<FONT SIZE="-1">      // active form is called by FrmDispatchEvent each time it is called </FONT>
+<FONT SIZE="-1">      switch (formId) {</FONT>
+<FONT SIZE="-1">      case HelloWorldForm:</FONT>
+<FONT SIZE="-1">         FrmSetEventHandler(frm, MyFormHandleEvent);</FONT>
+<FONT SIZE="-1">         break;</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">      handled = true;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">  </FONT>
+<FONT SIZE="-1">   return handled;</FONT>
+<FONT SIZE="-1">}</FONT>
+
+<FONT SIZE="-1">static void EventLoop(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   EventType  event;</FONT>
+<FONT SIZE="-1">   Word      error;</FONT>
+<FONT SIZE="-1">  </FONT>
+<FONT SIZE="-1">   do {</FONT>
+<FONT SIZE="-1">    EvtGetEvent(&amp;event, evtWaitForever);</FONT>
+<FONT SIZE="-1">    if (! SysHandleEvent(&amp;event))</FONT>
+<FONT SIZE="-1">       if (! MenuHandleEvent(0, &amp;event, &amp;error))</FONT>
+<FONT SIZE="-1">          if (! ApplicationHandleEvent(&amp;event))</FONT>
+<FONT SIZE="-1">             FrmDispatchEvent(&amp;event);</FONT>
+<FONT SIZE="-1">   } while (event.eType != appStopEvent);</FONT>
+<FONT SIZE="-1">}</FONT>
+
+<FONT SIZE="-1">DWord PilotMain(Word launchCode, Ptr cmdPBP, Word launchFlags)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">  Err err;    </FONT>
+<FONT SIZE="-1">  </FONT>
+<FONT SIZE="-1">  if (launchCode == sysAppLaunchCmdNormalLaunch) { </FONT>
+<FONT SIZE="-1">     if ((err = StartApplication()) == 0) {</FONT>
+<FONT SIZE="-1">        EventLoop();</FONT>
+<FONT SIZE="-1">        StopApplication();</FONT>
+<FONT SIZE="-1">     }</FONT>
+<FONT SIZE="-1">   }</FONT>
+
+<FONT SIZE="-1">   return err;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">A Code Walkthrough of Hello World</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Let's start at the beginning with the </FONT><FONT FACE="Courier New">#include</FONT><FONT FACE="Times"> files.</FONT></P>
+
+<P><I><FONT FACE="Times">The #include files</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><I>Pilot.h</I> is an <A NAME="P209_6937"></A>include file that itself includes most of the standard Palm OS include files (using CodeWarrior, <I>Pilot.h</I> actually includes a prebuilt header file to speed compilation). To keep things simple, our application doesn't use anything beyond the standard Palm OS include files. Indeed, any calls outside the standard ones would have necessitated the use of other specific Palm OS include files. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The second include file, <I><A NAME="P211_7351"></A>Callback.h</I>, defines some macros needed if you are using GCC. They are needed to handle callbacks from the Palm OS to your code. We discuss this in <A HREF="#P433_17909">&quot;Callbacks in GCC&quot; on page&#160;78</A>.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The third include file, <I>HelloWorldRsc.h</I>, defines constants for all the application's resources (for example, </FONT><FONT FACE="Courier New">HelloWorldForm</FONT><FONT FACE="Times">). As we'll see in Chapter&#160;5, if you use Constructor, this file is generated automatically (see <A HREF="#P217_7864">Example&#160;4-2</A>). If you use the GNU PalmPilot SDK, you usually create this file yourself (see <A HREF="#P254_8929">Example&#160;4-3</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Example&#160; 4- 2</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P217_7864"></A>HelloWorldRsc.h Generated by Constructor (Used with CodeWarrior)</FONT></B></P><PRE><FONT SIZE="-1">// Header generated by Constructor for Pilot 1.0.2</FONT>
+<FONT SIZE="-1">//</FONT>
+<FONT SIZE="-1">// Generated at 9:55:01 PM on Thursday, August 20, 1998</FONT>
+<FONT SIZE="-1">//</FONT>
+<FONT SIZE="-1">// Generated for file: Macintosh HD:Palm:HelloWorld:Rsc:Hello.rsrc</FONT>
+<FONT SIZE="-1">//</FONT>
+<FONT SIZE="-1">// THIS IS AN AUTOMATICALLY GENERATED HEADER FILE FROM CONSTRUCTOR FOR PALMPILOT;</FONT>
+<FONT SIZE="-1">// - DO NOT EDIT - CHANGES MADE TO THIS FILE WILL BE LOST</FONT>
+<FONT SIZE="-1">//</FONT>
+<FONT SIZE="-1">// Pilot App Name:      &quot;Hello World&quot;</FONT>
+<FONT SIZE="-1">//</FONT>
+<FONT SIZE="-1">// Pilot App Version:      &quot;1.0&quot;</FONT>
+
+<FONT SIZE="-1">// Resource: tFRM 1000</FONT>
+<FONT SIZE="-1">#define HelloWorldForm                            1000   </FONT>
+<FONT SIZE="-1">#define HelloWorldButtonButton                    1003   </FONT>
+
+<FONT SIZE="-1">// Resource: Talt 1101</FONT>
+<FONT SIZE="-1">#define GoodnightMoonAlert                        1101</FONT>
+<FONT SIZE="-1">#define GoodnightMoonOK                           0</FONT>
+
+<FONT SIZE="-1">// Resource: MBAR 1000</FONT>
+<FONT SIZE="-1">#define HelloWorldMenuBar                         1000</FONT>
+
+<FONT SIZE="-1">// Resource: MENU 1010</FONT>
+<FONT SIZE="-1">#define FirstMenu                                 1010</FONT>
+<FONT SIZE="-1">#define FirstBeep                                 1010</FONT>
+
+<FONT SIZE="-1">// Resource: MENU 1000</FONT>
+<FONT SIZE="-1">#define SecondMenu                                1000</FONT>
+<FONT SIZE="-1">#define SecondBeepmore                            1000</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times"> </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Example&#160; 4- 3</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P254_8929"></A>HelloWorldRsrc.h Created by Hand (Used with GNU PalmPilot SDK)</FONT></B></P><PRE><FONT SIZE="-1">#define HelloWorldForm                            1000   </FONT>
+<FONT SIZE="-1">#define HelloWorldButtonButton                    1003   </FONT>
+<FONT SIZE="-1">#define HelloWorldMenuBar                         1000</FONT>
+
+<FONT SIZE="-1">#define GoodnightMoonAlert                        1101</FONT>
+
+<FONT SIZE="-1">#define FirstBeep                                 1010</FONT>
+
+<FONT SIZE="-1">#define SecondBeepmore                            1000</FONT></PRE>
+
+<P><I><FONT FACE="Times">The main routine: PilotMain</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P269_9349"></A><A HREF="#P271_9657">Example&#160;4-4</A> shows the main entry point into your application. The first parameter is the <A NAME="P269_9438"></A>launch code. If your application is being opened normally, this parameter is the constant </FONT><FONT FACE="Courier New"><A NAME="P269_9528"></A>sysAppLaunchCmdNormalLaunch</FONT><FONT FACE="Times">. The second and third parameters are used when the application is opened at other times.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Example&#160; 4- 4</FONT></B><A NAME="P271_9657"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">PilotMain</FONT></B></P><PRE><FONT SIZE="-1">DWord PilotMain(Word launchCode, Ptr cmdPBP, Word launchFlags)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Err err;    </FONT>
+<FONT SIZE="-1">  </FONT>
+<FONT SIZE="-1">   if (launchCode == sysAppLaunchCmdNormalLaunch) {</FONT>
+<FONT SIZE="-1">      if ((err = StartApplication()) == 0) {</FONT>
+<FONT SIZE="-1">         EventLoop();</FONT>
+<FONT SIZE="-1">         StopApplication();</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">   }</FONT>
+
+<FONT SIZE="-1">   return err;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">If the launch code is </FONT><FONT FACE="Courier New">sysAppLaunchCmdNormalLaunch</FONT><FONT FACE="Times">, we do an initialization in </FONT><FONT FACE="Courier New">StartApplication</FONT><FONT FACE="Times"> and run our event loop until the user does something to close the application. At that point, we handle termination in </FONT><FONT FACE="Courier New">StopApplication</FONT><FONT FACE="Times">.</FONT><A NAME="P290_10145"></A></P>
+
+<P><I><FONT FACE="Times">The startup routine: StartApplication</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P294_10183"></A>In the routine shown in <A HREF="#P296_10605">Example&#160;4-5</A>, we handle all the standard opening and initialization of our application. In more complicated applications, this would include opening our databases and reading user preference information. In our rudimentary Hello World application, all we need to do is tell the Form Manager that we want to send our (one and only) form. This queues up a </FONT><FONT FACE="Courier New">frmLoadEvent</FONT><FONT FACE="Times"> in the event queue.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Example&#160; 4- 5</FONT></B><A NAME="P296_10605"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">StartApplication</FONT></B></P><PRE><FONT SIZE="-1">static Err StartApplication(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FrmGotoForm(HelloWorldForm);</FONT>
+<FONT SIZE="-1">   return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">The closing routine: StopApplication</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P309_10736"></A>Because we are creating such a simple application, we don't actually have anything to do when it's closing time. We provided the routine in <A HREF="#P311_11004">Example&#160;4-6</A> so that our Hello World source code would have the same standard structure as other Palm applications. </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Example&#160; 4- 6</FONT></B><A NAME="P311_11004"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">An Empty StopApplication</FONT></B></P><PRE><FONT SIZE="-1">static void StopApplication(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Normally in </FONT><FONT FACE="Courier New">StopApplication</FONT><FONT FACE="Times"> we handle all the standard closing operations, such as closing our database, saving the current state in preferences, and so on.</FONT></P>
+
+<P><I><FONT FACE="Times">The main event loop</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P324_11238"></A>In </FONT><FONT FACE="Courier New">PilotMain</FONT><FONT FACE="Times">, you will notice that after the initialization there is a call to the one main event loop (see <A HREF="#P328_11973">Example&#160;4-7</A>). In this loop, we continually process events-handing them off wherever possible to the system. We go through the loop, getting an event with </FONT><FONT FACE="Courier New">&#160;&#160;<A NAME="P324_11502"></A>EvtGetEvent</FONT><FONT FACE="Times">, and then dispatch that event to one of four nested event handlers, each of which gets a chance to handle the event. If an event handler returns true, it has handled the event and we don't process it any further. </FONT><FONT FACE="Courier New">EvtGetEvent</FONT><FONT FACE="Times"> then gets the next event in the queue, and our loop repeats the process.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The loop doggedly continues in this fashion until we get the </FONT><FONT FACE="Courier New"><A NAME="P326_11872"></A>appStopEvent</FONT><FONT FACE="Times">, at which time we exit the function and clean things up in </FONT><FONT FACE="Courier New">StopApplication</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Example&#160; 4- 7</FONT></B><A NAME="P328_11973"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">EventLoop</FONT></B></P><PRE><FONT SIZE="-1">static void EventLoop(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   EventType  event;</FONT>
+<FONT SIZE="-1">   Word      error;</FONT>
+<FONT SIZE="-1">  </FONT>
+<FONT SIZE="-1">   do {</FONT>
+<FONT SIZE="-1">    EvtGetEvent(&amp;event, evtWaitForever);             </FONT><I><FONT FACE="Times">system routine</FONT></I>
+<FONT SIZE="-1">    if (! SysHandleEvent(&amp;event))                    </FONT><I><FONT FACE="Times">system routine</FONT></I>
+<FONT SIZE="-1">       if (! MenuHandleEvent(0, &amp;event, &amp;error))     </FONT><I><FONT FACE="Times">system routine</FONT></I>
+<FONT SIZE="-1">          if (! ApplicationHandleEvent(&amp;event))      </FONT><I><FONT FACE="Times">routine we write</FONT></I>
+<FONT SIZE="-1">             FrmDispatchEvent(&amp;event);               </FONT><I><FONT FACE="Times">system routine</FONT></I>
+<FONT SIZE="-1">   } while (event.eType != appStopEvent);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Handling events with EvtGetEvent</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This Event Manager routine's sole purpose in life is to get the next event from the queue. It takes as a second parameter a time-out value (in ticks-hundredths of a second). </FONT><FONT FACE="Courier New">EvtGetEvent</FONT><FONT FACE="Times"> returns either when an event has occurred (in which case it returns true) or when the time-out value has elapsed (in which case it returns false and fills in an event code of </FONT><FONT FACE="Courier New">nilEvent</FONT><FONT FACE="Times">).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We don't have anything to do until an event occurs (this application has no background processing to do), so we pass the </FONT><FONT FACE="Courier New">evtWaitForever</FONT><FONT FACE="Times"> constant, specifying that we don't want a time-out.</FONT><FONT FACE="Courier New">&#160;&#160;</FONT><A NAME="P351_13029"></A></P>
+
+<P><I><FONT FACE="Times">The event queue and application event loop</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P355_13071"></A>Let's step back for a moment and look at the events that are received from </FONT><FONT FACE="Courier New">EvtGetEvent</FONT><FONT FACE="Times">. Events can be of all different types, anything from low-level to high-level ones. In fact, one useful way to look at a Palm application is simply as an event handler-it takes all sorts of events, handing them off to various managers, which in turn may post a new event back to the queue, where it is handled by another event handler. We will discuss more sophisticated examples of this later (see <A HREF="#P542_23533">&quot;Scenarios</A>&quot; later in this chapter), but for now look at a very simple set of events to get an idea of how this all works together. Imagine the user has our application open and taps the stylus on the screen in the area of the silk-screened Menu button. The first time through the event queue the </FONT><FONT FACE="Courier New">&#160;<A NAME="P355_13853"></A>SysHandleEvent</FONT><FONT FACE="Times"> routine handles the event, interprets it, and creates a new event that gets put back in the queue (see <A HREF="#P358_13994">Figure 4-3</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 4- 3</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P358_13994"></A>An event in the event loop</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch04-plmp.0403-3.gif" WIDTH=503 HEIGHT=281 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">This new event, when it comes through the loop, gets passed through </FONT><FONT FACE="Courier New">SysHandleEvent</FONT><FONT FACE="Times"> and on to the </FONT><FONT FACE="Courier New">&#160;<A NAME="P366_14118"></A>MenuHandleEvent</FONT><FONT FACE="Times">, as it is now recognizable as a menu request (see <A HREF="#P367_14337">Figure 4-4</A>). </FONT><FONT FACE="Courier New">MenuHandleEvent</FONT><FONT FACE="Times"> displays the menubar and drops down one of the menus. If the user now taps outside the menu, the menus disappear.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 4- 4</FONT></B><A NAME="P367_14337"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">A regurgitated event in the event loop</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch04-plmp.0404-4.gif" WIDTH=503 HEIGHT=270 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">If a menu item is selected, however, a new event is generated and sent to the queue. This event is retrieved by the event loop, where it is passed through </FONT><FONT FACE="Courier New">SysHandleEvent</FONT><FONT FACE="Times"> and on to </FONT><FONT FACE="Courier New">MenuHandleEvent.</FONT><FONT FACE="Times"> Given the way this process works, you can see that the different managers are interested in different types of events. Keeping this in mind, let's now return to our code and look at the event loop and the four routines in it.</FONT><A NAME="P377_14797"></A></P>
+
+<P><I><FONT FACE="Times">SysHandleEvent</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The first routine in the loop is always </FONT><FONT FACE="Courier New">&#160;<A NAME="P381_14852"></A>SysHandleEvent</FONT><FONT FACE="Times">, as it provides functionality common to all Palm applications. For instance, it handles key events for the built-in application buttons. It does so by posting an </FONT><FONT FACE="Courier New"><A NAME="P381_15029"></A>appStopEvent</FONT><FONT FACE="Times"> to tell the current application to quit; the system can then launch the desired application.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">It handles <A NAME="P383_15145"></A>pen events in the silk-screened area (the Graffiti input area and the silk-screened buttons). For example, if the user taps on <A NAME="P383_15272"></A>Find, </FONT><FONT FACE="Courier New">SysHandleEvent</FONT><FONT FACE="Times"> completely handles the Find, returning only when the Find is done.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here are some of the more important events it handles:</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">keyEvent</FONT></P>
+
+<P><FONT FACE="Times"><A NAME="P388_15421"></A>Occurs, among other times, when one of the built-in buttons is pressed. The keycode specifies which particular button is pressed. </FONT><FONT FACE="Courier New">SysHandleEvent</FONT><FONT FACE="Times"> handles pen events in the Graffiti input area. When a character is written, </FONT><FONT FACE="Courier New">SysHandleEvent</FONT><FONT FACE="Times"> posts a </FONT><FONT FACE="Courier New">keyEvent</FONT><FONT FACE="Times"> with the recognized character.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">penDownEvent</FONT></P>
+
+<P><FONT FACE="Times"><A NAME="P390_15716"></A>Occurs when the user presses the stylus to the screen.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">penMoveEvent</FONT></P>
+
+<P><FONT FACE="Times">Occurs when the user moves the stylus on the screen.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">penMoveEvent</FONT><FONT FACE="Times">s aren't actually stored in the event queue, because there are so many of them. Instead, when </FONT><FONT FACE="Courier New">EvtGetEvent</FONT><FONT FACE="Times"> is called, if no other events are pending, </FONT><FONT FACE="Courier New">EvtGetEvent</FONT><FONT FACE="Times"> will return a </FONT><FONT FACE="Courier New">penMoveEvent</FONT><FONT FACE="Times"> if the pen is down and has moved since the last call.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">MenuHandleEvent</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The second routine in our event loop is </FONT><FONT FACE="Courier New">&#160;<A NAME="P398_16143"></A>MenuHandleEvent</FONT><FONT FACE="Times">. As you might have imagined, the </FONT><FONT FACE="Courier New">MenuHandleEvent</FONT><FONT FACE="Times"> handles events involving menus. These events occur when a user:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Taps on the Menu silk-screened button. The function finds the <A NAME="P400_16335"></A>menubar for the current form and displays it by creating a window.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Taps somewhere else while a menu is being displayed. The function closes the menu when the user taps outside it. </FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">MenuHandleEvent</FONT><FONT FACE="Times"> also switches menus if the user taps on the menubar. As would be expected, it closes the menu and menubar if the user taps on a menu item. At this point, it posts a menu event that will be retrieved in a later call to </FONT><FONT FACE="Courier New">EvtGetEvent.</FONT></P>
+
+<P><I><FONT FACE="Times">ApplicationHandleEvent</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The third routine, </FONT><FONT FACE="Courier New">&#160;&#160;<A NAME="P406_16805"></A>ApplicationHandleEvent</FONT><FONT FACE="Times">, is also a standard part of the event loop and is responsible for loading forms and associating an event handler with the form. Note that this is also the first time our application is doing something with an event. Here is the code in our Hello World application for that routine:</FONT></P><PRE><FONT SIZE="-1">static Boolean ApplicationHandleEvent(EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr  frm;</FONT>
+<FONT SIZE="-1">   Int    formId;</FONT>
+<FONT SIZE="-1">   Boolean  handled = false;</FONT>
+
+<FONT SIZE="-1">   if (event-&gt;eType == frmLoadEvent) {</FONT>
+<FONT SIZE="-1">   // Load the form resource specified in the event and activate the form.</FONT>
+<FONT SIZE="-1">      formId = event-&gt;data.frmLoad.formID;</FONT>
+<FONT SIZE="-1">      frm = FrmInitForm(formId);</FONT>
+<FONT SIZE="-1">      FrmSetActiveForm(frm);</FONT>
+
+<FONT SIZE="-1">  // Set the event handler for the form.  The handler of the currently </FONT>
+<FONT SIZE="-1">  // active form is called by FrmDispatchEvent each time it gets an event.</FONT>
+<FONT SIZE="-1">      switch (formId) {</FONT>
+<FONT SIZE="-1">      case HelloWorldForm:</FONT>
+<FONT SIZE="-1">         FrmSetEventHandler(frm, MyFormHandleEvent);</FONT>
+<FONT SIZE="-1">         break;</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">      handled = true;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   return handled;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">While we'll see a more complex example of </FONT><FONT FACE="Courier New">ApplicationHandleEvent</FONT><FONT FACE="Times"> in Chapter&#160;5, you can at least see that our routine handles the request to load our sole form.</FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P433_17909"></A>Callbacks in GCC</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P435_17925"></A>We need to swerve down a tangent for a moment to discuss GCC. There is one way that your code will differ depending on whether you use GCC or CodeWarrior. Even if you're not using GCC, it's still worth reading this section to learn why we sprinkled a bunch of &quot;</FONT><FONT FACE="Courier New">#ifdef __GNUC__ </FONT><FONT FACE="Times">&quot; in our functions.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The GCC compiler's calling conventions differ from those in the Palm OS. In particular, the GCC compiler expects at startup that it can set up the A4 register (which it uses to access global variables) and that it will remain set throughout the life of the application. Unfortunately, this is not true when a GCC application calls a Palm OS routine that either directly or indirectly calls back to a GCC function (a callback).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The most common example of this occurrence is when we've installed an event handler for a form with </FONT><FONT FACE="Courier New">&#160;<A NAME="P439_18748"></A>FrmSetEventHandler</FONT><FONT FACE="Times">. Once we've done that, a call to </FONT><FONT FACE="Courier New">&#160;<A NAME="P439_18801"></A>FrmDispatchEvent</FONT><FONT FACE="Times"> (a Palm OS routine) can call our form's event handler (a GCC function, if we've compiled our application with GCC). At this point, if our event handler tries to access global variables, it'll cause a spectacular application crash.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The solution is to use a set of macros that set the <A NAME="P441_19100"></A>A4 register on entry to the callback function and restore it on exit. You need to provide a <I><A NAME="P441_19192"></A>Callback.h</I> header file as part of your project (see <A HREF="#P469_20306">Example&#160;4-8</A>) and </FONT><FONT FACE="Courier New">#include</FONT><FONT FACE="Times"> it in your file. Then, every callback needs to add the </FONT><FONT FACE="Courier New"><A NAME="P441_19325"></A>CALLBACK_PROLOGUE</FONT><FONT FACE="Times"> macro at the beginning of the callback function (just after variables are declared) and a </FONT><FONT FACE="Courier New">CALLBACK_EPILOGUE</FONT><FONT FACE="Times"> macro at the end of the callback function. Here's a very simple example:</FONT></P><PRE><FONT SIZE="-1">static int MyCallback()</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   int myReturnResult;</FONT>
+<FONT SIZE="-1">   int anotherVariable;</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_PROLOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   // do stuff in my function</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_EPILOGUE</FONT>
+<FONT SIZE="-1">   return myReturnResult;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P455_19723"></A>It's crucial that you don't try to access global variables before the </FONT><FONT FACE="Courier New">CALLBACK_ PROLOGUE</FONT><FONT FACE="Times"> macro. For example, here's code that will blow up because you're accessing globals before the macro has had a chance to set the A4 register:</FONT></P><PRE><FONT SIZE="-1">static int MyCallback()</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   int myVariable = gSomeGlobalVar;</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_PROLOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   ...</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">It's also important that you return from your function at the bottom. If you must ignore our advice and return from your function in the middle, make sure to add yet another instance of the </FONT><FONT FACE="Courier New">CALLBACK_EPILOGUE</FONT><FONT FACE="Times"> right before the return.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">&#160;-Example&#160; 4- 8</FONT></B><A NAME="P467_20306"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P469_20306"></A>The Callback.h File, Needed for GCC</FONT></B></P><PRE><FONT SIZE="-1">#ifndef __CALLBACK_H__</FONT>
+<FONT SIZE="-1">#define __CALLBACK_H__</FONT>
+
+<FONT SIZE="-1">/* This is a workaround for a bug in the current version of gcc: gcc assumes</FONT>
+<FONT SIZE="-1">   that no one will touch %a4 after it is set up in crt0.o. This isn't true</FONT>
+<FONT SIZE="-1">   if a function is called as a callback by something that wasn't compiled by</FONT>
+<FONT SIZE="-1">   gcc (like FrmCloseAllForms()).  It may also not be true if it is used as a</FONT>
+<FONT SIZE="-1">   callback by something in a different shared library. We really want a function</FONT>
+<FONT SIZE="-1">   attribute &quot;callback&quot; that inserts this prologue and epilogue automatically.</FONT>
+<FONT SIZE="-1">- Ian */</FONT>
+
+<FONT SIZE="-1">register void *reg_a4 asm(&quot;%a4&quot;);</FONT>
+
+<FONT SIZE="-1">#define CALLBACK_PROLOGUE \</FONT>
+<FONT SIZE="-1">   void *save_a4 = reg_a4; asm(&quot;move.l %%a5,%%a4; sub.l #edata,%%a4&quot; : :);</FONT>
+<FONT SIZE="-1">#define CALLBACK_EPILOGUE reg_a4 = save_a4;</FONT>
+
+<FONT SIZE="-1">#endif</FONT></PRE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">There's been some discussion among those who use the GCC compiler about a more convenient solution to the <A HREF="#P467_20306">Example&#160;4-8</A> workaround. Some folks want to get rid of the macros by modifying the GCC compiler with a </FONT><FONT FACE="Courier New">callback</FONT><FONT FACE="Times"> attribute to the function declaration. This would cause the compiler to add code that manages A4 correctly. Here's an example:</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Times">callback int MyCallback()</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Times">{</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Times">   // code which can safely access globals</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Times">}</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Others want a more radical solution. They want to be able to use all functions as callbacks without any special declaration. </FONT><A NAME="P497_21577"></A></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">&#160;</FONT></I><A NAME="P498_21578"></A></P>
+
+<P><I><FONT FACE="Times">FrmDispatchEvent</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This fourth and last routine in the event loop is the one that indirectly provides form-specific handling. This routine handles standard form functionality (for example, a pen-down event on a button highlights the button, a pen-up on a button posts a </FONT><FONT FACE="Courier New">ctlSelectEvent</FONT><FONT FACE="Times"> to the event queue). Cut/copy/paste in text fields are other examples of functionality handled by </FONT><FONT FACE="Courier New">FrmDispatchEvent</FONT><FONT FACE="Times">. In order to provide form-specific handling, </FONT><FONT FACE="Courier New">FrmDispatchEvent</FONT><FONT FACE="Times"> also calls the form's installed event handler. Therefore, when </FONT><FONT FACE="Courier New">FrmDispatchEvent</FONT><FONT FACE="Times"> gets an event, it calls our own</FONT><FONT FACE="Courier New"> MyFormHandleEvent</FONT><FONT FACE="Times"> routine:</FONT></P><PRE><FONT SIZE="-1">static Boolean MyFormHandleEvent(EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Boolean    handled = false;</FONT>
+
+<FONT SIZE="-1">   switch (event-&gt;eType) {</FONT>
+<FONT SIZE="-1">    case ctlSelectEvent:  // A control button was pressed and released.</FONT>
+<FONT SIZE="-1">       FrmAlert(GoodnightMoonAlert);</FONT>
+<FONT SIZE="-1">       handled = true;</FONT>
+<FONT SIZE="-1">       break;</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    case frmOpenEvent:  </FONT>
+<FONT SIZE="-1">       FrmDrawForm(FrmGetActiveForm());</FONT>
+<FONT SIZE="-1">       handled = true;</FONT>
+<FONT SIZE="-1">       break;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">    case menuEvent:    </FONT>
+<FONT SIZE="-1">       if (event-&gt;data.menu.itemID == FirstBeep)</FONT>
+<FONT SIZE="-1">          SndPlaySystemSound(sndInfo);</FONT>
+<FONT SIZE="-1">       else</FONT>
+<FONT SIZE="-1">          SndPlaySystemSound(sndStartUp);</FONT>
+<FONT SIZE="-1">      handled = true;</FONT>
+<FONT SIZE="-1">      break;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   return handled;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">As the code indicates, we take an action if the user taps on our button or chooses either of the two menu items. We beep in either case.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Hello World Summary</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">In this simple application, we have all the major elements of any Palm application. In review, these are:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  A set of necessary include files</FONT></LI>
+
+  <LI><FONT FACE="Times">  A startup routine called </FONT><FONT FACE="Courier New">StartApplication</FONT><FONT FACE="Times">, which handles all our initial setup</FONT></LI>
+
+  <LI><FONT FACE="Times">  A </FONT><FONT FACE="Courier New">PilotMain</FONT><FONT FACE="Times"> routine, which starts an event loop to handle events passed to it by the system</FONT></LI>
+
+  <LI><FONT FACE="Times">  An event loop, which continually hands events to a series of four managing routines-</FONT><FONT FACE="Courier New">SysHandleEvent</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">MenuHandleEvent</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">ApplicationHandleEvent</FONT><FONT FACE="Times">, and </FONT><FONT FACE="Courier New">FrmDispatchEvent</FONT></LI>
+
+  <LI><FONT FACE="Times">  A set of routines to handle our form-specific functionality</FONT></LI>
+
+  <LI><FONT FACE="Times">  A closing routine called </FONT><FONT FACE="Courier New">StopApplication</FONT><FONT FACE="Times">, which handles the proper closing of our application</FONT></LI></UL>
+
+<P><A NAME="P542_23533"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Scenarios</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now that you have a better understanding of the code in the Hello World application, let's take a close look at what happens as events are passed from the event queue into the event loop. Unlike our earlier example, where we hand-waved through the technical parts of what happens when a menu was chosen, we will now look with great detail at three different user actions and the flow through the code as these scenarios occur.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This first code excerpt shows what happens when a user opens the application by tapping on the application's icon. <A HREF="#P548_24287">Example&#160;4-9</A> shows the flow of events. Pay particular attention to the </FONT><FONT FACE="Courier New"><A NAME="P546_24153"></A>frmLoadEvent</FONT><FONT FACE="Times">, which is handled by </FONT><FONT FACE="Courier New">&#160;<A NAME="P546_24188"></A>ApplicationHandleEvent</FONT><FONT FACE="Times">, and the </FONT><FONT FACE="Courier New">frmOpenEvent</FONT><FONT FACE="Times">, which is handled by </FONT><FONT FACE="Courier New">MyFormHandleEvent</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">&#160;-Example&#160; 4- 9</FONT></B><A NAME="P548_24287"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Flow of Control as Hello World Application Is Opened</FONT></B></P><PRE><FONT SIZE="-1">PilotMain (enter)</FONT>
+<FONT SIZE="-1">  StartApplication (enter)</FONT>
+<FONT SIZE="-1">    FrmGotoForm(HelloWorldForm)                  </FONT><I><FONT FACE="Times" SIZE="-1">open the HelloWorldForm</FONT></I>
+<FONT SIZE="-1">  StartApplication (exit)                        </FONT><I><FONT FACE="Times" SIZE="-1">returns 0 (proceed)</FONT></I>
+<FONT SIZE="-1">  EventLoop (enter)</FONT>
+<FONT FACE="Times"><I>    &#160;&#160;</I>EvtGetEvent                                   </FONT><I><FONT FACE="Times" SIZE="-1">returns frmLoadEvent (formID </FONT></I>
+<FONT SIZE="-1">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;   </FONT><I><FONT FACE="Times" SIZE="-1">HelloWorldForm)</FONT></I>
+<FONT SIZE="-1">    SysHandleEvent                               </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">    MenuHandleEvent                              </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">    ApplicationHandleEvent (enter)</FONT>
+<FONT SIZE="-1">      FrmInitForm(HelloWorldForm)                </FONT><I><FONT FACE="Times" SIZE="-1">load the form</FONT></I>
+<FONT SIZE="-1">      FrmSetActiveForm(frm)                      </FONT><I><FONT FACE="Times" SIZE="-1">activate the form</FONT></I>
+<FONT SIZE="-1">      FrmSetEventHandler(frm, MyFormHandleEvent) </FONT><I><FONT FACE="Times" SIZE="-1">set the event handler</FONT></I>
+<FONT SIZE="-1">    ApplicationHandleEvent (exit)                </FONT><I><FONT FACE="Times" SIZE="-1">returns true</FONT></I>
+<FONT SIZE="-1">  EvtGetEvent                                    </FONT><I><FONT FACE="Times" SIZE="-1">returns frmOpenEvent</FONT></I>
+<FONT SIZE="-1">  SysHandleEvent                                 </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">  MenuHandleEvent                                </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">  ApplicationHandleEvent                         </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">  FrmDispatchEvent (enter)                       </FONT><I><FONT FACE="Times" SIZE="-1">calls form's event handler</FONT></I>
+<FONT SIZE="-1">    MyFormHandleEvent (enter)</FONT>
+<FONT SIZE="-1">      FrmDrawForm(FrmGetActiveForm())            </FONT><I><FONT FACE="Times" SIZE="-1">draws the form and its contents</FONT></I>
+<FONT SIZE="-1">    MyFormHandlEvent (exit)                      </FONT><I><FONT FACE="Times" SIZE="-1">returns true</FONT></I></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">In <A HREF="#P578_25844">Example&#160;4-10</A> our user taps on the button labeled &quot;Button,&quot; which in turn puts up an alert. Notice that eventually, the </FONT><FONT FACE="Courier New"><A NAME="P576_25728"></A>penDownEvent</FONT><FONT FACE="Times"> is transformed into a </FONT><FONT FACE="Courier New"><A NAME="P576_25763"></A>ctlSelectEvent</FONT><FONT FACE="Times">, which is handled by our routine, </FONT><FONT FACE="Courier New">MyFormHandleEvent</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Example&#160; 4- 10</FONT></B><A NAME="P578_25844"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Flow of Control in Event Loop When &quot;Button&quot; Button Is Pressed</FONT></B></P><PRE><FONT SIZE="-1">EvtGetEvent                         </FONT><I><FONT FACE="Times" SIZE="-1">returns penDownEvent</FONT></I>
+<FONT SIZE="-1">SysHandleEvent                      </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">MenuHandleEvent                     </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">ApplicationHandleEvent             </FONT><I><FONT FACE="Times"> &#160;</FONT><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">FrmDispatchEvent (enter)</FONT>
+<FONT SIZE="-1">  MyFormHandleEvent                 </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">  CtlHandleEvent                    </FONT><I><FONT FACE="Times" SIZE="-1">standard control-manager routine that posts </FONT></I>
+<FONT FACE="Times"><I>  </I>                                     </FONT><I><FONT FACE="Times" SIZE="-1">ctlEnterEvent to the event queue and returns true.</FONT></I>
+<FONT SIZE="-1">                                      </FONT><I><FONT FACE="Times" SIZE="-1">a tap hits a usable control; a ctlEnterEvent is sent</FONT></I>
+<FONT SIZE="-1">FrmDispatchEvent (exit)             </FONT><I><FONT FACE="Times" SIZE="-1">returns true</FONT></I>
+
+<FONT SIZE="-1">EvtGetEvent                         </FONT><I><FONT FACE="Times" SIZE="-1">returns ctlEnterEvent</FONT></I>
+<FONT SIZE="-1">SysHandleEvent                      </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">MenuHandleEvent                     </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">ApplicationHandleEvent              </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">FrmDispatchEvent (enter)</FONT>
+<FONT SIZE="-1">  MyFormHandleEvent                 </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">  CtlHandleEvent                    </FONT><I><FONT FACE="Times" SIZE="-1">inverts the button and waits for the pen to be lifted</FONT></I>
+<FONT SIZE="-1">                                      </FONT><I><FONT FACE="Times" SIZE="-1">(EvtGetPen); when the pen is lifted, inverts</FONT></I>
+<FONT SIZE="-1">                                      </FONT><I><FONT FACE="Times" SIZE="-1">the button; posts ctlSelectEvent to the event queue</FONT></I>
+<FONT SIZE="-1">                                      </FONT><I><FONT FACE="Times" SIZE="-1">as the pen is lifted from the control; returns true</FONT></I>
+<FONT SIZE="-1">FrmDispatchEvent (exit)             </FONT><I><FONT FACE="Times" SIZE="-1">returns true</FONT></I>
+
+<FONT SIZE="-1">EvtGetEvent                         </FONT><I><FONT FACE="Times" SIZE="-1">returns ctlSelectEvent</FONT></I>
+<FONT SIZE="-1">SysHandleEvent                      </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">MenuHandleEvent                     </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">ApplicationHandleEvent              </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">FrmDispatchEvent (enter)</FONT>
+<FONT SIZE="-1">  MyFormHandleEvent (enter)</FONT>
+<FONT SIZE="-1">    FrmAlert                        </FONT><I><FONT FACE="Times" SIZE="-1">returns after the OK button has been pressed </FONT></I>
+<FONT SIZE="-1">                                      </FONT><I><FONT FACE="Times" SIZE="-1">(FrmDoAlert has its own event loop)</FONT></I>
+<FONT SIZE="-1">  MyFormHandleEvent (exit)          </FONT><I><FONT FACE="Times" SIZE="-1">returns true</FONT></I>
+
+<FONT SIZE="-1">EvtGetEvent                         </FONT><I><FONT FACE="Times" SIZE="-1">returns penUpEvent</FONT></I>
+<FONT SIZE="-1">SysHandleEvent                      </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">MenuHandleEvent                     </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">ApplicationHandleEvent              </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">FrmDispatchEvent (enter)</FONT>
+<FONT SIZE="-1">  MyFormHandleEvent                 </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">FrmDispatchEvent (exit)             </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Last, but not least, examine <A HREF="#P626_28342">Example&#160;4-11</A> to see what happens when the user finally chooses a menu item. The </FONT><FONT FACE="Courier New">penDownEvent</FONT><FONT FACE="Times"> is transformed into a </FONT><FONT FACE="Courier New"><A NAME="P624_28088"></A>keyEvent</FONT><FONT FACE="Times"> (tapping on the hardware keys or on the soft buttons causes a </FONT><FONT FACE="Courier New">keyEvent</FONT><FONT FACE="Times"> to be posted). When the user finally taps on a particular menu item, a </FONT><FONT FACE="Courier New"><A NAME="P624_28239"></A>menuEvent</FONT><FONT FACE="Times"> is posted to the event queue, which is once again handled by </FONT><FONT FACE="Courier New">MyFormHandleEvent</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Example&#160; 4- 11</FONT></B><A NAME="P626_28342"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Event Loop Handling a Menu Item</FONT></B></P><PRE><FONT SIZE="-1">                              </FONT><I><FONT FACE="Times" SIZE="-1">Tap on Menu button</FONT></I>
+<FONT SIZE="-1">EvtGetEvent                   </FONT><I><FONT FACE="Times" SIZE="-1">returns penDownEvent</FONT></I>
+<FONT SIZE="-1">SysHandleEvent                </FONT><I><FONT FACE="Times" SIZE="-1">tracks pen; doesn't return until pen up; returns true</FONT></I>
+<FONT SIZE="-1">  </FONT>
+<FONT SIZE="-1">EvtGetEvent                   </FONT><I><FONT FACE="Times" SIZE="-1">returns penUpEvent</FONT></I>
+<FONT SIZE="-1">SysHandleEvent                </FONT><I><FONT FACE="Times" SIZE="-1">posts keyDownEvent on the event queue and returns true</FONT></I>
+<FONT SIZE="-1">  </FONT>
+<FONT SIZE="-1">EvtGetEvent                   </FONT><I><FONT FACE="Times" SIZE="-1">returns keyDownEvent with key: menuChr (0x105). This </FONT></I>
+<FONT SIZE="-1">                                </FONT><I><FONT FACE="Times" SIZE="-1">is a special </FONT><FONT FACE="Times">system key event that triggers menu</FONT></I>
+<FONT SIZE="-1">                                </FONT><I><FONT FACE="Times" SIZE="-1">code in MenuHandleEvent</FONT></I>
+<FONT SIZE="-1">SysHandleEvent                </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">MenuHandleEvent               </FONT><I><FONT FACE="Times" SIZE="-1">puts up menu bar and &quot;First&quot; menu and returns true</FONT></I>
+
+<FONT SIZE="-1">                              </FONT><I><FONT FACE="Times" SIZE="-1">Tap on Second menu</FONT></I>
+<FONT SIZE="-1">EvtGetEvent                   </FONT><I><FONT FACE="Times" SIZE="-1">returns penDownEvent</FONT></I>
+<FONT SIZE="-1">SysHandleEvent                </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">MenuHandleEvent               </FONT><I><FONT FACE="Times" SIZE="-1">puts up &quot;Second&quot; menu and returns true</FONT></I>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">EvtGetEvent                   </FONT><I><FONT FACE="Times" SIZE="-1">returns penUpEvent</FONT></I>
+<FONT SIZE="-1">SysHandleEvent                </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">MenuHandleEvent               </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">ApplicationHandleEvent        </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">FrmDispatchEvent (enter)      </FONT><I><FONT FACE="Times" SIZE="-1">calls MyFormHandleEvent</FONT></I>
+<FONT SIZE="-1">  MyFormHandleEvent           </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">FrmDispatchEvent (exit)       </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">  </FONT>
+<FONT SIZE="-1">                              </FONT><I><FONT FACE="Times" SIZE="-1">Tap on Beep Another Item</FONT></I>
+<FONT SIZE="-1">EvtGetEvent                   </FONT><I><FONT FACE="Times" SIZE="-1">returns penDownEvent</FONT></I><A NAME="P657_29665"></A>
+<FONT SIZE="-1">SysHandleEvent                </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">MenuHandleEvent               </FONT><I><FONT FACE="Times" SIZE="-1">removes menubar and menu and posts menuEvent to the </FONT></I>
+<FONT SIZE="-1">                                </FONT><I><FONT FACE="Times" SIZE="-1">event queue and returns true</FONT></I>
+<FONT SIZE="-1">  </FONT>
+<FONT SIZE="-1">EvtGetEvent                   </FONT><I><FONT FACE="Times" SIZE="-1">returns menuEvent with itemID: 1000</FONT></I>
+<FONT SIZE="-1">SysHandleEvent                </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">MenuHandleEvent               </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">ApplicationHandleEvent        </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">FrmDispatchEvent (enter)      </FONT><I><FONT FACE="Times" SIZE="-1">calls MyFormHandleEvent</FONT></I>
+<FONT SIZE="-1">  MyFormHandleEvent           </FONT><I><FONT FACE="Times" SIZE="-1">beeps and returns true</FONT></I>
+<FONT SIZE="-1">FrmDispatchEvent (exit)       </FONT><I><FONT FACE="Times" SIZE="-1">returns true</FONT></I>
+
+<FONT SIZE="-1">EvtGetEvent                   </FONT><I><FONT FACE="Times" SIZE="-1">returns penUpEvent</FONT></I>
+<FONT SIZE="-1">SysHandleEvent                </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">MenuHandleEvent               </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">ApplicationHandleEvent        </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">FrmDispatchEvent (enter)      </FONT><I><FONT FACE="Times" SIZE="-1">calls MyFormHandleEvent</FONT></I>
+<FONT SIZE="-1">  MyFormHandleEvent           </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I>
+<FONT SIZE="-1">FrmDispatchEvent (exit)       </FONT><I><FONT FACE="Times" SIZE="-1">returns false</FONT></I><A NAME="P676_30509"></A></PRE>
+
+<P><A NAME="P679_30509"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Memory Is Extremely Limited</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P681_30536"></A>Now that you have an idea of how the system hands events off to the application, it's time to look at how memory is handled. To start off, it will help if you remember one crucial point: <I>memory is an extremely limited resource on Palm OS devices</I>. Because of this, Palm OS applications need to be written with careful attention to memory management. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To that end, let's examine the memory architecture on Palm devices. RAM is divided into two areas: <A NAME="P683_30984"></A>storage and dynamic (see <A HREF="#P684_31222">Figure 4-5</A>). The storage area of memory is managed by the Database Manager, which we discuss in <A HREF="#P12_161">Chapter&#160;6, </A><I>Databases</I>. It is <A NAME="P683_31133"></A>dynamic memory, which is handled by the Memory Manager, that we discuss here. </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 4- 5</FONT></B><A NAME="P684_31222"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Memory map</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch04-plmp.0405-5.gif" WIDTH=503 HEIGHT=223 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The dynamic memory is used for Palm OS globals, Palm OS dynamic allocations, your application's global variables (note that C statics are a form of globals), your application's stack space, and any dynamic memory allocations you make. As you can see in <A HREF="#P695_31606">Table 4-1</A>, the size available depends on the operating system and on the amount of total memory on the device.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Table 4- 1</FONT></B><A NAME="P695_31606"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Dynamic Memory Usage for Various Palm OS Configurations</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=184><P><B><FONT FACE="Times" SIZE="-1"> System Resources</FONT></B></P>
+</TD>
+<TD WIDTH=98><P><B><FONT FACE="Times" SIZE="-1"> OS 3.0 (&gt;1 MB)</FONT></B></P>
+</TD>
+<TD WIDTH=98><P><B><FONT FACE="Times" SIZE="-1">OS 2.0 (1 MB; has TCP/IP)</FONT></B></P>
+</TD>
+<TD WIDTH=98><P><B><FONT FACE="Times" SIZE="-1">OS 2.0 (512 KB; no TCP/IP)</FONT></B></P>
+</TD></TR>
+<TR>
+<TD WIDTH=184><P><FONT FACE="Times" SIZE="-1">System Globals</FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">6KB</FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">2.5KB</FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">2.5KB</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=184><P><FONT FACE="Times" SIZE="-1">System dynamic allocation </FONT></P>
+<P><FONT FACE="Times" SIZE="-1">(TCP/IP, IRDA, etc.)</FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">50KB</FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">47KB</FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">15KB</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=184><P><FONT FACE="Times" SIZE="-1">Application stack (call stack and local variables)</FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">4KB <BR>
+(by default)</FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">2.5KB</FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">2.5KB</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=184><P><FONT FACE="Times" SIZE="-1">Remainder (application globals dynamic allocation)</FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">36KB</FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">12KB</FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">12KB</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=184><P><FONT FACE="Times" SIZE="-1">Total dynamic memory</FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">96KB </FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">64KB</FONT></P>
+</TD>
+<TD WIDTH=98><P><FONT FACE="Times" SIZE="-1">32KB</FONT></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">The Dynamic Heap</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P732_32016"></A>The dynamic memory area is called the <I>dynamic heap</I>. You can allocate from the heap as either nonrelocatable chunks (called pointers) or relocatable chunks (called handles). It is always preferable to use handles wherever possible (if you're going to keep something locked for its entire existence, you might as well use a pointer). This gives the memory manager the ability to move chunks around as necessary and to keep free space contiguous.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P734_32459"></A>In order to read or modify the contents of a relocatable block, you temporarily lock it. When a memory <A NAME="P734_32562"></A>allocation occurs, any unlocked relocatable block can be relocated (see <A HREF="#P735_32736">Figure 4-6</A> for a diagram of unlocked relocatable blocks moving due to a memory allocation).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 4- 6</FONT></B><A NAME="P735_32736"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">The dynamic heap before and after doing an allocation</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch04-plmp.0406-6.gif" WIDTH=503 HEIGHT=238 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Memory API</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P748_32799"></A>Here is the API for using handles in your code. </FONT><FONT FACE="Courier New">&#160;<A NAME="P748_32848"></A>MemHandleNew</FONT><FONT FACE="Times"> lets you allocate a handle like this:</FONT></P><PRE><FONT SIZE="-1">VoidHand myHandle = MemHandleNew(chunkSize)</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">MemHandleNew</FONT><FONT FACE="Times"> will return NULL if the allocation was unsuccessful.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Before you read from or write to a handle in your program, you need to lock it. You do so by calling </FONT><FONT FACE="Courier New">MemHandleLock</FONT><FONT FACE="Times">, which returns a pointer to the locked data. While the handle is locked, the relocatable block can't be moved and you can do things like reading and writing of the data. In general, you should keep a handle locked for as short a time as possible (keeping in mind, however, that there is a <A NAME="P753_33410"></A>performance cost to repetitive locking and unlocking); locked handles tend to fragment free memory when compaction takes place. Here is the code to lock and unlock a memory handle:</FONT></P><PRE><FONT SIZE="-1">void *myPointer = MemHandleLock(myHandle);</FONT>
+<FONT SIZE="-1">// do something with myPointer</FONT>
+<FONT SIZE="-1">MemHandleUnlock(myHandle);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;&#160;<A NAME="P758_33690"></A>MemHandleLock</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">MemHandleUnlock</FONT><FONT FACE="Times"> calls can be nested, because </FONT><FONT FACE="Courier New">MemHandleLock</FONT><FONT FACE="Times"> increments a lock count (you can have a maximum of 15 outstanding locks per handle). </FONT><FONT FACE="Courier New">MemHandleUnlock</FONT><FONT FACE="Times"> decrements the lock count. Note that it doesn't actually allow the chunk to move unless the lock count hits 0. If you get overeager and try to lock a handle that's already been locked 15 times, you get a runtime &quot;chunk overlocked&quot; error message. Similarly, unlocking a handle that is already unlocked (whose lock count is 0) generates a &quot;chunk underlocked&quot; error message.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Alternatively, you can call </FONT><FONT FACE="Courier New">&#160;<A NAME="P760_34268"></A>MemPtrUnlock</FONT><FONT FACE="Times">. This may be more convenient, especially when the unlock is in a separate routine from the lock. This way you only have to pass around the locked pointer.</FONT></P>
+<P>
+<TABLE BORDER=1>
+<TR>
+<TD WIDTH=480><P ALIGN=CENTER><I><FONT FACE="Times" SIZE="+1">Lock Counts</FONT></I></P>
+<P><FONT FACE="Times">A lock count allows nested locking to work. For example, imagine the following code:</FONT><A NAME="P763_34530"></A></P>
+  <UL><P><FONT FACE="Times" SIZE="-1">void A(VoidHand h)</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">{</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">VoidPtr p = MemHandleLock(h);</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">// do stuff with P</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">B(h);</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">// code after B</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">MemHandleUnlock(h);</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">}</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">void B(VoidHand h)</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">{</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">VoidPtr s = MemHandleLock(h);</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">// do stuff with s</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">MemHandleUnlock(h);</FONT></P>
+  <P><FONT FACE="Times" SIZE="-1">}</FONT></P>
+</UL><P><FONT FACE="Times">When A locks h, its lock count goes to 1. When A calls B, it passes this locked handle. When B locks it again, the lock count goes to 2. When B unlocks it, it goes down to 1. After B returns, the handle is still locked, with a lock count of 1. After A unlocks it, it is really unlocked.</FONT></P>
+<P><FONT FACE="Times">If </FONT><FONT FACE="Courier New">MemHandleLock</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">MemHandleUnlock</FONT><FONT FACE="Times"> didn't use lock counts (some operating systems do provide handle locking but don't use lock counts), there would be a problem with the previous code. When B unlocked the handle, it would in fact be unlocked. Then, in A's code after the call to B, but before the call to unlock the handle, the handle would be unlocked. If A's code used the pointer p during that time, havoc could ensue, as p is no longer valid once its handle is unlocked (actually, it's still valid until the chunk moves, but that could happen any time after the handle is unlocked).</FONT></P>
+<P><FONT FACE="Times">Lock counts add a small amount of complexity to the Memory Manager, but make applications easier to code.</FONT><A NAME="P785_35701"></A></P>
+</TD></TR></TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">To allocate a pointer, use </FONT><FONT FACE="Courier New">&#160;<A NAME="P789_35729"></A>MemPtrNew</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">struct s *myS = MemPtrNew(sizeof(struct s));</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">To free a chunk, use </FONT><FONT FACE="Courier New">&#160;&#160;<A NAME="P792_35806"></A>MemPtrFree</FONT><FONT FACE="Times"> or </FONT><FONT FACE="Courier New">MemHandleFree</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">MemPtrFree(myPointer);</FONT>
+<FONT SIZE="-1">MemHandleFree(myHandle);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">As a chunk is allocated, it is marked with an <A NAME="P796_35926"></A>owner ID. When an application is closed, the <A NAME="P796_35971"></A>Memory Manager deallocates all chunks with that owner ID. Other chunks (for instance, those allocated by the system with a different mark) are not deallocated. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You shouldn't rely on this cleanup, however. Instead, you should code your application to free all its allocated memory explicitly. Just consider the system cleanup to be a crutch for those application writers who aren't as fastidious as you. However, in the rare case that you might forget a deallocation, the system will do it for you.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This cleanup makes the lives of Palm device users much happier. They are no longer prey to every poorly written application with a memory leak. Without this behavior, there would be no cleanup of memory allocated by an application but never deallocated. Imagine an application that allocates 50 bytes every time it is run but never deallocates it. Running the application twice a day for two weeks uses 1,400 bytes of dynamic memory that could be reclaimed only by a reset. A Palm device isn't like a desktop computer that is rebooted fairly often (at least we know <I>our</I> desktop computers are rebooted fairly often!). Instead, a Palm device <I>should</I> run months or years without a reset. The fact that handhelds need a reset button is a flaw. (Don't get us wrong, though; given the current state of affairs, handhelds do need reset buttons.)</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The Memory Manager provides other facilities, including finding the <A NAME="P802_37373"></A>size of a chunk, resizing a chunk, and finding a handle given a locked pointer. For more information about these routines, you should see the Memory Manager documentation (or the include file <I>MemoryMgr.h</I>).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Last, there are two useful memory utility routines you should know about. They are </FONT><FONT FACE="Courier New">&#160;&#160;<A NAME="P804_37663"></A>MemSet</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">MemMove</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">MemSet(void *p, ULong numBytes, Byte value)</FONT>
+<FONT SIZE="-1">MemMove(void *from, void *to, ULong numBytes)</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">MemSet</FONT><FONT FACE="Times"> sets a range of memory to the specified byte value. </FONT><FONT FACE="Courier New">MemMove</FONT><FONT FACE="Times"> <A NAME="P808_37837"></A>copies the specified number of bytes from a particular range to another range (it correctly handles the case where the two ranges overlap).</FONT><A NAME="P808_37976"></A></P>
+
+<P><A NAME="P811_37976"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Other Times Your Application Is Called</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P813_38014"></A>The Palm OS makes a distinction between communicating with the active application and communicating with a possibly inactive application. In this first case, the active application is busy executing an event loop and can be communicated with by posting events to the event queue. As shown in Hello World, this was how our application got closed; the </FONT><FONT FACE="Courier New">appStopEvent</FONT><FONT FACE="Times"> was posted to the event queue. When the active application gets that event, it quits.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Because there are other times that your application gets called by the Palm OS, there needs to be a way to communicate with it in those instances. First, let's look at a list of the circumstances under which the system might want to talk to your application:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  When the user does a Find, the system must ask each installed application to look for any records that match the Find request.</FONT></LI>
+
+  <LI><FONT FACE="Times">  When beamed data is received, the system must ask the appropriate application (the one that is registered to receive the data) to handle the incoming item.</FONT></LI>
+
+  <LI><FONT FACE="Times">  When a synchronization occurs, each application is notified after its data has been synced.</FONT></LI>
+
+  <LI><FONT FACE="Times">  After a reset, each application is notified that a reset has occurred.</FONT></LI>
+
+  <LI><FONT FACE="Times">  If the system time or date changes, each application is notified.</FONT></LI>
+
+  <LI><FONT FACE="Times">  If the country changes, each application is notified.</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">In all these cases, a communication must take place to an inactive or closed application. The question is how the system does this. The answer is launch codes; all these communications are handled by your application's launch codes. </FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Launch Codes</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Within the Palm OS, the <I><A NAME="P828_39561"></A>launch code</I> specifies to the application which of the circumstances just listed exist and what the application needs to do. These codes arrive at the application's </FONT><FONT FACE="Courier New">&#160;<A NAME="P828_39726"></A>PilotMain</FONT><FONT FACE="Times"> routine by way of its </FONT><FONT FACE="Courier New">launchCode</FONT><FONT FACE="Times"> parameter. Here are some common launch codes:</FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P830_39814"></A>sysAppLaunchFind</FONT></I></P>
+
+<P><FONT FACE="Times">This code tells the application to look up a particular text string and return information about any matching data.</FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P832_39945"></A>sysAppLaunchGoTo</FONT></I></P>
+
+<P><FONT FACE="Times">This code tells the application to open, if it isn't already open, and then to go to the specified piece of data.</FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P834_40074"></A>sysAppLaunchNormal</FONT></I></P>
+
+<P><FONT FACE="Times">As we have already seen, this code opens the application normally.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Launch Flags</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P839_40170"></A>Associated with these launch codes are various launch flags. The launch flags specify important information about how the application is being executed. Here are some examples: </FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Whether the application's global variables are available. Globals are not available on many launch codes.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Whether the application is now the active application.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Whether it had already been open as the active application.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Whether some other application is active.</FONT></LI></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">A Few Scenarios</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P848_40629"></A>To help make this whole relationship between the application and when it gets called by the system clear, let's look at some examples of when this happens and what the flow of the code is like.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A HREF="#P852_41047">Example&#160;4-12</A> shows what happens when a user does a Find when the built-in application Memo Pad is open. The </FONT><FONT FACE="Courier New">PilotMain</FONT><FONT FACE="Times"> of Hello World is called with the </FONT><FONT FACE="Courier New">sysAppLaunchCmdFind</FONT><FONT FACE="Times"> launch code and with no launch flags.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">&#160;-Example&#160; 4- 12</FONT></B><A NAME="P852_41047"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Flow of Control When User Chooses Find When MemoPad Is Open</FONT></B></P><PRE><FONT SIZE="-1">MemoPad's                                     </FONT><I><FONT FACE="Times" SIZE="-1">sysAppLaunchFlagNewStack AND </FONT></I>
+<FONT SIZE="-1">PilotMain(sysAppLaunchCmdNormalLaunch,params, </FONT><I><FONT FACE="Times" SIZE="-1">sysAppLaunchFlagNewGlobals AND</FONT></I>
+<FONT SIZE="-1">flags)                                        </FONT><I><FONT FACE="Times" SIZE="-1">sysAppLaunchFlagUIApp</FONT></I>
+<FONT SIZE="-1">  MemoPad's EventLoop</FONT>
+<FONT SIZE="-1">  SysHandleEvent (enter)</FONT>
+<FONT SIZE="-1">                                              </FONT><I><FONT FACE="Times" SIZE="-1">after user taps Find</FONT></I>
+<FONT SIZE="-1">    Loop through all applications:</FONT>
+<FONT SIZE="-1">      MemoPad's PilotMain(sysAppLaunchCmdFind,</FONT>
+<FONT SIZE="-1">        parameters, sysAppLaunchFlagSubCall)</FONT>
+<FONT SIZE="-1">      PilotMain(sysAppLaunchCmdFind,          </FONT><I><FONT FACE="Times" SIZE="-1">calls HelloWorld's PilotMain</FONT></I>
+<FONT SIZE="-1">        parameters, 0)</FONT>
+<FONT SIZE="-1">  SysHandleEvent (exit)</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now take a look in <A HREF="#P872_42121">Example&#160;4-13</A>. This is what happens when we do a Find with our application already open. In this case, HelloWorld's </FONT><FONT FACE="Courier New">PilotMain</FONT><FONT FACE="Times"> is called with the same launch code, </FONT><FONT FACE="Courier New"><A NAME="P870_41859"></A>sysAppLaunchCmdFind</FONT><FONT FACE="Times">, but with the launch flag </FONT><FONT FACE="Courier New"><A NAME="P870_41905"></A>sysAppLaunchFlagSubCall</FONT><FONT FACE="Times">, specifying that the HelloWorld application is already open and running. This signifies that global variables are available and that the </FONT><FONT FACE="Courier New">StartApplication</FONT><FONT FACE="Times"> routine has been called.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Example&#160; 4- 13</FONT></B><A NAME="P872_42121"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Flow of Control When User Chooses Find When Hello World Is Open</FONT></B></P><PRE><FONT SIZE="-1">HelloWorld's PilotMain(                       </FONT><I><FONT FACE="Times" SIZE="-1">sysAppLaunchFlagNewStack AND</FONT></I>
+<FONT SIZE="-1">sysAppLaunchCmdNormalLaunch, params,          </FONT><I><FONT FACE="Times" SIZE="-1">sysAppLaunchFlagNewGlobals AND</FONT></I>
+<FONT SIZE="-1">flags)                                        </FONT><I><FONT FACE="Times" SIZE="-1">sysAppLaunchFlagUIApp</FONT></I>
+<FONT SIZE="-1">  HelloWorld's EventLoop</FONT>
+<FONT SIZE="-1">  SysHandleEvent (enter)</FONT>
+<FONT SIZE="-1">                                              </FONT><I><FONT FACE="Times" SIZE="-1">after user taps Find</FONT></I>
+<FONT SIZE="-1">    Loop through all applications:</FONT>
+<FONT SIZE="-1">      HelloWorld's PilotMain(sysAppLaunchCmdFind, </FONT>
+<FONT SIZE="-1">       parameters, sysAppLaunchFlagSubCall)</FONT>
+<FONT SIZE="-1">      PilotMain(sysAppLaunchCmdFind,parameters, </FONT>
+<FONT SIZE="-1">       0)</FONT>
+<FONT SIZE="-1">  SysHandleEvent<A NAME="P887_42715"></A> (exit)</FONT><A NAME="P887_42722"></A></PRE>
+
+<P><A NAME="P890_42722"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Summary</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">In this chapter, we have given you a description of how an application interacts with the system on a Palm device. We have also done a code walkthrough of a sample program that contains all the code components that are standard to all Palm applications. You have learned that the Palm application is an event driven system. The system's event queue feeds a constant flow of events to your application, and it is up to you to handle them. You have also seen the wide variety of instances under which your application may get called by the system and the resources available to you to deal with these instances. Last, but not least, we have discussed some of the more important elements in handling memory in a Palm application. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">From all this information, you should now be well on your way to understanding this application architecture. In the following chapters, you will use this information to create a full-featured application.</FONT><A NAME="P894_43661"></A></P>
+<HR ALIGN=LEFT SIZE=2 WIDTH=100% NOSHADE>
+<!-- TRANSIT - TEXTBAR -->
+
+<ADDRESS><FONT SIZE=-1>Palm Programming: The Developer's Guide
+<BR>Copyright &#169; 1999, O'Rielly and Associates, Inc.
+<BR>Published on the web by permission of O'Rielly and Associates, Inc. Contents modified for web display.</FONT></ADDRESS><P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="part2.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch05.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P>
+</BODY>
+</HTML>

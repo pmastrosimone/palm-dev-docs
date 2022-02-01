@@ -1,0 +1,154 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Macro</TITLE>
+
+<META NAME="description" CONTENT="Using as: Macro">
+<META NAME="keywords" CONTENT="Using as: Macro">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC121"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_117.html#SEC120"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_119.html#SEC122"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_74.html#SEC77"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_68.html#SEC71"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_159.html#SEC168"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.50 <CODE>.macro</CODE> </H2>
+<!--docid::SEC121::-->
+<P>
+
+<A NAME="IDX357"></A>
+The commands <CODE>.macro</CODE> and <CODE>.endm</CODE> allow you to define macros that
+generate assembly output.  For example, this definition specifies a macro
+<CODE>sum</CODE> that puts a sequence of numbers into memory:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>        .macro  sum from=0, to=5
+        .long   \from
+        .if     \to-\from
+        sum     "(\from+1)",\to
+        .endif
+        .endm
+</pre></td></tr></table></P><P>
+
+With that definition, <SAMP>`SUM 0,5'</SAMP> is equivalent to this assembly input:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>        .long   0
+        .long   1
+        .long   2
+        .long   3
+        .long   4
+        .long   5
+</pre></td></tr></table></P><P>
+
+<DL COMPACT>
+<A NAME="IDX358"></A>
+<DT><CODE>.macro <VAR>macname</VAR></CODE>
+<DD><A NAME="IDX359"></A>
+<A NAME="IDX360"></A>
+<DT><CODE>.macro <VAR>macname</VAR> <VAR>macargs</VAR> <small>...</small></CODE>
+<DD><A NAME="IDX361"></A>
+<A NAME="IDX362"></A>
+Begin the definition of a macro called <VAR>macname</VAR>.  If your macro
+definition requires arguments, specify their names after the macro name,
+separated by commas or spaces.  You can supply a default value for any
+macro argument by following the name with <SAMP>`=<VAR>deflt</VAR>'</SAMP>.  For
+example, these are all valid <CODE>.macro</CODE> statements:
+<P>
+
+<DL COMPACT>
+<DT><CODE>.macro comm</CODE>
+<DD>Begin the definition of a macro called <CODE>comm</CODE>, which takes no
+arguments.
+<P>
+
+<DT><CODE>.macro plus1 p, p1</CODE>
+<DD><DT><CODE>.macro plus1 p p1</CODE>
+<DD>Either statement begins the definition of a macro called <CODE>plus1</CODE>,
+which takes two arguments; within the macro definition, write
+<SAMP>`\p'</SAMP> or <SAMP>`\p1'</SAMP> to evaluate the arguments.
+<P>
+
+<DT><CODE>.macro reserve_str p1=0 p2</CODE>
+<DD>Begin the definition of a macro called <CODE>reserve_str</CODE>, with two
+arguments.  The first argument has a default value, but not the second.
+After the definition is complete, you can call the macro either as
+<SAMP>`reserve_str <VAR>a</VAR>,<VAR>b</VAR>'</SAMP> (with <SAMP>`\p1'</SAMP> evaluating to
+<VAR>a</VAR> and <SAMP>`\p2'</SAMP> evaluating to <VAR>b</VAR>), or as <SAMP>`reserve_str
+,<VAR>b</VAR>'</SAMP> (with <SAMP>`\p1'</SAMP> evaluating as the default, in this case
+<SAMP>`0'</SAMP>, and <SAMP>`\p2'</SAMP> evaluating to <VAR>b</VAR>).
+</DL>
+<P>
+
+When you call a macro, you can specify the argument values either by
+position, or by keyword.  For example, <SAMP>`sum 9,17'</SAMP> is equivalent to
+<SAMP>`sum to=17, from=9'</SAMP>.
+</P><P>
+
+<A NAME="IDX363"></A>
+<DT><CODE>.endm</CODE>
+<DD><A NAME="IDX364"></A>
+<A NAME="IDX365"></A>
+Mark the end of a macro definition.
+<P>
+
+<A NAME="IDX366"></A>
+<DT><CODE>.exitm</CODE>
+<DD><A NAME="IDX367"></A>
+<A NAME="IDX368"></A>
+Exit early from the current macro definition.
+<P>
+
+<A NAME="IDX369"></A>
+<A NAME="IDX370"></A>
+<A NAME="IDX371"></A>
+<DT><CODE>\@</CODE>
+<DD><A NAME="IDX372"></A>
+<CODE>as</CODE> maintains a counter of how many macros it has
+executed in this pseudo-variable; you can copy that number to your
+output with <SAMP>`\@'</SAMP>, but <EM>only within a macro definition</EM>.
+<P>
+
+</DL>
+<P>
+
+<A NAME="Nolist"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_117.html#SEC120"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_119.html#SEC122"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_74.html#SEC77"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_68.html#SEC71"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_159.html#SEC168"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

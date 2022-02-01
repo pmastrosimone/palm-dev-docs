@@ -1,0 +1,206 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: M2 Operators</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: M2 Operators">
+<META NAME="keywords" CONTENT="Debugging with GDB: M2 Operators">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC108"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_107.html#SEC107"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_109.html#SEC109"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_89.html#SEC89"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_107.html#SEC107"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_116.html#SEC116"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 12.4.2.1 Operators </H4>
+<!--docid::SEC108::-->
+<P>
+
+Operators must be defined on values of specific types.  For instance,
+<CODE>+</CODE> is defined on numbers, but not on structures.  Operators are
+often defined on groups of types.  For the purposes of Modula-2, the
+following definitions hold:
+</P><P>
+
+<UL>
+
+<LI>
+<EM>Integral types</EM> consist of <CODE>INTEGER</CODE>, <CODE>CARDINAL</CODE>, and
+their subranges.
+<P>
+
+<LI>
+<EM>Character types</EM> consist of <CODE>CHAR</CODE> and its subranges.
+<P>
+
+<LI>
+<EM>Floating-point types</EM> consist of <CODE>REAL</CODE>.
+<P>
+
+<LI>
+<EM>Pointer types</EM> consist of anything declared as <CODE>POINTER TO
+<VAR>type</VAR></CODE>.
+<P>
+
+<LI>
+<EM>Scalar types</EM> consist of all of the above.
+<P>
+
+<LI>
+<EM>Set types</EM> consist of <CODE>SET</CODE> and <CODE>BITSET</CODE> types.
+<P>
+
+<LI>
+<EM>Boolean types</EM> consist of <CODE>BOOLEAN</CODE>.
+</UL>
+<P>
+
+The following operators are supported, and appear in order of
+increasing precedence:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>,</CODE>
+<DD>Function argument or array index separator.
+<P>
+
+<DT><CODE>:=</CODE>
+<DD>Assignment.  The value of <VAR>var</VAR> <CODE>:=</CODE> <VAR>value</VAR> is
+<VAR>value</VAR>.
+<P>
+
+<DT><CODE>&#60;, &#62;</CODE>
+<DD>Less than, greater than on integral, floating-point, or enumerated
+types.
+<P>
+
+<DT><CODE>&#60;=, &#62;=</CODE>
+<DD>Less than or equal to, greater than or equal to
+on integral, floating-point and enumerated types, or set inclusion on
+set types.  Same precedence as <CODE>&#60;</CODE>.
+<P>
+
+<DT><CODE>=, &#60;&#62;, #</CODE>
+<DD>Equality and two ways of expressing inequality, valid on scalar types.
+Same precedence as <CODE>&#60;</CODE>.  In GDB scripts, only <CODE>&#60;&#62;</CODE> is
+available for inequality, since <CODE>#</CODE> conflicts with the script
+comment character.
+<P>
+
+<DT><CODE>IN</CODE>
+<DD>Set membership.  Defined on set types and the types of their members.
+Same precedence as <CODE>&#60;</CODE>.
+<P>
+
+<DT><CODE>OR</CODE>
+<DD>Boolean disjunction.  Defined on boolean types.
+<P>
+
+<DT><CODE>AND, &#38;</CODE>
+<DD>Boolean conjunction.  Defined on boolean types.
+<P>
+
+<DT><CODE>@</CODE>
+<DD>The GDB "artificial array" operator (see section <A HREF="gdb_52.html#SEC52">Expressions</A>).
+<P>
+
+<DT><CODE>+, -</CODE>
+<DD>Addition and subtraction on integral and floating-point types, or union
+and difference on set types.
+<P>
+
+<DT><CODE>*</CODE>
+<DD>Multiplication on integral and floating-point types, or set intersection
+on set types.
+<P>
+
+<DT><CODE>/</CODE>
+<DD>Division on floating-point types, or symmetric set difference on set
+types.  Same precedence as <CODE>*</CODE>.
+<P>
+
+<DT><CODE>DIV, MOD</CODE>
+<DD>Integer division and remainder.  Defined on integral types.  Same
+precedence as <CODE>*</CODE>.
+<P>
+
+<DT><CODE>-</CODE>
+<DD>Negative. Defined on <CODE>INTEGER</CODE> and <CODE>REAL</CODE> data.
+<P>
+
+<DT><CODE>^</CODE>
+<DD>Pointer dereferencing.  Defined on pointer types.
+<P>
+
+<DT><CODE>NOT</CODE>
+<DD>Boolean negation.  Defined on boolean types.  Same precedence as
+<CODE>^</CODE>.
+<P>
+
+<DT><CODE>.</CODE>
+<DD><CODE>RECORD</CODE> field selector.  Defined on <CODE>RECORD</CODE> data.  Same
+precedence as <CODE>^</CODE>.
+<P>
+
+<DT><CODE>[]</CODE>
+<DD>Array indexing.  Defined on <CODE>ARRAY</CODE> data.  Same precedence as <CODE>^</CODE>.
+<P>
+
+<DT><CODE>()</CODE>
+<DD>Procedure argument list.  Defined on <CODE>PROCEDURE</CODE> objects.  Same precedence
+as <CODE>^</CODE>.
+<P>
+
+<DT><CODE>::, .</CODE>
+<DD>GDB and Modula-2 scope operators.
+</DL>
+<P>
+
+<BLOCKQUOTE>
+<EM>Warning:</EM> Sets and their operations are not yet supported, so GDB
+treats the use of the operator <CODE>IN</CODE>, or the use of operators
+<CODE>+</CODE>, <CODE>-</CODE>, <CODE>*</CODE>, <CODE>/</CODE>, <CODE>=</CODE>, , <CODE>&#60;&#62;</CODE>, <CODE>#</CODE>,
+<CODE>&#60;=</CODE>, and <CODE>&#62;=</CODE> on sets as an error.
+</BLOCKQUOTE>
+<P>
+
+<A NAME="Built-In Func/Proc"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_107.html#SEC107"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_109.html#SEC109"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_89.html#SEC89"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_107.html#SEC107"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_116.html#SEC116"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

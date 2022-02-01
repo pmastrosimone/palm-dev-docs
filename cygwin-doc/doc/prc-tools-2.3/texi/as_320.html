@@ -1,0 +1,134 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: MMIX-Opts</TITLE>
+
+<META NAME="description" CONTENT="Using as: MMIX-Opts">
+<META NAME="keywords" CONTENT="Using as: MMIX-Opts">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC329"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_319.html#SEC328"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_321.html#SEC330"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_179.html#SEC188"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_319.html#SEC328"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_328.html#SEC337"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.21.1 Command-line Options </H3>
+<!--docid::SEC329::-->
+<P>
+
+<A NAME="IDX1008"></A>
+<A NAME="IDX1009"></A>
+The MMIX version of <CODE>as</CODE> has some machine-dependent options.
+</P><P>
+
+<A NAME="IDX1010"></A>
+When <SAMP>`--fixed-special-register-names'</SAMP> is specified, only the register
+names specified in <A HREF="as_325.html#SEC334">8.21.3.3 Register names</A> are recognized in the instructions
+<CODE>PUT</CODE> and <CODE>GET</CODE>.
+</P><P>
+
+<A NAME="IDX1011"></A>
+You can use the <SAMP>`--globalize-symbols'</SAMP> to make all symbols global.
+This option is useful when splitting up a <CODE>mmixal</CODE> program into
+several files.
+</P><P>
+
+<A NAME="IDX1012"></A>
+The <SAMP>`--gnu-syntax'</SAMP> turns off most syntax compatibility with
+<CODE>mmixal</CODE>.  Its usability is currently doubtful.
+</P><P>
+
+<A NAME="IDX1013"></A>
+The <SAMP>`--relax'</SAMP> option is not fully supported, but will eventually make
+the object file prepared for linker relaxation.
+</P><P>
+
+<A NAME="IDX1014"></A>
+If you want to avoid inadvertently calling a predefined symbol and would
+rather get an error, for example when using <CODE>as</CODE> with a
+compiler or other machine-generated code, specify
+<SAMP>`--no-predefined-syms'</SAMP>.  This turns off built-in predefined
+definitions of all such symbols, including rounding-mode symbols, segment
+symbols, <SAMP>`BIT'</SAMP> symbols, and <CODE>TRAP</CODE> symbols used in <CODE>mmix</CODE>
+"system calls".  It also turns off predefined special-register names,
+except when used in <CODE>PUT</CODE> and <CODE>GET</CODE> instructions.
+</P><P>
+
+<A NAME="IDX1015"></A>
+By default, some instructions are expanded to fit the size of the operand
+or an external symbol (see section <A HREF="as_321.html#SEC330">8.21.2 Instruction expansion</A>).  By passing
+<SAMP>`--no-expand'</SAMP>, no such expansion will be done, instead causing errors
+at link time if the operand does not fit.
+</P><P>
+
+<A NAME="IDX1016"></A>
+The <CODE>mmixal</CODE> documentation (see  <A HREF="as_322.html#mmixsite">mmixsite</A>) specifies that global
+registers allocated with the <SAMP>`GREG'</SAMP> directive (see  <A HREF="as_326.html#MMIX-greg">MMIX-greg</A>) and
+initialized to the same non-zero value, will refer to the same global
+register.  This isn't strictly enforceable in <CODE>as</CODE> since the
+final addresses aren't known until link-time, but it will do an effort
+unless the <SAMP>`--no-merge-gregs'</SAMP> option is specified.  (Register merging
+isn't yet implemented in <CODE>ld</CODE>.)
+</P><P>
+
+<A NAME="IDX1017"></A>
+<CODE>as</CODE> will warn every time it expands an instruction to fit an
+operand unless the option <SAMP>`-x'</SAMP> is specified.  It is believed that
+this behaviour is more useful than just mimicking <CODE>mmixal</CODE>'s
+behaviour, in which instructions are only expanded if the <SAMP>`-x'</SAMP> option
+is specified, and assembly fails otherwise, when an instruction needs to
+be expanded.  It needs to be kept in mind that <CODE>mmixal</CODE> is both an
+assembler and linker, while <CODE>as</CODE> will expand instructions
+that at link stage can be contracted.  (Though linker relaxation isn't yet
+implemented in <CODE>ld</CODE>.)  The option <SAMP>`-x'</SAMP> also imples
+<SAMP>`--linker-allocated-gregs'</SAMP>.
+</P><P>
+
+<A NAME="IDX1018"></A>
+Usually a two-operand-expression (see  <A HREF="as_326.html#GREG-base">GREG-base</A>) without a matching
+<SAMP>`GREG'</SAMP> directive is treated as an error by <CODE>as</CODE>.  When
+the option <SAMP>`--linker-allocated-gregs'</SAMP> is in effect, they are instead
+passed through to the linker, which will allocate as many global registers
+as is needed.
+</P><P>
+
+<A NAME="MMIX-Expand"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_319.html#SEC328"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_321.html#SEC330"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_179.html#SEC188"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_319.html#SEC328"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_328.html#SEC337"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,100 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: i386-Arch</TITLE>
+
+<META NAME="description" CONTENT="Using as: i386-Arch">
+<META NAME="keywords" CONTENT="Using as: i386-Arch">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC278"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_268.html#SEC277"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_270.html#SEC279"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_259.html#SEC268"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.12.12 Specifying CPU Architecture </H3>
+<!--docid::SEC278::-->
+<P>
+
+<A NAME="IDX799"></A>
+<A NAME="IDX800"></A>
+<A NAME="IDX801"></A>
+<A NAME="IDX802"></A>
+</P><P>
+
+<CODE>as</CODE> may be told to assemble for a particular CPU
+architecture with the <CODE>.arch <VAR>cpu_type</VAR></CODE> directive.  This
+directive enables a warning when gas detects an instruction that is not
+supported on the CPU specified.  The choices for <VAR>cpu_type</VAR> are:
+</P><P>
+
+<TABLE>
+<TR><TD><SAMP>`i8086'</SAMP> </TD><TD> <SAMP>`i186'</SAMP> </TD><TD> <SAMP>`i286'</SAMP> </TD><TD> <SAMP>`i386'</SAMP></TD>
+</TR>
+<TR><TD><SAMP>`i486'</SAMP> </TD><TD> <SAMP>`i586'</SAMP> </TD><TD> <SAMP>`i686'</SAMP> </TD><TD> <SAMP>`pentium'</SAMP></TD>
+</TR>
+<TR><TD><SAMP>`pentiumpro'</SAMP> </TD><TD> <SAMP>`pentium4'</SAMP> </TD><TD> <SAMP>`k6'</SAMP> </TD><TD> <SAMP>`athlon'</SAMP></TD>
+</TR>
+<TR><TD><SAMP>`sledgehammer'</SAMP></TD>
+</TR></TABLE>
+<P>
+
+Apart from the warning, there are only two other effects on
+<CODE>as</CODE> operation;  Firstly, if you specify a CPU other than
+<SAMP>`i486'</SAMP>, then shift by one instructions such as <SAMP>`sarl $1, %eax'</SAMP>
+will automatically use a two byte opcode sequence.  The larger three
+byte opcode sequence is used on the 486 (and when no architecture is
+specified) because it executes faster on the 486.  Note that you can
+explicitly request the two byte opcode by writing <SAMP>`sarl %eax'</SAMP>.
+Secondly, if you specify <SAMP>`i8086'</SAMP>, <SAMP>`i186'</SAMP>, or <SAMP>`i286'</SAMP>,
+<EM>and</EM> <SAMP>`.code16'</SAMP> or <SAMP>`.code16gcc'</SAMP> then byte offset
+conditional jumps will be promoted when necessary to a two instruction
+sequence consisting of a conditional jump of the opposite sense around
+an unconditional jump to the target.
+</P><P>
+
+Following the CPU architecture, you may specify <SAMP>`jumps'</SAMP> or
+<SAMP>`nojumps'</SAMP> to control automatic promotion of conditional jumps.
+<SAMP>`jumps'</SAMP> is the default, and enables jump promotion;  All external
+jumps will be of the long variety, and file-local jumps will be promoted
+as necessary.  (see section <A HREF="as_264.html#SEC273">8.12.7 Handling of Jump Instructions</A>)  <SAMP>`nojumps'</SAMP> leaves external
+conditional jumps as byte offset jumps, and warns about file-local
+conditional jumps that <CODE>as</CODE> promotes.
+Unconditional jumps are treated as for <SAMP>`jumps'</SAMP>.
+</P><P>
+
+For example
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre> .arch i8086,nojumps
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="i386-Notes"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

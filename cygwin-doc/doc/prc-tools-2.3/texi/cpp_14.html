@@ -1,0 +1,259 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Standard Predefined</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Standard Predefined">
+<META NAME="keywords" CONTENT="The C Preprocessor: Standard Predefined">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC14"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_13.html#SEC13"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_15.html#SEC15"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_12.html#SEC12"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_13.html#SEC13"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_16.html#SEC16"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 1.4.3.1 Standard Predefined Macros </H4>
+<!--docid::SEC14::-->
+<P>
+
+The standard predefined macros are available with the same meanings
+regardless of the machine or operating system on which you are using GNU C.
+Their names all start and end with double underscores.  Those preceding
+<CODE>__GNUC__</CODE> in this table are standardized by ANSI C; the rest are
+GNU C extensions.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>__FILE__</CODE>
+<DD><A NAME="IDX14"></A>
+This macro expands to the name of the current input file, in the form of
+a C string constant.  The precise name returned is the one that was
+specified in <SAMP>`#include'</SAMP> or as the input file name argument.
+<P>
+
+<DT><CODE>__LINE__</CODE>
+<DD><A NAME="IDX15"></A>
+This macro expands to the current input line number, in the form of a
+decimal integer constant.  While we call it a predefined macro, it's
+a pretty strange macro, since its "definition" changes with each
+new line of source code.
+<P>
+
+This and <SAMP>`__FILE__'</SAMP> are useful in generating an error message to
+report an inconsistency detected by the program; the message can state
+the source line at which the inconsistency was detected.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>fprintf (stderr, "Internal error: "
+                 "negative string length "
+                 "%d at %s, line %d.",
+         length, __FILE__, __LINE__);
+</FONT></pre></td></tr></table></P><P>
+
+A <SAMP>`#include'</SAMP> directive changes the expansions of <SAMP>`__FILE__'</SAMP>
+and <SAMP>`__LINE__'</SAMP> to correspond to the included file.  At the end of
+that file, when processing resumes on the input file that contained
+the <SAMP>`#include'</SAMP> directive, the expansions of <SAMP>`__FILE__'</SAMP> and
+<SAMP>`__LINE__'</SAMP> revert to the values they had before the
+<SAMP>`#include'</SAMP> (but <SAMP>`__LINE__'</SAMP> is then incremented by one as
+processing moves to the line after the <SAMP>`#include'</SAMP>).
+</P><P>
+
+The expansions of both <SAMP>`__FILE__'</SAMP> and <SAMP>`__LINE__'</SAMP> are altered
+if a <SAMP>`#line'</SAMP> directive is used.  See section <A HREF="cpp_39.html#SEC39">1.6 Combining Source Files</A>.
+</P><P>
+
+<DT><CODE>__DATE__</CODE>
+<DD><A NAME="IDX16"></A>
+This macro expands to a string constant that describes the date on
+which the preprocessor is being run.  The string constant contains
+eleven characters and looks like <SAMP>`"Feb  1 1996"'</SAMP>.
+<P>
+
+<DT><CODE>__TIME__</CODE>
+<DD><A NAME="IDX17"></A>
+This macro expands to a string constant that describes the time at
+which the preprocessor is being run.  The string constant contains
+eight characters and looks like <SAMP>`"23:59:01"'</SAMP>.
+<P>
+
+<DT><CODE>__STDC__</CODE>
+<DD><A NAME="IDX18"></A>
+This macro expands to the constant 1, to signify that this is ANSI
+Standard C.  (Whether that is actually true depends on what C compiler
+will operate on the output from the preprocessor.)
+<P>
+
+On some hosts, system include files use a different convention, where
+<SAMP>`__STDC__'</SAMP> is normally 0, but is 1 if the user specifies strict
+conformance to the C Standard.  The preprocessor follows the host convention
+when processing system include files, but when processing user files it follows
+the usual GNU C convention.
+</P><P>
+
+This macro is not defined if the <SAMP>`-traditional'</SAMP> option is used.
+</P><P>
+
+<DT><CODE>__STDC_VERSION__</CODE>
+<DD><A NAME="IDX19"></A>
+This macro expands to the C Standard's version number,
+a long integer constant of the form <SAMP>`<VAR>yyyy</VAR><VAR>mm</VAR>L'</SAMP>
+where <VAR>yyyy</VAR> and <VAR>mm</VAR> are the year and month of the Standard version.
+This signifies which version of the C Standard the preprocessor conforms to.
+Like <SAMP>`__STDC__'</SAMP>, whether this version number is accurate
+for the entire implementation depends on what C compiler
+will operate on the output from the preprocessor.
+<P>
+
+This macro is not defined if the <SAMP>`-traditional'</SAMP> option is used.
+</P><P>
+
+<DT><CODE>__GNUC__</CODE>
+<DD><A NAME="IDX20"></A>
+This macro is defined if and only if this is GNU C.  This macro is
+defined only when the entire GNU C compiler is in use; if you invoke the
+preprocessor directly, <SAMP>`__GNUC__'</SAMP> is undefined.  The value
+identifies the major version number of GNU CC (<SAMP>`1'</SAMP> for GNU CC
+version 1, which is now obsolete, and <SAMP>`2'</SAMP> for version 2).
+<P>
+
+<DT><CODE>__GNUC_MINOR__</CODE>
+<DD><A NAME="IDX21"></A>
+The macro contains the minor version number of the compiler.  This can
+be used to work around differences between different releases of the
+compiler (for example, if gcc 2.6.3 is known to support a feature, you
+can test for <CODE>__GNUC__ &#62; 2 || (__GNUC__ == 2 &#38;&#38; __GNUC_MINOR__ &#62;= 6)</CODE>).
+The last number, <SAMP>`3'</SAMP> in the
+example above, denotes the bugfix level of the compiler; no macro
+contains this value.
+<P>
+
+<DT><CODE>__GNUG__</CODE>
+<DD><A NAME="IDX22"></A>
+The GNU C compiler defines this when the compilation language is
+C++; use <SAMP>`__GNUG__'</SAMP> to distinguish between GNU C and GNU
+C++.
+<P>
+
+<DT><CODE>__cplusplus</CODE>
+<DD><A NAME="IDX23"></A>
+The draft ANSI standard for C++ used to require predefining this
+variable.  Though it is no longer required, GNU C++ continues to define
+it, as do other popular C++ compilers.  You can use <SAMP>`__cplusplus'</SAMP>
+to test whether a header is compiled by a C compiler or a C++ compiler.
+<P>
+
+<DT><CODE>__STRICT_ANSI__</CODE>
+<DD><A NAME="IDX24"></A>
+GNU C defines this macro if and only if the <SAMP>`-ansi'</SAMP> switch was
+specified when GNU C was invoked.  Its definition is the null string.
+This macro exists primarily to direct certain GNU header files not to
+define certain traditional Unix constructs which are incompatible with
+ANSI C.
+<P>
+
+<DT><CODE>__BASE_FILE__</CODE>
+<DD><A NAME="IDX25"></A>
+This macro expands to the name of the main input file, in the form
+of a C string constant.  This is the source file that was specified
+as an argument when the C compiler was invoked.
+<P>
+
+<DT><CODE>__INCLUDE_LEVEL__</CODE>
+<DD><A NAME="IDX26"></A>
+This macro expands to a decimal integer constant that represents the
+depth of nesting in include files.  The value of this macro is
+incremented on every <SAMP>`#include'</SAMP> directive and decremented at every
+end of file.  For input files specified by command line arguments,
+the nesting level is zero.
+<P>
+
+<DT><CODE>__VERSION__</CODE>
+<DD><A NAME="IDX27"></A>
+This macro expands to a string constant which describes the version number of
+GNU C.  The string is normally a sequence of decimal numbers separated
+by periods, such as <SAMP>`"2.6.0"'</SAMP>.
+<P>
+
+<DT><CODE>__OPTIMIZE__</CODE>
+<DD><A NAME="IDX28"></A>
+GNU CC defines this macro in optimizing compilations.  It causes certain
+GNU header files to define alternative macro definitions for some system
+library functions.  You should not refer to or test the definition of
+this macro unless you make very sure that programs will execute with the
+same effect regardless.
+<P>
+
+<DT><CODE>__CHAR_UNSIGNED__</CODE>
+<DD><A NAME="IDX29"></A>
+GNU C defines this macro if and only if the data type <CODE>char</CODE> is
+unsigned on the target machine.  It exists to cause the standard header
+file <TT>`limits.h'</TT> to work correctly.  You should not refer to this
+macro yourself; instead, refer to the standard macros defined in
+<TT>`limits.h'</TT>.  The preprocessor uses this macro to determine whether
+or not to sign-extend large character constants written in octal; see
+<A HREF="cpp_32.html#SEC32">The <SAMP>`#if'</SAMP> Directive</A>.
+<P>
+
+<DT><CODE>__REGISTER_PREFIX__</CODE>
+<DD><A NAME="IDX30"></A>
+This macro expands to a string (not a string constant) describing the
+prefix applied to CPU registers in assembler code.  You can use it to
+write assembler code that is usable in multiple environments.  For
+example, in the <SAMP>`m68k-aout'</SAMP> environment it expands to the null
+string, but in the <SAMP>`m68k-coff'</SAMP> environment it expands to the string
+<SAMP>`%'</SAMP>.
+<P>
+
+<DT><CODE>__USER_LABEL_PREFIX__</CODE>
+<DD><A NAME="IDX31"></A>
+Similar to <CODE>__REGISTER_PREFIX__</CODE>, but describes the prefix applied
+to user generated labels in assembler code.  For example, in the
+<SAMP>`m68k-aout'</SAMP> environment it expands to the string <SAMP>`_'</SAMP>, but in
+the <SAMP>`m68k-coff'</SAMP> environment it expands to the null string.  This
+does not work with the <SAMP>`-mno-underscores'</SAMP> option that the i386
+OSF/rose and m88k targets provide nor with the <SAMP>`-mcall*'</SAMP> options of
+the rs6000 System V Release 4 target.
+</DL>
+<P>
+
+<A NAME="Nonstandard Predefined"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_13.html#SEC13"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_15.html#SEC15"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_12.html#SEC12"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_13.html#SEC13"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_16.html#SEC16"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

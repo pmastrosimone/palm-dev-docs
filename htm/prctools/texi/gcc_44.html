@@ -1,0 +1,227 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Environment Variables</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Environment Variables">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Environment Variables">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC44"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_45.html#SEC45"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.16 Environment Variables Affecting GCC </H2>
+<!--docid::SEC44::-->
+<P>
+
+This section describes several environment variables that affect how GCC
+operates.  Some of them work by specifying directories or prefixes to use
+when searching for various kinds of files. Some are used to specify other
+aspects of the compilation environment.
+</P><P>
+
+Note that you can also specify places to search using options such as
+<SAMP>`-B'</SAMP>, <SAMP>`-I'</SAMP> and <SAMP>`-L'</SAMP> (see section <A HREF="gcc_14.html#SEC14">2.12 Options for Directory Search</A>).  These
+take precedence over places specified using environment variables, which
+in turn take precedence over those specified by the configuration of GCC.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>LANG</CODE>
+<DD><DT><CODE>LC_CTYPE</CODE>
+<DD><DT><CODE>LC_MESSAGES</CODE>
+<DD><DT><CODE>LC_ALL</CODE>
+<DD><A NAME="IDX218"></A>
+<A NAME="IDX219"></A>
+<A NAME="IDX220"></A>
+<A NAME="IDX221"></A>
+<A NAME="IDX222"></A>
+These environment variables control the way that GCC uses
+localization information that allow GCC to work with different
+national conventions.  GCC inspects the locale categories
+<CODE>LC_CTYPE</CODE> and <CODE>LC_MESSAGES</CODE> if it has been configured to do
+so.  These locale categories can be set to any value supported by your
+installation.  A typical value is <SAMP>`en_UK'</SAMP> for English in the United
+Kingdom.
+<P>
+
+The <CODE>LC_CTYPE</CODE> environment variable specifies character
+classification.  GCC uses it to determine the character boundaries in
+a string; this is needed for some multibyte encodings that contain quote
+and escape characters that would otherwise be interpreted as a string
+end or escape.
+</P><P>
+
+The <CODE>LC_MESSAGES</CODE> environment variable specifies the language to
+use in diagnostic messages.
+</P><P>
+
+If the <CODE>LC_ALL</CODE> environment variable is set, it overrides the value
+of <CODE>LC_CTYPE</CODE> and <CODE>LC_MESSAGES</CODE>; otherwise, <CODE>LC_CTYPE</CODE>
+and <CODE>LC_MESSAGES</CODE> default to the value of the <CODE>LANG</CODE>
+environment variable.  If none of these variables are set, GCC
+defaults to traditional C English behavior.
+</P><P>
+
+<DT><CODE>TMPDIR</CODE>
+<DD><A NAME="IDX223"></A>
+If <CODE>TMPDIR</CODE> is set, it specifies the directory to use for temporary
+files.  GCC uses temporary files to hold the output of one stage of
+compilation which is to be used as input to the next stage: for example,
+the output of the preprocessor, which is the input to the compiler
+proper.
+<P>
+
+<DT><CODE>GCC_EXEC_PREFIX</CODE>
+<DD><A NAME="IDX224"></A>
+If <CODE>GCC_EXEC_PREFIX</CODE> is set, it specifies a prefix to use in the
+names of the subprograms executed by the compiler.  No slash is added
+when this prefix is combined with the name of a subprogram, but you can
+specify a prefix that ends with a slash if you wish.
+<P>
+
+If GCC cannot find the subprogram using the specified prefix, it
+tries looking in the usual places for the subprogram.
+</P><P>
+
+The default value of <CODE>GCC_EXEC_PREFIX</CODE> is
+<TT>`<VAR>prefix</VAR>/lib/gcc-lib/'</TT> where <VAR>prefix</VAR> is the value
+of <CODE>prefix</CODE> when you ran the <TT>`configure'</TT> script.
+</P><P>
+
+Other prefixes specified with <SAMP>`-B'</SAMP> take precedence over this prefix.
+</P><P>
+
+This prefix is also used for finding files such as <TT>`crt0.o'</TT> that are
+used for linking.
+</P><P>
+
+In addition, the prefix is used in an unusual way in finding the
+directories to search for header files.  For each of the standard
+directories whose name normally begins with <SAMP>`/usr/local/lib/gcc-lib'</SAMP>
+(more precisely, with the value of <CODE>GCC_INCLUDE_DIR</CODE>), GCC tries
+replacing that beginning with the specified prefix to produce an
+alternate directory name.  Thus, with <SAMP>`-Bfoo/'</SAMP>, GCC will search
+<TT>`foo/bar'</TT> where it would normally search <TT>`/usr/local/lib/bar'</TT>.
+These alternate directories are searched first; the standard directories
+come next.
+</P><P>
+
+<DT><CODE>COMPILER_PATH</CODE>
+<DD><A NAME="IDX225"></A>
+The value of <CODE>COMPILER_PATH</CODE> is a colon-separated list of
+directories, much like <CODE>PATH</CODE>.  GCC tries the directories thus
+specified when searching for subprograms, if it can't find the
+subprograms using <CODE>GCC_EXEC_PREFIX</CODE>.
+<P>
+
+<DT><CODE>LIBRARY_PATH</CODE>
+<DD><A NAME="IDX226"></A>
+The value of <CODE>LIBRARY_PATH</CODE> is a colon-separated list of
+directories, much like <CODE>PATH</CODE>.  When configured as a native compiler,
+GCC tries the directories thus specified when searching for special
+linker files, if it can't find them using <CODE>GCC_EXEC_PREFIX</CODE>.  Linking
+using GCC also uses these directories when searching for ordinary
+libraries for the <SAMP>`-l'</SAMP> option (but directories specified with
+<SAMP>`-L'</SAMP> come first).
+<P>
+
+<DT><CODE>C_INCLUDE_PATH</CODE>
+<DD><DT><CODE>CPLUS_INCLUDE_PATH</CODE>
+<DD><DT><CODE>OBJC_INCLUDE_PATH</CODE>
+<DD><A NAME="IDX227"></A>
+<A NAME="IDX228"></A>
+<A NAME="IDX229"></A>
+These environment variables pertain to particular languages.  Each
+variable's value is a colon-separated list of directories, much like
+<CODE>PATH</CODE>.  When GCC searches for header files, it tries the
+directories listed in the variable for the language you are using, after
+the directories specified with <SAMP>`-I'</SAMP> but before the standard header
+file directories.
+<P>
+
+<DT><CODE>DEPENDENCIES_OUTPUT</CODE>
+<DD><A NAME="IDX230"></A>
+<A NAME="IDX231"></A>
+If this variable is set, its value specifies how to output dependencies
+for Make based on the header files processed by the compiler.  This
+output looks much like the output from the <SAMP>`-M'</SAMP> option
+(see section <A HREF="gcc_11.html#SEC11">2.9 Options Controlling the Preprocessor</A>), but it goes to a separate file, and is
+in addition to the usual results of compilation.
+<P>
+
+The value of <CODE>DEPENDENCIES_OUTPUT</CODE> can be just a file name, in
+which case the Make rules are written to that file, guessing the target
+name from the source file name.  Or the value can have the form
+<SAMP>`<VAR>file</VAR> <VAR>target</VAR>'</SAMP>, in which case the rules are written to
+file <VAR>file</VAR> using <VAR>target</VAR> as the target name.
+</P><P>
+
+<DT><CODE>LANG</CODE>
+<DD><A NAME="IDX232"></A>
+<A NAME="IDX233"></A>
+This variable is used to pass locale information to the compiler. One way in
+which this information is used is to determine the character set to be used
+when character literals, string literals and comments are parsed in C and C++.
+When the compiler is configured to allow multibyte characters,
+the following values for <CODE>LANG</CODE> are recognized:
+<P>
+
+<DL COMPACT>
+<DT><CODE>C-JIS</CODE>
+<DD>Recognize JIS characters.
+<DT><CODE>C-SJIS</CODE>
+<DD>Recognize SJIS characters.
+<DT><CODE>C-EUCJP</CODE>
+<DD>Recognize EUCJP characters.
+</DL>
+<P>
+
+If <CODE>LANG</CODE> is not defined, or if it has some other value, then the
+compiler will use mblen and mbtowc as defined by the default locale to
+recognize and translate multibyte characters.
+</DL>
+<P>
+
+<A NAME="Running Protoize"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_45.html#SEC45"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

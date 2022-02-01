@@ -1,0 +1,167 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Define</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Define">
+<META NAME="keywords" CONTENT="Debugging with GDB: Define">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC189"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_188.html#SEC188"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_190.html#SEC190"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_188.html#SEC188"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_188.html#SEC188"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_193.html#SEC193"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 20.1 User-defined commands </H2>
+<!--docid::SEC189::-->
+<P>
+
+<A NAME="IDX827"></A>
+A <EM>user-defined command</EM> is a sequence of GDB commands to
+which you assign a new name as a command.  This is done with the
+<CODE>define</CODE> command.  User commands may accept up to 10 arguments
+separated by whitespace.  Arguments are accessed within the user command
+via <VAR>$arg0<small>...</small>$arg9</VAR>.  A trivial example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>define adder
+  print $arg0 + $arg1 + $arg2
+</FONT></pre></td></tr></table></P><P>
+
+To execute the command use:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>adder 1 2 3
+</FONT></pre></td></tr></table></P><P>
+
+This defines the command <CODE>adder</CODE>, which prints the sum of
+its three arguments.  Note the arguments are text substitutions, so they may
+reference variables, use complex expressions, or even perform inferior
+functions calls.
+</P><P>
+
+<DL COMPACT>
+
+<A NAME="IDX828"></A>
+<DT><CODE>define <VAR>commandname</VAR></CODE>
+<DD>Define a command named <VAR>commandname</VAR>.  If there is already a command
+by that name, you are asked to confirm that you want to redefine it.
+<P>
+
+The definition of the command is made up of other GDB command lines,
+which are given following the <CODE>define</CODE> command.  The end of these
+commands is marked by a line containing <CODE>end</CODE>.
+</P><P>
+
+<A NAME="IDX829"></A>
+<A NAME="IDX830"></A>
+<DT><CODE>if</CODE>
+<DD>Takes a single argument, which is an expression to evaluate.
+It is followed by a series of commands that are executed
+only if the expression is true (nonzero).
+There can then optionally be a line <CODE>else</CODE>, followed
+by a series of commands that are only executed if the expression
+was false.  The end of the list is marked by a line containing <CODE>end</CODE>.
+<P>
+
+<A NAME="IDX831"></A>
+<DT><CODE>while</CODE>
+<DD>The syntax is similar to <CODE>if</CODE>: the command takes a single argument,
+which is an expression to evaluate, and must be followed by the commands to
+execute, one per line, terminated by an <CODE>end</CODE>.
+The commands are executed repeatedly as long as the expression
+evaluates to true.
+<P>
+
+<A NAME="IDX832"></A>
+<DT><CODE>document <VAR>commandname</VAR></CODE>
+<DD>Document the user-defined command <VAR>commandname</VAR>, so that it can be
+accessed by <CODE>help</CODE>.  The command <VAR>commandname</VAR> must already be
+defined.  This command reads lines of documentation just as <CODE>define</CODE>
+reads the lines of the command definition, ending with <CODE>end</CODE>.
+After the <CODE>document</CODE> command is finished, <CODE>help</CODE> on command
+<VAR>commandname</VAR> displays the documentation you have written.
+<P>
+
+You may use the <CODE>document</CODE> command again to change the
+documentation of a command.  Redefining the command with <CODE>define</CODE>
+does not change the documentation.
+</P><P>
+
+<A NAME="IDX833"></A>
+<DT><CODE>help user-defined</CODE>
+<DD>List all user-defined commands, with the first line of the documentation
+(if any) for each.
+<P>
+
+<A NAME="IDX834"></A>
+<DT><CODE>show user</CODE>
+<DD><DT><CODE>show user <VAR>commandname</VAR></CODE>
+<DD>Display the GDB commands used to define <VAR>commandname</VAR> (but
+not its documentation).  If no <VAR>commandname</VAR> is given, display the
+definitions for all user-defined commands.
+<P>
+
+<A NAME="IDX835"></A>
+<A NAME="IDX836"></A>
+<DT><CODE>show max-user-call-depth</CODE>
+<DD><DT><CODE>set max-user-call-depth</CODE>
+<DD>The value of <CODE>max-user-call-depth</CODE> controls how many recursion
+levels are allowed in user-defined commands before GDB suspects an
+infinite recursion and aborts the command.
+<P>
+
+</DL>
+<P>
+
+When user-defined commands are executed, the
+commands of the definition are not printed.  An error in any command
+stops execution of the user-defined command.
+</P><P>
+
+If used interactively, commands that would ask for confirmation proceed
+without asking when used inside a user-defined command.  Many GDB
+commands that normally print messages to say what they are doing omit the
+messages when used in a user-defined command.
+</P><P>
+
+<A NAME="Hooks"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_188.html#SEC188"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_190.html#SEC190"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_188.html#SEC188"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_188.html#SEC188"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_193.html#SEC193"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

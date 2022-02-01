@@ -1,0 +1,775 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Installation</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Installation">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Installation">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC46"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_45.html#SEC45"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_47.html#SEC47"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H1> 3. Installing GNU CC </H1>
+<!--docid::SEC46::-->
+<P>
+
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gcc_47.html#SEC47">3.1 Files Created by <CODE>configure</CODE></A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Files created by running <CODE>configure</CODE>.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gcc_48.html#SEC48">3.2 Configurations Supported by GNU CC</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gcc_49.html#SEC49">3.3 Compilation in a Separate Directory</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Compiling in a separate directory (not where the source is).</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gcc_50.html#SEC50">3.4 Building and Installing a Cross-Compiler</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Building and installing a cross-compiler.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gcc_57.html#SEC57">3.5 Installing GNU CC on the Sun</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">See below for installation on the Sun.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gcc_58.html#SEC58">3.6 Installing GNU CC on VMS</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">See below for installation on VMS.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gcc_59.html#SEC59">3.7 <CODE>collect2</CODE></A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How <CODE>collect2</CODE> works; how it finds <CODE>ld</CODE>.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gcc_60.html#SEC60">3.8 Standard Header File Directories</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Understanding the standard header file directories.</TD></TR>
+</TABLE></BLOCKQUOTE>
+<P>
+
+Here is the procedure for installing GNU CC on a GNU or Unix system.
+See <A HREF="gcc_58.html#SEC58">3.6 Installing GNU CC on VMS</A>, for VMS systems.  In this section we assume you
+compile in the same directory that contains the source files; see
+<A HREF="gcc_49.html#SEC49">3.3 Compilation in a Separate Directory</A>, to find out how to compile in a separate directory on
+Unix systems.
+</P><P>
+
+You cannot install GNU C by itself on MSDOS; it will not compile under
+any MSDOS compiler except itself.  You need to get the complete
+compilation package DJGPP, which includes binaries as well as sources,
+and includes all the necessary compilation tools and libraries.
+</P><P>
+
+<OL>
+<LI>
+If you have built GNU CC previously in the same directory for a
+different target machine, do <SAMP>`make distclean'</SAMP> to delete all files
+that might be invalid.  One of the files this deletes is
+<TT>`Makefile'</TT>; if <SAMP>`make distclean'</SAMP> complains that <TT>`Makefile'</TT>
+does not exist, it probably means that the directory is already suitably
+clean.
+<P>
+
+<LI>
+On a System V release 4 system, make sure <TT>`/usr/bin'</TT> precedes
+<TT>`/usr/ucb'</TT> in <CODE>PATH</CODE>.  The <CODE>cc</CODE> command in
+<TT>`/usr/ucb'</TT> uses libraries which have bugs.
+<P>
+
+<A NAME="IDX234"></A>
+<A NAME="IDX235"></A>
+<LI>
+Make sure the Bison parser generator is installed.  (This is
+unnecessary if the Bison output files <TT>`c-parse.c'</TT> and
+<TT>`cexp.c'</TT> are more recent than <TT>`c-parse.y'</TT> and <TT>`cexp.y'</TT>
+and you do not plan to change the <SAMP>`.y'</SAMP> files.)
+<P>
+
+Bison versions older than Sept 8, 1988 will produce incorrect output
+for <TT>`c-parse.c'</TT>.
+</P><P>
+
+<LI>
+If you have chosen a configuration for GNU CC which requires other GNU
+tools (such as GAS or the GNU linker) instead of the standard system
+tools, install the required tools in the build directory under the names
+<TT>`as'</TT>, <TT>`ld'</TT> or whatever is appropriate.  This will enable the
+compiler to find the proper tools for compilation of the program
+<TT>`enquire'</TT>.
+<P>
+
+Alternatively, you can do subsequent compilation using a value of the
+<CODE>PATH</CODE> environment variable such that the necessary GNU tools come
+before the standard system tools.
+</P><P>
+
+<LI>
+Specify the host, build and target machine configurations.  You do this
+when you run the <TT>`configure'</TT> script.
+<P>
+
+The <EM>build</EM> machine is the system which you are using, the
+<EM>host</EM> machine is the system where you want to run the resulting
+compiler (normally the build machine), and the <EM>target</EM> machine is
+the system for which you want the compiler to generate code.
+</P><P>
+
+If you are building a compiler to produce code for the machine it runs
+on (a native compiler), you normally do not need to specify any operands
+to <TT>`configure'</TT>; it will try to guess the type of machine you are on
+and use that as the build, host and target machines.  So you don't need
+to specify a configuration when building a native compiler unless
+<TT>`configure'</TT> cannot figure out what your configuration is or guesses
+wrong.
+</P><P>
+
+In those cases, specify the build machine's <EM>configuration name</EM>
+with the <SAMP>`--host'</SAMP> option; the host and target will default to be
+the same as the host machine.  (If you are building a cross-compiler,
+see <A HREF="gcc_50.html#SEC50">3.4 Building and Installing a Cross-Compiler</A>.)
+</P><P>
+
+Here is an example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>./configure --host=sparc-sun-sunos4.1
+</FONT></pre></td></tr></table></P><P>
+
+A configuration name may be canonical or it may be more or less
+abbreviated.
+</P><P>
+
+A canonical configuration name has three parts, separated by dashes.
+It looks like this: <SAMP>`<VAR>cpu</VAR>-<VAR>company</VAR>-<VAR>system</VAR>'</SAMP>.
+(The three parts may themselves contain dashes; <TT>`configure'</TT>
+can figure out which dashes serve which purpose.)  For example,
+<SAMP>`m68k-sun-sunos4.1'</SAMP> specifies a Sun 3.
+</P><P>
+
+You can also replace parts of the configuration by nicknames or aliases.
+For example, <SAMP>`sun3'</SAMP> stands for <SAMP>`m68k-sun'</SAMP>, so
+<SAMP>`sun3-sunos4.1'</SAMP> is another way to specify a Sun 3.  You can also
+use simply <SAMP>`sun3-sunos'</SAMP>, since the version of SunOS is assumed by
+default to be version 4.
+</P><P>
+
+You can specify a version number after any of the system types, and some
+of the CPU types.  In most cases, the version is irrelevant, and will be
+ignored.  So you might as well specify the version if you know it.
+</P><P>
+
+See <A HREF="gcc_48.html#SEC48">3.2 Configurations Supported by GNU CC</A>, for a list of supported configuration names and
+notes on many of the configurations.  You should check the notes in that
+section before proceeding any further with the installation of GNU CC.
+</P><P>
+
+<LI>
+When running <CODE>configure</CODE>, you may also need to specify certain
+additional options that describe variant hardware and software
+configurations.  These are <SAMP>`--with-gnu-as'</SAMP>, <SAMP>`--with-gnu-ld'</SAMP>,
+<SAMP>`--with-stabs'</SAMP> and <SAMP>`--nfp'</SAMP>.
+<P>
+
+<DL COMPACT>
+<DT><SAMP>`--with-gnu-as'</SAMP>
+<DD>If you will use GNU CC with the GNU assembler (GAS), you should declare
+this by using the <SAMP>`--with-gnu-as'</SAMP> option when you run
+<TT>`configure'</TT>.
+<P>
+
+Using this option does not install GAS.  It only modifies the output of
+GNU CC to work with GAS.  Building and installing GAS is up to you.
+</P><P>
+
+Conversely, if you <EM>do not</EM> wish to use GAS and do not specify
+<SAMP>`--with-gnu-as'</SAMP> when building GNU CC, it is up to you to make sure
+that GAS is not installed.  GNU CC searches for a program named
+<CODE>as</CODE> in various directories; if the program it finds is GAS, then
+it runs GAS.  If you are not sure where GNU CC finds the assembler it is
+using, try specifying <SAMP>`-v'</SAMP> when you run it.
+</P><P>
+
+The systems where it makes a difference whether you use GAS are<BR>
+<SAMP>`hppa1.0-<VAR>any</VAR>-<VAR>any</VAR>'</SAMP>, <SAMP>`hppa1.1-<VAR>any</VAR>-<VAR>any</VAR>'</SAMP>,
+<SAMP>`i386-<VAR>any</VAR>-sysv'</SAMP>, <SAMP>`i386-<VAR>any</VAR>-isc'</SAMP>,<BR>
+<SAMP>`i860-<VAR>any</VAR>-bsd'</SAMP>, <SAMP>`m68k-bull-sysv'</SAMP>,<BR>
+<SAMP>`m68k-hp-hpux'</SAMP>, <SAMP>`m68k-sony-bsd'</SAMP>,<BR>
+<SAMP>`m68k-altos-sysv'</SAMP>, <SAMP>`m68000-hp-hpux'</SAMP>,<BR>
+<SAMP>`m68000-att-sysv'</SAMP>, <SAMP>`<VAR>any</VAR>-lynx-lynxos'</SAMP>,
+and <SAMP>`mips-<VAR>any</VAR>'</SAMP>).
+On any other system, <SAMP>`--with-gnu-as'</SAMP> has no effect.
+</P><P>
+
+On the systems listed above (except for the HP-PA, for ISC on the
+386, and for <SAMP>`mips-sgi-irix5.*'</SAMP>), if you use GAS, you should also
+use the GNU linker (and specify <SAMP>`--with-gnu-ld'</SAMP>).
+</P><P>
+
+<DT><SAMP>`--with-gnu-ld'</SAMP>
+<DD>Specify the option <SAMP>`--with-gnu-ld'</SAMP> if you plan to use the GNU
+linker with GNU CC.
+<P>
+
+This option does not cause the GNU linker to be installed; it just
+modifies the behavior of GNU CC to work with the GNU linker.
+</P><P>
+
+<DT><SAMP>`--with-stabs'</SAMP>
+<DD>On MIPS based systems and on Alphas, you must specify whether you want
+GNU CC to create the normal ECOFF debugging format, or to use BSD-style
+stabs passed through the ECOFF symbol table.  The normal ECOFF debug
+format cannot fully handle languages other than C.  BSD stabs format can
+handle other languages, but it only works with the GNU debugger GDB.
+<P>
+
+Normally, GNU CC uses the ECOFF debugging format by default; if you
+prefer BSD stabs, specify <SAMP>`--with-stabs'</SAMP> when you configure GNU
+CC.
+</P><P>
+
+No matter which default you choose when you configure GNU CC, the user
+can use the <SAMP>`-gcoff'</SAMP> and <SAMP>`-gstabs+'</SAMP> options to specify explicitly
+the debug format for a particular compilation.
+</P><P>
+
+<SAMP>`--with-stabs'</SAMP> is meaningful on the ISC system on the 386, also, if
+<SAMP>`--with-gas'</SAMP> is used.  It selects use of stabs debugging
+information embedded in COFF output.  This kind of debugging information
+supports C++ well; ordinary COFF debugging information does not.
+</P><P>
+
+<SAMP>`--with-stabs'</SAMP> is also meaningful on 386 systems running SVR4.  It
+selects use of stabs debugging information embedded in ELF output.  The
+C++ compiler currently (2.6.0) does not support the DWARF debugging
+information normally used on 386 SVR4 platforms; stabs provide a
+workable alternative.  This requires gas and gdb, as the normal SVR4
+tools can not generate or interpret stabs.
+</P><P>
+
+<DT><SAMP>`--nfp'</SAMP>
+<DD>On certain systems, you must specify whether the machine has a floating
+point unit.  These systems include <SAMP>`m68k-sun-sunos<VAR>n</VAR>'</SAMP> and
+<SAMP>`m68k-isi-bsd'</SAMP>.  On any other system, <SAMP>`--nfp'</SAMP> currently has no
+effect, though perhaps there are other systems where it could usefully
+make a difference.
+<P>
+
+<A NAME="IDX236"></A>
+<A NAME="IDX237"></A>
+<DT><SAMP>`--enable-haifa'</SAMP>
+<DD><DT><SAMP>`--disable-haifa'</SAMP>
+<DD>Use <SAMP>`--enable-haifa'</SAMP> to enable use of an experimental instruction
+scheduler (from IBM Haifa).  This may or may not produce better code.
+Some targets on which it is known to be a win enable it by default; use
+<SAMP>`--disable-haifa'</SAMP> to disable it in these cases.  <CODE>configure</CODE>
+will print out whether the Haifa scheduler is enabled when it is run.
+<P>
+
+<A NAME="IDX238"></A>
+<A NAME="IDX239"></A>
+<DT><SAMP>`--enable-threads=<VAR>type</VAR>'</SAMP>
+<DD>Certain systems, notably Linux-based GNU systems, can't be relied on to
+supply a threads facility for the Objective C runtime and so will
+default to single-threaded runtime.  They may, however, have a library
+threads implementation available, in which case threads can be enabled
+with this option by supplying a suitable <VAR>type</VAR>, probably
+<SAMP>`posix'</SAMP>.  The possibilities for <VAR>type</VAR> are <SAMP>`single'</SAMP>,
+<SAMP>`posix'</SAMP>, <SAMP>`win32'</SAMP>, <SAMP>`solaris'</SAMP>, <SAMP>`irix'</SAMP> and <SAMP>`mach'</SAMP>.
+<P>
+
+<A NAME="IDX240"></A>
+<DT><SAMP>`--enable-checking'</SAMP>
+<DD>When you specify this option, the compiler is built to perform checking
+of tree node types when referencing fields of that node.  This does not
+change the generated code, but adds error checking within the compiler.
+This will slow down the compiler and may only work properly if you
+are building the compiler with GNU C.
+<P>
+
+The <TT>`configure'</TT> script searches subdirectories of the source
+directory for other compilers that are to be integrated into GNU CC.
+The GNU compiler for C++, called G++ is in a subdirectory named
+<TT>`cp'</TT>.  <TT>`configure'</TT> inserts rules into <TT>`Makefile'</TT> to build
+all of those compilers.
+</P><P>
+
+Here we spell out what files will be set up by <CODE>configure</CODE>.  Normally
+you need not be concerned with these files.
+</P><P>
+
+<UL>
+<LI>
+A file named <TT>`config.h'</TT> is created that contains a <SAMP>`#include'</SAMP>
+of the top-level config file for the machine you will run the compiler
+on (see section `The Configuration File' in <CITE>Using and Porting GCC</CITE>).  This file is responsible for defining information about the host
+machine.  It includes <TT>`tm.h'</TT>.
+<P>
+
+The top-level config file is located in the subdirectory <TT>`config'</TT>.
+Its name is always <TT>`xm-<VAR>something</VAR>.h'</TT>; usually
+<TT>`xm-<VAR>machine</VAR>.h'</TT>, but there are some exceptions.
+</P><P>
+
+If your system does not support symbolic links, you might want to
+set up <TT>`config.h'</TT> to contain a <SAMP>`#include'</SAMP> command which
+refers to the appropriate file.
+</P><P>
+
+<LI>
+A file named <TT>`tconfig.h'</TT> is created which includes the top-level config
+file for your target machine.  This is used for compiling certain
+programs to run on that machine.
+<P>
+
+<LI>
+A file named <TT>`tm.h'</TT> is created which includes the
+machine-description macro file for your target machine.  It should be in
+the subdirectory <TT>`config'</TT> and its name is often
+<TT>`<VAR>machine</VAR>.h'</TT>.
+</UL>
+<P>
+
+<A NAME="IDX241"></A>
+<A NAME="IDX242"></A>
+<DT><SAMP>`--enable-nls'</SAMP>
+<DD><DT><SAMP>`--disable-nls'</SAMP>
+<DD>The <SAMP>`--enable-nls'</SAMP> option enables Native Language Support (NLS),
+which lets GCC output diagnostics in languages other than American
+English.  No translations are available yet, so the main users of this
+option now are those translating GCC's diagnostics who want to test
+their work.  Once translations become available, Native Language Support
+will become enabled by default.  The <SAMP>`--disable-nls'</SAMP> option
+disables NLS.
+<P>
+
+<A NAME="IDX243"></A>
+<DT><SAMP>`--with-included-gettext'</SAMP>
+<DD>If NLS is enabled, the GCC build procedure normally attempts to use the
+host's <CODE>gettext</CODE> libraries, and falls back on GCC's copy of the GNU
+<CODE>gettext</CODE> library only if the host libraries do not suffice.  The
+<SAMP>`--with-included-gettext'</SAMP> option causes the build procedure to
+prefer its copy of GNU <CODE>gettext</CODE>.
+<P>
+
+<A NAME="IDX244"></A>
+<DT><SAMP>`--with-catgets'</SAMP>
+<DD>If NLS is enabled, and if the host lacks <CODE>gettext</CODE> but has the
+inferior <CODE>catgets</CODE> interface, the GCC build procedure normally
+ignores <CODE>catgets</CODE> and instead uses GCC's copy of the GNU
+<CODE>gettext</CODE> library.  The <SAMP>`--with-catgets'</SAMP> option causes the
+build procedure to use the host's <CODE>catgets</CODE> in this situation.
+</DL>
+<P>
+
+<LI>
+In certain cases, you should specify certain other options when you run
+<CODE>configure</CODE>.
+<P>
+
+<UL>
+<LI>
+The standard directory for installing GNU CC is <TT>`/usr/local/lib'</TT>.
+If you want to install its files somewhere else, specify
+<SAMP>`--prefix=<VAR>dir</VAR>'</SAMP> when you run <TT>`configure'</TT>.  Here <VAR>dir</VAR>
+is a directory name to use instead of <TT>`/usr/local'</TT> for all purposes
+with one exception: the directory <TT>`/usr/local/include'</TT> is searched
+for header files no matter where you install the compiler.  To override
+this name, use the <CODE>--with-local-prefix</CODE> option below.  The directory
+you specify need not exist, but its parent directory must exist.
+<P>
+
+<LI>
+Specify <SAMP>`--with-local-prefix=<VAR>dir</VAR>'</SAMP> if you want the compiler to
+search directory <TT>`<VAR>dir</VAR>/include'</TT> for locally installed header
+files <EM>instead</EM> of <TT>`/usr/local/include'</TT>.
+<P>
+
+You should specify <SAMP>`--with-local-prefix'</SAMP> <STRONG>only</STRONG> if your site has
+a different convention (not <TT>`/usr/local'</TT>) for where to put
+site-specific files.
+</P><P>
+
+The default value for <SAMP>`--with-local-prefix'</SAMP> is <TT>`/usr/local'</TT>
+regardless of the value of <SAMP>`--prefix'</SAMP>.  Specifying <SAMP>`--prefix'</SAMP>
+has no effect on which directory GNU CC searches for local header files.
+This may seem counterintuitive, but actually it is logical.
+</P><P>
+
+The purpose of <SAMP>`--prefix'</SAMP> is to specify where to <EM>install GNU
+CC</EM>.  The local header files in <TT>`/usr/local/include'</TT>---if you put
+any in that directory--are not part of GNU CC.  They are part of other
+programs--perhaps many others.  (GNU CC installs its own header files
+in another directory which is based on the <SAMP>`--prefix'</SAMP> value.)
+</P><P>
+
+<STRONG>Do not</STRONG> specify <TT>`/usr'</TT> as the <SAMP>`--with-local-prefix'</SAMP>!  The
+directory you use for <SAMP>`--with-local-prefix'</SAMP> <STRONG>must not</STRONG> contain
+any of the system's standard header files.  If it did contain them,
+certain programs would be miscompiled (including GNU Emacs, on certain
+targets), because this would override and nullify the header file
+corrections made by the <CODE>fixincludes</CODE> script.
+</P><P>
+
+Indications are that people who use this option use it based on
+mistaken ideas of what it is for.  People use it as if it specified
+where to install part of GNU CC.  Perhaps they make this assumption
+because installing GNU CC creates the directory.
+</UL>
+<P>
+
+<LI>
+Build the compiler.  Just type <SAMP>`make LANGUAGES=c'</SAMP> in the compiler
+directory.
+<P>
+
+<SAMP>`LANGUAGES=c'</SAMP> specifies that only the C compiler should be
+compiled.  The makefile normally builds compilers for all the supported
+languages; currently, C, C++ and Objective C.  However, C is the only
+language that is sure to work when you build with other non-GNU C
+compilers.  In addition, building anything but C at this stage is a
+waste of time.
+</P><P>
+
+In general, you can specify the languages to build by typing the
+argument <SAMP>`LANGUAGES="<VAR>list</VAR>"'</SAMP>, where <VAR>list</VAR> is one or more
+words from the list <SAMP>`c'</SAMP>, <SAMP>`c++'</SAMP>, and <SAMP>`objective-c'</SAMP>.  If
+you have any additional GNU compilers as subdirectories of the GNU CC
+source directory, you may also specify their names in this list.
+</P><P>
+
+Ignore any warnings you may see about "statement not reached" in
+<TT>`insn-emit.c'</TT>; they are normal.  Also, warnings about "unknown
+escape sequence" are normal in <TT>`genopinit.c'</TT> and perhaps some
+other files.  Likewise, you should ignore warnings about "constant is
+so large that it is unsigned" in <TT>`insn-emit.c'</TT> and
+<TT>`insn-recog.c'</TT>, a warning about a comparison always being zero
+in <TT>`enquire.o'</TT>, and warnings about shift counts exceeding type
+widths in <TT>`cexp.y'</TT>.  Any other compilation errors may represent bugs in
+the port to your machine or operating system, and
+should be investigated and reported (see section <A HREF="gcc_140.html#SEC140">8. Reporting Bugs</A>).
+</P><P>
+
+Some compilers fail to compile GNU CC because they have bugs or
+limitations.  For example, the Microsoft compiler is said to run out of
+macro space.  Some Ultrix compilers run out of expression space; then
+you need to break up the statement where the problem happens.
+</P><P>
+
+<LI>
+If you are building a cross-compiler, stop here.  See section <A HREF="gcc_50.html#SEC50">3.4 Building and Installing a Cross-Compiler</A>.
+<P>
+
+<A NAME="IDX245"></A>
+<LI>
+Move the first-stage object files and executables into a subdirectory
+with this command:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>make stage1
+</FONT></pre></td></tr></table></P><P>
+
+The files are moved into a subdirectory named <TT>`stage1'</TT>.
+Once installation is complete, you may wish to delete these files
+with <CODE>rm -r stage1</CODE>.
+</P><P>
+
+<LI>
+If you have chosen a configuration for GNU CC which requires other GNU
+tools (such as GAS or the GNU linker) instead of the standard system
+tools, install the required tools in the <TT>`stage1'</TT> subdirectory
+under the names <TT>`as'</TT>, <TT>`ld'</TT> or whatever is appropriate.  This
+will enable the stage 1 compiler to find the proper tools in the
+following stage.
+<P>
+
+Alternatively, you can do subsequent compilation using a value of the
+<CODE>PATH</CODE> environment variable such that the necessary GNU tools come
+before the standard system tools.
+</P><P>
+
+<LI>
+Recompile the compiler with itself, with this command:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>make CC="stage1/xgcc -Bstage1/" CFLAGS="-g -O2"
+</FONT></pre></td></tr></table></P><P>
+
+This is called making the stage 2 compiler.
+</P><P>
+
+The command shown above builds compilers for all the supported
+languages.  If you don't want them all, you can specify the languages to
+build by typing the argument <SAMP>`LANGUAGES="<VAR>list</VAR>"'</SAMP>.  <VAR>list</VAR>
+should contain one or more words from the list <SAMP>`c'</SAMP>, <SAMP>`c++'</SAMP>,
+<SAMP>`objective-c'</SAMP>, and <SAMP>`proto'</SAMP>.  Separate the words with spaces.
+<SAMP>`proto'</SAMP> stands for the programs <CODE>protoize</CODE> and
+<CODE>unprotoize</CODE>; they are not a separate language, but you use
+<CODE>LANGUAGES</CODE> to enable or disable their installation.
+</P><P>
+
+If you are going to build the stage 3 compiler, then you might want to
+build only the C language in stage 2.
+</P><P>
+
+Once you have built the stage 2 compiler, if you are short of disk
+space, you can delete the subdirectory <TT>`stage1'</TT>.
+</P><P>
+
+On a 68000 or 68020 system lacking floating point hardware,
+unless you have selected a <TT>`tm.h'</TT> file that expects by default
+that there is no such hardware, do this instead:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>make CC="stage1/xgcc -Bstage1/" CFLAGS="-g -O2 -msoft-float"
+</FONT></pre></td></tr></table></P><P>
+
+<LI>
+If you wish to test the compiler by compiling it with itself one more
+time, install any other necessary GNU tools (such as GAS or the GNU
+linker) in the <TT>`stage2'</TT> subdirectory as you did in the
+<TT>`stage1'</TT> subdirectory, then do this:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>make stage2
+make CC="stage2/xgcc -Bstage2/" CFLAGS="-g -O2"
+</FONT></pre></td></tr></table></P><P>
+
+This is called making the stage 3 compiler.  Aside from the <SAMP>`-B'</SAMP>
+option, the compiler options should be the same as when you made the
+stage 2 compiler.  But the <CODE>LANGUAGES</CODE> option need not be the
+same.  The command shown above builds compilers for all the supported
+languages; if you don't want them all, you can specify the languages to
+build by typing the argument <SAMP>`LANGUAGES="<VAR>list</VAR>"'</SAMP>, as described
+above.
+</P><P>
+
+If you do not have to install any additional GNU tools, you may use the
+command
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>make bootstrap LANGUAGES=<VAR>language-list</VAR> BOOT_CFLAGS=<VAR>option-list</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+instead of making <TT>`stage1'</TT>, <TT>`stage2'</TT>, and performing
+the two compiler builds.
+</P><P>
+
+<LI>
+Compare the latest object files with the stage 2 object files--they
+ought to be identical, aside from time stamps (if any).
+<P>
+
+On some systems, meaningful comparison of object files is impossible;
+they always appear "different."  This is currently true on Solaris and
+some systems that use ELF object file format.  On some versions of Irix
+on SGI machines and DEC Unix (OSF/1) on Alpha systems, you will not be
+able to compare the files without specifying <TT>`-save-temps'</TT>; see the
+description of individual systems above to see if you get comparison
+failures.  You may have similar problems on other systems.
+</P><P>
+
+Use this command to compare the files:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>make compare
+</FONT></pre></td></tr></table></P><P>
+
+This will mention any object files that differ between stage 2 and stage
+3.  Any difference, no matter how innocuous, indicates that the stage 2
+compiler has compiled GNU CC incorrectly, and is therefore a potentially
+serious bug which you should investigate and report (see section <A HREF="gcc_140.html#SEC140">8. Reporting Bugs</A>).
+</P><P>
+
+If your system does not put time stamps in the object files, then this
+is a faster way to compare them (using the Bourne shell):
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>for file in *.o; do
+cmp $file stage2/$file
+done
+</FONT></pre></td></tr></table></P><P>
+
+If you have built the compiler with the <SAMP>`-mno-mips-tfile'</SAMP> option on
+MIPS machines, you will not be able to compare the files.
+</P><P>
+
+<LI>
+Install the compiler driver, the compiler's passes and run-time support
+with <SAMP>`make install'</SAMP>.  Use the same value for <CODE>CC</CODE>,
+<CODE>CFLAGS</CODE> and <CODE>LANGUAGES</CODE> that you used when compiling the
+files that are being installed.  One reason this is necessary is that
+some versions of Make have bugs and recompile files gratuitously when
+you do this step.  If you use the same variable values, those files will
+be recompiled properly.
+<P>
+
+For example, if you have built the stage 2 compiler, you can use the
+following command:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>make install CC="stage2/xgcc -Bstage2/" CFLAGS="-g -O" LANGUAGES="<VAR>list</VAR>"
+</FONT></pre></td></tr></table></P><P>
+
+This copies the files <TT>`cc1'</TT>, <TT>`cpp'</TT> and <TT>`libgcc.a'</TT> to
+files <TT>`cc1'</TT>, <TT>`cpp'</TT> and <TT>`libgcc.a'</TT> in the directory
+<TT>`/usr/local/lib/gcc-lib/<VAR>target</VAR>/<VAR>version</VAR>'</TT>, which is where
+the compiler driver program looks for them.  Here <VAR>target</VAR> is the
+canonicalized form of target machine type specified when you ran
+<TT>`configure'</TT>, and <VAR>version</VAR> is the version number of GNU CC.
+This naming scheme permits various versions and/or cross-compilers to
+coexist.  It also copies the executables for compilers for other
+languages (e.g., <TT>`cc1plus'</TT> for C++) to the same directory.
+</P><P>
+
+This also copies the driver program <TT>`xgcc'</TT> into
+<TT>`/usr/local/bin/gcc'</TT>, so that it appears in typical execution
+search paths.  It also copies <TT>`gcc.1'</TT> into
+<TT>`/usr/local/man/man1'</TT> and info pages into <TT>`/usr/local/info'</TT>.
+</P><P>
+
+On some systems, this command causes recompilation of some files.  This
+is usually due to bugs in <CODE>make</CODE>.  You should either ignore this
+problem, or use GNU Make.
+</P><P>
+
+<A NAME="IDX246"></A>
+<STRONG>Warning: there is a bug in <CODE>alloca</CODE> in the Sun library.  To
+avoid this bug, be sure to install the executables of GNU CC that were
+compiled by GNU CC.  (That is, the executables from stage 2 or 3, not
+stage 1.)  They use <CODE>alloca</CODE> as a built-in function and never the
+one in the library.</STRONG>
+</P><P>
+
+(It is usually better to install GNU CC executables from stage 2 or 3,
+since they usually run faster than the ones compiled with some other
+compiler.)
+</P><P>
+
+<LI>
+<A NAME="IDX247"></A>
+<A NAME="IDX248"></A>
+If you're going to use C++, you need to install the C++ runtime library.
+This includes all I/O functionality, special class libraries, etc.
+<P>
+
+The standard C++ runtime library for GNU CC is called <SAMP>`libstdc++'</SAMP>.
+An obsolescent library <SAMP>`libg++'</SAMP> may also be available, but it's
+necessary only for older software that hasn't been converted yet; if
+you don't know whether you need <SAMP>`libg++'</SAMP> then you probably don't
+need it.
+</P><P>
+
+Here's one way to build and install <SAMP>`libstdc++'</SAMP> for GNU CC:
+</P><P>
+
+<UL>
+<LI>
+Build and install GNU CC, so that invoking <SAMP>`gcc'</SAMP> obtains the GNU CC
+that was just built.
+<P>
+
+<LI>
+Obtain a copy of a compatible <SAMP>`libstdc++'</SAMP> distribution.  For
+example, the <SAMP>`libstdc++-2.8.0.tar.gz'</SAMP> distribution should be
+compatible with GCC 2.8.0.  GCC distributors normally distribute
+<SAMP>`libstdc++'</SAMP> as well.
+<P>
+
+<LI>
+Set the <SAMP>`CXX'</SAMP> environment variable to <SAMP>`gcc'</SAMP> while running the
+<SAMP>`libstdc++'</SAMP> distribution's <TT>`configure'</TT> command.  Use the same
+<TT>`configure'</TT> options that you used when you invoked GCC's
+<TT>`configure'</TT> command.
+<P>
+
+<LI>
+Invoke <SAMP>`make'</SAMP> to build the C++ runtime.
+<P>
+
+<LI>
+Invoke <SAMP>`make install'</SAMP> to install the C++ runtime.
+<P>
+
+</UL>
+<P>
+
+To summarize, after building and installing GNU CC, invoke the following
+shell commands in the topmost directory of the C++ library distribution.
+For <VAR>configure-options</VAR>, use the same options that
+you used to configure GNU CC.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$ CXX=gcc ./configure <VAR>configure-options</VAR>
+$ make
+$ make install
+</pre></td></tr></table></P><P>
+
+<LI>
+GNU CC includes a runtime library for Objective-C because it is an
+integral part of the language.  You can find the files associated with
+the library in the subdirectory <TT>`objc'</TT>.  The GNU Objective-C
+Runtime Library requires header files for the target's C library in
+order to be compiled,and also requires the header files for the target's
+thread library if you want thread support.  See section <A HREF="gcc_55.html#SEC55">Cross-Compilers and Header Files</A>, for
+discussion about header files issues for cross-compilation.
+<P>
+
+When you run <TT>`configure'</TT>, it picks the appropriate Objective-C
+thread implementation file for the target platform.  In some situations,
+you may wish to choose a different back-end as some platforms support
+multiple thread implementations or you may wish to disable thread
+support completely.  You do this by specifying a value for the
+<VAR>OBJC_THREAD_FILE</VAR> makefile variable on the command line when you
+run make, for example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>make CC="stage2/xgcc -Bstage2/" CFLAGS="-g -O2" OBJC_THREAD_FILE=thr-single
+</FONT></pre></td></tr></table></P><P>
+
+Below is a list of the currently available back-ends.
+</P><P>
+
+<UL>
+<LI>thr-single
+Disable thread support, should work for all platforms.
+<LI>thr-decosf1
+DEC OSF/1 thread support.
+<LI>thr-irix
+SGI IRIX thread support.
+<LI>thr-mach
+Generic MACH thread support, known to work on NEXTSTEP.
+<LI>thr-os2
+IBM OS/2 thread support.
+<LI>thr-posix
+Generix POSIX thread support.
+<LI>thr-pthreads
+PCThreads on Linux-based GNU systems.
+<LI>thr-solaris
+SUN Solaris thread support.
+<LI>thr-win32
+Microsoft Win32 API thread support.
+</UL>
+</OL>
+<P>
+
+<A NAME="Configuration Files"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_45.html#SEC45"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_47.html#SEC47"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

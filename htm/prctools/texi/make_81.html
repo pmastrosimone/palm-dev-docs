@@ -1,0 +1,368 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Text Functions</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Text Functions">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Text Functions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC85"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_80.html#SEC84"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_82.html#SEC86"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.2 Functions for String Substitution and Analysis </H2>
+<!--docid::SEC85::-->
+<P>
+
+Here are some functions that operate on strings:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>$(subst <VAR>from</VAR>,<VAR>to</VAR>,<VAR>text</VAR>)</CODE>
+<DD><A NAME="IDX277"></A>
+Performs a textual replacement on the text <VAR>text</VAR>: each occurrence
+of <VAR>from</VAR> is replaced by <VAR>to</VAR>.  The result is substituted for
+the function call.  For example,
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(subst ee,EE,feet on the street)
+</pre></td></tr></table></P><P>
+
+substitutes the string <SAMP>`fEEt on the strEEt'</SAMP>.
+</P><P>
+
+<DT><CODE>$(patsubst <VAR>pattern</VAR>,<VAR>replacement</VAR>,<VAR>text</VAR>)</CODE>
+<DD><A NAME="IDX278"></A>
+Finds whitespace-separated words in <VAR>text</VAR> that match
+<VAR>pattern</VAR> and replaces them with <VAR>replacement</VAR>.  Here
+<VAR>pattern</VAR> may contain a <SAMP>`%'</SAMP> which acts as a wildcard,
+matching any number of any characters within a word.  If
+<VAR>replacement</VAR> also contains a <SAMP>`%'</SAMP>, the <SAMP>`%'</SAMP> is replaced
+by the text that matched the <SAMP>`%'</SAMP> in <VAR>pattern</VAR>.  Only the first
+<SAMP>`%'</SAMP> in the <VAR>pattern</VAR> and <VAR>replacement</VAR> is treated this
+way; any subsequent <SAMP>`%'</SAMP> is unchanged.<P>
+
+<A NAME="IDX279"></A>
+<A NAME="IDX280"></A>
+<A NAME="IDX281"></A>
+<A NAME="IDX282"></A>
+<A NAME="IDX283"></A>
+<SAMP>`%'</SAMP> characters in <CODE>patsubst</CODE> function invocations can be
+quoted with preceding backslashes (<SAMP>`\'</SAMP>).  Backslashes that would
+otherwise quote <SAMP>`%'</SAMP> characters can be quoted with more backslashes.
+Backslashes that quote <SAMP>`%'</SAMP> characters or other backslashes are
+removed from the pattern before it is compared file names or has a stem
+substituted into it.  Backslashes that are not in danger of quoting
+<SAMP>`%'</SAMP> characters go unmolested.  For example, the pattern
+<TT>`the\%weird\\%pattern\\'</TT> has <SAMP>`the%weird\'</SAMP> preceding the
+operative <SAMP>`%'</SAMP> character, and <SAMP>`pattern\\'</SAMP> following it.  The
+final two backslashes are left alone because they cannot affect any
+<SAMP>`%'</SAMP> character.</P><P>
+
+Whitespace between words is folded into single space characters;
+leading and trailing whitespace is discarded.
+</P><P>
+
+For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(patsubst %.c,%.o,x.c.c bar.c)
+</pre></td></tr></table></P><P>
+
+produces the value <SAMP>`x.c.o bar.o'</SAMP>.
+</P><P>
+
+Substitution references (see section <A HREF="make_65.html#SEC69">Substitution References</A>) are a simpler way to get the effect of the <CODE>patsubst</CODE>
+function:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(<VAR>var</VAR>:<VAR>pattern</VAR>=<VAR>replacement</VAR>)
+</pre></td></tr></table></P><P>
+
+is equivalent to
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(patsubst <VAR>pattern</VAR>,<VAR>replacement</VAR>,$(<VAR>var</VAR>))
+</pre></td></tr></table></P><P>
+
+The second shorthand simplifies one of the most common uses of
+<CODE>patsubst</CODE>: replacing the suffix at the end of file names.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(<VAR>var</VAR>:<VAR>suffix</VAR>=<VAR>replacement</VAR>)
+</pre></td></tr></table></P><P>
+
+is equivalent to
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(patsubst %<VAR>suffix</VAR>,%<VAR>replacement</VAR>,$(<VAR>var</VAR>))
+</pre></td></tr></table></P><P>
+
+For example, you might have a list of object files:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>objects = foo.o bar.o baz.o
+</pre></td></tr></table></P><P>
+
+To get the list of corresponding source files, you could simply write:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(objects:.o=.c)
+</pre></td></tr></table></P><P>
+
+instead of using the general form:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(patsubst %.o,%.c,$(objects))
+</pre></td></tr></table></P><P>
+
+<DT><CODE>$(strip <VAR>string</VAR>)</CODE>
+<DD><A NAME="IDX284"></A>
+<A NAME="IDX285"></A>
+<A NAME="IDX286"></A>
+<A NAME="IDX287"></A>
+Removes leading and trailing whitespace from <VAR>string</VAR> and replaces
+each internal sequence of one or more whitespace characters with a
+single space.  Thus, <SAMP>`$(strip a b  c )'</SAMP> results in <SAMP>`a b c'</SAMP>.
+<P>
+
+The function <CODE>strip</CODE> can be very useful when used in conjunction
+with conditionals.  When comparing something with the empty string
+<SAMP>`'</SAMP> using <CODE>ifeq</CODE> or <CODE>ifneq</CODE>, you usually want a string of
+just whitespace to match the empty string (see section <A HREF="make_75.html#SEC79">7. Conditional Parts of Makefiles</A>).
+</P><P>
+
+Thus, the following may fail to have the desired results:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.PHONY: all
+ifneq   "$(needs_made)" ""
+all: $(needs_made)
+else
+all:;@echo 'Nothing to make!'
+endif
+</pre></td></tr></table></P><P>
+
+Replacing the variable reference <SAMP>`$(needs_made)'</SAMP> with the
+function call <SAMP>`$(strip $(needs_made))'</SAMP> in the <CODE>ifneq</CODE>
+directive would make it more robust.</P><P>
+
+<DT><CODE>$(findstring <VAR>find</VAR>,<VAR>in</VAR>)</CODE>
+<DD><A NAME="IDX288"></A>
+<A NAME="IDX289"></A>
+<A NAME="IDX290"></A>
+<A NAME="IDX291"></A>
+Searches <VAR>in</VAR> for an occurrence of <VAR>find</VAR>.  If it occurs, the
+value is <VAR>find</VAR>; otherwise, the value is empty.  You can use this
+function in a conditional to test for the presence of a specific
+substring in a given string.  Thus, the two examples,
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(findstring a,a b c)
+$(findstring a,b c)
+</pre></td></tr></table></P><P>
+
+produce the values <SAMP>`a'</SAMP> and <SAMP>`'</SAMP> (the empty string),
+respectively.  See section <A HREF="make_78.html#SEC82">7.3 Conditionals that Test Flags</A>, for a practical application of
+<CODE>findstring</CODE>.</P><P>
+
+<A NAME="IDX292"></A>
+<A NAME="IDX293"></A>
+<A NAME="IDX294"></A>
+<DT><CODE>$(filter <VAR>pattern</VAR><small>...</small>,<VAR>text</VAR>)</CODE>
+<DD>Returns all whitespace-separated words in <VAR>text</VAR> that <EM>do</EM> match
+any of the <VAR>pattern</VAR> words, removing any words that <EM>do not</EM>
+match.  The patterns are written using <SAMP>`%'</SAMP>, just like the patterns
+used in the <CODE>patsubst</CODE> function above.<P>
+
+The <CODE>filter</CODE> function can be used to separate out different types
+of strings (such as file names) in a variable.  For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>sources := foo.c bar.c baz.s ugh.h
+foo: $(sources)
+        cc $(filter %.c %.s,$(sources)) -o foo
+</pre></td></tr></table></P><P>
+
+says that <TT>`foo'</TT> depends of <TT>`foo.c'</TT>, <TT>`bar.c'</TT>,
+<TT>`baz.s'</TT> and <TT>`ugh.h'</TT> but only <TT>`foo.c'</TT>, <TT>`bar.c'</TT> and
+<TT>`baz.s'</TT> should be specified in the command to the
+compiler.</P><P>
+
+<DT><CODE>$(filter-out <VAR>pattern</VAR><small>...</small>,<VAR>text</VAR>)</CODE>
+<DD><A NAME="IDX295"></A>
+<A NAME="IDX296"></A>
+<A NAME="IDX297"></A>
+Returns all whitespace-separated words in <VAR>text</VAR> that <EM>do not</EM>
+match any of the <VAR>pattern</VAR> words, removing the words that <EM>do</EM>
+match one or more.  This is the exact opposite of the <CODE>filter</CODE>
+function.<P>
+
+For example, given:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>objects=main1.o foo.o main2.o bar.o
+mains=main1.o main2.o
+</pre></td></tr></table></P><P>
+
+the following generates a list which contains all the object files not
+in <SAMP>`mains'</SAMP>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(filter-out $(mains),$(objects))
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX298"></A>
+<A NAME="IDX299"></A>
+<DT><CODE>$(sort <VAR>list</VAR>)</CODE>
+<DD>Sorts the words of <VAR>list</VAR> in lexical order, removing duplicate
+words.  The output is a list of words separated by single spaces.
+Thus,
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(sort foo bar lose)
+</pre></td></tr></table></P><P>
+
+returns the value <SAMP>`bar foo lose'</SAMP>.
+</P><P>
+
+<A NAME="IDX300"></A>
+<A NAME="IDX301"></A>
+<A NAME="IDX302"></A>
+Incidentally, since <CODE>sort</CODE> removes duplicate words, you can use
+it for this purpose even if you don't care about the sort order.
+</P><P>
+
+<DT><CODE>$(word <VAR>n</VAR>,<VAR>text</VAR>)</CODE>
+<DD><A NAME="IDX303"></A>
+<A NAME="IDX304"></A>
+<A NAME="IDX305"></A>
+Returns the <VAR>n</VAR>th word of <VAR>text</VAR>.  The legitimate values of
+<VAR>n</VAR> start from 1.  If <VAR>n</VAR> is bigger than the number of words
+in <VAR>text</VAR>, the value is empty.  For example,
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(word 2, foo bar baz)
+</pre></td></tr></table></P><P>
+
+returns <SAMP>`bar'</SAMP>.
+</P><P>
+
+<DT><CODE>$(wordlist <VAR>s</VAR>,<VAR>e</VAR>,<VAR>text</VAR>)</CODE>
+<DD><A NAME="IDX306"></A>
+<A NAME="IDX307"></A>
+<A NAME="IDX308"></A>
+Returns the list of words in <VAR>text</VAR> starting with word <VAR>s</VAR> and
+ending with word <VAR>e</VAR> (inclusive).  The legitimate values of <VAR>s</VAR>
+and <VAR>e</VAR> start from 1.  If <VAR>s</VAR> is bigger than the number of words
+in <VAR>text</VAR>, the value is empty.  If <VAR>e</VAR> is bigger than the number
+of words in <VAR>text</VAR>, words up to the end of <VAR>text</VAR> are returned.
+If <VAR>s</VAR> is greater than <VAR>e</VAR>, nothing is returned.  For example,
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(wordlist 2, 3, foo bar baz)
+</pre></td></tr></table></P><P>
+
+returns <SAMP>`bar baz'</SAMP>.
+</P><P>
+
+<DT><CODE>$(words <VAR>text</VAR>)</CODE>
+<DD><A NAME="IDX309"></A>
+<A NAME="IDX310"></A>
+Returns the number of words in <VAR>text</VAR>.
+Thus, the last word of <VAR>text</VAR> is
+<CODE>$(word $(words <VAR>text</VAR>),<VAR>text</VAR>)</CODE>.<P>
+
+<DT><CODE>$(firstword <VAR>names</VAR><small>...</small>)</CODE>
+<DD><A NAME="IDX311"></A>
+<A NAME="IDX312"></A>
+The argument <VAR>names</VAR> is regarded as a series of names, separated
+by whitespace.  The value is the first name in the series.  The rest
+of the names are ignored.
+<P>
+
+For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(firstword foo bar)
+</pre></td></tr></table></P><P>
+
+produces the result <SAMP>`foo'</SAMP>.  Although <CODE>$(firstword
+<VAR>text</VAR>)</CODE> is the same as <CODE>$(word 1,<VAR>text</VAR>)</CODE>, the
+<CODE>firstword</CODE> function is retained for its simplicity.</DL>
+<P>
+
+Here is a realistic example of the use of <CODE>subst</CODE> and
+<CODE>patsubst</CODE>.  Suppose that a makefile uses the <CODE>VPATH</CODE> variable
+to specify a list of directories that <CODE>make</CODE> should search for
+prerequisite files
+(see section <A HREF="make_31.html#SEC35"><CODE>VPATH</CODE> Search Path for All Prerequisites</A>).
+This example shows how to
+tell the C compiler to search for header files in the same list of
+directories.</P><P>
+
+The value of <CODE>VPATH</CODE> is a list of directories separated by colons,
+such as <SAMP>`src:../headers'</SAMP>.  First, the <CODE>subst</CODE> function is used to
+change the colons to spaces:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(subst :, ,$(VPATH))
+</pre></td></tr></table></P><P>
+
+This produces <SAMP>`src ../headers'</SAMP>.  Then <CODE>patsubst</CODE> is used to turn
+each directory name into a <SAMP>`-I'</SAMP> flag.  These can be added to the
+value of the variable <CODE>CFLAGS</CODE>, which is passed automatically to the C
+compiler, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>override CFLAGS += $(patsubst %,-I%,$(subst :, ,$(VPATH)))
+</pre></td></tr></table></P><P>
+
+The effect is to append the text <SAMP>`-Isrc -I../headers'</SAMP> to the
+previously given value of <CODE>CFLAGS</CODE>.  The <CODE>override</CODE> directive is
+used so that the new value is assigned even if the previous value of
+<CODE>CFLAGS</CODE> was specified with a command argument (see section <A HREF="make_70.html#SEC74">The <CODE>override</CODE> Directive</A>).
+</P><P>
+
+<A NAME="File Name Functions"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_80.html#SEC84"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_82.html#SEC86"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,101 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Environment</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Environment">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Environment">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC76"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_71.html#SEC75"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_73.html#SEC77"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 6.9 Variables from the Environment </H2>
+<!--docid::SEC76::-->
+<P>
+
+<A NAME="IDX274"></A>
+<A NAME="IDX275"></A>
+Variables in <CODE>make</CODE> can come from the environment in which
+<CODE>make</CODE> is run.  Every environment variable that <CODE>make</CODE> sees when
+it starts up is transformed into a <CODE>make</CODE> variable with the same name
+and value.  But an explicit assignment in the makefile, or with a command
+argument, overrides the environment.  (If the <SAMP>`-e'</SAMP> flag is specified,
+then values from the environment override assignments in the makefile.
+See section <A HREF="make_98.html#SEC102">Summary of Options</A>.
+But this is not recommended practice.)
+</P><P>
+
+Thus, by setting the variable <CODE>CFLAGS</CODE> in your environment, you can
+cause all C compilations in most makefiles to use the compiler switches you
+prefer.  This is safe for variables with standard or conventional meanings
+because you know that no makefile will use them for other things.  (But
+this is not totally reliable; some makefiles set <CODE>CFLAGS</CODE> explicitly
+and therefore are not affected by the value in the environment.)
+</P><P>
+
+When <CODE>make</CODE> is invoked recursively, variables defined in the
+outer invocation can be passed to inner invocations through the
+environment (see section <A HREF="make_54.html#SEC58">Recursive Use of <CODE>make</CODE></A>).  By
+default, only variables that came from the environment or the command
+line are passed to recursive invocations.  You can use the
+<CODE>export</CODE> directive to pass other variables.
+See section <A HREF="make_56.html#SEC60">Communicating Variables to a Sub-<CODE>make</CODE></A>, for full details.
+</P><P>
+
+Other use of variables from the environment is not recommended.  It is not
+wise for makefiles to depend for their functioning on environment variables
+set up outside their control, since this would cause different users to get
+different results from the same makefile.  This is against the whole
+purpose of most makefiles.
+</P><P>
+
+Such problems would be especially likely with the variable <CODE>SHELL</CODE>,
+which is normally present in the environment to specify the user's choice
+of interactive shell.  It would be very undesirable for this choice to
+affect <CODE>make</CODE>.  So <CODE>make</CODE> ignores the environment value of
+<CODE>SHELL</CODE> (except on MS-DOS and MS-Windows, where <CODE>SHELL</CODE> is
+usually not set.  See section <A HREF="make_50.html#SEC54">Special handling of SHELL on MS-DOS</A>.)</P><P>
+
+<A NAME="Target-specific"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_71.html#SEC75"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_73.html#SEC77"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

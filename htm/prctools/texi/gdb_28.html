@@ -1,0 +1,133 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Breakpoints</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Breakpoints">
+<META NAME="keywords" CONTENT="Debugging with GDB: Breakpoints">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC28"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_29.html#SEC29"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.1 Breakpoints, watchpoints, and catchpoints </H2>
+<!--docid::SEC28::-->
+<P>
+
+<A NAME="IDX128"></A>
+A <EM>breakpoint</EM> makes your program stop whenever a certain point in
+the program is reached.  For each breakpoint, you can add conditions to
+control in finer detail whether your program stops.  You can set
+breakpoints with the <CODE>break</CODE> command and its variants (see section <A HREF="gdb_29.html#SEC29">Setting breakpoints</A>), to specify the place where your program
+should stop by line number, function name or exact address in the
+program.
+</P><P>
+
+In HP-UX, SunOS 4.x, SVR4, and Alpha OSF/1 configurations, you can set
+breakpoints in shared libraries before the executable is run.  There is
+a minor limitation on HP-UX systems: you must wait until the executable
+is run in order to set breakpoints in shared library routines that are
+not called directly by the program (for example, routines that are
+arguments in a <CODE>pthread_create</CODE> call).
+</P><P>
+
+<A NAME="IDX129"></A>
+<A NAME="IDX130"></A>
+<A NAME="IDX131"></A>
+<A NAME="IDX132"></A>
+A <EM>watchpoint</EM> is a special breakpoint that stops your program
+when the value of an expression changes.  You must use a different
+command to set watchpoints (see section <A HREF="gdb_30.html#SEC30">Setting watchpoints</A>), but aside from that, you can manage a watchpoint like
+any other breakpoint: you enable, disable, and delete both breakpoints
+and watchpoints using the same commands.
+</P><P>
+
+You can arrange to have values from your program displayed automatically
+whenever GDB stops at a breakpoint.  See section <A HREF="gdb_57.html#SEC57">Automatic display</A>.
+</P><P>
+
+<A NAME="IDX133"></A>
+<A NAME="IDX134"></A>
+A <EM>catchpoint</EM> is another special breakpoint that stops your program
+when a certain kind of event occurs, such as the throwing of a C<TT>++</TT>
+exception or the loading of a library.  As with watchpoints, you use a
+different command to set a catchpoint (see section <A HREF="gdb_31.html#SEC31">Setting catchpoints</A>), but aside from that, you can manage a catchpoint like any
+other breakpoint.  (To stop when your program receives a signal, use the
+<CODE>handle</CODE> command; see <A HREF="gdb_39.html#SEC39">Signals</A>.)
+</P><P>
+
+<A NAME="IDX135"></A>
+<A NAME="IDX136"></A>
+GDB assigns a number to each breakpoint, watchpoint, or
+catchpoint when you create it; these numbers are successive integers
+starting with one.  In many of the commands for controlling various
+features of breakpoints you use the breakpoint number to say which
+breakpoint you want to change.  Each breakpoint may be <EM>enabled</EM> or
+<EM>disabled</EM>; if disabled, it has no effect on your program until you
+enable it again.
+</P><P>
+
+<A NAME="IDX137"></A>
+<A NAME="IDX138"></A>
+Some GDB commands accept a range of breakpoints on which to
+operate.  A breakpoint range is either a single breakpoint number, like
+<SAMP>`5'</SAMP>, or two such numbers, in increasing order, separated by a
+hyphen, like <SAMP>`5-7'</SAMP>.  When a breakpoint range is given to a command,
+all breakpoint in that range are operated on.
+</P><P>
+
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_29.html#SEC29">5.1.1 Setting breakpoints</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_30.html#SEC30">5.1.2 Setting watchpoints</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_31.html#SEC31">5.1.3 Setting catchpoints</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_32.html#SEC32">5.1.4 Deleting breakpoints</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_33.html#SEC33">5.1.5 Disabling breakpoints</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_34.html#SEC34">5.1.6 Break conditions</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_35.html#SEC35">5.1.7 Breakpoint command lists</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_36.html#SEC36">5.1.8 Breakpoint menus</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_37.html#SEC37">5.1.9 "Cannot insert breakpoints"</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+</TABLE></BLOCKQUOTE>
+<P>
+
+<A NAME="Set Breaks"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_29.html#SEC29"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

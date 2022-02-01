@@ -1,0 +1,105 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Recursion</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Recursion">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Recursion">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC58"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_53.html#SEC57"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_55.html#SEC59"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_59.html#SEC63"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.6 Recursive Use of <CODE>make</CODE> </H2>
+<!--docid::SEC58::-->
+<P>
+
+Recursive use of <CODE>make</CODE> means using <CODE>make</CODE> as a command in a
+makefile.  This technique is useful when you want separate makefiles for
+various subsystems that compose a larger system.  For example, suppose you
+have a subdirectory <TT>`subdir'</TT> which has its own makefile, and you would
+like the containing directory's makefile to run <CODE>make</CODE> on the
+subdirectory.  You can do it by writing this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>subsystem:
+        cd subdir &#38;&#38; $(MAKE)
+</pre></td></tr></table></P><P>
+
+or, equivalently, this (see section <A HREF="make_98.html#SEC102">Summary of Options</A>):
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>subsystem:
+        $(MAKE) -C subdir
+</pre></td></tr></table><A NAME="IDX195"></A>
+<A NAME="IDX196"></A>
+</P><P>
+
+You can write recursive <CODE>make</CODE> commands just by copying this example,
+but there are many things to know about how they work and why, and about
+how the sub-<CODE>make</CODE> relates to the top-level <CODE>make</CODE>.  You may
+also find it useful to declare targets that invoke recursive
+<CODE>make</CODE> commands as <SAMP>`.PHONY'</SAMP> (for more discussion on when
+this is useful, see <A HREF="make_37.html#SEC41">4.6 Phony Targets</A>).
+</P><P>
+
+For your convenience, GNU <CODE>make</CODE> sets the variable <CODE>CURDIR</CODE> to
+the pathname of the current working directory for you.  If <CODE>-C</CODE> is
+in effect, it will contain the path of the new directory, not the
+original.  The value has the same precedence it would have if it were
+set in the makefile (by default, an environment variable <CODE>CURDIR</CODE>
+will not override this value).  Note that setting this variable has no
+effect on the operation of <CODE>make</CODE>
+</P><P>
+
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_55.html#SEC59">5.6.1 How the <CODE>MAKE</CODE> Variable Works</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">The special effects of using <SAMP>`$(MAKE)'</SAMP>.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_56.html#SEC60">5.6.2 Communicating Variables to a Sub-<CODE>make</CODE></A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to communicate variables to a sub-<CODE>make</CODE>.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_57.html#SEC61">5.6.3 Communicating Options to a Sub-<CODE>make</CODE></A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to communicate options to a sub-<CODE>make</CODE>.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_58.html#SEC62">5.6.4 The <SAMP>`--print-directory'</SAMP> Option</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How the <SAMP>`-w'</SAMP> or <SAMP>`--print-directory'</SAMP> option
+                                  helps debug use of recursive <CODE>make</CODE> commands.</TD></TR>
+</TABLE></BLOCKQUOTE>
+<P>
+
+<A NAME="MAKE Variable"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_53.html#SEC57"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_55.html#SEC59"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_59.html#SEC63"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

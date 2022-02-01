@@ -1,0 +1,139 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: Unsupported GCC features</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: Unsupported GCC features">
+<META NAME="keywords" CONTENT="Using PRC-Tools: Unsupported GCC features">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC4"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_3.html#SEC3"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_5.html#SEC5"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_5.html#SEC5"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_1.html#SEC1"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_8.html#SEC8"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 1.3 Unsupported GCC features </H2>
+<!--docid::SEC4::-->
+<P>
+
+The following GCC options are not currently supported on Palm OS:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-p</CODE>
+<DD><DT><CODE>-pg</CODE>
+<DD><DT><CODE>-a</CODE>
+<DD><DT><CODE>-ax</CODE>
+<DD><DT><CODE>-fprofile-arcs</CODE>
+<DD><DT><CODE>-fbranch-probabilities</CODE>
+<DD>Probably profiling is unsupported.  Certainly the support functions in
+<TT>`libgcc'</TT> aren't being included, because they depend on non-existent
+stdio support.
+<P>
+
+<DT><CODE>-ftest-coverage</CODE>
+<DD>A similar comment applies to the <CODE>gcov</CODE> data file.
+<P>
+
+<DT><CODE>-ffunction-sections</CODE>
+<DD>This option sets each function's section <EM>after</EM> function calls are
+generated.  This is too late to be effective because we need to emit special
+code for cross-section function calls.
+<P>
+
+<DT><CODE>-mbitfield</CODE>
+<DD><DT><CODE>-m68020</CODE>
+<DD><DT><CODE>-m68881</CODE>
+<DD>These and other M68K hardware selection options will cause your programs
+to fail horribly.
+<P>
+
+<DT><CODE>-mrtd</CODE>
+<DD>This selects code generation patterns which disagree with the conventions
+used by the Palm OS API functions, so will fail horribly.
+</DL>
+<P>
+
+There are also the following caveats:
+</P><P>
+
+<UL>
+<LI>
+While describing the <CODE>section</CODE> attribute, the GCC manual suggests using
+the linker to split an executable into sections.  Just like
+<SAMP>`-ffunction-sections'</SAMP>, this doesn't work.
+<P>
+
+<LI>
+The <CODE>__complex__</CODE> extension doesn't work.
+<P>
+
+<LI>
+The <SAMP>`-Wmultichar'</SAMP> warning is off by default, even if you use <SAMP>`-Wall'</SAMP>.
+<P>
+
+<LI>
+If <SAMP>`-mpcrel'</SAMP> is on, as it always is, any <SAMP>`-fpic'</SAMP> or <SAMP>`-fPIC'</SAMP>
+options are ineffective: <SAMP>`-mpcrel'</SAMP> always implies <SAMP>`-fpic'</SAMP>.
+<P>
+
+<LI>
+Because we care about code size (and don't have an instruction cache), too
+much of the following is probably counter-productive: <SAMP>`-ffunction-cse'</SAMP>,
+<SAMP>`-funroll-loops'</SAMP>, <SAMP>`-funroll-all-loops'</SAMP>.  Hence these options are not
+implied by the <SAMP>`-O'</SAMP> flags, but must be selected explicitly.
+<P>
+
+<LI>
+If you use 64K code resources, the linker <SAMP>`-r'</SAMP> option will not always work.
+Fortunately, these are both unnecessary.
+<P>
+
+<LI>
+Changing the specs file with <SAMP>`-specs=<VAR>file</VAR>'</SAMP> or invoking
+<CODE>m68k-palmos-as</CODE> or <CODE>m68k-palmos-ld</CODE> directly should be done
+with caution: proper operation is quite dependent on options set in the
+default specs file.
+</UL>
+<P>
+
+<A NAME="Include files"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_3.html#SEC3"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_5.html#SEC5"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_5.html#SEC5"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_1.html#SEC1"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_8.html#SEC8"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

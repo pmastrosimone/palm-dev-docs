@@ -1,0 +1,144 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Xtensa Immediate Relaxation</TITLE>
+
+<META NAME="description" CONTENT="Using as: Xtensa Immediate Relaxation">
+<META NAME="keywords" CONTENT="Using as: Xtensa Immediate Relaxation">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC430"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_420.html#SEC429"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_422.html#SEC431"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_422.html#SEC431"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_418.html#SEC427"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_422.html#SEC431"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 8.33.4.3 Other Immediate Field Relaxation </H4>
+<!--docid::SEC430::-->
+<P>
+
+<A NAME="IDX1543"></A>
+<A NAME="IDX1544"></A>
+The <CODE>MOVI</CODE> machine instruction can only materialize values in the
+range from -2048 to 2047.  Values outside this range are best
+materalized with <CODE>L32R</CODE> instructions.  Thus:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    movi a0, 100000
+</FONT></pre></td></tr></table></P><P>
+
+is assembled into the following machine code:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    .literal .L1, 100000
+    l32r a0, .L1
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX1545"></A>
+<A NAME="IDX1546"></A>
+<A NAME="IDX1547"></A>
+<A NAME="IDX1548"></A>
+<A NAME="IDX1549"></A>
+<A NAME="IDX1550"></A>
+<A NAME="IDX1551"></A>
+<A NAME="IDX1552"></A>
+The <CODE>L8UI</CODE> machine instruction can only be used with immediate
+offsets in the range from 0 to 255. The <CODE>L16SI</CODE> and <CODE>L16UI</CODE>
+machine instructions can only be used with offsets from 0 to 510.  The
+<CODE>L32I</CODE> machine instruction can only be used with offsets from 0 to
+1020.  A load offset outside these ranges can be materalized with
+an <CODE>L32R</CODE> instruction if the destination register of the load
+is different than the source address register.  For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    l32i a1, a0, 2040
+</FONT></pre></td></tr></table></P><P>
+
+is translated to:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    .literal .L1, 2040
+    l32r a1, .L1
+    addi a1, a0, a1
+    l32i a1, a1, 0
+</FONT></pre></td></tr></table></P><P>
+
+If the load destination and source address register are the same, an
+out-of-range offset causes an error.
+</P><P>
+
+<A NAME="IDX1553"></A>
+<A NAME="IDX1554"></A>
+The Xtensa <CODE>ADDI</CODE> instruction only allows immediate operands in the
+range from -128 to 127.  There are a number of alternate instruction
+sequences for the generic <CODE>ADDI</CODE> operation.  First, if the
+immediate is 0, the <CODE>ADDI</CODE> will be turned into a <CODE>MOV.N</CODE>
+instruction (or the equivalent <CODE>OR</CODE> instruction if the code density
+option is not available).  If the <CODE>ADDI</CODE> immediate is outside of
+the range -128 to 127, but inside the range -32896 to 32639, an
+<CODE>ADDMI</CODE> instruction or <CODE>ADDMI</CODE>/<CODE>ADDI</CODE> sequence will be
+used.  Finally, if the immediate is outside of this range and a free
+register is available, an <CODE>L32R</CODE>/<CODE>ADD</CODE> sequence will be used
+with a literal allocated from the literal pool.
+</P><P>
+
+For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    addi    a5, a6, 0
+    addi    a5, a6, 512
+    addi    a5, a6, 513
+    addi    a5, a6, 50000
+</FONT></pre></td></tr></table></P><P>
+
+is assembled into the following:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    .literal .L1, 50000
+    mov.n   a5, a6
+    addmi   a5, a6, 0x200
+    addmi   a5, a6, 0x200
+    addi    a5, a5, 1
+    l32r    a5, .L1
+    add     a5, a6, a5
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="Xtensa Directives"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_420.html#SEC429"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_422.html#SEC431"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_422.html#SEC431"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_418.html#SEC427"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_422.html#SEC431"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

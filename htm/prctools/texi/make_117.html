@@ -1,0 +1,77 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Archive Symbols</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Archive Symbols">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Archive Symbols">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC121"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_116.html#SEC120"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_118.html#SEC122"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_115.html#SEC119"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_116.html#SEC120"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_118.html#SEC122"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 11.2.1 Updating Archive Symbol Directories </H3>
+<!--docid::SEC121::-->
+<P>
+
+An archive file that is used as a library usually contains a special member
+named <TT>`__.SYMDEF'</TT> that contains a directory of the external symbol
+names defined by all the other members.  After you update any other
+members, you need to update <TT>`__.SYMDEF'</TT> so that it will summarize the
+other members properly.  This is done by running the <CODE>ranlib</CODE> program:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ranlib <VAR>archivefile</VAR>
+</pre></td></tr></table></P><P>
+
+Normally you would put this command in the rule for the archive file,
+and make all the members of the archive file prerequisites of that rule.
+For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>libfoo.a: libfoo.a(x.o) libfoo.a(y.o) <small>...</small>
+        ranlib libfoo.a
+</pre></td></tr></table></P><P>
+
+The effect of this is to update archive members <TT>`x.o'</TT>, <TT>`y.o'</TT>,
+etc., and then update the symbol directory member <TT>`__.SYMDEF'</TT> by
+running <CODE>ranlib</CODE>.  The rules for updating the members are not shown
+here; most likely you can omit them and use the implicit rule which copies
+files into the archive, as described in the preceding section.
+</P><P>
+
+This is not necessary when using the GNU <CODE>ar</CODE> program, which
+updates the <TT>`__.SYMDEF'</TT> member automatically.
+</P><P>
+
+<A NAME="Archive Pitfalls"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

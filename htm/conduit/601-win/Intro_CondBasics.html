@@ -1,0 +1,841 @@
+<html>
+<head>
+<title>Introducing Conduits | Introduction to Conduit Development</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="KEYWORDS" CONTENT="conduit, conduits, introduction, basics, basic, philosophy, design, goal, types, synchronization, sync, synch, entry point, log, HotSync log, CDK">
+<META NAME="DESCRIPTION" CONTENT="Introduces basic conduit concepts, including the types of conduits, what conduits do, example synchronization logic they implement, and the principles developers need to adhere to when developing conduits.">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource HTML 20040609">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="LASTUPDATED" CONTENT="06/28/04 08:30:37">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="995934"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="IntroToConduitsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_HotSyncExch.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_HSMBasics.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="IntroToConduitsIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">4 &nbsp;&nbsp;
+Introducing Conduits</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Introduction to Conduit Development</p>
+<p class="SubTitle">Palm OS&#174; Conduit Development Kit for Windows, Version 6.0.1 </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="Intro_CondBasics.html">4  Introducing Conduits</a></h1>
+
+   <h2 class="SideTOC2"><a href="#995972">
+   Types of Conduits</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996020">
+   Conduit Design Philosophy</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996058">
+   Conduit Tasks</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996067">
+   Conduit Entry Points</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996242">
+   Adding Messages to the HotSync Log</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1001603">
+   Types of Synchronization</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996307">
+   Synchronization Logic</a></h2>
+
+      <h3 class="SideTOC3"><a href="#996320">
+      Record Synchronization</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996444">
+      Category Synchronization</a></h3>
+
+</div>
+</td>
+<!--END SIDETOC-->
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="995939"> </a>This chapter introduces basic conduit concepts, including the types of conduits, what conduits do, example synchronization logic they implement, and the principles developers need to adhere to when developing conduits.</p>
+
+<p><a name="995941"> </a>This chapter includes the following topics: </p>
+   <blockquote class = "bq"><a name="995945"> </a><a href="Intro_CondBasics.html#995972">Types of Conduits</a> </blockquote>
+   <blockquote class = "bq"><a name="995949"> </a><a href="Intro_CondBasics.html#996020">Conduit Design Philosophy</a> </blockquote>
+   <blockquote class = "bq"><a name="995953"> </a><a href="Intro_CondBasics.html#996058">Conduit Tasks</a> </blockquote>
+   <blockquote class = "bq"><a name="995957"> </a><a href="Intro_CondBasics.html#996067">Conduit Entry Points</a> </blockquote>
+   <blockquote class = "bq"><a name="995961"> </a><a href="Intro_CondBasics.html#996242">Adding Messages to the HotSync Log</a> </blockquote>
+   <blockquote class = "bq"><a name="995965"> </a><a href="Intro_CondBasics.html#1001603">Types of Synchronization</a></blockquote>
+   <blockquote class = "bq"><a name="995969"> </a><a href="Intro_CondBasics.html#996307">Synchronization Logic</a></blockquote>
+
+<h2 class="haH2">
+  <a name="995972"> </a>Types of Conduits <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="995973"> </a>Conduits can perform a variety of tasks, but they all fall into the three major types described in <a href="Intro_CondBasics.html#995983">Table 4.1</a>. </p>
+
+<p class="fineprint">
+<p class="caption"><a name="995983"> </a><b>Table 4.1&nbsp;&nbsp;Conduit types </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="995989"> </a><b>Conduit Type</b></p>
+    </th>
+    <th><p class="tt"><a name="995991"> </a><b>Description</b></p>
+    </th>
+    <th><p class="tt"><a name="995993"> </a><b>Notes</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005185"> </a><b>Synchronization conduit</b> </p>
+    </td>
+    <td><p class="tt"><a name="1005187"> </a>Performs whatever tasks a conduit developer designs it to do, typically synchronizing databases on the handheld with their desktop counterparts. See <a href="Intro_CondBasics.html#1001603">"Types of Synchronization."</a> </p>
+    </td>
+    <td><p class="tt"><a name="1005193"> </a>HotSync Manager for Windows runs registered synchronization conduits only if there is an application with a matching creator ID on the handheld. An exception to this exists for HotSync Manager 6.0 or later: a conduit can indicate that it must always be run regardless of whether matching application is on the handheld.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="995995"> </a><b>Install conduit</b> </p>
+    </td>
+    <td><p class="tt"><a name="995997"> </a>Installs Palm OS<sup>&#174;</sup> applications and databases in a handheld's main memory or files on expansion cards. PalmSource ships HotSync Manager with several install conduits. </p>
+    </td>
+    <td><p class="tt"><a name="996000"> </a>HotSync<sup>&#174;</sup> Manager for Windows runs install conduits both before and after it runs synchronization conduits. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996002"> </a><b>Backup conduit</b> </p>
+    </td>
+    <td><p class="tt"><a name="996004"> </a>Copies to the desktop entire handheld databases and applications without synchronizing specific records within them. PalmSource ships HotSync Manager with a backup conduit named Backup. </p>
+<p class="tt"><a name="996005"> </a>The Backup conduit is intended for handheld databases and applications that do not have synchronization conduits associated with them. </p>
+    </td>
+    <td><p class="tt"><a name="996007"> </a>HotSync Manager runs the backup conduit after it runs synchronization conduits. </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<h2 class="haH2">
+  <a name="996020"> </a>Conduit Design Philosophy <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996021"> </a>HotSync technology has been a very important part of the success of the Palm OS platform. One of the reasons for this is that the conduits called by HotSync Manager run quickly and adhere to a strong set of design goals. You need to develop your conduit with these same goals in mind, as described in <a href="Intro_CondBasics.html#996031">Table 4.2</a>.</p>
+
+<p class="fineprint">
+<p class="caption"><a name="996031"> </a><b>Table 4.2&nbsp;&nbsp;Conduit design goals </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="996035"> </a><b>Design goal</b></p>
+    </th>
+    <th><p class="tt"><a name="996037"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996039"> </a>Fast execution</p>
+    </td>
+    <td><p class="tt"><a name="996041"> </a>The overarching goal for the HotSync process is that a complete synchronization happen very quickly. Conduits need to be designed for optimal processing speed and minimal data transfer between the desktop and handheld.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996043"> </a>Zero data loss</p>
+    </td>
+    <td><p class="tt"><a name="996045"> </a>Conduits must take measures required to prevent data loss under any circumstances, including loss of connection during a HotSync operation.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996047"> </a>Good conflict handling</p>
+    </td>
+    <td><p class="tt"><a name="996049"> </a>Conduits that perform mirror-image synchronization must be able to gracefully handle conflicting modifications, also called a <b>double modify</b>. This occurs when the user modifies a record on both the desktop computer and the handheld. In addition to managing the conflict, the conduit should add an entry to the log to notify the user of this situation. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996052"> </a>No user interaction</p>
+    </td>
+    <td><p class="tt"><a name="996054"> </a>The user expects to be able to press the HotSync button on the cradle and have synchronization proceed without any required interaction. Conduits need to be constructed to avoid the need for user interaction. This is especially important for users who are synchronizing remotely (for example, over a network) and cannot interact with the desktop computer. </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<h2 class="haH2">
+  <a name="996058"> </a>Conduit Tasks <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996059"> </a>Conduits synchronize data for a specific application on the handheld with the desktop computer. Conduits perform the following tasks:</p>
+<ul type="disc">
+  <li><a name="996060"> </a>open and close databases on the handheld
+  <li><a name="996061"> </a>add, delete, and modify records on the handheld and desktop computer, converting formats as required
+</ul>
+
+<p><a name="996062"> </a>Because each application stores data in its own format, each conduit must implement custom data handling and conversion algorithms. To work with data on the handheld, a conduit calls the Sync Manager API, as described in <a href="Intro_CondDevelopment.html#996718">"Classic Sync Manager API."</a></p>
+
+<h2 class="haH2">
+  <a name="996067"> </a>Conduit Entry Points <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996068"> </a>To perform a conduit's tasks, HotSync Manager calls a conduit's <b>entry points</b>, which implement its synchronization logic, user customization, and responses to HotSync Manager's queries. There are two types of entry points that HotSync Manager calls in your conduit:</p>
+<ul type="disc">
+  <li><a name="996070"> </a>Required entry points that must be implemented in each conduit.
+  <li><a name="996071"> </a>Optional entry points that provide additional information or capabilities.
+</ul>
+
+<p><a name="996074"> </a>This section provides a brief description of these conduit entry points. For more information about these functions, see the <i>Companion</i> document for the sync suite you are using to create a conduit (<a href="Intro_About.html#991618">"Related Documentation"</a>).</p>
+
+<p><a name="996081"> </a><a href="Intro_CondBasics.html#999058">Table 4.3</a> provides a summary of the entry point functions. </p>
+
+<p class="fineprint">
+<p class="caption"><a name="999058"> </a><b>Table 4.3&nbsp;&nbsp;Conduit entry points called by HotSync Manager </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="999066"> </a><b>Function Type</b></p>
+    </th>
+    <th><p class="tt"><a name="999068"> </a><b>C/C++ Sync Suite for Windows Function Name</b></p>
+    </th>
+    <th><p class="tt"><a name="999070"> </a><b>COM Sync Suite Function Name</b></p>
+    </th>
+    <th><p class="tt"><a name="999072"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tts"><a name="999074"> </a>Required</p>
+    </td>
+    <td><p class="tts"><a name="999076"> </a><code>N/A</code></p>
+    </td>
+    <td><p class="tts"><a name="999078"> </a><code>N/A</code></p>
+    </td>
+    <td><p class="tts"><a name="999080"> </a>Returns the conduit's name for HotSync Manager to display. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tts"><a name="999082"> </a>Required</p>
+    </td>
+    <td><p class="tts"><a name="999084"> </a><code>GetConduitVersion</code></p>
+    </td>
+    <td><p class="tts"><a name="999086"> </a><code>IPDClientNotify-&gt;<br>GetConduitVersion</code></p>
+    </td>
+    <td><p class="tts"><a name="999088"> </a>Returns the conduit's version number.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tts"><a name="999090"> </a>Required</p>
+    </td>
+    <td><p class="tts"><a name="999092"> </a><code>OpenConduit</code></p>
+    </td>
+    <td><p class="tts"><a name="999094"> </a><code>IPDClientNotify-&gt;<br>BeginProcess</code></p>
+    </td>
+    <td><p class="tts"><a name="999096"> </a>The main conduit entry point. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tts"><a name="999098"> </a>Required</p>
+    </td>
+    <td><p class="tts"><a name="999100"> </a><code>GetConduitInfo</code></p>
+    </td>
+    <td><p class="tts"><a name="999102"> </a><code>IPDClientNotify-&gt;<br>GetConduitInfo</code></p>
+    </td>
+    <td><p class="tts"><a name="999104"> </a>Returns information about the conduit to HotSync Manager (based on parameters passed in).</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tts"><a name="999106"> </a>Customization<br>(optional)</p>
+    </td>
+    <td><p class="tts"><a name="999108"> </a><code>ConfigureConduit</code> <br>(prior to HotSync 3.0.1)</p>
+<p class="tts"><a name="999109"> </a>or</p>
+<p class="tts"><a name="999110"> </a><code>CfgConduit</code> <br>(HotSync 3.0.1 or later)</p>
+    </td>
+    <td><p class="tts"><a name="999112"> </a><code>IPDClientNotify-&gt;<br>ConfigureConduit</code> <br>(prior to HotSync 3.0.1)</p>
+<p class="tts"><a name="999113"> </a>or</p>
+<p class="tts"><a name="999114"> </a><code>IPDClientNotify-&gt;<br>CfgConduit <br></code>(HotSync 3.0.1 or later)</p>
+    </td>
+    <td><p class="tts"><a name="999116"> </a>Presents a dialog that allows the user to configure the conduit.</p>
+<p class="tts"><a name="999117"> </a>PalmSource strongly recommends that you provide this function.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tts"><a name="999119"> </a>Optional</p>
+    </td>
+    <td><p class="tts"><a name="999121"> </a><code>GetConduitName</code></p>
+    </td>
+    <td><p class="tts"><a name="999123"> </a><code>N/A</code></p>
+    </td>
+    <td><p class="tts"><a name="999125"> </a>Returns the conduit's name for HotSync Manager to display. </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<h2 class="haH2">
+  <a name="996242"> </a>Adding Messages to the HotSync Log <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996243"> </a>During a HotSync operation, HotSync Manager and any running conduit can add messages to the HotSync log, either on the desktop, on the handheld, or both. Because the handheld log has limited space, keep your entries in it as short as possible. If any unusual messages are added to the desktop log, HotSync Manager notifies the user at the end of the HotSync operation.</p>
+
+<p><a name="996244"> </a>Conduits can also add messages to the HotSync log for debugging purposes.</p>
+
+<h4 class="hcH4">
+  <a name="1002421"> </a>Desktop HotSync Log
+</h4>
+
+<p><a name="1003501"> </a>Each sync suite provides functions for logging messages. Each message string can optionally be time-stamped and associated with a specified activity type. Perhaps the simplest logging function is the one that adds an entry to the desktop HotSync log, as shown for each sync suite below:</p>
+
+<p><a name="1002439"> </a><a href="CRef_HSLog.html#996068"><code>LogAddEntry()</code></a> in the C/C++ Sync Suite</p>
+<pre class="sl">long LogAddEntry (
+   LPCTSTR <code class="par">pszEntry</code>, 
+   Activity <code class="par">act</code>, 
+   BOOL <code class="par">bTimeStamp</code>) </pre>
+
+<p><a name="1002320"> </a><a href="COMRef_Meth.html#995940"><code>AddLogEntry()</code></a> in the COM Sync Suite</p>
+<pre class="sl">Sub AddLogEntry (
+   ByVal <code class="par">pLogText</code> As String, _
+   [ByVal <code class="par">eActivity</code> As ELogActivity = eText], _
+   [ByVal <code class="par">bTimeStamp</code> As Boolean = True], _
+   [ByVal <code class="par">bPalmLog</code> As Boolean = False])</pre>
+
+<p><a name="1002661"> </a>Each of these functions allow your conduit to specify the activity that causes it to add a message: pass in one of the <a href="CRef_HSLog.html#1000851"><code>Activity</code></a> (C/C++ Sync Suite) or <a href="COMRef_Const.html#996157"><code>ELogActivity</code></a> (COM Sync Suite) values. Each time a log entry is added, HotSync Manager increments a counter to track how many warnings have occurred. The only log activity values that are not counted are:</p>
+
+<p class="fineprint">
+'
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1002707"> </a><b>C/C++ Sync Suite</b></p>
+    </th>
+    <th><p class="tt"><a name="1002709"> </a><b>COM Sync Suite</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002711"> </a><code>slSyncStarted</code> </p>
+    </td>
+    <td><p class="tt"><a name="1002713"> </a><code>eSyncStarted</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002715"> </a><code>slSyncFinished</code> </p>
+    </td>
+    <td><p class="tt"><a name="1002717"> </a><code>eSyncFinished</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002739"> </a><code>slSyncAborted</code> </p>
+    </td>
+    <td><p class="tt"><a name="1002741"> </a><code>eSyncAborted</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002755"> </a><code>slText</code> </p>
+    </td>
+    <td><p class="tt"><a name="1002757"> </a><code>eText</code> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<p><a name="1002843"> </a>Of all the log activity values, only two explicitly cause text to be added to the log beyond any you specify in your conduit's call to <code>LogAddEntry()/AddLogEntry()</code>:</p>
+
+<p class="fineprint">
+'
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1002911"> </a><b>C/C++ Sync Suite</b></p>
+    </th>
+    <th><p class="tt"><a name="1002913"> </a><b>COM Sync Suite</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002923"> </a><code>slSyncAborted</code> </p>
+    </td>
+    <td><p class="tt"><a name="1002925"> </a><code>eSyncAborted</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002927"> </a><code>slText</code> </p>
+    </td>
+    <td><p class="tt"><a name="1002929"> </a><code>eText</code> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<p><a name="1002999"> </a>Specifying any other log activity value inserts only the text you specify. </p>
+
+<p><a name="1003023"> </a>When no synchronization errors or warnings have occurred, <code>slSyncFinished/eSyncFinished</code> inserts into the log the text "OK " followed by the message you specify. If, on the other hand, one or more synchronization warnings have been logged, <code>slSyncFinished/eSyncFinished</code> inserts the text "OK ", then the message your conduit specified, then the text "with X message(s)", where "X" is the number of messages logged. This text may be localized depending on what version of HotSync Manager you have installed.</p>
+
+<p><a name="1003061"> </a>The <code>slSyncAborted/eSyncAborted</code> activity code displays the message you passed in followed by " synchronization failed". </p>
+<div class="NINoteImportant"><hr>
+  <a name="1003101"> </a> <b>NOTE: </b> The conduits provided by PalmSource, Inc. pass simply the conduit name into <code>LogAddEntry()</code> for the <code>slSyncFinished</code> and <code>slSyncAborted</code> activities. This results in messages such as "OK Address Book" and "Address Book synchronization failed" to appear. PalmSource suggests that you follow this standard for consistency.
+<hr>
+</div>
+
+<p><a name="1002502"> </a>Beginning with HotSync Manager version 6.0.1, the HotSync log on the desktop is stored as an HTML file; in earlier versions, the log is an ASCII text file. When the user views the log, HotSync Manager calls the desktop's default web browser to display it. Logging in HTML format allows HotSync Manager and conduits to do the following:</p>
+<ul type="disc">
+  <li><a name="1001492"> </a>Format entries for easier reading.
+  <li><a name="1001504"> </a>Provide hypertext links to further information on the conduit developer's web site.
+  <li><a name="1001517"> </a>Make the log "active" by adding scripts.
+</ul>
+
+<p><a name="1001601"> </a>When you add a log entry and specify a log activity value, the entry is automatically formatted to help indicate the type of activity that caused the entry to be logged&#8212a warning, an error, the conduit started/completed, etc. All activity types filter out special HTML control characters so that they do not cause formatting errors; however, one special log activity value&#8212<span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">slHTMLText/eHTMLText</span>&#8212allows the caller to pass in any string, including HTML tags and characters, to take advantage of HTML features. </p>
+
+<p><a name="1001817"> </a><a href="Intro_CondBasics.html#1001665">Figure 4.1</a> shows an example of the HotSync log in HTML. It also shows how each activity type is formatted by HotSync Manager.</p>
+
+<p class="FFigureCaption">
+  <a name="1001665"> </a><b>Figure 4.1&nbsp;&nbsp;Example of formats used by HotSync log activity types</b>
+</p>
+<div align="left"><img src="images/HSLogHTML.gif" border="0" hspace="0" vspace="0">
+</div>
+
+<h4 class="hcH4">
+  <a name="1003783"> </a>Handheld HotSync Log
+</h4>
+
+<p><a name="1003784"> </a>The HotSync log on the handheld is accessible from the HotSync client application: from Launcher, tap <b>HotSync</b>, and then tap the <b>Log</b> button.</p>
+
+<p><a name="1003785"> </a>Because the handheld log has limited space, keep your entries in it as short as possible. </p>
+
+<p><a name="1003786"> </a>Each sync suite provide a function for adding messages to the handheld HotSync log:</p>
+
+<p><a name="1003790"> </a><a href="CRef_SyncCommon.html#999643"><code>SyncAddLogEntry()</code></a> in the C/C++ Sync Suite</p>
+<pre class="sl">SInt32 SyncAddLogEntry (const char *<code class="par">pText</code>)</pre>
+
+<p><a name="1003795"> </a><a href="COMRef_Meth.html#995940"><code>AddLogEntry()</code></a> in the COM Sync Suite</p>
+<pre class="sl">Sub AddLogEntry (
+   ByVal <code class="par">pLogText</code> As String, _
+   [ByVal <code class="par">eActivity</code> As ELogActivity = eText], _
+   [ByVal <code class="par">bTimeStamp</code> As Boolean = True], _
+   [ByVal <code class="par">bPalmLog</code> As Boolean = False])</pre>
+
+<p><a name="1003797"> </a>Note that in the COM Sync Suite, the function for writing to the handheld log is the same as that for writing to the desktop log. However, with both of the above functions, you can write only unformatted text to the handheld log.</p>
+<h4>
+  <a name="1003798"> </a>See Also 
+</h4>
+
+<p><a name="1003807"> </a><a href="CRef_HSLog.html#996068"><code>LogAddEntry()</code></a> and <a href="CRef_SyncCommon.html#999643"><code>SyncAddLogEntry()</code></a> in <i>C/C++ Sync Suite Reference</i>, <a href="COMRef_Meth.html#995940"><code>AddLogEntry()</code></a> in <i>COM Sync Suite Reference</i></p>
+
+<h2 class="haH2">
+  <a name="1001603"> </a>Types of Synchronization <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996250"> </a>The synchronization type depends on the nature of the applications involved and how you want to handle their data. The desktop and handheld synchronization types are summarized in <a href="Intro_CondBasics.html#996260">Table 4.4</a>. </p>
+
+<p class="fineprint">
+<p class="caption"><a name="996260"> </a><b>Table 4.4&nbsp;&nbsp;Conduit synchronization types </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="996266"> </a><b>Synchronization Type</b></p>
+    </th>
+    <th><p class="tt"><a name="996268"> </a><b>Description</b></p>
+    </th>
+    <th><p class="tt"><a name="996270"> </a><b>Notes</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996273"> </a>Mirror-image</p>
+    </td>
+    <td><p class="tt"><a name="996275"> </a>Ideal for applications that run on both the desktop and the handheld; allows modifications on both; makes data identical on both.</p>
+<p class="tt"><a name="996276"> </a>Example applications for this kind of synchronization include the Address Book and Date Book applications.</p>
+    </td>
+    <td><p class="tt"><a name="996278"> </a>Your conduit must provide conflict resolution solutions when the same record has been modified on both the desktop and the handheld (known as double modify). This must occur without user intervention.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996281"> </a>One-directional</p>
+    </td>
+    <td><p class="tt"><a name="996283"> </a>For applications that run on both the desktop and the handheld, but only allow data modification on one; copies the data to the other. </p>
+<p class="tt"><a name="996284"> </a>Example: Stock quotation program that updates data on the desktop computer and copies the latest data to the handheld.</p>
+    </td>
+    <td><p class="tt"><a name="996286"> </a>Requires less time, and should be used when possible.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996297"> </a>Transaction-based</p>
+    </td>
+    <td><p class="tt"><a name="996299"> </a>For applications that need to perform additional processing on the desktop computer between record synchronizations. </p>
+<p class="tt"><a name="996300"> </a>Example: E-mail program that uses transaction processing to update the Inbox on the desktop computer.</p>
+    </td>
+    <td><p class="tt"><a name="996302"> </a>Slows down the HotSync process. Use only when required.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+<div class="NINoteImportant"><hr>
+  <a name="996304"> </a> <b>NOTE: </b> A major design goal for conduits is to minimize synchronization time. This means that you should choose the simplest method of synchronization that can be used for your conduit. The synchronization types in order, from simplest to most complex are: backup, one-directional, mirror-image, and transaction-based.
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="996307"> </a>Synchronization Logic <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996308"> </a>The user can make changes to data on either the handheld or the desktop computer. Depending on your conduit design, its synchronization logic might need to handle a variety of modification situations to ensure correct synchronization. </p>
+
+<p><a name="996309"> </a>This section describes the logic implemented by the classic Generic Conduit Framework. Synchronization logic for schema databases is not covered in this document.</p>
+   <blockquote class = "bq"><a name="996313"> </a><a href="Intro_CondBasics.html#996320">Record Synchronization</a></blockquote>
+   <blockquote class = "bq"><a name="996317"> </a><a href="Intro_CondBasics.html#996444">Category Synchronization</a></blockquote>
+<h3 class="hbH3">
+  <a name="996320"> </a>Record Synchronization <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996324"> </a>The logic shown in <a href="Intro_CondBasics.html#996331">Table 4.5</a> lists the resultant action for each record modification condition. These conditions are based on the status bits maintained for records, which specify whether a record has been added, modified, deleted, or archived. </p>
+
+<p class="fineprint">
+<p class="caption"><a name="996331"> </a><b>Table 4.5&nbsp;&nbsp;Synchronizing records </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="996337"> </a><b>Handheld Record Status</b></p>
+    </th>
+    <th><p class="tt"><a name="996339"> </a><b>Desktop Record Status</b></p>
+    </th>
+    <th><p class="tt"><a name="996341"> </a><b>Action</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996343"> </a>Add</p>
+    </td>
+    <td><p class="tt"><a name="996345"> </a>No record</p>
+    </td>
+    <td><p class="tt"><a name="996347"> </a>Add the handheld record to the desktop database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996349"> </a>Archive</p>
+    </td>
+    <td><p class="tt"><a name="996351"> </a>Delete</p>
+    </td>
+    <td><p class="tt"><a name="996353"> </a>Archive the handheld record and delete the record from both the handheld and desktop databases.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996355"> </a>Archive</p>
+    </td>
+    <td><p class="tt"><a name="996357"> </a>No change</p>
+    </td>
+    <td><p class="tt"><a name="996359"> </a>Archive the handheld record and delete the record from both the handheld and desktop databases.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996361"> </a>Archive</p>
+    </td>
+    <td><p class="tt"><a name="996363"> </a>No record</p>
+    </td>
+    <td><p class="tt"><a name="996365"> </a>Archive the handheld record.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996367"> </a>Archive, change</p>
+    </td>
+    <td><p class="tt"><a name="996369"> </a>Change</p>
+    </td>
+    <td><p class="tt"><a name="996371"> </a>If the changes are identical, archive both the handheld record and the desktop record.</p>
+<p class="tt"><a name="996372"> </a>If the changes are not identical, do not archive the handheld record; instead, add the desktop record to the handheld database, and add the handheld record to the desktop database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996374"> </a>Archive, <br>no change</p>
+    </td>
+    <td><p class="tt"><a name="996376"> </a>Change</p>
+    </td>
+    <td><p class="tt"><a name="996378"> </a>Do not archive the handheld record; instead replace it with the desktop record.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996380"> </a>Change</p>
+    </td>
+    <td><p class="tt"><a name="996382"> </a>Archive, change</p>
+    </td>
+    <td><p class="tt"><a name="996384"> </a>If the changes are identical, archive the handheld record and then delete the records from both the handheld and desktop databases.</p>
+<p class="tt"><a name="996385"> </a>If the changes are not identical, do not archive the desktop record; instead, add the desktop record to the handheld database and add the handheld record to the desktop database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996387"> </a>Change</p>
+    </td>
+    <td><p class="tt"><a name="996389"> </a>Archive, no change</p>
+    </td>
+    <td><p class="tt"><a name="996391"> </a>Do not archive the desktop record; instead, replace the record in the desktop database with the handheld record.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996393"> </a>Change</p>
+    </td>
+    <td><p class="tt"><a name="996395"> </a>Change</p>
+    </td>
+    <td><p class="tt"><a name="996397"> </a>If changes are identical, no action.</p>
+<p class="tt"><a name="996398"> </a>If changes are not identical, add the handheld record to the desktop database and add the desktop record to the handheld database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996400"> </a>Change</p>
+    </td>
+    <td><p class="tt"><a name="996402"> </a>Delete</p>
+    </td>
+    <td><p class="tt"><a name="996404"> </a>Do not delete the desktop record; instead, replace the desktop record with the handheld record.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996406"> </a>Change</p>
+    </td>
+    <td><p class="tt"><a name="996408"> </a>No change</p>
+    </td>
+    <td><p class="tt"><a name="996410"> </a>Replace the desktop record with the handheld record.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996412"> </a>Delete</p>
+    </td>
+    <td><p class="tt"><a name="996414"> </a>Change</p>
+    </td>
+    <td><p class="tt"><a name="996416"> </a>Do not delete the handheld record; instead, replace the handheld record with the desktop record.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996418"> </a>Delete</p>
+    </td>
+    <td><p class="tt"><a name="996420"> </a>No change</p>
+    </td>
+    <td><p class="tt"><a name="996422"> </a>Delete the record from the desktop and handheld databases.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996424"> </a>No change</p>
+    </td>
+    <td><p class="tt"><a name="996426"> </a>Archive</p>
+    </td>
+    <td><p class="tt"><a name="996428"> </a>Archive the desktop record, then delete the record from both databases.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996430"> </a>No change</p>
+    </td>
+    <td><p class="tt"><a name="996432"> </a>Change</p>
+    </td>
+    <td><p class="tt"><a name="996434"> </a>Replace the handheld record with the desktop record.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996436"> </a>No change</p>
+    </td>
+    <td><p class="tt"><a name="996438"> </a>Delete</p>
+    </td>
+    <td><p class="tt"><a name="996440"> </a>Delete the record from the desktop and handheld databases.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+<h3 class="hbH3">
+  <a name="996444"> </a>Category Synchronization <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996448"> </a>The logic shown in <a href="Intro_CondBasics.html#996455">Table 4.6</a> lists the resultant action for each category modification condition.</p>
+
+<p class="fineprint">
+<p class="caption"><a name="996455"> </a><b>Table 4.6&nbsp;&nbsp;Synchronizing categories </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="996463"> </a><b>Category Name Conditions</b></p>
+    </th>
+    <th><p class="tt"><a name="996465"> </a><b>Category ID Conditions</b></p>
+    </th>
+    <th><p class="tt"><a name="996467"> </a><b>Category Index Conditions</b></p>
+    </th>
+    <th><p class="tt"><a name="996469"> </a><b>Actions</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996471"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Desktop name matches handheld name</span></p>
+    </td>
+    <td><p class="tt"><a name="996473"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">N/A</span></p>
+    </td>
+    <td><p class="tt"><a name="996475"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Desktop index matches handheld index</span></p>
+    </td>
+    <td><p class="tt"><a name="996477"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">No action required.</span></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996479"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Desktop name matches handheld name</span></p>
+    </td>
+    <td><p class="tt"><a name="996481"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">N/A</span></p>
+    </td>
+    <td><p class="tt"><a name="996483"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Desktop index does not match handheld index</span></p>
+    </td>
+    <td><p class="tt"><a name="996485"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Change all desktop records in the category to use the handheld's category ID.</span></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996487"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Desktop name not found on handheld and desktop name has been modified</span></p>
+    </td>
+    <td><p class="tt"><a name="996489"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Desktop ID matches handheld ID</span></p>
+    </td>
+    <td><p class="tt"><a name="996491"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">N/A</span></p>
+    </td>
+    <td><p class="tt"><a name="996493"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Change category name on the handheld to match desktop.</span></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996495"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Desktop name not found on handheld</span></p>
+    </td>
+    <td><p class="tt"><a name="996497"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Desktop ID not found on handheld</span></p>
+    </td>
+    <td><p class="tt"><a name="996499"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Desktop index is not in use on handheld</span></p>
+    </td>
+    <td><p class="tt"><a name="996501"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Desktop category added to handheld.</span></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996503"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Desktop name not found on handheld</span></p>
+    </td>
+    <td><p class="tt"><a name="996505"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Desktop ID not found on handheld</span></p>
+    </td>
+    <td><p class="tt"><a name="996507"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Desktop index is already in use on handheld</span></p>
+    </td>
+    <td><p class="tt"><a name="996509"> </a><span style="color: #333;;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">Desktop category is added with next free index on handheld, and desktop records in the category are updated to use new index.</span></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 2001-2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="Intro_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="IntroToConduitsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_HotSyncExch.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_HSMBasics.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="IntroToConduitsIX.html">Index</a>
+</p>
+</td>
+</tr>
+<!-- END FOOTER -->
+
+</body>
+</html>

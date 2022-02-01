@@ -1,0 +1,289 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: ARM Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: ARM Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: ARM Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC22"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_21.html#SEC21"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_23.html#SEC23"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_23.html#SEC23"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 2.14.6 ARM Options </H3>
+<!--docid::SEC22::-->
+<P>
+
+These <SAMP>`-m'</SAMP> options are defined for Advanced RISC Machines (ARM)
+architectures:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-mapcs-frame</CODE>
+<DD><A NAME="IDX105"></A>
+Generate a stack frame that is compliant with the ARM Procedure Call
+Standard for all functions, even if this is not strictly necessary for
+correct execution of the code.  Specifying <SAMP>`-fomit-frame-pointer'</SAMP>
+with this option will cause the stack frames not to be generated for
+leaf functions.  The default is <SAMP>`-mno-apcs-frame'</SAMP>.
+<P>
+
+<DT><CODE>-mapcs</CODE>
+<DD><A NAME="IDX106"></A>
+This is a synonym for <SAMP>`-mapcs-frame'</SAMP>.
+<P>
+
+<DT><CODE>-mapcs-26</CODE>
+<DD><A NAME="IDX107"></A>
+Generate code for a processor running with a 26-bit program counter,
+and conforming to the function calling standards for the APCS 26-bit
+option.  This option replaces the <SAMP>`-m2'</SAMP> and <SAMP>`-m3'</SAMP> options
+of previous releases of the compiler.
+<P>
+
+<DT><CODE>-mapcs-32</CODE>
+<DD><A NAME="IDX108"></A>
+Generate code for a processor running with a 32-bit program counter,
+and conforming to the function calling standards for the APCS 32-bit
+option.  This option replaces the <SAMP>`-m6'</SAMP> option of previous releases
+of the compiler.
+<P>
+
+<DT><CODE>-mapcs-stack-check</CODE>
+<DD><A NAME="IDX109"></A>
+<A NAME="IDX110"></A>
+Generate code to check the amount of stack space available upon entry to
+every function (that actually uses some stack space).  If there is
+insufficient space available then either the function
+<SAMP>`__rt_stkovf_split_small'</SAMP> or <SAMP>`__rt_stkovf_split_big'</SAMP> will be
+called, depending upon the amount of stack space required.  The run time
+system is required to provide these functions.  The default is
+<SAMP>`-mno-apcs-stack-check'</SAMP>, since this produces smaller code.
+<P>
+
+<DT><CODE>-mapcs-float</CODE>
+<DD><A NAME="IDX111"></A>
+<A NAME="IDX112"></A>
+Pass floating point arguments using the float point registers.  This is
+one of the variants of the APCS.  This option is reccommended if the
+target hardware has a floating point unit or if a lot of floating point
+arithmetic is going to be performed by the code.  The default is
+<SAMP>`-mno-apcs-float'</SAMP>, since integer only code is slightly increased in
+size if <SAMP>`-mapcs-float'</SAMP> is used.
+<P>
+
+<DT><CODE>-mapcs-reentrant</CODE>
+<DD><A NAME="IDX113"></A>
+<A NAME="IDX114"></A>
+Generate reentrant, position independent code.  This is the equivalent
+to specifying the <SAMP>`-fpic'</SAMP> option.  The default is
+<SAMP>`-mno-apcs-reentrant'</SAMP>.
+<P>
+
+<DT><CODE>-mthumb-interwork</CODE>
+<DD><A NAME="IDX115"></A>
+<A NAME="IDX116"></A>
+Generate code which supports calling between the ARM and THUMB
+instruction sets.  Without this option the two instruction sets cannot
+be reliably used inside one program.  The default is
+<SAMP>`-mno-thumb-interwork'</SAMP>, since slightly larger code is generated
+when <SAMP>`-mthumb-interwork'</SAMP> is specified.
+<P>
+
+<DT><CODE>-mno-sched-prolog</CODE>
+<DD><A NAME="IDX117"></A>
+<A NAME="IDX118"></A>
+Prevent the reordering of instructions in the function prolog, or the
+merging of those instruction with the instructions in the function's
+body.  This means that all functions will start with a recognisable set
+of instructions (or in fact one of a chioce from a small set of
+different function prologues), and this information can be used to
+locate the start if functions inside an executable piece of code.  The
+default is <SAMP>`-msched-prolog'</SAMP>.
+<P>
+
+<DT><CODE>-mhard-float</CODE>
+<DD>Generate output containing floating point instructions.  This is the
+default.
+<P>
+
+<DT><CODE>-msoft-float</CODE>
+<DD>Generate output containing library calls for floating point.
+<STRONG>Warning:</STRONG> the requisite libraries are not available for all ARM
+targets.  Normally the facilities of the machine's usual C compiler are
+used, but this cannot be done directly in cross-compilation.  You must make
+your own arrangements to provide suitable library functions for
+cross-compilation.
+<P>
+
+<SAMP>`-msoft-float'</SAMP> changes the calling convention in the output file;
+therefore, it is only useful if you compile <EM>all</EM> of a program with
+this option.  In particular, you need to compile <TT>`libgcc.a'</TT>, the
+library that comes with GCC, with <SAMP>`-msoft-float'</SAMP> in order for
+this to work.
+</P><P>
+
+<DT><CODE>-mlittle-endian</CODE>
+<DD>Generate code for a processor running in little-endian mode.  This is
+the default for all standard configurations.
+<P>
+
+<DT><CODE>-mbig-endian</CODE>
+<DD>Generate code for a processor running in big-endian mode; the default is
+to compile code for a little-endian processor.
+<P>
+
+<DT><CODE>-mwords-little-endian</CODE>
+<DD>This option only applies when generating code for big-endian processors.
+Generate code for a little-endian word order but a big-endian byte
+order.  That is, a byte order of the form <SAMP>`32107654'</SAMP>.  Note: this
+option should only be used if you require compatibility with code for
+big-endian ARM processors generated by versions of the compiler prior to
+2.8.
+<P>
+
+<DT><CODE>-mshort-load-bytes</CODE>
+<DD><A NAME="IDX119"></A>
+Do not try to load half-words (eg <SAMP>`short'</SAMP>s) by loading a word from
+an unaligned address.  For some targets the MMU is configured to trap
+unaligned loads; use this option to generate code that is safe in these
+environments.
+<P>
+
+<DT><CODE>-mno-short-load-bytes</CODE>
+<DD><A NAME="IDX120"></A>
+Use unaligned word loads to load half-words (eg <SAMP>`short'</SAMP>s).  This
+option produces more efficient code, but the MMU is sometimes configured
+to trap these instructions.
+<P>
+
+<DT><CODE>-mshort-load-words</CODE>
+<DD><A NAME="IDX121"></A>
+This is a synonym for the <SAMP>`-mno-short-load-bytes'</SAMP>.
+<P>
+
+<DT><CODE>-mno-short-load-words</CODE>
+<DD><A NAME="IDX122"></A>
+This is a synonym for the <SAMP>`-mshort-load-bytes'</SAMP>.
+<P>
+
+<DT><CODE>-mbsd</CODE>
+<DD><A NAME="IDX123"></A>
+This option only applies to RISC iX.  Emulate the native BSD-mode
+compiler.  This is the default if <SAMP>`-ansi'</SAMP> is not specified.
+<P>
+
+<DT><CODE>-mxopen</CODE>
+<DD><A NAME="IDX124"></A>
+This option only applies to RISC iX.  Emulate the native X/Open-mode
+compiler.
+<P>
+
+<DT><CODE>-mno-symrename</CODE>
+<DD><A NAME="IDX125"></A>
+This option only applies to RISC iX.  Do not run the assembler
+post-processor, <SAMP>`symrename'</SAMP>, after code has been assembled.
+Normally it is necessary to modify some of the standard symbols in
+preparation for linking with the RISC iX C library; this option
+suppresses this pass.  The post-processor is never run when the
+compiler is built for cross-compilation.
+<P>
+
+<DT><CODE>-mcpu=&#60;name&#62;</CODE>
+<DD><DT><CODE>-mtune=&#60;name&#62;</CODE>
+<DD><A NAME="IDX126"></A>
+<A NAME="IDX127"></A>
+This specifies the name of the target ARM processor.  GCC uses this name
+to determine what kind of instructions it can use when generating
+assembly code.  Permissable names are: arm2, arm250, arm3, arm6, arm60,
+arm600, arm610, arm620, arm7, arm7m, arm7d, arm7dm, arm7di, arm7dmi,
+arm70, arm700, arm700i, arm710, arm710c, arm7100, arm7500, arm7500fe,
+arm7tdmi, arm8, strongarm, strongarm110, strongarm1100, arm8, arm810,
+arm9, arm9tdmi.  <SAMP>`-mtune='</SAMP> is a synonym for <SAMP>`-mcpue='</SAMP> to
+support older versions of GCC.
+<P>
+
+<DT><CODE>-march=&#60;name&#62;</CODE>
+<DD><A NAME="IDX128"></A>
+This specifies the name of the target ARM architecture.  GCC uses this
+name to determine what kind of instructions it can use when generating
+assembly code.  This option can be used in conjunction with or instead
+of the <SAMP>`-mcpu='</SAMP> option.  Permissable names are: armv2, armv2a,
+armv3, armv3m, armv4, armv4t
+<P>
+
+<DT><CODE>-mfpe=&#60;number&#62;</CODE>
+<DD><DT><CODE>-mfp=&#60;number&#62;</CODE>
+<DD><A NAME="IDX129"></A>
+<A NAME="IDX130"></A>
+This specifes the version of the floating point emulation available on
+the target.  Permissable values are 2 and 3.  <SAMP>`-mfp='</SAMP> is a synonym
+for <SAMP>`-mfpe='</SAMP> to support older versions of GCC.
+<P>
+
+<DT><CODE>-mstructure-size-boundary=&#60;n&#62;</CODE>
+<DD><A NAME="IDX131"></A>
+The size of all structures and unions will be rounded up to a multiple
+of the number of bits set by this option.  Permissable values are 8 and
+32.  The default value varies for different toolchains.  For the COFF
+targeted toolchain the default value is 8.  Specifying the larger number
+can produced faster, more efficient code, but can also increase the size
+of the program.  The two values are potentially incompatible.  Code
+compiled with one value cannot necessarily expect to work with code or
+libraries compiled with the other value, if they exchange information
+using structures or unions.  Programmers are encouraged to use the 32
+value as future versions of the toolchain may default to this value.
+<P>
+
+<DT><CODE>-mabort-on-noreturn</CODE>
+<DD><A NAME="IDX132"></A>
+<A NAME="IDX133"></A>
+Generate a call to the function abort at the end of a noreturn function.
+It will be executed if the function tries to return.
+<P>
+
+</DL>
+<P>
+
+<A NAME="Thumb Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_21.html#SEC21"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_23.html#SEC23"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_23.html#SEC23"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

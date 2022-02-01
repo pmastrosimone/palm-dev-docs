@@ -1,0 +1,112 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Stub Contents</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Stub Contents">
+<META NAME="keywords" CONTENT="Debugging with GDB: Stub Contents">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC137"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_136.html#SEC136"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_138.html#SEC138"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_136.html#SEC136"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 17.3.1 What the stub can do for you </H3>
+<!--docid::SEC137::-->
+<P>
+
+<A NAME="IDX624"></A>
+The debugging stub for your architecture supplies these three
+subroutines:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>set_debug_traps</CODE>
+<DD><A NAME="IDX625"></A>
+<A NAME="IDX626"></A>
+This routine arranges for <CODE>handle_exception</CODE> to run when your
+program stops.  You must call this subroutine explicitly near the
+beginning of your program.
+<P>
+
+<DT><CODE>handle_exception</CODE>
+<DD><A NAME="IDX627"></A>
+<A NAME="IDX628"></A>
+This is the central workhorse, but your program never calls it
+explicitly--the setup code arranges for <CODE>handle_exception</CODE> to
+run when a trap is triggered.
+<P>
+
+<CODE>handle_exception</CODE> takes control when your program stops during
+execution (for example, on a breakpoint), and mediates communications
+with GDB on the host machine.  This is where the communications
+protocol is implemented; <CODE>handle_exception</CODE> acts as the GDB
+representative on the target machine.  It begins by sending summary
+information on the state of your program, then continues to execute,
+retrieving and transmitting any information GDB needs, until you
+execute a GDB command that makes your program resume; at that point,
+<CODE>handle_exception</CODE> returns control to your own code on the target
+machine.
+</P><P>
+
+<DT><CODE>breakpoint</CODE>
+<DD><A NAME="IDX629"></A>
+Use this auxiliary subroutine to make your program contain a
+breakpoint.  Depending on the particular situation, this may be the only
+way for GDB to get control.  For instance, if your target
+machine has some sort of interrupt button, you won't need to call this;
+pressing the interrupt button transfers control to
+<CODE>handle_exception</CODE>---in effect, to GDB.  On some machines,
+simply receiving characters on the serial port may also trigger a trap;
+again, in that situation, you don't need to call <CODE>breakpoint</CODE> from
+your own program--simply running <SAMP>`target remote'</SAMP> from the host
+GDB session gets control.
+<P>
+
+Call <CODE>breakpoint</CODE> if none of these is true, or if you simply want
+to make certain your program stops at a predetermined point for the
+start of your debugging session.
+</DL>
+<P>
+
+<A NAME="Bootstrapping"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_136.html#SEC136"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_138.html#SEC138"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_136.html#SEC136"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

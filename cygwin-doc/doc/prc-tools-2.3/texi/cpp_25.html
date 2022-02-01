@@ -1,0 +1,120 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Self-Reference</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Self-Reference">
+<META NAME="keywords" CONTENT="The C Preprocessor: Self-Reference">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC25"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_24.html#SEC24"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_26.html#SEC26"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_20.html#SEC20"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 1.4.8.5 Self-Referential Macros </H4>
+<!--docid::SEC25::-->
+<P>
+
+<A NAME="IDX50"></A>
+A <EM>self-referential</EM> macro is one whose name appears in its definition.
+A special feature of ANSI Standard C is that the self-reference is not
+considered a macro call.  It is passed into the preprocessor output
+unchanged.
+</P><P>
+
+Let's consider an example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define foo (4 + foo)
+</pre></td></tr></table></P><P>
+
+where <SAMP>`foo'</SAMP> is also a variable in your program.
+</P><P>
+
+Following the ordinary rules, each reference to <SAMP>`foo'</SAMP> will expand into
+<SAMP>`(4 + foo)'</SAMP>; then this will be rescanned and will expand into <SAMP>`(4
++ (4 + foo))'</SAMP>; and so on until it causes a fatal error (memory full) in the
+preprocessor.
+</P><P>
+
+However, the special rule about self-reference cuts this process short
+after one step, at <SAMP>`(4 + foo)'</SAMP>.  Therefore, this macro definition
+has the possibly useful effect of causing the program to add 4 to
+the value of <SAMP>`foo'</SAMP> wherever <SAMP>`foo'</SAMP> is referred to.
+</P><P>
+
+In most cases, it is a bad idea to take advantage of this feature.  A
+person reading the program who sees that <SAMP>`foo'</SAMP> is a variable will
+not expect that it is a macro as well.  The reader will come across the
+identifier <SAMP>`foo'</SAMP> in the program and think its value should be that
+of the variable <SAMP>`foo'</SAMP>, whereas in fact the value is four greater.
+</P><P>
+
+The special rule for self-reference applies also to <EM>indirect</EM>
+self-reference.  This is the case where a macro <VAR>x</VAR> expands to use a
+macro <SAMP>`y'</SAMP>, and the expansion of <SAMP>`y'</SAMP> refers to the macro
+<SAMP>`x'</SAMP>.  The resulting reference to <SAMP>`x'</SAMP> comes indirectly from the
+expansion of <SAMP>`x'</SAMP>, so it is a self-reference and is not further
+expanded.  Thus, after
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define x (4 + y)
+#define y (2 * x)
+</pre></td></tr></table></P><P>
+
+<SAMP>`x'</SAMP> would expand into <SAMP>`(4 + (2 * x))'</SAMP>.  Clear?
+</P><P>
+
+But suppose <SAMP>`y'</SAMP> is used elsewhere, not from the definition of <SAMP>`x'</SAMP>.
+Then the use of <SAMP>`x'</SAMP> in the expansion of <SAMP>`y'</SAMP> is not a self-reference
+because <SAMP>`x'</SAMP> is not "in progress".  So it does expand.  However,
+the expansion of <SAMP>`x'</SAMP> contains a reference to <SAMP>`y'</SAMP>, and that
+is an indirect self-reference now because <SAMP>`y'</SAMP> is "in progress".
+The result is that <SAMP>`y'</SAMP> expands to <SAMP>`(2 * (4 + y))'</SAMP>.
+</P><P>
+
+It is not clear that this behavior would ever be useful, but it is specified
+by the ANSI C standard, so you may need to understand it.
+</P><P>
+
+<A NAME="Argument Prescan"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_24.html#SEC24"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_26.html#SEC26"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_20.html#SEC20"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

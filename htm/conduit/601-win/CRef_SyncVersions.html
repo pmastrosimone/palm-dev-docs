@@ -1,0 +1,161 @@
+<html>
+<head>
+<title>Overview of the Sync Manager API | C/C++ Sync Suite Reference</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="KEYWORDS" CONTENT="C, C++, C/C++ Sync Suite, Sync Manager, overview, sync, syncmgr, reference, API, CDK, conduit, conduits, Windows">
+<META NAME="DESCRIPTION" CONTENT="Introduces the Sync Manager API in the C/C++ Sync Suite.">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource HTML 20040609">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="LASTUPDATED" CONTENT="06/28/04 08:29:59">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="1065297"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncReferenceTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CRef_Part_SyncMgr.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CRef_SyncSchema.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncReferenceIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">1 &nbsp;&nbsp;
+Overview of the Sync Manager API</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">C/C++ Sync Suite Reference</p>
+<p class="SubTitle">Palm OS&#174; Conduit Development Kit for Windows, Version 6.0.1 </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="CRef_Part_SyncMgr.html">Part I: Sync Manager API</a> </h1>
+
+</div>
+</td>
+<!--END SIDETOC-->
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="1067119"> </a>The Sync Manager API is declared across four separate header files. Each header file declares the functions that access only one of the three types of databases: schema (<code>SyncDb.h</code>), extended (<code>SyncDm.h</code>), and classic (<code>SyncMgr.h</code>) databases. The fourth header file (<code>SyncCommon.h</code>) declares functions either that work with all three types of databases or that do not access databases at all; therefore it is included by each of the other three header files.</p>
+
+<p><a name="1067120"> </a>Most conduits need to access only one type of database. Therefore you should include either <code>SyncDb.h</code>, <code>SyncDm.h</code>, or <code>SyncMgr.h</code>, but not more than one of these. The distinction between extended and classic database types is much greater in the desktop Sync Manager API than it is with the handheld Data Manager API. On the handheld, the Data Manager functions work with extended databases by default, unless you include the <code>DmCompatibility.h</code> header file to work with classic databases. The Sync Manager API consists of three separate sets of functions, each for working with a different type of database.</p>
+
+<p><a name="1067135"> </a>All Sync Manager functions are available in <code>Sync20.dll</code>.</p>
+
+<h4 class="hcH4">
+  <a name="1065342"> </a>Sync Manager API Versions
+</h4>
+
+<p><a name="1067072"> </a>The Sync Manager continues to evolve with new functions and new versions of existing functions. Each version of the Sync Manager API has a major version number and a minor version number. You can determine the version of the Sync Manager API that you are using by calling the <a href="CRef_SyncCommon.html#1000322"><code>SyncGetAPIVersion()</code></a> function. </p>
+
+<p><a name="1065346"> </a>The Sync Manager maintains backward compatibility within a major version. The Sync Manager minor version number changes when new functions are added or bugs are fixed. This document includes version information for each function.</p>
+
+<p><a name="1065348"> </a>If your conduit depends on functions that are available only in certain versions of the Sync Manager API, you need to determine the version of the Sync Manager API with which you are dealing on a specific installation. To do so, call <code>SyncGetAPIVersion()</code>, which returns both the major version number and minor version number of the Sync Manager API on the desktop computer. </p>
+
+<p><a name="1067193"> </a>For example, if your conduit depends on a function that was added in version 2.5 of the Sync Manager API, you need to call the <code>SyncGetAPIVersion()</code> function and then verify that the major number is 2 or greater and that the minor version number is 5 or greater.</p>
+
+<p><a name="1067194"> </a>For a description of what's new in each version of the Sync Manager API, see <a href="Intro_WhatsNew.html#995934">"What's New in the Palm OS CDK"</a> in the <i>Introduction to Conduit Development</i>.</p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1998-2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="CRef_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncReferenceTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CRef_Part_SyncMgr.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CRef_SyncSchema.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncReferenceIX.html">Index</a>
+</p>
+</td>
+</tr>
+<!-- END FOOTER -->
+
+</body>
+</html>

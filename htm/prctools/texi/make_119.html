@@ -1,0 +1,87 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Archive Suffix Rules</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Archive Suffix Rules">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Archive Suffix Rules">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC123"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_118.html#SEC122"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_120.html#SEC124"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_120.html#SEC124"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 11.4 Suffix Rules for Archive Files </H2>
+<!--docid::SEC123::-->
+<P>
+
+You can write a special kind of suffix rule for dealing with archive
+files.  See section <A HREF="make_112.html#SEC116">10.7 Old-Fashioned Suffix Rules</A>, for a full explanation of suffix rules.
+Archive suffix rules are obsolete in GNU <CODE>make</CODE>, because pattern
+rules for archives are a more general mechanism (see section <A HREF="make_116.html#SEC120">11.2 Implicit Rule for Archive Member Targets</A>).  But they are retained for compatibility with other
+<CODE>make</CODE>s.
+</P><P>
+
+To write a suffix rule for archives, you simply write a suffix rule
+using the target suffix <SAMP>`.a'</SAMP> (the usual suffix for archive files).
+For example, here is the old-fashioned suffix rule to update a library
+archive from C source files:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.c.a:
+        $(CC) $(CFLAGS) $(CPPFLAGS) -c $&#60; -o $*.o
+        $(AR) r $@ $*.o
+        $(RM) $*.o
+</pre></td></tr></table></P><P>
+
+This works just as if you had written the pattern rule:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(%.o): %.c
+        $(CC) $(CFLAGS) $(CPPFLAGS) -c $&#60; -o $*.o
+        $(AR) r $@ $*.o
+        $(RM) $*.o
+</pre></td></tr></table></P><P>
+
+In fact, this is just what <CODE>make</CODE> does when it sees a suffix rule
+with <SAMP>`.a'</SAMP> as the target suffix.  Any double-suffix rule
+<SAMP>`.<VAR>x</VAR>.a'</SAMP> is converted to a pattern rule with the target
+pattern <SAMP>`(%.o)'</SAMP> and a prerequisite pattern of <SAMP>`%.<VAR>x</VAR>'</SAMP>.
+</P><P>
+
+Since you might want to use <SAMP>`.a'</SAMP> as the suffix for some other kind
+of file, <CODE>make</CODE> also converts archive suffix rules to pattern rules
+in the normal way (see section <A HREF="make_112.html#SEC116">10.7 Old-Fashioned Suffix Rules</A>).  Thus a double-suffix rule
+<SAMP>`.<VAR>x</VAR>.a'</SAMP> produces two pattern rules: <SAMP>`(%.o):
+%.<VAR>x</VAR>'</SAMP> and <SAMP>`%.a: %.<VAR>x</VAR>'</SAMP>.</P><P>
+
+<A NAME="Features"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

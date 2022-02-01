@@ -1,0 +1,311 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: VMS Install</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: VMS Install">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: VMS Install">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC58"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_57.html#SEC57"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_59.html#SEC59"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_59.html#SEC59"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.6 Installing GNU CC on VMS </H2>
+<!--docid::SEC58::-->
+<P>
+
+The VMS version of GNU CC is distributed in a backup saveset containing
+both source code and precompiled binaries.
+</P><P>
+
+To install the <TT>`gcc'</TT> command so you can use the compiler easily, in
+the same manner as you use the VMS C compiler, you must install the VMS CLD
+file for GNU CC as follows:
+</P><P>
+
+<OL>
+<LI>
+Define the VMS logical names <SAMP>`GNU_CC'</SAMP> and <SAMP>`GNU_CC_INCLUDE'</SAMP>
+to point to the directories where the GNU CC executables
+(<TT>`gcc-cpp.exe'</TT>, <TT>`gcc-cc1.exe'</TT>, etc.) and the C include files are
+kept respectively.  This should be done with the commands:<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$ assign /system /translation=concealed -
+  disk:[gcc.] gnu_cc
+$ assign /system /translation=concealed -
+  disk:[gcc.include.] gnu_cc_include
+</FONT></pre></td></tr></table></P><P>
+
+with the appropriate disk and directory names.  These commands can be
+placed in your system startup file so they will be executed whenever
+the machine is rebooted.  You may, if you choose, do this via the
+<TT>`GCC_INSTALL.COM'</TT> script in the <TT>`[GCC]'</TT> directory.
+</P><P>
+
+<LI>
+Install the <TT>`GCC'</TT> command with the command line:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$ set command /table=sys$common:[syslib]dcltables -
+  /output=sys$common:[syslib]dcltables gnu_cc:[000000]gcc
+$ install replace sys$common:[syslib]dcltables
+</FONT></pre></td></tr></table></P><P>
+
+<LI>
+To install the help file, do the following:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$ library/help sys$library:helplib.hlb gcc.hlp
+</FONT></pre></td></tr></table></P><P>
+
+Now you can invoke the compiler with a command like <SAMP>`gcc /verbose
+file.c'</SAMP>, which is equivalent to the command <SAMP>`gcc -v -c file.c'</SAMP> in
+Unix.
+</OL>
+<P>
+
+If you wish to use GNU C++ you must first install GNU CC, and then
+perform the following steps:
+</P><P>
+
+<OL>
+<LI>
+Define the VMS logical name <SAMP>`GNU_GXX_INCLUDE'</SAMP> to point to the
+directory where the preprocessor will search for the C++ header files.
+This can be done with the command:<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$ assign /system /translation=concealed -
+  disk:[gcc.gxx_include.] gnu_gxx_include
+</FONT></pre></td></tr></table></P><P>
+
+with the appropriate disk and directory name.  If you are going to be
+using a C++ runtime library, this is where its install procedure will install
+its header files.
+</P><P>
+
+<LI>
+Obtain the file <TT>`gcc-cc1plus.exe'</TT>, and place this in the same
+directory that <TT>`gcc-cc1.exe'</TT> is kept.
+<P>
+
+The GNU C++ compiler can be invoked with a command like <SAMP>`gcc /plus
+/verbose file.cc'</SAMP>, which is equivalent to the command <SAMP>`g++ -v -c
+file.cc'</SAMP> in Unix.
+</OL>
+<P>
+
+We try to put corresponding binaries and sources on the VMS distribution
+tape.  But sometimes the binaries will be from an older version than the
+sources, because we don't always have time to update them.  (Use the
+<SAMP>`/version'</SAMP> option to determine the version number of the binaries and
+compare it with the source file <TT>`version.c'</TT> to tell whether this is
+so.)  In this case, you should use the binaries you get to recompile the
+sources.  If you must recompile, here is how:
+</P><P>
+
+<OL>
+<LI>
+Execute the command procedure <TT>`vmsconfig.com'</TT> to set up the files
+<TT>`tm.h'</TT>, <TT>`config.h'</TT>, <TT>`aux-output.c'</TT>, and <TT>`md.'</TT>, and
+to create files <TT>`tconfig.h'</TT> and <TT>`hconfig.h'</TT>.  This procedure
+also creates several linker option files used by <TT>`make-cc1.com'</TT> and
+a data file used by <TT>`make-l2.com'</TT>.<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$ @vmsconfig.com
+</FONT></pre></td></tr></table></P><P>
+
+<LI>
+Setup the logical names and command tables as defined above.  In
+addition, define the VMS logical name <SAMP>`GNU_BISON'</SAMP> to point at the
+to the directories where the Bison executable is kept.  This should be
+done with the command:<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$ assign /system /translation=concealed -
+  disk:[bison.] gnu_bison
+</FONT></pre></td></tr></table></P><P>
+
+You may, if you choose, use the <TT>`INSTALL_BISON.COM'</TT> script in the
+<TT>`[BISON]'</TT> directory.
+</P><P>
+
+<LI>
+Install the <SAMP>`BISON'</SAMP> command with the command line:<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$ set command /table=sys$common:[syslib]dcltables -
+  /output=sys$common:[syslib]dcltables -
+  gnu_bison:[000000]bison
+$ install replace sys$common:[syslib]dcltables
+</FONT></pre></td></tr></table></P><P>
+
+<LI>
+Type <SAMP>`@make-gcc'</SAMP> to recompile everything (alternatively, submit
+the file <TT>`make-gcc.com'</TT> to a batch queue).  If you wish to build
+the GNU C++ compiler as well as the GNU CC compiler, you must first edit
+<TT>`make-gcc.com'</TT> and follow the instructions that appear in the
+comments.<P>
+
+<LI>
+In order to use GCC, you need a library of functions which GCC compiled code
+will call to perform certain tasks, and these functions are defined in the
+file <TT>`libgcc2.c'</TT>.  To compile this you should use the command procedure
+<TT>`make-l2.com'</TT>, which will generate the library <TT>`libgcc2.olb'</TT>.
+<TT>`libgcc2.olb'</TT> should be built using the compiler built from
+the same distribution that <TT>`libgcc2.c'</TT> came from, and
+<TT>`make-gcc.com'</TT> will automatically do all of this for you.
+<P>
+
+To install the library, use the following commands:</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$ library gnu_cc:[000000]gcclib/delete=(new,eprintf)
+$ library gnu_cc:[000000]gcclib/delete=L_*
+$ library libgcc2/extract=*/output=libgcc2.obj
+$ library gnu_cc:[000000]gcclib libgcc2.obj
+</FONT></pre></td></tr></table></P><P>
+
+The first command simply removes old modules that will be replaced with
+modules from <TT>`libgcc2'</TT> under different module names.  The modules
+<CODE>new</CODE> and <CODE>eprintf</CODE> may not actually be present in your
+<TT>`gcclib.olb'</TT>---if the VMS librarian complains about those modules
+not being present, simply ignore the message and continue on with the
+next command.  The second command removes the modules that came from the
+previous version of the library <TT>`libgcc2.c'</TT>.
+</P><P>
+
+Whenever you update the compiler on your system, you should also update the
+library with the above procedure.
+</P><P>
+
+<LI>
+You may wish to build GCC in such a way that no files are written to the
+directory where the source files reside.  An example would be the when
+the source files are on a read-only disk.  In these cases, execute the
+following DCL commands (substituting your actual path names):
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$ assign dua0:[gcc.build_dir.]/translation=concealed, -
+         dua1:[gcc.source_dir.]/translation=concealed  gcc_build
+$ set default gcc_build:[000000]
+</FONT></pre></td></tr></table></P><P>
+
+where the directory <TT>`dua1:[gcc.source_dir]'</TT> contains the source
+code, and the directory <TT>`dua0:[gcc.build_dir]'</TT> is meant to contain
+all of the generated object files and executables.  Once you have done
+this, you can proceed building GCC as described above.  (Keep in mind
+that <TT>`gcc_build'</TT> is a rooted logical name, and thus the device
+names in each element of the search list must be an actual physical
+device name rather than another rooted logical name).
+</P><P>
+
+<LI>
+<STRONG>If you are building GNU CC with a previous version of GNU CC,
+you also should check to see that you have the newest version of the
+assembler</STRONG>.  In particular, GNU CC version 2 treats global constant
+variables slightly differently from GNU CC version 1, and GAS version
+1.38.1 does not have the patches required to work with GCC version 2.
+If you use GAS 1.38.1, then <CODE>extern const</CODE> variables will not have
+the read-only bit set, and the linker will generate warning messages
+about mismatched psect attributes for these variables.  These warning
+messages are merely a nuisance, and can safely be ignored.
+<P>
+
+If you are compiling with a version of GNU CC older than 1.33, specify
+<SAMP>`/DEFINE=("inline=")'</SAMP> as an option in all the compilations.  This
+requires editing all the <CODE>gcc</CODE> commands in <TT>`make-cc1.com'</TT>.
+(The older versions had problems supporting <CODE>inline</CODE>.)  Once you
+have a working 1.33 or newer GNU CC, you can change this file back.
+</P><P>
+
+<LI>
+If you want to build GNU CC with the VAX C compiler, you will need to
+make minor changes in <TT>`make-cccp.com'</TT> and <TT>`make-cc1.com'</TT>
+to choose alternate definitions of <CODE>CC</CODE>, <CODE>CFLAGS</CODE>, and
+<CODE>LIBS</CODE>.  See comments in those files.  However, you must
+also have a working version of the GNU assembler (GNU as, aka GAS) as
+it is used as the back-end for GNU CC to produce binary object modules
+and is not included in the GNU CC sources.  GAS is also needed to
+compile <TT>`libgcc2'</TT> in order to build <TT>`gcclib'</TT> (see above);
+<TT>`make-l2.com'</TT> expects to be able to find it operational in
+<TT>`gnu_cc:[000000]gnu-as.exe'</TT>.
+<P>
+
+To use GNU CC on VMS, you need the VMS driver programs
+<TT>`gcc.exe'</TT>, <TT>`gcc.com'</TT>, and <TT>`gcc.cld'</TT>.  They are
+distributed with the VMS binaries (<TT>`gcc-vms'</TT>) rather than the
+GNU CC sources.  GAS is also included in <TT>`gcc-vms'</TT>, as is Bison.
+</P><P>
+
+Once you have successfully built GNU CC with VAX C, you should use the
+resulting compiler to rebuild itself.  Before doing this, be sure to
+restore the <CODE>CC</CODE>, <CODE>CFLAGS</CODE>, and <CODE>LIBS</CODE> definitions in
+<TT>`make-cccp.com'</TT> and <TT>`make-cc1.com'</TT>.  The second generation
+compiler will be able to take advantage of many optimizations that must
+be suppressed when building with other compilers.
+</OL>
+<P>
+
+Under previous versions of GNU CC, the generated code would occasionally
+give strange results when linked with the sharable <TT>`VAXCRTL'</TT> library.
+Now this should work.
+</P><P>
+
+Even with this version, however, GNU CC itself should not be linked with
+the sharable <TT>`VAXCRTL'</TT>.  The version of <CODE>qsort</CODE> in
+<TT>`VAXCRTL'</TT> has a bug (known to be present in VMS versions V4.6
+through V5.5) which causes the compiler to fail.
+</P><P>
+
+The executables are generated by <TT>`make-cc1.com'</TT> and
+<TT>`make-cccp.com'</TT> use the object library version of <TT>`VAXCRTL'</TT> in
+order to make use of the <CODE>qsort</CODE> routine in <TT>`gcclib.olb'</TT>.  If
+you wish to link the compiler executables with the shareable image
+version of <TT>`VAXCRTL'</TT>, you should edit the file <TT>`tm.h'</TT> (created
+by <TT>`vmsconfig.com'</TT>) to define the macro <CODE>QSORT_WORKAROUND</CODE>.
+</P><P>
+
+<CODE>QSORT_WORKAROUND</CODE> is always defined when GNU CC is compiled with
+VAX C, to avoid a problem in case <TT>`gcclib.olb'</TT> is not yet
+available.
+</P><P>
+
+<A NAME="Collect2"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_57.html#SEC57"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_59.html#SEC59"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_59.html#SEC59"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

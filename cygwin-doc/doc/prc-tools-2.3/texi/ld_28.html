@@ -1,0 +1,124 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Output Section Data</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Output Section Data">
+<META NAME="keywords" CONTENT="Untitled Document: Output Section Data">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC28"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_27.html#SEC27"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_29.html#SEC29"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_29.html#SEC29"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_18.html#SEC18"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.6.5 Output Section Data </H3>
+<!--docid::SEC28::-->
+You can include explicit bytes of data in an output section by using
+<CODE>BYTE</CODE>, <CODE>SHORT</CODE>, <CODE>LONG</CODE>, <CODE>QUAD</CODE>, or <CODE>SQUAD</CODE> as
+an output section command.  Each keyword is followed by an expression in
+parentheses providing the value to store (see section <A HREF="ld_41.html#SEC41">3.10 Expressions in Linker Scripts</A>).  The
+value of the expression is stored at the current value of the location
+counter.
+<P>
+
+The <CODE>BYTE</CODE>, <CODE>SHORT</CODE>, <CODE>LONG</CODE>, and <CODE>QUAD</CODE> commands
+store one, two, four, and eight bytes (respectively).  After storing the
+bytes, the location counter is incremented by the number of bytes
+stored.
+</P><P>
+
+For example, this will store the byte 1 followed by the four byte value
+of the symbol <SAMP>`addr'</SAMP>:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>BYTE(1)
+LONG(addr)
+</FONT></pre></td></tr></table></P><P>
+
+When using a 64 bit host or target, <CODE>QUAD</CODE> and <CODE>SQUAD</CODE> are the
+same; they both store an 8 byte, or 64 bit, value.  When both host and
+target are 32 bits, an expression is computed as 32 bits.  In this case
+<CODE>QUAD</CODE> stores a 32 bit value zero extended to 64 bits, and
+<CODE>SQUAD</CODE> stores a 32 bit value sign extended to 64 bits.
+</P><P>
+
+If the object file format of the output file has an explicit endianness,
+which is the normal case, the value will be stored in that endianness.
+When the object file format does not have an explicit endianness, as is
+true of, for example, S-records, the value will be stored in the
+endianness of the first input object file.
+</P><P>
+
+Note--these commands only work inside a section description and not
+between them, so the following will produce an error from the linker:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS { .text : { *(.text) } LONG(1) .data : { *(.data) } }
+</FONT></pre></td></tr></table>whereas this will work:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS { .text : { *(.text) ; LONG(1) } .data : { *(.data) } }
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX309"></A>
+<A NAME="IDX310"></A>
+<A NAME="IDX311"></A>
+You may use the <CODE>FILL</CODE> command to set the fill pattern for the
+current section.  It is followed by an expression in parentheses.  Any
+otherwise unspecified regions of memory within the section (for example,
+gaps left due to the required alignment of input sections) are filled
+with the value of the expression, repeated as
+necessary.  A <CODE>FILL</CODE> statement covers memory locations after the
+point at which it occurs in the section definition; by including more
+than one <CODE>FILL</CODE> statement, you can have different fill patterns in
+different parts of an output section.
+</P><P>
+
+This example shows how to fill unspecified regions of memory with the
+value <SAMP>`0x90'</SAMP>:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>FILL(0x90909090)
+</FONT></pre></td></tr></table></P><P>
+
+The <CODE>FILL</CODE> command is similar to the <SAMP>`=<VAR>fillexp</VAR>'</SAMP> output
+section attribute, but it only affects the
+part of the section following the <CODE>FILL</CODE> command, rather than the
+entire section.  If both are used, the <CODE>FILL</CODE> command takes
+precedence.  See section <A HREF="ld_36.html#SEC36">3.6.8.5 Output Section Fill</A>, for details on the fill
+expression.
+</P><P>
+
+<A NAME="Output Section Keywords"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_27.html#SEC27"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_29.html#SEC29"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_29.html#SEC29"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_18.html#SEC18"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

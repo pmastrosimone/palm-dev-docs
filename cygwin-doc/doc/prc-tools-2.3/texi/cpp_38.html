@@ -1,0 +1,88 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: #error Directive</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: #error Directive">
+<META NAME="keywords" CONTENT="The C Preprocessor: #error Directive">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC38"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_37.html#SEC37"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_39.html#SEC39"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 1.5.6 The <SAMP>`#error'</SAMP> and <SAMP>`#warning'</SAMP> Directives </H3>
+<!--docid::SEC38::-->
+<P>
+
+<A NAME="IDX71"></A>
+The directive <SAMP>`#error'</SAMP> causes the preprocessor to report a fatal
+error.  The rest of the line that follows <SAMP>`#error'</SAMP> is used as the
+error message.  The line must consist of complete tokens.
+</P><P>
+
+You would use <SAMP>`#error'</SAMP> inside of a conditional that detects a
+combination of parameters which you know the program does not properly
+support.  For example, if you know that the program will not run
+properly on a Vax, you might write
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>#ifdef __vax__
+#error "Won't work on Vaxen.  See comments at get_last_object."
+#endif
+</FONT></pre></td></tr></table></P><P>
+
+See section <A HREF="cpp_15.html#SEC15">1.4.3.2 Nonstandard Predefined Macros</A>, for why this works.
+</P><P>
+
+If you have several configuration parameters that must be set up by
+the installation in a consistent way, you can use conditionals to detect
+an inconsistency and report it with <SAMP>`#error'</SAMP>.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>#if HASH_TABLE_SIZE % 2 == 0 || HASH_TABLE_SIZE % 3 == 0 \
+    || HASH_TABLE_SIZE % 5 == 0
+#error HASH_TABLE_SIZE should not be divisible by a small prime
+#endif
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX72"></A>
+The directive <SAMP>`#warning'</SAMP> is like the directive <SAMP>`#error'</SAMP>, but causes
+the preprocessor to issue a warning and continue preprocessing.  The rest of
+the line that follows <SAMP>`#warning'</SAMP> is used as the warning message.
+</P><P>
+
+You might use <SAMP>`#warning'</SAMP> in obsolete header files, with a message
+directing the user to the header file which should be used instead.
+</P><P>
+
+<A NAME="Combining Sources"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

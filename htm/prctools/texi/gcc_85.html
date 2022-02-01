@@ -1,0 +1,101 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Function Prototypes</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Function Prototypes">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Function Prototypes">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC85"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_84.html#SEC84"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_86.html#SEC86"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_64.html#SEC64"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.24 Prototypes and Old-Style Function Definitions </H2>
+<!--docid::SEC85::-->
+<P>
+
+GNU C extends ANSI C to allow a function prototype to override a later
+old-style non-prototype definition.  Consider the following example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>/* Use prototypes unless the compiler is old-fashioned.  */
+#ifdef __STDC__
+#define P(x) x
+#else
+#define P(x) ()
+#endif
+
+/* Prototype function declaration.  */
+int isroot P((uid_t));
+
+/* Old-style function definition.  */
+int
+isroot (x)   /* ??? lossage here ??? */
+     uid_t x;
+{
+  return x == 0;
+}
+</pre></td></tr></table></P><P>
+
+Suppose the type <CODE>uid_t</CODE> happens to be <CODE>short</CODE>.  ANSI C does
+not allow this example, because subword arguments in old-style
+non-prototype definitions are promoted.  Therefore in this example the
+function definition's argument is really an <CODE>int</CODE>, which does not
+match the prototype argument type of <CODE>short</CODE>.
+</P><P>
+
+This restriction of ANSI C makes it hard to write code that is portable
+to traditional C compilers, because the programmer does not know
+whether the <CODE>uid_t</CODE> type is <CODE>short</CODE>, <CODE>int</CODE>, or
+<CODE>long</CODE>.  Therefore, in cases like these GNU C allows a prototype
+to override a later old-style definition.  More precisely, in GNU C, a
+function prototype argument type overrides the argument type specified
+by a later old-style definition if the former type is the same as the
+latter type before promotion.  Thus in GNU C the above example is
+equivalent to the following:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>int isroot (uid_t);
+
+int
+isroot (uid_t x)
+{
+  return x == 0;
+}
+</pre></td></tr></table></P><P>
+
+GNU C++ does not support old-style function definitions, so this
+extension is irrelevant.
+</P><P>
+
+<A NAME="C++ Comments"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

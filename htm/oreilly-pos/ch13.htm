@@ -1,0 +1,2418 @@
+<HTML>
+<HEAD>
+<TITLE>Palm OS:  &#160;13.&#160; Two-Way Syncing </TITLE>
+<META NAME="GENERATOR" CONTENT="Transit Central Station 3.2 by InfoAccess Inc. www.infoaccess.com">
+</HEAD>
+<BODY BACKGROUND="images/grnitbkg.gif"><A NAME="TopOfPage"> </A>
+<A HREF="http://www.oreilly.com/catalog/palmprog/"><IMG SRC="images/palm_comp_ani_ad.gif" ALT="Order the book from O'Reilly" BORDER=0 width="468" height="60"></A>
+<P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch12.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch14.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P><P><I>In this chapter:</I></P>
+
+
+  <UL COMPACT><LI><A HREF="#P27_599" NAME="LOC_P27_599">The Logic of Syncing</A></LI>
+
+  <LI><A HREF="#P147_9107" NAME="LOC_P147_9107">The Conduit Classes</A></LI>
+
+  <LI><A HREF="#P371_21751" NAME="LOC_P371_21751">Sales Conduit Sample Based <BR>
+on the Classes</A></LI>
+
+  <LI><A HREF="#P1768_73647" NAME="LOC_P1768_73647">Generic Conduit</A></LI>
+
+  <LI><A HREF="#P1860_81433" NAME="LOC_P1860_81433">Sales Conduit Based on Generic Conduit</A></LI></UL>
+<P><UL><UL><UL><UL><UL><UL><UL><UL><UL><UL>
+<TABLE>
+<TR>
+<TD WIDTH=156>
+</TD></TR></TABLE></UL></UL></UL></UL></UL></UL></UL></UL></UL></UL>
+
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+<H1 ALIGN=LEFT><I><FONT SIZE=+3>&#160;13.&#160; Two-Way Syncing</FONT></I></H1>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P24_199"></A>You can implement two-way syncing using two different methods. While both methods rely on Palm sample code, that is where the similarity ends. The first is based on the conduit classes (commonly referred to as <I>basemon</I> and <I>basetabl</I>) and the second on new code called Generic Conduit. Before delving into either approach, however, we need to discuss the logic involved in two-way, mirror image syncing.</FONT></P>
+
+<P><A NAME="P27_599"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">The Logic of Syncing</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are two forms of syncing that occur between the desktop and the handheld. The quicker method is appropriately named &quot;fast sync&quot; and the other is likewise aptly named &quot;slow sync.&quot; A fast sync occurs when the handheld is being synced to the same desktop machine that it was synced to the previous time. Because handhelds can be synced to multiple desktops, this is not the only possibility. As a result, there are quite a few logic puzzles that need sorting out when records don't match. Let's start with the easier, fast scenario.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Fast Sync</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P34_1163"></A>A fast sync occurs when a handheld syncs to the same desktop as it last did, so you can be assured that the delete/archive/modify bits from the handheld are accurate. In such cases, the conduit needs to do the following:</FONT></P>
+
+<P><I><FONT FACE="Times">Examine the desktop data</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The conduit reads the current desktop data into a local database.</FONT></P>
+
+<P><I><FONT FACE="Times">Examine the handheld data</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">For each changed record on the handheld, the conduit does the following:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  If the record is archived, it adds the record to an archived database on the desktop and marks it in the local database as a pending delete. It deletes the archived record from the handheld.</FONT></LI>
+
+  <LI><FONT FACE="Times">  If deleted, it marks it in the local database as a pending delete and removes it from the handheld. (Remember, user-deleted records aren't actually deleted until a sync occurs; the user may not see them, but your application keeps them around for this very occasion.) </FONT></LI>
+
+  <LI><FONT FACE="Times">  If modified, it modifies it in the local database. </FONT></LI>
+
+  <LI><FONT FACE="Times">  If new-if the record doesn't exist in the local database-the conduit adds it.</FONT></LI></UL>
+
+<P><I><FONT FACE="Times">Examine the local data</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">It is necessary to handle modified records in the local database by comparing them to the handheld records:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  If archived, it removes the record from the handheld, puts it in the archived database, and marks it as a pending delete in the local database.</FONT></LI>
+
+  <LI><FONT FACE="Times">  If a record is deleted, the conduit removes it from the handheld and marks it as a pending delete in the local database.</FONT></LI>
+
+  <LI><FONT FACE="Times">  If modified, it copies the modifications to the handheld and clears the modification flag from the record in the local database.</FONT></LI>
+
+  <LI><FONT FACE="Times">  If new, it copies the record to the handheld and clears the added flag from the record in the local database.</FONT></LI></UL>
+
+<P><I><FONT FACE="Times">Dispose of the old data</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now the conduit deletes all records in the local database that are marked for deletion. At this point, all the records in the local database should match those on the handheld. </FONT></P>
+
+<P><I><FONT FACE="Times">Write local database to desktop database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Finally, all the data is moved from the temporary local database back to permanent storage; the archive database is written out first and then the local database. A copy of the local database is also saved as a backup database-you will use this for slow sync.</FONT><A NAME="P64_3299"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Thorny Comparisons-Changes to the Same Records on Both Platforms</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P69_3363"></A>There <A NAME="P69_3369"></A>are some very thorny cases of record conflicts we have to consider. When you give users the capability of modifying a record in more than one location, some twists result. The problem occurs when you have a record that can be changed simultaneously on the handheld and on the local database, but in different ways. For example, a customer record in our Sales application has its address changed on the handheld database and its name changed on the local database. Or a record was deleted on one platform and changed on another. The number of scenarios is so great that we require some formal rules to govern cases of conflict.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The Palm philosophy concerning such problems is that no data loss should occur, even at the price of a possible proliferation of records with only minor differences. Thus, in the case of a record with a name field of &quot;Smith&quot; on the handheld and &quot;Smithy&quot; on the local database, the end result is two records, each present in both databases. Here are the various possibilities and how this philosophy plays out into rules for actual conflicts.</FONT></P>
+
+<P><I><FONT FACE="Times">A record is deleted on one database and modified on the other</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The deleted version of the record is done away with, and the changed version is copied to the other platform.</FONT></P>
+
+<P><I><FONT FACE="Times">A record is archived on one database and changed on the other</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The archived version of the record is put in the archive database, and the changed version is copied to the other platform. Exception: if the archived version has been changed in exactly the same way, we do the right thing and end up with only one archived record.</FONT></P>
+
+<P><I><FONT FACE="Times">A record is archived on one database and deleted on the other</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The record is put in the archive database.</FONT></P>
+
+<P><I><FONT FACE="Times">A record is changed on one database and changed differently on the other</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The result is two records. This is true for records with the same field change, such as our case of &quot;Smith&quot; and &quot;Smithy.&quot; It is also true for a record where the name field is changed on one record and the address field on the other. In this case, you also end up with two records. Thus these initial records:</FONT></P>
+<P>
+<TABLE>
+<TR>
+<TD WIDTH=147><P><B><FONT FACE="Times" SIZE="-1">Handheld Database</FONT></B></P>
+</TD>
+<TD WIDTH=147><P><B><FONT FACE="Times" SIZE="-1">Local Database</FONT></B></P>
+</TD></TR>
+<TR>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">Name: Smith</FONT></P>
+</TD>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">Name: Smithy</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">Address: 120 Park Street</FONT></P>
+</TD>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">Address 100 East Street</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">City: River City</FONT></P>
+</TD>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">City: River City</FONT></P>
+</TD></TR></TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">yield the following records in fully synced mirror image databases:</FONT></P>
+<P>
+<TABLE>
+<TR>
+<TD WIDTH=147><P><B><FONT FACE="Times" SIZE="-1">Handheld Database</FONT></B></P>
+</TD>
+<TD WIDTH=147><P><B><FONT FACE="Times" SIZE="-1">Local Database</FONT></B></P>
+</TD></TR>
+<TR>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">Name: Smith</FONT></P>
+</TD>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">Name: Smith</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">Address: 120 Park Street</FONT></P>
+</TD>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">Address: 120 Park Street</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">City: River City</FONT></P>
+</TD>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">City: River City</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=147>&#160;
+</TD>
+<TD WIDTH=147>&#160;
+</TD></TR>
+<TR>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">Name: Smithy</FONT></P>
+</TD>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">Name: Smithy</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">Address 100 East Street</FONT></P>
+</TD>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">Address 100 East Street</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">City: River City</FONT></P>
+</TD>
+<TD WIDTH=147><P><FONT FACE="Times" SIZE="-1">City: River City</FONT></P>
+</TD></TR></TABLE>
+
+<P><I><FONT FACE="Times">A record is changed on one database and changed identically <BR>
+on the other</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">If a record is changed in both places in the same way (the same field contains the same new value in both places), the result is one record in both places. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This can get tricky, however. While it may be clear that &quot;Smith&quot; is not &quot;Smithy&quot;, it is not so obvious that &quot;Smith&quot; is not &quot;smith&quot;. Depending on the nature of your record fields, you may need to make case-by-case decisions about the meaning of <I>identical</I>.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Slow Sync</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P130_6340"></A>A slow sync takes place when the last sync of the handheld was not with this desktop. Commonly, this occurs when the user has more recently synced to another desktop machine. Less frequently, this happens because this is the first sync of a handheld. If the last sync of the handheld was not with this desktop, the modify/archive/delete bits are not accurate with respect to this desktop. They may be accurate with the desktop last synced to, but this doesn't help with the current sync scenario.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Since the modify/archive/delete bits aren't accurate, we've got to figure out how the handheld database has changed from the desktop database since the last sync. In order to do this, we need an accurate copy of the local database at the time of the last sync. This is complicated by the possibility that the local database may have changed since the last sync. The solution to this problem is to use the backup copy that we made after the last sync between these two machines-the last point at which these two matched.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Since this backup, both the handheld and the desktop database may have diverged. While it is true that all the changes to the desktop have been marked (changes, new, deleted, archived), it is not true for the handheld. Some or all of the changes to the handheld data were lost when the intervening sync took place; the deleted/archived records were removed, and the modified records were unmarked.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To deal with this problem, we need to use a slow sync. As the name implies, a slow sync looks at every record from the handheld. It copies them to an in-memory database on the desktop called the remote database and compares them to the backup database records. Here are the possibilities that need to be taken into account:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  The remote record matches a record in the backup database-nothing has changed.</FONT></LI>
+
+  <LI><FONT FACE="Times">  The remote record isn't present in the backup database-the record is new and is marked as modified.</FONT></LI>
+
+  <LI><FONT FACE="Times">  The backup record isn't present in the remote database-the remote record has been deleted (it could have been archived, in which case it has been archived on a different desktop). The record is marked as deleted.</FONT></LI>
+
+  <LI><FONT FACE="Times">  The backup record and the remote record are different-the remote record has been modified. The record is marked as changed.</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">At this point, we've got a copy of the remote database where each record has been left alone, marked as modified (due to being new or changed), or marked as deleted. Now the conduit can carry out the rest of the sync. Thus, the difference between the two syncs is the initial time required to mark records so that the two databases agree. It is a slow sync because every record from the handheld had to be copied to the desktop.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now that you know what to do with records during a sync, let's discuss how to do it.</FONT><A NAME="P144_9107"></A></P>
+
+<P><A NAME="P147_9107"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">The Conduit Classes</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P149_9126"></A>You may be apprehensive about tackling two-way syncing using the conduit classes provided by Palm (sometimes called </FONT><FONT FACE="Courier New"><A NAME="P149_9242"></A>basemon</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">basetabl</FONT><FONT FACE="Times"> because of the filenames in which they are located). The implementation may seem murky and the examples quite complicated. If you looked over the samples, you certainly noted that there is no simple example showing how to do what you want to do. Things get even more formidable if you don't want to save your data in the format the base classes provide.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We had all these same apprehensions-many of them were well deserved. At the time this book was written, the documentation wasn't clear concerning the definitions and tasks of each class, nor was it clear what you specifically needed to do to write your own conduit (what methods you are required to override, for instance). The good news is that a detailed examination shows that the architecture of the conduit classes is sound; they do quite a lot for you, and it's not hard to support other file formats once you know what you have to change.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">After diving in and working with the conduit classes, we figured out how to use them effectively. In a moment, we will show you their architecture and describe each class and its responsibilities. After that, we show you what is required on your part-what methods you must override and what data members you must set. Next, we show you the code for a complete syncing conduit that supports its own file format.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">The Classes and Their Responsibilities</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The classes you use to create the conduit are:</FONT></P>
+
+<P><I><FONT FACE="Times">CBaseConduit Monitor</FONT></I></P>
+
+<P><FONT FACE="Times">Runs the entire sync</FONT></P>
+
+<P><I><FONT FACE="Times">CBaseTable</FONT></I></P>
+
+<P><FONT FACE="Times">Creates a table that holds all the records</FONT></P>
+
+<P><I><FONT FACE="Times">CBaseSchema</FONT></I></P>
+
+<P><FONT FACE="Times">Defines the structure of a record in the table</FONT></P>
+
+<P><I><FONT FACE="Times">CBaseRecord</FONT></I></P>
+
+<P><FONT FACE="Times">Creates an object used to read and write each record to the table</FONT></P>
+
+<P><I><FONT FACE="Times">CDTLinkConverter</FONT></I></P>
+
+<P><FONT FACE="Times">Converts the Palm OS record format into a CBaseRecord and vice versa</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">CBaseConduitMonitor</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The <A NAME="P173_10987"></A>CBaseConduitMonitor class is responsible for directing syncing from the start to the end. It does the logging, initializes and deinitializes the sync manager, creates tables, populates them, and decides what records should go where. It is the administrator of the sync. It is also within CBaseConduitMonitor that we add all of the code from the previous chapters that handle the uploading and downloading of data. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">CBaseConduitMonitor contains five functions that you need to override:</FONT></P>
+
+  <UL><LI><I><FONT FACE="Times"> </FONT></I><FONT FACE="Courier New"> CreateTable</FONT></LI>
+
+  <LI><I><FONT FACE="Times"> </FONT></I><FONT FACE="Courier New"> ConstructRecord</FONT></LI>
+
+  <LI><I><FONT FACE="Times"> </FONT></I><FONT FACE="Courier New"> SetArchiveFileExt</FONT></LI>
+
+  <LI><I><FONT FACE="Times"> </FONT></I><FONT FACE="Courier New"> LogRecordData</FONT></LI>
+
+  <LI><I><FONT FACE="Times"> </FONT></I><FONT FACE="Courier New"> LogApplicationName</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">At this point, we give you a brief description of each function. Later, we'll look at actual code when examining our conduit sample.</FONT></P>
+
+<P><I><FONT FACE="Times">CreateTable</FONT></I><FONT FACE="Courier New">&#160;</FONT><A NAME="P184_11699"></A></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You override this to create your class derived from CBaseTable. Here's the function declaration:</FONT></P><PRE><FONT SIZE="-1">long CreateTable(CBaseTable*&amp; pBase);</FONT></PRE>
+
+<P><I><FONT FACE="Times">ConstructRecord</FONT></I><FONT FACE="Courier New">&#160;</FONT><A NAME="P189_11848"></A></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This routine creates your own class derived from CBaseRecord. Here is the function:</FONT></P><PRE><FONT SIZE="-1">long ConstructRecord(CBaseRecord*&amp; pBase, </FONT>
+<FONT SIZE="-1">          CBaseTable&amp; rtable,  WORD wModAction);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">If the incoming </FONT><FONT FACE="Courier New">wModAction</FONT><FONT FACE="Times"> parameter is equal to </FONT><FONT FACE="Courier New">MODFILTER_STUPID</FONT><FONT FACE="Times">, the newly created CBaseRecord object should check any attempted changes to its fields. If the change attempts to set a new value equal to the old value, the CBaseRecord object should just ignore the change, not marking the record as having changed.</FONT></P>
+
+<P><I><FONT FACE="Times">SetArchiveFileExt</FONT></I><FONT FACE="Courier New">&#160;</FONT><A NAME="P197_12354"></A></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P199_12354"></A>This function simply sets the filename extension used for archive files. Here is the override call:</FONT></P><PRE><FONT SIZE="-1">void SetArchiveFileExt();</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Your override should set the </FONT><FONT FACE="Courier New">m_ArchFileExt</FONT><FONT FACE="Times"> data member of CBaseConduitMonitor to a string that will be appended to the category name and used as the filename of the archive.</FONT></P>
+
+<P><I><FONT FACE="Times">LogRecordData</FONT></I><FONT FACE="Courier New">&#160;</FONT><A NAME="P204_12665"></A></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This function writes a summary of a record to the log. Here is the function you override:</FONT></P><PRE><FONT SIZE="-1">void LogRecordData(CBaseRecord&amp;rRec, char *errBuf);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here are the values of the parameters:</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">rRec</FONT></P>
+
+<P><FONT FACE="Times">The record to summarize</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">errBuff</FONT></P>
+
+<P><FONT FACE="Times">The buffer to write the summary to</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This routine is called when the monitor is going to add a log entry for a specific record (for example, when a record has been changed on both the desktop and the handheld). It writes a succinct description of the record, one that enables the user to identify the record.</FONT></P>
+
+<P><I><FONT FACE="Times">LogApplicationName</FONT></I><FONT FACE="Courier New">&#160;</FONT><A NAME="P217_13201"></A></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P219_13201"></A>This is the function that returns the name of the conduit:</FONT></P><PRE><FONT SIZE="-1">void LogApplicationName(char* appName, WORD len);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The conduit name is returned into </FONT><FONT FACE="Courier New">appName</FONT><FONT FACE="Times"> (the </FONT><FONT FACE="Courier New">appName</FONT><FONT FACE="Times"> buffer is </FONT><FONT FACE="Courier New">len</FONT><FONT FACE="Times"> bytes long).</FONT></P>
+
+<P><I><FONT FACE="Times">CBaseConduitMonitor data member</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This class contains one data member that you must initialize:</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_wRawRecSize</FONT></P>
+
+<P><FONT FACE="Times">Initialize this to the maximum size of a record in your handheld database. It is used as the size of the </FONT><FONT FACE="Courier New">m_pBytes</FONT><FONT FACE="Times"> field of the CRawRecordInfo (see &quot;The CRawRecordInfo class&quot; on page&#160;337). It is used to read and write handheld database records.</FONT><A NAME="P229_13737"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">CBaseTable</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This <A NAME="P233_13752"></A>class is used to create a table that contains field objects for each record. The whole thing is stored in a large array. Every record contains the same number of fields in the same order. The number of rows in the array is the number of records in the table. The number of columns is the number of fields per record. You should imagine a structure similar to that shown in <A HREF="#P234_14150">Figure 13-1</A>.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 13- 1</FONT></B><A NAME="P234_14150"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Record structure in CBaseTable</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch13-plmp.1301-1.gif" WIDTH=503 HEIGHT=217 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">This is not an array of arrays, but a single large one. The fields are stored in a single-dimensional array, where the fields for the first record are followed by those of the second record and so on. When it's necessary to retrieve the values in a row, a CBaseRecord is positioned at the appropriate fields in the array. It can then read from and write to the fields to effect a change to the row. The table is responsible for reading itself from a file and writing itself out. The default format is an MFC archive format.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">This type of programming is a bit startling after months of handheld programming, where every byte of memory is precious. It's refreshing to be in an environment where memory is less limited. How profligate to just allocate a field object for every field in every row-all we can say is that its a good thing conduits aren't required to run in 15K of dynamic memory.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">A conduit actually has several CBaseTables: one for the records on the handheld, one for the records on the desktop, one for the backup database during a slow sync, and one containing archived records. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Within a table, the data is handled in a straightforward manner and records are frequently copied from one table to another during a sync. While records can be individually deleted, they are normally marked as deleted and then all purged at once.</FONT></P>
+
+<P><I><FONT FACE="Times">Functions you must override</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This class has only one function to override:</FONT></P><PRE><FONT SIZE="-1">virtual long  &#160;<A NAME="P256_15603"></A>AppendDuplicateRecord (</FONT>
+<FONT SIZE="-1">    CBaseRecord&amp;rFrom, CBaseRecord&amp;rTo, BOOL bAllFlds = TRUE);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here are the parameters and their values:</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">rFrom</FONT></P>
+
+<P><FONT FACE="Times">The record that contains the fields that are copied from.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">rTo</FONT></P>
+
+<P><FONT FACE="Times">A record that contains the fields that get copied to.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">bAllFlds</FONT></P>
+
+<P><FONT FACE="Times">If this is true, the record ID and status should be copied with all the other fields.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This adds a new row of fields. </FONT></P>
+
+<P><I><FONT FACE="Times">CBaseTable functions you can't override, but wish you could</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are two other functions that you will often wish to override. The problem is that you can't, given the flawed design of the class. These functions are:</FONT></P><PRE><FONT SIZE="-1">long  &#160;&#160;<A NAME="P272_16195"></A>OpenFrom (CString&amp; rTableName, long openFlag);</FONT>
+<FONT SIZE="-1">long  ExportTo (CString&amp; rTableName, CString &amp; csError);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">These are the routines responsible for reading a table from and writing a table to disk. Thus, any time you want to use a different file format, you should override these. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Unfortunately, these routines aren't declared virtual in the original Palm class and can't easily be overridden. Since you can't accomplish what you need to in a standard way, you have to use a far less appealing method. See <A HREF="#P829_40891">&quot;The problem-virtual reality beats nonvirtual reality</A>&quot; later in this chapter for a description of the unpalatable measures we suggest.</FONT><A NAME="P276_16828"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">CBaseSchema</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This <A NAME="P281_16844"></A>class is responsible for defining the number, the order, and the type of the fields of each record.</FONT></P>
+
+<P><I><FONT FACE="Times">Functions you must override</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This class contains only one function to override:</FONT></P><PRE><FONT SIZE="-1">virtual long  &#160;<A NAME="P287_17035"></A>DiscoverSchema(void);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This routine specifies each of the fields and marks which ones store the record ID, attributes, category ID, etc.</FONT></P>
+
+<P><I><FONT FACE="Times">CBaseSchema data members</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are several data members that you need to initialize in </FONT><FONT FACE="Courier New">DiscoverSchema</FONT><FONT FACE="Times">:</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_FieldsPerRow</FONT></P>
+
+<P><FONT FACE="Times">Initialize to the number of fields in each record.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_Fields</FONT></P>
+
+<P><FONT FACE="Times">Call this object's </FONT><FONT FACE="Courier New">SetSize</FONT><FONT FACE="Times"> member function to specify the number of fields in each record. Call the object's </FONT><FONT FACE="Courier New">SetAt</FONT><FONT FACE="Times"> member function for every field from </FONT><FONT FACE="Courier New">0</FONT><FONT FACE="Times"> to </FONT><FONT FACE="Courier New">m_FieldsPerRow-1</FONT><FONT FACE="Times"> to specify the type of the field.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_RecordIdPos</FONT></P>
+
+<P><FONT FACE="Times">Initialize to the field number containing the record ID.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_RecordStatusPos</FONT></P>
+
+<P><FONT FACE="Times">Initialize to the field number containing the status byte.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_CategoryIdPos</FONT></P>
+
+<P><FONT FACE="Times">Initialize to the field number containing the category ID.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_PlacementPos</FONT></P>
+
+<P><FONT FACE="Times">Initialize to the field number containing the record number on the handheld. If you don't keep track of record numbers, you'll initialize to an empty field.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Most conduits do not need the record numbers from the handheld and therefore have a dummy field that the </FONT><FONT FACE="Courier New">m_PlacementPos</FONT><FONT FACE="Times"> refers to. Occasionally, a conduit needs to know the ordering of the records on the handheld. For example, the Memo Pad conduit wants records on the desktop to be displayed in the same order as on the handheld and has no key on which to determine the order. Its solution is to use the ordering of the records in the database as the sort order (no other conduits for the built-in applications use record numbers).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">A conduit that needs record numbers would do the following:</FONT></P>
+
+<P><FONT FACE="Times"> 1. Override <I>ApplyRemotePositionMap</I> (which does nothing by default) to read the record IDs in the order in which they are stored on the handheld.</FONT></P>
+
+<P><FONT FACE="Times"> 2. Store each record number in the field referenced by </FONT><FONT FACE="Courier New">m_PlacementPos.</FONT><A NAME="P311_18741"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">CBaseRecord</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">A <A NAME="P315_18754"></A>CBaseRecord is a transitory object that you use to access a record's fields. The fields are stored within the table itself; use the CBaseRecord to read and write data from a specific row within the table. Your derived class should contain utility routines to read and write the data in the record.</FONT></P>
+
+<P><I><FONT FACE="Times">Functions you must override</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This class contains a couple of functions that you must override:</FONT></P><PRE><FONT SIZE="-1">virtual BOOL  &#160;<A NAME="P321_19158"></A>operator==(const CBaseRecord&amp;r);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This function compares two records to determine whether they are the same. It should not just compare record IDs or attributes, but should use all the relevant fields in the records. Note that the parameter </FONT><FONT FACE="Courier New">r</FONT><FONT FACE="Times"> is actually your subclass of CBaseRecord. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Whenever this function is called, the two records are in different tables:</FONT></P><PRE><FONT SIZE="-1">virtual long &#160;<A NAME="P326_19529"></A>Assign(const CBaseRecord&amp;r);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This routine copies the contents of </FONT><FONT FACE="Courier New">r</FONT><FONT FACE="Times"> to this record, including the record ID and attributes. Note that the parameter </FONT><FONT FACE="Courier New">r</FONT><FONT FACE="Times"> is actually a subclass of CBaseRecord. The two records are in different tables.</FONT></P>
+
+<P><I><FONT FACE="Times">Useful functions</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are also several functions that you can use to set the record ID, get or set individual attributes of the record, and so on. Here they are:</FONT></P><PRE><FONT SIZE="-1">long  &#160;&#160;&#160;&#160;<A NAME="P333_19927"></A>SetRecordId     (int  nRecId);</FONT>
+<FONT SIZE="-1">long  GetRecordId     (int&amp; rRecId);</FONT>
+<FONT SIZE="-1">long  SetStatus       (int  nStatus);</FONT>
+<FONT SIZE="-1">long  GetStatus       (int&amp; rStatus);</FONT>
+<FONT SIZE="-1">long  &#160;&#160;&#160;<A NAME="P337_20076"></A>SetCategoryId   (int  nCatId);</FONT>
+<FONT SIZE="-1">long  GetCategoryId   (int&amp; rCatId);</FONT>
+<FONT SIZE="-1">long  SetArchiveBit   (BOOL bOnOff);</FONT>
+
+<FONT SIZE="-1">BOOL  &#160;&#160;&#160;&#160;&#160;&#160;<A NAME="P341_20190"></A>IsDeleted       (void);</FONT>
+<FONT SIZE="-1">BOOL  IsModified      (void);</FONT>
+<FONT SIZE="-1">BOOL  IsAdded         (void);</FONT>
+<FONT SIZE="-1">BOOL  IsArchived      (void);</FONT>
+<FONT SIZE="-1">BOOL  IsNone          (void);</FONT>
+<FONT SIZE="-1">BOOL  IsPending       (void);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The first set of routines returns information about the record ID, its status, the category ID, and whether the record should be archived. The second set of routines tells you the modified status of the record.</FONT></P>
+
+<P><I><FONT FACE="Times">CBaseRecord data members</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are a couple of data members that are available for you to use:</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_fields</FONT></P>
+
+<P><FONT FACE="Times">This data member is an array of fields for this specific record. It is initialized by the table when the table is focused (so to speak) on the record. Only one record within a table can be focused at a time.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_Positioned</FONT></P>
+
+<P><FONT FACE="Times">This specifies whether the table is positioned on this particular record. It starts out false, but when the table focuses on a record, it is set to true.</FONT><A NAME="P356_21041"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">CDTLinkConverter</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P360_21057"></A>This class is responsible for converting from Palm record format to your subclass of CBaseRecord and vice versa.</FONT></P>
+
+<P><I><FONT FACE="Times">Functions you must override</FONT></I></P><PRE><FONT SIZE="-1">long &#160;<A NAME="P364_21202"></A>ConvertToRemote(CBaseRecord &amp;rRec, CRawRecordInfo &amp;rInfo);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">You use this function to convert from your subclass of CBaseRecord to the CRawRecordInfo. The </FONT><FONT FACE="Courier New">rInfo.m_pBytes</FONT><FONT FACE="Times"> pointer has already been allocated for you. You must write into the buffer and update </FONT><FONT FACE="Courier New">rInfo.m_RecSize</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">long &#160;<A NAME="P367_21477"></A>ConvertFromRemote(CBaseRecord &amp;rRec, CRawRecordInfo &amp;rInfo);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Convert from the CRawRecordInfo to your subclass of CBaseRecord. The </FONT><FONT FACE="Courier New">rRec</FONT><FONT FACE="Times"> parameter is the subclass of CBaseRecord created by your CBaseTable::CreateRecord. You need to initialize </FONT><FONT FACE="Courier New">rRec</FONT><FONT FACE="Times"> based on the values in </FONT><FONT FACE="Courier New">rInfo</FONT><FONT FACE="Times">.</FONT><A NAME="P368_21751"></A></P>
+
+<P><A NAME="P371_21751"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Sales Conduit Sample Based <BR>
+on the Classes</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P373_21792"></A>Now that you have an idea what each of the classes does and which functions you override, it is time to use this information to add syncing to the Sales application conduit. We use these new sync classes for syncing the customer database. We continue to use our own routines that we created in Chapter&#160;12 to upload the orders database and download the products database.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There is also a problem in the implementation of two of the classes: CBaseConduitMonitor and CBaseTable. We use an unorthodox approach, which involves circumventing normal inheritance and copying the classes by hand. We talk about this as part of our discussion of each of these classes in the sample conduit. Other classes are used normally.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">CSalesConduitMonitor-Copying the Class</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P380_22542"></A>This is the class that is based on CBaseConduitMonitor. Let's look at a problem we have before going any further.</FONT></P>
+
+<P><I><FONT FACE="Times">A virtual conundrum</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Our customer database doesn't use categories, but CBaseConduitMonitor expects them to exist. CBaseConduitMonitor's </FONT><FONT FACE="Courier New">&#160;<A NAME="P384_22790"></A>ObtainRemoteCategories</FONT><FONT FACE="Times"> function reads the app info block of the handheld database and causes an error if the AppInfo block doesn't exist. In the original class, there were two functions that expected information about categories. The first was </FONT><FONT FACE="Courier New">&#160;<A NAME="P384_23035"></A>SynchronizeCategories,</FONT><FONT FACE="Times"> which is responsible for syncing the categories. We overrode this routine to do nothing. Unfortunately, a second function dealing with categories was not declared virtual in the original class and thus could not be overridden. Here is the unseemly bit of code that caused our problem:</FONT></P><PRE><FONT SIZE="-1">long  ObtainRemoteCategories (void); // acquire HH Categories </FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Because of this code, our function </FONT><FONT FACE="Courier New">ObtainRemoteCategories</FONT><FONT FACE="Times"> never gets called, and our conduit fails with an error. After a bit of nail biting, our solution was to re-sort to copy and paste-we copy the <I>basemon.cpp</I> and <I>basemon.h</I> files to our conduit source directory and change the declaration of CBaseConduitMonitor so that </FONT><FONT FACE="Courier New">ObtainRemoteCategories </FONT><FONT FACE="Times">is virtual. </FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">In a perfect world, you would never have to concern yourself with the following code. It would remain invisible to you. Doing this type of code copy is an action fraught with difficulty. If Palm Computing changes this class, you'll have to reapply this change (unless one of the changes was to add the needed </FONT><FONT FACE="Courier New">virtual</FONT><FONT FACE="Times">, in which case you could throw away your changes).</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">Code we wish you never had to see</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here is the class that you need to copy into your conduit source directory (note that the line of code we change is in bold):</FONT></P><PRE><FONT SIZE="-1">class CBaseConduitMonitor</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">protected:</FONT>
+<FONT SIZE="-1">    // code deleted that declares lots of data members     </FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    virtual long  CreateTable   (CBaseTable*&amp; pBase);</FONT>
+<FONT SIZE="-1">    virtual long  ConstructRecord (CBaseRecord*&amp; pBase, </FONT>
+<FONT SIZE="-1">                                    CBaseTable&amp; rtable,</FONT>
+<FONT SIZE="-1">                                    WORD wModAction);</FONT>
+<FONT SIZE="-1">    virtual void  SetArchiveFileExt();</FONT>
+
+<FONT SIZE="-1">    // Moved to Base class.</FONT>
+<FONT SIZE="-1">    virtual long  ObtainRemoteTables(void);// get HH real &amp; archive tables</FONT>
+<FONT SIZE="-1">    virtual long  ObtainLocalTables (void);// get PC real &amp; archive tables</FONT>
+<FONT SIZE="-1">    virtual long  AddRecord             (CBaseRecord&amp; rFromRec, </FONT>
+<FONT SIZE="-1">                                         CBaseTable&amp;  rTable);</FONT>
+<FONT SIZE="-1">    virtual long  AddRemoteRecord       (CBaseRecord&amp; rRec);</FONT>
+<FONT SIZE="-1">    virtual long  ChangeRemoteRecord    (CBaseRecord&amp; rRec);</FONT>
+<FONT SIZE="-1">    virtual long  CopyRecordsHHtoPC (void); // copy records from HH to PC</FONT>
+<FONT SIZE="-1">    virtual long  CopyRecordsPCtoHH (void); // copy records from PC to HH </FONT>
+<FONT SIZE="-1">    virtual long  FastSyncRecords (void); // carries out 'Fast' sync</FONT>
+<FONT SIZE="-1">    virtual long  SlowSyncRecords       (void); // carries out 'Slow' sync</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    // deleted function</FONT>
+<FONT SIZE="-1">    // virtual  long  CreateLocArchTable    (CBaseTable*&amp; pBase);</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    virtual long  SaveLocalTables       (const char*); </FONT>
+<FONT SIZE="-1">    virtual long  PurgeLocalDeletedRecs (void); </FONT>
+<FONT SIZE="-1">    virtual long  GetLocalRecordCount   (void); </FONT>
+<FONT SIZE="-1">    virtual long  SendRemoteChanges     (CBaseRecord&amp; rLocRecord);</FONT>
+<FONT SIZE="-1">    virtual long  ApplyRemotePositionMap(void);</FONT>
+<FONT SIZE="-1">    virtual long  SynchronizeCategories (void);</FONT>
+<FONT SIZE="-1">    virtual long  FlushPCRecordIDs      (void);</FONT>
+<FONT SIZE="-1">    virtual long  ArchiveRecords        (void);</FONT>
+
+<FONT SIZE="-1">    // file link related functions</FONT>
+<FONT SIZE="-1">    virtual long  ProcessSubscription   (void);</FONT>
+<FONT SIZE="-1">    virtual int GetFirstRecord (CStringArray*&amp; pSubRecord );</FONT>
+<FONT SIZE="-1">    virtual int GetNextRecord(CStringArray*&amp; );</FONT>
+<FONT SIZE="-1">    virtual int DeleteSubscTableRecs(CString&amp; csCatName, </FONT>
+<FONT SIZE="-1">        CBaseTable* pTable, WORD wDeleteOption);</FONT>
+<FONT SIZE="-1">    virtual int AddCategory(CString&amp; csCatName, CBaseTable* pTable);</FONT>
+<FONT SIZE="-1">    virtual long LogModifiedSubscRec(CBaseRecord* pRecord, </FONT>
+<FONT SIZE="-1">        BOOL blocalRec);</FONT>
+<FONT SIZE="-1">    virtual long SynchronizeSubscCategories(CCategoryMgr* catMgr);</FONT>
+<FONT SIZE="-1">    virtual long CheckFileName(CString&amp; csFileName);</FONT>
+<FONT SIZE="-1">    virtual int  GetSubData (CString&amp; csfilename, CString csFldOrder );</FONT>
+<FONT SIZE="-1">    virtual void  AddSubDataToTable( int subCatId);</FONT>
+
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    // Audit trail notifications (optional override)</FONT>
+<FONT SIZE="-1">    virtual long  AuditAddToPC          (CBaseRecord&amp; rRec, long rowOffset); </FONT>
+<FONT SIZE="-1">    virtual long  AuditUpdateToPC       (CBaseRecord&amp; rRec, long rowOffset); </FONT>
+<FONT SIZE="-1">    virtual long  AuditAddToHH          (CBaseRecord&amp; rRec, long rowOffset); </FONT>
+
+<FONT SIZE="-1">    // Overload with care !! </FONT>
+<FONT SIZE="-1">    virtual long  EngageStandard        (void);</FONT>
+<FONT SIZE="-1">    virtual long  EngageInstall         (void);</FONT>
+<FONT SIZE="-1">    virtual long  EngageBackup          (void);</FONT>
+<FONT SIZE="-1">    virtual long  EngageDoNothing           (void);</FONT>
+
+<I><FONT FACE="Times">Code changed here:</FONT></I>
+<B><FONT SIZE="-1">    // ObtainRemoteCategories changed to virtual Neil Rhodes 8/6/98</FONT></B>
+<B><FONT SIZE="-1">    virtual long  ObtainRemoteCategories (void); // acquire HH Categories </FONT></B>
+<FONT SIZE="-1">    virtual long  SaveRemoteCategories          (CCategoryMgr *catMgr); </FONT>
+<FONT SIZE="-1">    long  SaveLocalCategories           (CCategoryMgr *catMgr);</FONT>
+<FONT SIZE="-1">    long  ClearStatusAddRecord          (CBaseRecord&amp; rFromRec, </FONT>
+<FONT SIZE="-1">                                         CBaseTable&amp;  rTable);</FONT>
+<FONT SIZE="-1">    long  AllocateRawRecordMemory       (CRawRecordInfo&amp; rawRecord, WORD);</FONT>
+<FONT SIZE="-1">    void  SetDirtyCategoryFlags         (CCategoryMgr* catMgr);</FONT>
+<FONT SIZE="-1">    void  UpdatePCCategories            (CUpdateCategoryId *updCatId);</FONT>
+<FONT SIZE="-1">    BOOL  IsRemoteMemError              (long);</FONT>
+<FONT SIZE="-1">    BOOL  IsCommsError                  (long);</FONT>
+
+
+<FONT SIZE="-1">    // Used by FastSync and SlowSync.</FONT>
+<FONT SIZE="-1">    virtual long  SynchronizeRecord      (CBaseRecord &amp; rRemRecord, </FONT>
+<FONT SIZE="-1">                                         CBaseRecord &amp; rLocRecord, </FONT>
+<FONT SIZE="-1">                                         CBaseRecord &amp; rBackRecord); </FONT>
+
+<FONT SIZE="-1">    // code deleted that declares lots of log functions</FONT>
+<FONT SIZE="-1">    virtual BOOL IsFatalConduitError(long lError, CBaseRecord 
+         *prRec=NULL);</FONT>
+
+<FONT SIZE="-1">public:</FONT>
+<FONT SIZE="-1">             CBaseConduitMonitor        (PROGRESSFN pFn, </FONT>
+<FONT SIZE="-1">                                         CSyncProperties&amp;, </FONT>
+<FONT SIZE="-1">                                         HINSTANCE hInst = NULL);  </FONT>
+<FONT SIZE="-1">    virtual ~CBaseConduitMonitor        ();</FONT>
+
+<FONT SIZE="-1">    long  Engage                        (void);</FONT>
+<FONT SIZE="-1">    void  SetDllInstance                (HINSTANCE hInst);</FONT>
+<FONT SIZE="-1">    void  SetFilelinkSupport (long lvalue){ m_lFilelinkSupported = lvalue; }</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    // file link public functions</FONT>
+<FONT SIZE="-1">    long UpdateTablesOnSubsc(void);</FONT>
+<FONT SIZE="-1">    int GetCategories(char  categoryNames[][CAT_NAME_LEN] );</FONT>
+<FONT SIZE="-1">};</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">There seems to be no rhyme or reason as to which functions are declared virtual and which aren't in CBaseConduitMonitor. These are not routines that get called hundreds of thousands of times a sync that never need to be overridden. We can't see any optimization that would warrant making them virtual. There's no excuse for this oversight.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Luckily, that's all that needs to be done; <I>basemon.cpp</I> will need to be recompiled, but that is uncomplicated.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">CSalesConduitMonitor</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now we can move on to a discussion of changes we would normally make to our code and standard modifications we make to this class. </FONT></P>
+
+<P><I><FONT FACE="Times">CSalesConduitMonitor Class Definition</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Within this class, we do a few things. We override the category functions to do nothing. We also override </FONT><FONT FACE="Courier New">&#160;<A NAME="P504_29435"></A>EngageStandard</FONT><FONT FACE="Times">. We insert the calls to our uploading and downloading databases. We also need to override the class functions that every conduit must override. Here is the class definition:</FONT></P><PRE><FONT SIZE="-1">class CSalesConduitMonitor : public CBaseConduitMonitor</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">protected:</FONT>
+<FONT SIZE="-1">// required</FONT>
+<FONT SIZE="-1">    long CreateTable    (CBaseTable*&amp; pBase);</FONT>
+<FONT SIZE="-1">    long ConstructRecord(CBaseRecord*&amp; pBase, </FONT>
+<FONT SIZE="-1">            CBaseTable&amp; rtable,  WORD wModAction);</FONT>
+<FONT SIZE="-1">    void SetArchiveFileExt();</FONT>
+<FONT SIZE="-1">    void LogRecordData          (CBaseRecord&amp;, char*);</FONT>
+<FONT SIZE="-1">    void LogApplicationName     (char* appName, WORD);</FONT>
+
+<FONT SIZE="-1">//overridden to do nothing because we don't have categories</FONT>
+<FONT SIZE="-1">    virtual long  SynchronizeCategories (void);</FONT>
+<FONT SIZE="-1">    virtual long  ObtainRemoteCategories(void); </FONT>
+<FONT SIZE="-1">// ovverriden so we can upload and download our other databases </FONT>
+<FONT SIZE="-1">    virtual long  EngageStandard(void);</FONT>
+
+<FONT SIZE="-1">public:</FONT>
+<FONT SIZE="-1">    CSalesConduitMonitor(PROGRESSFN pFn, CSyncProperties&amp;,</FONT>
+<FONT SIZE="-1">                 HINSTANCE hInst = NULL);  </FONT>
+<FONT SIZE="-1">};</FONT></PRE>
+
+<P><I><FONT FACE="Times">CSalesConduitMonitor constructor</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Our constructor allocates a </FONT><FONT FACE="Courier New">DTLinkConverter</FONT><FONT FACE="Times"> and sets the maximum size of handheld records:</FONT></P><PRE><FONT SIZE="-1">CSalesConduitMonitor::CSalesConduitMonitor(</FONT>
+<FONT SIZE="-1">    PROGRESSFN pFn,</FONT>
+<FONT SIZE="-1">    CSyncProperties&amp; rProps, </FONT>
+<FONT SIZE="-1">    HINSTANCE hInst</FONT>
+<FONT SIZE="-1">) : CBaseConduitMonitor(pFn, rProps, hInst)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    m_pDTConvert = new CSalesDTLinkConverter(hInst);</FONT>
+<FONT SIZE="-1">    m_wRawRecSize = 1000;   // no record will exceed 1000 bytes</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Functions that require overriding</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are five functions that we need to override:</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P544_30821"></A>CreateTable</FONT></I></P>
+
+<P><FONT FACE="Times">This function simply creates a CSalesTable:</FONT></P><PRE><FONT SIZE="-1">long CSalesConduitMonitor::CreateTable(CBaseTable*&amp; pBase)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    pBase = new CSalesTable();</FONT>
+
+<FONT SIZE="-1">    return pBase ? 0 : -1;</FONT></PRE>
+
+      <UL><UL><UL><P><FONT FACE="Times" SIZE="-1">}</FONT></P>
+
+</UL></UL></UL><P><I><FONT FACE="Times">ConstructRecord&#160;</FONT></I><A NAME="P552_31007"></A></P>
+
+<P><FONT FACE="Times">This routine creates a new CSalesRecord:</FONT></P><PRE><FONT SIZE="-1">long CSalesConduitMonitor::ConstructRecord(CBaseRecord*&amp; pBase, </FONT>
+<FONT SIZE="-1">                                           CBaseTable&amp; rtable ,</FONT>
+<FONT SIZE="-1">                                           WORD wModAction)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    pBase = new CSalesRecord((CSalesTable &amp;) rtable, wModAction);</FONT>
+
+<FONT SIZE="-1">    return pBase ? 0 : -1;</FONT></PRE>
+
+      <UL><UL><UL><P><FONT FACE="Times" SIZE="-1">}</FONT></P>
+
+</UL></UL></UL><P><I><FONT FACE="Times">SetArchiveFileExt&#160;</FONT></I><A NAME="P562_31344"></A></P>
+
+<P><FONT FACE="Times">Next, we set the suffix for our archive files as <I>ARC.TXT</I> in </FONT><FONT FACE="Courier New">SetArchiveFileExt</FONT><FONT FACE="Times">. Our archive file is called <I>UnfiledARC.TXT</I> (all our records are category 0, the Unfiled category):</FONT></P><PRE><FONT SIZE="-1">void  CSalesConduitMonitor::SetArchiveFileExt()</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    strcpy(m_ArchFileExt, &quot;ARC.TXT&quot;);</FONT></PRE>
+
+      <UL><UL><UL><P><FONT FACE="Times" SIZE="-1">}</FONT></P>
+
+</UL></UL></UL><P><I><FONT FACE="Times">LogRecordData&#160;</FONT></I><A NAME="P568_31620"></A></P>
+
+<P><FONT FACE="Times">Our </FONT><FONT FACE="Courier New">LogRecordData</FONT><FONT FACE="Times"> summarizes a CSalesRecord to a log:</FONT></P><PRE><FONT SIZE="-1">void CSalesConduitMonitor::LogRecordData(CBaseRecord&amp; rRec, </FONT>
+<FONT SIZE="-1">    char * errBuff)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    // return something of the form &quot; city name, &quot;</FONT>
+<FONT SIZE="-1">    CSalesRecord    &amp;rLocRec = (CSalesRecord&amp;)rRec;</FONT>
+<FONT SIZE="-1">    CString     csStr;</FONT>
+<FONT SIZE="-1">    int         len = 0;</FONT>
+
+<FONT SIZE="-1">    rLocRec.GetCity(csStr);</FONT>
+<FONT SIZE="-1">    len = csStr.GetLength() ; </FONT>
+<FONT SIZE="-1">    if (len &gt; 20)</FONT>
+<FONT SIZE="-1">        len = 20;</FONT>
+
+<FONT SIZE="-1">    strcpy(errBuff, &quot;       &quot;);</FONT>
+<FONT SIZE="-1">    strncat(errBuff, csStr, len);</FONT>
+<FONT SIZE="-1">    strcat(errBuff, &quot;, &quot;);</FONT>
+
+<FONT SIZE="-1">    rLocRec.GetName(csStr);</FONT>
+<FONT SIZE="-1">    len = csStr.GetLength() ; </FONT>
+<FONT SIZE="-1">    if (len &gt; 20)</FONT>
+<FONT SIZE="-1">        len = 20;</FONT>
+
+<FONT SIZE="-1">    strncat(errBuff, csStr, len);</FONT>
+<FONT SIZE="-1">    strcat(errBuff, &quot;, &quot;);</FONT>
+<FONT SIZE="-1">    strncat(errBuff, csStr, len);</FONT></PRE>
+
+      <UL><UL><UL><P><FONT FACE="Times" SIZE="-1">}</FONT></P>
+
+</UL></UL></UL><P><I><FONT FACE="Times">LogApplicationName&#160;</FONT></I><A NAME="P596_32284"></A></P>
+
+<P><FONT FACE="Times">Last, but not least, we need to override the routine </FONT><FONT FACE="Courier New">LogApplicationName</FONT><FONT FACE="Times">. It returns our conduit's name:</FONT></P><PRE><FONT SIZE="-1">void CSalesConduitMonitor::LogApplicationName(char* appName, WORD len)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    strncpy(appName, &quot;Sales&quot;, len-1);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This ends the required routines. There are a few others we override.</FONT></P>
+
+<P><I><FONT FACE="Times">The two category routines</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We override the two category routines to do nothing. This prevents CBaseConduitMonitor from reading the app info block from the handheld and from actually trying to synchronize categories between the handheld and the desktop:</FONT></P><PRE><FONT SIZE="-1">long CSalesConduitMonitor::&#160;<A NAME="P608_32842"></A>ObtainRemoteCategories()</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    return 0;</FONT>
+<FONT SIZE="-1">}</FONT>
+
+<FONT SIZE="-1">long CSalesConduitMonitor::&#160;<A NAME="P613_32909"></A>SynchronizeCategories()</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Modifying EngageStandard</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Next, we override </FONT><FONT FACE="Courier New">&#160;<A NAME="P619_32990"></A>EngageStandard</FONT><FONT FACE="Times"> so that we can call the routines we defined in Chapter&#160;12 for copying orders from the handheld and copying products from the desktop. We have physically copied the inherited code, since we have to place our code in the middle of it. We place it after the conduit is registered with the Sync Manager and the log is started, but before the log is finished and the Sync Manager is closed.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A HREF="#P623_33600">Example&#160;13-1</A> shows the entire function in all its complexity. We wanted you to see the complexity you avoid by using CBaseConduitMomitor for syncing instead of writing all of this from scratch. </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">&#160;-Example&#160; 13- 1</FONT></B><A NAME="P623_33600"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">EngageStandard</FONT></B></P><PRE><FONT SIZE="-1">long CSalesConduitMonitor::EngageStandard(void)  </FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    CONDHANDLE  conduitHandle = (CONDHANDLE)0;</FONT>
+<FONT SIZE="-1">    long        retval = 0; </FONT>
+<FONT SIZE="-1">    char        appName[40];</FONT>
+<FONT SIZE="-1">    long        pcCount = 0;</FONT>
+<FONT SIZE="-1">    WORD        hhCount = 0;</FONT>
+<FONT SIZE="-1">    Activity    syncFinishCode = slSyncFinished;</FONT>
+
+
+<FONT SIZE="-1">    // Register this conduit with SyncMgr.DLL for communication to HH</FONT>
+<FONT SIZE="-1">    if (retval = SyncRegisterConduit(conduitHandle))</FONT>
+<FONT SIZE="-1">        return(retval);</FONT>
+
+<FONT SIZE="-1">    // Notify the log that a sync is about to begin</FONT>
+<FONT SIZE="-1">    LogAddEntry(&quot;&quot;, slSyncStarted,FALSE);            </FONT>
+
+<FONT SIZE="-1">    memset(&amp;m_DbGenInfo, 0, sizeof(m_DbGenInfo));</FONT>
+
+<FONT SIZE="-1">    //  Loop through all possible 'remote' db's</FONT>
+<FONT SIZE="-1">    for (; m_CurrRemoteDB &lt; m_TotRemoteDBs &amp;&amp; !retval; m_CurrRemoteDB++)</FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        // Open the Remote Database</FONT>
+<FONT SIZE="-1">        retval = ObtainRemoteTables();</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">        // Open PC tables and load local records &amp;&amp; local categories.   </FONT>
+<FONT SIZE="-1">        if (!retval &amp;&amp; !(retval = ObtainLocalTables()))</FONT>
+<FONT SIZE="-1">        {</FONT>
+<FONT SIZE="-1">            #ifdef _FILELNK</FONT>
+<FONT SIZE="-1">// Process Subscriptions</FONT>
+<FONT SIZE="-1">// This needs to be done first before desktop records are affected </FONT>
+<FONT SIZE="-1">// by other calls.</FONT>
+<FONT SIZE="-1">// (e.g.) FlushPCRecordIDs()... which will set all recStatus to Added </FONT>
+<FONT SIZE="-1">// for a  hard reset HH</FONT>
+<FONT SIZE="-1">            // (m_firstDevice = eHH)</FONT>
+<FONT SIZE="-1">            if (!retval)</FONT>
+<FONT SIZE="-1">                if (m_rSyncProperties.m_SyncType != eHHtoPC)</FONT>
+<FONT SIZE="-1">                {</FONT>
+<FONT SIZE="-1">                    retval = ProcessSubscription();</FONT>
+<FONT SIZE="-1">                }</FONT>
+<FONT SIZE="-1">            #endif</FONT>
+<FONT SIZE="-1">            if( !(retval) )</FONT>
+<FONT SIZE="-1">            {</FONT>
+<FONT SIZE="-1">                FlushPCRecordIDs();</FONT>
+
+<FONT SIZE="-1">                if (!(retval = ObtainRemoteCategories()))</FONT>
+<FONT SIZE="-1">                {</FONT>
+<FONT SIZE="-1"> // Synchronize the AppInfoBlock Info excluding the categories</FONT>
+<FONT SIZE="-1">                    m_pDTConvert-&gt;SynchronizeAppInfoBlock(m_DbGenInfo, </FONT>
+<FONT SIZE="-1">                                        *m_LocRealTable, </FONT>
+<FONT SIZE="-1">                                        m_rSyncProperties.m_SyncType,</FONT>
+<FONT SIZE="-1">                                        m_rSyncProperties.m_FirstDevice);</FONT>
+
+<FONT SIZE="-1">                    // Synchronize the categories</FONT>
+<FONT SIZE="-1">                    retval = SynchronizeCategories();</FONT>
+<FONT SIZE="-1">                }</FONT>
+<FONT SIZE="-1">            }</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">        }</FONT>
+
+<FONT SIZE="-1">        // Synchronize the records</FONT>
+<FONT SIZE="-1">        if (!retval)</FONT>
+<FONT SIZE="-1">        {</FONT>
+<FONT SIZE="-1">            #ifdef _FILELNK</FONT>
+<FONT SIZE="-1">            // path for subsc info</FONT>
+<FONT SIZE="-1">            CString csSubInfoPath(m_rSyncProperties.m_PathName);</FONT>
+<FONT SIZE="-1">            csSubInfoPath =csSubInfoPath + SUBSC_FILENAME;  </FONT>
+<FONT SIZE="-1">            SubError subErr = SubLoadInfo(csSubInfoPath);</FONT>
+<FONT SIZE="-1">            #endif</FONT>
+
+<FONT SIZE="-1">            if (m_rSyncProperties.m_SyncType == eHHtoPC)</FONT>
+<FONT SIZE="-1">                retval = CopyRecordsHHtoPC();</FONT>
+<FONT SIZE="-1">            else if (m_rSyncProperties.m_SyncType == ePCtoHH)</FONT>
+<FONT SIZE="-1">                retval = CopyRecordsPCtoHH();</FONT>
+<FONT SIZE="-1">            else if (m_rSyncProperties.m_SyncType == eFast)</FONT>
+<FONT SIZE="-1">                retval = FastSyncRecords();</FONT>
+<FONT SIZE="-1">            else if (m_rSyncProperties.m_SyncType == eSlow)</FONT>
+<FONT SIZE="-1">                retval = SlowSyncRecords();</FONT>
+
+<FONT SIZE="-1">            #ifdef _FILELNK</FONT>
+<FONT SIZE="-1">            SubSaveInfo(csSubInfoPath);</FONT>
+<FONT SIZE="-1">            #endif</FONT>
+<FONT SIZE="-1">        }</FONT>
+
+<FONT SIZE="-1">        // If the number of records are not equal after a FastSync or</FONT>
+<FONT SIZE="-1">        // SlowSync: If the PC has more records, then do a PCtoHH Sync.</FONT>
+<FONT SIZE="-1">        // If the HH has more records, then do a HHtoPC Sync.</FONT>
+<FONT SIZE="-1">        if (!retval &amp;&amp; ((m_rSyncProperties.m_SyncType == eFast) || </FONT>
+<FONT SIZE="-1">                            (m_rSyncProperties.m_SyncType == eSlow)))</FONT>
+<FONT SIZE="-1">        {</FONT>
+<FONT SIZE="-1">            // Get the record counts</FONT>
+<FONT SIZE="-1">            pcCount = GetLocalRecordCount(); </FONT>
+<FONT SIZE="-1">            if (!(retval = SyncGetDBRecordCount(m_RemHandle, hhCount)))</FONT>
+<FONT SIZE="-1">            {</FONT>
+<FONT SIZE="-1">                if (pcCount &gt; (long)hhCount)</FONT>
+<FONT SIZE="-1">                    retval = CopyRecordsPCtoHH();</FONT>
+
+<FONT SIZE="-1">                else if (pcCount &lt; (long)hhCount)</FONT>
+<FONT SIZE="-1">                {</FONT>
+<FONT SIZE="-1">                    m_LocRealTable-&gt;PurgeAllRecords();</FONT>
+<FONT SIZE="-1">                    retval = CopyRecordsHHtoPC();</FONT>
+<FONT SIZE="-1">                }</FONT>
+<FONT SIZE="-1">            }</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">        if (!retval || !IsCommsError(retval)) </FONT>
+<FONT SIZE="-1">        {</FONT>
+<FONT SIZE="-1">         // Re-check the record counts, only if we've obtained rem tables</FONT>
+<FONT SIZE="-1">            pcCount = GetLocalRecordCount(); </FONT>
+<FONT SIZE="-1">            hhCount = 0;</FONT>
+<FONT SIZE="-1">            retval  = SyncGetDBRecordCount(m_RemHandle, hhCount);</FONT>
+<FONT SIZE="-1">            </FONT>
+<FONT SIZE="-1">         // If the record counts are not equal, send message to the log.</FONT>
+<FONT SIZE="-1">            if (pcCount &lt; (long)hhCount)</FONT>
+<FONT SIZE="-1">            {</FONT>
+<FONT SIZE="-1">                LogRecCountMismatch(pcCount, (long)hhCount);            </FONT>
+<FONT SIZE="-1">                syncFinishCode = slSyncAborted;</FONT>
+<FONT SIZE="-1">            }</FONT>
+<FONT SIZE="-1">            else if (pcCount &gt; (long)hhCount)</FONT>
+<FONT SIZE="-1">            {</FONT>
+<FONT SIZE="-1">                LogPilotFull(pcCount, (long)hhCount);           </FONT>
+<FONT SIZE="-1">                syncFinishCode = slSyncAborted;</FONT>
+<FONT SIZE="-1">            }</FONT>
+<FONT SIZE="-1">        }</FONT>
+
+
+<FONT SIZE="-1">    // This allows exact display order matching with the remote device.</FONT>
+<FONT SIZE="-1">        if (!retval || !IsCommsError(retval))</FONT>
+<FONT SIZE="-1">            if (ApplyRemotePositionMap())</FONT>
+<FONT SIZE="-1">                LogBadXMap();</FONT>
+
+<FONT SIZE="-1">        if (!retval || IsRemoteMemError(retval)) </FONT>
+<FONT SIZE="-1">        {</FONT>
+<FONT SIZE="-1">            // Save all records to be archived to their appropriate files</FONT>
+<FONT SIZE="-1">            if (ArchiveRecords())</FONT>
+<FONT SIZE="-1">                LogBadArchiveErr();</FONT>
+<FONT SIZE="-1">                </FONT>
+<FONT SIZE="-1">            // Copy PC file to Backup PC file</FONT>
+<FONT SIZE="-1">            CString backFile(m_rSyncProperties.m_PathName);</FONT>
+<FONT SIZE="-1">            CString dataFile(m_rSyncProperties.m_PathName);</FONT>
+<FONT SIZE="-1">            backFile += m_rSyncProperties.m_LocalName;</FONT>
+<FONT SIZE="-1">            dataFile += m_rSyncProperties.m_LocalName;</FONT>
+<FONT SIZE="-1">            int nIndex = backFile.ReverseFind(_T('.'));</FONT>
+<FONT SIZE="-1">            if (nIndex != -1)</FONT>
+<FONT SIZE="-1">                backFile = backFile.Left(nIndex);</FONT>
+<FONT SIZE="-1">            backFile += BACK_EXT;</FONT>
+
+<FONT SIZE="-1">            // Save synced records to PC file</FONT>
+<FONT SIZE="-1">            if (!SaveLocalTables((const char*)dataFile))</FONT>
+<FONT SIZE="-1">            {</FONT>
+<FONT SIZE="-1">                // Clear HH status flags</FONT>
+<FONT SIZE="-1">                if (SyncResetSyncFlags(m_RemHandle))</FONT>
+<FONT SIZE="-1">                {</FONT>
+<FONT SIZE="-1">                    LogBadResetSyncFlags();</FONT>
+<FONT SIZE="-1">                    syncFinishCode = slSyncAborted;</FONT>
+<FONT SIZE="-1">                }</FONT>
+<FONT SIZE="-1">                remove(backFile);</FONT>
+<FONT SIZE="-1">                CopyFile(dataFile, backFile, FALSE);</FONT>
+<FONT SIZE="-1">            }</FONT>
+<FONT SIZE="-1">            else</FONT>
+<FONT SIZE="-1">                syncFinishCode = slSyncAborted;</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">        if (!IsCommsError(retval))</FONT>
+<FONT SIZE="-1">            SyncCloseDB(m_RemHandle);</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<B><FONT SIZE="-1">// added here for sales conduit</FONT></B>
+<B><FONT SIZE="-1">    if (retval == 0 &amp;&amp; m_rSyncProperties.m_SyncType == eHHtoPC ||</FONT></B>
+<B><FONT SIZE="-1">        m_rSyncProperties.m_SyncType == eFast || </FONT></B>
+<B><FONT SIZE="-1">        m_rSyncProperties.m_SyncType == eSlow)</FONT></B>
+<B><FONT SIZE="-1">        retval = CopyOrdersFromHH(m_rSyncProperties);</FONT></B>
+<B><FONT SIZE="-1">    if (retval == 0 &amp;&amp; m_rSyncProperties.m_SyncType == ePCtoHH ||</FONT></B>
+<B><FONT SIZE="-1">        m_rSyncProperties.m_SyncType == eFast || </FONT></B>
+<B><FONT SIZE="-1">        m_rSyncProperties.m_SyncType == eSlow)</FONT></B>
+<B><FONT SIZE="-1">        retval = CopyProductsAndCategoriesToHH(m_rSyncProperties);</FONT></B>
+<B><FONT SIZE="-1">// done added here for sales conduit</FONT></B>
+
+<FONT SIZE="-1">    if (retval)</FONT>
+<FONT SIZE="-1">        syncFinishCode = slSyncAborted;</FONT>
+
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    // Get the application name</FONT>
+<FONT SIZE="-1">    memset(appName, 0, sizeof(appName));</FONT>
+<FONT SIZE="-1">    LogApplicationName(appName, sizeof(appName)); </FONT>
+
+<FONT SIZE="-1">    LogAddEntry(appName, syncFinishCode,FALSE);</FONT>
+<FONT SIZE="-1">        </FONT>
+<FONT SIZE="-1">    if (!IsCommsError(retval))</FONT>
+<FONT SIZE="-1">        SyncUnRegisterConduit(conduitHandle);</FONT>
+
+<FONT SIZE="-1">    return(retval);</FONT>
+<FONT SIZE="-1">}</FONT><FONT FACE="Courier New">&#160;</FONT><A NAME="P817_40197"></A></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">These are all the changes to the CSalesConduitMonitor class. As you can see, there was very little complexity to the added code, especially when you realize that most of the difficulty occurs in the last routine, where we have to fold our code into a fairly large routine.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now that we have dealt with the administration portion of the code, it is time to create the tables that hold the data.</FONT><A NAME="P822_40588"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">CBaseTable-Copying the Class</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P827_40616"></A>We need to create the class that is based on CBaseTable. Before we can define our table structure, however, we need to deal with another class problem. Once again, the solution is to resort to copying the class as a whole, and it is for just as unsatisfying a set of reasons.</FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P829_40891"></A>The problem-virtual reality beats nonvirtual reality</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We want to store our tables in comma-delimited text files rather than in the default MFC archived file format. This is certainly a reasonable wish on our part. It is an even more attractive alternative when you realize that MFC archived files are very hard to read from anything but MFC-based code. We have no desire to create an MFC application just to read our data files, when a text-based system gives us such enormous versatility. Good reasoning on our part is unfortunately difficult to act on.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;&#160;<A NAME="P833_41445"></A>For example, if we attempt to override </FONT><FONT FACE="Courier New">CBaseTable::SaveTo</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">CBaseTable::OpenFrom</FONT><FONT FACE="Times">, we don't get very far. As you might have guessed, those two member functions are not declared </FONT><FONT FACE="Courier New">virtual</FONT><FONT FACE="Times"> in the original CBaseTable class. We are stuck then with seeking a workaround. The solution to this problem is to copy the <I>basetabl.cpp</I> and <I>basetabl.h</I> files to our conduit's source folder. </FONT></P>
+
+<P><I><FONT FACE="Times">The CBaseTable code you have to copy</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We need to modify the declaration of CBaseTable to add the </FONT><FONT FACE="Courier New">virtual</FONT><FONT FACE="Times"> keywords. Here is the code we copy and the two changes we make:</FONT></P><PRE><FONT SIZE="-1">class TABLES_DECL CBaseTable : public CObject</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">protected:</FONT>
+<FONT SIZE="-1">    friend            CBaseIterator;</FONT>
+<FONT SIZE="-1">    friend            CRepeateEventIterator;</FONT>
+<FONT SIZE="-1">    friend            CBaseRecord;</FONT>
+<FONT SIZE="-1">    CString           m_TableName;</FONT>
+<FONT SIZE="-1">    CString           m_TableString;</FONT>
+<FONT SIZE="-1">    CBaseSchema*      m_Schema;</FONT>
+<FONT SIZE="-1">    CBaseFieldArray*  m_Fields;</FONT>
+<FONT SIZE="-1">    CCategoryMgr*     m_pCatMgr;</FONT>
+<FONT SIZE="-1">    DWORD             m_dwVersion;</FONT>
+<FONT SIZE="-1">    BOOL              m_bOnTheMac;</FONT>
+
+<FONT SIZE="-1">//  CPtrArray         m_OpenIts;      // List of open  CBaseIterator(s) </FONT>
+<FONT SIZE="-1">//  long    AddIterator           (long&amp; ItPos, CBaseIterator *);</FONT>
+<FONT SIZE="-1">//  long    RemoveIterator        (long  ItPos, CBaseIterator *);</FONT>
+
+<FONT SIZE="-1">    BOOL  SubstCRwithNL        (CString &amp;);</FONT>
+<FONT SIZE="-1">    BOOL  SubstNLwithCR        (CString &amp;);</FONT>
+<FONT SIZE="-1">    void  Serialize            (CArchive &amp;);</FONT>
+<FONT SIZE="-1">    long  WipeOutRow           (long RecPos);</FONT>
+<FONT SIZE="-1">    long  ReadInFields         (CArchive &amp;ar);</FONT>
+<FONT SIZE="-1">    long  DestroyAllFields     (void) ;</FONT>
+<FONT SIZE="-1">    void  DeleteContents       (void) ;</FONT>
+<FONT SIZE="-1">    virtual long  ConstructProperField (eFieldTypes, CBaseField**);</FONT>
+
+
+<FONT SIZE="-1">public:</FONT>
+<FONT SIZE="-1">    DECLARE_SERIAL(CBaseTable)</FONT>
+
+<FONT SIZE="-1">    CBaseTable           ();</FONT>
+<FONT SIZE="-1">    CBaseTable           (DWORD dwVersion);</FONT>
+<FONT SIZE="-1">    virtual ~CBaseTable           ();</FONT>
+<FONT SIZE="-1">// change OpenFrom to virtual</FONT>
+<B><FONT SIZE="-1">    virtual long  OpenFrom (CString&amp; rTableName, long openFlag);</FONT></B>
+<FONT SIZE="-1">    long  ExportTo (CString&amp; rTableName, CString &amp; csError);</FONT>
+<FONT SIZE="-1">// change SaveTo to virtual</FONT>
+<B><FONT SIZE="-1">&#160;&#160;&#160;&#160;virtual long  SaveTo               (CString&amp; rTableName);</FONT></B>
+<FONT SIZE="-1">    virtual long  Save                 (void);</FONT>
+<FONT SIZE="-1">    virtual long  GetRecordCount       (void);</FONT>
+<FONT SIZE="-1">    virtual long  GetFieldCount        (void);</FONT>
+<FONT SIZE="-1">    virtual BOOL  AtEof                (long nRecPos);</FONT>
+<FONT SIZE="-1">    virtual long  AlignFieldPointers   (long RecPos, CBaseRecord&amp;); </FONT>
+<FONT SIZE="-1">    virtual long  GetMySchema          (const CBaseSchema*&amp; pSchema);</FONT>
+<FONT SIZE="-1">    virtual long  PurgeDeletedRecords  (void);</FONT>
+<FONT SIZE="-1">    virtual long  ClearPlacementField  (void);</FONT>
+<FONT SIZE="-1">    virtual long  PurgeAllRecords      (void);</FONT>
+<FONT SIZE="-1">    virtual long  AppendBlankRecord     (CBaseRecord&amp;);</FONT>
+<FONT SIZE="-1">    virtual long  AppendDuplicateRecord (CBaseRecord&amp;, </FONT>
+<FONT SIZE="-1">                                        CBaseRecord&amp;,</FONT>
+<FONT SIZE="-1">                                        BOOL bAllFlds = TRUE);</FONT>
+
+<FONT SIZE="-1">    virtual long  GetTableString           (CString&amp; rTableString);</FONT>
+<FONT SIZE="-1">    virtual long  SetTableString           (CString&amp; rTableString);</FONT>
+<FONT SIZE="-1">    virtual CCategoryMgr* GetCategoryManager    (void);</FONT>
+
+<FONT SIZE="-1">    virtual void DumpRecords(LPCSTR lpPathName,BOOL bAppend=TRUE);</FONT>
+<FONT SIZE="-1">};</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Don't breathe a sigh of relief just yet-we have a complication. This isn't like the straightforward copying we did with </FONT><FONT FACE="Courier New">basemon.cpp</FONT><FONT FACE="Times"> for CBaseConduitMonitor-copy, link, recompile, and everything works greats. This is a horse of an entirely different color-unlike <I>basemon.cpp</I>, this</FONT><FONT FACE="Courier New"> </FONT><FONT FACE="Times">isn't code that is normally added to your project and linked with your remaining code. Therein lies the wrinkle. This is code that is found in a DLL in the folder with HotSync. Since the DLL is already compiled without the virtual keyword, the DLL won't cooperate by calling our derived class's </FONT><FONT FACE="Courier New">OpenFrom</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">SaveTo</FONT><FONT FACE="Times">.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Our solution was to statically link the </FONT><FONT FACE="Courier New">basetabl.cpp</FONT><FONT FACE="Times"> code into our application and not use the table DLL at all. This also required adding the define of the symbol </FONT><FONT FACE="Courier New">_TABLES</FONT><FONT FACE="Times"> to our project-thereby ensuring that the </FONT><FONT FACE="Courier New">TABLES_DECL</FONT><FONT FACE="Times"> define was no longer defined as </FONT><FONT FACE="Courier New">__declspec(import)</FONT><FONT FACE="Times">. This caused </FONT><FONT FACE="Courier New">basemon.h</FONT><FONT FACE="Times"> to no longer declare the class as being imported from a DLL. Note that the only other choice besides imported for the </FONT><FONT FACE="Courier New">TABLES_DECL</FONT><FONT FACE="Times"> define was </FONT><FONT FACE="Courier New">__declspec(export)</FONT><FONT FACE="Times">. We took what was offered. Unfortunately, the result is that our conduit DLL unnecessarily exports the functions in the CBaseTable class. On the positive side, by these various machinations, we avoid having to change the contents of <I>basetabl.cpp</I> at all.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">That is all of the unusual stuff we need to do. Now we can move to more normal overriding.</FONT></P>
+
+<P><I><FONT FACE="Times">CSalesTable</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We need to handle a number of things in our CBaseTable class. In our definitions, we override the two functions. We also add a couple of new routines to handle the read and write functions.</FONT></P>
+
+<P><I><FONT FACE="Times">Class definition</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;&#160;<A NAME="P910_45906"></A>Here's our actual class definition (with </FONT><FONT FACE="Courier New">OpenFrom</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">SaveTo</FONT><FONT FACE="Times"> overridden). We also include </FONT><FONT FACE="Courier New">ReadCustomer</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">WriteRecord</FONT><FONT FACE="Times">, which are utility functions used by </FONT><FONT FACE="Courier New">OpenFrom</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">SaveTo</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">class CSalesTable : public CBaseTable</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">public:</FONT>
+<FONT SIZE="-1">     CSalesTable  () ; </FONT>
+
+<FONT SIZE="-1">// required</FONT>
+<FONT SIZE="-1">    virtual long  AppendDuplicateRecord (</FONT>
+<FONT SIZE="-1">        CBaseRecord&amp;, </FONT>
+<FONT SIZE="-1">        CBaseRecord&amp;,</FONT>
+<FONT SIZE="-1">        BOOL bAllFlds = TRUE</FONT>
+<FONT SIZE="-1">    );</FONT>
+<FONT SIZE="-1">// optional overridden</FONT>
+<FONT SIZE="-1">    long OpenFrom(CString&amp; rTableName, long openFlag);</FONT>
+<FONT SIZE="-1">    long SaveTo(CString&amp; rTableName);</FONT>
+<FONT SIZE="-1">// useful</FONT>
+<FONT SIZE="-1">    CSalesRecord *ReadCustomer(CStdioFile &amp;file);</FONT>
+<FONT SIZE="-1">    long WriteRecord(HANDLE hFile, CSalesRecord&amp; rRec);</FONT>
+<FONT SIZE="-1">};</FONT></PRE>
+
+<P><I><FONT FACE="Times">CSalesTable constructor </FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The constructor creates the schema and initializes it:</FONT></P><PRE><FONT SIZE="-1">CSalesTable::CSalesTable()</FONT>
+<FONT SIZE="-1">             : CBaseTable()</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    m_Schema = new CSalesSchema;</FONT>
+<FONT SIZE="-1">    if (m_Schema)</FONT>
+<FONT SIZE="-1">        m_Schema-&gt;DiscoverSchema();</FONT>
+
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">CSalesTable functions</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P944_46746"></A>AppendDuplicateRecord</FONT><FONT FACE="Times"> creates a new row and copies </FONT><FONT FACE="Courier New">rFrom</FONT><FONT FACE="Times"> to </FONT><FONT FACE="Courier New">rTo</FONT><FONT FACE="Times">. Note that </FONT><FONT FACE="Courier New">rFrom</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">rTo</FONT><FONT FACE="Times"> are actually CSalesRecord objects:</FONT></P><PRE><FONT SIZE="-1">long CSalesTable::AppendDuplicateRecord(CBaseRecord&amp; rFrom, </FONT>
+<FONT SIZE="-1">                   CBaseRecord&amp; rTo, BOOL bAllFlds)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    int     tempInt;</FONT>
+<FONT SIZE="-1">    CString tempStr;</FONT>
+<FONT SIZE="-1">    long    retval = -1;</FONT>
+
+<FONT SIZE="-1">    CSalesRecord&amp; rFromRec = (CSalesRecord&amp;)rFrom;</FONT>
+<FONT SIZE="-1">    CSalesRecord&amp; rToRec   = (CSalesRecord&amp;)rTo;</FONT>
+
+<FONT SIZE="-1">    // Source record must be positioned at valid data.</FONT>
+<FONT SIZE="-1">    if (!rFromRec.m_Positioned)</FONT>
+<FONT SIZE="-1">        return -1;</FONT>
+<FONT SIZE="-1">    if ((retval = CBaseTable::AppendBlankRecord(rToRec)) != 0)</FONT>
+<FONT SIZE="-1">        return retval;</FONT>
+<FONT SIZE="-1">    if (bAllFlds) {</FONT>
+<FONT SIZE="-1">        retval = rFromRec.GetRecordId(tempInt) ||</FONT>
+<FONT SIZE="-1">            rToRec.SetRecordId(tempInt);</FONT>
+<FONT SIZE="-1">        if (retval != 0)</FONT>
+<FONT SIZE="-1">            return retval;</FONT>
+
+<FONT SIZE="-1">        if ((retval = rFromRec.GetStatus(tempInt)) != 0)</FONT>
+<FONT SIZE="-1">            if ((retval = rToRec.SetStatus(tempInt)) != 0)</FONT>
+<FONT SIZE="-1">                return retval;</FONT>
+
+<FONT SIZE="-1">        if ((retval = rToRec.SetArchiveBit(rFromRec.IsArchived())) != 0)</FONT>
+<FONT SIZE="-1">            return retval;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    if ((retval = rToRec.SetPrivate(rFromRec.IsPrivate())) != 0)</FONT>
+<FONT SIZE="-1">        return retval;</FONT>
+
+<FONT SIZE="-1">    retval = rFromRec.GetID(tempInt) || rToRec.SetID(tempInt);</FONT>
+<FONT SIZE="-1">    if (retval != 0)</FONT>
+<FONT SIZE="-1">        return retval;</FONT>
+<FONT SIZE="-1">            </FONT>
+<FONT SIZE="-1">    retval = rFromRec.GetName(tempStr) || rToRec.SetName(tempStr);</FONT>
+<FONT SIZE="-1">    if (retval != 0)</FONT>
+<FONT SIZE="-1">        return retval;</FONT>
+<FONT SIZE="-1">            </FONT>
+<FONT SIZE="-1">    retval = rFromRec.GetAddress(tempStr) || rToRec.SetAddress(tempStr);</FONT>
+<FONT SIZE="-1">    if (retval != 0)</FONT>
+<FONT SIZE="-1">        return retval;</FONT>
+<FONT SIZE="-1">            </FONT>
+<FONT SIZE="-1">    retval = rFromRec.GetCity(tempStr) || rToRec.SetCity(tempStr);</FONT>
+<FONT SIZE="-1">    if (retval != 0)</FONT>
+<FONT SIZE="-1">        return retval;</FONT>
+<FONT SIZE="-1">            </FONT>
+<FONT SIZE="-1">    retval = rFromRec.GetPhone(tempStr) || rToRec.SetPhone(tempStr);</FONT>
+<FONT SIZE="-1">    if (retval != 0)</FONT>
+<FONT SIZE="-1">        return retval;</FONT>
+<FONT SIZE="-1">        </FONT>
+<FONT SIZE="-1">    return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This is the only required function. There are also two other functions we override.</FONT></P>
+
+<P><I><FONT FACE="Times">SaveTo</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's our version of </FONT><FONT FACE="Courier New">&#160;<A NAME="P1004_48547"></A>SaveTo</FONT><FONT FACE="Times">. We use it to save in a comma-delimited format:</FONT></P><PRE><FONT SIZE="-1">long CSalesTable::SaveTo(CString&amp; rTableName)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    CSalesRecord    locRecord(*this, 0);</FONT>
+<FONT SIZE="-1">    CBaseIterator   locIterator(*this);</FONT>
+<FONT SIZE="-1">    long            err;</FONT>
+
+<FONT SIZE="-1">    CString tdvFile(rTableName);</FONT>
+<FONT SIZE="-1">    HANDLE tdvFileStream = CreateFile(</FONT>
+<FONT SIZE="-1">        tdvFile, </FONT>
+<FONT SIZE="-1">        GENERIC_READ | GENERIC_WRITE,</FONT>
+<FONT SIZE="-1">        FILE_SHARE_READ | FILE_SHARE_WRITE, </FONT>
+<FONT SIZE="-1">        NULL, </FONT>
+<FONT SIZE="-1">        CREATE_ALWAYS,</FONT>
+<FONT SIZE="-1">        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, </FONT>
+<FONT SIZE="-1">        NULL</FONT>
+<FONT SIZE="-1">    );</FONT>
+
+<FONT SIZE="-1">    // generate the file</FONT>
+<FONT SIZE="-1">    if (tdvFileStream != (HANDLE)INVALID_HANDLE_VALUE) {</FONT>
+
+<FONT SIZE="-1">        SetFilePointer(tdvFileStream, 0, NULL, FILE_BEGIN);</FONT>
+<FONT SIZE="-1">        SetEndOfFile(tdvFileStream);</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">        err = locIterator.FindFirst(locRecord, FALSE);</FONT>
+<FONT SIZE="-1">        while (!err) {</FONT>
+<FONT SIZE="-1">            WriteRecord(tdvFileStream, locRecord);</FONT>
+<FONT SIZE="-1">            err = locIterator.FindNext(locRecord, FALSE);</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">        if (err == -1)  // we reached the last record</FONT>
+<FONT SIZE="-1">            err = 0;</FONT>
+
+<FONT SIZE="-1">        CloseHandle(tdvFileStream);</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    return err;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">It creates the file, opens it, calls </FONT><FONT FACE="Courier New">WriteRecord</FONT><FONT FACE="Times"> to do the actual writing of one record, and then closes the file. </FONT></P>
+
+<P><I><FONT FACE="Times">WriteRecord</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note that </FONT><FONT FACE="Courier New">&#160;<A NAME="P1045_49668"></A>WriteRecord</FONT><FONT FACE="Times"> doesn't write the attributes (modified, deleted, etc.) to a record, because it isn't necessary. By the time we write a table to disk, all deleted records should be deleted, all modified records will be synced, all archived records will be archived, and all added records will be synced. Thus, the attribute information is not relevant:</FONT></P><PRE><FONT SIZE="-1">long CSalesTable::WriteRecord(HANDLE hFile, CSalesRecord&amp; rRec)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    int             customerID;</FONT>
+<FONT SIZE="-1">    CString         csName, csAddress, csCity, csPhone;</FONT>
+<FONT SIZE="-1">    int             recId;</FONT>
+<FONT SIZE="-1">    DWORD           dwPut;</FONT>
+<FONT SIZE="-1">    unsigned long   len;</FONT>
+<FONT SIZE="-1">    const int       kMaxRecordSize = 1000;</FONT>
+<FONT SIZE="-1">    char            buf[kMaxRecordSize];</FONT>
+
+<FONT SIZE="-1">    // Get the record ID</FONT>
+<FONT SIZE="-1">    rRec.GetRecordId(recId);</FONT>
+
+<FONT SIZE="-1">    // Get the customer ID, name, address, city &amp; phone.</FONT>
+<FONT SIZE="-1">    // Replace any tabs with spaces in all.</FONT>
+<FONT SIZE="-1">    rRec.GetID(customerID);</FONT>
+<FONT SIZE="-1">    rRec.GetName(csName);</FONT>
+<FONT SIZE="-1">    rRec.GetAddress(csAddress);</FONT>
+<FONT SIZE="-1">    rRec.GetCity(csCity);</FONT>
+<FONT SIZE="-1">    rRec.GetPhone(csPhone);</FONT>
+<FONT SIZE="-1">    ReplaceTabs(csName);</FONT>
+<FONT SIZE="-1">    ReplaceTabs(csAddress);</FONT>
+<FONT SIZE="-1">    ReplaceTabs(csCity);</FONT>
+<FONT SIZE="-1">    ReplaceTabs(csPhone);</FONT>
+
+<FONT SIZE="-1">    // Write the record to the file as (if private):</FONT>
+<FONT SIZE="-1">    // &lt;customerID&gt;\t&lt;name&gt;\t&lt;address&gt;\t&lt;city&gt;\t&lt;phone&gt;\tP\t&lt;recID&gt;</FONT>
+<FONT SIZE="-1">    //    or, if not private:</FONT>
+<FONT SIZE="-1">    // &lt;customerID&gt;\t&lt;name&gt;\t&lt;address&gt;\t&lt;city&gt;\t&lt;phone&gt;\t\t&lt;recID&gt;</FONT>
+<FONT SIZE="-1">    sprintf(</FONT>
+<FONT SIZE="-1">        buf, </FONT>
+<FONT SIZE="-1">        &quot;%d\t%s\t%s\t%s\t%s\t%s\t%d\r\n&quot;,</FONT>
+<FONT SIZE="-1">        customerID,</FONT>
+<FONT SIZE="-1">        csName.GetBuffer(csName.GetLength()),</FONT>
+<FONT SIZE="-1">        csAddress.GetBuffer(csAddress.GetLength()),</FONT>
+<FONT SIZE="-1">        csCity.GetBuffer(csCity.GetLength()),</FONT>
+<FONT SIZE="-1">        csPhone.GetBuffer(csPhone.GetLength()),</FONT>
+<FONT SIZE="-1">        rRec.IsPrivate() ? &quot;P&quot;: &quot;&quot;,</FONT>
+<FONT SIZE="-1">        recId</FONT>
+<FONT SIZE="-1">    );</FONT>
+<FONT SIZE="-1">    len = strlen(buf);</FONT>
+<FONT SIZE="-1">    WriteFile(</FONT>
+<FONT SIZE="-1">        hFile, </FONT>
+<FONT SIZE="-1">        buf,</FONT>
+<FONT SIZE="-1">        len,</FONT>
+<FONT SIZE="-1">        &amp;dwPut, </FONT>
+<FONT SIZE="-1">        NULL</FONT>
+<FONT SIZE="-1">    );</FONT>
+<FONT SIZE="-1">    ASSERT(dwPut == len);</FONT>
+
+<FONT SIZE="-1">    // Release the string buffers</FONT>
+<FONT SIZE="-1">    csName.ReleaseBuffer();</FONT>
+<FONT SIZE="-1">    csAddress.ReleaseBuffer();</FONT>
+<FONT SIZE="-1">    csCity.ReleaseBuffer();</FONT>
+<FONT SIZE="-1">    csPhone.ReleaseBuffer();</FONT>
+
+<FONT SIZE="-1">    return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">For each of the strings that will be written (name, address, city, phone), </FONT><FONT FACE="Courier New">WriteRecord</FONT><FONT FACE="Times"> replaces any tabs or newlines with spaces by using </FONT><FONT FACE="Courier New">ReplaceTabs</FONT><FONT FACE="Times">. This is necessary because it would ruin our tab-delimited format if a tab or newline occurred within a field. </FONT></P>
+
+<P><I><FONT FACE="Times">ReplaceTabs</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the code for </FONT><FONT FACE="Courier New">&#160;<A NAME="P1109_51836"></A>ReplaceTabs</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">static long ReplaceTabs(CString&amp; csStr)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    char *p;</FONT>
+
+<FONT SIZE="-1">    p = csStr.GetBuffer(csStr.GetLength());</FONT>
+
+<FONT SIZE="-1">    // Scan and replace all tabs or newlines with blanks</FONT>
+<FONT SIZE="-1">    while (*p) {</FONT>
+<FONT SIZE="-1">        if (*p == '\t' || *p == '\r' || *p == '\n')</FONT>
+<FONT SIZE="-1">            *p = ' ';</FONT>
+<FONT SIZE="-1">        ++p;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    csStr.ReleaseBuffer();</FONT>
+
+<FONT SIZE="-1">    return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This is all that needs to be done to handle writing to the file. </FONT></P>
+
+<P><I><FONT FACE="Times">OpenFrom</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We now need to take care of reading one of these files. </FONT><FONT FACE="Courier New">&#160;<A NAME="P1132_52274"></A>OpenFrom</FONT><FONT FACE="Times"> does that. It checks for the existence of the file, opens and closes it, and handles any exceptions that are thrown:</FONT></P><PRE><FONT SIZE="-1">long CSalesTable::OpenFrom(CString&amp; rTableName, long openFlag) </FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    char *pszName ;</FONT>
+<FONT SIZE="-1">    CFileStatus fStat;</FONT>
+<FONT SIZE="-1">    CStdioFile  *file = 0;</FONT>
+
+<FONT SIZE="-1">    pszName = rTableName.GetBuffer(rTableName.GetLength());</FONT>
+
+<FONT SIZE="-1">    // Check for the presence of the disk file, if not here get out</FONT>
+<FONT SIZE="-1">    // *without* invoking any of the reading code.</FONT>
+<FONT SIZE="-1">    if (!CStdioFile::GetStatus(pszName, fStat))</FONT>
+<FONT SIZE="-1">        return DERR_FILE_NOT_FOUND; </FONT>
+
+<FONT SIZE="-1">    TRY</FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        file = new CStdioFile(pszName, CFile::modeReadWrite |</FONT>
+<FONT SIZE="-1">                           CFile::shareDenyWrite);</FONT>
+<FONT SIZE="-1">        rTableName.ReleaseBuffer(-1);</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    CATCH_ALL(e)</FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        rTableName.ReleaseBuffer(-1);</FONT>
+<FONT SIZE="-1">        if (file)</FONT>
+<FONT SIZE="-1">            file-&gt;Abort();</FONT>
+<FONT SIZE="-1">        delete file;</FONT>
+<FONT SIZE="-1">        return ((CFileException*)e)-&gt;m_cause;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    END_CATCH_ALL</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    // Get rid of current contents (if any)</FONT>
+<FONT SIZE="-1">    DestroyAllFields(); </FONT>
+
+<FONT SIZE="-1">    CSalesRecord *newRecord = 0;</FONT>
+<FONT SIZE="-1">    TRY</FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        while ((newRecord = ReadCustomer(*file)) != 0) {</FONT>
+<FONT SIZE="-1">            </FONT>
+<FONT SIZE="-1">            delete newRecord;</FONT>
+<FONT SIZE="-1">            newRecord = 0;</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">        file-&gt;Close();</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    CATCH_ALL(e)</FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        file-&gt;Abort();</FONT>
+<FONT SIZE="-1">        delete file;</FONT>
+<FONT SIZE="-1">        delete newRecord;</FONT>
+<FONT SIZE="-1">        return DERR_INVALID_FILE_FORMAT;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    END_CATCH_ALL</FONT>
+<FONT SIZE="-1">    delete file;</FONT>
+
+<FONT SIZE="-1">    return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">ReadCustomer</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;&#160;<A NAME="P1190_53610"></A>ReadCustomer</FONT><FONT FACE="Times"> has quite a lot of work to do. It creates a new CSalesRecord for each line in the file. It returns 0 when there are no more lines:</FONT></P><PRE><FONT SIZE="-1">CSalesRecord *CSalesTable::ReadCustomer(CStdioFile &amp;file)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    static char gBigBuffer[4096];</FONT>
+<FONT SIZE="-1">    int retval;</FONT>
+<FONT SIZE="-1">    if (file.ReadString(gBigBuffer, sizeof(gBigBuffer)) == NULL)</FONT>
+<FONT SIZE="-1">        return false;</FONT>
+<FONT SIZE="-1">    char *p = gBigBuffer;</FONT>
+<FONT SIZE="-1">    char *customerID = FindUpToNextTab(&amp;p);</FONT>
+<FONT SIZE="-1">    char *name = FindUpToNextTab(&amp;p);</FONT>
+<FONT SIZE="-1">    char *address = FindUpToNextTab(&amp;p);</FONT>
+<FONT SIZE="-1">    char *city = FindUpToNextTab(&amp;p);</FONT>
+<FONT SIZE="-1">    char *phone = FindUpToNextTab(&amp;p);</FONT>
+<FONT SIZE="-1">    char *priv = FindUpToNextTab(&amp;p);</FONT>
+<FONT SIZE="-1">    char *uniqueID = FindUpToNextTab(&amp;p);</FONT>
+<FONT SIZE="-1">    char *attributes = FindUpToNextTab(&amp;p);</FONT>
+
+<FONT SIZE="-1">    if (!address)</FONT>
+<FONT SIZE="-1">        address = &quot;&quot;;</FONT>
+<FONT SIZE="-1">    if (!city)</FONT>
+<FONT SIZE="-1">        city = &quot;&quot;;</FONT>
+<FONT SIZE="-1">    if (!phone)</FONT>
+<FONT SIZE="-1">        phone = &quot;&quot;;</FONT>
+<FONT SIZE="-1">    if (!priv)</FONT>
+<FONT SIZE="-1">        priv = &quot;&quot;;</FONT>
+<FONT SIZE="-1">    if (!attributes)</FONT>
+<FONT SIZE="-1">        attributes = &quot;c&quot;;</FONT>
+<FONT SIZE="-1">    if (!uniqueID)</FONT>
+<FONT SIZE="-1">        uniqueID = &quot;0&quot;;</FONT>
+<FONT SIZE="-1">    if (customerID &amp;&amp; name) {</FONT>
+<FONT SIZE="-1">        CSalesRecord *rec = new CSalesRecord(*this, 0);</FONT>
+<FONT SIZE="-1">        </FONT>
+<FONT SIZE="-1">        if (AppendBlankRecord(*rec)) {  </FONT>
+<FONT SIZE="-1">            // should throw an error here!</FONT>
+<FONT SIZE="-1">            return 0;</FONT>
+<FONT SIZE="-1">            // return(CONDERR_BAD_REMOTE_TABLES);</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">        retval = rec-&gt;SetRecordId(atol(uniqueID));</FONT>
+<FONT SIZE="-1">        retval = rec-&gt;SetCategoryId(0);</FONT>
+<FONT SIZE="-1">        </FONT>
+<FONT SIZE="-1">        retval = rec-&gt;SetID(atol(customerID));</FONT>
+<FONT SIZE="-1">        retval = rec-&gt;SetName(CString(name));</FONT>
+<FONT SIZE="-1">        retval = rec-&gt;SetAddress(CString(address));</FONT>
+<FONT SIZE="-1">        retval = rec-&gt;SetCity(CString(city));</FONT>
+<FONT SIZE="-1">        retval = rec-&gt;SetPhone(CString(phone));</FONT>
+<FONT SIZE="-1">        retval = rec-&gt;SetPrivate(*priv == 'P'); </FONT>
+<FONT SIZE="-1">        </FONT>
+<FONT SIZE="-1">        int attr = 0;</FONT>
+<FONT SIZE="-1">        // 'N' -- new, 'M' -- modify, 'D'-- delete, 'A' -- archive</FONT>
+<FONT SIZE="-1">        // if it's Add, it can't be modify</FONT>
+<FONT SIZE="-1">        if (strchr(attributes, 'N'))</FONT>
+<FONT SIZE="-1">            attr |= fldStatusADD;</FONT>
+<FONT SIZE="-1">        else if (strchr(attributes, 'M'))</FONT>
+<FONT SIZE="-1">            attr |= fldStatusUPDATE;</FONT>
+<FONT SIZE="-1">        if (strchr(attributes, 'D'))</FONT>
+<FONT SIZE="-1">            attr |= fldStatusDELETE;</FONT>
+<FONT SIZE="-1">        if (strchr(attributes, 'A'))</FONT>
+<FONT SIZE="-1">            attr |= fldStatusARCHIVE;</FONT>
+<FONT SIZE="-1">        rec-&gt;SetStatus(attr);</FONT>
+<FONT SIZE="-1">        </FONT>
+<FONT SIZE="-1">        return rec;</FONT>
+<FONT SIZE="-1">    } else</FONT>
+<FONT SIZE="-1">        return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Although </FONT><FONT FACE="Courier New">WriteRecord</FONT><FONT FACE="Times"> doesn't write any attributes, </FONT><FONT FACE="Courier New">ReadCustomer</FONT><FONT FACE="Times"> must handle the possibility of reading them. You might wonder how attributes could have gotten into the file. The answer is simple-the user of the desktop application that edits our comma-delimited file may have changed this record. Since we support desktop editing of records, we need to know if a modification has occurred (for the next sync). </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">In such instances, the routine appends a value to the end of the record. </FONT><FONT FACE="Courier New">ReadCustomer</FONT><FONT FACE="Times"> adds an </FONT><FONT FACE="Courier New">M</FONT><FONT FACE="Times"> as a field at the end. If the record has been deleted, it doesn't remove the record line from the file; instead, it adds a </FONT><FONT FACE="Courier New">D</FONT><FONT FACE="Times"> in the last field. If the record is archived, it adds an </FONT><FONT FACE="Courier New">A</FONT><FONT FACE="Times">, and new records get marked with an </FONT><FONT FACE="Courier New">N</FONT><FONT FACE="Times">. On the next sync, all these newly marked records are dealt with by the sync code. Note that the marking is almost completely analogous to the marking done on the handheld side.</FONT><A NAME="P1257_56556"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">CSalesSchema</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1262_56568"></A>The schema class defines the number, ordering, and type of the fields. We also declare a number of constants and create one function.</FONT></P>
+
+<P><I><FONT FACE="Times">Constants</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">These constants define the field ordering within a row for the record information we save:</FONT></P><PRE><FONT SIZE="-1">#define slFLDRecordID       0</FONT>
+<FONT SIZE="-1">#define slFLDStatus         1</FONT>
+
+<FONT SIZE="-1">#define slFLDCustomerID     2</FONT>
+<FONT SIZE="-1">#define slFLDName           3</FONT>
+<FONT SIZE="-1">#define slFLDAddress        4</FONT>
+<FONT SIZE="-1">#define slFLDCity           5</FONT>
+<FONT SIZE="-1">#define slFLDPhone          6</FONT>
+
+<FONT SIZE="-1">#define slFLDPrivate        7</FONT>
+<FONT SIZE="-1">#define slFLDPlacement      8</FONT>
+<FONT SIZE="-1">#define slFLDCategoryID     9</FONT>
+
+<FONT SIZE="-1">#define slFLDLast           slFLDCategoryID</FONT></PRE>
+
+<P><I><FONT FACE="Times">CSalesSchema class definition</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This is very straightforward, with only one function to define:</FONT></P><PRE><FONT SIZE="-1">class CSalesSchema : public CBaseSchema </FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">public:</FONT>
+<FONT SIZE="-1">    virtual long  DiscoverSchema     (void);</FONT>
+
+<FONT SIZE="-1">};</FONT></PRE>
+
+<P><I><FONT FACE="Times">CSalesSchema functions</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The </FONT><FONT FACE="Courier New">&#160;<A NAME="P1294_57346"></A>DiscoverSchema</FONT><FONT FACE="Times"> function must set the number of fields per record, set the type of each record, and mark which fields contain the record ID, the attributes, and the category ID. Even though our Sales application keeps its records sorted by customer number, we are still required to reserve a field for the record number:</FONT></P><PRE><FONT SIZE="-1">long CSalesSchema::DiscoverSchema(void) </FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    m_FieldsPerRow = slFLDLast + 1;</FONT>
+
+<FONT SIZE="-1">    m_FieldTypes.SetSize(m_FieldsPerRow);</FONT>
+<FONT SIZE="-1">    m_FieldTypes.SetAt(slFLDRecordID,       (WORD)eInteger);    </FONT>
+<FONT SIZE="-1">    m_FieldTypes.SetAt(slFLDStatus,         (WORD)eInteger);    </FONT>
+
+<FONT SIZE="-1">    m_FieldTypes.SetAt(slFLDCustomerID,     (WORD)eInteger);    </FONT>
+<FONT SIZE="-1">    m_FieldTypes.SetAt(slFLDName,           (WORD)eString);    </FONT>
+<FONT SIZE="-1">    m_FieldTypes.SetAt(slFLDAddress,        (WORD)eString);    </FONT>
+<FONT SIZE="-1">    m_FieldTypes.SetAt(slFLDCity,           (WORD)eString);    </FONT>
+<FONT SIZE="-1">    m_FieldTypes.SetAt(slFLDPhone,          (WORD)eString);    </FONT>
+<FONT SIZE="-1">    m_FieldTypes.SetAt(slFLDPrivate,        (WORD)eBool);    </FONT>
+<FONT SIZE="-1">    m_FieldTypes.SetAt(slFLDPlacement,      (WORD)eInteger);    </FONT>
+<FONT SIZE="-1">    m_FieldTypes.SetAt(slFLDCategoryID,     (WORD)eInteger);    </FONT>
+
+<FONT SIZE="-1">    // Be sure to set the 4 common fields' position</FONT>
+<FONT SIZE="-1">    m_RecordIdPos     = slFLDRecordID;</FONT>
+<FONT SIZE="-1">    m_RecordStatusPos = slFLDStatus;</FONT>
+<FONT SIZE="-1">    m_CategoryIdPos   = slFLDCategoryID; </FONT>
+<FONT SIZE="-1">    m_PlacementPos    = slFLDPlacement;</FONT>
+
+<FONT SIZE="-1">    return 0;</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P1320_58634"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">CSalesRecord</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1323_58646"></A>CSalesRecord is based on the CBaseRecord class. This is the class that deals with records in the table. We have routines that get and set appropriate fields in the record.</FONT></P>
+
+<P><I><FONT FACE="Times">CSalesRecord class definition</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The constructor takes a </FONT><FONT FACE="Courier New">wModAction</FONT><FONT FACE="Times"> parameter, which it uses to initialize its base class. Other routines just get and set the values of a customer record:</FONT></P><PRE><FONT SIZE="-1">class CSalesRecord : public CBaseRecord </FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">protected:</FONT>
+<FONT SIZE="-1">    friend        CSalesTable;          </FONT>
+
+<FONT SIZE="-1">public:</FONT>
+<FONT SIZE="-1">    CSalesRecord            (CSalesTable &amp;rTable, </FONT>
+<FONT SIZE="-1">                                WORD wModAction);</FONT>
+
+<FONT SIZE="-1">    long SetID              (int ID);</FONT>
+<FONT SIZE="-1">    long SetName            (CString &amp;csName);</FONT>
+<FONT SIZE="-1">    long SetAddress         (CString &amp;csAddress);</FONT>
+<FONT SIZE="-1">    long SetCity            (CString &amp;csCity);</FONT>
+<FONT SIZE="-1">    long SetPhone           (CString &amp;csPhone);</FONT>
+
+<FONT SIZE="-1">    long SetPrivate         (BOOL bPrivate);</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    long GetID              (int &amp;ID);</FONT>
+<FONT SIZE="-1">    long GetName            (CString &amp;csName);</FONT>
+<FONT SIZE="-1">    long GetAddress         (CString &amp;csAddress);</FONT>
+<FONT SIZE="-1">    long GetCity            (CString &amp;csCity);</FONT>
+<FONT SIZE="-1">    long GetPhone           (CString &amp;csPhone);</FONT>
+<FONT SIZE="-1"> </FONT>
+<FONT SIZE="-1">    BOOL IsPrivate          (void);</FONT>
+
+<FONT SIZE="-1">// required overrides</FONT>
+<FONT SIZE="-1">    virtual BOOL  operator==(const CBaseRecord&amp;r);</FONT>
+<FONT SIZE="-1">    virtual long Assign(const CBaseRecord&amp;r);</FONT>
+<FONT SIZE="-1">};</FONT></PRE>
+
+<P><I><FONT FACE="Times">Class constructor</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The constructor doesn't do much:</FONT></P><PRE><FONT SIZE="-1">CSalesRecord::CSalesRecord(</FONT>
+<FONT SIZE="-1">    CSalesTable &amp;rTable, </FONT>
+<FONT SIZE="-1">    WORD wModAction</FONT>
+<FONT SIZE="-1">) : CBaseRecord(rTable, wModAction)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">CSalesRecord functions</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are a number of functions, all of which involve getting or setting records fields. There are routines that get or set the customer ID, name, address, city, and ZIP Code. There are also routines that compare records and assign the values of one record to another.</FONT></P>
+
+<P><I><FONT FACE="Times">Getting the customer ID</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P1374_60321"></A>Here's the routine that gets the value of the customer ID. It gets the appropriately numbered field (checking first to make sure the table is positioned at this record) and asks the field for the current value:</FONT></P><PRE><FONT SIZE="-1">long CSalesRecord::GetID(int &amp;customerID)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    CIntegerField* pFld;</FONT>
+
+<FONT SIZE="-1">    if (m_Positioned &amp;&amp; </FONT>
+<FONT SIZE="-1">        (pFld = (CIntegerField*) m_Fields.GetAt(slFLDCustomerID)) &amp;&amp;</FONT>
+<FONT SIZE="-1">        pFld-&gt;GetValue(customerID) == 0)</FONT>
+<FONT SIZE="-1">        return 0;</FONT>
+<FONT SIZE="-1">    else</FONT>
+<FONT SIZE="-1">        return DERR_RECORD_NOT_POSITIONED;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Setting the customer ID</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P1389_60821"></A>Here's the routine that sets the customer ID. Note that if </FONT><FONT FACE="Courier New">m_wModAction</FONT><FONT FACE="Times"> is equal to </FONT><FONT FACE="Courier New">MODFILTER_STUPID</FONT><FONT FACE="Times">, the code checks the value being set to see if it is equal to the current value-if it is, the update (modified) attribute of the status isn't set:</FONT></P><PRE><FONT SIZE="-1">long CSalesRecord::SetID(int customerID)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    BOOL autoFlip   = FALSE;</FONT>
+<FONT SIZE="-1">    int  currStatus = 0;</FONT>
+<FONT SIZE="-1">    long retval     = DERR_RECORD_NOT_POSITIONED;</FONT>
+<FONT SIZE="-1">    CIntegerField* pFld = NULL;</FONT>
+
+<FONT SIZE="-1">    if (m_Positioned &amp;&amp; </FONT>
+<FONT SIZE="-1">        (pFld = (CIntegerField*) m_Fields.GetAt(slFLDCustomerID)))</FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        if (m_wModAction == MODFILTER_STUPID)</FONT>
+<FONT SIZE="-1">        {</FONT>
+<FONT SIZE="-1">            GetStatus(currStatus); </FONT>
+<FONT SIZE="-1">            if (currStatus != fldStatusADD)</FONT>
+<FONT SIZE="-1">            {</FONT>
+<FONT SIZE="-1">                CIntegerField tmpFld(customerID);</FONT>
+<FONT SIZE="-1">                if (pFld-&gt;Compare(&amp;tmpFld))</FONT>
+<FONT SIZE="-1">                    autoFlip = TRUE;</FONT>
+<FONT SIZE="-1">            }</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">        if (!pFld-&gt;SetValue(customerID))</FONT>
+<FONT SIZE="-1">        {</FONT>
+<FONT SIZE="-1">            if (autoFlip)</FONT>
+<FONT SIZE="-1">                SetStatus(fldStatusUPDATE);</FONT>
+<FONT SIZE="-1">            retval = 0;</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">    }   </FONT>
+<FONT SIZE="-1">    return retval;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Because the routines to get and set the name, address, city, and ZIP, and private value are so similar to those for the customer ID, we are not bothering to show them.</FONT></P>
+
+<P><I><FONT FACE="Times">Assigning one record to another</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P1424_62006"></A>We need an assign function that assigns one CSalesRecord to another. It copies all fields, including the record ID and attributes:</FONT></P><PRE><FONT SIZE="-1">long CSalesRecord::Assign(const CBaseRecord&amp; rSubj)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    if (!m_Positioned)</FONT>
+<FONT SIZE="-1">        return -1;</FONT>
+<FONT SIZE="-1">    for (int x=slFLDRecordID; x &lt;= slFLDLast; x++)</FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        CBaseField* pMyFld   = (CBaseField*) m_Fields.GetAt(x); </FONT>
+<FONT SIZE="-1">        CBaseField* pSubjFld = </FONT>
+<FONT SIZE="-1">           (CBaseField*) ((CSalesRecord&amp;)rSubj).m_Fields.GetAt(x); </FONT>
+<FONT SIZE="-1">        if (pMyFld &amp;&amp; pSubjFld)</FONT>
+<FONT SIZE="-1">            pMyFld-&gt;Assign(*pSubjFld);</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Comparing one record to another</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The comparison routine (== operator) checks to see whether one CSalesRecord is equal to another (ignoring record ID and attributes):</FONT></P><PRE><FONT SIZE="-1">BOOL CSalesRecord::&#160;<A NAME="P1444_62716"></A>operator==(const CBaseRecord&amp; rSubj)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    if (!m_Positioned)</FONT>
+<FONT SIZE="-1">        return FALSE;</FONT>
+<FONT SIZE="-1">    for (int x=slFLDCustomerID; x &lt;= slFLDLast; x++)</FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        CBaseField* pMyFld   = (CBaseField*) m_Fields.GetAt(x); </FONT>
+<FONT SIZE="-1">        CBaseField* pSubjFld =</FONT>
+<FONT SIZE="-1">           (CBaseField*) ((CSalesRecord&amp;)rSubj).m_Fields.GetAt(x); </FONT>
+<FONT SIZE="-1">        if (!pMyFld || !pSubjFld)</FONT>
+<FONT SIZE="-1">            return FALSE;</FONT>
+<FONT SIZE="-1">        if (pMyFld-&gt;Compare(pSubjFld) != 0)</FONT>
+<FONT SIZE="-1">            return FALSE;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    return TRUE;</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P1459_63162"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">CSalesDTLinkConverter</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1462_63183"></A>This is the last class that we have in our conduit. It is the one responsible for converting a record from one format to another and vice versa. We have one function that converts a Palm OS handheld record into a CBaseRecord format, and another does the opposite.</FONT></P>
+
+<P><I><FONT FACE="Times">CSalesDTLinkConverter class definition</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The definition is simple with just two functions:</FONT></P><PRE><FONT SIZE="-1">class CSalesDTLinkConverter : public CBaseDTLinkConverter</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">public:</FONT>
+<FONT SIZE="-1">    CSalesDTLinkConverter(HINSTANCE hInst);</FONT>
+
+<FONT SIZE="-1">    long ConvertToRemote(CBaseRecord &amp;rRec, CRawRecordInfo &amp;rInfo);</FONT>
+<FONT SIZE="-1">    long ConvertFromRemote(CBaseRecord &amp;rRec, CRawRecordInfo &amp;rInfo);</FONT>
+
+<FONT SIZE="-1">};</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The </FONT><FONT FACE="Courier New">HINSTANCE</FONT><FONT FACE="Times"> parameter in the constructor is there so that the converter can obtain strings from the DLL resource file, if it needs to.</FONT></P>
+
+<P><I><FONT FACE="Times">CSalesDTLinkConverter constructor</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the constructor:</FONT></P><PRE><FONT SIZE="-1">CSalesDTLinkConverter::CSalesDTLinkConverter(HINSTANCE hInst)</FONT>
+<FONT SIZE="-1">                        : CBaseDTLinkConverter(hInst)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Converting to Palm record format</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the code that converts to a handheld record. Note that it must set the record ID, the category ID, and the attributes as well as write the record contents. We use a utility routine, </FONT><FONT FACE="Courier New">&#160;&#160;<A NAME="P1489_64310"></A>SwapDWordToMotor</FONT><FONT FACE="Times">, to swap the customer ID:</FONT></P><PRE><FONT SIZE="-1">long CSalesDTLinkConverter::ConvertToRemote(CBaseRecord&amp; rRec, </FONT>
+<FONT SIZE="-1">                                            CRawRecordInfo&amp; rInfo)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    long            retval = 0;</FONT>
+<FONT SIZE="-1">    char            *pBuff;</FONT>
+<FONT SIZE="-1">    CString         tempStr;</FONT>
+<FONT SIZE="-1">    int             destLen, tempInt;</FONT>
+<FONT SIZE="-1">    char            *pSrc;</FONT>
+<FONT SIZE="-1">    int             customerID;</FONT>
+
+<FONT SIZE="-1">    CSalesRecord&amp; rExpRec = (CSalesRecord &amp;)rRec;</FONT>
+<FONT SIZE="-1">    rInfo.m_RecSize = 0;</FONT>
+
+<FONT SIZE="-1">    // Convert the record ID and Category ID</FONT>
+<FONT SIZE="-1">    retval = rExpRec.GetRecordId(tempInt);</FONT>
+<FONT SIZE="-1">    rInfo.m_RecId = (long)tempInt;</FONT>
+<FONT SIZE="-1">    retval = rExpRec.GetCategoryId(tempInt);</FONT>
+<FONT SIZE="-1">    rInfo.m_CatId = tempInt;</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    // Convert the attributes</FONT>
+<FONT SIZE="-1">    rInfo.m_Attribs = 0;</FONT>
+<FONT SIZE="-1">    if (rExpRec.IsPrivate())</FONT>
+<FONT SIZE="-1">        rInfo.m_Attribs |= PRIVATE_BIT;</FONT>
+<FONT SIZE="-1">    if (rExpRec.IsArchived())</FONT>
+<FONT SIZE="-1">        rInfo.m_Attribs |= ARCHIVE_BIT;</FONT>
+<FONT SIZE="-1">    if (rExpRec.IsDeleted())</FONT>
+<FONT SIZE="-1">        rInfo.m_Attribs |= DELETE_BIT;</FONT>
+<FONT SIZE="-1">    if (rExpRec.IsModified() || rExpRec.IsAdded())</FONT>
+<FONT SIZE="-1">        rInfo.m_Attribs |= DIRTY_BIT;</FONT>
+<FONT SIZE="-1">        </FONT>
+<FONT SIZE="-1">    pBuff = (char*)rInfo.m_pBytes;</FONT>
+
+<FONT SIZE="-1">    // customer ID</FONT>
+<FONT SIZE="-1">    retval = rExpRec.GetID(customerID);</FONT>
+<FONT SIZE="-1">    *((DWORD *)pBuff) = SwapDWordToMotor(customerID);</FONT>
+<FONT SIZE="-1">    pBuff += sizeof(DWORD);</FONT>
+<FONT SIZE="-1">    rInfo.m_RecSize += sizeof(DWORD);</FONT>
+
+<FONT SIZE="-1">    // name</FONT>
+<FONT SIZE="-1">    retval = rExpRec.GetName(tempStr);</FONT>
+<FONT SIZE="-1">        // Strip the CR's (if present) places result directly into pBuff</FONT>
+<FONT SIZE="-1">    pSrc    = tempStr.GetBuffer(tempStr.GetLength());</FONT>
+<FONT SIZE="-1">    destLen = StripCRs(pBuff, pSrc, tempStr.GetLength());  </FONT>
+<FONT SIZE="-1">    tempStr.ReleaseBuffer(-1);</FONT>
+<FONT SIZE="-1">    pBuff += destLen;  </FONT>
+<FONT SIZE="-1">    rInfo.m_RecSize += destLen;</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    // address</FONT>
+<FONT SIZE="-1">    retval = rExpRec.GetAddress(tempStr);</FONT>
+<FONT SIZE="-1">        // Strip the CR's (if present) places result directly into pBuff</FONT>
+<FONT SIZE="-1">    pSrc    = tempStr.GetBuffer(tempStr.GetLength());</FONT>
+<FONT SIZE="-1">    destLen = StripCRs(pBuff, pSrc, tempStr.GetLength());  </FONT>
+<FONT SIZE="-1">    tempStr.ReleaseBuffer(-1);</FONT>
+<FONT SIZE="-1">    pBuff += destLen;  </FONT>
+<FONT SIZE="-1">    rInfo.m_RecSize += destLen;</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    // city</FONT>
+<FONT SIZE="-1">    retval = rExpRec.GetCity(tempStr);</FONT>
+<FONT SIZE="-1">        // Strip the CR's (if present) places result directly into pBuff</FONT>
+<FONT SIZE="-1">    pSrc    = tempStr.GetBuffer(tempStr.GetLength());</FONT>
+<FONT SIZE="-1">    destLen = StripCRs(pBuff, pSrc, tempStr.GetLength());  </FONT>
+<FONT SIZE="-1">    tempStr.ReleaseBuffer(-1);</FONT>
+<FONT SIZE="-1">    pBuff += destLen;  </FONT>
+<FONT SIZE="-1">    rInfo.m_RecSize += destLen;</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    // phone</FONT>
+<FONT SIZE="-1">    retval = rExpRec.GetPhone(tempStr);</FONT>
+<FONT SIZE="-1">        // Strip the CR's (if present) places result directly into pBuff</FONT>
+<FONT SIZE="-1">    pSrc    = tempStr.GetBuffer(tempStr.GetLength());</FONT>
+<FONT SIZE="-1">    destLen = StripCRs(pBuff, pSrc, tempStr.GetLength());  </FONT>
+<FONT SIZE="-1">    tempStr.ReleaseBuffer(-1);</FONT>
+<FONT SIZE="-1">    pBuff += destLen;  </FONT>
+<FONT SIZE="-1">    rInfo.m_RecSize += destLen;</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    return retval;</FONT>
+<FONT SIZE="-1">}</FONT><FONT FACE="Courier New">&#160;</FONT><A NAME="P1566_66800"></A></PRE>
+
+<P><I><FONT FACE="Times">Converting to CBaseRecord format</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the code that converts from a handheld record to a CBaseRecord format. Note that it must read the record ID, the category ID, the attributes, and the record contents. We use a utility</FONT><FONT FACE="Courier New">&#160;</FONT><FONT FACE="Times"><A NAME="P1569_67023"></A> routine, </FONT><FONT FACE="Courier New">&#160;<A NAME="P1569_67034"></A>SwapDWordToIntel</FONT><FONT FACE="Times">, to swap the customer ID. If the record is deleted, there are no record contents. We don't try to read the record contents in such cases.</FONT></P><PRE><FONT SIZE="-1">long CSalesDTLinkConverter::ConvertFromRemote(</FONT>
+<FONT SIZE="-1">    CBaseRecord&amp; rRec,</FONT>
+<FONT SIZE="-1">    CRawRecordInfo&amp; rInfo)</FONT>
+<FONT SIZE="-1"> {</FONT>
+<FONT SIZE="-1">    long                retval = 0;</FONT>
+<FONT SIZE="-1">    char                *pBuff;</FONT>
+<FONT SIZE="-1">    CString             aString;</FONT>
+
+<FONT SIZE="-1">    CSalesRecord&amp; rExpRec = (CSalesRecord &amp;)rRec;</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    retval = rExpRec.SetRecordId(rInfo.m_RecId);</FONT>
+<FONT SIZE="-1">    retval = rExpRec.SetCategoryId(rInfo.m_CatId);</FONT>
+<FONT SIZE="-1">    if (rInfo.m_Attribs &amp; ARCHIVE_BIT)</FONT>
+<FONT SIZE="-1">        retval = rExpRec.SetArchiveBit(TRUE);</FONT>
+<FONT SIZE="-1">    else</FONT>
+<FONT SIZE="-1">        retval = rExpRec.SetArchiveBit(FALSE); </FONT>
+
+<FONT SIZE="-1">    if (rInfo.m_Attribs &amp; PRIVATE_BIT)</FONT>
+<FONT SIZE="-1">        retval = rExpRec.SetPrivate(TRUE);</FONT>
+<FONT SIZE="-1">    else</FONT>
+<FONT SIZE="-1">        retval = rExpRec.SetPrivate(FALSE); </FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    retval = rExpRec.SetStatus(fldStatusNONE);</FONT>
+<FONT SIZE="-1">    if (rInfo.m_Attribs &amp; DELETE_BIT) // Delete flag</FONT>
+<FONT SIZE="-1">        retval = rExpRec.SetStatus(fldStatusDELETE);</FONT>
+<FONT SIZE="-1">    else if (rInfo.m_Attribs &amp; DIRTY_BIT) // Dirty flag</FONT>
+<FONT SIZE="-1">        retval = rExpRec.SetStatus(fldStatusUPDATE);</FONT>
+
+<FONT SIZE="-1">    // Only convert body if remote record is *not* deleted..</FONT>
+<FONT SIZE="-1">    if (!(rInfo.m_Attribs &amp; DELETE_BIT)) </FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        pBuff = (char*)rInfo.m_pBytes;</FONT>
+<FONT SIZE="-1">        </FONT>
+<FONT SIZE="-1">        //  Customer ID</FONT>
+<FONT SIZE="-1">        long customerID = SwapDWordToIntel(*((DWORD*)pBuff));</FONT>
+<FONT SIZE="-1">        retval = rExpRec.SetID(customerID);</FONT>
+<FONT SIZE="-1">        pBuff += sizeof(DWORD);</FONT>
+
+<FONT SIZE="-1">        // Name</FONT>
+<FONT SIZE="-1">        AddCRs(pBuff, strlen(pBuff));</FONT>
+<FONT SIZE="-1">        aString = m_TransBuff;</FONT>
+<FONT SIZE="-1">        retval = rExpRec.SetName(aString);</FONT>
+<FONT SIZE="-1">        pBuff += strlen(pBuff) + 1;</FONT>
+
+<FONT SIZE="-1">        // Address</FONT>
+<FONT SIZE="-1">        AddCRs(pBuff, strlen(pBuff));</FONT>
+<FONT SIZE="-1">        aString = m_TransBuff;</FONT>
+<FONT SIZE="-1">        retval = rExpRec.SetAddress(aString);</FONT>
+<FONT SIZE="-1">        pBuff += strlen(pBuff) + 1;</FONT>
+
+<FONT SIZE="-1">        // City</FONT>
+<FONT SIZE="-1">        AddCRs(pBuff, strlen(pBuff));</FONT>
+<FONT SIZE="-1">        aString = m_TransBuff;</FONT>
+<FONT SIZE="-1">        retval = rExpRec.SetCity(aString);</FONT>
+<FONT SIZE="-1">        pBuff += strlen(pBuff) + 1;</FONT>
+
+<FONT SIZE="-1">        // Phone</FONT>
+<FONT SIZE="-1">        AddCRs(pBuff, strlen(pBuff));</FONT>
+<FONT SIZE="-1">        aString = m_TransBuff;</FONT>
+<FONT SIZE="-1">        retval = rExpRec.SetPhone(aString);</FONT>
+<FONT SIZE="-1">        pBuff += strlen(pBuff) + 1;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    return retval ;</FONT><FONT FACE="Courier New">&#160;</FONT><A NAME="P1633_69043"></A>
+<FONT SIZE="-1">}</FONT><A NAME="P1634_69044"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">The DLL</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1637_69051"></A>The one remaining piece in our puzzle is the DLL where the CSalesConduitMonitor actually gets created.</FONT></P>
+
+<P><I><FONT FACE="Times">DLL OpenConduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">DLL's </FONT><FONT FACE="Courier New">&#160;<A NAME="P1641_69175"></A>OpenConduit</FONT><FONT FACE="Times"> is where we put the conduit creation code:</FONT></P><PRE><FONT SIZE="-1">__declspec(dllexport) long OpenConduit(PROGRESSFN pFn, </FONT>
+<FONT SIZE="-1">    CSyncProperties&amp; rProps)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    AFX_MANAGE_STATE(AfxGetStaticModuleState());</FONT>
+
+<FONT SIZE="-1">    long retval = -1;</FONT>
+<FONT SIZE="-1">  </FONT>
+<FONT SIZE="-1">    rProps.m_DbType = 'Cust';// in case it needs to be created </FONT>
+<FONT SIZE="-1">    if (pFn) {</FONT>
+<FONT SIZE="-1">        CSalesConduitMonitor* pMonitor;</FONT>
+
+<FONT SIZE="-1">        pMonitor = new CSalesConduitMonitor(pFn, rProps, myInst);</FONT>
+<FONT SIZE="-1">        if (pMonitor)</FONT>
+<FONT SIZE="-1">        {</FONT>
+<FONT SIZE="-1">            retval = pMonitor-&gt;Engage();</FONT>
+
+<FONT SIZE="-1">            delete pMonitor;</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    return retval;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note that we set the </FONT><FONT FACE="Courier New">m_DbType</FONT><FONT FACE="Times"> field of </FONT><FONT FACE="Courier New">rProps</FONT><FONT FACE="Times">. We do this so that </FONT><FONT FACE="Courier New">CBaseConduitMonitor</FONT><FONT FACE="Times"> will create the customer database on the handheld if it doesn't exist; it uses the type found in </FONT><FONT FACE="Courier New">rProps.m_DbType</FONT><FONT FACE="Times"> to do the job.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We also pass our DLL's instance, </FONT><FONT FACE="Courier New">myInst</FONT><FONT FACE="Times">, as the third parameter. It is used to retrieve resource strings. The instance is stored as a global variable, along with three others:</FONT></P><PRE><FONT SIZE="-1">static int ClientCount = 0;</FONT>
+<FONT SIZE="-1">static HINSTANCE hRscInstance = 0;</FONT>
+<FONT SIZE="-1">static HINSTANCE hDLLInstance = 0;</FONT>
+<FONT SIZE="-1">HINSTANCE myInst=0;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">These globals are initialized when the DLL is opened. </FONT></P>
+
+<P><I><FONT FACE="Times">DLL class definition</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's our DLL's class declaration (as created automatically by Visual C++):</FONT></P><PRE><FONT SIZE="-1">class CSalesCondDll : public CWinApp</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">public:</FONT>
+<FONT SIZE="-1">    //CSalesCondDll();</FONT>
+<FONT SIZE="-1">    virtual BOOL InitInstance(); // Initialization</FONT>
+<FONT SIZE="-1">    virtual int ExitInstance();  // Termination </FONT>
+
+<FONT SIZE="-1">// Overrides</FONT>
+<FONT SIZE="-1">    // ClassWizard generated virtual function overrides</FONT>
+<FONT SIZE="-1">    //{{AFX_VIRTUAL(CSalesCondDll)</FONT>
+<FONT SIZE="-1">    //}}AFX_VIRTUAL</FONT>
+
+<FONT SIZE="-1">    //{{AFX_MSG(CSalesCondDll)</FONT>
+<FONT SIZE="-1">        // NOTE - the ClassWizard will add/remove member functions here.</FONT>
+<FONT SIZE="-1">        //    DO NOT EDIT what you see in these blocks of generated code !</FONT>
+<FONT SIZE="-1">    //}}AFX_MSG</FONT>
+<FONT SIZE="-1">    DECLARE_MESSAGE_MAP()</FONT>
+<FONT SIZE="-1">};</FONT></PRE>
+
+<P><I><FONT FACE="Times">Initializing function</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P1698_70872"></A>InitInstance</FONT><FONT FACE="Times"> must initialize the table's DLL. This contains some field functions beyond those in the <I>basetable.cpp</I> file. It must also initialize the PDCmn DLL, which contains some resources for the dialog shown in </FONT><FONT FACE="Courier New">ConfigureConduit</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">BOOL CSalesCondDll::InitInstance()</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    // DLL initialization </FONT>
+<FONT SIZE="-1">    TRACE0(&quot;SALESCOND.DLL initializing\n&quot;);</FONT>
+
+<FONT SIZE="-1">    if (!ClientCount ) {</FONT>
+<FONT SIZE="-1">        hDLLInstance = AfxGetInstanceHandle();</FONT>
+
+<FONT SIZE="-1">        hRscInstance = hDLLInstance;</FONT>
+
+<FONT SIZE="-1">        // add any extension DLLs into CDynLinkLibrary chain</FONT>
+<FONT SIZE="-1">        InitTables5DLL();</FONT>
+<FONT SIZE="-1">        InitPdcmn5DLL();</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    myInst = hRscInstance;</FONT>
+<FONT SIZE="-1">    ClientCount++;</FONT>
+
+<FONT SIZE="-1">    return TRUE;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Exit function</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We also need an </FONT><FONT FACE="Courier New">ExitInstance</FONT><FONT FACE="Times">:</FONT><FONT FACE="Courier New">&#160;</FONT><A NAME="P1721_71531"></A></P><PRE><FONT SIZE="-1">int CSalesCondDll::ExitInstance()</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    TRACE0(&quot;SALESCOND.DLL Terminating!\n&quot;);</FONT>
+
+<FONT SIZE="-1">    // Check for last client and clean up potential memory leak.</FONT>
+<FONT SIZE="-1">    if (--ClientCount &lt;= 0) </FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        PalmFreeLanguage(hRscInstance, hDLLInstance);</FONT>
+<FONT SIZE="-1">        hRscInstance = hDLLInstance; </FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    // DLL clean up, if required</FONT>
+<FONT SIZE="-1">    return CWinApp::ExitInstance();</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">DLL resources</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are a variety of strings that the Conduit Manager loads from resources (including all the logging strings). These strings have to be stored within our DLL. In our resource file, <I>SalesCond.rc</I>, we don't have any explicit resources. Instead, in the Resource Includes panel, we add a compile-time directive:</FONT></P><PRE><FONT SIZE="-1">#include &quot;..\include\Res\R_English\Basemon.rc&quot;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This makes all the standard <I>basemon</I> resource strings part of our DLL.</FONT><A NAME="P1742_72305"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Testing the Conduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1747_72324"></A>Before testing, make sure you use <I>CondCfg.exe</I> to register the Remote Database name for the Sales conduit as &quot;Customers-Sles&quot;. This is what tells your conduit what database to sync.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are some good tests you can perform to ensure that your conduit is working properly:</FONT></P>
+
+<P><I><FONT FACE="Times">Sync having never run your application</FONT></I></P>
+
+<P><FONT FACE="Times">Your database(s) won't yet exist. This simulates a user syncing after installing your software but before using it. If your conduit performs correctly, any data from the desktop should be copied to the handheld.</FONT></P>
+
+<P><I><FONT FACE="Times">Sync having run your application once</FONT></I></P>
+
+<P><FONT FACE="Times">Do this test after first deleting your databases. This simulates a user syncing after installing your software and using it. If everything works as expected, data from the handheld should be copied to the desktop.</FONT></P>
+
+<P><I><FONT FACE="Times">Add a record on the handheld and sync</FONT></I></P>
+
+<P><FONT FACE="Times">Make sure the new record gets added to the desktop.</FONT></P>
+
+<P><I><FONT FACE="Times">Add a record on the desktop and sync</FONT></I></P>
+
+<P><FONT FACE="Times">Make sure the new record gets added to the handheld.</FONT></P>
+
+<P><I><FONT FACE="Times">Delete a record on the handheld and sync</FONT></I></P>
+
+<P><FONT FACE="Times">Make sure the record gets deleted from the desktop.</FONT></P>
+
+<P><I><FONT FACE="Times">Delete a record on the desktop and sync</FONT></I></P>
+
+<P><FONT FACE="Times">Make sure the record gets deleted from the handheld.</FONT></P>
+
+<P><I><FONT FACE="Times">Archive a record on the handheld</FONT></I></P>
+
+<P><FONT FACE="Times">Make sure the record gets deleted from the main desktop file and gets added to the archive.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are other tests you can make, but these provide the place to <A NAME="P1765_73641"></A>begin.</FONT><A NAME="P1765_73647"></A></P>
+
+<P><A NAME="P1768_73647"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Generic Conduit</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1770_73662"></A>Generic Conduit is the other approach to creating a conduit that handles two-way syncing. It is based on a new set of classes (currently unsupported) that Palm Computing has recently started distributing. Having seen all that is involved in creating a conduit based on the <I>basemon</I> and <I>basetabl</I> classes, you can understand why Palm Computing wanted to offer a simpler solution to developers. Generic Conduit is one of Palm's solutions to this problem-these classes are intended to make it easier to get a conduit up and running. </FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Advantages of Using Generic Conduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1775_74225"></A>There are some powerfully persuasive advantages to basing a conduit on these new classes:</FONT></P>
+
+<P><I><FONT FACE="Times">In some cases, you don't need to write any code</FONT></I></P>
+
+<P><FONT FACE="Times">Generic Conduit contains everything, including </FONT><FONT FACE="Courier New">ConfigureConduit</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">GetConduitName</FONT><FONT FACE="Times">, etc. If you compile and register it, it'll be happy to two-way sync your Palm database to a file on the desktop. This approach requires the use of its own file format, however. If you don't like that format, you need to customize the Generic Conduit classes to some extent.</FONT></P>
+
+<P><I><FONT FACE="Times">If you do have to write code, it might not be much</FONT></I></P>
+
+<P><FONT FACE="Times">The number of classes and the number of methods are much less daunting than those found in the <I>basemon</I> and <I>basetabl</I> classes.</FONT></P>
+
+<P><I><FONT FACE="Times">All the source code is available</FONT></I></P>
+
+<P><FONT FACE="Times">The entire source code is provided; you don't have to rely on any DLLs (<I>basemon</I> uses <I>Tables.DLL</I> for the CBaseTable class and MFC for serialization). Further, if you so desire, you can change any or all of the source code.</FONT></P>
+
+<P><I><FONT FACE="Times">There's less work involved in handling records</FONT></I></P>
+
+<P><FONT FACE="Times">Generic Conduit is unlike <I>basemon</I>, which has a schema and attempts to represent your record as fields in memory. Generic Conduit treats your record as just a sequence of bytes. Thus, records are copied from the handheld to the desktop and left untouched; the default file format stores them as is. Record comparison is accomplished by comparing all the bytes in each record to see if they are identical. This is a far cry from <I>basemon</I>'s approach, which represents records in memory as fields and does field-by-field comparison.</FONT></P>
+
+<P><I><FONT FACE="Times">The approach to conduit creation makes more sense</FONT></I></P>
+
+<P><FONT FACE="Times">This Generic Conduit approach makes a great deal of sense. All that's needed for synchronization to work correctly is to compare two records to see whether they are the same or different. There's no need to know what fields exist or anything else; you just compare the bytes.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Disadvantages of Using Generic Conduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are also disadvantages to this approach. The good news is that they may possibly fade over time:</FONT></P>
+
+<P><I><FONT FACE="Times">Generic Conduit is not supported by Palm</FONT></I></P>
+
+<P><FONT FACE="Times">Palm Computing provides the Generic Conduit code as an unsupported sample. The supported way to do two-way syncing is with the <I>basemon</I> classes. It is certainly worth checking for the latest version of Generic Conduit and Palm's current support position before making a decision regarding its use (see <I><A HREF="http://www.palmos.com/dev">http://www.palm.com/devzone</A> </I>for information).</FONT></P>
+
+<P><I><FONT FACE="Times">It's new</FONT></I></P>
+
+<P><FONT FACE="Times">The <I>basemon</I> classes are used for Palm's shipping conduits and by numerous third parties. That means they work very well, and, presumably, most of the bugs have already been found and fixed. If you're an early user of Generic Conduit, you are at risk for as yet unfound bugs of who knows what nature. Once again, it is worth checking on the most recent version of Generic Conduit-as time passes this will become less of a problem.</FONT></P>
+
+<P><I><FONT FACE="Times">The suggested way to create conduits is duplicate/modify</FONT></I></P>
+
+<P><FONT FACE="Times">Palm Computing's suggested way to use the Generic Conduit is to duplicate the Generic Conduit source folder and then go to work making changes to their source. This approach flies in the face of good C++ inheritance programming practices, which should be to derive classes from the Generic Conduit classes and override only those routines that require modification.</FONT></P>
+
+<P><FONT FACE="Times">Here is why this approach has two major problems:</FONT></P>
+
+  <UL><P><FONT FACE="Times">-  If and when changes are made to the Generic Conduit classes (for example, bug fixes or added features), the source code to every single Generic Conduit-based conduit will need to incorporate those changes. You, the developer, need to apply any changes that were made in the Generic Conduit code to your own modified version of the code. </FONT></P>
+
+  <P><FONT FACE="Times">On the other hand, in our subclassing model, the conduits just need to be recompiled to take advantage of the newly changed code.</FONT></P>
+
+  <P><FONT FACE="Times">-  Sample conduits are massive. The Generic Conduit comes with two samples: one for the address book and one for the date book. Unfortunately, these two samples have as much additional code as the Generic Conduit itself (actually, they have more, since they've got all the code from the Generic Conduit plus their own specific code). This intermingled code in the samples means they are very bad guides to creating a conduit. It is wretchedly difficult to figure out which code is for the conduit and which is specifically for the address book. Until you do, you won't know what needs to be done to write a new conduit.</FONT></P>
+
+</UL><P><I><FONT FACE="Times" SIZE="+1">Solution to the Disadvantages</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We can't do anything about the first two problems (only time and Palm Computing have control of these issues), but we can address the third problem. Our sample that uses the Generic Conduit doesn't duplicate the original code; instead, it makes use of derived classes and virtual functions-our code consists only of the differences from the original. By doing this, we can easily use new versions of the Generic Conduit classes, and it should be very easy for you to use our code as a sample for creating a conduit.</FONT><A NAME="P1805_79102"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Generic Conduit Classes</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1810_79125"></A>There are eight classes that affect your use of Generic Conduit. As might be expected, each has a different responsibility. <A HREF="#P1811_79312">Figure 13-2</A> shows you the inheritance relationship.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 13- 2</FONT></B><A NAME="P1811_79312"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Inheritance relationship of Generic Conduit classes</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch13-plmp.1302-2.gif" WIDTH=503 HEIGHT=184 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now let's look at what each class does.</FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P1823_79402"></A>CPalmRecord</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This represents a Palm record; it stores attributes, a unique ID, a category number, a record length, and a pointer to the raw record data.</FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P1827_79552"></A>CDbManager</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This is the class that is responsible for a database. It defines methods for iterating through the records, adding and deleting records, etc. As you can see from <A HREF="#P1811_79312">Figure 13-2</A>, it is also an abstract class; there are four derived classes that implement these methods. </FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P1831_79828"></A>CHHMgr</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This class is derived from CDbManager and implements the CDbManager member functions by using the Sync Manager. This concrete subclass uses the interface of the abstract class. It can be used just like any other database, but its implementation is different. For example, its method to add a record is implemented using </FONT><FONT FACE="Courier New">SyncWriteRec</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P1835_80167"></A>CPcMgr</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This class implements the CDbManager member functions for a file on the desktop. When a file is opened, it reads all the records into memory and stores them in a list. Changes to the database are reflected in memory until the database is closed; at that point, the records are rewritten to the database.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You often create your own derived class of CPcMgr and override the functions </FONT><FONT FACE="Courier New">RetrieveDB</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">StoreDB</FONT><FONT FACE="Times"> to read and write your own file formats. </FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P1841_80617"></A>CArchiveDatabase</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This class is derived from CPcMgr. It is responsible for handling the archive files on the desktop.</FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P1845_80732"></A>CBackupMgr</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This class is also derived from CPcMgr. It is responsible for the backup file on the desktop.</FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P1849_80835"></A>CPLogging</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This class is responsible for logging when any type of failure occurs during syncing.</FONT></P>
+
+<P><I><FONT FACE="Times"><A NAME="P1853_80929"></A>CSynchronizer</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This class is responsible for handling the actual synchronization. It creates the database classes and manages the entire process (it has many of the same duties as CBaseConduitMonitor). You often override one of its member functions, </FONT><FONT FACE="Courier New">CreateDBManager</FONT><FONT FACE="Times">, to create your own class derived from CPcMgr.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Amazing as it may seem, that is all there is worth noting about the Generic Conduit classes. Now let's turn to the code based on Generic Conduit that we create for the Sales application <A NAME="P1857_81425"></A>conduit.</FONT></P>
+
+<P><A NAME="P1860_81433"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Sales Conduit Based on Generic Conduit</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1863_81471"></A>This sample was based on an early beta version of the Generic Conduit and may not compile with the version available to you. For a more current version of the sample, see </FONT><FONT FACE="Times" SIZE="-1"><I><A HREF="http://www.oreilly.com/">http://www.oreilly.com/</A> catalog/palmprog</I>/.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times" SIZE="+1">CSalesPCMgr</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1867_81695"></A>We have derived a new class from CPcMgr, because we want to support the same a tab-delimited text format we used with the alternative conduit classes. Here is our new class:</FONT></P><PRE><FONT SIZE="-1">class CSalesPcMgr: public CPcMgr</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">public:</FONT>
+<FONT SIZE="-1">    CSalesPcMgr(CPLogging *pLogging, char *szDbName, </FONT>
+<FONT SIZE="-1">      TCHAR *pFileName = NULL, TCHAR *pDirName = NULL, </FONT>
+<FONT SIZE="-1">      DWORD dwGenericFlags,</FONT>
+<FONT SIZE="-1">      eSyncTypes syncType = eDoNothing);</FONT>
+
+<FONT SIZE="-1">protected:</FONT>
+<FONT SIZE="-1">    virtual long StoreDB(void);</FONT>
+<FONT SIZE="-1">    virtual long RetrieveDB(void);</FONT>
+<FONT SIZE="-1">};</FONT></PRE>
+
+<P><I><FONT FACE="Times">CSalesPCMgr constructor</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Our constructor just initializes the base class:</FONT></P><PRE><FONT SIZE="-1">CSalesPcMgr::CSalesPcMgr(CPLogging *pLogging, char *szDbName, </FONT>
+<FONT SIZE="-1">   TCHAR *pFileName, TCHAR *pDirName, </FONT>
+<FONT SIZE="-1">   DWORD dwGenericFlags, eSyncTypes syncType)</FONT>
+<FONT SIZE="-1">   :CPcMgr(pLogging, szDbName, pFileName, pDirName, dwGenericFlags,</FONT>
+<FONT SIZE="-1">      syncType)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">StoreDB function</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Our </FONT><FONT FACE="Courier New">&#160;<A NAME="P1894_82481"></A>StoreDB</FONT><FONT FACE="Times"> routine writes the list of records in text-delimited format:</FONT></P><PRE><FONT SIZE="-1">long CSalesPcMgr::StoreDB(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   if ( !m_bNeedToSave) { // if no changes, don't waste time saving</FONT>
+<FONT SIZE="-1">       return 0; </FONT>
+<FONT SIZE="-1">   }</FONT>
+
+<FONT SIZE="-1">    long retval = OpenDB();</FONT>
+<FONT SIZE="-1">    if (retval)</FONT>
+<FONT SIZE="-1">        return GEN_ERR_UNABLE_TO_SAVE;</FONT>
+
+<FONT SIZE="-1">    for (DWORD dwIndex = 0; (dwIndex &lt; m_dwMaxRecordCount) &amp;&amp; (!retval);</FONT>
+<FONT SIZE="-1">       dwIndex++){</FONT>
+<FONT SIZE="-1">        if (!m_pRecordList[dwIndex]) // if there is no record, skip ahead</FONT>
+<FONT SIZE="-1">            continue;</FONT>
+<FONT SIZE="-1">        retval = WriteRecord(m_hFile, m_pRecordList[dwIndex]);  </FONT>
+
+<FONT SIZE="-1">        if (retval != 0){</FONT>
+<FONT SIZE="-1">            CloseDB();</FONT>
+<FONT SIZE="-1">            return GEN_ERR_UNABLE_TO_SAVE;</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    CloseDB();</FONT>
+<FONT SIZE="-1">    m_bNeedToSave = FALSE;</FONT>
+<FONT SIZE="-1">    return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">It calls </FONT><FONT FACE="Courier New">WriteRecord</FONT><FONT FACE="Times">, which writes line by line.</FONT></P>
+
+<P><I><FONT FACE="Times">WriteRecord</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This writes the record:</FONT></P><PRE><FONT SIZE="-1">long </FONT><FONT FACE="Courier New">&#160;</FONT><FONT FACE="Courier New" SIZE="-1"><A NAME="P1928_83242"></A>WriteRecord(HANDLE hFile, CPalmRecord *pPalmRec)</FONT>
+<FONT SIZE="-1">{</FONT>
+
+<FONT SIZE="-1">    DWORD           dwPut;</FONT>
+<FONT SIZE="-1">    unsigned long   len;</FONT>
+<FONT SIZE="-1">    const int       kMaxRecordSize = 1000;</FONT>
+<FONT SIZE="-1">    char            buf[kMaxRecordSize];</FONT>
+<FONT SIZE="-1">    char            rawRecord[kMaxRecordSize];</FONT>
+<FONT SIZE="-1">    DWORD           recordSize = kMaxRecordSize;</FONT>
+<FONT SIZE="-1">    long            retval;</FONT>
+
+<FONT SIZE="-1">    retval = pPalmRec-&gt;GetRawData((unsigned char *) rawRecord,</FONT>
+<FONT SIZE="-1">       &amp;recordSize);</FONT>
+<FONT SIZE="-1">    if (retval) {</FONT>
+<FONT SIZE="-1">        return retval;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    Customer *aCustomer = RawRecordToCustomer(rawRecord);</FONT>
+
+
+<FONT SIZE="-1">    // Write the record to the file as (if private):</FONT>
+<FONT SIZE="-1">    // &lt;customerID&gt;\t&lt;name&gt;\t&lt;address&gt;\t&lt;city&gt;\t&lt;phone&gt;\tP\t&lt;recID&gt;</FONT>
+<FONT SIZE="-1">    //    or, if not private:</FONT>
+<FONT SIZE="-1">    // &lt;customerID&gt;\t&lt;name&gt;\t&lt;address&gt;\t&lt;city&gt;\t&lt;phone&gt;\t\t&lt;recID&gt;</FONT>
+<FONT SIZE="-1">    sprintf(</FONT>
+<FONT SIZE="-1">        buf, </FONT>
+<FONT SIZE="-1">        &quot;%d\t%s\t%s\t%s\t%s\t%s\t%d\r\n&quot;,</FONT>
+<FONT SIZE="-1">        aCustomer-&gt;customerID,</FONT>
+<FONT SIZE="-1">        aCustomer-&gt;name,</FONT>
+<FONT SIZE="-1">        aCustomer-&gt;address,</FONT>
+<FONT SIZE="-1">        aCustomer-&gt;city,</FONT>
+<FONT SIZE="-1">        aCustomer-&gt;phone,</FONT>
+<FONT SIZE="-1">        pPalmRec-&gt;IsPrivate() ? &quot;P&quot;: &quot;&quot;,</FONT>
+<FONT SIZE="-1">        pPalmRec-&gt;GetID()</FONT>
+<FONT SIZE="-1">    );</FONT>
+<FONT SIZE="-1">    len = strlen(buf);</FONT>
+<FONT SIZE="-1">    WriteFile(</FONT>
+<FONT SIZE="-1">        hFile, </FONT>
+<FONT SIZE="-1">        buf,</FONT>
+<FONT SIZE="-1">        len,</FONT>
+<FONT SIZE="-1">        &amp;dwPut, </FONT>
+<FONT SIZE="-1">        NULL</FONT>
+<FONT SIZE="-1">    );</FONT>
+
+<FONT SIZE="-1">    delete aCustomer;</FONT>
+
+<FONT SIZE="-1">    return dwPut == len ? 0 : GEN_ERR_UNABLE_TO_SAVE;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">It calls </FONT><FONT FACE="Courier New">&#160;<A NAME="P1976_84402"></A>RawRecordToCustomer</FONT><FONT FACE="Times">, which converts the bytes in a record to a customer:</FONT></P><PRE><FONT SIZE="-1">Customer *RawRecordToCustomer(void *rec)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    Customer *c = new Customer;</FONT>
+<FONT SIZE="-1">    PackedCustomer *pc = (PackedCustomer *) rec;</FONT>
+<FONT SIZE="-1">    c-&gt;customerID = SyncHHToHostDWord(pc-&gt;customerID);</FONT>
+<FONT SIZE="-1">    char * p = (char *) pc-&gt;name;</FONT>
+<FONT SIZE="-1">    c-&gt;name = new char[strlen(p)+1];</FONT>
+<FONT SIZE="-1">    strcpy(c-&gt;name, p);</FONT>
+<FONT SIZE="-1">    p += strlen(p) + 1;</FONT>
+<FONT SIZE="-1">    c-&gt;address = new char[strlen(p)+1];</FONT>
+<FONT SIZE="-1">    strcpy(c-&gt;address, p);</FONT>
+<FONT SIZE="-1">    p += strlen(p) + 1;</FONT>
+<FONT SIZE="-1">    c-&gt;city = new char[strlen(p)+1];</FONT>
+<FONT SIZE="-1">    strcpy(c-&gt;city, p);</FONT>
+<FONT SIZE="-1">    p += strlen(p) + 1;</FONT>
+<FONT SIZE="-1">    c-&gt;phone = new char[strlen(p)+1];</FONT>
+<FONT SIZE="-1">    strcpy(c-&gt;phone, p);</FONT>
+<FONT SIZE="-1">    return c;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Retrieving a database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We also have a function, </FONT><FONT FACE="Courier New">&#160;<A NAME="P2000_85055"></A>RetrieveDB</FONT><FONT FACE="Times">, that reads a text file and creates records from it. Even though </FONT><FONT FACE="Courier New">m_HFile</FONT><FONT FACE="Times"> is already an open </FONT><FONT FACE="Courier New">HFILE</FONT><FONT FACE="Times"> that we could read, it's easier to do it another way. We read text from a <I>CStdioFile</I> (it provides a routine to read a line at a time), so we open the file read-only with <I>CStdioFile</I> and close it once we're done:</FONT></P><PRE><FONT SIZE="-1">long CSalesPcMgr::RetrieveDB(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    m_bNeedToSave = FALSE;</FONT>
+<FONT SIZE="-1">    if (!_tcslen(m_szDataFile))</FONT>
+<FONT SIZE="-1">        return GEN_ERR_INVALID_DB_NAME;</FONT>
+
+<FONT SIZE="-1">    CStdioFile *file = 0;</FONT>
+<FONT SIZE="-1">    TRY</FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        file = new CStdioFile(m_szDataFile, CFile::modeRead);</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    CATCH_ALL(e)</FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        if (file)</FONT>
+<FONT SIZE="-1">            file-&gt;Abort();</FONT>
+<FONT SIZE="-1">        delete file;</FONT>
+
+<FONT SIZE="-1">        return GEN_ERR_READING_RECORD;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    END_CATCH_ALL</FONT>
+
+<FONT SIZE="-1">    TRY</FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        CPalmRecord newRecord;</FONT>
+<FONT SIZE="-1">        while (ReadCustomer(*file, newRecord)) {</FONT>
+<FONT SIZE="-1">            AddRec(newRecord);</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">        file-&gt;Close();</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    CATCH_ALL(e)</FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        file-&gt;Abort();</FONT>
+<FONT SIZE="-1">        delete file;</FONT>
+<FONT SIZE="-1">        return GEN_ERR_READING_RECORD;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    END_CATCH_ALL</FONT>
+<FONT SIZE="-1">    delete file;</FONT>
+
+<FONT SIZE="-1">    return 0;</FONT>
+
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Reading customer information</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The previous routine relies on a utility routine that we need to write. This routine simply reads in the tab-delimited text file and turns it into a Palm record: </FONT></P><PRE><FONT SIZE="-1">bool &#160;&#160;<A NAME="P2047_86258"></A>ReadCustomer(CStdioFile &amp;file, CPalmRecord &amp;rec)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    static char gBigBuffer[4096];</FONT>
+<FONT SIZE="-1">    if (file.ReadString(gBigBuffer, sizeof(gBigBuffer)) == NULL)</FONT>
+<FONT SIZE="-1">        return false;</FONT>
+<FONT SIZE="-1">    char *p = gBigBuffer;</FONT>
+<FONT SIZE="-1">    char *customerID = FindUpToNextTab(&amp;p);</FONT>
+<FONT SIZE="-1">    char *name = FindUpToNextTab(&amp;p);</FONT>
+<FONT SIZE="-1">    char *address = FindUpToNextTab(&amp;p);</FONT>
+<FONT SIZE="-1">    char *city = FindUpToNextTab(&amp;p);</FONT>
+<FONT SIZE="-1">    char *phone = FindUpToNextTab(&amp;p);</FONT>
+<FONT SIZE="-1">    char *priv = FindUpToNextTab(&amp;p);</FONT>
+<FONT SIZE="-1">    char *uniqueID = FindUpToNextTab(&amp;p);</FONT>
+<FONT SIZE="-1">    char *attributes = FindUpToNextTab(&amp;p);</FONT>
+
+<FONT SIZE="-1">    if (!address)</FONT>
+<FONT SIZE="-1">        address = &quot;&quot;;</FONT>
+<FONT SIZE="-1">    if (!city)</FONT>
+<FONT SIZE="-1">        city = &quot;&quot;;</FONT>
+<FONT SIZE="-1">    if (!phone)</FONT>
+<FONT SIZE="-1">        phone = &quot;&quot;;</FONT>
+<FONT SIZE="-1">    if (!priv)</FONT>
+<FONT SIZE="-1">        priv = &quot;&quot;;</FONT>
+<FONT SIZE="-1">    if (!attributes)</FONT>
+<FONT SIZE="-1">        attributes = &quot;&quot;;</FONT>
+<FONT SIZE="-1">    if (!uniqueID)</FONT>
+<FONT SIZE="-1">        uniqueID = &quot;0&quot;;</FONT>
+<FONT SIZE="-1">    if (customerID &amp;&amp; name) {</FONT>
+<FONT SIZE="-1">        rec.SetID(atol(customerID));</FONT>
+<FONT SIZE="-1">        rec.SetIndex(-1);</FONT>
+<FONT SIZE="-1">        rec.SetCategory(0);</FONT>
+
+<FONT SIZE="-1">        rec.SetPrivate(*priv == 'P');</FONT>
+
+<FONT SIZE="-1">        // 'N' -- new, 'M' -- modify, 'D'-- delete, 'A' -- archive</FONT>
+<FONT SIZE="-1">        // if it's Add, it can't be modify</FONT>
+<FONT SIZE="-1">        rec.ResetAttribs();</FONT>
+<FONT SIZE="-1">        if (strchr(attributes, 'N'))</FONT>
+<FONT SIZE="-1">            rec.SetNew();</FONT>
+<FONT SIZE="-1">        else if (strchr(attributes, 'M'))</FONT>
+<FONT SIZE="-1">            rec.SetUpdate();</FONT>
+<FONT SIZE="-1">        if (strchr(attributes, 'D'))</FONT>
+<FONT SIZE="-1">            rec.SetDeleted();</FONT>
+<FONT SIZE="-1">        if (strchr(attributes, 'A'))</FONT>
+<FONT SIZE="-1">            rec.SetArchived();</FONT>
+<FONT SIZE="-1">        </FONT>
+<FONT SIZE="-1">        static char buf[4096];</FONT>
+<FONT SIZE="-1">        PackedCustomer *pc = (PackedCustomer *) buf;</FONT>
+<FONT SIZE="-1">        pc-&gt;customerID = SyncHostToHHDWord(atol(customerID));</FONT>
+<FONT SIZE="-1">        char *p = (char *) pc-&gt;name;</FONT>
+<FONT SIZE="-1">        strcpy(p, name);</FONT>
+<FONT SIZE="-1">        p += strlen(p) + 1;</FONT>
+<FONT SIZE="-1">        strcpy(p, address);</FONT>
+<FONT SIZE="-1">        p += strlen(p) + 1;</FONT>
+<FONT SIZE="-1">        strcpy(p, city);</FONT>
+<FONT SIZE="-1">        p += strlen(p) + 1;</FONT>
+<FONT SIZE="-1">        strcpy(p, phone);</FONT>
+<FONT SIZE="-1">        p += strlen(p) + 1;</FONT>
+
+<FONT SIZE="-1">        rec.SetRawData(p - buf, (unsigned char *) buf);</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">        return true;</FONT>
+<FONT SIZE="-1">    } else</FONT>
+<FONT SIZE="-1">        return false;</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P2111_88043"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">CSalesSynchronizer</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P2114_88061"></A>We also have a derived a class from CSynchronizer, because we want to do three things:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Create our derived class of CPcMgr.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Set a bit field specifying that we don't use the AppInfo block (for sort info or categories).</FONT></LI>
+
+  <LI><FONT FACE="Times">  Copy our orders database from the handheld and our products database to the handheld.</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Unlike the previous occasion, we don't have to perform a bunch of copying tricks to handle a simple override. Everything works as expected.</FONT></P>
+
+<P><I><FONT FACE="Times">Class definition</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's our class declaration of CSalesSynchronizer:</FONT></P><PRE><FONT SIZE="-1">class CSalesSynchronizer: public CSynchronizer {</FONT>
+<FONT SIZE="-1">public:</FONT>
+<FONT SIZE="-1">    CSalesSynchronizer(CSyncProperties&amp; rProps);</FONT>
+
+<FONT SIZE="-1">protected:</FONT>
+<FONT SIZE="-1">    virtual long Perform(void);</FONT>
+<FONT SIZE="-1">    virtual long CreatePCManager(void);</FONT>
+<FONT SIZE="-1">};</FONT></PRE>
+
+<P><I><FONT FACE="Times">Creating a CSalesPcMgr class</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the routine that creates a CSalesPcMgr:</FONT></P><PRE><FONT SIZE="-1">long CSalesSynchronizer::&#160;<A NAME="P2137_88857"></A>CreatePCManager(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    DeletePCManager();</FONT>
+
+<FONT SIZE="-1">    m_dbPC = new CSalesPcMgr(m_pLog, </FONT>
+<FONT SIZE="-1">                        m_remoteDB-&gt;m_Name, </FONT>
+<FONT SIZE="-1">                        m_rSyncProperties.m_LocalName, </FONT>
+<FONT SIZE="-1">                        m_rSyncProperties.m_PathName,</FONT>
+<FONT SIZE="-1">                        m_dwDatabaseFlags</FONT>
+<FONT SIZE="-1">                        m_rSyncProperties.m_SyncType);</FONT>
+<FONT SIZE="-1">    if (!m_dbPC)</FONT>
+<FONT SIZE="-1">        return GEN_ERR_LOW_MEMORY;</FONT>
+<FONT SIZE="-1">    return m_dbPC-&gt;Open();</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">The constructor</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Our constructor sets the bit field, specifying that we don't support categories, or the AppInfo block or the sort info block:</FONT></P><PRE><FONT SIZE="-1">CSalesSynchronizer::CSalesSynchronizer(CSyncProperties&amp; rProps) :</FONT>
+<FONT SIZE="-1">    CSynchronizer(rProps)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    // m_dwDatabaseFlags is a bit-field with </FONT>
+<FONT SIZE="-1">    //   GENERIC_FLAG_CATEGORY_SUPPORTED</FONT>
+<FONT SIZE="-1">    //   GENERIC_FLAG_APPINFO_SUPPORTED</FONT>
+<FONT SIZE="-1">    //   GENERIC_FLAG_SORTINFO_SUPPORTED</FONT>
+
+<FONT SIZE="-1">    // we don't want any of the flags set, so we just use 0</FONT>
+<FONT SIZE="-1">    m_dwDatabaseFlags = 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Modifying perform to add uploading and downloading products <BR>
+and orders</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">As we found in the <I>basemon</I> case, there's a fairly large routine that opens the conduit, does the appropriate kind of syncing, and closes the conduit. We need to insert our code to copy the Products database and Orders database in there. We've copied that routine and inserted our code (our added code is bold):</FONT></P><PRE><FONT SIZE="-1">long CSalesSynchronizer::&#160;<A NAME="P2170_90149"></A>Perform(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    long retval = 0;</FONT>
+<FONT SIZE="-1">    long retval2 = 0;</FONT>
+
+<FONT SIZE="-1">    if (m_rSyncProperties.m_SyncType &gt; eProfileInstall)</FONT>
+<FONT SIZE="-1">        return GEN_ERR_BAD_SYNC_TYPE;</FONT>
+
+
+<FONT SIZE="-1">    if (m_rSyncProperties.m_SyncType == eDoNothing) {</FONT>
+<FONT SIZE="-1">        return 0;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    // Obtain System Information</FONT>
+<FONT SIZE="-1">    m_SystemInfo.m_ProductIdText = (BYTE*) new char [MAX_PROD_ID_TEXT];</FONT>
+<FONT SIZE="-1">    if (!m_SystemInfo.m_ProductIdText)</FONT>
+<FONT SIZE="-1">        return GEN_ERR_LOW_MEMORY;</FONT>
+<FONT SIZE="-1">    m_SystemInfo.m_AllocedLen = (BYTE) MAX_PROD_ID_TEXT; </FONT>
+<FONT SIZE="-1">    retval = SyncReadSystemInfo(m_SystemInfo);</FONT>
+<FONT SIZE="-1">    if (retval)</FONT>
+<FONT SIZE="-1">        return retval;</FONT>
+
+<FONT SIZE="-1">    retval = RegisterConduit();</FONT>
+<FONT SIZE="-1">    if (retval)</FONT>
+<FONT SIZE="-1">        return retval;</FONT>
+
+
+
+<FONT SIZE="-1">    for (int iCount=0; iCount &lt; m_TotRemoteDBs &amp;&amp; !retval; iCount++) {</FONT>
+<FONT SIZE="-1">        retval = GetRemoteDBInfo(iCount);</FONT>
+<FONT SIZE="-1">        if (retval) {</FONT>
+<FONT SIZE="-1">            retval = 0;</FONT>
+<FONT SIZE="-1">            break;</FONT>
+<FONT SIZE="-1">        }</FONT>
+
+<FONT SIZE="-1">        switch (m_rSyncProperties.m_SyncType) {</FONT>
+<FONT SIZE="-1">            case eFast:</FONT>
+<FONT SIZE="-1">                retval = PerformFastSync();</FONT>
+<FONT SIZE="-1">                if ((retval) &amp;&amp; (retval == GEN_ERR_CHANGE_SYNC_MODE)){</FONT>
+<FONT SIZE="-1">                    if (GetSyncMode() == eHHtoPC)</FONT>
+<FONT SIZE="-1">                        retval = CopyHHtoPC();</FONT>
+<FONT SIZE="-1">                    else if (GetSyncMode() == ePCtoHH)</FONT>
+<FONT SIZE="-1">                        retval = CopyPCtoHH();</FONT>
+<FONT SIZE="-1">                }</FONT>
+<FONT SIZE="-1">                break;</FONT>
+<FONT SIZE="-1">            case eSlow:</FONT>
+<FONT SIZE="-1">                retval = PerformSlowSync();  </FONT>
+<FONT SIZE="-1">                if ((retval) &amp;&amp; (retval == GEN_ERR_CHANGE_SYNC_MODE)){</FONT>
+<FONT SIZE="-1">                    if (GetSyncMode() == eHHtoPC)</FONT>
+<FONT SIZE="-1">                        retval = CopyHHtoPC();</FONT>
+<FONT SIZE="-1">                    else if (GetSyncMode() == ePCtoHH)</FONT>
+<FONT SIZE="-1">                        retval = CopyPCtoHH();</FONT>
+<FONT SIZE="-1">                }</FONT>
+<FONT SIZE="-1">                break;</FONT>
+<FONT SIZE="-1">            case eHHtoPC:</FONT>
+<FONT SIZE="-1">            case eBackup: </FONT>
+<FONT SIZE="-1">                retval = CopyHHtoPC();</FONT>
+<FONT SIZE="-1">                break;</FONT>
+<FONT SIZE="-1">            case eInstall:</FONT>
+<FONT SIZE="-1">            case ePCtoHH:</FONT>
+<FONT SIZE="-1">            case eProfileInstall:</FONT>
+<FONT SIZE="-1">                retval = CopyPCtoHH();</FONT>
+<FONT SIZE="-1">                break;</FONT>
+<FONT SIZE="-1">            case eDoNothing:</FONT>
+<FONT SIZE="-1">                break;</FONT>
+<FONT SIZE="-1">            default:</FONT>
+<FONT SIZE="-1">                retval = GEN_ERR_SYNC_TYPE_NOT_SUPPORTED;</FONT>
+<FONT SIZE="-1">                break;</FONT>
+<FONT SIZE="-1">        }</FONT>
+
+<FONT SIZE="-1">        DeleteHHManager();</FONT>
+<FONT SIZE="-1">        DeletePCManager();</FONT>
+<FONT SIZE="-1">        DeleteBackupManager();</FONT>
+<FONT SIZE="-1">        CloseArchives();</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<B><FONT SIZE="-1">// added here for sales conduit</FONT></B>
+<B><FONT SIZE="-1">    if (retval == 0 &amp;&amp; m_rSyncProperties.m_SyncType == eHHtoPC ||</FONT></B>
+<B><FONT SIZE="-1">        m_rSyncProperties.m_SyncType == eFast || </FONT></B>
+<B><FONT SIZE="-1">        m_rSyncProperties.m_SyncType == eSlow)</FONT></B>
+<B><FONT SIZE="-1">        retval = CopyOrdersFromHH(m_rSyncProperties);</FONT></B>
+<B><FONT SIZE="-1">    if (retval == 0 &amp;&amp; m_rSyncProperties.m_SyncType == ePCtoHH ||</FONT></B>
+<B><FONT SIZE="-1">        m_rSyncProperties.m_SyncType == eFast || </FONT></B>
+<B><FONT SIZE="-1">        m_rSyncProperties.m_SyncType == eSlow)</FONT></B>
+<B><FONT SIZE="-1">        retval = CopyProductsAndCategoriesToHH(m_rSyncProperties);</FONT></B>
+<B><FONT SIZE="-1">// done added here for sales conduit</FONT></B>
+<FONT SIZE="-1">// Unregister the conduit</FONT>
+<FONT SIZE="-1">    retval2 = UnregisterConduit((BOOL)(retval != 0));</FONT>
+
+<FONT SIZE="-1">    if (!retval)</FONT>
+<FONT SIZE="-1">        return retval2;</FONT>
+<FONT SIZE="-1">    return retval;</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P2261_92891"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Creating the Conduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">In our </FONT><FONT FACE="Courier New">OpenConduit</FONT><FONT FACE="Times"> DLL entry point, we create our CSalesSynchronizer and call it's </FONT><FONT FACE="Courier New">Perform</FONT><FONT FACE="Times"> function to do the work of synchronization:</FONT></P><PRE><FONT SIZE="-1">ExportFunc long </FONT><FONT FACE="Courier New">&#160;</FONT><FONT FACE="Courier New" SIZE="-1"><A NAME="P2266_93062"></A>OpenConduit(PROGRESSFN pFn, CSyncProperties&amp; rProps)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    long retval = -1;</FONT>
+<FONT SIZE="-1">    if (pFn)</FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        CSalesSynchronizer* pGeneric;</FONT>
+
+<FONT SIZE="-1">        pGeneric = new CSalesSynchronizer(rProps);</FONT>
+<FONT SIZE="-1">        if (pGeneric){</FONT>
+<FONT SIZE="-1">            retval = pGeneric-&gt;Perform();</FONT>
+
+<FONT SIZE="-1">            delete pGeneric;</FONT>
+<FONT SIZE="-1">        }</FONT>
+
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    return(retval);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">At this point, we can test the code. It works just as the <I>basemon</I> version did, so we will use the same tests.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">As you can see, Generic Conduit makes the task of supporting two-way mirror image syncing much easier. It is simpler to derive classes, since there are no real problems with functions that should be virtual that are not. In either case, we hope that it is clearer how to add support for two-way syncing after this description of each <A NAME="P2285_93808"></A>method. </FONT><A NAME="P2285_93816"></A></P>
+<HR ALIGN=LEFT SIZE=2 WIDTH=100% NOSHADE>
+<!-- TRANSIT - TEXTBAR -->
+
+<ADDRESS><FONT SIZE=-1>Palm Programming: The Developer's Guide
+<BR>Copyright &#169; 1999, O'Rielly and Associates, Inc.
+<BR>Published on the web by permission of O'Rielly and Associates, Inc. Contents modified for web display.</FONT></ADDRESS><P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch12.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch14.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P>
+</BODY>
+</HTML>

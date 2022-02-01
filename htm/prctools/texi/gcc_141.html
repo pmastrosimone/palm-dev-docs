@@ -1,0 +1,134 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Bug Criteria</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Bug Criteria">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Bug Criteria">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC141"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_142.html#SEC142"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_145.html#SEC145"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.1 Have You Found a Bug? </H2>
+<!--docid::SEC141::-->
+<P>
+
+If you are not sure whether you have found a bug, here are some guidelines:
+</P><P>
+
+<UL>
+<A NAME="IDX448"></A>
+<A NAME="IDX449"></A>
+<LI>
+If the compiler gets a fatal signal, for any input whatever, that is a
+compiler bug.  Reliable compilers never crash.
+<P>
+
+<A NAME="IDX450"></A>
+<A NAME="IDX451"></A>
+<LI>
+If the compiler produces invalid assembly code, for any input whatever
+(except an <CODE>asm</CODE> statement), that is a compiler bug, unless the
+compiler reports errors (not just warnings) which would ordinarily
+prevent the assembler from being run.
+<P>
+
+<A NAME="IDX452"></A>
+<A NAME="IDX453"></A>
+<A NAME="IDX454"></A>
+<LI>
+If the compiler produces valid assembly code that does not correctly
+execute the input source code, that is a compiler bug.
+<P>
+
+However, you must double-check to make sure, because you may have run
+into an incompatibility between GNU C and traditional C
+(see section <A HREF="gcc_129.html#SEC129">7.6 Incompatibilities of GCC</A>).  These incompatibilities might be considered
+bugs, but they are inescapable consequences of valuable features.
+</P><P>
+
+Or you may have a program whose behavior is undefined, which happened
+by chance to give the desired results with another C or C++ compiler.
+</P><P>
+
+For example, in many nonoptimizing compilers, you can write <SAMP>`x;'</SAMP>
+at the end of a function instead of <SAMP>`return x;'</SAMP>, with the same
+results.  But the value of the function is undefined if <CODE>return</CODE>
+is omitted; it is not a bug when GCC produces different results.
+</P><P>
+
+Problems often result from expressions with two increment operators,
+as in <CODE>f (*p++, *p++)</CODE>.  Your previous compiler might have
+interpreted that expression the way you intended; GCC might
+interpret it another way.  Neither compiler is wrong.  The bug is
+in your code.
+</P><P>
+
+After you have localized the error to a single source line, it should
+be easy to check for these things.  If your program is correct and
+well defined, you have found a compiler bug.
+</P><P>
+
+<LI>
+If the compiler produces an error message for valid input, that is a
+compiler bug.
+<P>
+
+<A NAME="IDX455"></A>
+<LI>
+If the compiler does not produce an error message for invalid input,
+that is a compiler bug.  However, you should note that your idea of
+"invalid input" might be my idea of "an extension" or "support
+for traditional practice".
+<P>
+
+<LI>
+If you are an experienced user of C or C++ (or Fortran or Objective-C)
+compilers, your suggestions
+for improvement of GCC are welcome in any case.
+</UL>
+<P>
+
+<A NAME="Bug Lists"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_142.html#SEC142"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_145.html#SEC145"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

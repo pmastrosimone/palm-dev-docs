@@ -1,0 +1,198 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Alpha Directives</TITLE>
+
+<META NAME="description" CONTENT="Using as: Alpha Directives">
+<META NAME="keywords" CONTENT="Using as: Alpha Directives">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC186"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_176.html#SEC185"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_178.html#SEC187"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_178.html#SEC187"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_169.html#SEC178"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_179.html#SEC188"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.2.5 Alpha Assembler Directives </H3>
+<!--docid::SEC186::-->
+<P>
+
+<CODE>as</CODE> for the Alpha supports many additional directives for
+compatibility with the native assembler.  This section describes them only
+briefly.
+</P><P>
+
+<A NAME="IDX502"></A>
+These are the additional directives in <CODE>as</CODE> for the Alpha:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>.arch <VAR>cpu</VAR></CODE>
+<DD>Specifies the target processor.  This is equivalent to the
+<SAMP>`-m<VAR>cpu</VAR>'</SAMP> command-line option.  See section <A HREF="as_171.html#SEC180">Options</A>,
+for a list of values for <VAR>cpu</VAR>.
+<P>
+
+<DT><CODE>.ent <VAR>function</VAR>[, <VAR>n</VAR>]</CODE>
+<DD>Mark the beginning of <VAR>function</VAR>.  An optional number may follow for
+compatibility with the OSF/1 assembler, but is ignored.  When generating
+<CODE>.mdebug</CODE> information, this will create a procedure descriptor for
+the function.  In ELF, it will mark the symbol as a function a-la the
+generic <CODE>.type</CODE> directive.
+<P>
+
+<DT><CODE>.end <VAR>function</VAR></CODE>
+<DD>Mark the end of <VAR>function</VAR>.  In ELF, it will set the size of the symbol
+a-la the generic <CODE>.size</CODE> directive.
+<P>
+
+<DT><CODE>.mask <VAR>mask</VAR>, <VAR>offset</VAR></CODE>
+<DD>Indicate which of the integer registers are saved in the current
+function's stack frame.  <VAR>mask</VAR> is interpreted a bit mask in which
+bit <VAR>n</VAR> set indicates that register <VAR>n</VAR> is saved.  The registers
+are saved in a block located <VAR>offset</VAR> bytes from the <EM>canonical
+frame address</EM> (CFA) which is the value of the stack pointer on entry to
+the function.  The registers are saved sequentially, except that the
+return address register (normally <CODE>$26</CODE>) is saved first.
+<P>
+
+This and the other directives that describe the stack frame are
+currently only used when generating <CODE>.mdebug</CODE> information.  They
+may in the future be used to generate DWARF2 <CODE>.debug_frame</CODE> unwind
+information for hand written assembly.
+</P><P>
+
+<DT><CODE>.fmask <VAR>mask</VAR>, <VAR>offset</VAR></CODE>
+<DD>Indicate which of the floating-point registers are saved in the current
+stack frame.  The <VAR>mask</VAR> and <VAR>offset</VAR> parameters are interpreted
+as with <CODE>.mask</CODE>.
+<P>
+
+<DT><CODE>.frame <VAR>framereg</VAR>, <VAR>frameoffset</VAR>, <VAR>retreg</VAR>[, <VAR>argoffset</VAR>]</CODE>
+<DD>Describes the shape of the stack frame.  The frame pointer in use is
+<VAR>framereg</VAR>; normally this is either <CODE>$fp</CODE> or <CODE>$sp</CODE>.  The
+frame pointer is <VAR>frameoffset</VAR> bytes below the CFA.  The return
+address is initially located in <VAR>retreg</VAR> until it is saved as
+indicated in <CODE>.mask</CODE>.  For compatibility with OSF/1 an optional
+<VAR>argoffset</VAR> parameter is accepted and ignored.  It is believed to
+indicate the offset from the CFA to the saved argument registers.
+<P>
+
+<DT><CODE>.prologue <VAR>n</VAR></CODE>
+<DD>Indicate that the stack frame is set up and all registers have been
+spilled.  The argument <VAR>n</VAR> indicates whether and how the function
+uses the incoming <EM>procedure vector</EM> (the address of the called
+function) in <CODE>$27</CODE>.  0 indicates that <CODE>$27</CODE> is not used; 1
+indicates that the first two instructions of the function use <CODE>$27</CODE>
+to perform a load of the GP register; 2 indicates that <CODE>$27</CODE> is
+used in some non-standard way and so the linker cannot elide the load of
+the procedure vector during relaxation.
+<P>
+
+<DT><CODE>.gprel32 <VAR>expression</VAR></CODE>
+<DD>Computes the difference between the address in <VAR>expression</VAR> and the
+GP for the current object file, and stores it in 4 bytes.  In addition
+to being smaller than a full 8 byte address, this also does not require
+a dynamic relocation when used in a shared library.
+<P>
+
+<DT><CODE>.t_floating <VAR>expression</VAR></CODE>
+<DD>Stores <VAR>expression</VAR> as an IEEE double precision value.
+<P>
+
+<DT><CODE>.s_floating <VAR>expression</VAR></CODE>
+<DD>Stores <VAR>expression</VAR> as an IEEE single precision value.
+<P>
+
+<DT><CODE>.f_floating <VAR>expression</VAR></CODE>
+<DD>Stores <VAR>expression</VAR> as a VAX F format value.
+<P>
+
+<DT><CODE>.g_floating <VAR>expression</VAR></CODE>
+<DD>Stores <VAR>expression</VAR> as a VAX G format value.
+<P>
+
+<DT><CODE>.d_floating <VAR>expression</VAR></CODE>
+<DD>Stores <VAR>expression</VAR> as a VAX D format value.
+<P>
+
+<DT><CODE>.set <VAR>feature</VAR></CODE>
+<DD>Enables or disables various assembler features.  Using the positive
+name of the feature enables while using <SAMP>`no<VAR>feature</VAR>'</SAMP> disables.
+<P>
+
+<DL COMPACT>
+<DT><CODE>at</CODE>
+<DD>Indicates that macro expansions may clobber the <EM>assembler
+temporary</EM> (<CODE>$at</CODE> or <CODE>$28</CODE>) register.  Some macros may not be
+expanded without this and will generate an error message if <CODE>noat</CODE>
+is in effect.  When <CODE>at</CODE> is in effect, a warning will be generated
+if <CODE>$at</CODE> is used by the programmer.
+<P>
+
+<DT><CODE>macro</CODE>
+<DD>Enables the expansion of macro instructions.  Note that variants of real
+instructions, such as <CODE>br label</CODE> vs <CODE>br $31,label</CODE> are
+considered alternate forms and not macros.
+<P>
+
+<DT><CODE>move</CODE>
+<DD><DT><CODE>reorder</CODE>
+<DD><DT><CODE>volatile</CODE>
+<DD>These control whether and how the assembler may re-order instructions.
+Accepted for compatibility with the OSF/1 assembler, but <CODE>as</CODE>
+does not do instruction scheduling, so these features are ignored.
+</DL>
+</DL>
+<P>
+
+The following directives are recognized for compatibility with the OSF/1
+assembler but are ignored.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.proc           .aproc
+.reguse         .livereg
+.option         .aent
+.ugen           .eflag
+.alias          .noalias
+</pre></td></tr></table></P><P>
+
+<A NAME="Alpha Opcodes"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_176.html#SEC185"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_178.html#SEC187"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_178.html#SEC187"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_169.html#SEC178"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_179.html#SEC188"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

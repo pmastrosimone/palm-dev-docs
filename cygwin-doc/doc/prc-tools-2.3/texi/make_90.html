@@ -1,0 +1,100 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Make Control Functions</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Make Control Functions">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Make Control Functions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC94"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_89.html#SEC93"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.11 Functions That Control Make </H2>
+<!--docid::SEC94::-->
+<P>
+
+These functions control the way make runs.  Generally, they are used to
+provide information to the user of the makefile or to cause make to stop
+if some sort of environmental error is detected.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>$(error <VAR>text</VAR><small>...</small>)</CODE>
+<DD><A NAME="IDX336"></A>
+<A NAME="IDX337"></A>
+<A NAME="IDX338"></A>
+Generates a fatal error where the message is <VAR>text</VAR>.  Note that the
+error is generated whenever this function is evaluated.  So, if you put
+it inside a command script or on the right side of a recursive variable
+assignment, it won't be evaluated until later.  The <VAR>text</VAR> will be
+expanded before the error is generated.
+<P>
+
+For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ifdef ERROR1
+$(error error is $(ERROR1))
+endif
+</pre></td></tr></table></P><P>
+
+will generate a fatal error during the read of the makefile if the
+<CODE>make</CODE> variable <CODE>ERROR1</CODE> is defined.  Or,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ERR = $(error found an error!)
+
+.PHONY: err
+err: ; $(ERR)
+</pre></td></tr></table></P><P>
+
+will generate a fatal error while <CODE>make</CODE> is running, if the
+<CODE>err</CODE> target is invoked.
+</P><P>
+
+<DT><CODE>$(warning <VAR>text</VAR><small>...</small>)</CODE>
+<DD><A NAME="IDX339"></A>
+<A NAME="IDX340"></A>
+<A NAME="IDX341"></A>
+This function works similarly to the <CODE>error</CODE> function, above,
+except that <CODE>make</CODE> doesn't exit.  Instead, <VAR>text</VAR> is expanded
+and the resulting message is displayed, but processing of the makefile
+continues.
+<P>
+
+The result of the expansion of this function is the empty string.
+</DL>
+<P>
+
+<A NAME="Running"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

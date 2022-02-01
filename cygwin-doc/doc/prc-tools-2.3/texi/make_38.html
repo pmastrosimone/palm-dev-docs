@@ -1,0 +1,76 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Force Targets</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Force Targets">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Force Targets">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC42"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_37.html#SEC41"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_39.html#SEC43"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.7 Rules without Commands or Prerequisites </H2>
+<!--docid::SEC42::-->
+<P>
+
+If a rule has no prerequisites or commands, and the target of the rule
+is a nonexistent file, then <CODE>make</CODE> imagines this target to have
+been updated whenever its rule is run.  This implies that all targets
+depending on this one will always have their commands run.
+</P><P>
+
+An example will illustrate this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>clean: FORCE
+        rm $(objects)
+FORCE:
+</pre></td></tr></table></P><P>
+
+Here the target <SAMP>`FORCE'</SAMP> satisfies the special conditions, so the
+target <TT>`clean'</TT> that depends on it is forced to run its commands.
+There is nothing special about the name <SAMP>`FORCE'</SAMP>, but that is one name
+commonly used this way.
+</P><P>
+
+As you can see, using <SAMP>`FORCE'</SAMP> this way has the same results as using
+<SAMP>`.PHONY: clean'</SAMP>.
+</P><P>
+
+Using <SAMP>`.PHONY'</SAMP> is more explicit and more efficient.  However,
+other versions of <CODE>make</CODE> do not support <SAMP>`.PHONY'</SAMP>; thus
+<SAMP>`FORCE'</SAMP> appears in many makefiles.  See section <A HREF="make_37.html#SEC41">4.6 Phony Targets</A>.
+</P><P>
+
+<A NAME="Empty Targets"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

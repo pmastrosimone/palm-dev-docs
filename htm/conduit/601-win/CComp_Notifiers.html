@@ -1,0 +1,338 @@
+<html>
+<head>
+<title>Writing a Desktop Notifier | C/C++ Sync Suite Companion</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="KEYWORDS" CONTENT="notifier, desktop notifier, notifier DLL, notification, CDK, conduit, conduits">
+<META NAME="DESCRIPTION" CONTENT="Explains how to write a notifier that HotSync Manager can call to send messages to your desktop application.">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource HTML 20040609">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="LASTUPDATED" CONTENT="06/28/04 08:29:33">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="996097"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncCompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_Debug.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_Install.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncCompanionIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">8 &nbsp;&nbsp;
+Writing a Desktop Notifier</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">C/C++ Sync Suite Companion</p>
+<p class="SubTitle">Palm OS&#174; Conduit Development Kit for  Windows, Version 6.0.1 </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="CComp_Notifiers.html">8  Writing a Desktop Notifier</a></h1>
+
+   <h2 class="SideTOC2"><a href="#996234">
+   Requirements</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996611">
+   Example Notifier</a></h2>
+
+</div>
+</td>
+<!--END SIDETOC-->
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="996169"> </a>When it is possible for both an application on the desktop computer and a conduit to modify the same user data on the desktop at the same time, HotSync Manager can notify the desktop application when a HotSync operation is starting so that both are not changing data on the desktop at the same time. To enable this messaging, you must implement a <b>notifier</b>. A notifier is an optional DLL, entirely separate from a conduit, that you can implement to pass messages from HotSync Manager to your desktop application. </p>
+<div class="NINoteImportant"><hr>
+  <a name="996740"> </a> <b>NOTE: </b> If your conduit accesses desktop data but does not share that data with a desktop application, you do not need to provide a notifier.
+<hr>
+</div>
+
+<p><a name="996730"> </a>For an overview of notifiers, see <a href="Intro_HSMBasics.html#1003341">"Desktop Notifiers,"</a> and for more on when HotSync Manager calls them, see <a href="Intro_HotSyncProc.html#996153">"Calling Notifiers"</a> in <i>Introduction to Conduit Development</i>. </p>
+
+<p><a name="996233"> </a>This chapter has the following sections:</p>
+   <blockquote class = "bq"><a name="996683"> </a><a href="CComp_Notifiers.html#996234">Requirements</a></blockquote>
+   <blockquote class = "bq"><a name="996695"> </a><a href="CComp_Notifiers.html#996611">Example Notifier</a></blockquote>
+
+<h2 class="haH2">
+  <a name="996234"> </a>Requirements <a href="#996097"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="995981"> </a>To have HotSync Manager call your notifier during a HotSync operation: </p>
+<ul type="disc">
+  <li><a name="995984"> </a>Implement the Desktop Application Notification API specified in <a href="CRef_Notifier.html#995932">Chapter 18, "Desktop Application Notifier API,"</a> in the <i>C/C++ Sync Suite Reference</i>. 
+  <li><a name="995989"> </a>Registered your notifier with HotSync Manager in one of two ways:
+  <ul type="disc">
+    <li><a name="995990"> </a>Use the Notifier Install Manager API, part of the Conduit Manager (<code>CondMgr.dll</code>). This API allows your installer application to programmatically register, modify, or unregister a notifier on an end user's computer. See <a href="CComp_Install.html#1060410">Chapter 9, "Using the Notifier Install Manager API,"</a>. 
+    <li><a name="995994"> </a>Use the Conduit Configuration utility (<code>CondCfg.exe</code>), a Windows application that allows you to register and unregister notifiers on your development machine without writing code. See <a href="Util_CondCfg.html#996434">"Registering and Editing Notifier Information"</a> of the <i>Conduit Development Utilities Guide</i>. 
+  </ul>
+</ul>
+
+<p><a name="996001"> </a>Before calling any conduits and again after they complete, HotSync Manager calls each registered notifier with the following Desktop Notification API call:</p>
+<pre class="sl">BOOL HS_Notify (int <code class="par">nCode</code>, int <code class="par">nUserId</code>)</pre>
+
+<p><a name="996003"> </a>The <code class="par">nCode</code> parameter value is a message code, and the <code class="par">nUserId</code> parameter value is the ID of the user for whom the synchronization is being performed. The notifier must understand the <code class="par">nCode</code> values that it receives and then tell the desktop application what it needs to know.</p>
+
+<p><a name="996007"> </a><a href="CComp_Notifiers.html#996012">Table 8.1</a> describes the message codes that HotSync Manager sends to a notifier. The "Typical Response" column indicates how a desktop application should respond and what value the notifier should return to HotSync Manager. </p>
+<div class="NINoteImportant"><hr>
+  <a name="996008"> </a> <b>IMPORTANT: </b> The desktop application is not notified whether your individual conduit fails.
+<hr>
+</div>
+
+<p class="fineprint">
+<p class="caption"><a name="996012"> </a><b>Table 8.1&nbsp;&nbsp;HotSync Manager notification message <br>codes </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="996021"> </a><b>Message Code</b></p>
+    </th>
+    <th><p class="tt"><a name="996023"> </a><b>Description</b></p>
+    </th>
+    <th><p class="tt"><a name="996025"> </a><b>Typical Response</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996027"> </a><code>HS_SYNC_FAILURE</code> </p>
+    </td>
+    <td><p class="tt"><a name="996029"> </a>Notifies the desktop application that the synchronization has completed unsuccessfully.</p>
+    </td>
+    <td><p class="tt"><a name="996031"> </a>The message does not indicate the reason for failure.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996033"> </a><code>HS_SYNC_QUERYOK</code> </p>
+    </td>
+    <td><p class="tt"><a name="996035"> </a>Sent to desktop application to determine if it can be synchronized.</p>
+    </td>
+    <td><p class="tt"><a name="996037"> </a>If the application can be synchronized, it returns <code>TRUE</code>.</p>
+<p class="tt"><a name="996038"> </a>If the user is currently editing data and the application cannot be synchronized, it returns <code>FALSE</code> and displays a message to the user, instructing him or her to finish editing and retry the HotSync operation. HotSync Manager aborts synchronization operations.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996040"> </a><code>HS_SYNC_STARTED</code> </p>
+    </td>
+    <td><p class="tt"><a name="996042"> </a>Notifies the desktop application of which user is about to be synchronized.</p>
+    </td>
+    <td><p class="tt"><a name="996044"> </a>If the specified user is currently using the desktop application, the application saves the user's data to disk. If that save fails, the desktop application returns <code>FALSE</code> and HotSync Manager aborts synchronization operations.</p>
+<p class="tt"><a name="996045"> </a>The desktop application returns <code>TRUE</code> in all other cases.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996047"> </a><code>HS_SYNC_SUCCESS</code> </p>
+    </td>
+    <td><p class="tt"><a name="996049"> </a>Notifies the desktop application that synchronization has completed successfully.</p>
+    </td>
+    <td><p class="tt"><a name="996051"> </a>If the list of users was modified, the application must reload its user data.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996053"> </a><code>HS_USER_UPDATE</code> </p>
+    </td>
+    <td><p class="tt"><a name="996055"> </a>Notifies the desktop application that the user list has been modified.</p>
+    </td>
+    <td><p class="tt"><a name="996057"> </a>The application must read in the list of users and reload user data after synchronization operations complete.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<h2 class="haH2">
+  <a name="996611"> </a>Example Notifier <a href="#996097"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996252"> </a>The example notifier in <a href="CComp_Notifiers.html#996484">Listing 8.1</a> is based on one that sends messages to Palm OS Desktop. The <code>HSNotify.h</code> file is located in <code>&lt;CDK&gt;\C++\Win\include</code>.</p>
+<p class="CCodeCaption">
+  <a name="996484"> </a><b>Listing 8.1&nbsp;&nbsp;Example notifier</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+#include &lt;windows.h&gt;<a name="996262"> </a>
+#include &lt;hsnotify.h&gt;<a name="996263"> </a>
+<a name="996266"> </a>
+const char* pszPilotDesktopWndClass = "Bell XS-1";<a name="996267"> </a>
+const char* pszHotSyncWndClass = "KittyHawk";<a name="996268"> </a>
+<a name="996407"> </a>
+#define WM_POKEWILMA(WM_USER+0xBAC4)<a name="996410"> </a>
+#define PW_IDENTIFY0<a name="996411"> </a>
+#define PW_SYNCSTART1<a name="996412"> </a>
+#define PW_SYNCSUCCESS2<a name="996413"> </a>
+#define PW_SYNCFAILURE3<a name="996414"> </a>
+#define PW_ADVISEUSER4<a name="996415"> </a>
+#define PW_SYNCOKQUERY5<a name="996416"> </a>
+#define PW_UPDATEUSERS6<a name="996408"> </a>
+<a name="996269"> </a>
+BOOL APIENTRY DllMain( HANDLE hModule, <a name="996270"> </a>
+                       DWORD ul_reason_for_call, <a name="996271"> </a>
+                       LPVOID lpReserved )<a name="996272"> </a>
+<a name="996273"> </a>
+{<a name="996274"> </a>
+   switch (ul_reason_for_call)<a name="996275"> </a>
+   {<a name="996276"> </a>
+      case DLL_PROCESS_ATTACH:<a name="996277"> </a>
+      case DLL_THREAD_ATTACH:<a name="996278"> </a>
+      case DLL_THREAD_DETACH:<a name="996279"> </a>
+      case DLL_PROCESS_DETACH:<a name="996280"> </a>
+      break;<a name="996281"> </a>
+   }<a name="996282"> </a>
+   return TRUE;<a name="996283"> </a>
+}<a name="996284"> </a>
+<a name="996285"> </a>
+// GetNotifierVersion() is optional. HotSync Manager does not call it. However, <a name="996290"> </a>
+// it may be useful for your desktop application to call this function to <a name="996632"> </a>
+// identify the version of your notifier.<a name="996633"> </a>
+NOTIFY_API DWORD GetNotifierVersion()<a name="996303"> </a>
+{<a name="996304"> </a>
+   return 0;<a name="996305"> </a>
+}<a name="996306"> </a>
+<a name="996307"> </a>
+// HS_Notify() passes messages from HotSync Manager to your <a name="996308"> </a>
+// desktop application.<a name="996475"> </a>
+NOTIFY_API BOOL HS_Notify(int nCode,int nUserID)<a name="996326"> </a>
+{<a name="996327"> </a>
+   BOOL bRtn = TRUE;<a name="996328"> </a>
+<a name="996330"> </a>
+   // Find the Palm OS Desktop application.<a name="996331"> </a>
+   HWND hWnd = FindWindow(pszPilotDesktopWndClass,NULL);<a name="996332"> </a>
+<a name="996333"> </a>
+   if (hWnd != NULL)<a name="996334"> </a>
+   {<a name="996335"> </a>
+      // Make sure it's the right Palm OS Desktop.<a name="996336"> </a>
+      if (SendMessage(hWnd,WM_POKEWILMA,PW_IDENTIFY,0) == WM_POKEWILMA)<a name="996337"> </a>
+      {<a name="996338"> </a>
+         switch (nCode)<a name="996339"> </a>
+         {<a name="996340"> </a>
+            case HS_SYNC_QUERYOK:<a name="996341"> </a>
+            bRtn = (SendMessage(hWnd,WM_POKEWILMA,PW_SYNCOKQUERY,0) == 0);<a name="996342"> </a>
+            break;<a name="996343"> </a>
+<a name="996344"> </a>
+            case HS_SYNC_STARTED:<a name="996345"> </a>
+            bRtn = (SendMessage(hWnd,WM_POKEWILMA,PW_SYNCSTART,nUserID) == 0);<a name="996346"> </a>
+            break;<a name="996347"> </a>
+<a name="996348"> </a>
+            case HS_SYNC_SUCCESS:<a name="996349"> </a>
+            SendMessage(hWnd,WM_POKEWILMA,PW_SYNCSUCCESS,nUserID);<a name="996350"> </a>
+            break;<a name="996351"> </a>
+<a name="996352"> </a>
+            case HS_SYNC_FAILURE:<a name="996353"> </a>
+            SendMessage(hWnd,WM_POKEWILMA,PW_SYNCFAILURE,nUserID);<a name="996354"> </a>
+            break;<a name="996355"> </a>
+<a name="996356"> </a>
+            case HS_USER_UPDATE:<a name="996357"> </a>
+            SendMessage(hWnd,WM_POKEWILMA,PW_UPDATEUSERS,nUserID);<a name="996358"> </a>
+            break;<a name="996359"> </a>
+         }<a name="996360"> </a>
+      }<a name="996361"> </a>
+   }<a name="996362"> </a>
+<a name="996363"> </a>
+   return bRtn;<a name="996364"> </a>
+}<a name="996365"> </a>
+</pre><div class="CodeRule"><hr></div>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1999-2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="CComp_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncCompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_Debug.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_Install.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncCompanionIX.html">Index</a>
+</p>
+</td>
+</tr>
+<!-- END FOOTER -->
+
+</body>
+</html>

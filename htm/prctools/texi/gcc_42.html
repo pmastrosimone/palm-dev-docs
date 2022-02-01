@@ -1,0 +1,190 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: NS32K Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: NS32K Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: NS32K Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC42"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_41.html#SEC41"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 2.14.26 NS32K Options </H3>
+<!--docid::SEC42::-->
+<P>
+
+These are the <SAMP>`-m'</SAMP> options defined for the 32000 series.  The default
+values for these options depends on which style of 32000 was selected when
+the compiler was configured; the defaults for the most common choices are
+given below.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-m32032</CODE>
+<DD><DT><CODE>-m32032</CODE>
+<DD>Generate output for a 32032.  This is the default
+when the compiler is configured for 32032 and 32016 based systems.
+<P>
+
+<DT><CODE>-m32332</CODE>
+<DD><DT><CODE>-m32332</CODE>
+<DD>Generate output for a 32332.  This is the default
+when the compiler is configured for 32332-based systems.
+<P>
+
+<DT><CODE>-m32532</CODE>
+<DD><DT><CODE>-m32532</CODE>
+<DD>Generate output for a 32532.  This is the default
+when the compiler is configured for 32532-based systems.
+<P>
+
+<DT><CODE>-m32081</CODE>
+<DD>Generate output containing 32081 instructions for floating point.
+This is the default for all systems.
+<P>
+
+<DT><CODE>-m32381</CODE>
+<DD>Generate output containing 32381 instructions for floating point.  This
+also implies <SAMP>`-m32081'</SAMP>. The 32381 is only compatible with the 32332
+and 32532 cpus. This is the default for the pc532-netbsd configuration.
+<P>
+
+<DT><CODE>-mmulti-add</CODE>
+<DD>Try and generate multiply-add floating point instructions <CODE>polyF</CODE>
+and <CODE>dotF</CODE>. This option is only available if the <SAMP>`-m32381'</SAMP>
+option is in effect. Using these instructions requires changes to to
+register allocation which generally has a negative impact on
+performance.  This option should only be enabled when compiling code
+particularly likely to make heavy use of multiply-add instructions.
+<P>
+
+<DT><CODE>-mnomulti-add</CODE>
+<DD>Do not try and generate multiply-add floating point instructions
+<CODE>polyF</CODE> and <CODE>dotF</CODE>. This is the default on all platforms.
+<P>
+
+<DT><CODE>-msoft-float</CODE>
+<DD>Generate output containing library calls for floating point.
+<STRONG>Warning:</STRONG> the requisite libraries may not be available.
+<P>
+
+<DT><CODE>-mnobitfield</CODE>
+<DD>Do not use the bit-field instructions. On some machines it is faster to
+use shifting and masking operations. This is the default for the pc532.
+<P>
+
+<DT><CODE>-mbitfield</CODE>
+<DD>Do use the bit-field instructions. This is the default for all platforms
+except the pc532.
+<P>
+
+<DT><CODE>-mrtd</CODE>
+<DD>Use a different function-calling convention, in which functions
+that take a fixed number of arguments return pop their
+arguments on return with the <CODE>ret</CODE> instruction.
+<P>
+
+This calling convention is incompatible with the one normally
+used on Unix, so you cannot use it if you need to call libraries
+compiled with the Unix compiler.
+</P><P>
+
+Also, you must provide function prototypes for all functions that
+take variable numbers of arguments (including <CODE>printf</CODE>);
+otherwise incorrect code will be generated for calls to those
+functions.
+</P><P>
+
+In addition, seriously incorrect code will result if you call a
+function with too many arguments.  (Normally, extra arguments are
+harmlessly ignored.)
+</P><P>
+
+This option takes its name from the 680x0 <CODE>rtd</CODE> instruction.
+</P><P>
+
+<DT><CODE>-mregparam</CODE>
+<DD>Use a different function-calling convention where the first two arguments
+are passed in registers.
+<P>
+
+This calling convention is incompatible with the one normally
+used on Unix, so you cannot use it if you need to call libraries
+compiled with the Unix compiler.
+</P><P>
+
+<DT><CODE>-mnoregparam</CODE>
+<DD>Do not pass any arguments in registers. This is the default for all
+targets.
+<P>
+
+<DT><CODE>-msb</CODE>
+<DD>It is OK to use the sb as an index register which is always loaded with
+zero. This is the default for the pc532-netbsd target.
+<P>
+
+<DT><CODE>-mnosb</CODE>
+<DD>The sb register is not available for use or has not been initialized to
+zero by the run time system. This is the default for all targets except
+the pc532-netbsd. It is also implied whenever <SAMP>`-mhimem'</SAMP> or
+<SAMP>`-fpic'</SAMP> is set.
+<P>
+
+<DT><CODE>-mhimem</CODE>
+<DD>Many ns32000 series addressing modes use displacements of up to 512MB.
+If an address is above 512MB then displacements from zero can not be used.
+This option causes code to be generated which can be loaded above 512MB.
+This may be useful for operating systems or ROM code.
+<P>
+
+<DT><CODE>-mnohimem</CODE>
+<DD>Assume code will be loaded in the first 512MB of virtual address space.
+This is the default for all platforms.
+<P>
+
+</DL>
+<P>
+
+<A NAME="Code Gen Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_41.html#SEC41"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

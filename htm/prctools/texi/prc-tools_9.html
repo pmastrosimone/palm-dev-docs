@@ -1,0 +1,79 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: Accessing</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: Accessing">
+<META NAME="keywords" CONTENT="Using PRC-Tools: Accessing">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC9"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_8.html#SEC8"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_10.html#SEC10"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_8.html#SEC8"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_8.html#SEC8"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.1 Accessing global data </H2>
+<!--docid::SEC9::-->
+<P>
+
+How global data should be accessed depends on what you are building:
+</P><P>
+
+<UL>
+<LI>
+Depending on its launch code, a Palm OS application may or may not have
+access to its global data (see the <CITE>Palm OS Reference</CITE> manual).
+If global data is available, it is accessed via the A5 register
+(which points to the <STRONG>end</STRONG> of the global data).
+<P>
+
+<LI>
+A GLib accesses its global data via the A4 register.
+<P>
+
+<LI>
+A SysLib must set up global data in its <CODE>Open</CODE> vector if it wants any,
+and then can access it via A4.
+<P>
+
+<LI>
+A Hack has no global data.
+(But it could use similar tricks to a SysLib if it really wanted to.)
+</UL>
+<P>
+
+By default, or with <SAMP>`-mno-own-gp'</SAMP>, compiled code will access global data
+via (a negative offset from) A5.  Shared libraries and other special
+purpose programs should be compiled with <SAMP>`-mown-gp'</SAMP>, and will use
+(a positive offset from) A4 (see see section <A HREF="prc-tools_2.html#SEC2">1.1 Palm OS-specific GCC options</A>).
+</P><P>
+
+<A NAME="Initialising A4"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

@@ -1,0 +1,1613 @@
+<HTML>
+
+<HEAD>
+<SMALLSCREENIGNORE> 
+<LINK HREF="copy_of_palmos.css" REL="stylesheet" TYPE="text/css">
+<LINK HREF="document.css" REL="StyleSheet" TYPE="text/css" media="screen">
+<!-- SCRIPT_START -->
+<!-- SCRIPT_END -->
+</SMALLSCREENIGNORE>
+<TITLE>Serial Communication</TITLE>
+
+<META NAME="PALMTEMPLATE" CONTENT="1006-002 Palm HTML 20020513">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="TEMPLATEBASE" CONTENT="Palm HTML 20010625">
+<META NAME="LASTUPDATED" CONTENT="12/13/02 10:04:17">
+<META HTTP-EQUIV="content-type" CONTENT="text/html;charset=ISO-8859-1">
+
+</HEAD>
+
+<BODY LEFTMARGIN="0" MARGINWIDTH="0" TOPMARGIN="0" MARGINHEIGHT="0">
+<SMALLSCREENIGNORE> 
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+	<td><a name="989132"></a>
+      <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr height="35"> 
+          <td height="35" colspan="2" bgcolor="#6699CC">&nbsp;</td>
+        </tr>
+        <tr valign="top"> 
+          <td width="160" align="left"><a href="http://www.palmos.com"><img src="images/bigorb.gif" width="160" height="110" border="0"></a></td>
+          <td align="left" width="100%"> 
+            </SMALLSCREENIGNORE>
+            <!-- CONTENTCELL_START -->
+            <img border="0" height="45" src="images/orb_bkgrnd_600.gif" width="600"><br>
+            <!--PAGENAV_START-->
+            <SPAN CLASS="subnav">&nbsp;&lt;&nbsp;<A HREF="http://www.palmos.com/index.html">Home</a> 
+              &nbsp;&nbsp;&lt;&nbsp;<A HREF="http://www.palmos.com/dev/">Developers</a> 
+              &nbsp;&nbsp;&lt;&nbsp;<A HREF="http://www.palmos.com/dev/support/">Development Support</a>
+              &nbsp;&nbsp;&lt;&nbsp;<A HREF="http://www.palmos.com/dev/support/docs/">Documentation</a></span><BR>
+             <img src="images/pixel_ltblue.gif" width="600" height="1" border="0" vspace="2"><br>
+             <h2 class="HeadDocPage">5  Serial Communication</h2>
+             <img src="images/pixel_ltblue.gif" width="600" height="1" border="0" vspace="2"><br>
+             &nbsp;<span class="subnav"><a href="Companion2TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Beaming.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="BTCompanion.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Companion2IX.html">Index</a></span>  
+            <!--PAGENAV_END-->
+          </td>
+        </tr>
+      </table>
+    </td>
+			</tr>
+  <tr>
+				<td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+							<td>&nbsp;&nbsp;&nbsp;</td>
+						</tr>
+        <tr>
+		<td valign="top" width="10">&nbsp;&nbsp;&nbsp;</td>
+		<td valign="top" width="175">
+			<p class="SideTitle">Title - <br><a href="Companion2Front.html">Palm OS® Programmer's Companion</a></p>
+			<p class="SideTOC1-PartTab">Volume II Communications </p>
+			<p class="SideTOC1"><a href="SerialCommunication.html">5  Serial Communication</a></p>
+			
+<p class="SideTOC2">
+<a href="#989165">Serial Hardware
+</a></p>
+
+<p class="SideTOC2">
+<a href="#989183">Byte Ordering
+</a></p>
+
+<p class="SideTOC2">
+<a href="#989187">Serial Communications Architecture Hierarchy
+</a></p>
+
+<p class="SideTOC2">
+<a href="#989262">The Serial Manager
+</a></p>
+
+<p class="SideTOC3">
+<a href="#989310">Which Serial Manager Version To Use
+</a></p>
+
+<p class="SideTOC3">
+<a href="#989396">Steps for Using the Serial Manager
+</a></p>
+
+<p class="SideTOC3">
+<a href="#989430">Opening a Port
+</a></p>
+
+<p class="SideTOC3">
+<a href="#989546">Closing a Port
+</a></p>
+
+<p class="SideTOC3">
+<a href="#989559">Configuring the Port
+</a></p>
+
+<p class="SideTOC3">
+<a href="#989664">Sending Data
+</a></p>
+
+<p class="SideTOC3">
+<a href="#989718">Receiving Data
+</a></p>
+
+<p class="SideTOC3">
+<a href="#989965">Serial Manager Tips and Tricks
+</a></p>
+
+<p class="SideTOC3">
+<a href="#990006">Writing a Virtual Device Driver
+</a></p>
+
+<p class="SideTOC2">
+<a href="#990067">The Connection Manager
+</a></p>
+
+<p class="SideTOC2">
+<a href="#990174">The Serial Link Protocol
+</a></p>
+
+<p class="SideTOC3">
+<a href="#990179">SLP Packet Structures
+</a></p>
+
+<p class="SideTOC3">
+<a href="#990321">Transmitting an SLP Packet
+</a></p>
+
+<p class="SideTOC3">
+<a href="#990329">Receiving an SLP Packet
+</a></p>
+
+<p class="SideTOC2">
+<a href="#990338">The Serial Link Manager
+</a></p>
+
+<p class="SideTOC3">
+<a href="#990347">Using the Serial Link Manager
+</a></p>
+
+<p class="SideTOC2">
+<a href="#990479">Summary of Serial Communications
+</a></p>
+
+		</td>
+
+		<td width="5">&nbsp;&nbsp;</td>
+		<td width="1" bgcolor="#6699cc">&nbsp;</td>
+		<td width="5">&nbsp;&nbsp;</td>
+		<td> 
+
+				<!-- CONTENT_START -->
+
+<p class="Body">
+  <a name="996592"> </a>The Palm OS<sup>®</sup> serial communications software provides high-performance serial communications capabilities, including byte-level serial I/O, best-effort packet-based I/O with CRC-16, reliable data transport with retries and acknowledgments, connection management, and modem dialing capabilities.
+</p>
+<p class="Body">
+  <a name="989134"> </a>This chapter helps you understand the different parts of the serial communications system and explains how to use them, discussing these topics:
+</p>
+
+  <a name="989138"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#989165">Serial Hardware</a> describes the serial port hardware.</p>
+
+  <a name="989142"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#989183">Byte Ordering</a> briefly explains the byte order used for all data.</p>
+
+  <a name="989146"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#989187">Serial Communications Architecture Hierarchy</a> provides an overview of the hierarchy, including an illustration. </p>
+
+  <a name="989150"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#989262">The Serial Manager</a> is responsible for byte-level serial I/O and control of the RS-232, USB, Bluetooth, and IR signals.</p>
+
+  <a name="989154"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#990067">The Connection Manager</a> allows other applications to access, add, and delete connection profiles contained in the Connection preferences panel.</p>
+
+  <a name="989158"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#990174">The Serial Link Protocol</a> provides an efficient mechanism for sending and receiving packets. </p>
+
+  <a name="989162"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#990338">The Serial Link Manager</a> is the Palm OS implementation of the serial link protocol.</p>
+<div class="NINoteImportant"><hr>
+  <a name="989163"> </a> <span style="color: #333;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">NOTE:  </span> Although the Palm OS supports Bluetooth connections, Bluetooth requires additional hardware and software that is not available as of this writing. 
+<hr>
+</div>
+
+<h2 class="HaHeadA">
+  <a name="989165"> </a>Serial Hardware 
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="989167"> </a>The Palm OS platform device serial port is used for implementing desktop PC connectivity or other external communication. The serial communication is fully interrupt-driven for receiving data. Currently, interrupt-driven transmission of data is not implemented in software, but the hardware does support it. Five external signals are used for this communication:
+</p>
+
+  <a name="989168"> </a><p class="B1Bullet"> &#8226; SG (signal ground)</p>
+
+  <a name="989169"> </a><p class="B1Bullet"> &#8226; TxD (transmit data)</p>
+
+  <a name="989170"> </a><p class="B1Bullet"> &#8226; RxD (receive data) </p>
+
+  <a name="989171"> </a><p class="B1Bullet"> &#8226; CTS (clear to send)</p>
+
+  <a name="989172"> </a><p class="B1Bullet"> &#8226; RTS (request to send) </p>
+<p class="Body">
+  <a name="989173"> </a>Some devices also have a configurable DTR (data terminal ready) signal. Normally, the DTR signal is always high. 
+</p>
+<p class="Body">
+  <a name="989175"> </a>The Palm OS platform device has an external connector that provides:
+</p>
+
+  <a name="989176"> </a><p class="B1Bullet"> &#8226; Five serial communication signals</p>
+
+  <a name="989177"> </a><p class="B1Bullet"> &#8226; General-purpose output</p>
+
+  <a name="989178"> </a><p class="B1Bullet"> &#8226; General-purpose input</p>
+
+  <a name="989179"> </a><p class="B1Bullet"> &#8226; Cradle button input</p>
+<p class="Body">
+  <a name="989180"> </a>Palm, Inc. publishes information designed to assist hardware developers in creating devices to interface with the serial communications port on Palm OS platform products. You can obtain this information by joining the Alliance Program and enrolling in the Plugged-In Program. For more information about this program and the serial port hardware, see the Palm<sup>&#8482;</sup> developer web page at <a href="http://www.palm.com/developers/pluggedin/">http://www.palm.com/developers/pluggedin/</a>.
+</p>
+
+<h2 class="HaHeadA">
+  <a name="989183"> </a>Byte Ordering 
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="989184"> </a>By convention, all data coming from and going to the Palm OS device use Motorola byte ordering. That is, data of compound types such as <span style="font-family: monospace">UInt16</span> (2 bytes) and <span style="font-family: monospace">UInt32</span> (4 bytes), as well as their integral counterparts, are packaged with the most-significant byte at the lowest address. This contrasts with Intel byte ordering.
+</p>
+
+<h2 class="HaHeadA">
+  <a name="989187"> </a>Serial Communications Architecture Hierarchy 
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="989188"> </a>The serial communications software has multiple layers. Higher layers depend on the more primitive functionality provided by lower layers. Applications can use the functionality of all layers. The software consists of the following layers, described in more detail below:
+</p>
+
+  <a name="989189"> </a><p class="B1Bullet"> &#8226; The Serial Manager, at the lowest layer, deals with the serial port and control of the RS-232 signals, USB signals, or IR signals, providing byte-level serial I/O. See <a href="SerialCommunication.html#989262">"The Serial Manager"</a>.</p>
+
+  <a name="989194"> </a><p class="B1Bullet"> &#8226; The Modem Manager provides modem dialing capabilities.</p>
+
+  <a name="989197"> </a><p class="B1Bullet"> &#8226; The Serial Link Protocol (SLP) provides best-effort packet send and receive capabilities with CRC-16. Packet delivery is left to the higher-level protocols; SLP does not guarantee it. See <a href="SerialCommunication.html#990174">"The Serial Link Protocol"</a>.</p>
+
+  <a name="989203"> </a><p class="B1Bullet"> &#8226; The Packet Assembly/Disassembly Protocol (PADP) sends and receives buffered data. PADP is an efficient protocol featuring variable-size block transfers with robust error checking and automatic retries. Applications don't need access to this part of the system.</p>
+
+  <a name="989206"> </a><p class="B1Bullet"> &#8226; The Desktop Link Protocol (DLP) provides remote access to Palm OS data storage and other subsystems. </p>
+<p class="Indented1"> <a name="989207"> </a>DLP facilitates efficient data synchronization between desktop (PC or Macintosh) and Palm OS applications, database backup, installation of code patches, extensions, applications, and other databases, as well as Remote Interapplication Communication (RIAC) and Remote Procedure Calls (RPC).</p>
+<p class="Body">
+  <a name="989215"> </a><a href="SerialCommunication.html#989217">Figure 5.1</a> illustrates the communications layers.
+</p>
+
+<p class="FFigureCaption">
+  <a name="989217"> </a>Figure 5.1	 Palm OS Serial Communications Architecture
+</p>
+<p class="FgFigure">
+  <a name="989260"> </a><div align="left"><img src="images/SerialCommunicationa.gif" height="373" width="422" border="0" hspace="20" vspace="0">
+</div>
+</p>
+
+<h2 class="HaHeadA">
+  <a name="989262"> </a>The Serial Manager 
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="989263"> </a>The Palm OS Serial Manager is responsible for byte-level serial I/O and control of the RS-232, IR, Bluetooth, or USB signals.
+</p>
+<div class="NINoteImportant"><hr>
+  <a name="989268"> </a> <span style="color: #333;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">NOTE:  </span> Although the Palm OS supports Bluetooth connections, Bluetooth requires additional hardware and software that is not available as of this writing. 
+<hr>
+</div>
+<p class="Body">
+  <a name="989269"> </a>To ensure that the Serial Manager does not slow down processing of user events, the Serial Manager receives data asynchronously. Sending data is performed synchronously in the current implementation. 
+</p>
+<p class="Body">
+  <a name="989271"> </a>This section describes the Serial Manager and how to write the virtual serial drivers that it can use. It covers the following topics:
+</p>
+
+  <a name="989275"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#989310">Which Serial Manager Version To Use</a></p>
+
+  <a name="989279"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#989396">Steps for Using the Serial Manager</a></p>
+
+  <a name="989283"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#989430">Opening a Port</a></p>
+
+  <a name="989287"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#989546">Closing a Port</a></p>
+
+  <a name="989291"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#989559">Configuring the Port</a></p>
+
+  <a name="989295"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#989664">Sending Data</a></p>
+
+  <a name="989299"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#989718">Receiving Data</a></p>
+
+  <a name="989303"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#989965">Serial Manager Tips and Tricks</a></p>
+
+  <a name="989307"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#990006">Writing a Virtual Device Driver</a></p>
+<div class="NINoteImportant"><hr>
+  <a name="989308"> </a> <span style="color: #333;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">NOTE:  </span> You must check which Serial Manager is present before making any calls. See the next section for details. When in doubt, the old Serial Manager API is always available.
+<hr>
+</div>
+
+<h2 class="HBHeadB">
+  <a name="989310"> </a>Which Serial Manager Version To Use
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="989311"> </a>There are several versions of the Serial Manager available. The first several releases of Palm OS had a Serial Manager that supported only a a single serial port. The API for this Serial Manager is documented in the chapter <a href="OldSerialManager.html#1304750">"Old Serial Manager"</a> of the <i>Palm OS Programmer's API Reference</i>. 
+</p>
+<p class="Body">
+  <a name="989321"> </a>If the <a href="CompatibilityApdx.html#970840">New Serial Manager Feature Set</a> is present, the Serial Manager has a different set of API (described in the chapter <a href="SerialManager.html#1287571">"Serial Manager"</a> of the <i>Palm OS Programmer's API Reference</i>) and can support multiple physical serial hardware devices and virtual serial devices. Physical serial drivers manage communication with the hardware as needed, and virtual drivers manage blocks of data to be sent to some sort of block-based serial code. The detailed operation of drivers is abstracted from the main serial management code. 
+</p>
+<p class="Body">
+  <a name="989328"> </a>The newest versions of Palm OS may have an updated version of the new Serial Manager installed. Version 2 provides USB and Bluetooth virtual drivers and provides a few enhancements to the Serial Manager and virtual driver APIs. 
+</p>
+<p class="Body">
+  <a name="989329"> </a>When deciding which API to use, note the following: 
+</p>
+
+  <a name="989330"> </a><p class="B1Bullet"> &#8226; If you are writing new application code, best performance is achieved by using the new Serial Manager functions directly, if it is available. The new Serial Manager was introduced in Palm OS 3.3. If it is available on all devices in your target market, consider using new Serial Manager directly.</p>
+
+  <a name="989331"> </a><p class="B1Bullet"> &#8226; The old Serial Manager API is available on all versions of Palm OS; however, it only supports RS-232 communications and low-level IrDA communications. </p>
+
+  <a name="989332"> </a><p class="B1Bullet"> &#8226; The new Serial Manager API supports the IrComm protocol. </p>
+
+  <a name="989333"> </a><p class="B1Bullet"> &#8226; Version 2 of the new Serial Manager supports USB and Bluetooth communication. </p>
+
+  <a name="989334"> </a><p class="B1Bullet"> &#8226; If you write a virtual serial driver, you must use the new Serial Manager API. </p>
+
+<h4 class="HCHeadC">
+  <a name="989335"> </a>Checking the Serial Manager Version
+</h4>
+<p class="Body">
+  <a name="989336"> </a>To check whether you can use the new Serial Manager API, check for the existence of the new Serial Manager feature set by calling <a href="FeatureManager.html#1110037"><span style="font-family: monospace">FtrGet</span></a> as follows:
+</p>
+<pre  class="Preformatted">
+err = FtrGet(sysFileCSerialMgr, <a name="989340"> </a>
+  sysFtrNewSerialPresent, &amp;value);<a name="989341"> </a>
+</pre>
+<p class="Body">
+  <a name="989342"> </a>If the new Serial Manager is installed, the <span style="font-family: monospace">value</span> parameter is non-zero and the returned error is zero (for no error).
+</p>
+<p class="Body">
+  <a name="989343"> </a>To check for the existence of version 2 of the new Serial Manager, you should check both the Serial Manager version number and the Palm OS version number as follows: 
+</p>
+<pre  class="Preformatted">
+err = FtrGet(sysFileCSerialMgr, <a name="989344"> </a>
+  sysFtrNewSerialVersion, &amp;value);<a name="989346"> </a>
+err = FtrGet(sysFtrCreator, <a name="989347"> </a>
+  sysFtrNumROMVersion, &amp;romVersion);<a name="989348"> </a>
+</pre>
+<p class="Body">
+  <a name="989349"> </a>If the <span style="font-family: monospace">value</span> parameter is 2, the <span style="font-family: monospace">romVersion</span> is <span style="font-family: monospace">0x04003000</span>, and both calls to <span style="font-family: monospace">FtrGet</span> return 0 (for no error), version 2 of the new Serial Manager feature set is present. 
+</p>
+<p class="Body">
+  <a name="989350"> </a>Version 2 of the new Serial Manager ships with roughly Palm OS 4.0 and higher; however, some Handspring devices that run Palm OS 3.5 have a Serial Manager that returns a version number of 2. This Serial Manager has a slightly different feature set than the Serial Manager that ships with Palm OS 4.0. It contains virtual driver operation codes and virtual driver enhancements to support USB, but it does not contain any of the public Serial Manager functions added in version 2. Therefore, you need to check both the Serial Manager version number and the Palm OS version number before you use the version 2 Serial Manager functions. 
+</p>
+
+<h4 class="HCHeadC">
+  <a name="989351"> </a>About the New Serial Manager
+</h4>
+<p class="Body">
+  <a name="989352"> </a>The new Serial Manager manages multiple serial devices with minimal duplication of hardware drivers and data structures. In older Palm systems, the serial library managed any and all connections to the serial hardware in the 68328 (Dragonball) processor, which was the only serial device in the system. Newer systems contain additional serial devices, such as an IR port and possibly a USB port. 
+</p>
+<p class="Body">
+  <a name="989353"> </a>The figure below shows the layering of communication software with the Serial Manager and hardware drivers. 
+</p>
+
+<p class="FFigureCaption">
+  <a name="989354"> </a>Figure 5.2	 Serial Communications Architecture with Serial Manager
+</p>
+<p class="FgFigure">
+  <a name="989386"> </a><div align="left"><img src="images/SerialCommunication2.gif" height="217" width="449" border="0" hspace="20" vspace="0">
+</div>
+</p>
+<p class="Body">
+  <a name="989387"> </a>The Serial Manager maintains a database of installed hardware and currently open connections. Applications, libraries, or other serial communication tasks open different pieces of serial hardware by specifying a logical port number or a four-character code identifying the exact piece of serial hardware that a task wishes to open a connection with. The Serial Manager then performs the proper actions on the hardware through small hardware drivers that are opened dynamically when the port is needed. One hardware driver is needed for each serial communication hardware device available to the Palm unit.
+</p>
+<p class="Body">
+  <a name="989388"> </a>At system restart, the Serial Manager searches for all serial drivers on the Palm device. Serial drivers are independent <span style="font-family: monospace">.prc</span> files with a code resource and a version resource and are of type 'sdrv' (for physical serial drivers) or 'vdrv' (for virtual serial drivers). Once a driver is found, it is asked to locate its associated hardware and provide information on the capabilities of that hardware. This is done for each driver found and the Serial Manager always maintains a list of hardware currently on the device.
+</p>
+<p class="Body">
+  <a name="989389"> </a>Once a port is opened, the Serial Manager allocates a structure for maintaining the current information and settings of the particular port. The task or application that opens the port is returned a port ID and must supply the port ID to refer to this port when other Serial Manager functions are called.
+</p>
+<p class="Body">
+  <a name="989390"> </a>Upon closing the port, the Serial Manager deallocates the open port structure and unlocks the driver code resource to prevent memory fragmentation.
+</p>
+<p class="Body">
+  <a name="989391"> </a>Note that applications can use the Connection Manager to obtain the proper port name and other serial port parameters that the user has stored in connection profiles for different connection types. For more information, see the section <a href="SerialCommunication.html#990067">"The Connection Manager"</a>. 
+</p>
+
+<h2 class="HBHeadB">
+  <a name="989396"> </a>Steps for Using the Serial Manager
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="989397"> </a>Regardless of which version of the API you use, the main steps to perform serial communication are the same. They are: 
+</p>
+  <a name="989398"> </a><p class="N1NumList">1.	  Open a serial port. </p><p class="Indented1"> <a name="989399"> </a>To open a port in the new Serial Manager, you specify which port to open and obtain a port ID that uniquely identifies this connection. You pass that port ID to every other Serial Manager call you make. </p>
+<p class="Indented1"> <a name="989400"> </a>Because the old Serial Manager only has one port, it uses the serial library reference number to uniquely identify the connection. Therefore, with the old Serial Manager, you must first obtain the serial library reference number and then open the port. </p>
+<p class="Indented1"> <a name="989404"> </a>See <a href="SerialCommunication.html#989430">"Opening a Port"</a>.</p>
+  <a name="989405"> </a><p class="N1NumList">2.	  If necessary, configure the connection.</p><p class="Indented1"> <a name="989406"> </a>You might need to change the baud rate or increase the size of the receive queue before you use any other Serial Manager calls. See <a href="SerialCommunication.html#989559">"Configuring the Port"</a>.</p>
+  <a name="989410"> </a><p class="N1NumList">3.	  Send or receive data.</p><p class="Indented1"> <a name="989417"> </a>See <a href="SerialCommunication.html#989664">"Sending Data"</a> and <a href="SerialCommunication.html#989718">"Receiving Data"</a>.</p>
+  <a name="989418"> </a><p class="N1NumList">4.	  Close the port. </p><p class="Indented1"> <a name="989422"> </a>See <a href="SerialCommunication.html#989546">"Closing a Port"</a>.</p>
+<p class="Body">
+  <a name="989424"> </a>The next several sections describe these steps in more detail. Where the old and new Serial Manager APIs are similar, the task is described in terms of using the new Serial Manager, and the old Serial Manager API is given in parentheses. In these cases, the only difference is in the name of the function and the ID you pass to identify the connection. Where the two APIs differ considerably, both are described. 
+</p>
+<div class="NINoteImportant"><hr>
+  <a name="989428"> </a> <span style="color: #333;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">TIP:  </span> See <a href="SerialCommunication.html#989965">"Serial Manager Tips and Tricks"</a> for debugging information and information on how to fix common errors. 
+<hr>
+</div>
+
+<h2 class="HBHeadB">
+  <a name="989430"> </a>Opening a Port
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="989432"> </a>The Serial Manager is installed when the device is booted. Before you can use it, however, you must enable the serial hardware by opening a port. 
+</p>
+<p class="Body">
+  <a name="989433"> </a>You open a port for the Serial Manager differently depending on which API you are using: the new Serial Manager or the old Serial Manager.
+</p>
+<div class="NINoteImportant"><hr>
+  <a name="989434"> </a> <span style="color: #333;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">IMPORTANT:  </span> Applications that open a serial port are responsible for closing it. Opening a serial port powers up the UART and drains batteries. To conserve battery power, don't keep the port open longer than necessary. 
+<hr>
+</div>
+<p class="Body">
+  <a name="989435"> </a>When you attempt to open a serial port, regardless of which API you use, you must check for errors upon return: 
+</p>
+
+  <a name="989436"> </a><p class="B1Bullet"> &#8226; If <span style="font-family: monospace">errNone</span> is returned, the port was opened successfully. The application can then perform its tasks and close the port when finished.</p>
+
+  <a name="989438"> </a><p class="B1Bullet"> &#8226; If <span style="font-family: monospace">serErrAlreadyOpen</span> is returned, the port was already open. For example, you might receive this error if the console opened the port during a previous debugging session and never closed it or, on some devices, if there is an open TCP/IP stack. </p>
+
+  <a name="989439"> </a><p class="B1Bullet"> &#8226; If any other error is returned, the port was not opened, and the application must <b>not</b> close it.</p>
+
+<h4 class="HCHeadC">
+  <a name="989441"> </a>Opening a Port With the New Serial Manager
+</h4>
+<p class="Body">
+  <a name="989447"> </a>To open a port using the new Serial Manager, call the <a href="SerialManager.html#1288783"><span style="font-family: monospace">SrmOpen</span></a> function, specifying the port (see <a href="SerialCommunication.html#989483">"Specifying the Port"</a>) and the initial baud rate of the UART. <span style="font-family: monospace">SrmOpen</span> returns a port ID that uniquely identifies this connection. You pass this port ID to all other Serial Manager calls. 
+</p>
+<p class="Body">
+  <a name="989451"> </a>Version 2 of the new Serial Manager supports USB and Bluetooth connections as well as RS-232 and IR connections. With the Bluetooth and USB protocols, it is often more important to specify the reason why the application is opening the port. The baud rate is unimportant as that is negotiated in USB and Bluetooth protocols. To open a USB or Bluetooth connection, use <a href="SerialManager.html#1288561"><span style="font-family: monospace">SrmExtOpen</span></a> instead of <span style="font-family: monospace">SrmOpen</span>. This function takes a <a href="SerialManager.html#1287793"><span style="font-family: monospace">SrmOpenConfigType</span></a> structure, which allows you to specify the purpose of the connection instead of the baud rate. 
+</p>
+<p class="Body">
+  <a name="989460"> </a>Once the <span style="font-family: monospace">SrmOpen</span> or <span style="font-family: monospace">SrmExtOpen</span> call is made successfully, it indicates that the Serial Manager has successfully allocated internal structures to maintain the port and has successfully loaded the serial driver for this port.
+</p>
+<p class="CCodeCaption">
+  <a name="989461"> </a>Listing 5.1  Opening the port (new Serial Manager)
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+UInt16 portId;<a name="989462"> </a>
+Boolean serPortOpened = false;<a name="989463"> </a>
+ <a name="989464"> </a>
+err = SrmOpen(serPortCradlePort /* port */, 57600, /* baud */<a name="989465"> </a>
+  &amp;portId);<a name="989466"> </a>
+if (err) {<a name="989467"> </a>
+   // display error message here.<a name="989468"> </a>
+}<a name="989469"> </a>
+//record our open status in global.<a name="989470"> </a>
+serPortOpened = true;<a name="989471"> </a>
+</pre><div class="CodeRule"><hr></div>
+<p class="Body">
+  <a name="989472"> </a>A port may be opened with either a foreground connection (<span style="font-family: monospace">SrmOpen</span> or <span style="font-family: monospace">SrmExtOpen</span>) or background connection (<a href="SerialManager.html#1288826"><span style="font-family: monospace">SrmOpenBackground</span></a> or <a href="SerialManager.html#1288621"><span style="font-family: monospace">SrmExtOpenBackground</span></a>). A foreground connection makes an active connection to the port and controls usage of the port until the connection is closed. A background connection opens the port but relinquishes control to any other task requesting a foreground connection. Background connections are provided to support tasks (for example, a keyboard driver) that want to use a serial device to receive data only when no other task is using the port.
+</p>
+<p class="Body">
+  <a name="989481"> </a>Note that background ports have limited functionality: they can only receive data and notify owning clients of what data has been received.
+</p>
+
+<h4 class="HCHeadC">
+  <a name="989483"> </a>Specifying the Port
+</h4>
+<p class="Body">
+  <a name="989484"> </a>Ports must be specified using one of the following methods:
+</p>
+
+  <a name="989487"> </a><p class="B1Bullet"> &#8226; Logical ports (see <a href="SerialManager.html#1287882">"Logical Serial Port Constants"</a> of the <i>Palm OS Programmer's API Reference</i>)</p>
+<p class="Indented1"> <a name="989492"> </a>The recommended way to specify the port is to use the logical port name. Logical ports are hardware independent. Palm OS will map them to the correct physical port. It is better to use logical ports instead of physical ports.</p>
+
+  <a name="989495"> </a><p class="B1Bullet"> &#8226; Physical ports (see <a href="SerialManager.html#1287940">"Physical Serial Port Constants"</a> of the <i>Palm OS Programmer's API Reference</i>)</p>
+<p class="Indented1"> <a name="989500"> </a>Physical ports are 4-character constants (<span style="font-family: monospace">'u</span><i>xxx</i><span style="font-family: monospace">'</span>) that reference the physical hardware of the device. It is usually not a good idea to use these ports because the hardware they reference may not exist on a particular device.</p>
+
+  <a name="989503"> </a><p class="B1Bullet"> &#8226; Virtual ports (see <a href="SerialManager.html#1287976">"Virtual Serial Port Constants"</a> of the <i>Palm OS Programmer's API Reference</i>)</p>
+<p class="Indented1"> <a name="989508"> </a>Virtual ports are associated with virtual drivers installed on the device. For example, the virtual port constant <span style="font-family: monospace">sysFileCVirtIrComm</span> specifies the virtual driver that implements the IrComm protocol. </p>
+
+  <a name="989512"> </a><p class="B1Bullet"> &#8226; Connection Manager (see <a href="SerialCommunication.html#990067">"The Connection Manager"</a>)</p>
+<p class="Indented1"> <a name="989514"> </a>If you want to use a particular connection profile as stored in the Connection preferences panel, use the Connection Manager to obtain the port name from the connection profile and then use that name to open the port. </p>
+<p class="Body">
+  <a name="989515"> </a>Note that other 4-character codes for the physical and virtual ports will be added in the future. Also note that the port IDs, like creator IDs, are 4-character constants, not strings. Therefore, they are enclosed in single quotes (' '), not double quotes (" "). 
+</p>
+
+<h4 class="HCHeadC">
+  <a name="989517"> </a>Opening a Port with the Old Serial Manager
+</h4>
+<p class="Body">
+  <a name="989519"> </a>If you are using the old Serial Manager, there is only one port, so you always pass 0 (or the constant <span style="font-family: monospace">serPortLocalHotSync</span>) to identify the port. The serial library reference number identifies the connection. To obtain the reference number, call <a href="SystemManager.html#1166164"><span style="font-family: monospace">SysLibFind</span></a>, passing <span style="font-family: monospace">"Serial Library"</span> for the library name. 
+</p>
+<p class="Body">
+  <a name="989525"> </a>The reference number remains the same within one invocation of the application. You can close and open the library as needed using the number. Between invocations, the reference number may change. Because of that, you should call <span style="font-family: monospace">SysLibFind</span> each time you reopen the Serial Manager. 
+</p>
+<p class="Body">
+  <a name="989530"> </a>After the call to <span style="font-family: monospace">SysLibFind</span>, use <a href="OldSerialManager.html#1305038"><span style="font-family: monospace">SerOpen</span></a> to open the port. Like <span style="font-family: monospace">SrmOpen</span>, you pass the baud rate along with the reference number. 
+</p>
+<p class="CCodeCaption">
+  <a name="989531"> </a>Listing 5.2  Opening the port (old Serial Manager)
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+UInt16 refNum = sysInvalidRefNum;<a name="989532"> </a>
+Boolean serPortOpened = false;<a name="989533"> </a>
+Err err;<a name="989534"> </a>
+ <a name="989535"> </a>
+err = SysLibFind("Serial Library", &amp;refNum);<a name="989536"> </a>
+err = SerOpen(refNum, 0 /* port is always 0*/, <a name="989537"> </a>
+  57600 /* baud */);<a name="989538"> </a>
+if (err == serErrAlreadyOpen) {<a name="989539"> </a>
+  err = SerClose(refNum); <a name="989540"> </a>
+  // display error message here.<a name="989541"> </a>
+}<a name="989542"> </a>
+//record our open status in global.<a name="989543"> </a>
+serPortOpened = true;<a name="989544"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h2 class="HBHeadB">
+  <a name="989546"> </a>Closing a Port
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="989547"> </a>Once an application is finished with the serial port, it must close the port using the <a href="SerialManager.html#1288316"><span style="font-family: monospace">SrmClose</span></a> function (or <a href="OldSerialManager.html#1304908"><span style="font-family: monospace">SerClose</span></a> function if you are using the old Serial Manager). If <span style="font-family: monospace">SrmClose</span> returns no error, it indicates that the Serial Manager has successfully closed the driver and deallocated the data structures used for maintaining the port.
+</p>
+<p class="Body">
+  <a name="989557"> </a>To conserve battery power, it is important not to leave the serial port open longer than necessary. It is generally better to close and reopen the connection multiple times than it is to leave it open unnecessarily.
+</p>
+
+<h2 class="HBHeadB">
+  <a name="989559"> </a>Configuring the Port
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="989560"> </a>A newly opened port has the default configuration. The default port configuration is:
+</p>
+
+  <a name="989561"> </a><p class="B1Bullet"> &#8226; A receive queue of 512 bytes</p>
+
+  <a name="989562"> </a><p class="B1Bullet"> &#8226; A default CTS timeout (currently 5 seconds) set </p>
+
+  <a name="989563"> </a><p class="B1Bullet"> &#8226; 1 stop bit</p>
+
+  <a name="989564"> </a><p class="B1Bullet"> &#8226; 8 data bits</p>
+
+  <a name="989565"> </a><p class="B1Bullet"> &#8226; Hardware handshaking on input </p>
+
+  <a name="989566"> </a><p class="B1Bullet"> &#8226; Flow control enabled </p>
+
+  <a name="989567"> </a><p class="B1Bullet"> &#8226; For RS-232 connections, the baud rate you specified when you opened the port. </p>
+<p class="Body">
+  <a name="989568"> </a>You can change this configuration if necessary before sending or receiving data. 
+</p>
+
+<h4 class="HCHeadC">
+  <a name="989569"> </a>Increasing the Receive Queue Buffer Size 
+</h4>
+<p class="Body">
+  <a name="989570"> </a>The default receive queue size is 512 bytes. If you notice a large number of hardware overruns or software overruns while running your application, consider replacing the default receive queue with a bigger one. 
+</p>
+<p class="Body">
+  <a name="989571"> </a>To use a custom receive queue, an application must:
+</p>
+
+  <a name="989572"> </a><p class="B1Bullet"> &#8226; Allocate a memory chunk for the custom queue. This needs to be an actual memory chunk, not a global variable or an offset from the chunk.</p>
+
+  <a name="989580"> </a><p class="B1Bullet"> &#8226; Call <a href="SerialManager.html#1289400"><span style="font-family: monospace">SrmSetReceiveBuffer</span></a> (or <a href="OldSerialManager.html#1305364"><span style="font-family: monospace">SerSetReceiveBuffer</span></a> in the old Serial Manager) with the new buffer and the size of the new buffer as arguments. </p>
+
+  <a name="989581"> </a><p class="B1Bullet"> &#8226; Restore the default queue before closing the port. That way, any bits sent in have a place to go.</p>
+
+  <a name="989582"> </a><p class="B1Bullet"> &#8226; Deallocate the custom queue after restoring the default queue. The system only deallocates the default queue. </p>
+<p class="Body">
+  <a name="989583"> </a>The following code fragment illustrates replacing the default queue with a custom queue. 
+</p>
+<p class="CCodeCaption">
+  <a name="989584"> </a>Listing 5.3  Replacing the receive queue
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+#define myCustomSerQueueSize 1024<a name="989585"> </a>
+void *customSerQP;<a name="989586"> </a>
+// Allocate a dynamic memory chunk for our custom receive <a name="989587"> </a>
+// queue.<a name="989588"> </a>
+customSerQP = MemPtrNew(myCustomSerQueueSize);<a name="989589"> </a>
+// Replace the default receive queue.<a name="989590"> </a>
+if (customSerQP) {<a name="989591"> </a>
+  err = SrmSetReceiveBuffer(portId, customSerQP, <a name="989592"> </a>
+     myCustomSerQueueSize);<a name="989593"> </a>
+}<a name="989594"> </a>
+ <a name="989595"> </a>
+// ... do Serial Manager work<a name="989596"> </a>
+ <a name="989597"> </a>
+// Now restore default queue and delete custom queue.<a name="989598"> </a>
+// Pass NULL for the buffer and 0 for bufSize to restore the <a name="989599"> </a>
+// default queue.<a name="989600"> </a>
+err = SrmSetReceiveBuffer(portId, NULL, 0);<a name="989601"> </a>
+if(customSerQP) {<a name="989602"> </a>
+   MemPtrFree(customSerQP);<a name="989603"> </a>
+   customSerQP = NULL;<a name="989604"> </a>
+}<a name="989605"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h4 class="HCHeadC">
+  <a name="989606"> </a>Changing Other Configuration Settings 
+</h4>
+<p class="Body">
+  <a name="989611"> </a>To change the other serial port settings, use <a href="SerialManager.html#1288349"><span style="font-family: monospace">SrmControl</span></a> (or <a href="OldSerialManager.html#1305384"><span style="font-family: monospace">SerSetSettings</span></a> in the old Serial Manager API). 
+</p>
+<p class="Body">
+  <a name="989619"> </a><a href="SerialCommunication.html#989623">Listing 5.4</a> configures the serial port for 19200 baud, 8 data bits, even parity, 1 stop bit, and full hardware handshake (input and output) with a CTS timeout of 0.5 seconds. The CTS timeout specifies the maximum number of system ticks the serial library will wait to send a byte when the CTS input is not asserted. The CTS timeout is ignored if <span style="font-family: monospace">srmSettingsFlagCTSAutoM</span> is not set. 
+</p>
+<p class="CCodeCaption">
+  <a name="989623"> </a>Listing 5.4  Changing the configuration (new Serial Manager)
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+Err err;<a name="989624"> </a>
+Int32 paramSize;<a name="989625"> </a>
+Int32 baudRate = 19200;<a name="989626"> </a>
+UInt32 flags = srmSettingsFlagBitsPerChar8 |
+srmSettingsFlagParityOnM | srmSettingsFlagParityEvenM |
+srmSettingsFlagStopBits1 | srmSettingsFlagRTSAutoM |
+srmSettingsFlagCTSAutoM;<a name="989627"> </a>
+Int32 ctsTimeout = SysTicksPerSecond() / 2;<a name="989628"> </a>
+ <a name="989629"> </a>
+paramSize = sizeof(baudRate);<a name="989630"> </a>
+err = SrmControl(portId, srmCtlSetBaudRate, &amp;baudRate, <a name="989631"> </a>
+   &amp;paramSize);<a name="989632"> </a>
+ <a name="989633"> </a>
+paramSize = sizeof(flags);<a name="989634"> </a>
+err = SrmControl(portId, srmCtlSetFlags, &amp;flags, &amp;paramSize);<a name="989635"> </a>
+ <a name="989636"> </a>
+paramSize = sizeof(ctsTimeout);<a name="989637"> </a>
+err = SrmControl(portId, srmCtlSetCtsTimeout, &amp;ctsTimeout, <a name="989638"> </a>
+   &amp;paramSize);<a name="989639"> </a>
+</pre><div class="CodeRule"><hr></div>
+<p class="Body">
+  <a name="989643"> </a><a href="SerialCommunication.html#989645">Listing 5.5</a> shows how to set up the same configuration in the old Serial Manager. 
+</p>
+<p class="CCodeCaption">
+  <a name="989645"> </a>Listing 5.5  Changing the configuration (old Serial Manager)
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+SerSettingsType serSettings;<a name="989646"> </a>
+ <a name="989647"> </a>
+serSettings.baudRate = 19200;<a name="989648"> </a>
+serSettings.flags = serSettingsFlagBitsPerChar8 |
+serSettingsFlagParityOnM | serSettingsFlagParityEvenM |
+serSettingsFlagStopBits1 | serSettingsFlagRTSAutoM |
+serSettingsFlagCTSAutoM;<a name="989649"> </a>
+serSettings.ctsTimeout = SysTicksPerSecond() / 2;<a name="989650"> </a>
+err = SerSetSettings(refNum, &amp;serSettings);<a name="989651"> </a>
+</pre><div class="CodeRule"><hr></div>
+<p class="Body">
+  <a name="989652"> </a>The settings remain in effect until you change them again or close the connection. As you configure the Serial Manager, note the following points: 
+</p>
+
+  <a name="989654"> </a><p class="B1Bullet"> &#8226; Set a CTS timeout if a lack of a CTS signal means a loss of connection. (Use -1 to specify no timeout.) </p>
+
+  <a name="989655"> </a><p class="B1Bullet"> &#8226; If <span style="font-family: monospace">srmSettingsFlagRTSAutoM</span> is not set, the RTS output will be permanently asserted. (This flag is set by default.)</p>
+
+  <a name="989656"> </a><p class="B1Bullet"> &#8226; For baud rates above 19200, the use of full hardware handshaking (<span style="font-family: monospace">srmSettingsFlagRTSAutoM</span> | <span style="font-family: monospace">SrmSettingsFlagCTSAutoM</span>) is advised. </p>
+<p class="Body">
+  <a name="989659"> </a>If you want to find out what the current configuration is, pass one of the <span style="font-family: monospace">srmCtlGet</span>... op codes to the <span style="font-family: monospace">SrmControl</span> function. For example, to find out the current baud rate, pass <span style="font-family: monospace">srmCtlGetBaudRate</span>. To find out the current configuration in the old Serial Manager, use the <a href="OldSerialManager.html#1304970"><span style="font-family: monospace">SerGetSettings</span></a> function. 
+</p>
+
+<h2 class="HBHeadB">
+  <a name="989664"> </a>Sending Data
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="989674"> </a>To send data, use <a href="SerialManager.html#1289212"><span style="font-family: monospace">SrmSend</span></a> (or <a href="OldSerialManager.html#1305235"><span style="font-family: monospace">SerSend</span></a> in the old Serial Manager). Sending data is performed synchronously. To send data, the application only needs to have an open connection with a port that has been configured properly and then specify a buffer to send. The larger the buffer to send, the longer the send function operates before returning to the calling application. The send function returns the actual number of bytes that were placed in the UART's FIFO. This makes it possible to determine what was sent and what wasn't in case of an error. 
+</p>
+<p class="Body">
+  <a name="989678"> </a><a href="SerialCommunication.html#989680">Listing 5.6</a> illustrates the use of <span style="font-family: monospace">SrmSend</span>.
+</p>
+<p class="CCodeCaption">
+  <a name="989680"> </a>Listing 5.6  Sending data
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+UInt32 toSend, numSent;<a name="989681"> </a>
+Err err;<a name="989682"> </a>
+Char msg[] = "logon\n";<a name="989683"> </a>
+toSend = StrLen(msg);<a name="989684"> </a>
+numSent = SrmSend(portId, msg, toSend, &amp;err);<a name="989685"> </a>
+if (err == serErrTimeOut) {<a name="989686"> </a>
+  //cts timeout detected<a name="989687"> </a>
+}<a name="989688"> </a>
+</pre><div class="CodeRule"><hr></div>
+<p class="Body">
+  <a name="989689"> </a>If <span style="font-family: monospace">SrmSend</span> returns an error, or if you simply want to ensure that all data has been sent, you can use any of the following functions: 
+</p>
+
+  <a name="989699"> </a><p class="B1Bullet"> &#8226; Use <a href="SerialManager.html#1289351"><span style="font-family: monospace">SrmSendWait</span></a> (<a href="OldSerialManager.html#1305334"><span style="font-family: monospace">SerSendWait</span></a> in the old Serial Manager) if you need to wait for all data to leave the device before performing other actions. The <span style="font-family: monospace">SrmSend</span> function returns when it has loaded the last byte into the FIFO. The <span style="font-family: monospace">SrmSendWait</span> function does not return until the FIFO empties. Like <span style="font-family: monospace">SrmSend</span>, the <span style="font-family: monospace">SrmSendWait</span> call can timeout if CTS handshaking is on and the CTS timeout value is reached. Note that the old Serial Manager version of this call, <span style="font-family: monospace">SerSendWait</span>, takes a timeout parameter, but this parameter is ignored. The new Serial Manager call simply takes the port ID. </p>
+
+  <a name="989706"> </a><p class="B1Bullet"> &#8226; Use <a href="SerialManager.html#1289265"><span style="font-family: monospace">SrmSendCheck</span></a> (or <span style="font-family: monospace">SerSendCheck</span>) to determine how many bytes are left in the FIFO. Note that not all serial devices support this feature. </p>
+<p class="Indented1"> <a name="989707"> </a>If the hardware does not provide an exact reading, the function returns an approximate number: 8 means full, 4 means approximately half-full. If the function returns 0, the queue is empty.</p>
+
+  <a name="989716"> </a><p class="B1Bullet"> &#8226; The <a href="SerialManager.html#1289309"><span style="font-family: monospace">SrmSendFlush</span></a> (or <a href="OldSerialManager.html#1305312"><span style="font-family: monospace">SerSendFlush</span></a>) function can be used to flush remaining bytes in the FIFO that have not been sent. </p>
+
+<h2 class="HBHeadB">
+  <a name="989718"> </a>Receiving Data
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="989719"> </a>Receiving data is a more involved process because it depends on the receiving application actually listening for data from the port. 
+</p>
+<p class="Body">
+  <a name="989720"> </a>To receive data, an application must do the following: 
+</p>
+
+  <a name="989721"> </a><p class="B1Bullet"> &#8226; Ensure that the code does not loop indefinitely waiting for data from the receive queue. </p>
+<p class="Indented1"> <a name="989722"> </a>The most common way to do this is to pass a timeout value to <a href="SystemEventManager.html#1161014"><span style="font-family: monospace">EvtGetEvent</span></a>. </p>
+<p class="Indented1"> <a name="989727"> </a>Virtual devices often run in the same thread as applications. If you don't specify a timeout for the event loop, it can prevent the virtual device and other serial related code from properly handling received data.</p>
+<p class="Indented1"> <a name="989728"> </a>If your code is outside of an event loop, you can use the <a href="SystemEventManager.html#1160938"><span style="font-family: monospace">EvtEventAvail</span></a> function to see if the system has an event it needs to process, and if so, call <span style="font-family: monospace">SysHandleEvent</span>. </p>
+
+  <a name="989733"> </a><p class="B1Bullet"> &#8226; To avoid having the system go to sleep while it's waiting to receive data, an application should call <a href="SystemEventManager.html#1161259"><span style="font-family: monospace">EvtResetAutoOffTimer</span></a> periodically (or call <a href="SystemEventManager.html#1161288"><span style="font-family: monospace">EvtSetAutoOffTimer</span></a>). For example, the Serial Link Manager automatically calls <span style="font-family: monospace">EvtResetAutoOffTimer</span> each time a new packet is received.</p>
+<div class="NINoteImportant"><hr>
+  <a name="989742"> </a> <span style="color: #333;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">TIP:  </span> For many applications, the auto-off feature presents no problem. Use <span style="font-family: monospace">EvtResetAutoOffTimer</span> with discretion; applications that use it drain the battery.
+<hr>
+</div>
+
+  <a name="989751"> </a><p class="B1Bullet"> &#8226; To receive the data, call <a href="SerialManager.html#1288916"><span style="font-family: monospace">SrmReceive</span></a> (or <a href="OldSerialManager.html#1305077"><span style="font-family: monospace">SerReceive</span></a>). Pass a buffer, the number of bytes you want to receive, and the inter-byte timeout in system ticks. This call blocks until all the requested data have been received or an error occurs. This function returns the number of bytes actually received. (The error is returned in the last parameter that you pass to the function.) </p>
+
+  <a name="989752"> </a><p class="B1Bullet"> &#8226; If you want to wait until a certain amount of data is available before you receive it, call <a href="SerialManager.html#1289059"><span style="font-family: monospace">SrmReceiveWait</span></a> (or <a href="OldSerialManager.html#1305197"><span style="font-family: monospace">SerReceiveWait</span></a>) before you call <span style="font-family: monospace">SrmReceive</span>. Specify the number of bytes to wait for, which must be less than the current receive buffer size, and the amount of time to wait in system ticks. If <span style="font-family: monospace">SrmReceiveWait</span> returns <span style="font-family: monospace">errNone</span>, it means that the receive queue contains the specified number of bytes. If it returns anything other than <span style="font-family: monospace">errNone</span>, that number of bytes is not available. </p>
+<p class="Indented1"> <a name="989761"> </a><span style="font-family: monospace">SrmReceiveWait</span> is useful, for example, if you are receiving data packets. You can use <span style="font-family: monospace">SrmReceiveWait</span> to wait until an entire packet is available and then read that packet. </p>
+
+  <a name="989762"> </a><p class="B1Bullet"> &#8226; It's common to want to receive data only when the system is idle. In this case, have your event loop respond to the <span style="font-family: monospace">nilEvent</span>, which is generated whenever <span style="font-family: monospace">EvtGetEvent</span> times out and another event is not available. In response to this event, call <a href="SerialManager.html#1288971"><span style="font-family: monospace">SrmReceiveCheck</span></a> (or <a href="OldSerialManager.html#1305146"><span style="font-family: monospace">SerReceiveCheck</span></a>). Unlike <span style="font-family: monospace">SrmReceiveWait</span>, <span style="font-family: monospace">SrmReceiveCheck</span> does not block awaiting input. Instead, it immediately returns the number of bytes currently in the receive queue. If there is data in the receive queue, call <span style="font-family: monospace">SrmReceive</span> to receive it. If the queue has no data, your event handler can simply return and allow the system to perform other tasks. </p>
+
+  <a name="989772"> </a><p class="B1Bullet"> &#8226; Check for and handle error conditions returned by any of the receive function calls as described in <a href="SerialCommunication.html#989791">"Handling Errors"</a>.</p>
+<div class="NINoteImportant"><hr>
+  <a name="989776"> </a> <span style="color: #333;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">IMPORTANT:  </span> Always check for line errors. Due to unpredictable conditions, there is no guaranteed of success. If a line error occurs, all other Serial Manager calls fail until you clear the error.
+<hr>
+</div>
+<p class="Body">
+  <a name="989779"> </a>For example code that shows how to receive data, see <a href="SerialCommunication.html#989869">"Receive Data Example"</a>.
+</p>
+<p class="Body">
+  <a name="989781"> </a>In the new Serial Manager, you can directly access the receive queue using <a href="SerialManager.html#1289160"><span style="font-family: monospace">SrmReceiveWindowOpen</span></a>, and <a href="SerialManager.html#1289123"><span style="font-family: monospace">SrmReceiveWindowClose</span></a>. These functions allow fast access to the buffer to reduce buffer copying. These functions are not supported on systems where the new Serial Manager feature set is not present. 
+</p>
+
+<h4 class="HCHeadC">
+  <a name="989791"> </a>Handling Errors
+</h4>
+<p class="Body">
+  <a name="989792"> </a>If an error occurs on the line, all of the receive functions return the error condition <span style="font-family: monospace">serErrLineErr</span>. This error will continue to be returned until you explicitly clear the error condition and continue. 
+</p>
+<p class="Body">
+  <a name="989801"> </a>To clear line errors, call <a href="SerialManager.html#1288290"><span style="font-family: monospace">SrmClearErr</span></a> (or <a href="OldSerialManager.html#1304886"><span style="font-family: monospace">SerClearErr</span></a>). 
+</p>
+<p class="Body">
+  <a name="989806"> </a>If you want more information about the error, call <a href="SerialManager.html#1288745"><span style="font-family: monospace">SrmGetStatus</span></a> (or <a href="SerialManager.html#1288745"></a><a href="OldSerialManager.html#1305003"><span style="font-family: monospace">SerGetStatus</span></a>) before you clear the line. 
+</p>
+<p class="Body">
+  <a name="989817"> </a><a href="SerialCommunication.html#989819">Listing 5.7</a> checks whether a framing or parity error have returned and clears the line errors. 
+</p>
+<p class="CCodeCaption">
+  <a name="989819"> </a>Listing 5.7  Handling line errors (new Serial Manager)
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+void HandleSerReceiveErr(UInt16 portId, Err err) {<a name="989820"> </a>
+   UInt32 lineStatus;<a name="989821"> </a>
+   UInt16 lineErrs;<a name="989822"> </a>
+ <a name="989823"> </a>
+   if (err == serErrLineErr) {<a name="989824"> </a>
+      SrmGetStatus(portId, &amp;lineStatus, &amp;lineErrs);<a name="989825"> </a>
+      // test for framing or parity error.<a name="989826"> </a>
+      if (lineErrs &amp; serLineErrorFraming | serLineErrorParity) <a name="989827"> </a>
+      {<a name="989828"> </a>
+            //framing or parity error occurred. Do something.<a name="989829"> </a>
+      }<a name="989830"> </a>
+       SrmClearErr(portId);<a name="989831"> </a>
+   }<a name="989832"> </a>
+}<a name="989833"> </a>
+</pre><div class="CodeRule"><hr></div>
+<p class="Body">
+  <a name="989837"> </a><a href="SerialCommunication.html#989839">Listing 5.8</a> performs the same tasks using the old Serial Manager. Note that the <span style="font-family: monospace">SerGetStatus</span> call looks a little different from the <span style="font-family: monospace">SrmGetStatus</span> call. 
+</p>
+<p class="CCodeCaption">
+  <a name="989839"> </a>Listing 5.8  Handling line errors (old Serial Manager)
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+void HandleSerReceiveErr(UInt16 refNum, Err err) {<a name="989840"> </a>
+   UInt16 lineErrs;<a name="989841"> </a>
+   Boolean ctsOn, dsrOn;<a name="989842"> </a>
+ <a name="989843"> </a>
+   if (err == serErrLineErr) {<a name="989844"> </a>
+      lineErrs = SerGetStatus(refNum, &amp;ctsOn, &amp;dsrOn);<a name="989845"> </a>
+      // test for framing or parity error.<a name="989846"> </a>
+      if (lineErrs &amp; serLineErrorFraming | serLineErrorParity) <a name="989847"> </a>
+      {<a name="989848"> </a>
+            //framing or parity error occurred. Do something.<a name="989849"> </a>
+      }<a name="989850"> </a>
+       SerClearErr(refNum);<a name="989851"> </a>
+   }<a name="989852"> </a>
+}<a name="989853"> </a>
+</pre><div class="CodeRule"><hr></div>
+<div class="NINoteImportant"><hr>
+  <a name="989857"> </a> <span style="color: #333;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">TIP:  </span> See <a href="SerialCommunication.html#989981">"Common Errors"</a> for some common causes of line errors and how to fix them. 
+<hr>
+</div>
+<p class="Body">
+  <a name="989858"> </a>In some cases, you may want to discard any received data when an error occurs. For example, if your protocol is packet driven and you detect data corruption, you should flush the buffer before you continue. To do so, call <a href="SerialManager.html#1289015"><span style="font-family: monospace">SrmReceiveFlush</span></a> (or <a href="OldSerialManager.html#1305179"><span style="font-family: monospace">SerReceiveFlush</span></a>). This function flushes any bytes in the receive queue and then calls <span style="font-family: monospace">SrmClearErr</span> for you. 
+</p>
+<p class="Body">
+  <a name="989867"> </a><span style="font-family: monospace">SrmReceiveFlush</span> takes a timeout value as a parameter. If you specify a timeout, it waits that period of time for any other data to be received in the queue and flushes it as well. If you pass 0 for the timeout, it simply flushes the data currently in the queue, clears the line errors, and returns. The flush timeout has to be large enough to flush out the noise but not so large that it flushes part of the next packet. 
+</p>
+
+<h4 class="HCHeadC">
+  <a name="989869"> </a>Receive Data Example
+</h4>
+<p class="Body">
+  <a name="989873"> </a><a href="SerialCommunication.html#989875">Listing 5.9</a> shows how to receive large blocks of data using the Serial Manager.
+</p>
+<p class="CCodeCaption">
+  <a name="989875"> </a>Listing 5.9  Receiving Data Using the Serial Manager
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+#include &lt;PalmOS.h&gt; // all the system toolbox headers<a name="989876"> </a>
+#include &lt;SerialMgr.h&gt;<a name="989877"> </a>
+#define k2KBytes 2048<a name="989878"> </a>
+/************************************************************<a name="989879"> </a>
+*<a name="989880"> </a>
+* FUNCTION: RcvSerialData<a name="989881"> </a>
+*<a name="989882"> </a>
+* DESCRIPTION: An example of how to receive a large chunk of data<a name="989883"> </a>
+* from the Serial Manager. This function is useful if the app<a name="989884"> </a>
+* knows it must receive all this data before moving on. The<a name="989885"> </a>
+* YourDrainEventQueue() function is a chance for the application<a name="989886"> </a>
+* to call EvtGetEvent and handle other application events.<a name="989887"> </a>
+* Receiving data whenever it's available during idle events<a name="989888"> </a>
+* might be done differently than this sample.<a name="989889"> </a>
+*<a name="989890"> </a>
+* PARAMETERS: <a name="989891"> </a>
+* thePort -&gt; valid portID for an open serial port.<a name="989892"> </a>
+* rcvDataP -&gt; pointer to a buffer to put the received data.<a name="989893"> </a>
+* bufSize &lt;-&gt; pointer to the size of rcvBuffer and returns<a name="989894"> </a>
+*   the number of bytes read.<a name="989895"> </a>
+*<a name="989896"> </a>
+************************************************************/<a name="989897"> </a>
+Err RcvSerialData(UInt16 thePort, UInt8 *rcvDataP, UInt32 *bufSizeP)<a name="989898"> </a>
+{<a name="989899"> </a>
+UInt32 bytesLeft, maxRcvBlkSize, bytesRcvd, waitTime, totalRcvBytes = 0;<a name="989900"> </a>
+UInt8 *newRcvBuffer;<a name="989901"> </a>
+UInt16 dataLen = sizeof(UInt32);<a name="989902"> </a>
+Err* error;<a name="989903"> </a>
+ <a name="989904"> </a>
+   // The default receive buffer is only 512 bytes; increase it if <a name="989905"> </a>
+   // necessary. The following lines are just an example of how to <a name="989906"> </a>
+   // do it, but its necessity depends on the ability of the code<a name="989907"> </a>
+   // to retrieve data in a timely manner.<a name="989908"> </a>
+   newRcvBuffer = MemPtrNew(k2KBytes); // Allocate new rcv buffer.<a name="989909"> </a>
+   if (newRcvBuffer)<a name="989910"> </a>
+      // Set new rcv buffer.<a name="989911"> </a>
+      error = SrmSetReceiveBuffer(thePort, newRcvBuffer, k2KBytes);<a name="989912"> </a>
+      if (error)<a name="989913"> </a>
+         goto Exit;<a name="989914"> </a>
+   else<a name="989915"> </a>
+      return memErrNotEnoughSpace;<a name="989916"> </a>
+ <a name="989917"> </a>
+   // Initialize the maximum bytes to receive at one time.<a name="989918"> </a>
+   maxRcvBlkSize = k2KBytes;<a name="989919"> </a>
+   // Remember how many bytes are left to receive.<a name="989920"> </a>
+   bytesLeft = *bufSizeP;<a name="989921"> </a>
+   // Only wait 1/5 of a second for bytes to arrive.<a name="989922"> </a>
+   waitTime = SysTicksPerSecond() / 5;<a name="989923"> </a>
+   <a name="989924"> </a>
+   // Now loop while getting blocks of data and filling the buffer.<a name="989925"> </a>
+   do {<a name="989926"> </a>
+      // Is the max size larger then the number of bytes left?<a name="989927"> </a>
+      if (bytesLeft &lt; maxRcvBlkSize)<a name="989928"> </a>
+         // Yes, so change the rcv block amount.<a name="989929"> </a>
+    maxRcvBlkSize = bytesLeft; <a name="989930"> </a>
+      // Try to receive as much data as possible, <a name="989931"> </a>
+      // but wait only 1/5 second for it.<a name="989932"> </a>
+      bytesRcvd = SrmReceive(thePort,  rcvDataP, maxRcvBlkSize, waitTime, <a name="989933"> </a>
+         &amp;error);<a name="989934"> </a>
+      // Remember the total number of bytes received.<a name="989935"> </a>
+      totalRcvBytes += bytesRcvd;<a name="989936"> </a>
+      // Figure how many bytes are left to receive.<a name="989937"> </a>
+      bytesLeft -= bytesRcvd;<a name="989938"> </a>
+      rcvDataP += bytesRcvd; // Advance the rcvDataP.<a name="989939"> </a>
+      // If there was a timeout and no data came through...<a name="989940"> </a>
+      if ((error == serErrTimeOut) &amp;&amp; (bytesRcvd == 0))<a name="989941"> </a>
+         goto ReceiveError; // ...bail out and report the error.<a name="989942"> </a>
+      // If there's some other error, bail out.<a name="989943"> </a>
+      if ((error) &amp;&amp; (error != serErrTimeOut))<a name="989944"> </a>
+         goto ReceiveError;<a name="989945"> </a>
+ <a name="989946"> </a>
+      // Call a function to handle any pending events because<a name="989947"> </a>
+      // someone might press the cancel button.<a name="989948"> </a>
+      YourDrainEventQueue();<a name="989949"> </a>
+   // Continue receiving data until all data has been received.<a name="989950"> </a>
+   } while (bytesLeft);<a name="989951"> </a>
+   <a name="989952"> </a>
+   ReceiveError:<a name="989953"> </a>
+      // Clearing the receive buffer can also be done right before <a name="989954"> </a>
+      // the port is to be closed.<a name="989955"> </a>
+      // Set back the default buffer when we're done.<a name="989956"> </a>
+      SrmSetReceiveBuffer(thePort, 0L, 0);<a name="989957"> </a>
+ <a name="989958"> </a>
+   Exit:<a name="989959"> </a>
+      MemPtrFree(newRcvBuffer); // Free the space.<a name="989960"> </a>
+      *bufSizeP = totalRcvBytes;<a name="989961"> </a>
+      return error;<a name="989962"> </a>
+}<a name="989963"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h2 class="HBHeadB">
+  <a name="989965"> </a>Serial Manager Tips and Tricks
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="989966"> </a>The following tips and tricks help you debug your serial application and help avoid errors in the first place. 
+</p>
+
+<h4 class="HCHeadC">
+  <a name="989967"> </a>Debugging Tips
+</h4>
+<p class="Body">
+  <a name="989968"> </a>The following are some tips to help you track down errors while debugging.
+</p>
+
+  <a name="989969"> </a><p class="B1Bullet"> &#8226; Debug first using the Palm OS Emulator. Debug on the device last. </p>
+<p class="Indented1"> <a name="989970"> </a>The Palm OS Emulator supports all Serial Manager functions and lets you test applications that use the Serial Manager. You can use the desktop computer's serial port to connect to outside devices. For more information on how to set up and use the emulator to debug serial communications, see the emulator documentation. </p>
+
+  <a name="989971"> </a><p class="B1Bullet"> &#8226; Track communication errors and the amount of data sent and received.</p>
+<p class="Indented1"> <a name="989972"> </a>In your debug build, maintain individual counts for the amount of data transferred and for each communication error of interest. This includes timeouts and retries for reliable protocols.</p>
+
+  <a name="989973"> </a><p class="B1Bullet"> &#8226; Use an easily recognizable start-of-frame signature. This helps during debugging of packet-based protocols.</p>
+
+  <a name="989974"> </a><p class="B1Bullet"> &#8226; Implement developer back doors for debugging.</p>
+<p class="Indented1"> <a name="989975"> </a>Implement a mechanism to trigger one or more debugging features at runtime without recompiling. For example, you may want to create a back door to disable the receive timeout on one side to prevent it from timing out while you are debugging the other side. Another back door might print some debugging information to the display. For example, your application might look for a pen down event in the upper right corner of the digitizer while the page-up key is being pressed to trigger one of your back doors.</p>
+
+  <a name="989976"> </a><p class="B1Bullet"> &#8226; Use the HotSync<sup>®</sup> log for debug-time error logging on the device.</p>
+<p class="Indented1"> <a name="989977"> </a>You may use <span style="font-family: monospace">DlkSetLogEntry</span> to write your debugging messages to the HotSync log on the device. The HotSync log will accept up to 2KB of text. You may then switch to the HotSync application to view the log. </p>
+<div class="NINoteImportant"><hr>
+  <a name="989978"> </a> <span style="color: #333;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">NOTE:  </span> Restrict writing to the HotSync log to debugging. Users will not appreciate having your debugging messages in their HotSync log.
+<hr>
+</div>
+
+  <a name="989979"> </a><p class="B1Bullet"> &#8226; If you have a protocol analyzer, use it to examine the data that is actually sent and received. </p>
+
+<h4 class="HCHeadC">
+  <a name="989981"> </a>Common Errors
+</h4>
+<p class="Body">
+  <a name="989982"> </a>Even if you're careful, errors may crop up. Here are some frequently encountered problems and their solutions. 
+</p>
+
+  <a name="989983"> </a><p class="B1Bullet"> &#8226; Nothing is being received</p>
+<p class="Indented1"> <a name="989984"> </a>Check for a broken or incorrectly wired connection and make sure the expected handshaking signals are received.</p>
+
+  <a name="989985"> </a><p class="B1Bullet"> &#8226; Garbage is received</p>
+<p class="Indented1"> <a name="989986"> </a>Check that baud rate, word length, and/or parity agree.</p>
+
+  <a name="989987"> </a><p class="B1Bullet"> &#8226; Baud rate mismatch</p>
+<p class="Indented1"> <a name="989988"> </a>If the two sides disagree on the baud rate, it may either show up as a framing error, or the number of received characters will be different from the number that was sent.</p>
+
+  <a name="989989"> </a><p class="B1Bullet"> &#8226; Parity error</p>
+<p class="Indented1"> <a name="989990"> </a>Parity errors indicate that the data has been damaged. They can also mean that the sender and receiver have not been configured to use the same parity or word length. </p>
+
+  <a name="989991"> </a><p class="B1Bullet"> &#8226; Word-length mismatch</p>
+<p class="Indented1"> <a name="989992"> </a>Word-length mismatches may show up as a framing error.</p>
+
+  <a name="989993"> </a><p class="B1Bullet"> &#8226; Framing error</p>
+<p class="Indented1"> <a name="989994"> </a>Framing errors indicate a mismatch in the number of bits and are reported when the stop bit is not received when it is expected. This could indicate damaged data, but frequently it signals a disagreement in common baud rate, word length, or parity setting. </p>
+
+  <a name="989995"> </a><p class="B1Bullet"> &#8226; Hardware overrun</p>
+<p class="Indented1"> <a name="989996"> </a>The Serial Manager's receive interrupt service routine cannot keep up with incoming data. Enable full hardware handshaking (see <a href="SerialCommunication.html#989559">"Configuring the Port"</a>).</p>
+
+  <a name="990000"> </a><p class="B1Bullet"> &#8226; Software overrun</p>
+<p class="Indented1"> <a name="990001"> </a>The application is not reading incoming data fast enough. Read data more frequently, or replace the default receive queue with a larger one. (see <a href="SerialCommunication.html#989559">"Configuring the Port"</a>). </p>
+
+<h2 class="HBHeadB">
+  <a name="990006"> </a>Writing a Virtual Device Driver
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="990007"> </a>If the new Serial Manager feature set is present, the Serial Manager supports the ability to add virtual device drivers to the system. Virtual serial device drivers transmit and receive data in blocks instead of a byte at a time. 
+</p>
+<p class="Body">
+  <a name="990008"> </a>A virtual driver is a code resource (ID=0) that is independently compiled and installed on a Palm device. Virtual driver .prc files are of file type 'vdrv' and their creator type is chosen by the developer (and must be registered with PalmSource, Inc. in the creator ID database). When the Serial Manager is installed, it searches the Database Manager for code resources of the 'vdrv' type and then calls the driver's entry point function to get information about the features and capabilities of this virtual device. Unlike physical serial device drivers, virtual device drivers send and receive data in blocks instead of transferring one byte at a time. Their purpose is to abstract a level of communication protocol away from serial devices without forcing applications to work through a different API than the Serial Manager that may already be used for normal RS-232 serial communication.
+</p>
+<div class="NINoteImportant"><hr>
+  <a name="990009"> </a> <span style="color: #333;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">NOTE:  </span> Creator types with all lowercase letters are reserved by PalmSource, Inc. For more information about assigning and registering creator types, see "Assigning a Database Type and Creator ID" on page 15  of the <i>Palm OS Programmer's Companion</i>, vol. I.
+<hr>
+</div>
+
+<h4 class="HCHeadC">
+  <a name="990016"> </a>Virtual Driver Functions
+</h4>
+<p class="Body">
+  <a name="990017"> </a>There are six functions that each virtual driver must minimally support in order to work with the Serial Manager. These functions are briefly described in this section. For details on the exact operations each function must perform, see the function descriptions in the <i>Palm OS Programmer's API Reference</i>.
+</p>
+<p class="Body">
+  <a name="990021"> </a>The functions a virtual driver must implement include:
+</p>
+
+  <a name="990026"> </a><p class="B1Bullet"> &#8226; <a href="SerialDriver.html#1281346"><span style="font-family: monospace">DrvEntryPointProcPtr</span></a> must be the first function defined in a virtual driver code resource and must be marked as the <span style="font-family: monospace">__Startup__</span> function of the code resource. When the code resource is loaded, the Serial Manager jumps to the beginning of the code resource and begins execution at <span style="font-family: monospace">DrvEntryPoint</span>. This function is called at system restart, when the Serial Manager is building a database of installed drivers and their capabilities, and when a virtual port is opened.</p>
+
+  <a name="990034"> </a><p class="B1Bullet"> &#8226; The <a href="SerialDriver.html#1281531"><span style="font-family: monospace">VdrvOpenProcPtr</span></a> and <a href="SerialDriver.html#1281555"><span style="font-family: monospace">VdrvOpenProcV4Ptr</span></a> function is responsible for initializing the virtual device to begin communication. </p>
+
+  <a name="990039"> </a><p class="B1Bullet"> &#8226; The <a href="SerialDriver.html#1281386"><span style="font-family: monospace">VdrvCloseProcPtr</span></a> function must handle all activities needed to close the virtual device.</p>
+
+  <a name="990044"> </a><p class="B1Bullet"> &#8226; <a href="SerialDriver.html#1281404"><span style="font-family: monospace">VdrvControlProcPtr</span></a> extends the <span style="font-family: monospace">SrmControl</span> function to the level of the virtual device.</p>
+
+  <a name="990049"> </a><p class="B1Bullet"> &#8226; <a href="SerialDriver.html#1281586"><span style="font-family: monospace">VdrvStatusProcPtr</span></a> returns a bitfield that describes the current state of the virtual device. </p>
+
+  <a name="990054"> </a><p class="B1Bullet"> &#8226; <a href="SerialDriver.html#1281609"><span style="font-family: monospace">VdrvWriteProcPtr</span></a> writes a block of bytes to the virtual device.</p>
+
+  <a name="990059"> </a><p class="B1Bullet"> &#8226; The optional <a href="SerialDriver.html#1281502"><span style="font-family: monospace">VdrvControlCustomProcPtr</span></a> function can handle any custom control codes defined specifically for this virtual driver.</p>
+<p class="Body">
+  <a name="990060"> </a>Note that there is no virtual read function in the current implementation. Virtual devices must save received data by using the functions provided in the <a href="SerialDriver.html#1280689"><span style="font-family: monospace">DrvrRcvQType</span></a> when they are notified that data is available using some callback mechanism. 
+</p>
+<p class="Body">
+  <a name="990065"> </a>For an example of how to implement a virtual serial driver, download the CryptoDrvr example from the Palm OS Developer Knowledge Base. 
+</p>
+
+<h2 class="HaHeadA">
+  <a name="990067"> </a>The Connection Manager 
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="990069"> </a>The Connection Manager allows applications to access, add, and delete connection profiles contained in the Connection preferences panel. Earlier releases of the Palm OS have a Modem preferences panel. The Connection panel replaces the Modem panel. This change was made as more connection choices (serial cable, IR, modem, network and so on) became available to users.
+</p>
+<p class="Body">
+  <a name="990071"> </a>The Connection Manager was introduced at the same time as the Connection panel to manage connection profiles that save preferences for various connection types. A connection profile includes information on the hardware port to be used for a particular connection, the port details (speed, flow control, modem initialization string), and any other pertinent information. 
+</p>
+<p class="Body">
+  <a name="990073"> </a>The Connection Manager is not available on all Palm devices. You must ensure that it is present before you can make Connection Manager calls. If the <a href="CompatibilityApdx.html#970840">New Serial Manager Feature Set</a> is present, then at least the basic version of the Connection Manager is available. If the <a href="CompatibilityApdx.html#971055">Connection Manager Feature Set</a> is present, then an expanded version of the Connection Manager is available. This expanded Connection Manager allows profiles that specify communications with mobile phones and profiles that specify communications with Bluetooth devices. It is also more extensible, allowing you to create your own profile parameters if necessary. 
+</p>
+<div class="NINoteImportant"><hr>
+  <a name="990080"> </a> <span style="color: #333;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">NOTE:  </span> Although the Connection Manager supports Bluetooth connections, Bluetooth requires additional hardware and software that is not available as of this writing. 
+<hr>
+</div>
+<p class="Body">
+  <a name="990081"> </a>The basic version of the Connection Manager provides functions that list the saved connection profiles (<a href="ConnectionMgr.html#1218967"><span style="font-family: monospace">CncGetProfileList</span></a>), return details for a specific profile (<a href="ConnectionMgr.html#1218913"><span style="font-family: monospace">CncGetProfileInfo</span></a>), add a profile (<a href="ConnectionMgr.html#1218754"><span style="font-family: monospace">CncAddProfile</span></a>), and delete a profile (<a href="ConnectionMgr.html#1218853"><span style="font-family: monospace">CncDeleteProfile</span></a>).
+</p>
+<p class="Body">
+  <a name="990098"> </a>When you create a profile with the basic Connection Manager, each profile parameter is passed as a parameter to the <span style="font-family: monospace">CncAddProfile</span> function. Similarly, when you request profile information, each profile parameter is passed in an output parameter to <span style="font-family: monospace">CncGetProfileInfo</span>. 
+</p>
+<p class="Body">
+  <a name="990099"> </a>Because the newer, expanded Connection Manager supports more types of connections than the basic Connection Manager, it also supports many more types of profile parameters. For this reason, you now retrieve profile information one parameter at a time using <a href="ConnectionMgr.html#1219497"><span style="font-family: monospace">CncProfileSettingGet</span></a>. In the new API, constants specify the predefined profile parameters. (See <a href="ConnectionMgr.html#1218110">"Profile Parameter Constants"</a> of the <i>Palm OS Programmer's API Reference</i>.) For example, to retrieve the connection's port, you use code similar to that shown in <a href="SerialCommunication.html#990114">Listing 5.10</a>.
+</p>
+<p class="CCodeCaption">
+  <a name="990114"> </a>Listing 5.10  Retrieving port information 
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+UInt16 dataSize;<a name="990115"> </a>
+UInt32 portCreator;<a name="990116"> </a>
+ <a name="990117"> </a>
+dataSize = kCncParamPortSize;<a name="990118"> </a>
+err = CncProfileSettingGet(profileID, kCncParamPort, <a name="990119"> </a>
+   &amp;portCreator, &amp;dataSize);<a name="990120"> </a>
+</pre><div class="CodeRule"><hr></div>
+<p class="Body">
+  <a name="990121"> </a>To create a profile, you first must obtain a unique profile ID and then set the profile parameters one by one as shown in <a href="SerialCommunication.html#990137">Listing 5.11</a>. Note that <a href="SerialCommunication.html#990137">Listing 5.11</a> uses <a href="ConnectionMgr.html#1219444"><span style="font-family: monospace">CncProfileOpenDB</span></a> to open the Connection Manager profile database and <a href="ConnectionMgr.html#1219198"><span style="font-family: monospace">CncProfileCloseDB</span></a> to close it. These are not required calls. If you don't explicitly open and close the database, each Connection Manager function opens the database, performs its work, and then closes the database. By calling <span style="font-family: monospace">CncProfileOpenDB</span> in front of a series of Connection Manager calls and calling <span style="font-family: monospace">CncProfileCloseDB</span> at the end, you save the overhead of having each function open and close the database. 
+</p>
+<p class="CCodeCaption">
+  <a name="990137"> </a>Listing 5.11  Creating a connection profile
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+// Open the Connection Manager profile database;<a name="990138"> </a>
+err = CncProfileOpenDB();<a name="990139"> </a>
+// obtain new profile ID. <a name="990140"> </a>
+err = CncProfileCreate(&amp;profileId);<a name="990142"> </a>
+ <a name="990143"> </a>
+if (!err) {<a name="990144"> </a>
+   // Create a name for the profile. <a name="990145"> </a>
+   err = CncProfileSettingSet(profileId, kCncParamName, <a name="990146"> </a>
+         myProfileName, StrLen(myProfileName)+1);<a name="990147"> </a>
+ <a name="990148"> </a>
+   // Set some other required parameters. <a name="990149"> </a>
+   port = serPortLocalHotSync;<a name="990150"> </a>
+   err = CncProfileSettingSet(profileId, kCncParamPort, <a name="990151"> </a>
+      &amp;port, kCncParamPortSize);<a name="990152"> </a>
+   baud = 57600;<a name="990153"> </a>
+   err = CncProfileSettingSet(profileId, kCncParamBaud, <a name="990155"> </a>
+      &amp;baud, kCncParamBaudSize);<a name="990156"> </a>
+   deviceKind = kCncDeviceKindSerial;<a name="990157"> </a>
+   err = CncProfileSettingSet(profileId, kCncParamDeviceKind, <a name="990158"> </a>
+      &amp;deviceKind, kCncParamDeviceKindSize);<a name="990159"> </a>
+}<a name="990160"> </a>
+ <a name="990161"> </a>
+// close the profile database.<a name="990162"> </a>
+err = CncProfileCloseDB();<a name="990163"> </a>
+</pre><div class="CodeRule"><hr></div>
+<p class="Body">
+  <a name="990164"> </a>The expanded Connection Manager API also allows you to create profile parameters that are unique to your type of connection. You can do so with the <a href="ConnectionMgr.html#1218817"><span style="font-family: monospace">CncDefineParamID</span></a> macro. See its description in the <i>Palm OS Programmer's API Reference</i> for more information. 
+</p>
+
+<h2 class="HaHeadA">
+  <a name="990174"> </a>The Serial Link Protocol 
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="990177"> </a>The Serial Link Protocol (SLP) provides an efficient packet send and receive mechanism that is used by the Palm desktop software and debugger. SLP provides robust error detection with CRC-16. SLP is a best-effort protocol; it does not guarantee packet delivery (packet delivery is left to the higher-level protocols). For enhanced error detection and implementation convenience of higher-level protocols, SLP specifies packet type, source, destination, and transaction ID information as an integral part of its data packet structure.
+</p>
+
+<h2 class="HBHeadB">
+  <a name="990179"> </a>SLP Packet Structures
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="990180"> </a>The following sections describe:
+</p>
+
+  <a name="990184"> </a><p class="B1Bullet"> &#8226;  <a href="SerialCommunication.html#990198">SLP Packet Format</a></p>
+
+  <a name="990188"> </a><p class="B1Bullet"> &#8226; <a href="SerialCommunication.html#990248">Packet Type Assignment</a></p>
+
+  <a name="990192"> </a><p class="B1Bullet"> &#8226;  <a href="SerialCommunication.html#990272">Socket ID Assignment</a></p>
+
+  <a name="990196"> </a><p class="B1Bullet"> &#8226;  <a href="SerialCommunication.html#990305">Transaction ID Assignment</a></p>
+
+<h4 class="HCHeadC">
+  <a name="990198"> </a>SLP Packet Format
+</h4>
+<p class="Body">
+  <a name="990200"> </a>Each SLP packet consists of a packet header, client data of variable size, and a packet footer, as shown in <a href="SerialCommunication.html#990205">Figure 5.3</a>.
+</p>
+
+<p class="FFigureCaption">
+  <a name="990205"> </a>Figure 5.3	 Structure of a Serial Link Packet
+</p>
+<p class="FgFigure">
+  <a name="990240"> </a><div align="left"><img src="images/SerialCommunication3.gif" height="379" width="360" border="0" hspace="20" vspace="0">
+</div>
+</p>
+
+  <a name="990242"> </a><p class="B1Bullet"> &#8226; The <b>packet header</b> contains the packet signature, the destination socket ID, the source socket ID, packet type, client data size, transaction ID, and header checksum. The packet signature is composed of the three bytes 0xBE, 0xEF, 0xED, in that order. The header checksum is an 8-bit arithmetic checksum of the entire packet header, not including the checksum field itself.</p>
+
+  <a name="990243"> </a><p class="B1Bullet"> &#8226; The <b>client data </b>is a variable-size block of binary data specified by the user and is not interpreted by the Serial Link Protocol.</p>
+
+  <a name="990246"> </a><p class="B1Bullet"> &#8226; The <b>packet footer</b> consists of the CRC-16 value computed over the packet header and client data.</p>
+
+<h4 class="HCHeadC">
+  <a name="990248"> </a>Packet Type Assignment
+</h4>
+<p class="Body">
+  <a name="990249"> </a>Packet type values in the range of 0x00 through 0x7F are reserved for use by the system software. The following packet type assignments are currently implemented:
+</p>
+
+<h5 class="TgTable">
+  <a name="990270"> </a>
+
+<table width="450" border="0" cellpadding="5" cellspacing="0">
+  <caption></caption>
+  <tr valign="top">
+    <td><a name="990252"> </a><div class="CellBody">0x00</div></td>
+    <td><a name="990259"> </a><div class="CellBody">Remote Debugger, Remote Console, and System Remote Procedure Call packets.</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="990261"> </a><div class="CellBody">0x02</div></td>
+    <td><a name="990264"> </a><div class="CellBody">PADP packets.</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="990266"> </a><div class="CellBody">0x03</div></td>
+    <td><a name="990269"> </a><div class="CellBody">Loop-back test packets.</div></td>
+  </tr>
+</table>
+
+
+
+
+</h5>
+<h4 class="HCHeadC">
+  <a name="990272"> </a>Socket ID Assignment
+</h4>
+<p class="Body">
+  <a name="990273"> </a>Socket IDs are divided into two categories: static and dynamic. The static socket IDs are "well-known" socket ID values that are reserved by the components of the system software. The dynamic socket IDs are assigned at runtime when requested by clients of SLP. Static socket ID values in the ranges 0x00 through 0x03 and 0xE0 through 0xFF are reserved for use by the system software. The following static socket IDs are currently implemented or reserved:
+</p>
+
+<h5 class="TgTable">
+  <a name="990303"> </a>
+
+<table width="450" border="0" cellpadding="5" cellspacing="0">
+  <caption></caption>
+  <tr valign="top">
+    <td><a name="990276"> </a><div class="CellBody">0x00</div></td>
+    <td><a name="990279"> </a><div class="CellBody">Remote Debugger socket.</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="990281"> </a><div class="CellBody">0x01</div></td>
+    <td><a name="990284"> </a><div class="CellBody">Remote Console socket.</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="990286"> </a><div class="CellBody">0x02</div></td>
+    <td><a name="990289"> </a><div class="CellBody">Remote UI socket.</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="990291"> </a><div class="CellBody">0x03</div></td>
+    <td><a name="990294"> </a><div class="CellBody">Desktop Link Server socket.</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="990296"> </a><div class="CellBody">0x04 -0xCF</div></td>
+    <td><a name="990298"> </a><div class="CellBody">Reserved for dynamic assignment.</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="990300"> </a><div class="CellBody">0xD0 - 0xDF</div></td>
+    <td><a name="990302"> </a><div class="CellBody">Reserved for testing.</div></td>
+  </tr>
+</table>
+
+
+
+
+</h5>
+<h4 class="HCHeadC">
+  <a name="990305"> </a>Transaction ID Assignment
+</h4>
+<p class="Body">
+  <a name="990306"> </a>Transaction ID values are not interpreted by the Serial Link Protocol and are for the sole benefit of the higher-level protocols. The following transaction ID values are currently reserved:
+</p>
+
+<h5 class="TgTable">
+  <a name="990320"> </a>
+
+<table width="450" border="0" cellpadding="5" cellspacing="0">
+  <caption></caption>
+  <tr valign="top">
+    <td><a name="990309"> </a><div class="CellBody">0x00 and 0xFF </div></td>
+    <td><a name="990311"> </a><div class="CellBody">Reserved for use by the system software.</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="990313"> </a><div class="CellBody">0x00</div></td>
+    <td><a name="990315"> </a><div class="CellBody">Reserved by the Palm OS implementation of SLP to request automatic transaction ID generation. </div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="990317"> </a><div class="CellBody">0xFF</div></td>
+    <td><a name="990319"> </a><div class="CellBody">Reserved for the connection manager's WakeUp packets.</div></td>
+  </tr>
+</table>
+
+
+
+
+</h5>
+<h2 class="HBHeadB">
+  <a name="990321"> </a>Transmitting an SLP Packet
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="990323"> </a>This section provides an overview of the steps involved in transmitting an SLP packet. The next section describes the implementation. 
+</p>
+<p class="Body">
+  <a name="990324"> </a>Transmission of an SLP packet consists of these steps:
+</p>
+  <a name="990325"> </a><p class="N1NumList">1.	  Fill in the packet header and compute its checksum.</p>  <a name="990326"> </a><p class="N1NumList">2.	  Compute the CRC-16 of the packet header and client data.</p>  <a name="990327"> </a><p class="N1NumList">3.	  Transmit the packet header, client data, and packet footer.</p>  <a name="990328"> </a><p class="N1NumList">4.	  Return an error code to the client.</p>
+<h2 class="HBHeadB">
+  <a name="990329"> </a>Receiving an SLP Packet
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="990331"> </a>Receiving an SLP packet consists of these steps:
+</p>
+  <a name="990332"> </a><p class="N1NumList">1.	  Scan the serial input until the packet header signature is matched.</p>  <a name="990333"> </a><p class="N1NumList">2.	  Read in the rest of the packet header and validate its checksum.</p>  <a name="990334"> </a><p class="N1NumList">3.	  Read in the client data.</p>  <a name="990335"> </a><p class="N1NumList">4.	  Read in the packet footer and validate the packet CRC.</p>  <a name="990336"> </a><p class="N1NumList">5.	  Dispatch/return an error code and the packet (if successful) to the client.</p>
+<h2 class="HaHeadA">
+  <a name="990338"> </a>The Serial Link Manager 
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="990341"> </a>The serial link manager is the Palm OS implementation of the Serial Link Protocol.
+</p>
+<p class="Body">
+  <a name="990342"> </a>Serial link manager provides the mechanisms for managing multiple client sockets, sending packets, and receiving packets both synchronously and asynchronously. It also provides support for the Remote Debugger and Remote Procedure Calls (RPC).
+</p>
+
+<h2 class="HBHeadB">
+  <a name="990347"> </a>Using the Serial Link Manager
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="990348"> </a>Before an application can use the services of the serial link manager, the application must open the manager by calling <a href="SerialLinkManager.html#1309389"><span style="font-family: monospace">SlkOpen</span></a>. Success is indicated by error codes of 0 (zero) or <span style="font-family: monospace">slkErrAlreadyOpen</span>. The return value <span style="font-family: monospace">slkErrAlreadyOpen</span> indicates that the serial link manager has already been opened (most likely by another task). Other error codes indicate failure.
+</p>
+<p class="Body">
+  <a name="990358"> </a>When you finish using the serial link manager, call <a href="SerialLinkManager.html#1309321"><span style="font-family: monospace">SlkClose</span></a>. <span style="font-family: monospace">SlkClose</span> may be called only if <a href="SerialLinkManager.html#1309389"><span style="font-family: monospace">SlkOpen</span></a> returned 0 (zero) or <span style="font-family: monospace">slkErrAlreadyOpen</span>. When the open count reaches zero, <span style="font-family: monospace">SlkClose</span> frees resources allocated by <span style="font-family: monospace">SlkOpen</span>.
+</p>
+<p class="Body">
+  <a name="990364"> </a>To use the serial link manager socket services, open a Serial Link socket by calling <a href="SerialLinkManager.html#1309411"><span style="font-family: monospace">SlkOpenSocket</span></a>. Pass a reference number or port ID (for the Serial Manager) of an opened and initialized communications library (see <span style="font-family: monospace">SlkClose</span>), a pointer to a memory location for returning the socket ID, and a Boolean indicating whether the socket is static or dynamic. If a static socket is being opened, the memory location for the socket ID must contain the desired socket number. If opening a dynamic socket, the new socket ID is returned in the passed memory location. Sharing of sockets is not supported. Success is indicated by an error code of 0 (zero). For information about static and dynamic socket IDs, see <a href="SerialCommunication.html#990272">"Socket ID Assignment"</a>.
+</p>
+<p class="Body">
+  <a name="990372"> </a>When you have finished using a Serial Link socket, close it by calling <a href="SerialLinkManager.html#1309339"><span style="font-family: monospace">SlkCloseSocket</span></a>. This releases system resources allocated for this socket by the serial link manager.
+</p>
+<p class="Body">
+  <a name="990377"> </a>To obtain the communications library reference number for a particular socket, call <span style="font-family: monospace">SlkSocketRefNum</span>. The socket must already be open. To obtain the port ID for a socket, if you are using the Serial Manager, call <a href="SerialLinkManager.html#1309531"><span style="font-family: monospace">SlkSocketPortID</span></a>.
+</p>
+<p class="Body">
+  <a name="990383"> </a>To set the interbyte packet receive timeout for a particular socket, call <a href="SerialLinkManager.html#1309567"><span style="font-family: monospace">SlkSocketSetTimeout</span></a>.
+</p>
+<p class="Body">
+  <a name="990388"> </a>To flush the receive stream for a particular socket, call <a href="SerialLinkManager.html#1309372"><span style="font-family: monospace">SlkFlushSocket</span></a>, passing the socket number and the interbyte timeout.
+</p>
+<p class="Body">
+  <a name="990394"> </a>To register a socket listener for a particular socket, call <a href="SerialLinkManager.html#1309498"><span style="font-family: monospace">SlkSetSocketListener</span></a>, passing the socket number of an open socket and a pointer to the <span style="font-family: monospace">SlkSocketListenType</span> structure. Because the serial link manager does not make a copy of the <span style="font-family: monospace">SlkSocketListenType</span> structure but instead saves the pointer passed to it, the structure may not be an automatic variable (that is, allocated on the stack). The <span style="font-family: monospace">SlkSocketListenType</span> structure may be a global variable in an application or a locked chunk allocated from the dynamic heap. The <span style="font-family: monospace">SlkSocketListenType</span> structure specifies pointers to the socket listener procedure and the data buffers for dispatching packets destined for this socket. Pointers to two buffers must be specified: 
+</p>
+
+  <a name="990401"> </a><p class="B1Bullet"> &#8226; Packet header buffer (size of <span style="font-family: monospace">SlkPktHeaderType</span>). </p>
+
+  <a name="990402"> </a><p class="B1Bullet"> &#8226; Packet body buffer, which must be large enough for the largest expected client data size.</p>
+<p class="Body">
+  <a name="990403"> </a>Both buffers can be application global variables or locked chunks allocated from the dynamic heap. 
+</p>
+<p class="Body">
+  <a name="990404"> </a>The socket listener procedure is called when a valid packet is received for the socket. Pointers to the packet header buffer and the packet body buffer are passed as parameters to the socket listener procedure. The serial link manager does not free the <span style="font-family: monospace">SlkSocketListenType</span> structure or the buffers when the socket is closed; freeing them is the responsibility of the application. For this mechanism to function, some task needs to assume the responsibility to "drive" the serial link manager receiver by periodically calling <a href="SerialLinkManager.html#1309440"><span style="font-family: monospace">SlkReceivePacket</span></a>.
+</p>
+<p class="Body">
+  <a name="990413"> </a>To send a packet, call <a href="SerialLinkManager.html#1309476"><span style="font-family: monospace">SlkSendPacket</span></a>, passing a pointer to the packet header (<span style="font-family: monospace">SlkPktHeaderType</span>) and a pointer to an array of <span style="font-family: monospace">SlkWriteDataType</span> structures. <a href="SerialLinkManager.html#1309476"><span style="font-family: monospace">SlkSendPacket</span></a> stuffs the signature, client data size, and the checksum fields of the packet header. The caller must fill in all other packet header fields. If the transaction ID field is set to 0 (zero), the serial link manager automatically generates and stuffs a new non-zero transaction ID. The array of <span style="font-family: monospace">SlkWriteDataType</span> structures enables the caller to specify the client data part of the packet as a list of noncontiguous blocks. The end of list is indicated by an array element with the <span style="font-family: monospace">size</span> field set to 0 (zero). <a href="SerialCommunication.html#990423">Listing 5.12</a> incorporates the processes described in this section.
+</p>
+<p class="CCodeCaption">
+  <a name="990423"> </a>Listing 5.12  Sending a Serial Link Packet
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+Err                     err;<a name="990424"> </a>
+//serial link packet header<a name="990425"> </a>
+SlkPktHeaderType        sendHdr;<a name="990426"> </a>
+//serial link write data segments<a name="990427"> </a>
+SlkWriteDataType         writeList[2]; <a name="990428"> </a>
+//packet body(example packet body)<a name="990429"> </a>
+UInt8           body[20];<a name="990430"> </a>
+ <a name="990431"> </a>
+// Initialize packet body<a name="990432"> </a>
+...<a name="990433"> </a>
+ <a name="990434"> </a>
+// Compose the packet header. Let Serial Link Manager<a name="990435"> </a>
+// set the transId. <a name="990436"> </a>
+sendHdr.dest = slkSocketDLP;<a name="990437"> </a>
+sendHdr.src = slkSocketDLP;<a name="990438"> </a>
+sendHdr.type = slkPktTypeSystem;<a name="990439"> </a>
+sendHdr.transId = 0; <a name="990440"> </a>
+ <a name="990441"> </a>
+// Specify packet body<a name="990442"> </a>
+writeList[0].size = sizeof(body);     //first data block size<a name="990443"> </a>
+writeList[0].dataP = body;    //first data block pointer<a name="990444"> </a>
+writeList[1].size = 0;    //no more data blocks <a name="990445"> </a>
+ <a name="990446"> </a>
+// Send the packet<a name="990447"> </a>
+err = SlkSendPacket( &amp;sendHdr, writeList );<a name="990448"> </a>
+   ...<a name="990449"> </a>
+}<a name="990450"> </a>
+</pre><div class="CodeRule"><hr></div>
+<p class="CCodeCaption">
+  <a name="990451"> </a>Listing 5.13  Generating a New Transaction ID
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+//<a name="990452"> </a>
+// Example: Generating a new transaction ID given the <a name="990453"> </a>
+// previous transaction ID. Can start with any seed value.<a name="990454"> </a>
+//<a name="990455"> </a>
+ <a name="990456"> </a>
+UInt8 NextTransactionID (UInt8 previousTransactionID)<a name="990457"> </a>
+{<a name="990458"> </a>
+   UInt8  nextTransactionID;<a name="990459"> </a>
+   <a name="990460"> </a>
+   // Generate a new transaction id, avoid the <a name="990461"> </a>
+   // reserved values (0x00 and 0xFF)<a name="990462"> </a>
+   if ( previousTransactionID &gt;= (UInt8)0xFE )<a name="990463"> </a>
+      nextTransactionID = 1;    // wrap around<a name="990464"> </a>
+   else<a name="990465"> </a>
+      nextTransactionID = previousTransactionID + 1;<a name="990466"> </a>
+      // increment<a name="990467"> </a>
+   <a name="990468"> </a>
+   return nextTransactionID;<a name="990469"> </a>
+}<a name="990470"> </a>
+</pre><div class="CodeRule"><hr></div>
+<p class="Body">
+  <a name="990476"> </a>To receive a packet, call <a href="SerialLinkManager.html#1309440"><span style="font-family: monospace">SlkReceivePacket</span></a>. You may request a packet for the passed socket ID only, or for any open socket that does not have a socket listener. The parameters also specify buffers for the packet header and client data, and a timeout. The timeout indicates how long the receiver should wait for a packet to begin arriving before timing out. A timeout value of (-1) means "wait forever." If a packet is received for a socket with a registered socket listener, the packet is dispatched via its socket listener procedure.
+</p>
+
+<h2 class="HaHeadA">
+  <a name="990479"> </a>Summary of Serial Communications 
+<a href="#989132"><img src="images/top.gif" border="0"></a></h2>
+
+
+<h5 class="TgTable">
+  <a name="998722"> </a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <caption></caption>
+  <tr bgcolor="#CCCCCC" valign="top">
+    <th colspan="2" rowspan="1"><a name="998546"> </a><div class="CellHeading">New and Old Serial Manager Functions</div></th>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="998550"> </a><div class="CellHeading">Opening and Closing the Port</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="998557"> </a><div class="CellBody"><a href="SerialManager.html#1288783">SrmOpen</a><br><a href="SerialManager.html#1288826">SrmOpenBackground</a><br><a href="OldSerialManager.html#1305038">SerOpen</a><br><a href="OldSerialManager.html#1304908">SerClose</a></div></td>
+    <td><a name="998571"> </a><div class="CellBody"><a href="SerialManager.html#1288561">SrmExtOpen</a><br><a href="SerialManager.html#1288621">SrmExtOpenBackground</a><br><a href="SerialManager.html#1288316">SrmClose</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="998579"> </a><div class="CellHeading">Receiving Data</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="998586"> </a><div class="CellBody"><a href="SerialManager.html#1288916">SrmReceive</a><br><a href="SerialManager.html#1288971">SrmReceiveCheck</a><br><a href="SerialManager.html#1289015">SrmReceiveFlush</a><br><a href="SerialManager.html#1289059">SrmReceiveWait</a><br><a href="SerialManager.html#1289123">SrmReceiveWindowClose</a><br><a href="SerialManager.html#1289160">SrmReceiveWindowOpen</a></div></td>
+    <td><a name="998606"> </a><div class="CellBody"><a href="OldSerialManager.html#1305077">SerReceive</a><br><a href="OldSerialManager.html#1305146">SerReceiveCheck</a><br><a href="OldSerialManager.html#1305179">SerReceiveFlush</a><br><a href="OldSerialManager.html#1305197">SerReceiveWait</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="998617"> </a><div class="CellHeading">Sending Data</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="998624"> </a><div class="CellBody"><a href="SerialManager.html#1289212">SrmSend</a><br><a href="SerialManager.html#1289265">SrmSendCheck</a><br><a href="SerialManager.html#1289309">SrmSendFlush</a><br><a href="SerialManager.html#1289351">SrmSendWait</a></div></td>
+    <td><a name="998638"> </a><div class="CellBody"><a href="OldSerialManager.html#1305235">SerSend</a><br><a href="OldSerialManager.html#1305312">SerSendFlush</a><br><a href="OldSerialManager.html#1305334">SerSendWait</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="998646"> </a><div class="CellHeading">Configuring the Port</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="998653"> </a><div class="CellBody"><a href="SerialManager.html#1289400">SrmSetReceiveBuffer</a><br><a href="SerialManager.html#1288349">SrmControl</a><br><a href="SerialManager.html#1288516">SrmCustomControl</a></div></td>
+    <td><a name="998664"> </a><div class="CellBody"><a href="OldSerialManager.html#1304938">SerControl</a><br><a href="OldSerialManager.html#1305364">SerSetReceiveBuffer</a><br><a href="OldSerialManager.html#1305384">SerSetSettings</a><br><a href="OldSerialManager.html#1304970">SerGetSettings</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="998675"> </a><div class="CellHeading">Error Checking</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="998682"> </a><div class="CellBody"><a href="SerialManager.html#1288290">SrmClearErr</a><br><a href="SerialManager.html#1288745">SrmGetStatus</a></div></td>
+    <td><a name="998690"> </a><div class="CellBody"><a href="OldSerialManager.html#1304886">SerClearErr</a><br><a href="OldSerialManager.html#1305003">SerGetStatus</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="998695"> </a><div class="CellHeading">Obtaining Device Information</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="998702"> </a><div class="CellBody"><a href="SerialManager.html#1288682">SrmGetDeviceCount</a></div></td>
+    <td><a name="998707"> </a><div class="CellBody"><a href="SerialManager.html#1288705">SrmGetDeviceInfo</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="998709"> </a><div class="CellHeading">Implementing a Wakeup Handler</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="998716"> </a><div class="CellBody"><a href="SerialManager.html#1288873">SrmPrimeWakeupHandler</a></div></td>
+    <td><a name="998721"> </a><div class="CellBody"><a href="SerialManager.html#1289435">SrmSetWakeupHandler</a></div></td>
+  </tr>
+</table>
+
+
+
+
+</h5>
+<h5 class="TgTable">
+  <a name="998804"> </a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <caption></caption>
+  <tr bgcolor="#CCCCCC" valign="top">
+    <th><a name="998725"> </a><div class="CellHeading">Virtual Driver Functions</div></th>
+    <th><a name="998727"> </a><div class="CellHeading"><br></div></th>
+  </tr>
+  <tr valign="top">
+    <td colspan="1" rowspan="10"><a name="998732"> </a><div class="CellBody"><a href="SerialDriver.html#1281346">DrvEntryPointProcPtr</a><br><a href="SerialDriver.html#1281640">GetSizeProcPtr</a><br><a href="SerialDriver.html#1281660">GetSpaceProcPtr</a><br><a href="SerialDriver.html#1281404">VdrvControlProcPtr</a><br><a href="SerialDriver.html#1281531">VdrvOpenProcPtr</a><br><a href="SerialDriver.html#1281555">VdrvOpenProcV4Ptr</a></div></td>
+    <td colspan="1" rowspan="10"><a name="998752"> </a><div class="CellBody"><a href="SerialDriver.html#1281586">VdrvStatusProcPtr</a><br><a href="SerialDriver.html#1281609">VdrvWriteProcPtr</a><br><a href="SerialDriver.html#1281502">VdrvControlCustomProcPtr</a><br><a href="SerialDriver.html#1281706">WriteBlockProcPtr</a><br><a href="SerialDriver.html#1281728">WriteByteProcPtr</a><br><a href="SerialDriver.html#1281679">SignalCheckPtr</a></div></td>
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+</table>
+
+
+
+
+</h5>
+<h5 class="TgTable">
+  <a name="998971"> </a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <caption></caption>
+  <tr bgcolor="#CCCCCC" valign="top">
+    <th><a name="998807"> </a><div class="CellHeading">Connection Manager Functions</div></th>
+    <th><a name="998809"> </a><div class="CellHeading"><br></div></th>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="998811"> </a><div class="CellHeading">Basic Connection Manager Functions</div></td>
+  </tr>
+  <tr valign="top">
+    <td colspan="1" rowspan="10"><a name="998818"> </a><div class="CellBody"><a href="ConnectionMgr.html#1218754">CncAddProfile</a><br><a href="ConnectionMgr.html#1218853">CncDeleteProfile</a></div></td>
+    <td colspan="1" rowspan="10"><a name="998826"> </a><div class="CellBody"><a href="ConnectionMgr.html#1218913">CncGetProfileInfo</a><br><a href="ConnectionMgr.html#1218967">CncGetProfileList</a></div></td>
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="998867"> </a><div class="CellHeading">Extended Connection Manager Functions</div></td>
+  </tr>
+  <tr valign="top">
+    <td colspan="1" rowspan="10"><a name="998874"> </a><div class="CellBody"><a href="ConnectionMgr.html#1219246">CncProfileCreate</a><br><a href="ConnectionMgr.html#1219282">CncProfileDelete</a><br><a href="ConnectionMgr.html#1219313">CncProfileGetCurrent</a><br><a href="ConnectionMgr.html#1219347">CncProfileGetIDFromIndex</a><br><a href="ConnectionMgr.html#1219381">CncProfileGetIDFromName</a><br><a href="ConnectionMgr.html#1219415">CncProfileGetIndex</a><br><a href="ConnectionMgr.html#1219444">CncProfileOpenDB</a><br><a href="ConnectionMgr.html#1219470">CncProfileSetCurrent</a><br><a href="ConnectionMgr.html#1219497">CncProfileSettingGet</a><br><a href="ConnectionMgr.html#1219535">CncProfileSettingSet</a></div></td>
+    <td colspan="1" rowspan="10"><a name="998906"> </a><div class="CellBody"><a href="ConnectionMgr.html#1218884">CncGetParamType</a><br><a href="ConnectionMgr.html#1219016">CncGetSystemFlagBitnum</a><br><a href="ConnectionMgr.html#1219042">CncGetTrueParamID</a><br><a href="ConnectionMgr.html#1219068">CncIsFixedLengthParamType</a></div><a name="998919"> </a><div class="CellBody"><a href="ConnectionMgr.html#1219094">CncIsSystemFlags</a><br><a href="ConnectionMgr.html#1219120">CncIsSystemRange</a><br><a href="ConnectionMgr.html#1219146">CncIsThirdPartiesRange</a><br><a href="ConnectionMgr.html#1219172">CncIsVariableLengthParamType</a><br><a href="ConnectionMgr.html#1219198">CncProfileCloseDB</a><br><a href="ConnectionMgr.html#1219222">CncProfileCount</a></div></td>
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+</table>
+
+
+
+
+</h5>
+<h5 class="TgTable">
+  <a name="998432"> </a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <caption></caption>
+  <tr bgcolor="#CCCCCC" valign="top">
+    <th><a name="998974"> </a><div class="CellHeading">Serial Link Manager Functions</div></th>
+    <th><a name="998976"> </a><div class="CellHeading"><br></div></th>
+  </tr>
+  <tr valign="top">
+    <td colspan="1" rowspan="10"><a name="998981"> </a><div class="CellBody"><a href="SerialLinkManager.html#1309321">SlkClose</a><br><a href="SerialLinkManager.html#1309339">SlkCloseSocket</a><br><a href="SerialLinkManager.html#1309372">SlkFlushSocket</a><br><a href="SerialLinkManager.html#1309389">SlkOpen</a><br><a href="SerialLinkManager.html#1309411">SlkOpenSocket</a></div></td>
+    <td colspan="1" rowspan="10"><a name="998998"> </a><div class="CellBody"><a href="SerialLinkManager.html#1309440">SlkReceivePacket</a><br><a href="SerialLinkManager.html#1309476">SlkSendPacket</a><br><a href="SerialLinkManager.html#1309498">SlkSetSocketListener</a><br><a href="SerialLinkManager.html#1309531">SlkSocketPortID</a><br><a href="SerialLinkManager.html#1309567">SlkSocketSetTimeout</a></div></td>
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+</table>
+
+
+
+
+</h5>
+&nbsp;<br>
+				<!-- CONTENT_END -->
+
+		</td>
+		<td width="5">&nbsp;&nbsp;</td>
+	</tr>
+      </table>
+    </td>
+			</tr>
+  <tr>
+				<td>
+					<table border="0" cellpadding="0" cellspacing="0" width="760">
+        <!-- CONTENTCELL_END -->
+        <tr valign="top"> 
+          <td width="10">&nbsp;<!-- FOOTER_START --></td>
+          <td width="72">&nbsp;</td>
+          <td width="25" bgcolor="white" background="images/bkgrnd.gif">&nbsp;</td>
+          <td width="600"> 
+            <table border="0" cellpadding="0" cellspacing="0" width="600">
+              <tr> 
+                <td><img src="images/rule_10-1-5_ltblue.gif" width="600" height="16" border="0"></td>
+              </tr>
+              <tr> 
+                <td> 
+                  <p align="center" class="footer"> ©2002 PalmSource, Inc. and its affiliates.  All rights reserved. 
+<a href="http://www.palmos.com/dev/training/">Training</a>&nbsp;|&nbsp;<a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a>&nbsp;|&nbsp;<a href="http://www.palmos.com/">Palm&nbsp;OS&nbsp;Platform</a>&nbsp;|&nbsp;<a href="Companion2Front.html" target="_blank">Legal Notices</a>&nbsp;<br>
+												<!-- FOOTER_END --><br>
+											</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+				</td>
+			</tr>
+</table>
+</BODY>
+</HTML>

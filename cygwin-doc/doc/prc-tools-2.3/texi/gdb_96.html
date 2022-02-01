@@ -1,0 +1,135 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Type Checking</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Type Checking">
+<META NAME="keywords" CONTENT="Debugging with GDB: Type Checking">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC96"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_95.html#SEC95"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_97.html#SEC97"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_98.html#SEC98"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_95.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_98.html#SEC98"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 12.3.1 An overview of type checking </H3>
+<!--docid::SEC96::-->
+<P>
+
+Some languages, such as Modula-2, are strongly typed, meaning that the
+arguments to operators and functions have to be of the correct type,
+otherwise an error occurs.  These checks prevent type mismatch
+errors from ever causing any run-time problems.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>1 + 2 => 3
+but
+error--> 1 + 2.3
+</FONT></pre></td></tr></table></P><P>
+
+The second example fails because the <CODE>CARDINAL</CODE> 1 is not
+type-compatible with the <CODE>REAL</CODE> 2.3.
+</P><P>
+
+For the expressions you use in GDB commands, you can tell the
+GDB type checker to skip checking;
+to treat any mismatches as errors and abandon the expression;
+or to only issue warnings when type mismatches occur,
+but evaluate the expression anyway.  When you choose the last of
+these, GDB evaluates expressions like the second example above, but
+also issues a warning.
+</P><P>
+
+Even if you turn type checking off, there may be other reasons
+related to type that prevent GDB from evaluating an expression.
+For instance, GDB does not know how to add an <CODE>int</CODE> and
+a <CODE>struct foo</CODE>.  These particular type errors have nothing to do
+with the language in use, and usually arise from expressions, such as
+the one described above, which make little sense to evaluate anyway.
+</P><P>
+
+Each language defines to what degree it is strict about type.  For
+instance, both Modula-2 and C require the arguments to arithmetical
+operators to be numbers.  In C, enumerated types and pointers can be
+represented as numbers, so that they are valid arguments to mathematical
+operators.  See section <A HREF="gdb_98.html#SEC98">Supported languages</A>, for further
+details on specific languages.
+</P><P>
+
+GDB provides some additional commands for controlling the type checker:
+</P><P>
+
+<A NAME="IDX457"></A>
+<A NAME="IDX458"></A>
+<A NAME="IDX459"></A>
+<DL COMPACT>
+<DT><CODE>set check type auto</CODE>
+<DD>Set type checking on or off based on the current working language.
+See section <A HREF="gdb_98.html#SEC98">Supported languages</A>, for the default settings for
+each language.
+<P>
+
+<DT><CODE>set check type on</CODE>
+<DD><DT><CODE>set check type off</CODE>
+<DD>Set type checking on or off, overriding the default setting for the
+current working language.  Issue a warning if the setting does not
+match the language default.  If any type mismatches occur in
+evaluating an expression while type checking is on, GDB prints a
+message and aborts evaluation of the expression.
+<P>
+
+<DT><CODE>set check type warn</CODE>
+<DD>Cause the type checker to issue warnings, but to always attempt to
+evaluate the expression.  Evaluating the expression may still
+be impossible for other reasons.  For example, GDB cannot add
+numbers and structures.
+<P>
+
+<DT><CODE>show type</CODE>
+<DD>Show the current setting of the type checker, and whether or not GDB
+is setting it automatically.
+</DL>
+<P>
+
+<A NAME="IDX460"></A>
+<A NAME="IDX461"></A>
+<A NAME="Range Checking"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_95.html#SEC95"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_97.html#SEC97"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_98.html#SEC98"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_95.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_98.html#SEC98"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

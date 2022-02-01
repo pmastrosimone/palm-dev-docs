@@ -1,0 +1,196 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Frame Annotations</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Frame Annotations">
+<META NAME="keywords" CONTENT="Debugging with GDB: Frame Annotations">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC204"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_203.html#SEC203"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_205.html#SEC205"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_205.html#SEC205"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_200.html#SEC200"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_213.html#SEC213"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 23.4 Frames </H2>
+<!--docid::SEC204::-->
+<P>
+
+<A NAME="IDX912"></A>
+Whenever GDB prints a frame, it annotates it.  For example, this applies
+to frames printed when GDB stops, output from commands such as
+<CODE>backtrace</CODE> or <CODE>up</CODE>, etc.
+</P><P>
+
+<A NAME="IDX913"></A>
+The frame annotation begins with
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>^Z^Zframe-begin <VAR>level</VAR> <VAR>address</VAR>
+<VAR>level-string</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+where <VAR>level</VAR> is the number of the frame (0 is the innermost frame,
+and other frames have positive numbers), <VAR>address</VAR> is the address of
+the code executing in that frame, and <VAR>level-string</VAR> is a string
+designed to convey the level to the user.  <VAR>address</VAR> is in the form
+<SAMP>`0x'</SAMP> followed by one or more lowercase hex digits (note that this
+does not depend on the language).  The frame ends with
+</P><P>
+
+<A NAME="IDX914"></A>
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>^Z^Zframe-end
+</FONT></pre></td></tr></table></P><P>
+
+Between these annotations is the main body of the frame, which can
+consist of
+</P><P>
+
+<UL>
+<LI>
+<A NAME="IDX915"></A>
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>^Z^Zfunction-call
+<VAR>function-call-string</VAR>
+</FONT></pre></td></tr></table><P>
+
+where <VAR>function-call-string</VAR> is text designed to convey to the user
+that this frame is associated with a function call made by GDB to a
+function in the program being debugged.
+</P><P>
+
+<LI>
+<A NAME="IDX916"></A>
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>^Z^Zsignal-handler-caller
+<VAR>signal-handler-caller-string</VAR>
+</FONT></pre></td></tr></table><P>
+
+where <VAR>signal-handler-caller-string</VAR> is text designed to convey to
+the user that this frame is associated with whatever mechanism is used
+by this operating system to call a signal handler (it is the frame which
+calls the signal handler, not the frame for the signal handler itself).
+</P><P>
+
+<LI>
+A normal frame.
+<P>
+
+<A NAME="IDX917"></A>
+<A NAME="IDX918"></A>
+This can optionally (depending on whether this is thought of as
+interesting information for the user to see) begin with
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>^Z^Zframe-address
+<VAR>address</VAR>
+^Z^Zframe-address-end
+<VAR>separator-string</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+where <VAR>address</VAR> is the address executing in the frame (the same
+address as in the <CODE>frame-begin</CODE> annotation, but printed in a form
+which is intended for user consumption--in particular, the syntax varies
+depending on the language), and <VAR>separator-string</VAR> is a string
+intended to separate this address from what follows for the user's
+benefit.
+</P><P>
+
+<A NAME="IDX919"></A>
+<A NAME="IDX920"></A>
+Then comes
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>^Z^Zframe-function-name
+<VAR>function-name</VAR>
+^Z^Zframe-args
+<VAR>arguments</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+where <VAR>function-name</VAR> is the name of the function executing in the
+frame, or <SAMP>`??'</SAMP> if not known, and <VAR>arguments</VAR> are the arguments
+to the frame, with parentheses around them (each argument is annotated
+individually as well, see section <A HREF="gdb_203.html#SEC203">23.3 Values</A>).
+</P><P>
+
+<A NAME="IDX921"></A>
+<A NAME="IDX922"></A>
+<A NAME="IDX923"></A>
+<A NAME="IDX924"></A>
+<A NAME="IDX925"></A>
+If source information is available, a reference to it is then printed:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>^Z^Zframe-source-begin
+<VAR>source-intro-string</VAR>
+^Z^Zframe-source-file
+<VAR>filename</VAR>
+^Z^Zframe-source-file-end
+:
+^Z^Zframe-source-line
+<VAR>line-number</VAR>
+^Z^Zframe-source-end
+</FONT></pre></td></tr></table></P><P>
+
+where <VAR>source-intro-string</VAR> separates for the user's benefit the
+reference from the text which precedes it, <VAR>filename</VAR> is the name of
+the source file, and <VAR>line-number</VAR> is the line number within that
+file (the first line is line 1).
+</P><P>
+
+<A NAME="IDX926"></A>
+If GDB prints some information about where the frame is from (which
+library, which load segment, etc.; currently only done on the RS/6000),
+it is annotated with
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>^Z^Zframe-where
+<VAR>information</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+Then, if source is to actually be displayed for this frame (for example,
+this is not true for output from the <CODE>backtrace</CODE> command), then a
+<CODE>source</CODE> annotation (see section <A HREF="gdb_211.html#SEC211">23.11 Displaying Source</A>) is displayed.  Unlike
+most annotations, this is output instead of the normal text which would be
+output, not in addition.
+</UL>
+<P>
+
+<A NAME="Displays"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_203.html#SEC203"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_205.html#SEC205"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_205.html#SEC205"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_200.html#SEC200"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_213.html#SEC213"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,84 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Cast to Union</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Cast to Union">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Cast to Union">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC83"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_82.html#SEC82"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_84.html#SEC84"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_64.html#SEC64"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.22 Cast to a Union Type </H2>
+<!--docid::SEC83::-->
+<P>
+
+A cast to union type is similar to other casts, except that the type
+specified is a union type.  You can specify the type either with
+<CODE>union <VAR>tag</VAR></CODE> or with a typedef name.  A cast to union is actually
+a constructor though, not a cast, and hence does not yield an lvalue like
+normal casts.  (See section <A HREF="gcc_80.html#SEC80">4.19 Constructor Expressions</A>.)
+</P><P>
+
+The types that may be cast to the union type are those of the members
+of the union.  Thus, given the following union and variables:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>union foo { int i; double d; };
+int x;
+double y;
+</pre></td></tr></table></P><P>
+
+both <CODE>x</CODE> and <CODE>y</CODE> can be cast to type <CODE>union</CODE> foo.
+</P><P>
+
+Using the cast as the right-hand side of an assignment to a variable of
+union type is equivalent to storing in a member of the union:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>union foo u;
+<small>...</small>
+u = (union foo) x  ==  u.i = x
+u = (union foo) y  ==  u.d = y
+</pre></td></tr></table></P><P>
+
+You can also use the union cast as a function argument:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>void hack (union foo);
+<small>...</small>
+hack ((union foo) x);
+</pre></td></tr></table></P><P>
+
+<A NAME="Function Attributes"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

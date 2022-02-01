@@ -1,0 +1,149 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Simple Macros</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Simple Macros">
+<META NAME="keywords" CONTENT="The C Preprocessor: Simple Macros">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC11"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_12.html#SEC12"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 1.4.1 Simple Macros </H3>
+<!--docid::SEC11::-->
+<P>
+
+A <EM>simple macro</EM> is a kind of abbreviation.  It is a name which
+stands for a fragment of code.  Some people refer to these as
+<EM>manifest constants</EM>.
+</P><P>
+
+Before you can use a macro, you must <EM>define</EM> it explicitly with the
+<SAMP>`#define'</SAMP> directive.  <SAMP>`#define'</SAMP> is followed by the name of the
+macro and then the code it should be an abbreviation for.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define BUFFER_SIZE 1020
+</pre></td></tr></table></P><P>
+
+defines a macro named <SAMP>`BUFFER_SIZE'</SAMP> as an abbreviation for the text
+<SAMP>`1020'</SAMP>.  If somewhere after this <SAMP>`#define'</SAMP> directive there comes
+a C statement of the form
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo = (char *) xmalloc (BUFFER_SIZE);
+</pre></td></tr></table></P><P>
+
+then the C preprocessor will recognize and <EM>expand</EM> the macro
+<SAMP>`BUFFER_SIZE'</SAMP>, resulting in
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo = (char *) xmalloc (1020);
+</pre></td></tr></table></P><P>
+
+The use of all upper case for macro names is a standard convention.
+Programs are easier to read when it is possible to tell at a glance which
+names are macros.
+</P><P>
+
+Normally, a macro definition must be a single line, like all C
+preprocessing directives.  (You can split a long macro definition
+cosmetically with Backslash-Newline.)  There is one exception: Newlines
+can be included in the macro definition if within a string or character
+constant.  This is because it is not possible for a macro definition to
+contain an unbalanced quote character; the definition automatically
+extends to include the matching quote character that ends the string or
+character constant.  Comments within a macro definition may contain
+Newlines, which make no difference since the comments are entirely
+replaced with Spaces regardless of their contents.
+</P><P>
+
+Aside from the above, there is no restriction on what can go in a macro
+body.  Parentheses need not balance.  The body need not resemble valid C
+code.  (But if it does not, you may get error messages from the C
+compiler when you use the macro.)
+</P><P>
+
+The C preprocessor scans your program sequentially, so macro definitions
+take effect at the place you write them.  Therefore, the following input to
+the C preprocessor
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo = X;
+#define X 4
+bar = X;
+</pre></td></tr></table></P><P>
+
+produces as output
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo = X;
+
+bar = 4;
+</pre></td></tr></table></P><P>
+
+After the preprocessor expands a macro name, the macro's definition body is
+appended to the front of the remaining input, and the check for macro calls
+continues.  Therefore, the macro body can contain calls to other macros.
+For example, after
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define BUFSIZE 1020
+#define TABLESIZE BUFSIZE
+</pre></td></tr></table></P><P>
+
+the name <SAMP>`TABLESIZE'</SAMP> when used in the program would go through two
+stages of expansion, resulting ultimately in <SAMP>`1020'</SAMP>.
+</P><P>
+
+This is not at all the same as defining <SAMP>`TABLESIZE'</SAMP> to be <SAMP>`1020'</SAMP>.
+The <SAMP>`#define'</SAMP> for <SAMP>`TABLESIZE'</SAMP> uses exactly the body you
+specify--in this case, <SAMP>`BUFSIZE'</SAMP>---and does not check to see whether
+it too is the name of a macro.  It's only when you <EM>use</EM> <SAMP>`TABLESIZE'</SAMP>
+that the result of its expansion is checked for more macro names.
+See section <A HREF="cpp_27.html#SEC27">1.4.8.7 Cascaded Use of Macros</A>.
+</P><P>
+
+<A NAME="Argument Macros"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_12.html#SEC12"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,608 @@
+<html>
+<head>
+<title>(Protein) SoundMgr.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:20:12">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SmsLib.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SslLib.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">105 &nbsp;&nbsp;
+SoundMgr.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="SoundMgr.html">105  SoundMgr.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424941">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424987">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="424917"> </a>The Sound Manager APIs in Palm OS Cobalt are largely unchanged from their Palm OS Garnet counterparts (for the most notable exceptions, see <a href="SoundMgr.html#425614">Table 105.4, "Modified functions," on page 420</a>).</p>
+
+<div><hr>
+  <a name="429040"> </a> <b>NOTE: </b> Don't use the streaming sound callbacks to cause sounds to play after an application has quit. Instead, create a background thread and play the sounds from within that thread.
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425558"> </a><b>Table 105.1&nbsp;&nbsp;Deleted functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425562"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425564"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425566"> </a><code>SndInit()</code> </p>
+    </td>
+    <td><p class="tt"><a name="425568"> </a>Nothing; this function was documented as System Use Only, so it should not have been used by Palm OS applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429583"> </a><code>SndInterruptSmfIrregardless()</code> </p>
+    </td>
+    <td><p class="tt"><a name="429011"> </a><code>SndInterruptSmf()</code>.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428053"> </a><code>SndPlaySmfIrregardless()</code> </p>
+    </td>
+    <td><p class="tt"><a name="429013"> </a><code>SndPlaySmf()</code>, or spawn a background thread and play the MIDI sound in that thread.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428045"> </a><code>SndPlaySmfResourceIrregardless()</code> </p>
+    </td>
+    <td><p class="tt"><a name="428061"> </a><code>SndPlaySmfResource()</code>, or spawn a background thread and play the MIDI sound in that thread.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425575"> </a><b>Table 105.2&nbsp;&nbsp;Deleted structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425579"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425581"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425583"> </a><code>SndMidiRecType</code> </p>
+    </td>
+    <td><p class="tt"><a name="425585"> </a>Nothing. This structure was not used by any of the publicly-exported APIs.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425592"> </a><b>Table 105.3&nbsp;&nbsp;Deleted enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425596"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425598"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425600"> </a><code>SndFormatTag</code></p>
+    </td>
+    <td><p class="tt"><a name="425602"> </a>The unnamed enum that contains all of the former <code>SndFormatTag</code>'s values.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425604"> </a><code>SndSampleTag</code></p>
+    </td>
+    <td><p class="tt"><a name="425606"> </a>The <code>audio_type_t</code> enum.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424941"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425614"> </a><b>Table 105.4&nbsp;&nbsp;Modified functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425618"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425620"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425622"> </a><code>status_t SndPlaySmfResource (uint32_t, DmOpenRef, int16_t, SystemPreferencesChoice)</code></p>
+    </td>
+    <td><p class="tt"><a name="425624"> </a>Because Palm OS Cobalt doesn't have the concept of a resource search chain, you now must explicitly identify the resource database containing the MIDI sound being played. Accordingly, this function now takes a new parameter: a <code>DmOpenRef</code>.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425630"> </a><code>status_t SndStreamCreate (SndStreamRef *, SndStreamMode, uint32_t, SndSampleType, SndStreamWidth, SndStreamBufferCallback, void *, uint32_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="425632"> </a>In Palm OS Cobalt a parameter was added to this function prototype indicating whether or not the callback function was an ARM-native function. In Palm OS Cobalt this parameter is unnecessary; it has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425634"> </a><code>status_t SndStreamCreateExtended (SndStreamRef *, SndStreamMode, SndFormatType, uint32_t, SndSampleType, SndStreamWidth, SndStreamVariableBufferCallback, void *, uint32_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="428981"> </a>In Palm OS Cobalt a parameter was added to this function prototype indicating whether or not the callback function was an ARM-native function. In Palm OS Cobalt this parameter is unnecessary; it has been removed.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425647"> </a><b>Table 105.5&nbsp;&nbsp;Modified structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425651"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425653"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425655"> </a><code>SndCommandType</code></p>
+    </td>
+    <td><p class="tt"><a name="425657"> </a>A padding field has been added before <code>param1</code> for alignment purposes.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425659"> </a><code>SndMidiListItemType</code></p>
+    </td>
+    <td><p class="tt"><a name="425661"> </a>The <code>dbID</code> and <code>cardNo</code> fields used in prior Palm OS releases to identify the database containing the MIDI file have been replaced with a single <code>DatabaseID</code> named <code>dbH</code>.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425663"> </a><code>SndMidiRecHdrType</code></p>
+    </td>
+    <td><p class="tt"><a name="428954"> </a>A padding field has been added to the end of the structure for alignment purposes.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425751"> </a><b>Table 105.6&nbsp;&nbsp;Modified types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425755"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425757"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425763"> </a><code>typedef audio_type_t SndSampleType</code></p>
+    </td>
+    <td><p class="tt"><a name="425765"> </a>Formerly an Int16, <code>SndSampleType</code> is now an enum.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425802"> </a><b>Table 105.7&nbsp;&nbsp;Modified enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425806"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425808"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425810"> </a><code>SndSysBeepTag</code></p>
+    </td>
+    <td><p class="tt"><a name="425812"> </a>The Palm OS Cobalt version of this enum has two additional enum values: <code>sndCardInserted</code> and <code>sndCardRemoved</code>, used to signal that an external storage card has been inserted or removed from the device's slot.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424987"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425860"> </a><b>Table 105.8&nbsp;&nbsp;Unchanged functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425864"> </a><code>SndCreateMidiList()</code> </p>
+    </td>
+    <td><p class="tt"><a name="425866"> </a><code>SndDoCmd()</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425868"> </a><code>SndGetDefaultVolume()</code> </p>
+    </td>
+    <td><p class="tt"><a name="428070"> </a><code>SndPlayResource()</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428079"> </a><code>SndPlaySmf()</code> </p>
+    </td>
+    <td><p class="tt"><a name="425878"> </a><code>SndPlaySystemSound()</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425880"> </a><code>SndSetDefaultVolume()</code> </p>
+    </td>
+    <td><p class="tt"><a name="425882"> </a><code>SndStreamDelete()</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425884"> </a><code>SndStreamDeviceControl()</code> </p>
+    </td>
+    <td><p class="tt"><a name="425886"> </a><code>SndStreamGetPan()</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425888"> </a><code>SndStreamGetVolume()</code> </p>
+    </td>
+    <td><p class="tt"><a name="425890"> </a><code>SndStreamPause()</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425892"> </a><code>SndStreamSetPan()</code> </p>
+    </td>
+    <td><p class="tt"><a name="425894"> </a><code>SndStreamSetVolume()</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425896"> </a><code>SndStreamStart()</code> </p>
+    </td>
+    <td><p class="tt"><a name="425898"> </a><code>SndStreamStop()</code> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425901"> </a><b>Table 105.9&nbsp;&nbsp;Unchanged structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425905"> </a><code>SndCallbackInfoType</code> </p>
+    </td>
+    <td><p class="tt"><a name="425907"> </a><code>SndSmfCallbacksType</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425909"> </a><code>SndSmfChanRangeType</code> </p>
+    </td>
+    <td><p class="tt"><a name="425911"> </a><code>SndSmfOptionsType</code> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425914"> </a><b>Table 105.10&nbsp;&nbsp;Unchanged types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="428842"> </a><code>SndBlockingFuncPtr</code> </p>
+    </td>
+    <td><p class="tt"><a name="428844"> </a><code>SndCmdIDType</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428888"> </a><code>SndCommandPtr</code> </p>
+    </td>
+    <td><p class="tt"><a name="428890"> </a><code>SndComplFuncPtr</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428892"> </a><code>SndFormatType</code> </p>
+    </td>
+    <td><p class="tt"><a name="428894"> </a><code>SndPtr</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429698"> </a><code>SndSmfCmdEnum</code> </p>
+    </td>
+    <td><p class="tt"><a name="428848"> </a><code>SndStreamMode</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428850"> </a><code>SndStreamRef</code> </p>
+    </td>
+    <td><p class="tt"><a name="428852"> </a><code>SndStreamWidth</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428858"> </a><code>SndSysBeepType</code> </p>
+    </td>
+    <td><p class="tt"><a name="428860"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425942"> </a><b>Table 105.11&nbsp;&nbsp;Unchanged #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425946"> </a><code>sndDefaultAmp</code> </p>
+    </td>
+    <td><p class="tt"><a name="425948"> </a><code>sndErrBadChannel</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425950"> </a><code>sndErrBadParam</code> </p>
+    </td>
+    <td><p class="tt"><a name="425952"> </a><code>sndErrBadStream</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425954"> </a><code>sndErrFormat</code> </p>
+    </td>
+    <td><p class="tt"><a name="425956"> </a><code>sndErrInterrupted</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425958"> </a><code>sndErrInvalidStream</code> </p>
+    </td>
+    <td><p class="tt"><a name="425960"> </a><code>sndErrMemory</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425962"> </a><code>sndErrNotImpl</code> </p>
+    </td>
+    <td><p class="tt"><a name="425964"> </a><code>sndErrOpen</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425966"> </a><code>sndErrQEmpty</code> </p>
+    </td>
+    <td><p class="tt"><a name="425968"> </a><code>sndErrQFull</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425970"> </a><code>sndFlagAsync</code> </p>
+    </td>
+    <td><p class="tt"><a name="425972"> </a><code>sndFlagNormal</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425974"> </a><code>sndFlagSync</code> </p>
+    </td>
+    <td><p class="tt"><a name="425976"> </a><code>sndFtrIDVersion</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425978"> </a><code>sndMaxAmp</code> </p>
+    </td>
+    <td><p class="tt"><a name="425980"> </a><code>sndMgrVersionNum</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425982"> </a><code>sndMidiNameLength</code> </p>
+    </td>
+    <td><p class="tt"><a name="425984"> </a><code>sndMidiRecSignature</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425986"> </a><code>sndPanCenter</code> </p>
+    </td>
+    <td><p class="tt"><a name="425988"> </a><code>sndPanFullLeft</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425990"> </a><code>sndPanFullRight</code> </p>
+    </td>
+    <td><p class="tt"><a name="425992"> </a><code>sndSmfPlayAllMilliSec</code> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426003"> </a><b>Table 105.12&nbsp;&nbsp;Unchanged enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426007"> </a><code>SndCmdIDTag</code> </p>
+    </td>
+    <td><p class="tt"><a name="426009"> </a><code>SndSmfCmdEnumTag</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426011"> </a><code>SndStreamModeTag</code> </p>
+    </td>
+    <td><p class="tt"><a name="426013"> </a><code>SndStreamWidthTag</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428998"> </a><code>sndSystemVolume</code>/<code>sndGameVolume</code>/<code>sndAlarmVolume</code> "cookie" values enum</p>
+    </td>
+    <td><p class="tt"><a name="429000"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426017"> </a><b>Table 105.13&nbsp;&nbsp;Unchanged application-defined functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426021"> </a><code>SndBlockingFuncType()</code> </p>
+    </td>
+    <td><p class="tt"><a name="426023"> </a><code>SndComplFuncType()</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426025"> </a><code>SndStreamBufferCallback()</code> </p>
+    </td>
+    <td><p class="tt"><a name="426027"> </a><code>SndStreamVariableBufferCallback()</code> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="425060"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SmsLib.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SslLib.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,192 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Automatic Prerequisites</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Automatic Prerequisites">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Automatic Prerequisites">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC51"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_46.html#SEC50"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.14 Generating Prerequisites Automatically </H2>
+<!--docid::SEC51::-->
+<P>
+
+In the makefile for a program, many of the rules you need to write often
+say only that some object file depends on some header
+file.  For example, if <TT>`main.c'</TT> uses <TT>`defs.h'</TT> via an
+<CODE>#include</CODE>, you would write:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>main.o: defs.h
+</pre></td></tr></table></P><P>
+
+You need this rule so that <CODE>make</CODE> knows that it must remake
+<TT>`main.o'</TT> whenever <TT>`defs.h'</TT> changes.  You can see that for a
+large program you would have to write dozens of such rules in your
+makefile.  And, you must always be very careful to update the makefile
+every time you add or remove an <CODE>#include</CODE>.
+<A NAME="IDX145"></A>
+</P><P>
+
+<A NAME="IDX146"></A>
+To avoid this hassle, most modern C compilers can write these rules for
+you, by looking at the <CODE>#include</CODE> lines in the source files.
+Usually this is done with the <SAMP>`-M'</SAMP> option to the compiler.
+For example, the command:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>cc -M main.c
+</pre></td></tr></table></P><P>
+
+generates the output:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>main.o : main.c defs.h
+</pre></td></tr></table></P><P>
+
+Thus you no longer have to write all those rules yourself.
+The compiler will do it for you.
+</P><P>
+
+Note that such a prerequisite constitutes mentioning <TT>`main.o'</TT> in a
+makefile, so it can never be considered an intermediate file by implicit
+rule search.  This means that <CODE>make</CODE> won't ever remove the file
+after using it; see section <A HREF="make_103.html#SEC107">Chains of Implicit Rules</A>.
+</P><P>
+
+<A NAME="IDX147"></A>
+With old <CODE>make</CODE> programs, it was traditional practice to use this
+compiler feature to generate prerequisites on demand with a command like
+<SAMP>`make depend'</SAMP>.  That command would create a file <TT>`depend'</TT>
+containing all the automatically-generated prerequisites; then the
+makefile could use <CODE>include</CODE> to read them in (see section <A HREF="make_15.html#SEC16">3.3 Including Other Makefiles</A>).
+</P><P>
+
+In GNU <CODE>make</CODE>, the feature of remaking makefiles makes this
+practice obsolete--you need never tell <CODE>make</CODE> explicitly to
+regenerate the prerequisites, because it always regenerates any makefile
+that is out of date.  See section <A HREF="make_19.html#SEC20">3.7 How Makefiles Are Remade</A>.
+</P><P>
+
+The practice we recommend for automatic prerequisite generation is to have
+one makefile corresponding to each source file.  For each source file
+<TT>`<VAR>name</VAR>.c'</TT> there is a makefile <TT>`<VAR>name</VAR>.d'</TT> which lists
+what files the object file <TT>`<VAR>name</VAR>.o'</TT> depends on.  That way
+only the source files that have changed need to be rescanned to produce
+the new prerequisites.
+</P><P>
+
+Here is the pattern rule to generate a file of prerequisites (i.e., a makefile)
+called <TT>`<VAR>name</VAR>.d'</TT> from a C source file called <TT>`<VAR>name</VAR>.c'</TT>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>%.d: %.c
+        @set -e; rm -f $@; \
+         $(CC) -M $(CPPFLAGS) $&#60; &#62; $@.$$$$; \
+         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' &#60; $@.$$$$ &#62; $@; \
+         rm -f $@.$$$$
+</FONT></pre></td></tr></table></P><P>
+
+See section <A HREF="make_104.html#SEC108">10.5 Defining and Redefining Pattern Rules</A>, for information on defining pattern rules.  The
+<SAMP>`-e'</SAMP> flag to the shell causes it to exit immediately if the
+<CODE>$(CC)</CODE> command (or any other command) fails (exits with a
+nonzero status).
+<A NAME="IDX148"></A>
+</P><P>
+
+<A NAME="IDX149"></A>
+With the GNU C compiler, you may wish to use the <SAMP>`-MM'</SAMP> flag instead
+of <SAMP>`-M'</SAMP>.  This omits prerequisites on system header files.
+See section `Options Controlling the Preprocessor' in <CITE>Using GNU CC</CITE>, for details.
+</P><P>
+
+<A NAME="IDX150"></A>
+The purpose of the <CODE>sed</CODE> command is to translate (for example):
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>main.o : main.c defs.h
+</pre></td></tr></table></P><P>
+
+into:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>main.o main.d : main.c defs.h
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX151"></A>
+This makes each <SAMP>`.d'</SAMP> file depend on all the source and header files
+that the corresponding <SAMP>`.o'</SAMP> file depends on.  <CODE>make</CODE> then
+knows it must regenerate the prerequisites whenever any of the source or
+header files changes.
+</P><P>
+
+Once you've defined the rule to remake the <SAMP>`.d'</SAMP> files,
+you then use the <CODE>include</CODE> directive to read them all in.
+See section <A HREF="make_15.html#SEC16">3.3 Including Other Makefiles</A>.  For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>sources = foo.c bar.c
+
+include $(sources:.c=.d)
+</pre></td></tr></table></P><P>
+
+(This example uses a substitution variable reference to translate the
+list of source files <SAMP>`foo.c bar.c'</SAMP> into a list of prerequisite
+makefiles, <SAMP>`foo.d bar.d'</SAMP>.  See section <A HREF="make_65.html#SEC69">6.3.1 Substitution References</A>, for full
+information on substitution references.)  Since the <SAMP>`.d'</SAMP> files are
+makefiles like any others, <CODE>make</CODE> will remake them as necessary
+with no further work from you.  See section <A HREF="make_19.html#SEC20">3.7 How Makefiles Are Remade</A>.
+</P><P>
+
+Note that the <SAMP>`.d'</SAMP> files contain target definitions; you should
+be sure to place the <CODE>include</CODE> directive <EM>after</EM> the first,
+default target in your makefiles or run the risk of having a random
+object file become the default target.
+See section <A HREF="make_7.html#SEC8">2.3 How <CODE>make</CODE> Processes a Makefile</A>.
+</P><P>
+
+<A NAME="Commands"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_46.html#SEC50"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

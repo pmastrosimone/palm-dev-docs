@@ -1,0 +1,272 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: i386 Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: i386 Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: i386 Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC31"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_30.html#SEC30"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_32.html#SEC32"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_18.html#SEC18"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 2.14.15 Intel 386 Options </H3>
+<!--docid::SEC31::-->
+<P>
+
+These <SAMP>`-m'</SAMP> options are defined for the i386 family of computers:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-mcpu=<VAR>cpu type</VAR></CODE>
+<DD>Assume the defaults for the machine type <VAR>cpu type</VAR> when scheduling
+instructions.  The choices for <VAR>cpu type</VAR> are:
+<P>
+
+<TABLE>
+<TR><TD><SAMP>`i386'</SAMP> </TD><TD> <SAMP>`i486'</SAMP> </TD><TD> <SAMP>`i586'</SAMP> </TD><TD> <SAMP>`i686'</SAMP></TD>
+</TR>
+<TR><TD><SAMP>`pentium'</SAMP> </TD><TD> <SAMP>`pentiumpro'</SAMP> </TD><TD> <SAMP>`k6'</SAMP></TD>
+</TR></TABLE>
+<P>
+
+While picking a specific <VAR>cpu type</VAR> will schedule things appropriately
+for that particular chip, the compiler will not generate any code that
+does not run on the i386 without the <SAMP>`-march=<VAR>cpu type</VAR>'</SAMP> option
+being used.  <SAMP>`i586'</SAMP> is equivalent to <SAMP>`pentium'</SAMP> and <SAMP>`i686'</SAMP>
+is equivalent to <SAMP>`pentiumpro'</SAMP>.  <SAMP>`k6'</SAMP> is the AMD chip as
+opposed to the Intel ones.
+</P><P>
+
+<DT><CODE>-march=<VAR>cpu type</VAR></CODE>
+<DD>Generate instructions for the machine type <VAR>cpu type</VAR>.  The choices
+for <VAR>cpu type</VAR> are the same as for <SAMP>`-mcpu'</SAMP>.  Moreover, 
+specifying <SAMP>`-march=<VAR>cpu type</VAR>'</SAMP> implies <SAMP>`-mcpu=<VAR>cpu type</VAR>'</SAMP>.
+<P>
+
+<DT><CODE>-m386</CODE>
+<DD><DT><CODE>-m486</CODE>
+<DD><DT><CODE>-mpentium</CODE>
+<DD><DT><CODE>-mpentiumpro</CODE>
+<DD>Synonyms for -mcpu=i386, -mcpu=i486, -mcpu=pentium, and -mcpu=pentiumpro
+respectively.  These synonyms are deprecated.
+<P>
+
+<DT><CODE>-mieee-fp</CODE>
+<DD><DT><CODE>-mno-ieee-fp</CODE>
+<DD>Control whether or not the compiler uses IEEE floating point
+comparisons.  These handle correctly the case where the result of a
+comparison is unordered.
+<P>
+
+<DT><CODE>-msoft-float</CODE>
+<DD>Generate output containing library calls for floating point.
+<STRONG>Warning:</STRONG> the requisite libraries are not part of GCC.
+Normally the facilities of the machine's usual C compiler are used, but
+this can't be done directly in cross-compilation.  You must make your
+own arrangements to provide suitable library functions for
+cross-compilation.
+<P>
+
+On machines where a function returns floating point results in the 80387
+register stack, some floating point opcodes may be emitted even if
+<SAMP>`-msoft-float'</SAMP> is used.
+</P><P>
+
+<DT><CODE>-mno-fp-ret-in-387</CODE>
+<DD>Do not use the FPU registers for return values of functions.
+<P>
+
+The usual calling convention has functions return values of types
+<CODE>float</CODE> and <CODE>double</CODE> in an FPU register, even if there
+is no FPU.  The idea is that the operating system should emulate
+an FPU.
+</P><P>
+
+The option <SAMP>`-mno-fp-ret-in-387'</SAMP> causes such values to be returned
+in ordinary CPU registers instead.
+</P><P>
+
+<DT><CODE>-mno-fancy-math-387</CODE>
+<DD>Some 387 emulators do not support the <CODE>sin</CODE>, <CODE>cos</CODE> and
+<CODE>sqrt</CODE> instructions for the 387.  Specify this option to avoid
+generating those instructions. This option is the default on FreeBSD.
+As of revision 2.6.1, these instructions are not generated unless you
+also use the <SAMP>`-ffast-math'</SAMP> switch.
+<P>
+
+<DT><CODE>-malign-double</CODE>
+<DD><DT><CODE>-mno-align-double</CODE>
+<DD>Control whether GCC aligns <CODE>double</CODE>, <CODE>long double</CODE>, and
+<CODE>long long</CODE> variables on a two word boundary or a one word
+boundary.  Aligning <CODE>double</CODE> variables on a two word boundary will
+produce code that runs somewhat faster on a <SAMP>`Pentium'</SAMP> at the
+expense of more memory.
+<P>
+
+<STRONG>Warning:</STRONG> if you use the <SAMP>`-malign-double'</SAMP> switch,
+structures containing the above types will be aligned differently than
+the published application binary interface specifications for the 386.
+</P><P>
+
+<DT><CODE>-msvr3-shlib</CODE>
+<DD><DT><CODE>-mno-svr3-shlib</CODE>
+<DD>Control whether GCC places uninitialized locals into <CODE>bss</CODE> or
+<CODE>data</CODE>.  <SAMP>`-msvr3-shlib'</SAMP> places these locals into <CODE>bss</CODE>.
+These options are meaningful only on System V Release 3.
+<P>
+
+<DT><CODE>-mno-wide-multiply</CODE>
+<DD><DT><CODE>-mwide-multiply</CODE>
+<DD>Control whether GCC uses the <CODE>mul</CODE> and <CODE>imul</CODE> that produce
+64 bit results in <CODE>eax:edx</CODE> from 32 bit operands to do <CODE>long
+long</CODE> multiplies and 32-bit division by constants.
+<P>
+
+<DT><CODE>-mrtd</CODE>
+<DD>Use a different function-calling convention, in which functions that
+take a fixed number of arguments return with the <CODE>ret</CODE> <VAR>num</VAR>
+instruction, which pops their arguments while returning.  This saves one
+instruction in the caller since there is no need to pop the arguments
+there.
+<P>
+
+You can specify that an individual function is called with this calling
+sequence with the function attribute <SAMP>`stdcall'</SAMP>.  You can also
+override the <SAMP>`-mrtd'</SAMP> option by using the function attribute
+<SAMP>`cdecl'</SAMP>.  See section <A HREF="gcc_84.html#SEC84">4.23 Declaring Attributes of Functions</A>.
+</P><P>
+
+<STRONG>Warning:</STRONG> this calling convention is incompatible with the one
+normally used on Unix, so you cannot use it if you need to call
+libraries compiled with the Unix compiler.
+</P><P>
+
+Also, you must provide function prototypes for all functions that
+take variable numbers of arguments (including <CODE>printf</CODE>);
+otherwise incorrect code will be generated for calls to those
+functions.
+</P><P>
+
+In addition, seriously incorrect code will result if you call a
+function with too many arguments.  (Normally, extra arguments are
+harmlessly ignored.)
+</P><P>
+
+<DT><CODE>-mreg-alloc=<VAR>regs</VAR></CODE>
+<DD>Control the default allocation order of integer registers.  The
+string <VAR>regs</VAR> is a series of letters specifying a register.  The
+supported letters are: <CODE>a</CODE> allocate EAX; <CODE>b</CODE> allocate EBX;
+<CODE>c</CODE> allocate ECX; <CODE>d</CODE> allocate EDX; <CODE>S</CODE> allocate ESI;
+<CODE>D</CODE> allocate EDI; <CODE>B</CODE> allocate EBP.
+<P>
+
+<DT><CODE>-mregparm=<VAR>num</VAR></CODE>
+<DD>Control how many registers are used to pass integer arguments.  By
+default, no registers are used to pass arguments, and at most 3
+registers can be used.  You can control this behavior for a specific
+function by using the function attribute <SAMP>`regparm'</SAMP>.
+See section <A HREF="gcc_84.html#SEC84">4.23 Declaring Attributes of Functions</A>.
+<P>
+
+<STRONG>Warning:</STRONG> if you use this switch, and
+<VAR>num</VAR> is nonzero, then you must build all modules with the same
+value, including any libraries.  This includes the system libraries and
+startup modules.
+</P><P>
+
+<DT><CODE>-malign-loops=<VAR>num</VAR></CODE>
+<DD>Align loops to a 2 raised to a <VAR>num</VAR> byte boundary.  If
+<SAMP>`-malign-loops'</SAMP> is not specified, the default is 2 unless
+gas 2.8 (or later) is being used in which case the default is
+to align the loop on a 16 byte boundary if it is less than 8
+bytes away.
+<P>
+
+<DT><CODE>-malign-jumps=<VAR>num</VAR></CODE>
+<DD>Align instructions that are only jumped to to a 2 raised to a <VAR>num</VAR>
+byte boundary.  If <SAMP>`-malign-jumps'</SAMP> is not specified, the default is
+2 if optimizing for a 386, and 4 if optimizing for a 486 unless
+gas 2.8 (or later) is being used in which case the default is
+to align the instruction on a 16 byte boundary if it is less
+than 8 bytes away.
+<P>
+
+<DT><CODE>-malign-functions=<VAR>num</VAR></CODE>
+<DD>Align the start of functions to a 2 raised to <VAR>num</VAR> byte boundary.
+If <SAMP>`-malign-functions'</SAMP> is not specified, the default is 2 if optimizing
+for a 386, and 4 if optimizing for a 486.
+<P>
+
+<DT><CODE>-mpreferred-stack-boundary=<VAR>num</VAR></CODE>
+<DD>Attempt to keep the stack boundary aligned to a 2 raised to <VAR>num</VAR>
+byte boundary.  If <SAMP>`-mpreferred-stack-boundary'</SAMP> is not specified,
+the default is 4 (16 bytes or 128 bits).
+<P>
+
+The stack is required to be aligned on a 4 byte boundary.  On Pentium
+and PentiumPro, <CODE>double</CODE> and <CODE>long double</CODE> values should be
+aligned to an 8 byte boundary (see <SAMP>`-malign-double'</SAMP>) or suffer
+significant run time performance penalties.  On Pentium III, the
+Streaming SIMD Extention (SSE) data type <CODE>__m128</CODE> suffers similar
+penalties if it is not 16 byte aligned.
+</P><P>
+
+To ensure proper alignment of this values on the stack, the stack boundary
+must be as aligned as that required by any value stored on the stack. 
+Further, every function must be generated such that it keeps the stack
+aligned.  Thus calling a function compiled with a higher preferred
+stack boundary from a function compiled with a lower preferred stack
+boundary will most likely misalign the stack.  It is recommended that
+libraries that use callbacks always use the default setting.
+</P><P>
+
+This extra alignment does consume extra stack space.  Code that is sensitive
+to stack space usage, such as embedded systems and operating system kernels,
+may want to reduce the preferred alignment to
+<SAMP>`-mpreferred-stack-boundary=2'</SAMP>.
+</DL>
+<P>
+
+<A NAME="HPPA Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_30.html#SEC30"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_32.html#SEC32"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_18.html#SEC18"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

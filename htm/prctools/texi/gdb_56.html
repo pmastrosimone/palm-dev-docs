@@ -1,0 +1,172 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Memory</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Memory">
+<META NAME="keywords" CONTENT="Debugging with GDB: Memory">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC56"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_55.html#SEC55"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_57.html#SEC57"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_57.html#SEC57"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.5 Examining memory </H2>
+<!--docid::SEC56::-->
+<P>
+
+You can use the command <CODE>x</CODE> (for "examine") to examine memory in
+any of several formats, independently of your program's data types.
+</P><P>
+
+<A NAME="IDX314"></A>
+<DL COMPACT>
+<A NAME="IDX315"></A>
+<DT><CODE>x/<VAR>nfu</VAR> <VAR>addr</VAR></CODE>
+<DD><DT><CODE>x <VAR>addr</VAR></CODE>
+<DD><DT><CODE>x</CODE>
+<DD>Use the <CODE>x</CODE> command to examine memory.
+</DL>
+<P>
+
+<VAR>n</VAR>, <VAR>f</VAR>, and <VAR>u</VAR> are all optional parameters that specify how
+much memory to display and how to format it; <VAR>addr</VAR> is an
+expression giving the address where you want to start displaying memory.
+If you use defaults for <VAR>nfu</VAR>, you need not type the slash <SAMP>`/'</SAMP>.
+Several commands set convenient defaults for <VAR>addr</VAR>.
+</P><P>
+
+<DL COMPACT>
+<DT><VAR>n</VAR>, the repeat count
+<DD>The repeat count is a decimal integer; the default is 1.  It specifies
+how much memory (counting by units <VAR>u</VAR>) to display.
+<P>
+
+<DT><VAR>f</VAR>, the display format
+<DD>The display format is one of the formats used by <CODE>print</CODE>,
+<SAMP>`s'</SAMP> (null-terminated string), or <SAMP>`i'</SAMP> (machine instruction).
+The default is <SAMP>`x'</SAMP> (hexadecimal) initially.
+The default changes each time you use either <CODE>x</CODE> or <CODE>print</CODE>.
+<P>
+
+<DT><VAR>u</VAR>, the unit size
+<DD>The unit size is any of
+<P>
+
+<DL COMPACT>
+<DT><CODE>b</CODE>
+<DD>Bytes.
+<DT><CODE>h</CODE>
+<DD>Halfwords (two bytes).
+<DT><CODE>w</CODE>
+<DD>Words (four bytes).  This is the initial default.
+<DT><CODE>g</CODE>
+<DD>Giant words (eight bytes).
+</DL>
+<P>
+
+Each time you specify a unit size with <CODE>x</CODE>, that size becomes the
+default unit the next time you use <CODE>x</CODE>.  (For the <SAMP>`s'</SAMP> and
+<SAMP>`i'</SAMP> formats, the unit size is ignored and is normally not written.)
+</P><P>
+
+<DT><VAR>addr</VAR>, starting display address
+<DD><VAR>addr</VAR> is the address where you want GDB to begin displaying
+memory.  The expression need not have a pointer value (though it may);
+it is always interpreted as an integer address of a byte of memory.
+See section <A HREF="gdb_52.html#SEC52">Expressions</A>, for more information on expressions.  The default for
+<VAR>addr</VAR> is usually just after the last address examined--but several
+other commands also set the default address: <CODE>info breakpoints</CODE> (to
+the address of the last breakpoint listed), <CODE>info line</CODE> (to the
+starting address of a line), and <CODE>print</CODE> (if you use it to display
+a value from memory).
+</DL>
+<P>
+
+For example, <SAMP>`x/3uh 0x54320'</SAMP> is a request to display three halfwords
+(<CODE>h</CODE>) of memory, formatted as unsigned decimal integers (<SAMP>`u'</SAMP>),
+starting at address <CODE>0x54320</CODE>.  <SAMP>`x/4xw $sp'</SAMP> prints the four
+words (<SAMP>`w'</SAMP>) of memory above the stack pointer (here, <SAMP>`$sp'</SAMP>;
+see section <A HREF="gdb_61.html#SEC61">Registers</A>) in hexadecimal (<SAMP>`x'</SAMP>).
+</P><P>
+
+Since the letters indicating unit sizes are all distinct from the
+letters specifying output formats, you do not have to remember whether
+unit size or format comes first; either order works.  The output
+specifications <SAMP>`4xw'</SAMP> and <SAMP>`4wx'</SAMP> mean exactly the same thing.
+(However, the count <VAR>n</VAR> must come first; <SAMP>`wx4'</SAMP> does not work.)
+</P><P>
+
+Even though the unit size <VAR>u</VAR> is ignored for the formats <SAMP>`s'</SAMP>
+and <SAMP>`i'</SAMP>, you might still want to use a count <VAR>n</VAR>; for example,
+<SAMP>`3i'</SAMP> specifies that you want to see three machine instructions,
+including any operands.  The command <CODE>disassemble</CODE> gives an
+alternative way of inspecting machine instructions; see <A HREF="gdb_50.html#SEC50">Source and machine code</A>.
+</P><P>
+
+All the defaults for the arguments to <CODE>x</CODE> are designed to make it
+easy to continue scanning memory with minimal specifications each time
+you use <CODE>x</CODE>.  For example, after you have inspected three machine
+instructions with <SAMP>`x/3i <VAR>addr</VAR>'</SAMP>, you can inspect the next seven
+with just <SAMP>`x/7'</SAMP>.  If you use <KBD>RET</KBD> to repeat the <CODE>x</CODE> command,
+the repeat count <VAR>n</VAR> is used again; the other arguments default as
+for successive uses of <CODE>x</CODE>.
+</P><P>
+
+<A NAME="IDX316"></A>
+The addresses and contents printed by the <CODE>x</CODE> command are not saved
+in the value history because there is often too much of them and they
+would get in the way.  Instead, GDB makes these values available for
+subsequent use in expressions as values of the convenience variables
+<CODE>$_</CODE> and <CODE>$__</CODE>.  After an <CODE>x</CODE> command, the last address
+examined is available for use in expressions in the convenience variable
+<CODE>$_</CODE>.  The contents of that address, as examined, are available in
+the convenience variable <CODE>$__</CODE>.
+</P><P>
+
+If the <CODE>x</CODE> command has a repeat count, the address and contents saved
+are from the last memory unit printed; this is not the same as the last
+address printed if several units were printed on the last line of output.
+</P><P>
+
+<A NAME="Auto Display"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_55.html#SEC55"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_57.html#SEC57"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_57.html#SEC57"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

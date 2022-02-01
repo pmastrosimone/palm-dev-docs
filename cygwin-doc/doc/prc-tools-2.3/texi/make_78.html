@@ -1,0 +1,79 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Testing Flags</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Testing Flags">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Testing Flags">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC82"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_77.html#SEC81"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.3 Conditionals that Test Flags </H2>
+<!--docid::SEC82::-->
+<P>
+
+You can write a conditional that tests <CODE>make</CODE> command flags such as
+<SAMP>`-t'</SAMP> by using the variable <CODE>MAKEFLAGS</CODE> together with the
+<CODE>findstring</CODE> function
+(see section <A HREF="make_81.html#SEC85">Functions for String Substitution and Analysis</A>).
+This is useful when <CODE>touch</CODE> is not enough to make a file appear up
+to date.
+</P><P>
+
+The <CODE>findstring</CODE> function determines whether one string appears as a
+substring of another.  If you want to test for the <SAMP>`-t'</SAMP> flag,
+use <SAMP>`t'</SAMP> as the first string and the value of <CODE>MAKEFLAGS</CODE> as
+the other.
+</P><P>
+
+For example, here is how to arrange to use <SAMP>`ranlib -t'</SAMP> to finish
+marking an archive file up to date:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>archive.a: <small>...</small>
+ifneq (,$(findstring t,$(MAKEFLAGS)))
+        +touch archive.a
+        +ranlib -t archive.a
+else
+        ranlib archive.a
+endif
+</pre></td></tr></table></P><P>
+
+The <SAMP>`+'</SAMP> prefix marks those command lines as "recursive" so
+that they will be executed despite use of the <SAMP>`-t'</SAMP> flag.
+See section <A HREF="make_54.html#SEC58">Recursive Use of <CODE>make</CODE></A>.
+</P><P>
+
+<A NAME="Functions"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

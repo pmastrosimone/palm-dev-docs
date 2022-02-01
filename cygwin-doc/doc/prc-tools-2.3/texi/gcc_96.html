@@ -1,0 +1,261 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Simple Constraints</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Simple Constraints">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Simple Constraints">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC96"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_95.html#SEC95"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_97.html#SEC97"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_95.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_100.html#SEC100"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 4.33.1 Simple Constraints </H3>
+<!--docid::SEC96::-->
+<P>
+
+The simplest kind of constraint is a string full of letters, each of
+which describes one kind of operand that is permitted.  Here are
+the letters that are allowed:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX313"></A>
+<A NAME="IDX314"></A>
+<DT><SAMP>`m'</SAMP>
+<DD>A memory operand is allowed, with any kind of address that the machine
+supports in general.
+<P>
+
+<A NAME="IDX315"></A>
+<A NAME="IDX316"></A>
+<DT><SAMP>`o'</SAMP>
+<DD>A memory operand is allowed, but only if the address is
+<EM>offsettable</EM>.  This means that adding a small integer (actually,
+the width in bytes of the operand, as determined by its machine mode)
+may be added to the address and the result is also a valid memory
+address.
+<P>
+
+<A NAME="IDX317"></A>
+For example, an address which is constant is offsettable; so is an
+address that is the sum of a register and a constant (as long as a
+slightly larger constant is also within the range of address-offsets
+supported by the machine); but an autoincrement or autodecrement
+address is not offsettable.  More complicated indirect/indexed
+addresses may or may not be offsettable depending on the other
+addressing modes that the machine supports.
+</P><P>
+
+Note that in an output operand which can be matched by another
+operand, the constraint letter <SAMP>`o'</SAMP> is valid only when accompanied
+by both <SAMP>`&#60;'</SAMP> (if the target machine has predecrement addressing)
+and <SAMP>`&#62;'</SAMP> (if the target machine has preincrement addressing).
+</P><P>
+
+<A NAME="IDX318"></A>
+<DT><SAMP>`V'</SAMP>
+<DD>A memory operand that is not offsettable.  In other words, anything that
+would fit the <SAMP>`m'</SAMP> constraint but not the <SAMP>`o'</SAMP> constraint.
+<P>
+
+<A NAME="IDX319"></A>
+<DT><SAMP>`&#60;'</SAMP>
+<DD>A memory operand with autodecrement addressing (either predecrement or
+postdecrement) is allowed.
+<P>
+
+<A NAME="IDX320"></A>
+<DT><SAMP>`&#62;'</SAMP>
+<DD>A memory operand with autoincrement addressing (either preincrement or
+postincrement) is allowed.
+<P>
+
+<A NAME="IDX321"></A>
+<A NAME="IDX322"></A>
+<DT><SAMP>`r'</SAMP>
+<DD>A register operand is allowed provided that it is in a general
+register.
+<P>
+
+<A NAME="IDX323"></A>
+<DT><SAMP>`d'</SAMP>, <SAMP>`a'</SAMP>, <SAMP>`f'</SAMP>, <small>...</small>
+<DD>Other letters can be defined in machine-dependent fashion to stand for
+particular classes of registers.  <SAMP>`d'</SAMP>, <SAMP>`a'</SAMP> and <SAMP>`f'</SAMP> are
+defined on the 68000/68020 to stand for data, address and floating
+point registers.
+<P>
+
+<A NAME="IDX324"></A>
+<A NAME="IDX325"></A>
+<DT><SAMP>`i'</SAMP>
+<DD>An immediate integer operand (one with constant value) is allowed.
+This includes symbolic constants whose values will be known only at
+assembly time.
+<P>
+
+<A NAME="IDX326"></A>
+<DT><SAMP>`n'</SAMP>
+<DD>An immediate integer operand with a known numeric value is allowed.
+Many systems cannot support assembly-time constants for operands less
+than a word wide.  Constraints for these operands should use <SAMP>`n'</SAMP>
+rather than <SAMP>`i'</SAMP>.
+<P>
+
+<A NAME="IDX327"></A>
+<DT><SAMP>`I'</SAMP>, <SAMP>`J'</SAMP>, <SAMP>`K'</SAMP>, <small>...</small> <SAMP>`P'</SAMP>
+<DD>Other letters in the range <SAMP>`I'</SAMP> through <SAMP>`P'</SAMP> may be defined in
+a machine-dependent fashion to permit immediate integer operands with
+explicit integer values in specified ranges.  For example, on the
+68000, <SAMP>`I'</SAMP> is defined to stand for the range of values 1 to 8.
+This is the range permitted as a shift count in the shift
+instructions.
+<P>
+
+<A NAME="IDX328"></A>
+<DT><SAMP>`E'</SAMP>
+<DD>An immediate floating operand (expression code <CODE>const_double</CODE>) is
+allowed, but only if the target floating point format is the same as
+that of the host machine (on which the compiler is running).
+<P>
+
+<A NAME="IDX329"></A>
+<DT><SAMP>`F'</SAMP>
+<DD>An immediate floating operand (expression code <CODE>const_double</CODE>) is
+allowed.
+<P>
+
+<A NAME="IDX330"></A>
+<A NAME="IDX331"></A>
+<DT><SAMP>`G'</SAMP>, <SAMP>`H'</SAMP>
+<DD><SAMP>`G'</SAMP> and <SAMP>`H'</SAMP> may be defined in a machine-dependent fashion to
+permit immediate floating operands in particular ranges of values.
+<P>
+
+<A NAME="IDX332"></A>
+<DT><SAMP>`s'</SAMP>
+<DD>An immediate integer operand whose value is not an explicit integer is
+allowed.
+<P>
+
+This might appear strange; if an insn allows a constant operand with a
+value not known at compile time, it certainly must allow any known
+value.  So why use <SAMP>`s'</SAMP> instead of <SAMP>`i'</SAMP>?  Sometimes it allows
+better code to be generated.
+</P><P>
+
+For example, on the 68000 in a fullword instruction it is possible to
+use an immediate operand; but if the immediate value is between -128
+and 127, better code results from loading the value into a register and
+using the register.  This is because the load into the register can be
+done with a <SAMP>`moveq'</SAMP> instruction.  We arrange for this to happen
+by defining the letter <SAMP>`K'</SAMP> to mean "any integer outside the
+range -128 to 127", and then specifying <SAMP>`Ks'</SAMP> in the operand
+constraints.
+</P><P>
+
+<A NAME="IDX333"></A>
+<DT><SAMP>`g'</SAMP>
+<DD>Any register, memory or immediate integer operand is allowed, except for
+registers that are not general registers.
+<P>
+
+<A NAME="IDX334"></A>
+<DT><SAMP>`X'</SAMP>
+<DD>Any operand whatsoever is allowed.
+<P>
+
+<A NAME="IDX335"></A>
+<A NAME="IDX336"></A>
+<DT><SAMP>`0'</SAMP>, <SAMP>`1'</SAMP>, <SAMP>`2'</SAMP>, <small>...</small> <SAMP>`9'</SAMP>
+<DD>An operand that matches the specified operand number is allowed.  If a
+digit is used together with letters within the same alternative, the
+digit should come last.
+<P>
+
+<A NAME="IDX337"></A>
+<A NAME="IDX338"></A>
+This is called a <EM>matching constraint</EM> and what it really means is
+that the assembler has only a single operand that fills two roles
+which <CODE>asm</CODE> distinguishes.  For example, an add instruction uses
+two input operands and an output operand, but on most CISC
+machines an add instruction really has only two operands, one of them an
+input-output operand:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>addl #35,r12
+</FONT></pre></td></tr></table></P><P>
+
+Matching constraints are used in these circumstances.
+More precisely, the two operands that match must include one input-only
+operand and one output-only operand.  Moreover, the digit must be a
+smaller number than the number of the operand that uses it in the
+constraint.
+</P><P>
+
+<A NAME="IDX339"></A>
+<A NAME="IDX340"></A>
+<A NAME="IDX341"></A>
+<A NAME="IDX342"></A>
+<DT><SAMP>`p'</SAMP>
+<DD>An operand that is a valid memory address is allowed.  This is
+for "load address" and "push address" instructions.
+<P>
+
+<A NAME="IDX343"></A>
+<SAMP>`p'</SAMP> in the constraint must be accompanied by <CODE>address_operand</CODE>
+as the predicate in the <CODE>match_operand</CODE>.  This predicate interprets
+the mode specified in the <CODE>match_operand</CODE> as the mode of the memory
+reference for which the address would be valid.
+</P><P>
+
+<A NAME="IDX344"></A>
+<A NAME="IDX345"></A>
+<DT><SAMP>`Q'</SAMP>, <SAMP>`R'</SAMP>, <SAMP>`S'</SAMP>, <small>...</small> <SAMP>`U'</SAMP>
+<DD>Letters in the range <SAMP>`Q'</SAMP> through <SAMP>`U'</SAMP> may be defined in a
+machine-dependent fashion to stand for arbitrary operand types.
+</DL>
+<P>
+
+<A NAME="Multi-Alternative"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_95.html#SEC95"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_97.html#SEC97"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_95.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_100.html#SEC100"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

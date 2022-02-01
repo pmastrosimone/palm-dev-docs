@@ -1,0 +1,188 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Symbol Names</TITLE>
+
+<META NAME="description" CONTENT="Using as: Symbol Names">
+<META NAME="keywords" CONTENT="Using as: Symbol Names">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC50"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_48.html#SEC49"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_50.html#SEC53"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_50.html#SEC53"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_46.html#SEC47"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_61.html#SEC64"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.3 Symbol Names </H2>
+<!--docid::SEC50::-->
+<P>
+
+<A NAME="IDX201"></A>
+<A NAME="IDX202"></A>
+Symbol names begin with a letter or with one of <SAMP>`._'</SAMP>.  On most
+machines, you can also use <CODE>$</CODE> in symbol names; exceptions are
+noted in <A HREF="as_159.html#SEC168">8. Machine Dependent Features</A>.  That character may be followed by any
+string of digits, letters, dollar signs (unless otherwise noted in
+<A HREF="as_159.html#SEC168">8. Machine Dependent Features</A>), and underscores.
+For the AMD 29K family, <SAMP>`?'</SAMP> is also allowed in the
+body of a symbol name, though not at its beginning.
+</P><P>
+
+Case of letters is significant: <CODE>foo</CODE> is a different symbol name
+than <CODE>Foo</CODE>.
+</P><P>
+
+Each symbol has exactly one name.  Each name in an assembly language program
+refers to exactly one symbol.  You may use that symbol name any number of times
+in a program.
+</P><P>
+
+<A NAME="SEC51"></A>
+<H3> Local Symbol Names </H3>
+<!--docid::SEC51::-->
+<P>
+
+<A NAME="IDX203"></A>
+<A NAME="IDX204"></A>
+<A NAME="IDX205"></A>
+<A NAME="IDX206"></A>
+Local symbols help compilers and programmers use names temporarily.
+They create symbols which are guaranteed to be unique over the entire scope of
+the input source code and which can be referred to by a simple notation.
+To define a local symbol, write a label of the form <SAMP>`<B>N</B>:'</SAMP> (where <B>N</B>
+represents any positive integer).  To refer to the most recent previous
+definition of that symbol write <SAMP>`<B>N</B>b'</SAMP>, using the same number as when
+you defined the label.  To refer to the next definition of a local label, write
+<SAMP>`<B>N</B>f'</SAMP>--- The <SAMP>`b'</SAMP> stands for"backwards" and the <SAMP>`f'</SAMP> stands
+for "forwards".
+</P><P>
+
+There is no restriction on how you can use these labels, and you can reuse them
+too.  So that it is possible to repeatedly define the same local label (using
+the same number <SAMP>`<B>N</B>'</SAMP>), although you can only refer to the most recently
+defined local label of that number (for a backwards reference) or the next
+definition of a specific local label for a forward reference.  It is also worth
+noting that the first 10 local labels (<SAMP>`<B>0:</B>'</SAMP><small>...</small><SAMP>`<B>9:</B>'</SAMP>) are
+implemented in a slightly more efficient manner than the others.
+</P><P>
+
+Here is an example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>1:        branch 1f
+2:        branch 1b
+1:        branch 2f
+2:        branch 1b
+</FONT></pre></td></tr></table></P><P>
+
+Which is the equivalent of:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>label_1:  branch label_3
+label_2:  branch label_1
+label_3:  branch label_4
+label_4:  branch label_3
+</FONT></pre></td></tr></table></P><P>
+
+Local symbol names are only a notational device.  They are immediately
+transformed into more conventional symbol names before the assembler uses them.
+The symbol names stored in the symbol table, appearing in error messages and
+optionally emitted to the object file.  The names are constructed using these
+parts:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>L</CODE>
+<DD>All local labels begin with <SAMP>`L'</SAMP>. Normally both <CODE>as</CODE> and
+<CODE>ld</CODE> forget symbols that start with <SAMP>`L'</SAMP>. These labels are
+used for symbols you are never intended to see.  If you use the
+<SAMP>`-L'</SAMP> option then <CODE>as</CODE> retains these symbols in the
+object file. If you also instruct <CODE>ld</CODE> to retain these symbols,
+you may use them in debugging.
+<P>
+
+<DT><CODE><VAR>number</VAR></CODE>
+<DD>This is the number that was used in the local label definition.  So if the
+label is written <SAMP>`55:'</SAMP> then the number is <SAMP>`55'</SAMP>. 
+<P>
+
+<DT><CODE><KBD>C-B</KBD></CODE>
+<DD>This unusual character is included so you do not accidentally invent a symbol
+of the same name.  The character has ASCII value of <SAMP>`\002'</SAMP> (control-B).
+<P>
+
+<DT><CODE><EM>ordinal number</EM></CODE>
+<DD>This is a serial number to keep the labels distinct.  The first definition of
+<SAMP>`0:'</SAMP> gets the number <SAMP>`1'</SAMP>.  The 15th definition of <SAMP>`0:'</SAMP> gets the 
+number <SAMP>`15'</SAMP>, and so on.  Likewise the first definition of <SAMP>`1:'</SAMP> gets
+the number <SAMP>`1'</SAMP> and its 15th defintion gets <SAMP>`15'</SAMP> as well.
+</DL>
+<P>
+
+So for example, the first <CODE>1:</CODE> is named <CODE>L1<KBD>C-B</KBD>1</CODE>, the 44th
+<CODE>3:</CODE> is named <CODE>L3<KBD>C-B</KBD>44</CODE>.
+</P><P>
+
+<A NAME="SEC52"></A>
+<H3> Dollar Local Labels </H3>
+<!--docid::SEC52::-->
+<P>
+
+<CODE>as</CODE> also supports an even more local form of local labels called
+dollar labels.  These labels go out of scope (ie they become undefined) as soon
+as a non-local label is defined.  Thus they remain valid for only a small
+region of the input source code.  Normal local labels, by contrast, remain in
+scope for the entire file, or until they are redefined by another occurrence of
+the same local label.
+</P><P>
+
+Dollar labels are defined in exactly the same way as ordinary local labels,
+except that instead of being terminated by a colon, they are terminated by a
+dollar sign.  eg <SAMP>`<B>55$</B>'</SAMP>.
+</P><P>
+
+They can also be distinguished from ordinary local labels by their transformed
+name which uses ASCII character <SAMP>`\001'</SAMP> (control-A) as the magic character
+to distinguish them from ordinary labels.  Thus the 5th defintion of <SAMP>`6$'</SAMP>
+is named <SAMP>`L6<KBD>C-A</KBD>5'</SAMP>.
+</P><P>
+
+<A NAME="Dot"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_48.html#SEC49"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_50.html#SEC53"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_50.html#SEC53"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_46.html#SEC47"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_61.html#SEC64"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

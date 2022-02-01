@@ -1,0 +1,755 @@
+<HTML>
+
+<HEAD>
+<SMALLSCREENIGNORE> 
+<LINK HREF="copy_of_palmos.css" REL="stylesheet" TYPE="text/css">
+<LINK HREF="document.css" REL="StyleSheet" TYPE="text/css" media="screen">
+<!-- SCRIPT_START -->
+<!-- SCRIPT_END -->
+</SMALLSCREENIGNORE>
+<TITLE>Event Loop</TITLE>
+
+<META NAME="PALMTEMPLATE" CONTENT="1006-002 Palm HTML 20020513">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="TEMPLATEBASE" CONTENT="Palm HTML 20010625">
+<META NAME="LASTUPDATED" CONTENT="12/13/02 10:05:17">
+<META HTTP-EQUIV="content-type" CONTENT="text/html;charset=ISO-8859-1">
+
+</HEAD>
+
+<BODY LEFTMARGIN="0" MARGINWIDTH="0" TOPMARGIN="0" MARGINHEIGHT="0">
+<SMALLSCREENIGNORE> 
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+	<td><a name="977418"></a>
+      <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr height="35"> 
+          <td height="35" colspan="2" bgcolor="#6699CC">&nbsp;</td>
+        </tr>
+        <tr valign="top"> 
+          <td width="160" align="left"><a href="http://www.palmos.com"><img src="images/bigorb.gif" width="160" height="110" border="0"></a></td>
+          <td align="left" width="100%"> 
+            </SMALLSCREENIGNORE>
+            <!-- CONTENTCELL_START -->
+            <img border="0" height="45" src="images/orb_bkgrnd_600.gif" width="600"><br>
+            <!--PAGENAV_START-->
+            <SPAN CLASS="subnav">&nbsp;&lt;&nbsp;<A HREF="http://www.palmos.com/index.html">Home</a> 
+              &nbsp;&nbsp;&lt;&nbsp;<A HREF="http://www.palmos.com/dev/">Developers</a> 
+              &nbsp;&nbsp;&lt;&nbsp;<A HREF="http://www.palmos.com/dev/support/">Development Support</a>
+              &nbsp;&nbsp;&lt;&nbsp;<A HREF="http://www.palmos.com/dev/support/docs/">Documentation</a></span><BR>
+             <img src="images/pixel_ltblue.gif" width="600" height="1" border="0" vspace="2"><br>
+             <h2 class="HeadDocPage">3  Event Loop</h2>
+             <img src="images/pixel_ltblue.gif" width="600" height="1" border="0" vspace="2"><br>
+             &nbsp;<span class="subnav"><a href="CompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="AppStartupAndStop.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="UserInterface.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Index</a></span>  
+            <!--PAGENAV_END-->
+          </td>
+        </tr>
+      </table>
+    </td>
+			</tr>
+  <tr>
+				<td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+							<td>&nbsp;&nbsp;&nbsp;</td>
+						</tr>
+        <tr>
+		<td valign="top" width="10">&nbsp;&nbsp;&nbsp;</td>
+		<td valign="top" width="175">
+			<p class="SideTitle">Title - <br><a href="Companion_Front.html">Palm OS® Programmer's Companion</a></p>
+			<p class="SideTOC1-PartTab">Volume I </p>
+			<p class="SideTOC1"><a href="EventLoop.html">3  Event Loop</a></p>
+			
+<p class="SideTOC2">
+<a href="#977590">The Application Event Loop
+</a></p>
+
+<p class="SideTOC2">
+<a href="#977704">Low-Level Event Management
+</a></p>
+
+<p class="SideTOC3">
+<a href="#977743">The Graffiti Manager
+</a></p>
+
+<p class="SideTOC3">
+<a href="#977800">The Key Manager
+</a></p>
+
+<p class="SideTOC3">
+<a href="#977820">The Pen Manager
+</a></p>
+
+<p class="SideTOC3">
+<a href="#977831">The System Event Manager
+</a></p>
+
+<p class="SideTOC2">
+<a href="#977957">System Event Manager Summary
+</a></p>
+
+		</td>
+
+		<td width="5">&nbsp;&nbsp;</td>
+		<td width="1" bgcolor="#6699cc">&nbsp;</td>
+		<td width="5">&nbsp;&nbsp;</td>
+		<td> 
+
+				<!-- CONTENT_START -->
+
+<p class="Body">
+  <a name="977420"> </a>This chapter discusses the Event Manager, the main interface between the Palm OS<sup>®</sup> system software and the application. It discusses in some detail what an application does in response to user input, providing code fragments as examples where needed. The topics covered are:
+</p>
+
+  <a name="977424"> </a><p class="B1Bullet"> &#8226; <a href="EventLoop.html#977590">The Application Event Loop</a></p>
+
+  <a name="977428"> </a><p class="B1Bullet"> &#8226; <a href="EventLoop.html#977704">Low-Level Event Management</a></p>
+<p class="Body">
+  <a name="977429"> </a>This chapter's focus is on how to write your applications main event loop. For more detailed information on events, consult the <i>Palm OS Programmer's API Reference</i>. Details for each event are given in <a href="EventRef.html#971621">Chapter 2, "Palm OS Events."</a> In addition to the reference material, consult the chapter <a href="UserInterface.html#979973">"User Interface"</a> in this book. It provides the event flow for each user interface element. 
+</p>
+<p class="Body">
+  <a name="977442"> </a><a href="EventLoop.html#977444">Figure 3.1</a> illustrates control flow in a typical application.
+</p>
+
+<p class="FFigureCaption">
+  <a name="977444"> </a>Figure 3.1	 Control Flow in a Typical Application
+</p>
+<p class="FgFigure">
+  <a name="977588"> </a><div align="left"><img src="images/EventLoopa.gif" height="538" width="360" border="0" hspace="20" vspace="0">
+</div>
+</p>
+
+<h2 class="HaHeadA">
+  <a name="977590"> </a>The Application Event Loop 
+<a href="#977418"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="977594"> </a>As described in the previous chapter, <a href="AppStartupAndStop.html#971704">"Application Startup and Stop,"</a> an application performs a full startup when it receives the launch code <span style="font-family: monospace">sysAppLaunchCmdNormalLaunch</span>. It begins with a startup routine, then goes into an event loop, and finally exits with a stop routine. 
+</p>
+<p class="Body">
+  <a name="977596"> </a>In the event loop, the application fetches events from the queue and dispatches them, taking advantage of the default system functionality as appropriate. 
+</p>
+<p class="Body">
+  <a name="977598"> </a>While in the loop, the application continuously checks for events in the event queue. If there are events in the queue, the application has to process them as determined in the event loop. As a rule, the events are passed on to the system, which knows how to handle them. For example, the system knows how to respond to pen taps on forms or menus. 
+</p>
+<p class="Body">
+  <a name="977599"> </a>The application typically remains in the event loop until the system tells it to shut itself down by sending an <a href="EventRef.html#971975"><span style="font-family: monospace">appStopEvent</span></a> (not a launch code) through the event queue. The application must detect this event and terminate. 
+</p>
+<p class="CCodeCaption">
+  <a name="977604"> </a>Listing 3.1  Top-Level Event Loop Example from Datebook.c
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+static void EventLoop (void)<a name="977605"> </a>
+{<a name="977606"> </a>
+   UInt16 error;<a name="977607"> </a>
+   EventType event;<a name="977608"> </a>
+   do<a name="977609"> </a>
+      {<a name="977610"> </a>
+      EvtGetEvent (&amp;event, evtWaitForever);<a name="977611"> </a>
+      <a name="977612"> </a>
+      PreprocessEvent (&amp;event);<a name="977613"> </a>
+      <a name="977614"> </a>
+      if (! SysHandleEvent (&amp;event))<a name="977615"> </a>
+         <a name="977616"> </a>
+         if (! MenuHandleEvent (NULL, &amp;event, &amp;error))<a name="977617"> </a>
+            <a name="977618"> </a>
+            if (! ApplicationHandleEvent (&amp;event))<a name="977619"> </a>
+               FrmDispatchEvent (&amp;event); <a name="977620"> </a>
+ <a name="977621"> </a>
+      #if  EMULATION_LEVEL != EMULATION_NONE<a name="977622"> </a>
+         ECApptDBValidate (ApptDB);<a name="977623"> </a>
+      #endif<a name="977624"> </a>
+      }<a name="977625"> </a>
+   while (event.eType != appStopEvent);<a name="977626"> </a>
+}<a name="977627"> </a>
+</pre><div class="CodeRule"><hr></div>
+<p class="Body">
+  <a name="977628"> </a>In the event loop, the application iterates through these steps (see <a href="EventLoop.html#977444">Figure 3.1</a> and <a href="EventLoop.html#977604">Listing 3.1</a>)
+</p>
+  <a name="977635"> </a><p class="N1NumList">1.	  Fetch an event from the event queue.</p>  <a name="977636"> </a><p class="N1NumList">2.	  Call <span style="font-family: monospace">PreprocessEvent </span>to allow the datebook event handler to see the command keys before any other event handler gets them. Some of the datebook views display UI that disappears automatically; this UI needs to be dismissed before the system event handler or the menu event handler display any UI objects. </p><p class="Indented1"> <a name="977637"> </a>Note that not all applications need a <span style="font-family: monospace">PreprocessEvent</span> function. It may be appropriate to call <span style="font-family: monospace">SysHandleEvent</span> right away. </p>
+  <a name="977641"> </a><p class="N1NumList">3.	  Call <a href="SystemManager.html#1166025"><span style="font-family: monospace">SysHandleEvent</span></a> to give the system an opportunity to handle the event. </p><p class="Indented1"> <a name="977642"> </a>The system handles events like power on/power off, Graffiti<sup>®</sup> or Graffiti 2 input, tapping input area icons, or pressing buttons. During the call to <span style="font-family: monospace">SysHandleEvent</span>, the user may also be informed about low-battery warnings or may find and search another application.</p>
+<p class="Indented1"> <a name="977643"> </a>Note that in the process of handling an event, <span style="font-family: monospace">SysHandleEvent</span> may generate new events and put them on the queue. For example, the system handles Graffiti 2 input by translating the pen events to key events. Those, in turn, are put on the event queue and are eventually handled by the application. </p>
+<p class="Indented1"> <a name="977644"> </a><span style="font-family: monospace">SysHandleEvent</span> returns <span style="font-family: monospace">true</span> if the event was completely handled, that is, no further processing of the event is required. The application can then pick up the next event from the queue. </p>
+  <a name="977645"> </a><p class="N1NumList">4.	  If <span style="font-family: monospace">SysHandleEvent</span> did not completely handle the event, the application calls <a href="Menu.html#1049069"><span style="font-family: monospace">MenuHandleEvent</span></a>. <span style="font-family: monospace">MenuHandleEvent</span> handles two types of events:</p>  <a name="977649"> </a><p class="B2BulletSub"> -	 If the user has tapped in the area that invokes a menu, <span style="font-family: monospace">MenuHandleEvent</span> brings up the menu. </p>  <a name="977650"> </a><p class="B2BulletSub"> -	 If the user has tapped inside a menu to invoke a menu command, <span style="font-family: monospace">MenuHandleEvent</span> removes the menu from the screen and puts the events that result from the command onto the event queue. </p><p class="Indented1"> <a name="977651"> </a><span style="font-family: monospace">MenuHandleEvent</span> returns <span style="font-family: monospace">true</span> if the event was completely handled. </p>
+  <a name="977652"> </a><p class="N1NumList">5.	  If <span style="font-family: monospace">MenuHandleEvent</span> did not completely handle the event, the application calls <span style="font-family: monospace">ApplicationHandleEvent</span>, a function your application has to provide itself. <span style="font-family: monospace">ApplicationHandleEvent</span> handles only the <a href="EventRef.html#972449"><span style="font-family: monospace">frmLoadEvent</span></a> for that event; it loads and activates application form resources and sets the event handler for the active form by calling the function <a href="Form.html#1024104"><span style="font-family: monospace">FrmSetEventHandler</span></a>. </p>  <a name="977659"> </a><p class="N1NumList">6.	  If <span style="font-family: monospace">ApplicationHandleEvent</span> did not completely handle the event, the application calls <a href="Form.html#1022557"><span style="font-family: monospace">FrmDispatchEvent</span></a><span style="font-family: monospace">. FrmDispatchEvent</span> first sends the event to the application's event handler for the active form. This is the event handler routine that was established in <span style="font-family: monospace">ApplicationHandleEvent</span>. Thus the application's code is given the first opportunity to process events that pertain to the current form. The application's event handler may completely handle the event and return <span style="font-family: monospace">true</span> to calls from <span style="font-family: monospace">FrmDispatchEvent.</span>In that case, <span style="font-family: monospace">FrmDispatchEvent</span> returns to the application's event loop. Otherwise, <span style="font-family: monospace">FrmDispatchEvent</span> calls <a href="Form.html#1023306"><span style="font-family: monospace">FrmHandleEvent</span></a> to provide the system's default processing for the event. </p><p class="Indented1"> <a name="977666"> </a>For example, in the process of handling an event, an application frequently has to first close the current form and then open another one, as follows: </p>
+  <a name="977670"> </a><p class="B2BulletSub"> -	 The application calls <a href="Form.html#1023267"><span style="font-family: monospace">FrmGotoForm</span></a> to bring up another form. <span style="font-family: monospace">FrmGotoForm</span> queues a <a href="EventRef.html#972285"><span style="font-family: monospace">frmCloseEvent</span></a> for the currently active form, then queues <a href="EventRef.html#972449"><span style="font-family: monospace">frmLoadEvent</span></a> and <a href="EventRef.html#972473"><span style="font-family: monospace">frmOpenEvent</span></a> for the new form. </p>  <a name="977680"> </a><p class="B2BulletSub"> -	 When the application gets the <span style="font-family: monospace">frmCloseEvent,</span> it closes and erases the currently active form. </p>  <a name="977681"> </a><p class="B2BulletSub"> -	 When the application gets the <span style="font-family: monospace">frmLoadEvent</span>, it loads and then activates the new form. Normally, the form remains active until it's closed. (Note that this wouldn't work if you preload all forms, but preloading is really discouraged. Applications don't need to be concerned with the overhead of loading forms; loading is so fast that applications can do it when they need it.) The application's event handler for the new form is also established.</p>  <a name="977682"> </a><p class="B2BulletSub"> -	 When the application gets the <span style="font-family: monospace">frmOpenEvent</span>, it performs any required initialization of the form, then draws the form on the display. </p><p class="Indented1"> <a name="977683"> </a>After <span style="font-family: monospace">FrmGotoForm</span> has been called, any further events that come through the main event loop and to <span style="font-family: monospace">FrmDispatchEvent</span> are dispatched to the event handler for the form that's currently active. For each dialog or form, the event handler knows how it should respond to events, for example, it may open, close, highlight, or perform other actions in response to the event. <a href="Form.html#1023306"><span style="font-family: monospace">FrmHandleEvent</span></a> invokes this default UI functionality. </p>
+<p class="Indented1"> <a name="977687"> </a>After the system has done all it can to handle the event for the specified form, the application finally calls the active form's own event handling function. For example, in the datebook application, it may call <span style="font-family: monospace">DayViewHandleEvent</span> or <span style="font-family: monospace">WeekViewHandleEvent</span>. </p>
+<p class="Body">
+  <a name="977688"> </a>Notice how the event flow allows your application to rely on system functionality as much as it wants. If your application wants to know whether a button is pressed, it has only to wait for <a href="EventRef.html#972101"><span style="font-family: monospace">ctlSelectEvent</span></a>. All the details of the event queue are handled by the system. 
+</p>
+<p class="Body">
+  <a name="977692"> </a>Some events are actually requests for the application to do something, for example, <a href="EventRef.html#972473"><span style="font-family: monospace">frmOpenEvent</span></a>. Typically, all the application does is draw its own interface, using the functions provided by the system, and then waits for events it can handle to arrive from the queue. 
+</p>
+<p class="Body">
+  <a name="977697"> </a>Only the active form should process events. 
+</p>
+
+<h2 class="HaHeadA">
+  <a name="977704"> </a>Low-Level Event Management 
+<a href="#977418"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="977705"> </a>The five ways that a user interacts with an application are: 
+</p>
+
+  <a name="977706"> </a><p class="B1Bullet"> &#8226; by writing letters, numbers, or symbols in the input area</p>
+
+  <a name="977707"> </a><p class="B1Bullet"> &#8226; by pressing a hardware button on the handheld</p>
+
+  <a name="977708"> </a><p class="B1Bullet"> &#8226; by tapping the pen on a control in a form or dialog</p>
+
+  <a name="977709"> </a><p class="B1Bullet"> &#8226; by tapping on an onscreen keyboard in the keyboard dialog.</p>
+
+  <a name="977710"> </a><p class="B1Bullet"> &#8226; by tapping in the menu bar or in a particular menu.</p>
+<p class="Body">
+  <a name="977711"> </a>For the first three types of input, the Palm OS provides a dedicated manager: the Graffiti Manager, the Key Manager, and the Pen Manager, respectively. Most applications do not need to access these managers directly; instead, applications receive events from these managers and respond to the events. There are cases, however, where you might need to interact with one of these managers. The following pages describe each of these managers and when you might need to use them. To learn how to obtain user input from a UI object, refer to the section in <a href="UserInterface.html#979973">Chapter 4, "User Interface,"</a> that covers that object.
+</p>
+<p class="Body">
+  <a name="977715"> </a>The keyboard dialog allows users to input characters into a text field by tapping an onscreen keyboard. When the keyboard dialog is closed, the amended text is automatically displayed in the original field. As with the three managers just mentioned, you will probably not need to access the keyboard dialog directly. The user can open the keyboard from any text field. In certain limited circumstances, however, you may wish to display the keyboard dialog programmatically. For more information, see <a href="UserInterface.html#980546">"The Keyboard Dialog"</a>.
+</p>
+<p class="Body">
+  <a name="977719"> </a>The Menu Manager handles taps that display a menu and those that select an item from a menu. For details, see <a href="UserInterface.html#981587">"Menus."</a>
+</p>
+<p class="Body">
+  <a name="977724"> </a>In addition to these managers, the System Event Manager is another manager involved in low-level event handling. Most applications have no need to call the System Event Manager directly because most of the functionality they need comes from the higher-level Event Manager or is automatically handled by the system. 
+</p>
+<p class="Body">
+  <a name="977725"> </a>This section provides information about the following managers: 
+</p>
+
+  <a name="977729"> </a><p class="B1Bullet"> &#8226; <a href="EventLoop.html#977743">The Graffiti Manager</a></p>
+
+  <a name="977733"> </a><p class="B1Bullet"> &#8226; <a href="EventLoop.html#977800">The Key Manager</a></p>
+
+  <a name="977737"> </a><p class="B1Bullet"> &#8226; <a href="EventLoop.html#977820">The Pen Manager</a></p>
+
+  <a name="977741"> </a><p class="B1Bullet"> &#8226; <a href="EventLoop.html#977831">The System Event Manager</a></p>
+
+<h2 class="HBHeadB">
+  <a name="977743"> </a>The Graffiti Manager
+<a href="#977418"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="977745"> </a>The Graffiti Manager provides an API to the Palm OS Graffiti or Graffiti 2 recognizer. The recognizer converts pen strokes into key events, which are then fed to an application through the Event Manager. 
+</p>
+<div class="NINoteImportant"><hr>
+  <a name="981002"> </a> <span style="color: #333;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">IMPORTANT:  </span> If the <a href="CompatibilityApdx.html#995574">Graffiti 2 Feature Set</a> is present, many of the Graffiti Manager API calls are deprecated or work differently. Avoid using the Graffiti Manager API. 
+<hr>
+</div>
+<p class="Body">
+  <a name="977746"> </a>Most applications never need to call the Graffiti Manager directly because it's automatically called by the Event Manager whenever it detects pen strokes in the input area of the digitizer. 
+</p>
+<p class="Body">
+  <a name="977748"> </a>Special-purpose applications, such as a Graffiti tutorial, may want to call the Graffiti Manager directly to recognize strokes in other areas of the screen or to customize the Graffiti behavior.
+</p>
+
+<h4 class="HCHeadC">
+  <a name="977750"> </a>Using GrfProcessStroke
+</h4>
+<p class="Body">
+  <a name="977755"> </a><a href="GraffitiManager.html#1126199"><span style="font-family: monospace">GrfProcessStroke</span></a> is a high-level Graffiti Manager call used by the Event Manager for converting pen strokes into key events. The call 
+</p>
+
+  <a name="977756"> </a><p class="B1Bullet"> &#8226; Removes pen points from the pen queue </p>
+
+  <a name="977757"> </a><p class="B1Bullet"> &#8226; Recognizes the stroke</p>
+
+  <a name="977758"> </a><p class="B1Bullet"> &#8226; Puts one or more key events into the key queue</p>
+<p class="Body">
+  <a name="977760"> </a><span style="font-family: monospace">GrfProcessStroke</span> automatically handles shortcut strokes and calls the user interface as appropriate to display shift indicators in the current window. 
+</p>
+<p class="Body">
+  <a name="977761"> </a>An application can call <span style="font-family: monospace">GrfProcessStroke</span> when it receives a <a href="EventRef.html#973088"><span style="font-family: monospace">penUpEvent</span></a> from the Event Manager if it wants to recognize strokes entered into its application area (in addition to the input area). 
+</p>
+
+<h4 class="HCHeadC">
+  <a name="977766"> </a>Using Other High-Level Graffiti Manager Calls
+</h4>
+<p class="Body">
+  <a name="977767"> </a>Other high-level calls provided by the Graffiti Manager include routines for 
+</p>
+
+  <a name="977769"> </a><p class="B1Bullet"> &#8226; Getting and setting the current shift state (caps lock on/off, temporary shift state, etc.) </p>
+
+  <a name="977770"> </a><p class="B1Bullet"> &#8226; Notifying the handwriting recognizer when the user selects a different field. The handwriting recognizer needs to be notified when a field change occurs so that it can cancel out of any partially entered shortcut and clear its temporary shift state if it's showing a potentially accented character. </p>
+<p class="Body">
+  <a name="981340"> </a>Note that if the <a href="CompatibilityApdx.html#995574">Graffiti 2 Feature Set</a> is present, the caps lock state is not supported. In Graffiti 2 handwriting, users write uppercase letters by writing between the dividers that separate the letter area from the number area. Because users can easily write a succession of uppercase letters, the caps lock state is unnecessary. 
+</p>
+
+<h4 class="HCHeadC">
+  <a name="977771"> </a>Special-Purpose Graffiti Manager Calls
+</h4>
+<p class="Body">
+  <a name="977772"> </a>The remainder of Graffiti Manager API routines are for special-purpose use. They are basically all the entry points into the Graffiti recognizer engine and are usually called only by <a href="GraffitiManager.html#1126199"><span style="font-family: monospace">GrfProcessStroke</span></a>. These special-purpose uses include calls to add pen points to the Graffiti recognizer's stroke buffer, to convert the stroke buffer into a Graffiti glyph ID, and to map a glyph into a string of one or more key strokes. 
+</p>
+<div class="NINoteImportant"><hr>
+  <a name="981332"> </a> <span style="color: #333;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">IMPORTANT:  </span> If the <a href="CompatibilityApdx.html#995574">Graffiti 2 Feature Set</a> is present, the special-purpose Graffiti Manager calls are deprecated. 
+<hr>
+</div>
+
+<h4 class="HCHeadC">
+  <a name="977777"> </a>Accessing Shortcuts 
+</h4>
+<p class="Body">
+  <a name="981584"> </a>Other routines provide access to the Graffiti or Graffiti 2 Shortcuts database. This is a separate database owned and maintained by the Graffiti Manager that contains all of the shortcuts. In Palm OS version 3.5 and earlier releases, this database is opened by the Graffiti Manager when it initializes and stays open even after applications quit. Starting in Palm OS 4.0, the database is only opened when necessary and is closed when it is no longer needed. 
+</p>
+<p class="Body">
+  <a name="977780"> </a>The only way to modify this database is through the Graffiti Manager API. It provides calls for getting a list of all shortcuts, and for adding, editing, and removing shortcuts. The Shortcuts screen of the Preferences application provides a user interface for modifying this database. 
+</p>
+
+<h4 class="HCHeadC">
+  <a name="977783"> </a>Note on Auto Shifting
+</h4>
+<p class="Body">
+  <a name="977784"> </a>The Palm OS 2.0 and later automatically uses an upper-case letter under the following conditions: 
+</p>
+
+  <a name="977785"> </a><p class="B1Bullet"> &#8226; Period and space or Return.</p>
+
+  <a name="977786"> </a><p class="B1Bullet"> &#8226; Other sentence terminator (such as ? or !) and space</p>
+<p class="Body">
+  <a name="977787"> </a>This functionality requires no changes by the developer, but should be welcome to the end user. 
+</p>
+<p class="Body">
+  <a name="977788"> </a>Note that the auto-shifting rules are language-specific, since capitalization differs depending on the region. These rules depend on the version of the ROM, the market into which the handheld is being sold, and so on.
+</p>
+
+<h4 class="HCHeadC">
+  <a name="977790"> </a>Note on Graffiti Help
+</h4>
+<p class="Body">
+  <a name="977791"> </a>In Palm OS 2.0 and later, applications can pop up Graffiti help by calling <a href="SystemDialogs.html#1060133"><span style="font-family: monospace">SysGraffitiReferenceDialog</span></a> or by putting a virtual character-<span style="font-family: monospace">graffitiReferenceChr</span> from <span style="font-family: monospace">Chars.h</span>-on the queue.
+</p>
+<p class="Body">
+  <a name="977798"> </a>Graffiti help is also available through the system Edit menu. As a result, any application that includes the system Edit menu allows users to access Graffiti help that way. 
+</p>
+
+<h2 class="HBHeadB">
+  <a name="977800"> </a>The Key Manager
+<a href="#977418"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="977802"> </a>The Key Manager manages the hardware buttons on the Palm Powered<sup>&#8482;</sup> handheld. It converts button presses into key events and implements auto-repeat of the buttons. Most applications never need to call the Key Manager directly except to change the key repeat rate or to poll the current state of the keys. 
+</p>
+<p class="Body">
+  <a name="977804"> </a>The Event Manager is the main interface to the keys; it returns a <a href="EventRef.html#972716"><span style="font-family: monospace">keyDownEvent</span></a> to an application whenever a button is pressed. Normally, applications are notified of key presses through the Event Manager. Whenever a hardware button is pressed, the application receives an event through the Event Manager with the appropriate key code stored in the event record. The state of the hardware buttons can also be queried by applications at any time through the <a href="KeyManager.html#1129288"><span style="font-family: monospace">KeyCurrentState</span></a> function call.
+</p>
+<p class="Body">
+  <a name="977818"> </a>The <a href="KeyManager.html#1129311"><span style="font-family: monospace">KeyRates</span></a> call changes the auto-repeat rate of the hardware buttons. This might be useful to game applications that want to use the hardware buttons for control. The current key repeat rates are stored in the Key Manager globals and should be restored before the application exits. 
+</p>
+
+<h2 class="HBHeadB">
+  <a name="977820"> </a>The Pen Manager
+<a href="#977418"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="977822"> </a>The Pen Manager manages the digitizer hardware and converts input from the digitizer into pen coordinates. The Palm Powered handheld has a built-in digitizer overlaid onto the LCD screen and extending about an inch below the screen. This digitizer is capable of sampling accurately to within 0.35 mm (.0138 in) with up to 50 accurate points/second. When the handheld is in doze mode, an interrupt is generated when the pen is first brought down on the screen. After a pen down is detected, the system software polls the pen location periodically (every 20 ms) until the pen is again raised.
+</p>
+<p class="Body">
+  <a name="977825"> </a>Most applications never need to call the Pen Manager directly because any pen activity is automatically returned to the application in the form of events.
+</p>
+<p class="Body">
+  <a name="977826"> </a>Pen coordinates are stored in the pen queue as raw, uncalibrated coordinates. When the System Event Manager routine for removing pen coordinates from the pen queue is called, it converts the pen coordinate into screen coordinates before returning. 
+</p>
+<p class="Body">
+  <a name="977829"> </a>The Preferences application provides a user interface for calibrating the digitizer. It uses the Pen Manager API to set up the calibration which is then saved into the Preferences database. The Pen Manager assumes that the digitizer is linear in both the x and y directions; the calibration is therefore a simple matter of adding an offset and scaling the x and y coordinates appropriately.
+</p>
+
+<h2 class="HBHeadB">
+  <a name="977831"> </a>The System Event Manager
+<a href="#977418"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="977832"> </a>The System Event Manager: 
+</p>
+
+  <a name="977833"> </a><p class="B1Bullet"> &#8226; manages the low-level pen and key event queues. </p>
+
+  <a name="977834"> </a><p class="B1Bullet"> &#8226; translates taps on input area icons into key events.</p>
+
+  <a name="977835"> </a><p class="B1Bullet"> &#8226; sends pen strokes in the input area to the Graffiti or Graffiti 2 recognizer. </p>
+
+  <a name="977836"> </a><p class="B1Bullet"> &#8226; puts the system into low-power doze mode when there is no user activity. </p>
+<p class="Body">
+  <a name="977837"> </a>Most applications have no need to call the System Event Manager directly because most of the functionality they need comes from the higher-level Event Manager or is automatically handled by the system. 
+</p>
+<p class="Body">
+  <a name="977838"> </a>Applications that do use the System Event Manager directly might do so to enqueue key events into the key queue or to retrieve each of the pen points that comprise a pen stroke from the pen queue. 
+</p>
+
+<h4 class="HCHeadC">
+  <a name="977840"> </a>Event Translation: Pen Strokes to Key Events
+</h4>
+<p class="Body">
+  <a name="977842"> </a>One of the higher-level functions provided by the System Event Manager is conversion of pen strokes on the digitizer to key events. For example, the System Event Manager sends any stroke in the input area of the digitizer automatically to the Graffiti or Graffiti 2 recognizer for conversion to a key event. Taps on input area icons, such as the Application button, Menu button, and Find button, are also intercepted by the System Event Manager and converted into the appropriate key events.
+</p>
+<p class="Body">
+  <a name="977843"> </a>When the system converts a pen stroke to a key event, it:
+</p>
+
+  <a name="977844"> </a><p class="B1Bullet"> &#8226; Retrieves all pen points that comprise the stroke from the pen queue</p>
+
+  <a name="977845"> </a><p class="B1Bullet"> &#8226; Converts the stroke into the matching key event</p>
+
+  <a name="977846"> </a><p class="B1Bullet"> &#8226; Enqueues that key event into the key queue</p>
+<p class="Body">
+  <a name="977847"> </a>Eventually, the system returns the key event to the application as a normal result of calling <a href="SystemEventManager.html#1161014"><span style="font-family: monospace">EvtGetEvent</span></a>. 
+</p>
+<p class="Body">
+  <a name="977851"> </a>Most applications rely on the following default behavior of the System Event Manager:
+</p>
+
+  <a name="977853"> </a><p class="B1Bullet"> &#8226; All strokes in the predefined input area of the digitizer are converted to key events</p>
+
+  <a name="977854"> </a><p class="B1Bullet"> &#8226; All taps on the input area icons are convert to key events</p>
+
+  <a name="977855"> </a><p class="B1Bullet"> &#8226; All other strokes are passed on to the application for processing</p>
+<p class="Body">
+  <a name="981536"> </a>If the <a href="CompatibilityApdx.html#995574">Graffiti 2 Feature Set</a> is present, you should be careful when processing key events one at a time. Graffiti 2 contains several multi-stroke characters. If the first stroke matches the stroke for another letter, the Graffiti 2 engine first enqueues the single-stroke character followed by a backspace and the multi-stroke character. 
+</p>
+<p class="Body">
+  <a name="981537"> </a>For example, The first stroke of a "k" character matches the stroke for the "l" character. When the user draws the first stroke of the "k," the Graffiti 2 engine processes that stroke and sends the "l" character to the key queue. When the user draws the second stroke of the "k," the Graffiti 2 engine sends a backspace to erase the "l" and then sends the "k" character. If your application has processed the "l" in the meantime, it has done so in error. 
+</p>
+<p class="Body">
+  <a name="981538"> </a>If your application processes characters as they are received, you should be aware that the following characters could be the first stroke of a multi-stroke character: 
+</p>
+
+  <a name="981539"> </a><p class="B1Bullet"> &#8226; The letter l</p>
+
+  <a name="981540"> </a><p class="B1Bullet"> &#8226; The space character</p>
+
+  <a name="981541"> </a><p class="B1Bullet"> &#8226; The single quote</p>
+
+  <a name="981542"> </a><p class="B1Bullet"> &#8226; The minus sign</p>
+<p class="Body">
+  <a name="981543"> </a>When your application receives these characters, it should wait to see if the next character received is a backspace. 
+</p>
+
+<h4 class="HCHeadC">
+  <a name="977857"> </a>Pen Queue Management
+</h4>
+<p class="Body">
+  <a name="977859"> </a>The pen queue is a preallocated area of system memory used for capturing the most recent pen strokes on the digitizer. It is a circular queue with a first-in, first-out method of storing and retrieving pen points. Points are usually enqueued by a low-level interrupt routine and dequeued by the System Event Manager or application.
+</p>
+<p class="Body">
+  <a name="977864"> </a><a href="EventLoop.html#977871">Table 3.1</a> summarizes pen management.
+</p>
+
+<h5 class="TgTable">
+  <a name="977891"> </a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <caption><a name="977871"> </a><div class="TableTitle">Table 3.1  Pen queue management </div></caption>
+  <tr bgcolor="#CCCCCC" valign="top">
+    <th><a name="977875"> </a><div class="CellHeading">The user...</div></th>
+    <th><a name="977877"> </a><div class="CellHeading">The system...</div></th>
+  </tr>
+  <tr valign="top">
+    <td><a name="977879"> </a><div class="CellBody">Brings the pen down on the digitizer.</div></td>
+    <td><a name="977881"> </a><div class="CellBody">Stores a pen-down sequence in the pen queue and starts the stroke capture. </div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="977883"> </a><div class="CellBody">Draws a character. </div></td>
+    <td><a name="977885"> </a><div class="CellBody">Stores additional points in the pen queue periodically. </div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="977887"> </a><div class="CellBody">Lifts the pen.</div></td>
+    <td><a name="977889"> </a><div class="CellBody">Stores a pen-up sequence in the pen queue and turns off stroke capture. </div></td>
+  </tr>
+</table>
+
+
+
+
+</h5><p class="Body">
+  <a name="977892"> </a>The System Event Manager provides an API for initializing and flushing the pen queue and for queuing and dequeuing points. Some state information is stored in the queue itself: to dequeue a stroke, the caller must first make a call to dequeue the stroke information (<a href="SystemEventManager.html#1160870"><span style="font-family: monospace">EvtDequeuePenStrokeInfo</span></a>) before the points for the stroke can be dequeued. Once the last point is dequeued, another <span style="font-family: monospace">EvtDequeuePenStrokeInfo</span> call must be made to get the next stroke.
+</p>
+<p class="Body">
+  <a name="977896"> </a>Applications usually don't need to call <span style="font-family: monospace">EvtDequeuePenStrokeInfo</span>  because the Event Manager calls this function automatically when it detects a complete pen stroke in the pen queue. After calling <span style="font-family: monospace">EvtDequeuePenStrokeInfo</span>, the System Event Manager stores the stroke bounds into the event record and returns the pen-up event to the application. The application is then free to dequeue the stroke points from the pen queue, or to ignore them altogether. If the points for that stroke are not dequeued by the time <a href="SystemEventManager.html#1161014"><span style="font-family: monospace">EvtGetEvent</span></a> is called again, the System Event Manager automatically flushes them.
+</p>
+
+<h4 class="HCHeadC">
+  <a name="977900"> </a>Key Queue Management
+</h4>
+<p class="Body">
+  <a name="977902"> </a>The key queue is an area of system memory preallocated for capturing key events. Key events come from one of two occurrences: 
+</p>
+
+  <a name="977903"> </a><p class="B1Bullet"> &#8226; As a direct result of the user pressing one of the buttons on the case </p>
+
+  <a name="977904"> </a><p class="B1Bullet"> &#8226; As a side effect of the user drawing a Graffiti or Graffiti 2 stroke on the digitizer, which is converted in software to a key event</p>
+<p class="Body">
+  <a name="977908"> </a><a href="EventLoop.html#977915">Table 3.2</a> summarizes key management.
+</p>
+
+<h5 class="TgTable">
+  <a name="977943"> </a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <caption><a name="977915"> </a><div class="TableTitle">Table 3.2  Key queue management </div></caption>
+  <tr bgcolor="#CCCCCC" valign="top">
+    <th><a name="977919"> </a><div class="CellHeading">User action</div></th>
+    <th><a name="977921"> </a><div class="CellHeading">System response</div></th>
+  </tr>
+  <tr valign="top">
+    <td><a name="977923"> </a><div class="CellBody">Hardware button press.</div></td>
+    <td><a name="977925"> </a><div class="CellBody">Interrupt routine enqueues the appropriate key event into the key queue, temporarily disables further hardware button interrupts, and sets up a timer task to run every 10 ms. </div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="977927"> </a><div class="CellBody">Hold down key for extended time period. </div></td>
+    <td><a name="977930"> </a><div class="CellBody">Timer task to supports auto-repeat of the key (timer task is also used to debounce the hardware). </div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="977932"> </a><div class="CellBody">Release key for certain amount of time.</div></td>
+    <td><a name="977934"> </a><div class="CellBody">Timer task reenables the hardware button interrupts.</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="977936"> </a><div class="CellBody">Pen stroke in input area of digitizer.</div></td>
+    <td><a name="977938"> </a><div class="CellBody">System Manager calls the Graffiti or Graffiti 2 recognizer, which then removes the stroke from the pen queue, converts the stroke into one or more key events, and finally enqueues these key events into the key queue. </div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="977940"> </a><div class="CellBody">Pen stroke on silk-screened icons.</div></td>
+    <td><a name="977942"> </a><div class="CellBody">System Event Manager converts the stroke into the appropriate key event and enqueues it into the key queue.</div></td>
+  </tr>
+</table>
+
+
+
+
+</h5><p class="Body">
+  <a name="977944"> </a>The System Event Manager provides an API for initializing and flushing the key queue and for enqueuing and dequeuing key events. Usually, applications have no need to dequeue key events; the Event Manager does this automatically if it detects a key in the queue and returns a <span style="font-family: monospace">keyDownEvent</span> to the application through the <a href="SystemEventManager.html#1161014"><span style="font-family: monospace">EvtGetEvent</span></a> call.
+</p>
+
+<h4 class="HCHeadC">
+  <a name="977949"> </a>Auto-Off Control
+</h4>
+<p class="Body">
+  <a name="977950"> </a>Because the System Event Manager manages hardware events like pen taps and hardware button presses, it's responsible for resetting the auto-off timer on the handheld. Whenever the system detects a hardware event, it automatically resets the auto-off timer to 0. If an application needs to reset the auto-off timer manually, it can do so through the System Event Manager call <a href="SystemEventManager.html#1161259"><span style="font-family: monospace">EvtResetAutoOffTimer</span></a>.
+</p>
+
+<h2 class="HaHeadA">
+  <a name="977957"> </a>System Event Manager Summary 
+<a href="#977418"><img src="images/top.gif" border="0"></a></h2>
+
+
+<h5 class="TgTable">
+  <a name="978126"> </a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <caption></caption>
+  <tr bgcolor="#CCCCCC" valign="top">
+    <th colspan="2" rowspan="1"><a name="977960"> </a><div class="CellHeading">System Event Manager Functions</div></th>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="977964"> </a><div class="CellHeading">Main Event Queue Management</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="977971"> </a><div class="CellBody"><a href="SystemEventManager.html#1161014">EvtGetEvent</a> </div></td>
+    <td><a name="977976"> </a><div class="CellBody"><a href="SystemEventManager.html#1160938">EvtEventAvail</a> </div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="977981"> </a><div class="CellBody"><a href="SystemEventManager.html#1161360">EvtSysEventAvail</a></div></td>
+    <td><a name="977986"> </a><div class="CellBody"><a href="SystemEventManager.html#1160775">EvtAddEventToQueue</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="977991"> </a><div class="CellBody"><a href="SystemEventManager.html#1160791">EvtAddUniqueEventToQueue</a></div></td>
+    <td><a name="977996"> </a><div class="CellBody"><a href="SystemEventManager.html#1160818">EvtCopyEvent</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978001"> </a><div class="CellBody"><a href="SystemEventManager.html#1161341">EvtSetNullEventTick</a></div></td>
+    <td><a name="978003"> </a><div class="CellBody"><br></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978005"> </a><div class="CellHeading">Pen Queue Management</div></td>
+    <td><a name="978007"> </a><div class="CellBody"><br></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978012"> </a><div class="CellBody"><a href="SystemEventManager.html#1161219">EvtPenQueueSize</a></div></td>
+    <td><a name="978017"> </a><div class="CellBody"><a href="SystemEventManager.html#1160851">EvtDequeuePenPoint</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978022"> </a><div class="CellBody"><a href="SystemEventManager.html#1160870">EvtDequeuePenStrokeInfo</a></div></td>
+    <td><a name="978027"> </a><div class="CellBody"><a href="SystemEventManager.html#1160971">EvtFlushNextPenStroke</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978032"> </a><div class="CellBody"><a href="SystemEventManager.html#1160994">EvtFlushPenQueue</a></div></td>
+    <td><a name="978037"> </a><div class="CellBody"><a href="SystemEventManager.html#1161038">EvtGetPen</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978042"> </a><div class="CellBody"><a href="SystemEventManager.html#1161061">EvtGetPenBtnList</a></div></td>
+    <td><a name="978044"> </a><div class="CellBody"><br></div></td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="978046"> </a><div class="CellHeading">Key Queue Management</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978053"> </a><div class="CellBody"><a href="SystemEventManager.html#1161203">EvtKeyQueueSize</a></div></td>
+    <td><a name="978058"> </a><div class="CellBody"><a href="SystemEventManager.html#1160915">EvtEnqueueKey</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978063"> </a><div class="CellBody"><a href="SystemEventManager.html#1160956">EvtFlushKeyQueue</a></div></td>
+    <td><a name="978068"> </a><div class="CellBody"><a href="SystemEventManager.html#1161188">EvtKeyQueueEmpty</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978073"> </a><div class="CellBody"><a href="SystemEventManager.html#1167369">EvtKeydownIsVirtual</a></div></td>
+    <td><a name="978075"> </a><div class="CellBody"><br></div></td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="978077"> </a><div class="CellHeading">Handling pen strokes and key strokes</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978084"> </a><div class="CellBody"><a href="SystemEventManager.html#1160902">EvtEnableGraffiti</a></div></td>
+    <td><a name="978089"> </a><div class="CellBody"><a href="SystemEventManager.html#1161235">EvtProcessSoftKeyStroke</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="978091"> </a><div class="CellHeading">Handling input area</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978098"> </a><div class="CellBody"><a href="SystemEventManager.html#1161110">EvtGetSilkscreenAreaList</a></div></td>
+    <td><a name="978100"> </a><div class="CellBody"><br></div></td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="978102"> </a><div class="CellHeading">Handling power on and off events</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978109"> </a><div class="CellBody"><a href="SystemEventManager.html#1161259">EvtResetAutoOffTimer</a></div></td>
+    <td><a name="978114"> </a><div class="CellBody"><a href="SystemEventManager.html#1161288">EvtSetAutoOffTimer</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978119"> </a><div class="CellBody"><a href="SystemEventManager.html#1161383">EvtWakeup</a></div></td>
+    <td><a name="978125"> </a><div class="CellBody"><a href="SystemEventManager.html#1161408">EvtWakeupWithoutNilEvent</a></div></td>
+  </tr>
+</table>
+
+
+
+
+</h5>
+<h5 class="TgTable">
+  <a name="978221"> </a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <caption></caption>
+  <tr bgcolor="#CCCCCC" valign="top">
+    <th><a name="978129"> </a><div class="CellHeading">Graffiti Manager Functions</div></th>
+    <th><a name="978131"> </a><div class="CellHeading"><br></div></th>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><a name="978133"> </a><div class="CellHeading">Translate a Stroke into Keyboard Events</div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978140"> </a><div class="CellBody"><a href="GraffitiManager.html#1126199">GrfProcessStroke</a></div></td>
+    <td><a name="978142"> </a><div class="CellBody"><br></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978144"> </a><div class="CellHeading">Shift State</div></td>
+    <td><a name="978146"> </a><div class="CellBody"><br></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978151"> </a><div class="CellBody"><a href="GraffitiManager.html#1126133">GrfInitState</a><br><a href="GraffitiManager.html#1125887">GrfCleanState</a><br><a href="GraffitiManager.html#1125941">GrfFindBranch</a></div></td>
+    <td><a name="978162"> </a><div class="CellBody"><a href="GraffitiManager.html#1126107">GrfGetState</a><br><a href="GraffitiManager.html#1126222">GrfSetState</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978167"> </a><div class="CellHeading">Point Buffer</div></td>
+    <td><a name="978169"> </a><div class="CellBody"><br></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978174"> </a><div class="CellBody"><a href="GraffitiManager.html#1126067">GrfGetNumPoints</a><br><a href="GraffitiManager.html#1125869">GrfAddPoint</a><br><a href="GraffitiManager.html#1125962">GrfFlushPoints</a><br><a href="GraffitiManager.html#1126154">GrfMatch</a></div></td>
+    <td><a name="978188"> </a><div class="CellBody"><a href="GraffitiManager.html#1126085">GrfGetPoint</a><br><a href="GraffitiManager.html#1125923">GrfFilterPoints</a><br><a href="GraffitiManager.html#1126003">GrfGetGlyphMapping</a><br><a href="GraffitiManager.html#1126179">GrfMatchGlyph</a></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978199"> </a><div class="CellHeading">Working with Macros</div></td>
+    <td><a name="978201"> </a><div class="CellBody"><br></div></td>
+  </tr>
+  <tr valign="top">
+    <td><a name="978206"> </a><div class="CellBody"><a href="GraffitiManager.html#1125980">GrfGetAndExpandMacro</a><br><a href="GraffitiManager.html#1125905">GrfDeleteMacro</a><br><a href="GraffitiManager.html#1126045">GrfGetMacroName</a></div></td>
+    <td><a name="978217"> </a><div class="CellBody"><a href="GraffitiManager.html#1125843">GrfAddMacro</a><br><a href="GraffitiManager.html#1126025">GrfGetMacro</a></div></td>
+  </tr>
+</table>
+
+
+
+
+</h5>
+<h5 class="TgTable">
+  <a name="978240"> </a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <caption></caption>
+  <tr bgcolor="#CCCCCC" valign="top">
+    <th><a name="978224"> </a><div class="CellHeading">Key Manager Functions</div></th>
+    <th><a name="978226"> </a><div class="CellHeading"><br></div></th>
+  </tr>
+  <tr valign="top">
+    <td><a name="978231"> </a><div class="CellBody"><a href="KeyManager.html#1129288">KeyCurrentState</a><br><a href="KeyManager.html#1129333">KeySetMask</a></div></td>
+    <td><a name="978239"> </a><div class="CellBody"><a href="KeyManager.html#1129311">KeyRates</a></div></td>
+  </tr>
+</table>
+
+
+
+
+</h5>
+<h5 class="TgTable">
+  <a name="978256"> </a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <caption></caption>
+  <tr bgcolor="#CCCCCC" valign="top">
+    <th><a name="978243"> </a><div class="CellHeading">Pen Manager Functions</div></th>
+    <th><a name="978245"> </a><div class="CellHeading"><br></div></th>
+  </tr>
+  <tr valign="top">
+    <td><a name="978250"> </a><div class="CellBody"><a href="PenManager.html#1144765">PenCalibrate</a> </div></td>
+    <td><a name="978255"> </a><div class="CellBody"><a href="PenManager.html#1144788">PenResetCalibration</a> </div></td>
+  </tr>
+</table>
+
+
+
+
+</h5><p class="Body">
+  <a name="978258"> </a>
+</p>
+&nbsp;<br>
+				<!-- CONTENT_END -->
+
+		</td>
+		<td width="5">&nbsp;&nbsp;</td>
+	</tr>
+      </table>
+    </td>
+			</tr>
+  <tr>
+				<td>
+					<table border="0" cellpadding="0" cellspacing="0" width="760">
+        <!-- CONTENTCELL_END -->
+        <tr valign="top"> 
+          <td width="10">&nbsp;<!-- FOOTER_START --></td>
+          <td width="72">&nbsp;</td>
+          <td width="25" bgcolor="white" background="images/bkgrnd.gif">&nbsp;</td>
+          <td width="600"> 
+            <table border="0" cellpadding="0" cellspacing="0" width="600">
+              <tr> 
+                <td><img src="images/rule_10-1-5_ltblue.gif" width="600" height="16" border="0"></td>
+              </tr>
+              <tr> 
+                <td> 
+                  <p align="center" class="footer"> ©2002 PalmSource, Inc. and its affiliates.  All rights reserved. 
+<a href="http://www.palmos.com/dev/training/">Training</a>&nbsp;|&nbsp;<a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a>&nbsp;|&nbsp;<a href="http://www.palmos.com/">Palm&nbsp;OS&nbsp;Platform</a>&nbsp;|&nbsp;<a href="Companion_Front.html" target="_blank">Legal Notices</a>&nbsp;<br>
+												<!-- FOOTER_END --><br>
+											</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+				</td>
+			</tr>
+</table>
+</BODY>
+</HTML>

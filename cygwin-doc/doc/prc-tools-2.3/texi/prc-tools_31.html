@@ -1,0 +1,98 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: obj-res</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: obj-res">
+<META NAME="keywords" CONTENT="Using PRC-Tools: obj-res">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC36"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_30.html#SEC35"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_32.html#SEC37"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_32.html#SEC37"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_27.html#SEC32"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 6.4 obj-res </H2>
+<!--docid::SEC36::-->
+<P>
+
+<A NAME="IDX14"></A>
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>obj-res [ -l ] [ -L <VAR>exportfile</VAR> ] [ -z <VAR>n</VAR> ] <VAR>bfdfile</VAR>
+</pre></td></tr></table></P><P>
+
+The <CODE>obj-res</CODE> utility reads a file in a BFD supported object file format
+(most usually COFF) and generates the raw binary resource files necessary to
+make up a Palm OS executable in the current directory.  These files can be
+bound together into a Palm OS resource data file using <CODE>build-prc</CODE>.
+</P><P>
+
+This utility is <STRONG>deprecated</STRONG>.  It is provided only for use in existing
+legacy build scripts and makefiles.  In new projects it is more convenient to
+present the same object file directly to <CODE>build-prc</CODE>, thus enabling
+better error checking, avoiding a separate <CODE>obj-res</CODE> step, and avoiding
+the clutter of separate <TT>`.grc'</TT> files.
+</P><P>
+
+In particular, if you are using multiple code resources or the stand-alone
+code facilities then you <STRONG>must not</STRONG> use <CODE>obj-res</CODE>.  Such projects
+require information that is thrown away by <CODE>obj-res</CODE>, and your build
+will fail or, worse, silently produce invalid results.
+</P><P>
+
+But if you nonetheless choose to use it: <CODE>obj-res</CODE> reads from
+<VAR>bfdfile</VAR> and writes to a number of files with names of the form
+<TT>`<VAR>type</VAR><VAR>nnnn</VAR>.<VAR>bfdfile</VAR>.grc'</TT>.  By default it generates
+resources for a Palm OS application.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-l</CODE>
+<DD>Generate resources for a GLib shared library.
+<P>
+
+<DT><CODE>-L <VAR>exportfile</VAR></CODE>
+<DD>Generate resources for a Palm OS version 2 system shared library.
+<P>
+
+Unlike previous versions of obj-res, this version cannot generate an
+offset table in <VAR>exportfile</VAR>.  You should use <CODE>build-prc</CODE>
+directly with a definition file instead.
+</P><P>
+
+<DT><CODE>-z <VAR>n</VAR></CODE>
+<DD>Compress the data resource, <TT>`data0000.<VAR>bfdfile</VAR>.grc'</TT>, similarly to
+the corresponding <CODE>build-prc</CODE> option.
+</DL>
+<P>
+
+<A NAME="palmdev-prep"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

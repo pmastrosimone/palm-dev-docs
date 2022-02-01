@@ -1,0 +1,130 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Frames</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Frames">
+<META NAME="keywords" CONTENT="Debugging with GDB: Frames">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC42"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_41.html#SEC41"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_43.html#SEC43"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_41.html#SEC41"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_41.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 6.1 Stack frames </H2>
+<!--docid::SEC42::-->
+<P>
+
+<A NAME="IDX223"></A>
+<A NAME="IDX224"></A>
+The call stack is divided up into contiguous pieces called <EM>stack
+frames</EM>, or <EM>frames</EM> for short; each frame is the data associated
+with one call to one function.  The frame contains the arguments given
+to the function, the function's local variables, and the address at
+which the function is executing.
+</P><P>
+
+<A NAME="IDX225"></A>
+<A NAME="IDX226"></A>
+<A NAME="IDX227"></A>
+When your program is started, the stack has only one frame, that of the
+function <CODE>main</CODE>.  This is called the <EM>initial</EM> frame or the
+<EM>outermost</EM> frame.  Each time a function is called, a new frame is
+made.  Each time a function returns, the frame for that function invocation
+is eliminated.  If a function is recursive, there can be many frames for
+the same function.  The frame for the function in which execution is
+actually occurring is called the <EM>innermost</EM> frame.  This is the most
+recently created of all the stack frames that still exist.
+</P><P>
+
+<A NAME="IDX228"></A>
+Inside your program, stack frames are identified by their addresses.  A
+stack frame consists of many bytes, each of which has its own address; each
+kind of computer has a convention for choosing one byte whose
+address serves as the address of the frame.  Usually this address is kept
+in a register called the <EM>frame pointer register</EM> while execution is
+going on in that frame.
+</P><P>
+
+<A NAME="IDX229"></A>
+GDB assigns numbers to all existing stack frames, starting with
+zero for the innermost frame, one for the frame that called it,
+and so on upward.  These numbers do not really exist in your program;
+they are assigned by GDB to give you a way of designating stack
+frames in GDB commands.
+</P><P>
+
+<A NAME="IDX230"></A>
+Some compilers provide a way to compile functions so that they operate
+without stack frames.  (For example, the gcc option
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre><SAMP>`-fomit-frame-pointer'</SAMP>
+</FONT></pre></td></tr></table>generates functions without a frame.)
+This is occasionally done with heavily used library functions to save
+the frame setup time.  GDB has limited facilities for dealing
+with these function invocations.  If the innermost function invocation
+has no stack frame, GDB nevertheless regards it as though
+it had a separate frame, which is numbered zero as usual, allowing
+correct tracing of the function call chain.  However, GDB has
+no provision for frameless functions elsewhere in the stack.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX231"></A>
+<A NAME="IDX232"></A>
+<DT><CODE>frame <VAR>args</VAR></CODE>
+<DD>The <CODE>frame</CODE> command allows you to move from one stack frame to another,
+and to print the stack frame you select.  <VAR>args</VAR> may be either the
+address of the frame or the stack frame number.  Without an argument,
+<CODE>frame</CODE> prints the current stack frame.
+<P>
+
+<A NAME="IDX233"></A>
+<A NAME="IDX234"></A>
+<DT><CODE>select-frame</CODE>
+<DD>The <CODE>select-frame</CODE> command allows you to move from one stack frame
+to another without printing the frame.  This is the silent version of
+<CODE>frame</CODE>.
+</DL>
+<P>
+
+<A NAME="Backtrace"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_41.html#SEC41"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_43.html#SEC43"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_41.html#SEC41"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_41.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

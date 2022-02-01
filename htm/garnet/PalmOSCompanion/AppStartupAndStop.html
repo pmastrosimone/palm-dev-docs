@@ -1,0 +1,1407 @@
+<html>
+<head>
+<title>(68K) Application Startup and Stop | Palm OS&#174; Programmer's Companion</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 10:43:06">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="997517"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="CompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Nutshell.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="EventLoop.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">2 &nbsp;&nbsp;
+Application Startup and Stop</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Palm OS&#174; Programmer's Companion</p>
+<p class="SubTitle">Volume I </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="AppStartupAndStop.html">2  Application Startup and Stop</a></h1>
+
+   <h2 class="SideTOC2"><a href="#997566">
+   Launch Codes and Launching an Application</a></h2>
+
+   <h2 class="SideTOC2"><a href="#997593">
+   Responding to Launch Codes</a></h2>
+
+      <h3 class="SideTOC3"><a href="#997681">
+      Responding to Normal Launch</a></h3>
+
+      <h3 class="SideTOC3"><a href="#997801">
+      Responding to Other Launch Codes</a></h3>
+
+   <h2 class="SideTOC2"><a href="#997824">
+   Launching Applications Programmatically</a></h2>
+
+   <h2 class="SideTOC2"><a href="#997886">
+   Creating Your Own Launch Codes </a></h2>
+
+   <h2 class="SideTOC2"><a href="#997894">
+   Stopping an Application </a></h2>
+
+   <h2 class="SideTOC2"><a href="#997938">
+   Notifications</a></h2>
+
+      <h3 class="SideTOC3"><a href="#997966">
+      Registering for a Notification</a></h3>
+
+      <h3 class="SideTOC3"><a href="#998034">
+      Writing a Notification Handler</a></h3>
+
+      <h3 class="SideTOC3"><a href="#998079">
+      Sleep and Wake Notifications</a></h3>
+
+   <h2 class="SideTOC2"><a href="#998138">
+   Helper Notifications</a></h2>
+
+      <h3 class="SideTOC3"><a href="#998192">
+      When to Use the Helper API</a></h3>
+
+      <h3 class="SideTOC3"><a href="#998213">
+      Requesting a Helper Service</a></h3>
+
+      <h3 class="SideTOC3"><a href="#998290">
+      Implementing a Helper</a></h3>
+
+   <h2 class="SideTOC2"><a href="#1003911">
+   Socket Notifications</a></h2>
+
+   <h2 class="SideTOC2"><a href="#998407">
+   Launch Code Summary</a></h2>
+
+   <h2 class="SideTOC2"><a href="#998657">
+   Notification Summary</a></h2>
+
+   <h2 class="SideTOC2"><a href="#998912">
+   Launch and Notification Function Summary</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="997519"> </a>On desktop computers, an application starts up when a user launches it and stops when the user chooses the Exit or Quit command. These things occur a little bit differently on the Palm OS<sup>&#174;</sup> handheld. A Palm OS application does launch when the user requests it, but it may also launch in response to some other user action, such as a request for the global find facility. Palm OS applications don't have an Exit command; instead they exit when a user requests another application. </p>
+
+<p><a name="997520"> </a>This chapter describes how an application launches, how an application stops, and the code you must write to perform these tasks properly. It also covers notifications, which is another way for the system to launch your code when certain events occur. Notifications are available in later releases of the Palm OS. This chapter covers: </p>
+<ul type="disc">
+  <li><a name="997524"> </a><a href="AppStartupAndStop.html#997566">Launch Codes and Launching an Application</a>
+  <li><a name="997528"> </a><a href="AppStartupAndStop.html#997593">Responding to Launch Codes</a>
+  <li><a name="997532"> </a><a href="AppStartupAndStop.html#997824">Launching Applications Programmatically</a>
+  <li><a name="997536"> </a><a href="AppStartupAndStop.html#997886">Creating Your Own Launch Codes</a>
+  <li><a name="997540"> </a><a href="AppStartupAndStop.html#997894">Stopping an Application</a>
+  <li><a name="997544"> </a><a href="AppStartupAndStop.html#997938">Notifications</a>
+  <li><a name="997548"> </a><a href="AppStartupAndStop.html#998138">Helper Notifications</a>
+  <li><a name="997552"> </a><a href="AppStartupAndStop.html#998407">Launch Code Summary</a>
+  <li><a name="997556"> </a><a href="AppStartupAndStop.html#998657">Notification Summary</a>
+  <li><a name="997560"> </a><a href="AppStartupAndStop.html#998912">Launch and Notification Function Summary</a>
+</ul>
+
+<p><a name="997561"> </a>This chapter does not cover the main application event loop. The event loop is covered in <a href="EventLoop.html#1004923">Chapter 3, "Event Loop."</a></p>
+
+<h2 class="haH2">
+  <a name="997566"> </a>Launch Codes and Launching an Application <a href="#997517"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="997568"> </a>An application launches when it receives a <b>launch code</b>. Launch codes are a means of communication between the Palm OS and the application (or between two applications). </p>
+
+<p><a name="997569"> </a>For example, an application typically launches when a user presses one of the buttons on the device or selects an application icon from the application launcher screen. When this happens, the system generates the launch code <a href="../PalmOSReference/AppLaunchCodes.html#1024358"><code>sysAppLaunchCmdNormalLaunch</code></a>, which tells the application to perform a full launch and display its user interface. </p>
+
+<p><a name="997572"> </a>Other launch codes specify that the application should perform some action but not necessarily become the current application (the application the user sees). A good example of this is the launch code used by the global find facility. The global find facility allows users to search all databases for a certain record, such as a name. In this case, it would be very wasteful to do a full launch&#8212;including the user interface&#8212;of each application only to access the application's databases in search of that item. Using a launch code avoids this overhead.</p>
+
+<p><a name="997573"> </a>Each launch code may be accompanied by two types of information:</p>
+<ul type="disc">
+  <li><a name="997575"> </a>A parameter block, a pointer to a structure that contains several parameters. These parameters contain information necessary to handle the associated launch code. 
+  <li><a name="997577"> </a>Launch flags indicate how the application should behave. For example, a flag could be used to specify whether the application should display UI or not. (See <a href="../PalmOSReference/AppLaunchCodes.html#1012458">"Launch Flags"</a> in the <i>Palm OS Programmer's API Reference</i>.) 
+</ul>
+
+<p><a name="997584"> </a>A complete list of all launch codes is provided at the end of this chapter in the section <a href="AppStartupAndStop.html#998407">"Launch Code Summary."</a> That section contains links into where each launch code is described in the <i>Palm OS Programmer's API Reference</i>. </p>
+
+<h2 class="haH2">
+  <a name="997593"> </a>Responding to Launch Codes <a href="#997517"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="997594"> </a>Your application should respond to launch codes in a function named <a href="../PalmOSReference/SystemManager.html#1077030"><code>PilotMain</code></a>. <code>PilotMain</code> is the entry point for all applications. </p>
+
+<p><a name="997599"> </a>When an application receives a launch code, it must first check whether it can handle this particular code. For example, only applications that have text data should respond to a launch code requesting a string search. If an application can't handle a launch code, it exits without failure. Otherwise, it performs the action immediately and returns. </p>
+
+<p><a name="997603"> </a><a href="AppStartupAndStop.html#997606">Listing 2.1</a> shows parts of <code>PilotMain</code> from the Datebook application as an example. To see the complete example, go to the examples folder in the Palm OS SDK and look at the file <code>Datebook.c</code>. </p>
+<p class="CCodeCaption">
+  <a name="997606"> </a><b>Listing 2.1&nbsp;&nbsp;PilotMain in Datebook.c</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+UInt32 PilotMain (UInt16 cmd, void *cmdPBP, 
+UInt16 launchFlags)<a name="997607"> </a>
+{<a name="997608"> </a>
+   return DBPilotMain(cmd, cmdPBP, launchFlags);<a name="997609"> </a>
+}<a name="997610"> </a>
+ <a name="997611"> </a>
+static UInt32 DBPilotMain (UInt16 cmd, void *cmdPBP, 
+UInt16 launchFlags)<a name="997612"> </a>
+{<a name="997613"> </a>
+   UInt16 error;<a name="997614"> </a>
+   Boolean launched;<a name="997615"> </a>
+ <a name="997616"> </a>
+   // This app makes use of PalmOS 2.0 features.It will crash <a name="997617"> </a>
+   // if run on an earlier version of PalmOS. Detect and warn <a name="997618"> </a>
+   // if this happens, then exit.<a name="997619"> </a>
+   error = RomVersionCompatible (version20, launchFlags);<a name="997620"> </a>
+   if (error)<a name="997621"> </a>
+      return error;<a name="997622"> </a>
+ <a name="997623"> </a>
+   // Launch code sent by the launcher or the datebook <a name="997624"> </a>
+   // button.<a name="997625"> </a>
+   if (cmd == sysAppLaunchCmdNormalLaunch) {<a name="997626"> </a>
+      error = StartApplication ();<a name="997627"> </a>
+      if (error) return (error);<a name="997628"> </a>
+ <a name="997629"> </a>
+      FrmGotoForm (DayView);<a name="997630"> </a>
+      EventLoop ();<a name="997631"> </a>
+      StopApplication ();<a name="997632"> </a>
+   }<a name="997633"> </a>
+   <a name="997634"> </a>
+ <a name="997635"> </a>
+   // Launch code sent by text search.<a name="997636"> </a>
+   else if (cmd == sysAppLaunchCmdFind) {<a name="997637"> </a>
+      Search ((FindParamsPtr)cmdPBP);<a name="997638"> </a>
+   }<a name="997639"> </a>
+   <a name="997640"> </a>
+ <a name="997641"> </a>
+   // This launch code might be sent to the app when it's <a name="997642"> </a>
+   // already running if the user hits the "Go To" button in <a name="997643"> </a>
+   // the Find Results dialog box.<a name="997644"> </a>
+   else if (cmd == sysAppLaunchCmdGoTo) {<a name="997645"> </a>
+      launched = launchFlags &amp; sysAppLaunchFlagNewGlobals;<a name="997646"> </a>
+      if (launched) {<a name="997647"> </a>
+         error = StartApplication ();<a name="997648"> </a>
+         if (error) return (error);<a name="997649"> </a>
+ <a name="997650"> </a>
+         GoToItem ((GoToParamsPtr) cmdPBP, launched);<a name="997651"> </a>
+ <a name="997652"> </a>
+         EventLoop ();<a name="997653"> </a>
+         StopApplication ();<a name="997654"> </a>
+         else<a name="997655"> </a>
+         GoToItem ((GoToParamsPtr) cmdPBP, launched);<a name="997656"> </a>
+   }<a name="997657"> </a>
+ <a name="997658"> </a>
+   // Launch code sent by sync application to notify the <a name="997659"> </a>
+   // datebook application that its database has been synced.<a name="997660"> </a>
+   // ...<a name="997661"> </a>
+   // Launch code sent by Alarm Manager to notify the <a name="997662"> </a>
+   // datebook application that an alarm has triggered.<a name="997663"> </a>
+   // ...<a name="997664"> </a>
+   // Launch code sent by Alarm Manager to notify the <a name="997665"> </a>
+   // datebook application that is should display its alarm <a name="997666"> </a>
+   // dialog.<a name="997667"> </a>
+   // ...<a name="997668"> </a>
+   // Launch code sent when the system time is changed.<a name="997669"> </a>
+   // ...<a name="997670"> </a>
+   // Launch code sent after the system is reset. We use this <a name="997671"> </a>
+   // time to create our default database if this is a hard <a name="997672"> </a>
+   // reset<a name="997673"> </a>
+   // ...<a name="997674"> </a>
+   // Launch code sent by the DesktopLink server when it <a name="997675"> </a>
+   // creates a new database.  We will initialize the new <a name="997676"> </a>
+   // database.<a name="997677"> </a>
+   return (0);<a name="997678"> </a>
+}<a name="997679"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h3 class="hbH3">
+  <a name="997681"> </a>Responding to Normal Launch <a href="#997517"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="997682"> </a>When an application receives the launch code <a href="../PalmOSReference/AppLaunchCodes.html#1024358"><code>sysAppLaunchCmdNormalLaunch</code></a>, it begins with a startup routine, then goes into an event loop, and finally exits with a stop routine. (The event loop is described in <a href="EventLoop.html#1004923">Chapter 3, "Event Loop."</a> The stop routine is shown in the section <a href="AppStartupAndStop.html#997894">"Stopping an Application"</a> at the end of this chapter.) </p>
+
+<p><a name="997691"> </a>During the startup routine, your application should perform these actions: </p>
+<ol type="1">
+  <li value="1"><a name="997693"> </a>Get system-wide preferences (for example for numeric or date and time formats) and use them to initialize global variables that will be referenced throughout the application. 
+  <li value="2"><a name="997694"> </a>Find the application database by creator type. If none exists, create it and initialize it. 
+  <li value="3"><a name="997696"> </a>Get application-specific preferences and initialize related global variables. 
+  <li value="4"><a name="997698"> </a>Initialize any other global variables.
+</ol>
+
+<p><a name="997702"> </a>As you saw in <a href="AppStartupAndStop.html#997606">Listing 2.1</a>, the Datebook application example responds to <code>sysAppLaunchCmdNormalLaunch</code> by calling a function named <code>StartApplication</code>. <a href="AppStartupAndStop.html#997707">Listing 2.2</a> shows the <code>StartApplication</code> function. </p>
+<p class="CCodeCaption">
+  <a name="997707"> </a><b>Listing 2.2&nbsp;&nbsp;StartApplication from Datebook.c</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+static UInt16 StartApplication (void)<a name="997708"> </a>
+{<a name="997709"> </a>
+   UInt16 error = 0;<a name="997710"> </a>
+   Err err = 0;<a name="997711"> </a>
+   UInt16 mode;<a name="997712"> </a>
+   DateTimeType dateTime;<a name="997713"> </a>
+   DatebookPreferenceType prefs;<a name="997714"> </a>
+   SystemPreferencesType sysPrefs;<a name="997715"> </a>
+   UInt16 prefsSize;<a name="997716"> </a>
+ <a name="997717"> </a>
+   // Step 1: Get system-wide preferences. <a name="997718"> </a>
+   PrefGetPreferences (&amp;sysPrefs);<a name="997719"> </a>
+   // Determime if secret records should be <a name="997720"> </a>
+   // displayed.<a name="997721"> </a>
+   HideSecretRecords = sysPrefs.hideSecretRecords;<a name="997722"> </a>
+   <a name="997723"> </a>
+   if (HideSecretRecords)<a name="997724"> </a>
+      mode = dmModeReadWrite;<a name="997725"> </a>
+   else<a name="997726"> </a>
+      mode = dmModeReadWrite | dmModeShowSecret;<a name="997727"> </a>
+ <a name="997728"> </a>
+   // Get the time formats from the system preferences.<a name="997729"> </a>
+   TimeFormat = sysPrefs.timeFormat;<a name="997730"> </a>
+ <a name="997731"> </a>
+   // Get the date formats from the system preferences.<a name="997732"> </a>
+   LongDateFormat = sysPrefs.longDateFormat;<a name="997733"> </a>
+   ShortDateFormat = sysPrefs.dateFormat;<a name="997734"> </a>
+ <a name="997735"> </a>
+   // Get the starting day of the week from the system <a name="997736"> </a>
+   // preferences.<a name="997737"> </a>
+   StartDayOfWeek = sysPrefs.weekStartDay;<a name="997738"> </a>
+   <a name="997739"> </a>
+ <a name="997740"> </a>
+   // Get today's date.<a name="997741"> </a>
+   TimSecondsToDateTime (TimGetSeconds(), &amp;dateTime);<a name="997742"> </a>
+   Date.year = dateTime.year - firstYear;<a name="997743"> </a>
+   Date.month = dateTime.month;<a name="997744"> </a>
+   Date.day = dateTime.day;<a name="997745"> </a>
+ <a name="997746"> </a>
+ <a name="997747"> </a>
+   // Step 2. Find the application's data file.  If it <a name="997748"> </a>
+   // doesn't exist, create it.<a name="997749"> </a>
+   ApptDB = DmOpenDatabaseByTypeCreator(datebookDBType, 
+      sysFileCDatebook, mode);<a name="997750"> </a>
+   if (! ApptDB) {<a name="997751"> </a>
+      error = DmCreateDatabase (0, datebookDBName, <a name="997752"> </a>
+         sysFileCDatebook, datebookDBType, false);<a name="997753"> </a>
+      if (error) return error;<a name="997754"> </a>
+      <a name="997755"> </a>
+      ApptDB = <a name="997756"> </a>
+         DmOpenDatabaseByTypeCreator(datebookDBType, 
+         sysFileCDatebook, mode);<a name="997757"> </a>
+      if (! ApptDB) return (1);<a name="997758"> </a>
+ <a name="997759"> </a>
+      error = ApptAppInfoInit (ApptDB);<a name="997760"> </a>
+      if (error) return error;<a name="997761"> </a>
+   }<a name="997762"> </a>
+   <a name="997763"> </a>
+ <a name="997764"> </a>
+   // Step 3. Get application-specific preferences. <a name="997765"> </a>
+   // Read the preferences/saved-state information. There is <a name="997766"> </a>
+   // only one version of the DateBook preferences so don't <a name="997767"> </a>
+   // worry about multiple versions.<a name="997768"> </a>
+   prefsSize = sizeof (DatebookPreferenceType);<a name="997769"> </a>
+   if (PrefGetAppPreferences (sysFileCDatebook, <a name="997770"> </a>
+         datebookPrefID, &amp;prefs, &amp;prefsSize, true) <a name="997771"> </a>
+         != noPreferenceFound) {<a name="997772"> </a>
+      DayStartHour = prefs.dayStartHour;<a name="997773"> </a>
+      DayEndHour = prefs.dayEndHour;<a name="997774"> </a>
+      AlarmPreset = prefs.alarmPreset;<a name="997775"> </a>
+      NoteFont = prefs.noteFont;<a name="997776"> </a>
+      SaveBackup = prefs.saveBackup;<a name="997777"> </a>
+      ShowTimeBars = prefs.showTimeBars;<a name="997778"> </a>
+      CompressDayView = prefs.compressDayView;<a name="997779"> </a>
+      ShowTimedAppts = prefs.showTimedAppts;<a name="997780"> </a>
+      ShowUntimedAppts = prefs.showUntimedAppts;<a name="997781"> </a>
+      ShowDailyRepeatingAppts = <a name="997782"> </a>
+         prefs.showDailyRepeatingAppts;<a name="997783"> </a>
+   }<a name="997784"> </a>
+ <a name="997785"> </a>
+   // Step 4. Initialize any other global variables. <a name="997786"> </a>
+   TopVisibleAppt = 0;<a name="997787"> </a>
+   CurrentRecord = noRecordSelected;	<a name="997788"> </a>
+   <a name="997789"> </a>
+ <a name="997790"> </a>
+   // Load the far call jump table.<a name="997791"> </a>
+   FarCalls.apptGetAppointments = ApptGetAppointments;<a name="997792"> </a>
+   FarCalls.apptGetRecord = ApptGetRecord;<a name="997793"> </a>
+   FarCalls.apptFindFirst = ApptFindFirst;<a name="997794"> </a>
+   FarCalls.apptNextRepeat = ApptNextRepeat;<a name="997795"> </a>
+   FarCalls.apptNewRecord = ApptNewRecord;<a name="997796"> </a>
+   FarCalls.moveEvent = MoveEvent;<a name="997797"> </a>
+ <a name="997798"> </a>
+   return (error);<a name="997799"> </a>
+}<a name="997800"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h3 class="hbH3">
+  <a name="997801"> </a>Responding to Other Launch Codes <a href="#997517"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="997802"> </a>If an application receives a launch code other than <a href="../PalmOSReference/AppLaunchCodes.html#1024358"><code>sysAppLaunchCmdNormalLaunch</code></a>, it decides if it should respond to that launch code. If it responds to the launch code, it does so by implementing a launch code handler, which is invoked from its <a href="../PalmOSReference/SystemManager.html#1077030"><code>PilotMain</code></a> function. </p>
+
+<p><a name="997806"> </a>In most cases, when you respond to other launch codes, you are not able to access global variables. Global variables are generally only allocated after an application receives <code>sysAppLaunchCmdNormalLaunch</code> (see <a href="AppStartupAndStop.html#997707">Listing 2.2</a>) or <a href="../PalmOSReference/AppLaunchCodes.html#1012140"><code>sysAppLaunchCmdGoTo</code></a>; so if the application hasn't received either of these launch codes, its global variables are usually not allocated and not accessible. In addition, if the application has multiple code segments, you cannot access code outside of segment 0 (the first segment) if the application has no access to global variables.</p>
+
+<p><a name="997813"> </a>There is one other case where an application may have access to its global variables (and to code segments other than 0). This is when an application is launched with the code <a href="../PalmOSReference/AppLaunchCodes.html#1012445"><code>sysAppLaunchCmdURLParams</code></a>. If this launch code results from a <code>palm</code> URL, then globals are available. If the launch code results from a <code>palmcall</code> URL, then globals are not available. The URL is passed to your application in the launch parameter block.</p>
+
+<div><hr>
+  <a name="997817"> </a> <b>NOTE: </b> Static local variables are stored with the global variables on the system's dynamic heap. They are not accessible if global variables are not accessible.
+<hr>
+</div>
+
+<p><a name="997818"> </a>Checking launch codes is generally a good way to determine if your application has access to global variables. However, it actually depends on the setting of the launch flags that are sent with the launch code. In particular, if the <code>sysAppLaunchFlagNewGlobals</code> flag is set, then your application's global variables have been allocated on this launch. This flag is set by the system and isn't (and shouldn't be) set by the sender of a launch code.</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+Boolean appHasGlobals = launchFlags &amp; sysAppLaunchFlag<code>NewGlobals</code>;<a name="997819"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="997820"> </a>There's one case where this flag won't be set and your application will still have access to global variables. This is when your application is already running as the current application. In this case, its global variables have already been allocated through a previous launch.</p>
+
+<p><a name="997821"> </a>If your application receives a launch code other than <code>sysAppLaunchCmdNormalLaunch</code> or <code>sysAppLaunchCmdGoTo</code>, you can find out if it is the current application by checking the launch flags that are sent with the launch code. If the application is the currently running application, the <code>sysAppLaunchFlagSubCall</code> flag is set. This flag is set by the system and isn't (and shouldn't be) set by the sender of a launch code. </p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+Boolean appIsActive = launchFlags &amp; <code>sysAppLaunchFlagSubCall</code>;<a name="997822"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h2 class="haH2">
+  <a name="997824"> </a>Launching Applications Programmatically <a href="#997517"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="997826"> </a>Applications can send launch codes to each other, so your application might be launched from another application or it might be launched from the system. An application can use a launch code to request that another application perform an action or modify its data. For example, a data collection application could instruct an email application to queue up a particular message to be sent.</p>
+
+<div><hr>
+  <a name="997827"> </a> <b>TIP: </b> In Palm OS 4.0 and higher, there are other ways for applications to communicate. See the section <a href="AppStartupAndStop.html#998192">"When to Use the Helper API"</a> to help you decide which method to use. 
+<hr>
+</div>
+
+<p><a name="997831"> </a>Sending a launch code to another application is like calling a specific subroutine in that application: the application responding to the launch code is responsible for determining what to do given the launch code constant passed on the stack as a parameter. </p>
+
+<p><a name="997832"> </a>To send a launch code to another application, use the system manager function <a href="../PalmOSReference/SystemManager.html#1075905"><code>SysAppLaunch</code></a>. Use this routine when you want to make use of another application's functionality and eventually return control of the system to your application. Usually, applications use it only for sending launch codes to other user-interface applications. </p>
+
+<p><a name="997837"> </a>For example, you would use this function to request that the built in Address Book application search its databases for a specified phone number and return the results of the search to your application. When calling <a href="../PalmOSReference/SystemManager.html#1075905"><code>SysAppLaunch</code></a> do not set launch flags yourself&#8212;the <a href="../PalmOSReference/SystemManager.html#1075905"><code>SysAppLaunch</code></a> function sets launch flags appropriately for you. </p>
+
+<p><a name="997845"> </a>An alternative, simpler method of sending launch codes is the <a href="../PalmOSReference/SystemManager.html#1076111"><code>SysBroadcastActionCode</code></a> call. This routine automatically finds all other user-interface applications and calls <a href="../PalmOSReference/SystemManager.html#1075905"><code>SysAppLaunch</code></a> to send the launch code to each of them.</p>
+
+<p><a name="997853"> </a>When an application is called using <code>SysAppLaunch</code>, the system considers that application to be the current application even though the application has not switched from the user's perspective. Thus, if your application is called from another application, it can still use the function <a href="../PalmOSReference/SystemManager.html#1076261"><code>SysCurAppDatabase</code></a> to get the card number and database ID of its own database. </p>
+
+<p><a name="997859"> </a>If you want to actually close your application and open another application, use <a href="../PalmOSReference/SystemManager.html#1076980"><code>SysUIAppSwitch</code></a> instead of <code>SysAppLaunch</code>. This routine notifies the system which application to launch next and feeds an application-quit event into the event queue. If and when the current application responds to the quit event and returns, the system launches the new application.</p>
+
+<p><a name="997864"> </a>When you allocate a parameter block to pass to <code>SysUIAppSwitch</code>, you must call <a href="../PalmOSReference/MemoryManager.html#1017249"><code>MemPtrSetOwner</code></a> to grant ownership of the parameter block chunk to the OS (your application is originally set as the owner). If the parameter block structure contains references by pointer or handle to any other chunks, you also must set the owner of those chunks by calling <code>MemPtrSetOwner</code> or <a href="../PalmOSReference/MemoryManager.html#1016553"><code>MemHandleSetOwner</code></a>. If you don't change the ownership of the parameter block, it will get freed before the application you're launching has a chance to use it.</p>
+
+<p><a name="997871"> </a>In Palm OS 3.0 and higher, you can also use the Application Launcher to launch any application. For more information, see the section <a href="UserInterface.html#1011190">"Application Launcher"</a> in the <a href="UserInterface.html#1007614">"User Interface"</a> chapter. </p>
+
+<div><hr>
+  <a name="997881"> </a> <span class="warning">WARNING! </span> Do not use the <a href="../PalmOSReference/SystemManager.html#1076980"><code>SysUIAppSwitch</code></a> or <a href="../PalmOSReference/SystemManager.html#1075905"><code>SysAppLaunch</code></a> functions to open the Application Launcher application. 
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="997886"> </a>Creating Your Own Launch Codes  <a href="#997517"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="997888"> </a>The Palm OS contains predefined launch codes, which are listed in <a href="AppStartupAndStop.html#998421">Table 2.1</a> at the end of this chapter. In addition, developers can create their own launch codes to implement specific functionality. Both the sending and the receiving application must know about and handle any developer-defined launch codes. </p>
+
+<p><a name="997892"> </a>The launch code parameter is a 16-bit word value. All launch codes with values 0&#8211;32767 are reserved for use by the system and for future enhancements. Launch codes 32768&#8211;65535 are available for private use by applications.</p>
+
+<h2 class="haH2">
+  <a name="997894"> </a>Stopping an Application  <a href="#997517"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="997895"> </a>An application shuts itself down when it receives the event <a href="../PalmOSReference/EventRef.html#996172"><code>appStopEvent</code></a>. Note that this is an event, not a launch code. The application must detect this event and terminate. (You'll learn more about events in the next chapter.) </p>
+
+<p><a name="997899"> </a>When an application stops, it is given an opportunity to perform cleanup activities including closing databases and saving state information. </p>
+
+<p><a name="997900"> </a>In the stop routine, an application should first flush all active records, then close the application's database, and finally save those aspects of the current state needed for startup. <a href="AppStartupAndStop.html#997905">Listing 2.3</a> is an example of a <code>StopApplication</code> routine from <code>Datebook.c</code>. </p>
+<p class="CCodeCaption">
+  <a name="997905"> </a><b>Listing 2.3&nbsp;&nbsp;StopApplication from Datebook.c</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+static void StopApplication (void)<a name="997907"> </a>
+{<a name="997908"> </a>
+   DatebookPreferenceType prefs;<a name="997909"> </a>
+   <a name="997910"> </a>
+   // Write the preferences / saved-state information.<a name="997911"> </a>
+   prefs.noteFont = NoteFont;<a name="997912"> </a>
+   prefs.dayStartHour = DayStartHour;<a name="997913"> </a>
+   prefs.dayEndHour = DayEndHour;<a name="997914"> </a>
+   prefs.alarmPreset = AlarmPreset;<a name="997915"> </a>
+   prefs.saveBackup = SaveBackup;<a name="997916"> </a>
+   prefs.showTimeBars = ShowTimeBars;<a name="997917"> </a>
+   prefs.compressDayView = CompressDayView;<a name="997918"> </a>
+   prefs.showTimedAppts = ShowTimedAppts;<a name="997919"> </a>
+   prefs.showUntimedAppts = ShowUntimedAppts;<a name="997920"> </a>
+   prefs.showDailyRepeatingAppts = ShowDailyRepeatingAppts;<a name="997921"> </a>
+ <a name="997922"> </a>
+   // Write the state information.<a name="997923"> </a>
+   PrefSetAppPreferences (sysFileCDatebook, datebookPrefID, <a name="997924"> </a>
+      datebookVersionNum, &amp;prefs, sizeof <a name="997925"> </a>
+      (DatebookPreferenceType), true);<a name="997926"> </a>
+ <a name="997927"> </a>
+   // Send a frmSave event to all the open forms.<a name="997928"> </a>
+   FrmSaveAllForms ();<a name="997929"> </a>
+   <a name="997930"> </a>
+   // Close all the open forms.<a name="997931"> </a>
+   FrmCloseAllForms ();<a name="997932"> </a>
+ <a name="997933"> </a>
+   // Close the application's data file.<a name="997934"> </a>
+   DmCloseDatabase (ApptDB);<a name="997935"> </a>
+}<a name="997936"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h2 class="haH2">
+  <a name="997938"> </a>Notifications <a href="#997517"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="997942"> </a>On systems where the <a href="../PalmOSReference/CompatibilityApdx.html#995220">Notification Feature Set</a> is present, your application can receive <b>notifications</b> and launch when certain system-level events or application-level events occur. Notifications are similar to application launch codes, but differ from them in two important ways: </p>
+<ul type="disc">
+  <li><a name="997944"> </a>Notifications can be sent to any code resource, such as a shared library or a system extension (for example, a hack installed with the HackMaster program). Launch codes can only be sent to applications. Any code resource that is registered to receive a notification is called a <b>notification client</b>. 
+  <li><a name="997946"> </a>Notifications are only sent to applications or code resources that have specifically registered to receive them, making them more efficient than launch codes. Many launch codes are sent to all installed applications to give each application a chance to respond. 
+</ul>
+
+<p><a name="997947"> </a>The Palm OS system and the built-in applications send notifications when certain events occur. See the <a href="AppStartupAndStop.html#998657">"Notification Summary"</a> in this chapter for a complete list. </p>
+
+<p><a name="997951"> </a>It's also possible for your application to create and broadcast its own notifications. However, doing so is rare. It's more likely that you'll want to register to receive the predefined notifications or that you'll broadcast the predefined <a href="../PalmOSReference/Notifications.html#1047851"><code>sysNotifyHelperEvent</code></a> described in the <a href="AppStartupAndStop.html#998138">"Helper Notifications"</a> section. </p>
+
+<p><a name="997958"> </a>Three general types of event flow are possible using the notification manager:</p>
+<ul type="disc">
+  <li><a name="997959"> </a>Single consumer 
+   <p><a name="997960"> </a>Each client is notified that the event has occurred and handles it in its own way without modifying any information in the parameter block. </p>
+  <li><a name="997961"> </a>Collaborative
+   <p><a name="997962"> </a>The notification's parameter block contains a <code>handled</code> flag. Clients can set this flag to communicate to other clients that the event has been handled, while still allowing them to receive the notification. An example of this is the <code>sysNotifyAntennaRaisedEvent</code> for Palm VII<sup>&#8482;</sup> series handhelds. A client might decide to handle the antenna key down event and in this case, sets <code>handled</code> to <code>true</code> to inform other clients that the event has been handled. </p>
+  <li><a name="997963"> </a>Collective
+   <p><a name="997964"> </a>Each client can add information to the notification's parameter block, allowing the data to be accumulated for all clients. This style of notification could be used, for example, to build a menu dynamically by letting each client add its own menu text. The <code>sysNotifyMenuCmdBarOpenEvent</code> is similar to this style of notification. </p>
+</ul>
+<h3 class="hbH3">
+  <a name="997966"> </a>Registering for a Notification <a href="#997517"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="997967"> </a>To receive notification that an event has occurred, you must register for it using the <a href="../PalmOSReference/NotifyMgr.html#1024486"><code>SysNotifyRegister</code></a> function. Once you register for a notification, you remain registered until the system is reset or until you explicitly unregister for this notification using <a href="../PalmOSReference/NotifyMgr.html#1024570"><code>SysNotifyUnregister</code></a>.</p>
+
+<p><a name="997976"> </a>To register an application for the HotSync<sup>&#174;</sup> notification, you'd use a function call similar to the one in <a href="AppStartupAndStop.html#997981">Listing 2.4</a>.</p>
+<p class="CCodeCaption">
+  <a name="997981"> </a><b>Listing 2.4&nbsp;&nbsp;Registering an application for a notification</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+SysNotifyRegister(myCardNo, appDBID, sysNotifySyncStartEvent, <a name="997982"> </a>
+   NULL, sysNotifyNormalPriority, myDataP);<a name="997983"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="997984"> </a>If you are writing a shared library instead of an application and you want to be notified about the HotSync event, your call to <code>SysNotifyRegister</code> looks slightly different. See <a href="AppStartupAndStop.html#997989">Listing 2.5</a>.</p>
+<p class="CCodeCaption">
+  <a name="997989"> </a><b>Listing 2.5&nbsp;&nbsp;Registering a shared library for a notification</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+SysNotifyRegister(myCardNo, shlibDBID,<a name="997990"> </a>
+   sysNotifySyncStartEvent, SyncNotifyHandler,<a name="997991"> </a>
+   sysNotifyNormalPriority, myDataP);<a name="997992"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="997993"> </a>The parameters you pass to the <code>SysNotifyRegister</code> function specify the following:</p>
+<ul type="disc">
+  <li><a name="997994"> </a>The first two parameters are the card number and database ID for the <code>prc</code> file. Be sure you're not passing the local ID of the record database that your application accesses. You use the record database's local ID more frequently than you do the application's local ID, so this is a common mistake to make. 
+  <li><a name="997996"> </a><code>sysNotifySyncStartEvent</code> specifies that you want to be informed when a HotSync operation is about to start. There is also a <code>sysNotifySyncFinishEvent</code> that specifies that a HotSync operation has ended. 
+  <li><a name="997998"> </a>The next parameter specifies how the notification should be received. This is where <a href="AppStartupAndStop.html#997981">Listing 2.4</a> and <a href="AppStartupAndStop.html#997989">Listing 2.5</a> differ. 
+   <p><a name="998005"> </a>Applications use <code>NULL</code> for this parameter to specify that they should be notified through the application launch code <a href="../PalmOSReference/AppLaunchCodes.html#1012303"><code>sysAppLaunchCmdNotify</code></a>. As with all other launch codes, the system passes this to the application's <a href="../PalmOSReference/SystemManager.html#1077030"><code>PilotMain</code></a> function. </p>
+   <p><a name="998013"> </a>The shared library has no <code>PilotMain</code> function and therefore no way to receive a launch code, so it passes a pointer to a callback function. Only use a callback function if your code doesn't have a <code>PilotMain</code>. </p>
+   <p><a name="998014"> </a>Note that it's always necessary to pass the card number and database ID of your <code>prc</code> file even if you specify a callback function. </p>
+  <li><a name="998016"> </a><code>sysNotifyNormalPriority</code> means that you don't want your code to receive any special consideration when receiving the notification. Notifications are broadcast synchronously in priority order. The lower the number you specify here, the earlier you receive the notification in the list. 
+   <p><a name="998017"> </a>In virtually all cases, you should use <code>sysNotifyNormalPriority</code>. If you absolutely must ensure that your code is notified in a certain order (either before most notifications or after most notifications), be sure to leave some space between priority values so that your code won't collide with the system's handling of notifications or with another application's handling of notifications. Never use the extreme maximum or minimum allowed value. In general, Palm<sup>&#8482;</sup> recommends using a value whose least significant bits are 0 (such as 32, 64, 96, and so on). </p>
+  <li><a name="998018"> </a><code>myDataP</code> is a pointer to any data you need to access in your notification handler function. As with most launch codes, <code>sysAppLaunchCmdNotify</code> does not provide access to global variables, so you should use this pointer to pass yourself any needed data. 
+</ul>
+
+<p><a name="998026"> </a>After you've made the calls shown in <a href="AppStartupAndStop.html#997981">Listing 2.4</a> and <a href="AppStartupAndStop.html#997989">Listing 2.5</a> and the system is about to begin a HotSync operation, it broadcasts the <code>sysNotifySyncStartEvent</code> notification to both clients. </p>
+
+<p><a name="998027"> </a>The application is notified through the <code>sysAppLaunchCmdNotify</code> launch code. This launch code's parameter block is a <a href="../PalmOSReference/Notifications.html#1047220"><code>SysNotifyParamType</code></a> structure containing the notification name, the broadcaster, and a pointer to your specific data (<code>myDataP</code> in the example above). Some notifications contain extra information in a <code>notifyDetailsP</code> field in this structure. The HotSync notifications do not use the <code>notifyDetailsP</code> field. </p>
+
+<p><a name="998032"> </a>The shared library is notified by a call to its <code>SyncNotifyHandler</code> function. This function is passed the same <code>SysNotifyParamType</code> structure that is passed through the launch code mechanism. </p>
+
+<div><hr>
+  <a name="998033"> </a> <b>IMPORTANT: </b> Because the callback pointer is used to directly call the function, the pointer must remain valid from the time <code>SysNotifyRegister</code> is called to the time the notification is broadcast. If the function is in a shared library, you must keep the library open. If the function is in a separately loaded code resource, the resource must remain locked while registered for the notification. When you close a library or unlock a resource, you must first unregister for any notifications. If you don't, the system will crash when the notification is broadcast. 
+<hr>
+</div>
+<h3 class="hbH3">
+  <a name="998034"> </a>Writing a Notification Handler <a href="#997517"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="998035"> </a>The application's response to <code>sysAppLaunchCmdNotify</code> and the shared library's callback function are called <b>notification handlers</b>. A notification handler may perform any processing necessary, including displaying a user interface or broadcasting other notifications. </p>
+
+<p><a name="998037"> </a>When displaying a user interface, consider the possibility that you may be blocking other applications from receiving the notification. For this reason, it's generally not a good idea to display a modal form or do anything else that requires waiting for the user to respond. Also, many of the notifications are broadcast during <a href="../PalmOSReference/SystemManager.html#1076542"><code>SysHandleEvent</code></a>, which means your application event loop may not have progressed to the point where it is possible for you to display a user interface, or that you may overflow the stack. </p>
+
+<p><a name="998041"> </a>If you need to perform some lengthy process in a notification handler, one way to ensure that you aren't blocking other events is to send yourself a deferred notification. For example, <a href="AppStartupAndStop.html#998046">Listing 2.6</a> shows a notification handler for the <code>sysNotifyTimeChangeEvent</code> notification that performs no work other than setting up a deferred notification (<code>myDeferredNotifyEvent</code>) and scheduling it for broadcast. When the application receives the <code>myDeferredNotifyEvent</code>, it calls the <span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">MyNotifyHandler</span> function, which is where the application really handles the time change event.</p>
+<p class="CCodeCaption">
+  <a name="998046"> </a><b>Listing 2.6&nbsp;&nbsp;Deferring notification within a handler</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+case sysAppLaunchCmdNotify : <a name="998047"> </a>
+   if (cmdPBP-&gt;notify-&gt;notifyType == <code>sysNotifyTimeChangeEvent</code>) {<a name="998048"> </a>
+      SysNotifyParamType notifyParm;<a name="998049"> </a>
+      MyGlobalsToAccess myData;<a name="998050"> </a>
+ <a name="998051"> </a>
+      /* initialize myData here */<a name="998052"> </a>
+ <a name="998053"> </a>
+      /* Create the notification block. */<a name="998054"> </a>
+      notifyParam.notifyType = myDeferredNotifyEvent;<a name="998055"> </a>
+      notifyParam.broadcaster = myCreatorID;<a name="998056"> </a>
+      notifyParam.notifyDetailsP= NULL;<a name="998057"> </a>
+      notifyParam.handled = false;<a name="998058"> </a>
+ <a name="998059"> </a>
+      /* Register for my notification */<a name="998060"> </a>
+      SysNotifyRegister(myCardNo, appDBID, myDeferredNotifyEvent, NULL, 
+         sysNotifyNormalPriority, &amp;myData);<a name="998061"> </a>
+ <a name="998062"> </a>
+      /* Broadcast the notification */<a name="998063"> </a>
+      SysNotifyBroadcastDeferred(&amp;notifyParam, NULL);<a name="998064"> </a>
+ <a name="998065"> </a>
+   } else if (cmdPBP-&gt;notify-&gt;notifyType == myDeferredNotifyEvent)<a name="998066"> </a>
+      MyNotifyHandler(cmdPBP-&gt;notify);<a name="998067"> </a>
+break;<a name="998068"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="998072"> </a>The <a href="../PalmOSReference/NotifyMgr.html#1024391"><code>SysNotifyBroadcastDeferred</code></a> function broadcasts the specified notification to all interested parties; however, it waits to do so until the current event has completed processing. Thus, by using a separate deferred notification, you can be sure that all other clients have had a chance to respond to the first notification. </p>
+
+<p><a name="998073"> </a>There are several functions that broadcast notifications. Notification handlers should use <code>SysNotifyBroadcastDeferred</code> to avoid the possibility of overflowing the notification stack. </p>
+
+<p><a name="998074"> </a>A special case of dealing with lengthy computations in a notification handler occurs when the system is being put to sleep. See <a href="AppStartupAndStop.html#998079">"Sleep and Wake Notifications"</a> below. </p>
+<h3 class="hbH3">
+  <a name="998079"> </a>Sleep and Wake Notifications <a href="#997517"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="998080"> </a>Several notifications are broadcast at various stages when the system goes to sleep and when the system wakes up. These are: </p>
+<ul type="disc">
+  <li><a name="998085"> </a><a href="../PalmOSReference/Notifications.html#1048196"><code>sysNotifySleepRequestEvent</code></a> 
+  <li><a name="998090"> </a><a href="../PalmOSReference/Notifications.html#1048174"><code>sysNotifySleepNotifyEvent</code></a> 
+  <li><a name="998095"> </a><a href="../PalmOSReference/Notifications.html#1047767"><code>sysNotifyEarlyWakeupEvent</code></a> 
+  <li><a name="998100"> </a><a href="../PalmOSReference/Notifications.html#1047965"><code>sysNotifyLateWakeupEvent</code></a> 
+</ul>
+
+<p><a name="998101"> </a>These notifications are <i>not</i> guaranteed to be broadcast. For example, if the system goes to sleep because the user removes the batteries, sleep notifications are not sent. Thus, these notifications are unsuitable for applications where external hardware must be shut off to conserve power before the system goes to sleep. </p>
+
+<p><a name="998102"> </a>If you want to know when the system is going to sleep because you have a small amount of cleanup that should occur beforehand, then register for <code>sysNotifySleepNotifyEvent</code>. </p>
+
+<p><a name="998103"> </a>It is recommended that you not perform any sort of prolonged activity, such as displaying an alert panel that requests confirmation, in response to a sleep notification. If you do, the alert might be displayed long enough to trigger another auto-off event, which could be detrimental to other handlers of the sleep notify event. </p>
+
+<p><a name="998104"> </a>In a few instances, you might need to prevent the system from going to sleep. For example, your code might be in the middle of performing some lengthy computation or in the middle of attempting a network connection. If so, register for the <code>sysNotifySleepRequestEvent</code> instead. This notification informs all clients that the system might go to sleep. If necessary, your handler can delay the sleep request by doing the following:</p>
+<pre class="proto"><a name="998105"></a>((SleepEventParamType *)
+  (notify-&gt;notifyDetailsP))-&gt;deferSleep++;
+</pre>
+
+<p><a name="998106"> </a>The system checks the <code>deferSleep</code> value when each notification handler returns. If it is nonzero, it cancels the sleep event. </p>
+
+<p><a name="998107"> </a>After you defer sleep, your code is free to finish what it was doing. When it is finished, you must allow the system to continue with the sleep event. To do so, create a <a href="../PalmOSReference/EventRef.html#997089"><code>keyDownEvent</code></a> with the <code>resumeSleepChr</code> and the command key bit set (to signal that the character is virtual) and add it to the event queue. When the system receives this event, it will again broadcast the <code>sysNotifySleepRequestEvent</code> to all clients. If <code>deferSleep</code> is 0 after all clients return, then the system knows it is safe to go to sleep, and it broadcasts the <code>sysNotifySleepNotifyEvent</code> to all of its clients. </p>
+
+<p><a name="998114"> </a>Notice that you may potentially receive the <code>sysNotifySleepRequestEvent</code> many times before the system actually goes to sleep, but you receive the <code>sysNotifySleepNotifyEvent</code> exactly once. </p>
+
+<p><a name="998115"> </a>During a wake-up event, the other two notifications listed above are broadcast. The <code>sysNotifyEarlyWakeupEvent</code> is broadcast very early on in the wakeup process, generally before the screen has turned on. At this stage, it is not guaranteed that the system will fully wake up. It may simply handle an alarm or a battery charger event and go back to sleep. Most applications that need notification of a wakeup event will probably want to register for <code>sysNotifyLateWakeupEvent</code> instead. At this stage, the screen has been turned on and the system is guaranteed to fully wake up. </p>
+
+<p><a name="998116"> </a>When the handheld receives the <code>sysNotifyLateWakeupEvent</code> notification, it may be locked and waiting for the user to enter the password. If this is the case, you must wait for the user to unlock the handheld before you display a user interface. Therefore, if you intend to display a user interface when the handheld wakes up, you should make sure the handheld is not locked. If the handheld is locked, you should register for <a href="../PalmOSReference/Notifications.html#1047718"><code>sysNotifyDeviceUnlocked</code></a> notification and display your user interface when it is received. See <a href="AppStartupAndStop.html#998125">Listing 2.7</a>. </p>
+<p class="CCodeCaption">
+  <a name="998125"> </a><b>Listing 2.7&nbsp;&nbsp;Responding to Late Wakeup Notification</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+case sysNotifyLateWakeupEvent: <a name="998126"> </a>
+   if ((Boolean) <a name="998127"> </a>
+         PrefGetPreference(prefDeviceLocked)) {<a name="998128"> </a>
+      SysNotifyRegister(myCardNo, myDbID, <a name="998129"> </a>
+         sysNotifyDeviceUnlocked, NULL, <a name="998130"> </a>
+         sysNotifyNormalPriority, NULL);<a name="998131"> </a>
+   } else {<a name="998132"> </a>
+      HandleDeviceWakeup();<a name="998133"> </a>
+   }<a name="998134"> </a>
+case sysNotifyDeviceUnlocked: <a name="998135"> </a>
+   HandleDeviceWakeup();<a name="998136"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h2 class="haH2">
+  <a name="998138"> </a>Helper Notifications <a href="#997517"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="998142"> </a>If the <a href="../PalmOSReference/CompatibilityApdx.html#995256"><code>4.0 New Feature Set</code></a> is present, the helper notification, <a href="../PalmOSReference/Notifications.html#1047851"><code>sysNotifyHelperEvent</code></a>, is defined. This notification is a way for one application to request a service from another application. On Palm OS 4.0, the Dial application is the only application that performs a service through <code>sysNotifyHelperEvent</code>. Specifically, the Dial application dials a phone in response to this notification. The Address Book uses the Dial application to dial the phone number that the user has selected. You can use the Dial application in a similar way by broadcasting the <code>sysNotifyHelperEvent</code> from your application. You may also choose to write a provider of services. </p>
+
+<p><a name="998147"> </a>In this section, the application that responds to the <code>sysNotifyHelperEvent</code> notification is called the <b>helper</b>, and the application that broadcasts the notification is called the <b>broadcaster</b>.</p>
+
+<p><a name="998151"> </a>A helper registers for the <a href="../PalmOSReference/Notifications.html#1047851"><code>sysNotifyHelperEvent</code></a> notification. In the notification handler, the helper responds to action requests pertaining to the <b>service</b> that it provides. </p>
+
+<p><a name="998152"> </a><b>Actions</b> are requests to provide information about the service or to perform the service. The details structure for <a href="../PalmOSReference/Notifications.html#1047851"><code>sysNotifyHelperEvent</code></a> (a <a href="../PalmOSReference/Helper.html#1010458"><code>HelperNotifyEventType</code></a> structure) defines three possible actions: </p>
+<ul type="disc">
+  <li><a name="998162"> </a><code>kHelperNotifyActionCodeEnumerate</code> is a request for the helper to list the services that it can perform. 
+  <li><a name="998164"> </a><code>kHelperNotifyActionCodeValidate</code> is a request for the helper to make sure that it can perform the service. 
+  <li><a name="998166"> </a><code>kHelperNotifyActionCodeExecute</code> is a request to actually perform the service. 
+</ul>
+
+<p><a name="998168"> </a>The possible <b>services</b> are defined in <code>HelperServiceClass.h</code> and described in the chapter <a href="../PalmOSReference/Helper.html#1010370">"Helper API"</a> of the <i>Palm OS Programmer's API Reference</i>. These services are to dial a number, email a message, send an SMS message, or send a fax. If you want to define your own service, you must register a unique creator ID for that service. Alternatively, you can use the creator ID of your application. </p>
+
+<p><a name="998175"> </a>This section discusses the helper APIs, which include the <code>sysNotifyHelperEvent</code> notification and the data structures that it passes as the <code>notifyDetailsP</code> portion of the <a href="../PalmOSReference/Notifications.html#1047220"><code>SysNotifyParamType</code></a> structure. It covers: </p>
+<ul type="disc">
+  <li><a name="998182"> </a><a href="AppStartupAndStop.html#998192">When to Use the Helper API</a>
+  <li><a name="998186"> </a><a href="AppStartupAndStop.html#998213">Requesting a Helper Service</a>
+  <li><a name="998190"> </a><a href="AppStartupAndStop.html#998290">Implementing a Helper</a>
+</ul>
+<h3 class="hbH3">
+  <a name="998192"> </a>When to Use the Helper API <a href="#997517"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="998196"> </a>If the <a href="../PalmOSReference/CompatibilityApdx.html#995256">4.0 New Feature Set</a> is present, there are several means by which one application can communicate with another application on the same handheld. Specifically, an application can send a launch code to another application (see <a href="AppStartupAndStop.html#997824">"Launching Applications Programmatically"</a> in this chapter), can use the Exchange Manager and Local Exchange Library to send data to another application (see the <a href="../PalmOSCompanion2/ExchangeManagerConcept.html#995795">"Object Exchange"</a> chapter), or can use the helper API to request that a service be performed. It can be difficult to determine which is the best method to use for your particular situation. </p>
+
+<p><a name="998203"> </a>The helper API is best used in these circumstances: </p>
+<ul type="disc">
+  <li><a name="998207"> </a>The <a href="../PalmOSReference/CompatibilityApdx.html#995256">4.0 New Feature Set</a> is present. 
+  <li><a name="998208"> </a>You do not know anything about the receiving application. 
+   <p><a name="998209"> </a>The helper API provides a means of communication where the sending and receiving application do not need to know anything about each other. This contrasts with the launch code mechanism, in which the sending application must know the card number and local ID of the receiving database as well as which launch code to send. </p>
+  <li><a name="998210"> </a>You want to communicate with any type of program. 
+   <p><a name="998211"> </a>Because the helper API uses a notification, the helper can be a shared library or another separately loaded code resource. Launch codes can only be received by applications. Because the Exchange Manager works through launch codes, it also only works with applications. </p>
+</ul>
+<h3 class="hbH3">
+  <a name="998213"> </a>Requesting a Helper Service <a href="#997517"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="998217"> </a><a href="AppStartupAndStop.html#998233">Listing 2.8</a> shows how an application should request the dial service. In general, you should do the following to request a service: </p>
+<ul type="disc">
+  <li><a name="998221"> </a>Broadcast a <a href="../PalmOSReference/Notifications.html#1047851"><code>sysNotifyHelperEvent</code></a> with a <code>kHelperNotifyActionCodeValidate</code> action each time you want to advertise that the service is available. 
+   <p><a name="998222"> </a>For example, when the Address Book initializes the List view form, it checks to see if the dial service is available by broadcasting the notification with the action code <code>kHelperNotifyActionCodeValidate</code>. The Dial application makes sure the Telephony Library is open. If so, it sets <code>handled</code> to <code>true</code> in the <a href="../PalmOSReference/Notifications.html#1047220"><code>SysNotifyParamType</code></a> structure. If not, it sets <code>handled</code> to <code>false</code>. If <code>handled</code> is <code>false</code> after the notification is broadcast, the Address Book does not display the Dial menu item. </p>
+  <li><a name="998227"> </a>Broadcast a <code>sysNotifyHelperEvent</code> with a <code>kHelperNotifyActionCodeExecute</code> action when you want the service performed. See <a href="AppStartupAndStop.html#998233">Listing 2.8</a>.
+  <li><a name="998231"> </a>If you want to obtain a list of all possible services, broadcast a <code>sysNotifyHelperEvent</code> with a <code>kHelperNotifyActionCodeEnumerate</code> action. You might do so when your application is launched, upon system reset, or any time the user performs a task where you might want to provide a service. 
+</ul>
+<p class="CCodeCaption">
+  <a name="998233"> </a><b>Listing 2.8&nbsp;&nbsp;Requesting a helper service</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+Boolean PrvDialListDialSelected(FormType* frmP) {<a name="998234"> </a>
+   SysNotifyParamType param;<a name="998235"> </a>
+   HelperNotifyEventType details;<a name="998236"> </a>
+   HelperNotifyExecuteType execute;<a name="998237"> </a>
+ <a name="998238"> </a>
+   param.notifyType = sysNotifyHelperEvent;<a name="998239"> </a>
+   param.broadcaster = sysFileCAddress;<a name="998240"> </a>
+   param.notifyDetailsP = &amp;details;<a name="998241"> </a>
+   param.handled = false;<a name="998242"> </a>
+ <a name="998243"> </a>
+   details.version = kHelperNotifyCurrentVersion;<a name="998244"> </a>
+   details.actionCode = kHelperNotifyActionCodeExecute;<a name="998245"> </a>
+   details.data.executeP = &amp;execute;<a name="998246"> </a>
+ <a name="998247"> </a>
+   execute.serviceClassID = kHelperServiceClassIDVoiceDial;<a name="998248"> </a>
+   execute.helperAppID = 0;<a name="998249"> </a>
+   execute.dataP = FldGetTextPtr(ToolsGetFrmObjectPtr(frmP, <a name="998250"> </a>
+      DialListNumberField));<a name="998251"> </a>
+   execute.displayedName = gDisplayName;<a name="998252"> </a>
+   execute.detailsP = 0;<a name="998253"> </a>
+   execute.err = errNone;<a name="998254"> </a>
+ <a name="998255"> </a>
+   SysNotifyBroadcast(&amp;param);<a name="998256"> </a>
+ <a name="998257"> </a>
+   // Check error code<a name="998258"> </a>
+   if (!param.handled)<a name="998259"> </a>
+   // Not handled so exit the list - Unexpected error<a name="998260"> </a>
+      return true;<a name="998261"> </a>
+   else<a name="998262"> </a>
+      return (execute.err == errNone);<a name="998263"> </a>
+}<a name="998264"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="998265"> </a>When you broadcast the <code>sysNotifyHelperEvent</code>, it's important to note the following: </p>
+<ul type="disc">
+  <li><a name="998270"> </a>Always use <a href="../PalmOSReference/NotifyMgr.html#1024347"><code>SysNotifyBroadcast</code></a>, which broadcasts the notification synchronously. 
+  <li><a name="998271"> </a>The notification's <code>notifyDetailsP</code> parameter points to a <a href="../PalmOSReference/Helper.html#1010458"><code>HelperNotifyEventType</code></a>. This structure allows the broadcaster to communicate with the helper. 
+  <li><a name="998276"> </a>The helper may allocate memory and add it to the <code>HelperNotifyEventType</code> structure. In particular, if the action code is <code>kHelperNotifyActionCodeEnumerate</code>, the helper allocates at least one structure of type <a href="../PalmOSReference/Helper.html#1010399"><code>HelperNotifyEnumerateListType</code></a> and adds it to the <code>data</code> field in the <code>HelperNotifyEventType</code> structure. The broadcaster must free this memory, even though the helper allocated it. 
+  <li><a name="998280"> </a>The broadcaster uses the <code>helperAppID</code> field to communicate directly with a particular provider of the requested service. For example, suppose two applications provide a dial service. The broadcaster might discover these two applications through the enumerate action and then allow the user to specify which application should dial the phone number. When broadcasting the enumerate action, no helper ID is specified, so all helpers respond. After the user has set the preferred helper, the broadcaster sets the <code>helperAppID</code> field for the validate and execute actions to that helper's creator ID. A helper must check the <code>helperAppID</code> field and only respond to the notification if its creator ID matches the value in that field or if that field is 0. 
+  <li><a name="998281"> </a>The <code>dataP</code> field contains the data required to perform the service. For the dial service, <code>dataP</code> contains the phone number to dial. If any extra information is required or desired, then it is provided in the <code>detailsP</code> field. If you're requesting the email or SMS service, you use <code>detailsP</code> to provide the message to be sent. See the chapter <a href="../PalmOSReference/Helper.html#1010370">"Helper API"</a> of the <i>Palm OS Programmer's API Reference</i> for more information. 
+  <li><a name="998288"> </a>The <code>handled</code> field of <code>SysNotifyParamType</code> and the <code>err</code> field of the <code>HelperNotifyEventType</code> structure are used to return the result. Always set <code>handled</code> to <code>false</code> and <code>err</code> to <code>errNone</code> before broadcasting and check their values after the broadcast is complete. The helper uses <code>handled</code> to indicate if it attempted to handle the service. If <code>handled</code> is <code>true</code>, it uses <code>err</code> to indicate the success or failure of performing that service. 
+</ul>
+<h3 class="hbH3">
+  <a name="998290"> </a>Implementing a Helper <a href="#997517"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="998291"> </a>To implement a helper, do the following: </p>
+<ul type="disc">
+  <li><a name="998296"> </a>Register to receive the <a href="../PalmOSReference/Notifications.html#1047851"><code>sysNotifyHelperEvent</code></a>. It is best to register for this notification in response to the <a href="../PalmOSReference/AppLaunchCodes.html#1012389"><code>sysAppLaunchCmdSyncNotify</code></a> and <a href="../PalmOSReference/AppLaunchCodes.html#1012412"><code>sysAppLaunchCmdSystemReset</code></a> launch codes. This registers your helper when it is first installed and re-registers it upon each system reset. 
+  <li><a name="998305"> </a>In the notification handler, handle the three possible actions: enumerate, execute, and validate. Note that even though the enumerate action is optional and not currently used by Address Book, a helper must respond to this action in its handler because another third party application might send the enumerate action. 
+</ul>
+
+<p><a name="998312"> </a><a href="AppStartupAndStop.html#998323">Listing 2.9</a> and <a href="AppStartupAndStop.html#998369">Listing 2.10</a> show how the Dial application responds to the enumerate and validate actions. Note that the enumerate action requires the helper to allocate memory and add that memory to the <a href="../PalmOSReference/Helper.html#1010458"><code>HelperNotifyEventType</code></a> structure pointed to by <code>notifyDetailsP</code> in the <a href="../PalmOSReference/Notifications.html#1047220"><code>SysNotifyParamType</code></a> parameter block. In this case, the <code>notifyDetailsP-&gt;dataP</code> field is a linked list of <a href="../PalmOSReference/Helper.html#1010399"><code>HelperNotifyEnumerateListType</code></a> structures. Each helper must allocate one of these structure per service and add it to the end of the list. The broadcaster is responsible for freeing all of these structures after the notification broadcast is complete. </p>
+<p class="CCodeCaption">
+  <a name="998323"> </a><b>Listing 2.9&nbsp;&nbsp;Enumerating services provided </b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+Boolean PrvAppEnumerate 
+(HelperNotifyEventType *helperNotifyEventP)<a name="998324"> </a>
+{<a name="998325"> </a>
+   HelperNotifyEnumerateListType* newNodeP;<a name="998326"> </a>
+   MemHandle handle;<a name="998327"> </a>
+   MemPtr stringP;<a name="998328"> </a>
+   <a name="998329"> </a>
+   newNodeP = MemPtrNew 
+      (sizeof(HelperNotifyEnumerateListType));<a name="998330"> </a>
+ <a name="998331"> </a>
+   // Get name to display in user interface. <a name="998332"> </a>
+   handle = DmGetResource(strRsc, HelperAppNameString);<a name="998333"> </a>
+   stringP = MemHandleLock(handle);<a name="998334"> </a>
+   StrCopy(newNodeP-&gt;helperAppName, stringP);<a name="998335"> </a>
+   MemHandleUnlock(handle);<a name="998336"> </a>
+   DmReleaseResource(handle);<a name="998337"> </a>
+ <a name="998338"> </a>
+   // Get name of service to display in UI. <a name="998339"> </a>
+   handle = DmGetResource(strRsc, HelperActionNameString);<a name="998340"> </a>
+   stringP = MemHandleLock(handle);<a name="998341"> </a>
+   StrCopy(newNodeP-&gt;actionName, stringP);<a name="998342"> </a>
+   MemHandleUnlock(handle);<a name="998343"> </a>
+   DmReleaseResource(handle);<a name="998344"> </a>
+ <a name="998345"> </a>
+   newNodeP-&gt;serviceClassID = kHelperServiceClassIDVoiceDial;<a name="998346"> </a>
+   newNodeP-&gt;helperAppID = kDialCreator;<a name="998347"> </a>
+   newNodeP-&gt;nextP = 0;<a name="998348"> </a>
+ <a name="998349"> </a>
+   // Add the new node.<a name="998350"> </a>
+   if (helperNotifyEventP-&gt;data.enumerateP == 0) {<a name="998351"> </a>
+      helperNotifyEventP-&gt;data.enumerateP = newNodeP;<a name="998352"> </a>
+   else {<a name="998353"> </a>
+      HelperNotifyEnumerateListType* nodeP;<a name="998354"> </a>
+      nodeP = helperNotifyEventP-&gt;data.enumerateP;<a name="998355"> </a>
+      //Look for the end of the list. <a name="998356"> </a>
+      while ( nodeP-&gt;nextP != 0 )<a name="998357"> </a>
+         nodeP = nodeP-&gt;nextP;<a name="998358"> </a>
+      nodeP-&gt;nextP = newNodeP;<a name="998359"> </a>
+   }<a name="998360"> </a>
+ <a name="998361"> </a>
+   return true;<a name="998362"> </a>
+}<a name="998363"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="998367"> </a><a href="AppStartupAndStop.html#998369">Listing 2.10</a> show how the Dial application responds to the validate action. </p>
+<p class="CCodeCaption">
+  <a name="998369"> </a><b>Listing 2.10&nbsp;&nbsp;Responding to validate action</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+Boolean PrvAppValidate (SysNotifyParamType *sysNotifyParamP)<a name="998370"> </a>
+{<a name="998371"> </a>
+   HelperNotifyEventType* helperNotifyEvent;<a name="998372"> </a>
+   <a name="998373"> </a>
+   helperNotifyEvent = sysNotifyParamP-&gt;notifyDetailsP;<a name="998374"> </a>
+   // Check version<a name="998375"> </a>
+   if (helperNotifyEvent-&gt;version &lt; 1)<a name="998376"> </a>
+      return false;<a name="998377"> </a>
+      <a name="998378"> </a>
+   // Check service<a name="998379"> </a>
+   if (helperNotifyEvent-&gt; data.validateP-&gt;serviceClassID <a name="998380"> </a>
+         != kHelperServiceClassIDVoiceDial)<a name="998381"> </a>
+      return false;<a name="998382"> </a>
+      <a name="998383"> </a>
+   // check appId (either null or me)<a name="998384"> </a>
+   if ((helperNotifyEvent-&gt;data.validateP-&gt;helperAppID != 0) <a name="998385"> </a>
+      &amp;&amp; (helperNotifyEvent-&gt;data.validateP-&gt;helperAppID != <a name="998386"> </a>
+         kDialCreator))<a name="998387"> </a>
+      return false;<a name="998388"> </a>
+   <a name="998389"> </a>
+   // Check Telephony library presence<a name="998390"> </a>
+   if (!PrvAppCheckTelephony())<a name="998391"> </a>
+      return false;<a name="998392"> </a>
+ <a name="998393"> </a>
+   sysNotifyParamP-&gt;handled = true;<a name="998394"> </a>
+   return true;<a name="998395"> </a>
+}<a name="998396"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="998397"> </a>When writing a helper, it is also important to note the following: </p>
+<ul type="disc">
+  <li><a name="998398"> </a>Always check the <code>helperAppID</code> field and only respond if it is 0 or if it matches your creator ID. For the validate and execute actions, a broadcaster may use <code>helperAppID</code> to only communicate with the desired helper. 
+  <li><a name="998399"> </a>If you handle the action, set <code>handled</code> to <code>true</code>. If the handling of the service was unsuccessful, set the <code>err</code> field in <code>notifyDetailsP</code>. 
+  <li><a name="998400"> </a>Always check the <code>handled</code> field before performing the service. If any helper can perform the service, you must make sure that the service has not already been performed before you perform it. If <code>handled</code> is <code>true</code>, the service has already been performed. 
+  <li><a name="998401"> </a>Remember that, as with all notifications, your notification handler does not have access to global variables. If there is data you need to access, pass it in the <code>userDataP</code> parameter to <a href="../PalmOSReference/NotifyMgr.html#1024486"><code>SysNotifyRegister</code></a>. If you want to have the notification handler return before the service is fully complete, make a copy of any data in the parameter block that you will need to complete the service. 
+</ul>
+
+<h2 class="haH2">
+  <a name="1003911"> </a>Socket Notifications <a href="#997517"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1003912"> </a>Socket notifications allow an application to receive a notification when certain conditions change in a network socket&#8212;such things as a remote socket being closed, or a socket receiving TCP data. Socket notifications are part of a larger topic known as socket notices. Please note that there is more to registering for socket notifications than merely calling <a href="../PalmOSReference/NotifyMgr.html#1024486"><code>SysNotifyRegister()</code></a>. For details, see <a href="../PalmOSCompanion2/NetworkCommunication.html#1030324">"Socket Notices,"</a> <i>Palm OS Programmer's Companion</i>, vol. II, <i>Communications</i>.</p>
+
+<h2 class="haH2">
+  <a name="998407"> </a>Launch Code Summary <a href="#997517"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="998413"> </a><a href="AppStartupAndStop.html#998421">Table 2.1</a> lists all Palm OS standard launch codes. These launch codes are declared in the header <code>SystemMgr.h</code>. All the parameters for a launch code are passed in a single parameter block, and the results are returned in the same parameter block. </p>
+
+<p class="caption"><a name="998421"> </a><b>Table 2.1&nbsp;&nbsp;Palm OS Launch Codes </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="998425"> </a><b>Code</b></p>
+    </th>
+    <th><p class="tt"><a name="998427"> </a><b>Request</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998433"> </a><a href="../PalmOSReference/ScriptPlugin.html#1111971"><code>scptLaunchCmdExecuteCmd</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998435"> </a>Execute the specified Network login script plugin command.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998441"> </a><a href="../PalmOSReference/ScriptPlugin.html#1111961"><code>scptLaunchCmdListCmds</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998443"> </a>Provide information about the commands that your Network script plugin executes.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998449"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1011469"><code>sysAppLaunchCmdAddRecord</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998451"> </a>Add a record to a database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998457"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1011569"><code>sysAppLaunchCmdAlarmTriggered</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998459"> </a>Schedule next alarm or perform quick actions such as sounding alarm tones.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998465"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1011602"><code>sysAppLaunchCmdAttention</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998467"> </a>Perform the action requested by the attention manager.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998473"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1011751"><code>sysAppLaunchCmdCardLaunch</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998475"> </a>Launch the application. This launch code signifies that the application is being launched from an expansion card.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998481"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1011789"><code>sysAppLaunchCmdCountryChange</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998483"> </a>Respond to country change.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998489"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1011800"><code>sysAppLaunchCmdDisplayAlarm</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998491"> </a>Display specified alarm dialog or perform time-consuming alarm-related actions.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998497"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1011831"><code>sysAppLaunchCmdExgAskUser</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998499"> </a>Let application override display of dialog asking user if they want to receive incoming data via the Exchange Manager.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998505"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1011877"><code>sysAppLaunchCmdExgGetData</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998507"> </a>Notify application that it should send data using the Exchange Manager.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998513"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1011910"><code>sysAppLaunchCmdExgPreview</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998515"> </a>Notify application that it should display a preview using the Exchange Manager. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998521"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1011991"><code>sysAppLaunchCmdExgReceiveData</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998523"> </a>Notify application that it should receive incoming data using the Exchange Manager.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998529"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012029"><code>sysAppLaunchCmdFind</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998531"> </a>Find a text string.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998537"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012140"><code>sysAppLaunchCmdGoTo</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998539"> </a>Go to a particular record, display it, and optionally select the specified text.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998545"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012191"><code>sysAppLaunchCmdGoToURL</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998547"> </a>Launch an application and open a URL.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998552"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012217"><code>sysAppLaunchCmdHandleSyncCallApp</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998554"> </a>Perform some application-specific operation at the behest of the application's conduit.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998560"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012262"><code>sysAppLaunchCmdInitDatabase</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998562"> </a>Initialize database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998568"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012288"><code>sysAppLaunchCmdLookup</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998570"> </a>Look up data. In contrast to <code>sysAppLaunchCmdFind</code>, a level of indirection is implied. For example, look up a phone number associated with a name.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998572"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1024358"><code>sysAppLaunchCmdNormalLaunch</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998574"> </a>Launch normally. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998579"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012303"><code>sysAppLaunchCmdNotify</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998581"> </a>Broadcast a notification. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998587"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012320"><code>sysAppLaunchCmdOpenDB</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998589"> </a>Launch application and open a database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998595"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012339"><code>sysAppLaunchCmdPanelCalledFromApp</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998597"> </a>Tell preferences panel that it was invoked from an application, not the Preferences application.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998603"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012359"><code>sysAppLaunchCmdReturnFromPanel</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998605"> </a>Tell an application that it's restarting after preferences panel had been called. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998611"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012372"><code>sysAppLaunchCmdSaveData</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998613"> </a>Save data. Often sent before find operations. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998619"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012389"><code>sysAppLaunchCmdSyncNotify</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998621"> </a>Notify applications that a HotSync has been completed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998627"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012402"><code>sysAppLaunchCmdSystemLock</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998629"> </a>Sent to the Security application to request that the system be locked down. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998635"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012412"><code>sysAppLaunchCmdSystemReset</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998637"> </a>Respond to system reset. No UI is allowed during this launch code. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998643"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012435"><code>sysAppLaunchCmdTimeChange</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998646"> </a>Respond to system time change.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998652"> </a><a href="../PalmOSReference/AppLaunchCodes.html#1012445"><code>sysAppLaunchCmdURLParams</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998654"> </a>Launch an application with parameters from the Web Clipping Application Viewer. </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="998657"> </a>Notification Summary <a href="#997517"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="998663"> </a><a href="AppStartupAndStop.html#998674">Table 2.2</a> lists all Palm OS standard notifications. These notifications are declared in the header <code>NotifyMgr.h</code>. All the parameters for a notification are passed in a <a href="../PalmOSReference/Notifications.html#1047220"><code>SysNotifyParamType</code></a> structure and the results are returned in that same structure. </p>
+
+<p class="caption"><a name="998674"> </a><b>Table 2.2&nbsp;&nbsp;Notification Constants </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="998678"> </a><b>Constant</b></p>
+    </th>
+    <th><p class="tt"><a name="998680"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998685"> </a><a href="../PalmOSReference/Notifications.html#1064774"><code>cncNotifyProfileEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998687"> </a>The connection profile used by the Connection Panel has changed. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998692"> </a><a href="../PalmOSReference/Notifications.html#1064333"><code>sysExternalConnectorAttachEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998694"> </a>A device has been attached to an external connector. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998699"> </a><a href="../PalmOSReference/Notifications.html#1047347"><code>sysExternalConnectorDetachEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998701"> </a>A device has been detached from an external connector. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998706"> </a><a href="../PalmOSReference/Notifications.html#1047359"><code>sysNotifyAntennaRaisedEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998708"> </a>The antenna has been raised on a Palm VII series handheld. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998713"> </a><a href="../PalmOSReference/Notifications.html#1047417"><code>sysNotifyCardInsertedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998715"> </a>An expansion card has been inserted into the expansion slot. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998720"> </a><a href="../PalmOSReference/Notifications.html#1047438"><code>sysNotifyCardRemovedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998722"> </a>An expansion card has been removed from the expansion slot. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998727"> </a><a href="../PalmOSReference/Notifications.html#1047459"><code>sysNotifyDBCreatedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998729"> </a>A database has been created.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998734"> </a><a href="../PalmOSReference/Notifications.html#1047493"><code>sysNotifyDBChangedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998736"> </a>Database info has been set on a database, such as with <a href="../PalmOSReference/DataAndResourceManager.html#1011529"><code>DmSetDatabaseInfo</code></a>.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998744"> </a><a href="../PalmOSReference/Notifications.html#1047621"><code>sysNotifyDBDeletedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998746"> </a>A database has been deleted. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998751"> </a><a href="../PalmOSReference/Notifications.html#1047659"><code>sysNotifyDBDirtyEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998753"> </a>An overlay has been opened, a database has been opened for write, or another event has occurred which has made the database info "dirty."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998758"> </a><a href="../PalmOSReference/Notifications.html#1047682"><code>sysNotifyDeleteProtectedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998760"> </a>The Launcher has attempted to delete a protected database. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998765"> </a><a href="../PalmOSReference/Notifications.html#1047718"><code>sysNotifyDeviceUnlocked</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998767"> </a>The user has unlocked the handheld. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998772"> </a><a href="../PalmOSReference/Notifications.html#1047736"><code>sysNotifyDisplayChangeEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998774"> </a>The color table or bit depth has changed. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998779"> </a><a href="../PalmOSReference/Notifications.html#1047767"><code>sysNotifyEarlyWakeupEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998781"> </a>The system is starting to wake up.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998790"> </a><a href="../PalmOSReference/Notifications.html#1047800"><code>sysNotifyForgotPasswordEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998792"> </a>The user has tapped the Lost Password button in the Security application. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998797"> </a><a href="../PalmOSReference/Notifications.html#1047812"><code>sysNotifyGotUsersAttention</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998799"> </a>The Attention Manager has informed the user of an event. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998804"> </a><a href="../PalmOSReference/Notifications.html#1047851"><code>sysNotifyHelperEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998806"> </a>An application has requested that a particular service be performed. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998808"> </a><code>sysNotifyIrDASniffEvent</code> </p>
+    </td>
+    <td><p class="tt"><a name="998810"> </a>Not used. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998815"> </a><a href="../PalmOSReference/Notifications.html#1047965"><code>sysNotifyLateWakeupEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998817"> </a>The system has finished waking up.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998822"> </a><a href="../PalmOSReference/Notifications.html#1047999"><code>sysNotifyLocaleChangedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998824"> </a>The system locale has changed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998829"> </a><a href="../PalmOSReference/Notifications.html#1048030"><code>sysNotifyMenuCmdBarOpenEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998831"> </a>The system is about to display the menu command toolbar. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998836"> </a><a href="../PalmOSReference/Notifications.html#1048055"><code>sysNotifyNetLibIFMediaEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998838"> </a>The system has been connected to or disconnected from the network. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998840"> </a><code>sysNotifyPhoneEvent</code> </p>
+    </td>
+    <td><p class="tt"><a name="998842"> </a>Reserved for future use. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998844"> </a><code>sysNotifyPOSEMountEvent</code> </p>
+    </td>
+    <td><p class="tt"><a name="998846"> </a>System use only. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998851"> </a><a href="../PalmOSReference/Notifications.html#1048112"><code>sysNotifyResetFinishedEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998853"> </a>The system has finished a reset. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998858"> </a><a href="../PalmOSReference/Notifications.html#1048129"><code>sysNotifyRetryEnqueueKey</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998860"> </a>The Attention Manager has failed to post a virtual character to the key queue. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998865"> </a><a href="../PalmOSReference/Notifications.html#1048174"><code>sysNotifySleepNotifyEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998867"> </a>The system is about to go to sleep. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998872"> </a><a href="../PalmOSReference/Notifications.html#1048196"><code>sysNotifySleepRequestEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998874"> </a>The system has decided to go to sleep. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998879"> </a><a href="../PalmOSReference/Notifications.html#1048246"><code>sysNotifySyncFinishEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998881"> </a>A HotSync operation has just completed. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998886"> </a><a href="../PalmOSReference/Notifications.html#1048257"><code>sysNotifySyncStartEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998888"> </a>A HotSync operation is about to begin. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998893"> </a><a href="../PalmOSReference/Notifications.html#1048269"><code>sysNotifyTimeChangeEvent</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="998895"> </a>The system time has just changed. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998900"> </a><a href="../PalmOSReference/Notifications.html#1048316"><code>sysNotifyVolumeMountedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998902"> </a>A file system has been mounted. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998907"> </a><a href="../PalmOSReference/Notifications.html#1048339"><code>sysNotifyVolumeUnmountedEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="998909"> </a>A file system has been unmounted. </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="998912"> </a>Launch and Notification Function Summary <a href="#997517"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th colspan="2" rowspan="1"><p class="tt"><a name="998915"> </a><b>Launching Applications</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998922"> </a><a href="../PalmOSReference/SystemManager.html#1075905">SysAppLaunch</a></p>
+    </td>
+    <td><p class="tt"><a name="998927"> </a><a href="../PalmOSReference/SystemManager.html#1076980">SysUIAppSwitch</a></p>
+<p class="tt"><a name="998931"> </a><a href="../PalmOSReference/SystemManager.html#1076111">SysBroadcastActionCode</a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="998933"> </a><b>Notification Manager Functions</b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998940"> </a><a href="../PalmOSReference/NotifyMgr.html#1024486">SysNotifyRegister</a> <br><a href="../PalmOSReference/NotifyMgr.html#1024347">SysNotifyBroadcast</a></p>
+    </td>
+    <td><p class="tt"><a name="998948"> </a><a href="../PalmOSReference/NotifyMgr.html#1024570">SysNotifyUnregister</a> <br><a href="../PalmOSReference/NotifyMgr.html#1024391">SysNotifyBroadcastDeferred</a> <br><a href="../PalmOSReference/NotifyMgr.html#1024434">SysNotifyBroadcastFromInterrupt</a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+ 
+
+<p><a name="998957"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996-2004, PalmSource, Inc. and its affiliates.  All rights reserved. <br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="Companion_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="CompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Nutshell.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="EventLoop.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

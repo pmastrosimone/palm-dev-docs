@@ -1,0 +1,113 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Multiple Rules</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Multiple Rules">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Multiple Rules">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC46"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_41.html#SEC45"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_43.html#SEC47"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.11 Multiple Rules for One Target </H2>
+<!--docid::SEC46::-->
+<P>
+
+One file can be the target of several rules.  All the prerequisites
+mentioned in all the rules are merged into one list of prerequisites for
+the target.  If the target is older than any prerequisite from any rule,
+the commands are executed.
+</P><P>
+
+There can only be one set of commands to be executed for a file.  If
+more than one rule gives commands for the same file, <CODE>make</CODE> uses
+the last set given and prints an error message.  (As a special case,
+if the file's name begins with a dot, no error message is printed.
+This odd behavior is only for compatibility with other implementations
+of <CODE>make</CODE>... you should avoid using it).  Occasionally it is
+useful to have the same target invoke multiple commands which are
+defined in different parts of your makefile; you can use
+<EM>double-colon rules</EM> (see section <A HREF="make_46.html#SEC50">4.13 Double-Colon Rules</A>) for this.
+</P><P>
+
+An extra rule with just prerequisites can be used to give a few extra
+prerequisites to many files at once.  For example, makefiles often
+have a variable, such as <CODE>objects</CODE>, containing a list of all the
+compiler output files in the system being made.  An easy way to say
+that all of them must be recompiled if <TT>`config.h'</TT> changes is to
+write the following:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>objects = foo.o bar.o
+foo.o : defs.h
+bar.o : defs.h test.h
+$(objects) : config.h
+</pre></td></tr></table></P><P>
+
+This could be inserted or taken out without changing the rules that really
+specify how to make the object files, making it a convenient form to use if
+you wish to add the additional prerequisite intermittently.
+</P><P>
+
+Another wrinkle is that the additional prerequisites could be specified with
+a variable that you set with a command argument to <CODE>make</CODE>
+(see section <A HREF="make_96.html#SEC100">Overriding Variables</A>).  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>extradeps=
+$(objects) : $(extradeps)
+</pre></td></tr></table></P><P>
+
+means that the command <SAMP>`make extradeps=foo.h'</SAMP> will consider
+<TT>`foo.h'</TT> as a prerequisite of each object file, but plain <SAMP>`make'</SAMP>
+will not.
+</P><P>
+
+If none of the explicit rules for a target has commands, then <CODE>make</CODE>
+searches for an applicable implicit rule to find some commands
+see section <A HREF="make_99.html#SEC103">Using Implicit Rules</A>).
+</P><P>
+
+<A NAME="Static Pattern"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_41.html#SEC45"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_43.html#SEC47"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

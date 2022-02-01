@@ -1,0 +1,80 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Alternate Keywords</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Alternate Keywords">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Alternate Keywords">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC104"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_103.html#SEC103"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_105.html#SEC105"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.36 Alternate Keywords </H2>
+<!--docid::SEC104::-->
+<P>
+
+The option <SAMP>`-traditional'</SAMP> disables certain keywords; <SAMP>`-ansi'</SAMP>
+disables certain others.  This causes trouble when you want to use GNU C
+extensions, or ANSI C features, in a general-purpose header file that
+should be usable by all programs, including ANSI C programs and traditional
+ones.  The keywords <CODE>asm</CODE>, <CODE>typeof</CODE> and <CODE>inline</CODE> cannot be
+used since they won't work in a program compiled with <SAMP>`-ansi'</SAMP>, while
+the keywords <CODE>const</CODE>, <CODE>volatile</CODE>, <CODE>signed</CODE>, <CODE>typeof</CODE>
+and <CODE>inline</CODE> won't work in a program compiled with
+<SAMP>`-traditional'</SAMP>.</P><P>
+
+The way to solve these problems is to put <SAMP>`__'</SAMP> at the beginning and
+end of each problematical keyword.  For example, use <CODE>__asm__</CODE>
+instead of <CODE>asm</CODE>, <CODE>__const__</CODE> instead of <CODE>const</CODE>, and
+<CODE>__inline__</CODE> instead of <CODE>inline</CODE>.
+</P><P>
+
+Other C compilers won't accept these alternative keywords; if you want to
+compile with another compiler, you can define the alternate keywords as
+macros to replace them with the customary keywords.  It looks like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#ifndef __GNUC__
+#define __asm__ asm
+#endif
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX362"></A>
+<SAMP>`-pedantic'</SAMP> causes warnings for many GNU C extensions.  You can
+prevent such warnings within one expression by writing
+<CODE>__extension__</CODE> before the expression.  <CODE>__extension__</CODE> has no
+effect aside from this.
+</P><P>
+
+<A NAME="Incomplete Enums"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

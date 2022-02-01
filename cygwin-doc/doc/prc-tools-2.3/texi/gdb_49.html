@@ -1,0 +1,146 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Source Path</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Source Path">
+<META NAME="keywords" CONTENT="Debugging with GDB: Source Path">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC49"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_48.html#SEC48"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_50.html#SEC50"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_50.html#SEC50"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.3 Specifying source directories </H2>
+<!--docid::SEC49::-->
+<P>
+
+<A NAME="IDX264"></A>
+<A NAME="IDX265"></A>
+Executable programs sometimes do not record the directories of the source
+files from which they were compiled, just the names.  Even when they do,
+the directories could be moved between the compilation and your debugging
+session.  GDB has a list of directories to search for source files;
+this is called the <EM>source path</EM>.  Each time GDB wants a source file,
+it tries all the directories in the list, in the order they are present
+in the list, until it finds a file with the desired name.  Note that
+the executable search path is <EM>not</EM> used for this purpose.  Neither is
+the current working directory, unless it happens to be in the source
+path.
+</P><P>
+
+If GDB cannot find a source file in the source path, and the
+object program records a directory, GDB tries that directory
+too.  If the source path is empty, and there is no record of the
+compilation directory, GDB looks in the current directory as a
+last resort.
+</P><P>
+
+Whenever you reset or rearrange the source path, GDB clears out
+any information it has cached about where source files are found and where
+each line is in the file.
+</P><P>
+
+<A NAME="IDX266"></A>
+<A NAME="IDX267"></A>
+When you start GDB, its source path includes only <SAMP>`cdir'</SAMP>
+and <SAMP>`cwd'</SAMP>, in that order.
+To add other directories, use the <CODE>directory</CODE> command.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>directory <VAR>dirname</VAR> <small>...</small></CODE>
+<DD><DT><CODE>dir <VAR>dirname</VAR> <small>...</small></CODE>
+<DD>Add directory <VAR>dirname</VAR> to the front of the source path.  Several
+directory names may be given to this command, separated by <SAMP>`:'</SAMP>
+(<SAMP>`;'</SAMP> on MS-DOS and MS-Windows, where <SAMP>`:'</SAMP> usually appears as
+part of absolute file names) or
+whitespace.  You may specify a directory that is already in the source
+path; this moves it forward, so GDB searches it sooner.
+<P>
+
+<A NAME="IDX268"></A>
+<A NAME="IDX269"></A>
+<A NAME="IDX270"></A>
+<A NAME="IDX271"></A>
+<A NAME="IDX272"></A>
+<A NAME="IDX273"></A>
+<A NAME="IDX274"></A>
+<A NAME="IDX275"></A>
+<A NAME="IDX276"></A>
+You can use the string <SAMP>`$cdir'</SAMP> to refer to the compilation
+directory (if one is recorded), and <SAMP>`$cwd'</SAMP> to refer to the current
+working directory.  <SAMP>`$cwd'</SAMP> is not the same as <SAMP>`.'</SAMP>---the former
+tracks the current working directory as it changes during your GDB
+session, while the latter is immediately expanded to the current
+directory at the time you add an entry to the source path.
+</P><P>
+
+<DT><CODE>directory</CODE>
+<DD>Reset the source path to empty again.  This requires confirmation.
+<P>
+
+<DT><CODE>show directories</CODE>
+<DD><A NAME="IDX277"></A>
+Print the source path: show which directories it contains.
+</DL>
+<P>
+
+If your source path is cluttered with directories that are no longer of
+interest, GDB may sometimes cause confusion by finding the wrong
+versions of source.  You can correct the situation as follows:
+</P><P>
+
+<OL>
+<LI>
+Use <CODE>directory</CODE> with no argument to reset the source path to empty.
+<P>
+
+<LI>
+Use <CODE>directory</CODE> with suitable arguments to reinstall the
+directories you want in the source path.  You can add all the
+directories in one command.
+</OL>
+<P>
+
+<A NAME="Machine Code"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_48.html#SEC48"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_50.html#SEC50"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_50.html#SEC50"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

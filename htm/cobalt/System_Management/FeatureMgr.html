@@ -1,0 +1,657 @@
+<html>
+<head>
+<title>(Protein) Feature Manager | System Management</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:27:38">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="992934"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="SysMgt_TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FatalAlert.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FloatMgr.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SysMgt_IX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">27 &nbsp;&nbsp;
+Feature Manager</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">System Management</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="SysMgt_Part2.html">Part II: Reference</a> </h1>
+<h1 class="SideTOC1"><a href="FeatureMgr.html">27  Feature Manager</a></h1>
+
+   <h2 class="SideTOC2"><a href="#992942">
+   Feature Manager Constants</a></h2>
+
+      <h3 class="SideTOC3"><a href="#992950">
+      Feature Manager Error Codes</a></h3>
+
+   <h2 class="SideTOC2"><a href="#992982">
+   Feature Manager Functions and Macros</a></h2>
+
+      <h3 class="SideTOC3"><a href="#992990">
+      FtrGet</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993401">
+      FtrGetByIndex</a></h3>
+
+      <h3 class="SideTOC3"><a href="#997379">
+      FtrPtrFree</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993711">
+      FtrPtrGet</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993808">
+      FtrPtrNew</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993886">
+      FtrPtrResize</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993944">
+      FtrSet</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993994">
+      FtrUnregister</a></h3>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="995500"> </a>"Features" provide applications or other components with a means to get and set 32-bit values that persist between invocations of those components. Features are identified by a 32-bit unique creator ID and a 32-bit feature number.  The operating system uses the Feature Manager to publish information about the current state of the operating system and the device. Applications are free to use the Feature Manager for similar purposes, or for holding small pieces of data that must persist across application launches. On reset, all features and feature pointers are cleared out and must be re-initialized by the appropriate component.</p>
+
+<p><a name="995501"> </a>Feature pointers have traditionally provided a way to allocate chunks of memory larger than the (then very small) dynamic heap, and allow that memory to persist until the device was reset.  In Palm OS Cobalt the dynamic heaps are typically much larger and are much more efficient, so reliance on feature pointers is reduced.</p>
+
+<p><a name="995937"> </a>This chapter describes the constants and functions that constitute the Feature Manager. It is organized as follows:</p>
+   <blockquote class = "bq"><a name="992948"> </a><a href="FeatureMgr.html#992942">Feature Manager Constants</a></blockquote>
+   <blockquote class = "bq"><a name="992988"> </a><a href="FeatureMgr.html#992982">Feature Manager Functions and Macros</a></blockquote>
+
+<p><a name="992938"> </a>The header file <code>FeatureMgr.h</code> declares the API that this chapter describes.</p>
+
+<p><a name="992940"> </a>For information on using the APIs documented in this chapter, see <a href="Features.html#993067">Chapter 2, "Features."</a></p>
+
+<h2 class="haH2">
+  <a name="992942"> </a>Feature Manager Constants <a href="#992934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<h3 class="hbH3">
+  <a name="992950"> </a>Feature Manager Error Codes <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="992952"> </a>Purpose 
+</h4>
+
+<p><a name="995694"> </a>Error codes returned by the various Feature Manager functions.</p>
+<h4>
+  <a name="992957"> </a>Declared In 
+</h4>
+<code>FeatureMgr.h<a name="992960"> </a></code><h4>
+  <a name="992962"> </a>Constants 
+</h4>
+
+<dl>
+<dt><a name="992965"> </a><code>#define ftrErrInternalErr (ftrErrorClass | 5)</code></dt>
+<dd><a name="992967"> </a>An internal error occurred.</dd>
+
+<dt><a name="992969"> </a><code>#define ftrErrInvalidParam (ftrErrorClass | 1)</code></dt>
+<dd><a name="992971"> </a>One of the function parameters is invalid.</dd>
+
+<dt><a name="992973"> </a><code>#define ftrErrNoSuchFeature (ftrErrorClass | 2)</code></dt>
+<dd><a name="992975"> </a>The specified feature number doesn't exist for the specified creator.</dd>
+
+</dl>
+
+<h2 class="haH2">
+  <a name="992982"> </a>Feature Manager Functions and Macros <a href="#992934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<h3 class="hbH3">
+  <a name="992990"> </a>FtrGet Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="992995"> </a>Purpose 
+</h4>
+
+<p><a name="993008"> </a>Get a feature.</p>
+<h4>
+  <a name="993029"> </a>Declared In 
+</h4>
+<code>FeatureMgr.h<a name="993066"> </a></code><h4>
+  <a name="993106"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="993149"></a>status_t FtrGet (
+   uint32_t <code class="par">creator</code>,
+   uint32_t <code class="par">featureNum</code>,
+   uint32_t <code class="par">*valueP</code>
+)
+</pre>
+<h4>
+  <a name="993211"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="993254"> </a><code>&rarr;  <i>creator</i></code></dt>
+<dd><a name="993296"> </a>Creator ID, which must be registered with PalmSource, Inc. This is usually the same as the creator ID for the application that owns this feature. </dd>
+
+<dt><a name="993338"> </a><code>&rarr;  <i>featureNum</i></code></dt>
+<dd><a name="993380"> </a>Feature number of the feature.</dd>
+
+<dt><a name="993382"> </a><code>&larr;  <i>valueP</i></code></dt>
+<dd><a name="993384"> </a>Value of the feature is returned here.</dd>
+
+</dl>
+<h4>
+  <a name="993386"> </a>Returns 
+</h4>
+
+<p><a name="994400"> </a>Returns 0 if no error, or <code>ftrErrNoSuchFeature</code> if the specified feature number doesn't exist for the specified creator.</p>
+<h4>
+  <a name="993391"> </a>Comments 
+</h4>
+
+<p><a name="993394"> </a>The value of the feature is application-dependent.</p>
+<h4>
+  <a name="993396"> </a>See Also 
+</h4>
+
+<p><a name="994413"> </a><a href="FeatureMgr.html#993944"><code>FtrSet()</code></a><code> </code></p>
+
+<h3 class="hbH3">
+  <a name="993401"> </a>FtrGetByIndex Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="993406"> </a>Purpose 
+</h4>
+
+<p><a name="993409"> </a>Get a feature by index. </p>
+<h4>
+  <a name="993411"> </a>Declared In 
+</h4>
+<code>FeatureMgr.h<a name="993414"> </a></code><h4>
+  <a name="993416"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="993419"></a>status_t FtrGetByIndex (
+   uint16_t <code class="par">index</code>,
+   Boolean <code class="par">romTable</code>,
+   uint32_t <code class="par">*creatorP</code>,
+   uint16_t <code class="par">*numP</code>,
+   uint32_t <code class="par">*valueP</code>
+)
+</pre>
+<h4>
+  <a name="993421"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="993424"> </a><code>&rarr;  <i>index</i></code></dt>
+<dd><a name="993426"> </a>Index of feature.</dd>
+
+<dt><a name="993428"> </a><code>&rarr;  <i>romTable</i></code></dt>
+<dd><a name="993430"> </a>If <code>true</code>, index into ROM table; otherwise, index into RAM table.</dd>
+
+<dt><a name="993432"> </a><code>&larr;  <i>creatorP</i></code></dt>
+<dd><a name="993434"> </a>Feature creator is returned here.</dd>
+
+<dt><a name="993440"> </a><code>&larr;  <i>numP</i></code></dt>
+<dd><a name="993442"> </a>Feature number is returned here.</dd>
+
+<dt><a name="993444"> </a><code>&larr;  <i>valueP</i></code></dt>
+<dd><a name="993446"> </a>Feature value is returned here.</dd>
+
+</dl>
+<h4>
+  <a name="993448"> </a>Returns 
+</h4>
+
+<p><a name="993451"> </a>Returns <code>errNone</code> if no error, or <code>ftrErrNoSuchFeature</code> if the index is out of range.</p>
+<h4>
+  <a name="993453"> </a>Comments 
+</h4>
+
+<p><a name="994665"> </a>This function is intended for system use only. It is used by shell commands. Most applications don't need it.</p>
+
+<p><a name="997357"> </a>Until the caller gets back <code>ftrErrNoSuchFeature</code>, it should pass indices for each table (ROM, RAM) starting at 0 and incrementing. Note that at system startup, the values in the ROM feature table are copied into the RAM feature table. </p>
+
+<h3 class="hbH3">
+  <a name="997379"> </a>FtrPtrFree Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="993508"> </a>Purpose 
+</h4>
+
+<p><a name="993511"> </a>Release memory previous allocated with <a href="FeatureMgr.html#993808"><code>FtrPtrNew()</code></a>.</p>
+<h4>
+  <a name="993513"> </a>Declared In 
+</h4>
+<code>FeatureMgr.h<a name="993516"> </a></code><h4>
+  <a name="993518"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="993521"></a>status_t FtrPtrFree (
+   uint32_t <code class="par">creator</code>,
+   uint32_t <code class="par">featureNum</code>
+)
+</pre>
+<h4>
+  <a name="993523"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="993564"> </a><code>&rarr;  <i>creator</i></code></dt>
+<dd><a name="993610"> </a>The creator ID for the feature. </dd>
+
+<dt><a name="993628"> </a><code>&rarr;  <i>featureNum</i></code></dt>
+<dd><a name="993694"> </a>Feature number of the feature.</dd>
+
+</dl>
+<h4>
+  <a name="993696"> </a>Returns 
+</h4>
+
+<p><a name="993699"> </a>Returns <code>errNone</code> if no error, or <code>ftrErrNoSuchFeature</code> if an error occurs.</p>
+<h4>
+  <a name="993701"> </a>Comments 
+</h4>
+
+<p><a name="993704"> </a>This function unregisters the feature before freeing the memory associated with it. </p>
+
+<h3 class="hbH3">
+  <a name="993711"> </a>FtrPtrGet Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="993716"> </a>Purpose 
+</h4>
+
+<p><a name="993719"> </a>Retrieve a previously created feature pointer.</p>
+<h4>
+  <a name="993721"> </a>Declared In 
+</h4>
+<code>FeatureMgr.h<a name="993724"> </a></code><h4>
+  <a name="993726"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="993729"></a>status_t FtrPtrGet (
+   uint32_t <code class="par">creator</code>,
+   uint32_t <code class="par">featureNum</code>,
+   size_t <code class="par">*sizeP</code>,
+   void <code class="par">**newPtrP</code>
+)
+</pre>
+<h4>
+  <a name="993731"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="993734"> </a><code>&rarr;  <i>creator</i></code></dt>
+<dd><a name="995878"> </a>Creator ID, which must be registered with PalmSource, Inc. This is usually the same as the creator ID for the application that owns this feature. </dd>
+
+<dt><a name="995879"> </a><code>&rarr;  <i>featureNum</i></code></dt>
+<dd><a name="995880"> </a>Feature number of the feature.</dd>
+
+<dt><a name="993742"> </a><code>&larr;  <i>sizeP</i></code></dt>
+<dd><a name="996069"> </a>Size, in bytes, of the memory chunk allocated to the feature pointer. </dd>
+
+<dt><a name="993746"> </a><code>&larr;  <i>newPtrP</i></code></dt>
+<dd><a name="996073"> </a>Pointer to the memory chunk is returned here. </dd>
+
+</dl>
+<h4>
+  <a name="993750"> </a>Returns 
+</h4>
+
+<p><a name="993753"> </a>Returns <code>errNone</code> if the operation completed successfully.</p>
+<h4>
+  <a name="993774"> </a>See Also 
+</h4>
+
+<p><a name="993784"> </a><a href="FeatureMgr.html#993808"><code>FtrPtrNew()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="993808"> </a>FtrPtrNew Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="993837"> </a>Purpose 
+</h4>
+
+<p><a name="993840"> </a>Allocate feature memory. </p>
+<h4>
+  <a name="993842"> </a>Declared In 
+</h4>
+<code>FeatureMgr.h<a name="993845"> </a></code><h4>
+  <a name="993847"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="993850"></a>status_t FtrPtrNew (
+   uint32_t <code class="par">creator</code>,
+   uint32_t <code class="par">featureNum</code>,
+   size_t <code class="par">size</code>,
+   void <code class="par">**newPtrP</code>
+)
+</pre>
+<h4>
+  <a name="993852"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="993855"> </a><code>&rarr;  <i>creator</i></code></dt>
+<dd><a name="993857"> </a>Creator ID, which must be registered with PalmSource, Inc. This is usually the same as the creator ID for the application that owns this feature.</dd>
+
+<dt><a name="993859"> </a><code>&rarr;  <i>featureNum</i></code></dt>
+<dd><a name="993861"> </a>Feature number of the feature.</dd>
+
+<dt><a name="993863"> </a><code>&rarr;  <i>size</i></code></dt>
+<dd><a name="993865"> </a>Size in bytes of the temporary memory to allocate. The maximum chunk size is 64K. </dd>
+
+<dt><a name="993867"> </a><code>&larr;  <i>newPtrP</i></code></dt>
+<dd><a name="993869"> </a>Pointer to the memory chunk is returned here. </dd>
+
+</dl>
+<h4>
+  <a name="993871"> </a>Returns 
+</h4>
+
+<p><a name="993874"> </a>Returns <code>errNone</code> if no error,<code> memErrInvalidParam</code> if the value of <code>size</code> is 0, or <code>memErrNotEnoughSpace</code> if there is not enough space to allocate a chunk of the specified size.</p>
+<h4>
+  <a name="993876"> </a>Comments 
+</h4>
+
+<p><a name="995073"> </a>This function allocates a chunk of memory and stores a pointer to that chunk in the feature table. The same pointer is returned in <code class="par">newPtrP</code>. The memory chunk remains allocated and locked until the next system reset or until you free the chunk with <a href="FeatureMgr.html#997379"><code>FtrPtrFree()</code></a>. </p>
+
+<p><a name="995077"> </a><code>FtrPtrNew()</code> is useful if you want quick, efficient access to data that persists from one invocation of the application to the next. <code>FtrPtrNew()</code> stores values on the storage heap rather than the dynamic heap, where free space is often extremely limited. The disadvantage to using feature memory is that writing to storage memory is slower than writing to dynamic memory. </p>
+
+<p><a name="995082"> </a>You can obtain the pointer to the chunk using <a href="FeatureMgr.html#992990"><code>FtrGet()</code></a>. To write to the chunk, you <b>must</b> use <a href="../Memory_Databases_Files/DataMgr.html#1007510"><code>DmWrite()</code></a> because the chunk is in the storage heap, not the dynamic heap. </p>
+
+<p><a name="995086"> </a>For example, if you allocate a memory chunk in this way: </p>
+<pre class="sl">FtrPtrNew(appCreator, 
+    myFtrMemFtr, 32, &amp;ftrMem);</pre>
+
+<p><a name="995089"> </a>You can later access that memory and write to it using the following:</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+void* data; <a name="995090"> </a>
+if (!FtrGet(appCreator,<a name="995091"> </a>
+    myFtrMemFtr, (UInt32*)&amp;data))<a name="999684"> </a>
+  DmWrite(data, 0, &amp;someVal, sizeof(someVal));<a name="995092"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h4>
+  <a name="993881"> </a>See Also 
+</h4>
+
+<p><a name="995135"> </a><a href="FeatureMgr.html#993711"><code>FtrPtrGet()</code></a><!-PS02-><span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">, </span><a href="FeatureMgr.html#993886"><code>FtrPtrResize()</code></a> </p>
+
+<h3 class="hbH3">
+  <a name="993886"> </a>FtrPtrResize Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="993891"> </a>Purpose 
+</h4>
+
+<p><a name="993894"> </a>Resize feature memory.</p>
+<h4>
+  <a name="993896"> </a>Declared In 
+</h4>
+<code>FeatureMgr.h<a name="993899"> </a></code><h4>
+  <a name="993901"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="993904"></a>status_t FtrPtrResize (
+   uint32_t <code class="par">creator</code>,
+   uint32_t <code class="par">featureNum</code>,
+   size_t <code class="par">newSize</code>,
+   void <code class="par">**newPtrP</code>
+)
+</pre>
+<h4>
+  <a name="993906"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="993909"> </a><code>&rarr;  <i>creator</i></code></dt>
+<dd><a name="993911"> </a>The creator ID for the feature.</dd>
+
+<dt><a name="993917"> </a><code>&rarr;  <i>featureNum</i></code></dt>
+<dd><a name="993919"> </a>Feature number of the feature.</dd>
+
+<dt><a name="993921"> </a><code>&rarr;  <i>newSize</i></code></dt>
+<dd><a name="993923"> </a>New size in bytes for the chunk. </dd>
+
+<dt><a name="993925"> </a><code>&larr;  <i>newPtrP</i></code></dt>
+<dd><a name="993927"> </a>Pointer to the memory chunk is returned here. </dd>
+
+</dl>
+<h4>
+  <a name="993929"> </a>Returns 
+</h4>
+
+<p><a name="995294"> </a>Returns <code>errNone</code> if no error, or <code>ftrErrNoSuchFeature</code> if the specified feature number doesn't exist for the specified creator, <code>memErrInvalidParam</code> if <code>newSize</code> is 0, or <code>memErrNotEnoughSpace</code> if there's not enough free space available to allocate a chunk of that size.</p>
+<h4>
+  <a name="993934"> </a>Comments 
+</h4>
+
+<p><a name="995305"> </a>Use this function to resize a chunk of memory previously allocated by <a href="FeatureMgr.html#993808"><code>FtrPtrNew()</code></a>. </p>
+
+<p><a name="995309"> </a>This function may move the chunk to a new location in order to resize it, so it is important to use the pointer returned by this function when accessing the memory chunk. The pointer in the feature table is automatically updated to be the same as the pointer returned by this function. </p>
+
+<p><a name="995310"> </a>If this function fails, the old memory pointer still exists and its data is unchanged. </p>
+<h4>
+  <a name="993939"> </a>See Also 
+</h4>
+
+<p><a name="995326"> </a><a href="../Memory_Databases_Files/MemoryMgr.html#994681"><code>MemHandleResize()</code></a> </p>
+
+<h3 class="hbH3">
+  <a name="993944"> </a>FtrSet Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="993949"> </a>Purpose 
+</h4>
+
+<p><a name="993952"> </a>Set a feature.</p>
+<h4>
+  <a name="993954"> </a>Declared In 
+</h4>
+<code>FeatureMgr.h<a name="993957"> </a></code><h4>
+  <a name="993959"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="993962"></a>status_t FtrSet (
+   uint32_t <code class="par">creator</code>,
+   uint32_t <code class="par">featureNum</code>,
+   uint32_t <code class="par">newValue</code>
+)
+</pre>
+<h4>
+  <a name="993964"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="993967"> </a><code>&rarr;  <i>creator</i></code></dt>
+<dd><a name="993969"> </a>Creator ID, which must be registered with PalmSource, Inc. This is usually the same as the creator ID for the application that owns this feature. </dd>
+
+<dt><a name="993971"> </a><code>&rarr;  <i>featureNum</i></code></dt>
+<dd><a name="993973"> </a>Feature number for this feature.</dd>
+
+<dt><a name="993975"> </a><code>&rarr;  <i>newValue</i></code></dt>
+<dd><a name="993977"> </a>New value.</dd>
+
+</dl>
+<h4>
+  <a name="993979"> </a>Returns 
+</h4>
+
+<p><a name="993982"> </a>Returns <code>errNone</code> if no error, or <code>memErrNotEnoughSpace</code> if the feature table must be resized to add a new feature and no space is available.</p>
+<h4>
+  <a name="993984"> </a>Comments 
+</h4>
+
+<p><a name="995368"> </a>The value of the feature is application-dependent.</p>
+
+<p><a name="995369"> </a>A feature that you define in this manner remains defined until the next system reset or until you explicitly undefine the feature with <a href="FeatureMgr.html#993994"><code>FtrUnregister()</code></a>.</p>
+<h4>
+  <a name="993989"> </a>See Also 
+</h4>
+
+<p><a name="995398"> </a><a href="FeatureMgr.html#992990"><code>FtrGet()</code></a>, <a href="FeatureMgr.html#993808"><code>FtrPtrNew()</code></a> </p>
+
+<h3 class="hbH3">
+  <a name="993994"> </a>FtrUnregister Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="993999"> </a>Purpose 
+</h4>
+
+<p><a name="994002"> </a>Unregister a feature.</p>
+<h4>
+  <a name="994004"> </a>Declared In 
+</h4>
+<code>FeatureMgr.h<a name="994007"> </a></code><h4>
+  <a name="994009"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="994038"></a>status_t FtrUnregister (
+   uint32_t <code class="par">creator</code>,
+   uint32_t <code class="par">featureNum</code>
+)
+</pre>
+<h4>
+  <a name="994094"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="994145"> </a><code>&rarr;  <i>creator</i></code></dt>
+<dd><a name="994195"> </a>Creator ID for the feature.</dd>
+
+<dt><a name="994245"> </a><code>&rarr;  <i>featureNum</i></code></dt>
+<dd><a name="994295"> </a>Feature number of the feature.</dd>
+
+</dl>
+<h4>
+  <a name="994297"> </a>Returns 
+</h4>
+
+<p><a name="995489"> </a>Returns <code>errNone</code> if no error, or <code>ftrErrNoSuchFeature</code> if the specified feature number doesn't exist for the specified creator. </p>
+
+<p><a name="992930"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="SysMgt_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="SysMgt_TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FatalAlert.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FloatMgr.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SysMgt_IX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

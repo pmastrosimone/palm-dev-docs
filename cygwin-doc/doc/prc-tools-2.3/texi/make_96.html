@@ -1,0 +1,114 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Overriding</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Overriding">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Overriding">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC100"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_95.html#SEC99"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_97.html#SEC101"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 9.5 Overriding Variables </H2>
+<!--docid::SEC100::-->
+<P>
+
+An argument that contains <SAMP>`='</SAMP> specifies the value of a variable:
+<SAMP>`<VAR>v</VAR>=<VAR>x</VAR>'</SAMP> sets the value of the variable <VAR>v</VAR> to <VAR>x</VAR>.
+If you specify a value in this way, all ordinary assignments of the same
+variable in the makefile are ignored; we say they have been
+<EM>overridden</EM> by the command line argument.
+</P><P>
+
+The most common way to use this facility is to pass extra flags to
+compilers.  For example, in a properly written makefile, the variable
+<CODE>CFLAGS</CODE> is included in each command that runs the C compiler, so a
+file <TT>`foo.c'</TT> would be compiled something like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>cc -c $(CFLAGS) foo.c
+</pre></td></tr></table></P><P>
+
+Thus, whatever value you set for <CODE>CFLAGS</CODE> affects each compilation
+that occurs.  The makefile probably specifies the usual value for
+<CODE>CFLAGS</CODE>, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>CFLAGS=-g
+</pre></td></tr></table></P><P>
+
+Each time you run <CODE>make</CODE>, you can override this value if you
+wish.  For example, if you say <SAMP>`make CFLAGS='-g -O''</SAMP>, each C
+compilation will be done with <SAMP>`cc -c -g -O'</SAMP>.  (This also
+illustrates how you can use quoting in the shell to enclose spaces and
+other special characters in the value of a variable when you override
+it.)
+</P><P>
+
+The variable <CODE>CFLAGS</CODE> is only one of many standard variables that
+exist just so that you can change them this way.  See section <A HREF="make_102.html#SEC106">Variables Used by Implicit Rules</A>, for a complete list.
+</P><P>
+
+You can also program the makefile to look at additional variables of your
+own, giving the user the ability to control other aspects of how the
+makefile works by changing the variables.
+</P><P>
+
+When you override a variable with a command argument, you can define either
+a recursively-expanded variable or a simply-expanded variable.  The
+examples shown above make a recursively-expanded variable; to make a
+simply-expanded variable, write <SAMP>`:='</SAMP> instead of <SAMP>`='</SAMP>.  But, unless
+you want to include a variable reference or function call in the
+<EM>value</EM> that you specify, it makes no difference which kind of
+variable you create.
+</P><P>
+
+There is one way that the makefile can change a variable that you have
+overridden.  This is to use the <CODE>override</CODE> directive, which is a line
+that looks like this: <SAMP>`override <VAR>variable</VAR> = <VAR>value</VAR>'</SAMP>
+(see section <A HREF="make_70.html#SEC74">The <CODE>override</CODE> Directive</A>).
+</P><P>
+
+<A NAME="Testing"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_95.html#SEC99"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_97.html#SEC101"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

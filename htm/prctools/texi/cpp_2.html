@@ -1,0 +1,141 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Global Actions</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Global Actions">
+<META NAME="keywords" CONTENT="The C Preprocessor: Global Actions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC2"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_1.html#SEC1"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_3.html#SEC3"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_3.html#SEC3"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 1.1 Transformations Made Globally </H2>
+<!--docid::SEC2::-->
+<P>
+
+Most C preprocessor features are inactive unless you give specific directives
+to request their use.  (Preprocessing directives are lines starting with
+<SAMP>`#'</SAMP>; see section <A HREF="cpp_3.html#SEC3">1.2 Preprocessing Directives</A>).  But there are three transformations that the
+preprocessor always makes on all the input it receives, even in the absence
+of directives.
+</P><P>
+
+<UL>
+<LI>
+All C comments are replaced with single spaces.
+<P>
+
+<LI>
+Backslash-Newline sequences are deleted, no matter where.  This
+feature allows you to break long lines for cosmetic purposes without
+changing their meaning.
+<P>
+
+<LI>
+Predefined macro names are replaced with their expansions
+(see section <A HREF="cpp_13.html#SEC13">1.4.3 Predefined Macros</A>).
+</UL>
+<P>
+
+The first two transformations are done <EM>before</EM> nearly all other parsing
+and before preprocessing directives are recognized.  Thus, for example, you
+can split a line cosmetically with Backslash-Newline anywhere (except
+when trigraphs are in use; see below).
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>/*
+*/ # /*
+*/ defi\
+ne FO\
+O 10\
+20
+</pre></td></tr></table></P><P>
+
+is equivalent into <SAMP>`#define FOO 1020'</SAMP>.  You can split even an escape
+sequence with Backslash-Newline.  For example, you can split <CODE>"foo\bar"</CODE>
+between the <SAMP>`\'</SAMP> and the <SAMP>`b'</SAMP> to get
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>"foo\\
+bar"
+</pre></td></tr></table></P><P>
+
+This behavior is unclean: in all other contexts, a Backslash can be
+inserted in a string constant as an ordinary character by writing a double
+Backslash, and this creates an exception.  But the ANSI C standard requires
+it.  (Strict ANSI C does not allow Newlines in string constants, so they
+do not consider this a problem.)
+</P><P>
+
+But there are a few exceptions to all three transformations.
+</P><P>
+
+<UL>
+<LI>
+C comments and predefined macro names are not recognized inside a
+<SAMP>`#include'</SAMP> directive in which the file name is delimited with
+<SAMP>`&#60;'</SAMP> and <SAMP>`&#62;'</SAMP>.
+<P>
+
+<LI>
+C comments and predefined macro names are never recognized within a
+character or string constant.  (Strictly speaking, this is the rule,
+not an exception, but it is worth noting here anyway.)
+<P>
+
+<LI>
+Backslash-Newline may not safely be used within an ANSI "trigraph".
+Trigraphs are converted before Backslash-Newline is deleted.  If you
+write what looks like a trigraph with a Backslash-Newline inside, the
+Backslash-Newline is deleted as usual, but it is then too late to
+recognize the trigraph.
+<P>
+
+This exception is relevant only if you use the <SAMP>`-trigraphs'</SAMP>
+option to enable trigraph processing.  See section <A HREF="cpp_42.html#SEC42">1.9 Invoking the C Preprocessor</A>.
+</UL>
+<P>
+
+<A NAME="Directives"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_1.html#SEC1"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_3.html#SEC3"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_3.html#SEC3"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

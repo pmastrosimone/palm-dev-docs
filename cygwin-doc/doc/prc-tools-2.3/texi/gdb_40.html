@@ -1,0 +1,150 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Thread Stops</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Thread Stops">
+<META NAME="keywords" CONTENT="Debugging with GDB: Thread Stops">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC40"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_39.html#SEC39"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_41.html#SEC41"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_41.html#SEC41"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.4 Stopping and starting multi-thread programs </H2>
+<!--docid::SEC40::-->
+<P>
+
+When your program has multiple threads (see section <A HREF="gdb_25.html#SEC25">Debugging programs with multiple threads</A>), you can choose whether to set
+breakpoints on all threads, or on a particular thread.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX214"></A>
+<A NAME="IDX215"></A>
+<A NAME="IDX216"></A>
+<DT><CODE>break <VAR>linespec</VAR> thread <VAR>threadno</VAR></CODE>
+<DD><DT><CODE>break <VAR>linespec</VAR> thread <VAR>threadno</VAR> if <small>...</small></CODE>
+<DD><VAR>linespec</VAR> specifies source lines; there are several ways of
+writing them, but the effect is always to specify some source line.
+<P>
+
+Use the qualifier <SAMP>`thread <VAR>threadno</VAR>'</SAMP> with a breakpoint command
+to specify that you only want GDB to stop the program when a
+particular thread reaches this breakpoint.  <VAR>threadno</VAR> is one of the
+numeric thread identifiers assigned by GDB, shown in the first
+column of the <SAMP>`info threads'</SAMP> display.
+</P><P>
+
+If you do not specify <SAMP>`thread <VAR>threadno</VAR>'</SAMP> when you set a
+breakpoint, the breakpoint applies to <EM>all</EM> threads of your
+program.
+</P><P>
+
+You can use the <CODE>thread</CODE> qualifier on conditional breakpoints as
+well; in this case, place <SAMP>`thread <VAR>threadno</VAR>'</SAMP> before the
+breakpoint condition, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) break frik.c:13 thread 28 if bartab &#62; lim
+</FONT></pre></td></tr></table></P><P>
+
+</DL>
+<P>
+
+<A NAME="IDX217"></A>
+<A NAME="IDX218"></A>
+Whenever your program stops under GDB for any reason,
+<EM>all</EM> threads of execution stop, not just the current thread.  This
+allows you to examine the overall state of the program, including
+switching between threads, without worrying that things may change
+underfoot.
+</P><P>
+
+<A NAME="IDX219"></A>
+<A NAME="IDX220"></A>
+Conversely, whenever you restart the program, <EM>all</EM> threads start
+executing.  <EM>This is true even when single-stepping</EM> with commands
+like <CODE>step</CODE> or <CODE>next</CODE>.
+</P><P>
+
+In particular, GDB cannot single-step all threads in lockstep.
+Since thread scheduling is up to your debugging target's operating
+system (not controlled by GDB), other threads may
+execute more than one statement while the current thread completes a
+single step.  Moreover, in general other threads stop in the middle of a
+statement, rather than at a clean statement boundary, when the program
+stops.
+</P><P>
+
+You might even find your program stopped in another thread after
+continuing or even single-stepping.  This happens whenever some other
+thread runs into a breakpoint, a signal, or an exception before the
+first thread completes whatever you requested.
+</P><P>
+
+On some OSes, you can lock the OS scheduler and thus allow only a single
+thread to run.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>set scheduler-locking <VAR>mode</VAR></CODE>
+<DD>Set the scheduler locking mode.  If it is <CODE>off</CODE>, then there is no
+locking and any thread may run at any time.  If <CODE>on</CODE>, then only the
+current thread may run when the inferior is resumed.  The <CODE>step</CODE>
+mode optimizes for single-stepping.  It stops other threads from
+"seizing the prompt" by preempting the current thread while you are
+stepping.  Other threads will only rarely (or never) get a chance to run
+when you step.  They are more likely to run when you <SAMP>`next'</SAMP> over a
+function call, and they are completely free to run when you use commands
+like <SAMP>`continue'</SAMP>, <SAMP>`until'</SAMP>, or <SAMP>`finish'</SAMP>.  However, unless another
+thread hits a breakpoint during its timeslice, they will never steal the
+GDB prompt away from the thread that you are debugging.
+<P>
+
+<DT><CODE>show scheduler-locking</CODE>
+<DD>Display the current scheduler locking mode.
+</DL>
+<P>
+
+<A NAME="Stack"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_39.html#SEC39"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_41.html#SEC41"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_41.html#SEC41"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

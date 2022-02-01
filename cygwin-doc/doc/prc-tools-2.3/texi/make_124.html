@@ -1,0 +1,123 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Utilities in Makefiles</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Utilities in Makefiles">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Utilities in Makefiles">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC128"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_123.html#SEC127"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_125.html#SEC129"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_125.html#SEC129"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_122.html#SEC126"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_129.html#SEC133"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 14.2 Utilities in Makefiles </H2>
+<!--docid::SEC128::-->
+<P>
+
+Write the Makefile commands (and any shell scripts, such as
+<CODE>configure</CODE>) to run in <CODE>sh</CODE>, not in <CODE>csh</CODE>.  Don't use any
+special features of <CODE>ksh</CODE> or <CODE>bash</CODE>.
+</P><P>
+
+The <CODE>configure</CODE> script and the Makefile rules for building and
+installation should not use any utilities directly except these:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>cat cmp cp diff echo egrep expr false grep install-info
+ln ls mkdir mv pwd rm rmdir sed sleep sort tar test touch true
+</pre></td></tr></table></P><P>
+
+The compression program <CODE>gzip</CODE> can be used in the <CODE>dist</CODE> rule.
+</P><P>
+
+Stick to the generally supported options for these programs.  For
+example, don't use <SAMP>`mkdir -p'</SAMP>, convenient as it may be, because
+most systems don't support it.
+</P><P>
+
+It is a good idea to avoid creating symbolic links in makefiles, since a
+few systems don't support them.
+</P><P>
+
+The Makefile rules for building and installation can also use compilers
+and related programs, but should do so via <CODE>make</CODE> variables so that the
+user can substitute alternatives.  Here are some of the programs we
+mean:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ar bison cc flex install ld ldconfig lex
+make makeinfo ranlib texi2dvi yacc
+</pre></td></tr></table></P><P>
+
+Use the following <CODE>make</CODE> variables to run those programs:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(AR) $(BISON) $(CC) $(FLEX) $(INSTALL) $(LD) $(LDCONFIG) $(LEX)
+$(MAKE) $(MAKEINFO) $(RANLIB) $(TEXI2DVI) $(YACC)
+</pre></td></tr></table></P><P>
+
+When you use <CODE>ranlib</CODE> or <CODE>ldconfig</CODE>, you should make sure
+nothing bad happens if the system does not have the program in question.
+Arrange to ignore an error from that command, and print a message before
+the command to tell the user that failure of this command does not mean
+a problem.  (The Autoconf <SAMP>`AC_PROG_RANLIB'</SAMP> macro can help with
+this.)
+</P><P>
+
+If you use symbolic links, you should implement a fallback for systems
+that don't have symbolic links.
+</P><P>
+
+Additional utilities that can be used via Make variables are:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>chgrp chmod chown mknod
+</pre></td></tr></table></P><P>
+
+It is ok to use other utilities in Makefile portions (or scripts)
+intended only for particular systems where you know those utilities
+exist.
+</P><P>
+
+<A NAME="Command Variables"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_123.html#SEC127"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_125.html#SEC129"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_125.html#SEC129"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_122.html#SEC126"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_129.html#SEC133"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

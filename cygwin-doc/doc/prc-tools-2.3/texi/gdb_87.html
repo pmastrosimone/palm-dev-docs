@@ -1,0 +1,120 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Automatic Overlay Debugging</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Automatic Overlay Debugging">
+<META NAME="keywords" CONTENT="Debugging with GDB: Automatic Overlay Debugging">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC87"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_86.html#SEC86"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_88.html#SEC88"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_88.html#SEC88"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_84.html#SEC84"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_89.html#SEC89"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 11.3 Automatic Overlay Debugging </H2>
+<!--docid::SEC87::-->
+<P>
+
+GDB can automatically track which overlays are mapped and which
+are not, given some simple co-operation from the overlay manager in the
+inferior.  If you enable automatic overlay debugging with the
+<CODE>overlay auto</CODE> command (see section <A HREF="gdb_86.html#SEC86">11.2 Overlay Commands</A>), GDB
+looks in the inferior's memory for certain variables describing the
+current state of the overlays.
+</P><P>
+
+Here are the variables your overlay manager must define to support
+GDB's automatic overlay debugging:
+</P><P>
+
+<DL COMPACT>
+
+<DT><CODE>_ovly_table</CODE>:
+<DD>This variable must be an array of the following structures:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>struct
+{
+  /* The overlay's mapped address.  */
+  unsigned long vma;
+
+  /* The size of the overlay, in bytes.  */
+  unsigned long size;
+
+  /* The overlay's load address.  */
+  unsigned long lma;
+
+  /* Non-zero if the overlay is currently mapped;
+     zero otherwise.  */
+  unsigned long mapped;
+}
+</FONT></pre></td></tr></table></P><P>
+
+<DT><CODE>_novlys</CODE>:
+<DD>This variable must be a four-byte signed integer, holding the total
+number of elements in <CODE>_ovly_table</CODE>.
+<P>
+
+</DL>
+<P>
+
+To decide whether a particular overlay is mapped or not, GDB
+looks for an entry in <CODE>_ovly_table</CODE> whose <CODE>vma</CODE> and
+<CODE>lma</CODE> members equal the VMA and LMA of the overlay's section in the
+executable file.  When GDB finds a matching entry, it consults
+the entry's <CODE>mapped</CODE> member to determine whether the overlay is
+currently mapped.
+</P><P>
+
+In addition, your overlay manager may define a function called
+<CODE>_ovly_debug_event</CODE>.  If this function is defined, GDB
+will silently set a breakpoint there.  If the overlay manager then
+calls this function whenever it has changed the overlay table, this
+will enable GDB to accurately keep track of which overlays
+are in program memory, and update any breakpoints that may be set
+in overlays.  This will allow breakpoints to work even if the 
+overlays are kept in ROM or other non-writable memory while they
+are not being executed.
+</P><P>
+
+<A NAME="Overlay Sample Program"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_86.html#SEC86"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_88.html#SEC88"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_88.html#SEC88"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_84.html#SEC84"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_89.html#SEC89"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

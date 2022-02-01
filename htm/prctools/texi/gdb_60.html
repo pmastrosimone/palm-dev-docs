@@ -1,0 +1,151 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Convenience Vars</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Convenience Vars">
+<META NAME="keywords" CONTENT="Debugging with GDB: Convenience Vars">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC60"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_59.html#SEC59"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_61.html#SEC61"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.9 Convenience variables </H2>
+<!--docid::SEC60::-->
+<P>
+
+<A NAME="IDX364"></A>
+GDB provides <EM>convenience variables</EM> that you can use within
+GDB to hold on to a value and refer to it later.  These variables
+exist entirely within GDB; they are not part of your program, and
+setting a convenience variable has no direct effect on further execution
+of your program.  That is why you can use them freely.
+</P><P>
+
+Convenience variables are prefixed with <SAMP>`$'</SAMP>.  Any name preceded by
+<SAMP>`$'</SAMP> can be used for a convenience variable, unless it is one of
+the predefined machine-specific register names (see section <A HREF="gdb_61.html#SEC61">Registers</A>).
+(Value history references, in contrast, are <EM>numbers</EM> preceded
+by <SAMP>`$'</SAMP>.  See section <A HREF="gdb_59.html#SEC59">Value history</A>.)
+</P><P>
+
+You can save a value in a convenience variable with an assignment
+expression, just as you would set a variable in your program.
+For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>set $foo = *object_ptr
+</FONT></pre></td></tr></table></P><P>
+
+would save in <CODE>$foo</CODE> the value contained in the object pointed to by
+<CODE>object_ptr</CODE>.
+</P><P>
+
+Using a convenience variable for the first time creates it, but its
+value is <CODE>void</CODE> until you assign a new value.  You can alter the
+value with another assignment at any time.
+</P><P>
+
+Convenience variables have no fixed types.  You can assign a convenience
+variable any type of value, including structures and arrays, even if
+that variable already has a value of a different type.  The convenience
+variable, when used as an expression, has the type of its current value.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX365"></A>
+<DT><CODE>show convenience</CODE>
+<DD>Print a list of convenience variables used so far, and their values.
+Abbreviated <CODE>show conv</CODE>.
+</DL>
+<P>
+
+One of the ways to use a convenience variable is as a counter to be
+incremented or a pointer to be advanced.  For example, to print
+a field from successive elements of an array of structures:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>set $i = 0
+print bar[$i++]-&#62;contents
+</FONT></pre></td></tr></table></P><P>
+
+Repeat that command by typing <KBD>RET</KBD>.
+</P><P>
+
+Some convenience variables are created automatically by GDB and given
+values likely to be useful.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX366"></A>
+<DT><CODE>$_</CODE>
+<DD>The variable <CODE>$_</CODE> is automatically set by the <CODE>x</CODE> command to
+the last address examined (see section <A HREF="gdb_56.html#SEC56">Examining memory</A>).  Other
+commands which provide a default address for <CODE>x</CODE> to examine also
+set <CODE>$_</CODE> to that address; these commands include <CODE>info line</CODE>
+and <CODE>info breakpoint</CODE>.  The type of <CODE>$_</CODE> is <CODE>void *</CODE>
+except when set by the <CODE>x</CODE> command, in which case it is a pointer
+to the type of <CODE>$__</CODE>.
+<P>
+
+<A NAME="IDX367"></A>
+<DT><CODE>$__</CODE>
+<DD>The variable <CODE>$__</CODE> is automatically set by the <CODE>x</CODE> command
+to the value found in the last address examined.  Its type is chosen
+to match the format in which the data was printed.
+<P>
+
+<DT><CODE>$_exitcode</CODE>
+<DD><A NAME="IDX368"></A>
+The variable <CODE>$_exitcode</CODE> is automatically set to the exit code when
+the program being debugged terminates.
+</DL>
+<P>
+
+On HP-UX systems, if you refer to a function or variable name that
+begins with a dollar sign, GDB searches for a user or system
+name first, before it searches for a convenience variable.
+</P><P>
+
+<A NAME="Registers"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_59.html#SEC59"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_61.html#SEC61"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

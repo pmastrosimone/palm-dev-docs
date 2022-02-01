@@ -1,0 +1,110 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Stop Reply Packets</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Stop Reply Packets">
+<META NAME="keywords" CONTENT="Debugging with GDB: Stop Reply Packets">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC629"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_274.html#SEC628"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_276.html#SEC630"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_276.html#SEC630"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_272.html#SEC626"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_279.html#SEC633"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> D.3 Stop Reply Packets </H2>
+<!--docid::SEC629::-->
+<P>
+
+The <SAMP>`C'</SAMP>, <SAMP>`c'</SAMP>, <SAMP>`S'</SAMP>, <SAMP>`s'</SAMP> and <SAMP>`?'</SAMP> packets can
+receive any of the below as a reply.  In the case of the <SAMP>`C'</SAMP>,
+<SAMP>`c'</SAMP>, <SAMP>`S'</SAMP> and <SAMP>`s'</SAMP> packets, that reply is only returned
+when the target halts.  In the below the exact meaning of <SAMP>`signal
+number'</SAMP> is poorly defined.  In general one of the UNIX signal numbering
+conventions is used.
+</P><P>
+
+<DL COMPACT>
+
+<DT><SAMP>`S<VAR>AA</VAR>'</SAMP>
+<DD><VAR>AA</VAR> is the signal number
+<P>
+
+<DT><SAMP>`<CODE>T</CODE><VAR>AA</VAR><VAR>n...</VAR><CODE>:</CODE><VAR>r...</VAR><CODE>;</CODE><VAR>n...</VAR><CODE>:</CODE><VAR>r...</VAR><CODE>;</CODE><VAR>n...</VAR><CODE>:</CODE><VAR>r...</VAR><CODE>;</CODE>'</SAMP>
+<DD><A NAME="IDX1216"></A>
+<P>
+
+<VAR>AA</VAR> = two hex digit signal number; <VAR>n...</VAR> = register number
+(hex), <VAR>r...</VAR>  = target byte ordered register contents, size defined
+by <CODE>REGISTER_RAW_SIZE</CODE>; <VAR>n...</VAR> = <SAMP>`thread'</SAMP>, <VAR>r...</VAR> =
+thread process ID, this is a hex integer; <VAR>n...</VAR> = (<SAMP>`watch'</SAMP> | 
+<SAMP>`rwatch'</SAMP> | <SAMP>`awatch'</SAMP>, <VAR>r...</VAR> = data address, this is a hex
+integer; <VAR>n...</VAR> = other string not starting with valid hex digit.
+GDB should ignore this <VAR>n...</VAR>, <VAR>r...</VAR> pair and go on
+to the next.  This way we can extend the protocol.
+</P><P>
+
+<DT><SAMP>`W<VAR>AA</VAR>'</SAMP>
+<DD><P>
+
+The process exited, and <VAR>AA</VAR> is the exit status.  This is only
+applicable to certain targets.
+</P><P>
+
+<DT><SAMP>`X<VAR>AA</VAR>'</SAMP>
+<DD><P>
+
+The process terminated with signal <VAR>AA</VAR>.
+</P><P>
+
+<DT><SAMP>`N<VAR>AA</VAR>;<VAR>t<small>...</small></VAR>;<VAR>d<small>...</small></VAR>;<VAR>b<small>...</small></VAR> <STRONG>(obsolete)</STRONG>'</SAMP>
+<DD><P>
+
+<VAR>AA</VAR> = signal number; <VAR>t<small>...</small></VAR> = address of symbol
+<CODE>_start</CODE>; <VAR>d<small>...</small></VAR> = base of data section; <VAR>b<small>...</small></VAR> =
+base of bss section.  <EM>Note: only used by Cisco Systems targets.
+The difference between this reply and the <SAMP>`qOffsets'</SAMP> query is that
+the <SAMP>`N'</SAMP> packet may arrive spontaneously whereas the <SAMP>`qOffsets'</SAMP>
+is a query initiated by the host debugger.</EM>
+</P><P>
+
+<DT><SAMP>`O<VAR>XX<small>...</small></VAR>'</SAMP>
+<DD><P>
+
+<VAR>XX<small>...</small></VAR> is hex encoding of ASCII data.  This can happen at
+any time while the program is running and the debugger should continue
+to wait for <SAMP>`W'</SAMP>, <SAMP>`T'</SAMP>, etc.
+</P><P>
+
+</DL>
+<P>
+
+<A NAME="General Query Packets"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

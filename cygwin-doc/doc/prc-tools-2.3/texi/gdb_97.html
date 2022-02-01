@@ -1,0 +1,121 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Range Checking</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Range Checking">
+<META NAME="keywords" CONTENT="Debugging with GDB: Range Checking">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC97"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_96.html#SEC96"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_98.html#SEC98"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_98.html#SEC98"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_95.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_98.html#SEC98"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 12.3.2 An overview of range checking </H3>
+<!--docid::SEC97::-->
+<P>
+
+In some languages (such as Modula-2), it is an error to exceed the
+bounds of a type; this is enforced with run-time checks.  Such range
+checking is meant to ensure program correctness by making sure
+computations do not overflow, or indices on an array element access do
+not exceed the bounds of the array.
+</P><P>
+
+For expressions you use in GDB commands, you can tell
+GDB to treat range errors in one of three ways: ignore them,
+always treat them as errors and abandon the expression, or issue
+warnings but evaluate the expression anyway.
+</P><P>
+
+A range error can result from numerical overflow, from exceeding an
+array index bound, or when you type a constant that is not a member
+of any type.  Some languages, however, do not treat overflows as an
+error.  In many implementations of C, mathematical overflow causes the
+result to "wrap around" to lower values--for example, if <VAR>m</VAR> is
+the largest integer value, and <VAR>s</VAR> is the smallest, then
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre><VAR>m</VAR> + 1 => <VAR>s</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+This, too, is specific to individual languages, and in some cases
+specific to individual compilers or machines.  See section <A HREF="gdb_98.html#SEC98">Supported languages</A>, for further details on specific languages.
+</P><P>
+
+GDB provides some additional commands for controlling the range checker:
+</P><P>
+
+<A NAME="IDX462"></A>
+<A NAME="IDX463"></A>
+<A NAME="IDX464"></A>
+<DL COMPACT>
+<DT><CODE>set check range auto</CODE>
+<DD>Set range checking on or off based on the current working language.
+See section <A HREF="gdb_98.html#SEC98">Supported languages</A>, for the default settings for
+each language.
+<P>
+
+<DT><CODE>set check range on</CODE>
+<DD><DT><CODE>set check range off</CODE>
+<DD>Set range checking on or off, overriding the default setting for the
+current working language.  A warning is issued if the setting does not
+match the language default.  If a range error occurs and range checking is on,
+then a message is printed and evaluation of the expression is aborted.
+<P>
+
+<DT><CODE>set check range warn</CODE>
+<DD>Output messages when the GDB range checker detects a range error,
+but attempt to evaluate the expression anyway.  Evaluating the
+expression may still be impossible for other reasons, such as accessing
+memory that the process does not own (a typical example from many Unix
+systems).
+<P>
+
+<DT><CODE>show range</CODE>
+<DD>Show the current setting of the range checker, and whether or not it is
+being set automatically by GDB.
+</DL>
+<P>
+
+<A NAME="Support"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_96.html#SEC96"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_98.html#SEC98"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_98.html#SEC98"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_95.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_98.html#SEC98"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

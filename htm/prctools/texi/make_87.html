@@ -1,0 +1,118 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Eval Function</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Eval Function">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Eval Function">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC91"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_86.html#SEC90"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_88.html#SEC92"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.8 The <CODE>eval</CODE> Function </H2>
+<!--docid::SEC91::-->
+<P>
+
+The <CODE>eval</CODE> function is very special: it allows you to define new
+makefile constructs that are not constant; which are the result of
+evaluating other variables and functions.  The argument to the
+<CODE>eval</CODE> function is expanded, then the results of that expansion
+are parsed as makefile syntax.  The expanded results can define new
+<CODE>make</CODE> variables, targets, implicit or explicit rules, etc.
+</P><P>
+
+The result of the <CODE>eval</CODE> function is always the empty string;
+thus, it can be placed virtually anywhere in a makefile without
+causing syntax errors.
+</P><P>
+
+It's important to realize that the <CODE>eval</CODE> argument is expanded
+<EM>twice</EM>; first by the <CODE>eval</CODE> function, then the results of
+that expansion are expanded again when they are parsed as makefile
+syntax.  This means you may need to provide extra levels of escaping
+for "$" characters when using <CODE>eval</CODE>.  The <CODE>value</CODE>
+function (see section <A HREF="make_86.html#SEC90">8.7 The <CODE>value</CODE> Function</A>) can sometimes be useful in these
+situations, to circumvent unwanted expansions.
+</P><P>
+
+Here is an example of how <CODE>eval</CODE> can be used; this example
+combines a number of concepts and other functions.  Although it might
+seem overly complex to use <CODE>eval</CODE> in this example, rather than
+just writing out the rules, consider two things: first, the template
+definition (in <CODE>PROGRAM_template</CODE>) could need to be much more
+complex than it is here; and second, you might put the complex,
+"generic" part of this example into another makefile, then include
+it in all the individual makefiles.  Now your individual makefiles are
+quite straightforward.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>PROGRAMS    = server client
+
+server_OBJS = server.o server_priv.o server_access.o
+server_LIBS = priv protocol
+
+client_OBJS = client.o client_api.o client_mem.o
+client_LIBS = protocol
+
+# Everything after this is generic
+
+.PHONY: all
+all: $(PROGRAMS)
+
+define PROGRAM_template
+ $(1): $$($(1)_OBJ) $$($(1)_LIBS:%=-l%)
+ ALL_OBJS   += $$($(1)_OBJS)
+endef
+
+$(foreach prog,$(PROGRAMS),$(eval $(call PROGRAM_template,$(prog))))
+
+$(PROGRAMS):
+        $(LINK.o) $^ $(LDLIBS) -o $@
+
+clean:
+        rm -f $(ALL_OBJS) $(PROGRAMS)
+</pre></td></tr></table></P><P>
+
+<A NAME="Origin Function"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_86.html#SEC90"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_88.html#SEC92"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

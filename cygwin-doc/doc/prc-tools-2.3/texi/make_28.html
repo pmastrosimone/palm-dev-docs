@@ -1,0 +1,97 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Wildcard Pitfall</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Wildcard Pitfall">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Wildcard Pitfall">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC32"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_27.html#SEC31"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_29.html#SEC33"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_25.html#SEC29"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_26.html#SEC30"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 4.4.2 Pitfalls of Using Wildcards </H3>
+<!--docid::SEC32::-->
+<P>
+
+Now here is an example of a naive way of using wildcard expansion, that
+does not do what you would intend.  Suppose you would like to say that the
+executable file <TT>`foo'</TT> is made from all the object files in the
+directory, and you write this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>objects = *.o
+
+foo : $(objects)
+        cc -o foo $(CFLAGS) $(objects)
+</pre></td></tr></table></P><P>
+
+The value of <CODE>objects</CODE> is the actual string <SAMP>`*.o'</SAMP>.  Wildcard
+expansion happens in the rule for <TT>`foo'</TT>, so that each <EM>existing</EM>
+<SAMP>`.o'</SAMP> file becomes a prerequisite of <TT>`foo'</TT> and will be recompiled if
+necessary.
+</P><P>
+
+But what if you delete all the <SAMP>`.o'</SAMP> files?  When a wildcard matches
+no files, it is left as it is, so then <TT>`foo'</TT> will depend on the
+oddly-named file <TT>`*.o'</TT>.  Since no such file is likely to exist,
+<CODE>make</CODE> will give you an error saying it cannot figure out how to
+make <TT>`*.o'</TT>.  This is not what you want!
+</P><P>
+
+Actually it is possible to obtain the desired result with wildcard
+expansion, but you need more sophisticated techniques, including the
+<CODE>wildcard</CODE> function and string substitution.
+See section <A HREF="make_29.html#SEC33">The Function <CODE>wildcard</CODE></A>.
+</P><P>
+
+<A NAME="IDX101"></A>
+<A NAME="IDX102"></A>
+</P><P>
+
+Microsoft operating systems (MS-DOS and MS-Windows) use backslashes to
+separate directories in pathnames, like so:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>  c:\foo\bar\baz.c
+</pre></td></tr></table></P><P>
+
+This is equivalent to the Unix-style <TT>`c:/foo/bar/baz.c'</TT> (the
+<TT>`c:'</TT> part is the so-called drive letter).  When <CODE>make</CODE> runs on
+these systems, it supports backslashes as well as the Unix-style forward
+slashes in pathnames.  However, this support does <EM>not</EM> include the
+wildcard expansion, where backslash is a quote character.  Therefore,
+you <EM>must</EM> use Unix-style slashes in these cases.
+</P><P>
+
+<A NAME="Wildcard Function"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

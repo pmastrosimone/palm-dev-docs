@@ -1,0 +1,441 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: GDB/MI Target Manipulation</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: GDB/MI Target Manipulation">
+<META NAME="keywords" CONTENT="Debugging with GDB: GDB/MI Target Manipulation">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC506"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_231.html#SEC465"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_233.html#SEC543"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_220.html#SEC225"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_213.html#SEC213"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_236.html#SEC590"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 24.11 GDB/MI Target Manipulation Commands </H2>
+<!--docid::SEC506::-->
+<P>
+
+<A NAME="SEC507"></A>
+<H3> The <CODE>-target-attach</CODE> Command </H3>
+<!--docid::SEC507::-->
+<P>
+
+<A NAME="SEC508"></A>
+<H4> Synopsis                                                                  </H4>
+<!--docid::SEC508::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -target-attach <VAR>pid</VAR> | <VAR>file</VAR>
+</pre></td></tr></table></P><P>
+
+Attach to a process <VAR>pid</VAR> or a file <VAR>file</VAR> outside of GDB.
+</P><P>
+
+<A NAME="SEC509"></A>
+<H4> GDB command     </H4>
+<!--docid::SEC509::-->
+<P>
+
+The corresponding GDB command is <SAMP>`attach'</SAMP>.
+</P><P>
+
+<A NAME="SEC510"></A>
+<H4> Example                                                                  </H4>
+<!--docid::SEC510::-->
+N.A.
+<P>
+
+<A NAME="SEC511"></A>
+<H3> The <CODE>-target-compare-sections</CODE> Command </H3>
+<!--docid::SEC511::-->
+<P>
+
+<A NAME="SEC512"></A>
+<H4> Synopsis                                                                   </H4>
+<!--docid::SEC512::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -target-compare-sections [ <VAR>section</VAR> ]
+</pre></td></tr></table></P><P>
+
+Compare data of section <VAR>section</VAR> on target to the exec file.
+Without the argument, all sections are compared.
+</P><P>
+
+<A NAME="SEC513"></A>
+<H4> GDB Command                                                              </H4>
+<!--docid::SEC513::-->
+<P>
+
+The GDB equivalent is <SAMP>`compare-sections'</SAMP>.
+</P><P>
+
+<A NAME="SEC514"></A>
+<H4> Example                                                                   </H4>
+<!--docid::SEC514::-->
+N.A.
+<P>
+
+<A NAME="SEC515"></A>
+<H3> The <CODE>-target-detach</CODE> Command </H3>
+<!--docid::SEC515::-->
+<P>
+
+<A NAME="SEC516"></A>
+<H4> Synopsis                                                                    </H4>
+<!--docid::SEC516::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -target-detach
+</pre></td></tr></table></P><P>
+
+Disconnect from the remote target.  There's no output.
+</P><P>
+
+<A NAME="SEC517"></A>
+<H4> GDB command      </H4>
+<!--docid::SEC517::-->
+<P>
+
+The corresponding GDB command is <SAMP>`detach'</SAMP>.
+</P><P>
+
+<A NAME="SEC518"></A>
+<H4> Example                                                                    </H4>
+<!--docid::SEC518::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+-target-detach
+^done
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC519"></A>
+<H3> The <CODE>-target-download</CODE> Command </H3>
+<!--docid::SEC519::-->
+<P>
+
+<A NAME="SEC520"></A>
+<H4> Synopsis                                                                     </H4>
+<!--docid::SEC520::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -target-download
+</pre></td></tr></table></P><P>
+
+Loads the executable onto the remote target.
+It prints out an update message every half second, which includes the fields:
+</P><P>
+
+<DL COMPACT>
+<DT><SAMP>`section'</SAMP>
+<DD>The name of the section.
+<DT><SAMP>`section-sent'</SAMP>
+<DD>The size of what has been sent so far for that section.
+<DT><SAMP>`section-size'</SAMP>
+<DD>The size of the section.
+<DT><SAMP>`total-sent'</SAMP>
+<DD>The total size of what was sent so far (the current and the previous sections).
+<DT><SAMP>`total-size'</SAMP>
+<DD>The size of the overall executable to download.
+</DL>
+<P>
+
+Each message is sent as status record (see section <A HREF="gdb_218.html#SEC219">GDB/MI Output Syntax</A>).
+</P><P>
+
+In addition, it prints the name and size of the sections, as they are
+downloaded.  These messages include the following fields:
+</P><P>
+
+<DL COMPACT>
+<DT><SAMP>`section'</SAMP>
+<DD>The name of the section.
+<DT><SAMP>`section-size'</SAMP>
+<DD>The size of the section.
+<DT><SAMP>`total-size'</SAMP>
+<DD>The size of the overall executable to download.
+</DL>
+<P>
+
+At the end, a summary is printed.
+</P><P>
+
+<A NAME="SEC521"></A>
+<H4> GDB Command                                                               </H4>
+<!--docid::SEC521::-->
+<P>
+
+The corresponding GDB command is <SAMP>`load'</SAMP>.
+</P><P>
+
+<A NAME="SEC522"></A>
+<H4> Example                                                                     </H4>
+<!--docid::SEC522::-->
+<P>
+
+Note: each status message appears on a single line.  Here the messages
+have been broken down so that they can fit onto a page.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+-target-download
++download,{section=".text",section-size="6668",total-size="9880"}
++download,{section=".text",section-sent="512",section-size="6668",
+total-sent="512",total-size="9880"}
++download,{section=".text",section-sent="1024",section-size="6668",
+total-sent="1024",total-size="9880"}
++download,{section=".text",section-sent="1536",section-size="6668",
+total-sent="1536",total-size="9880"}
++download,{section=".text",section-sent="2048",section-size="6668",
+total-sent="2048",total-size="9880"}
++download,{section=".text",section-sent="2560",section-size="6668",
+total-sent="2560",total-size="9880"}
++download,{section=".text",section-sent="3072",section-size="6668",
+total-sent="3072",total-size="9880"}
++download,{section=".text",section-sent="3584",section-size="6668",
+total-sent="3584",total-size="9880"}
++download,{section=".text",section-sent="4096",section-size="6668",
+total-sent="4096",total-size="9880"}
++download,{section=".text",section-sent="4608",section-size="6668",
+total-sent="4608",total-size="9880"}
++download,{section=".text",section-sent="5120",section-size="6668",
+total-sent="5120",total-size="9880"}
++download,{section=".text",section-sent="5632",section-size="6668",
+total-sent="5632",total-size="9880"}
++download,{section=".text",section-sent="6144",section-size="6668",
+total-sent="6144",total-size="9880"}
++download,{section=".text",section-sent="6656",section-size="6668",
+total-sent="6656",total-size="9880"}
++download,{section=".init",section-size="28",total-size="9880"}
++download,{section=".fini",section-size="28",total-size="9880"}
++download,{section=".data",section-size="3156",total-size="9880"}
++download,{section=".data",section-sent="512",section-size="3156",
+total-sent="7236",total-size="9880"}
++download,{section=".data",section-sent="1024",section-size="3156",
+total-sent="7748",total-size="9880"}
++download,{section=".data",section-sent="1536",section-size="3156",
+total-sent="8260",total-size="9880"}
++download,{section=".data",section-sent="2048",section-size="3156",
+total-sent="8772",total-size="9880"}
++download,{section=".data",section-sent="2560",section-size="3156",
+total-sent="9284",total-size="9880"}
++download,{section=".data",section-sent="3072",section-size="3156",
+total-sent="9796",total-size="9880"}
+^done,address="0x10004",load-size="9880",transfer-rate="6586",
+write-rate="429"
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC523"></A>
+<H3> The <CODE>-target-exec-status</CODE> Command </H3>
+<!--docid::SEC523::-->
+<P>
+
+<A NAME="SEC524"></A>
+<H4> Synopsis                                                                      </H4>
+<!--docid::SEC524::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -target-exec-status
+</pre></td></tr></table></P><P>
+
+Provide information on the state of the target (whether it is running or
+not, for instance).
+</P><P>
+
+<A NAME="SEC525"></A>
+<H4> GDB Command                                                                </H4>
+<!--docid::SEC525::-->
+<P>
+
+There's no equivalent GDB command.
+</P><P>
+
+<A NAME="SEC526"></A>
+<H4> Example                                                                      </H4>
+<!--docid::SEC526::-->
+N.A.
+<P>
+
+<A NAME="SEC527"></A>
+<H3> The <CODE>-target-list-available-targets</CODE> Command </H3>
+<!--docid::SEC527::-->
+<P>
+
+<A NAME="SEC528"></A>
+<H4> Synopsis                                                                       </H4>
+<!--docid::SEC528::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -target-list-available-targets
+</pre></td></tr></table></P><P>
+
+List the possible targets to connect to.
+</P><P>
+
+<A NAME="SEC529"></A>
+<H4> GDB Command                                                                 </H4>
+<!--docid::SEC529::-->
+<P>
+
+The corresponding GDB command is <SAMP>`help target'</SAMP>.
+</P><P>
+
+<A NAME="SEC530"></A>
+<H4> Example                                                                       </H4>
+<!--docid::SEC530::-->
+N.A.
+<P>
+
+<A NAME="SEC531"></A>
+<H3> The <CODE>-target-list-current-targets</CODE> Command </H3>
+<!--docid::SEC531::-->
+<P>
+
+<A NAME="SEC532"></A>
+<H4> Synopsis                                                                        </H4>
+<!--docid::SEC532::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -target-list-current-targets
+</pre></td></tr></table></P><P>
+
+Describe the current target.
+</P><P>
+
+<A NAME="SEC533"></A>
+<H4> GDB Command                                                                  </H4>
+<!--docid::SEC533::-->
+<P>
+
+The corresponding information is printed by <SAMP>`info file'</SAMP> (among
+other things).
+</P><P>
+
+<A NAME="SEC534"></A>
+<H4> Example                                                                        </H4>
+<!--docid::SEC534::-->
+N.A.
+<P>
+
+<A NAME="SEC535"></A>
+<H3> The <CODE>-target-list-parameters</CODE> Command </H3>
+<!--docid::SEC535::-->
+<P>
+
+<A NAME="SEC536"></A>
+<H4> Synopsis                                                                         </H4>
+<!--docid::SEC536::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -target-list-parameters
+</pre></td></tr></table></P><P>
+
+<A NAME="SEC537"></A>
+<H4> GDB Command                                                                   </H4>
+<!--docid::SEC537::-->
+<P>
+
+No equivalent.
+</P><P>
+
+<A NAME="SEC538"></A>
+<H4> Example                                                                         </H4>
+<!--docid::SEC538::-->
+N.A.
+<P>
+
+<A NAME="SEC539"></A>
+<H3> The <CODE>-target-select</CODE> Command </H3>
+<!--docid::SEC539::-->
+<P>
+
+<A NAME="SEC540"></A>
+<H4> Synopsis                                                                          </H4>
+<!--docid::SEC540::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -target-select <VAR>type</VAR> <VAR>parameters <small>...</small></VAR>
+</pre></td></tr></table></P><P>
+
+Connect GDB to the remote target.  This command takes two args:
+</P><P>
+
+<DL COMPACT>
+<DT><SAMP>`<VAR>type</VAR>'</SAMP>
+<DD>The type of target, for instance <SAMP>`async'</SAMP>, <SAMP>`remote'</SAMP>, etc.
+<DT><SAMP>`<VAR>parameters</VAR>'</SAMP>
+<DD>Device names, host names and the like.  See section <A HREF="gdb_129.html#SEC129">Commands for managing targets</A>, for more details.
+</DL>
+<P>
+
+The output is a connection notification, followed by the address at
+which the target program is, in the following form:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>^connected,addr="<VAR>address</VAR>",func="<VAR>function name</VAR>",
+  args=[<VAR>arg list</VAR>]
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC541"></A>
+<H4> GDB Command                                                                    </H4>
+<!--docid::SEC541::-->
+<P>
+
+The corresponding GDB command is <SAMP>`target'</SAMP>.
+</P><P>
+
+<A NAME="SEC542"></A>
+<H4> Example                                                                          </H4>
+<!--docid::SEC542::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+-target-select async /dev/ttya
+^connected,addr="0xfe00a300",func="??",args=[]
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="GDB/MI Thread Commands"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_231.html#SEC465"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_233.html#SEC543"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_220.html#SEC225"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_213.html#SEC213"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_236.html#SEC590"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

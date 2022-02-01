@@ -1,0 +1,713 @@
+<HTML>
+<HEAD>
+<TITLE>Palm OS:  &#160;10.&#160; Debugging Palm Applications </TITLE>
+<META NAME="GENERATOR" CONTENT="Transit Central Station 3.2 by InfoAccess Inc. www.infoaccess.com">
+</HEAD>
+<BODY BACKGROUND="images/grnitbkg.gif"><A NAME="TopOfPage"> </A>
+<A HREF="http://www.oreilly.com/catalog/palmprog/"><IMG SRC="images/palm_comp_ani_ad.gif" ALT="Order the book from O'Reilly" BORDER=0 width="468" height="60"></A>
+<P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch09.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="part3.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P><P><I>In this chapter:</I></P>
+
+
+  <UL COMPACT><LI><A HREF="#P33_1296" NAME="LOC_P33_1296">Using POSE</A></LI>
+
+  <LI><A HREF="#P154_9011" NAME="LOC_P154_9011">Device Reset</A></LI>
+
+  <LI><A HREF="#P170_10813" NAME="LOC_P170_10813">Graffiti Shortcut Characters</A></LI>
+
+  <LI><A HREF="#P197_13193" NAME="LOC_P197_13193">Source-Level Debugging with CodeWarrior</A></LI>
+
+  <LI><A HREF="#P302_16375" NAME="LOC_P302_16375">Source-Level Debugging with GNU PalmPilot SDK</A></LI>
+
+  <LI><A HREF="#P352_18661" NAME="LOC_P352_18661">Using Simulator on Mac OS</A></LI>
+
+  <LI><A HREF="#P370_19896" NAME="LOC_P370_19896">Gremlins</A></LI></UL>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=156>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+<H1 ALIGN=LEFT><I><FONT SIZE=+3>&#160;10.&#160; Debugging Palm Applications</FONT></I></H1>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P26_248"></A>There are a variety of useful tools to help you debug your Palm application. The best by far is the Palm OS Emulator (POSE). With it you can code, build, and test your handheld application, without ever leaving the comfort of your desktop. Another useful tool is the strategic use of the reset buttons. There are a couple of different forms that we discuss. There are also a number of hidden Graffiti shortcut characters that offer you debugging aids and shortcuts.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Source-level debugging is available for both CodeWarrior and GNU PalmPilot SDK. This goes a long way toward making your debugging job easier. Using the Simulator on Mac OS is also worth a brief discussion for those of you who will work on that platform. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Last, we discuss Gremlins-the useful testing creatures that bear not the slightest resemblance to fanciful beings. Gremlins in the Palm world are little monkeys who bash about randomly on your code looking for problems. You may not like them, but you will find them very helpful for catching bugs you might otherwise have missed.</FONT></P>
+
+<P><A NAME="P33_1296"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Using POSE</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P35_1306"></A>POSE emulates, at the hardware level, a Palm handheld. It emulates a Motorola Dragonball processor, a display, and so on. Actual Palm OS handhelds also contain ROM-the emulator requires ROM, as well (actually, a file containing a ROM image). POSE can emulate a 1.0, 2.0, or 3.0 OS device, depending on the ROM you provide.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">POSE is based on <A NAME="P37_1645"></A>Copilot, an application written by Greg <A NAME="P37_1685"></A>Hewgill. POSE is supported by Palm Computing for both Windows and Mac (XPilot, a port of Copilot running under X Windows on Unix/Linux, also exists). Better yet, source code is provided. You are free to make changes, but if you do, please contribute them to Palm Computing. Your enhancements may be incorporated in the main code base, making life better for everybody. </FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">POSE can be downloaded from </FONT><FONT FACE="Times" SIZE="-1"><I><A HREF="http://www.palmos.com/dev">http://www.palm.com/devzone</A></I>. You should always check Palm's web site for the most recent version, as this tool evolves rapidly. It also comes with the Metrowerks CodeWarrior for Palm OS. Versions of Copilot are available, though not officially supported by Palm, for Unix and Linux. The Linux port is available at Red Hat Software (<A HREF="http://www.redhat.com"><I>http://www.redhat.com</I>)</A>. </FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Debug versions of 2.0 and 3.0 ROMs can be downloaded from Palm's web site (<A HREF="http://www.palmos.com/dev"><I>http://www.palm.com/devzone</I>)</A>. These versions do extra sanity checking on calls; each can catch some problems that would cause a crash on a nondebug ROM (or problems that don't cause an error today but are still wrong).</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Major Advantages to POSE</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">In our programming, we use POSE almost exclusively. Every once in a while, we download to an actual device for testing, but all the following reasons should make it clear why this is a less attractive alternative:</FONT></P>
+
+<P><I><FONT FACE="Times">POSE provides source-level debugging</FONT></I></P>
+
+<P><FONT FACE="Times">If you have ever tried to work on a platform that did not have tools for source-level debugging (we have!), you know how useful this is.</FONT></P>
+
+<P><I><FONT FACE="Times">POSE doesn't need batteries</FONT></I></P>
+
+<P><FONT FACE="Times">We don't have to buy AAA batteries nearly as often.</FONT></P>
+
+<P><I><FONT FACE="Times">POSE doesn't need cables to download an application</FONT></I></P>
+
+<P><FONT FACE="Times">It can download an application directly from your desktop machine without a cable. (If you want to HotSync with POSE, however, you need a cable.)</FONT></P>
+
+<P><I><FONT FACE="Times">POSE can use the keyboard</FONT></I></P>
+
+<P><FONT FACE="Times">You can use the keyboard as an alternative to Graffiti.</FONT></P>
+
+<P><I><FONT FACE="Times">POSE on a laptop is a self-contained environment</FONT></I></P>
+
+<P><FONT FACE="Times">We've done development and testing at the beach, in the car, poolside, and in many other places where it would have been very inconvenient to also have had a Palm OS device and associated cabling.</FONT></P>
+
+<P><I><FONT FACE="Times">POSE detects bad programming practices</FONT></I></P>
+
+<P><FONT FACE="Times">Though we personally don't need to worry about this, since there are never bugs in <I>our</I> code, POSE is great for finding all sorts of violations. It lets you know if you are trying to access low memory, system globals, screen memory, hardware registers, and unimplemented functions (okay, this one gets us occasionally).</FONT></P>
+
+<P><I><FONT FACE="Times">Screenshots are a snap</FONT></I></P>
+
+<P><FONT FACE="Times">It's easy to take screenshots (for product manuals or books!).</FONT></P>
+
+<P><I><FONT FACE="Times">You can use POSE to demonstrate a Palm OS application</FONT></I></P>
+
+<P><FONT FACE="Times">With an LCD projector, hundreds of people can see your application being demonstrated. If you don't know that this is an advantage, try displaying a Palm application running on an actual handheld to even two people.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Future POSE Features</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P67_4466"></A>POSE is a heavily revised application, and you should always check Palm's web site for a current version. This also means new features are in the works for POSE if they haven't already been added. Here are some of the forthcoming features that will be even more helpful for debugging:</FONT></P>
+
+<P><I><FONT FACE="Times">Profiling</FONT></I></P>
+
+<P><FONT FACE="Times">You'll be able to profile your code to determine where it is spending its time; almost a necessity for effective optimizing.</FONT></P>
+
+<P><I><FONT FACE="Times">Illegal access checking</FONT></I></P>
+
+<P><FONT FACE="Times">You can check for an application's accessing of any of the following memory locations: </FONT></P>
+
+  <UL><P><FONT FACE="Times">&#183;  Low memory</FONT></P>
+
+  <P><FONT FACE="Times">&#183;  System globals</FONT></P>
+
+  <P><FONT FACE="Times">&#183;  LCD screen buffer</FONT></P>
+
+  <P><FONT FACE="Times">&#183;  Hardware registers</FONT></P>
+
+  <P><FONT FACE="Times">&#183;  Areas outside a heap block or the stack</FONT></P>
+
+</UL><P><I><FONT FACE="Times">Stack space</FONT></I></P>
+
+<P><FONT FACE="Times">The emulator will check to make sure that the stack pointer doesn't exceed the space allocated for the stack.</FONT></P>
+
+<P><I><FONT FACE="Times">Logging events</FONT></I></P>
+
+<P><FONT FACE="Times">You will be able to keep a log of events, whether they are events in the event queue, a log of system or application functions that are called, or CPU opcodes that get executed.</FONT></P>
+
+<P><I><FONT FACE="Times">Memory block checking</FONT></I></P>
+
+<P><FONT FACE="Times">Soon POSE should be able to do all the following:</FONT></P>
+
+  <UL><P><FONT FACE="Times">&#183;  Track memory leaks in an application</FONT></P>
+
+  <P><FONT FACE="Times">&#183;  Check for locked or busy database records when the application closes</FONT></P>
+
+  <P><FONT FACE="Times">&#183;  Fill newly allocated memory blocks with garbage to catch applications that don't properly initialize their allocated memory</FONT></P>
+
+  <P><FONT FACE="Times">&#183;  Fill disposed memory with garbage to catch applications that attempt to reuse disposed memory</FONT></P>
+
+  <P><FONT FACE="Times">&#183;  Fill stack space with garbage when leaving a routine to catch applications that keep pointers to stack variables that don't exist any longer</FONT></P>
+
+</UL><P><I><FONT FACE="Times" SIZE="+1">Minor Disadvantages to POSE</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Though we hate to admit it, POSE is bad for certain things:</FONT></P>
+
+<P><I><FONT FACE="Times">The speed isn't the same as on an actual device</FONT></I></P>
+
+<P><FONT FACE="Times">POSE can be faster or much slower than an actual device, depending on the particulars of the desktop machine on which it is running. (This makes optimizing wickedly difficult.)</FONT></P>
+
+<P><I><FONT FACE="Times">This isn't the ROM on which your final application will run</FONT></I></P>
+
+<P><FONT FACE="Times">As a result, you still need to test with the nondebug version of the ROM from an actual handheld unit. While nondebug versions of the ROMs aren't available from Palm's web site, you can use POSE to copy the (nondebug) ROM from your handheld. POSE comes with a handheld application that lets you upload a ROM copy from your handheld to POSE. Even after testing with a nondebug ROM under POSE, you still want to test on an actual handheld device.</FONT></P>
+
+<P><I><FONT FACE="Times">Graffiti is harder to use</FONT></I></P>
+
+<P><FONT FACE="Times">It's much harder to use <A NAME="P99_6814"></A>Graffiti with a mouse (or touchpad) than it is with a stylus. (Though, as we said, you should see some improvement in future revisions.)</FONT></P>
+
+<P><I><FONT FACE="Times">POSE doesn't contain support for infrared</FONT></I></P>
+
+<P><FONT FACE="Times">This means that all beaming functionality must be tested with actual handheld devices.</FONT></P>
+
+<P><I><FONT FACE="Times">Some current versions of POSE can't reliably do serial communication</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P103_7145"></A>We've had problems with 2.0b3 on both Windows and Mac OS on all machine configurations. A good test for serial communication is to hook up a modem and attempt a dial-up TCP/IP connection; if POSE cannot do this on your machine, it will have problems with the serial communication code that you write. If you happen to be a serial communication wizard, please check to see if this has been fixed; if not, consider fixing it and giving back the changes!</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Cross-Platform Capabilities</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P107_7623"></A>POSE is available for both Macintosh and Windows and both platforms share quite a range of capabilities. POSE on Mac and Windows can:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Reset</FONT></LI>
+
+  <LI><FONT FACE="Times">  HotSync</FONT></LI>
+
+  <LI><FONT FACE="Times">  Load an application or PDB file</FONT></LI>
+
+  <LI><FONT FACE="Times">  Upload a copy of the ROM from a device</FONT></LI>
+
+  <LI><FONT FACE="Times">  Save a copy of the screen as a file (the Windows version saves in <I>.BMP</I> format; the Mac version saves in PICT format)</FONT></LI>
+
+  <LI><FONT FACE="Times">  Do automated testing with Gremlins (see <A HREF="#P383_21465">Figure 10-9</A>)</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are settings that control the following:</FONT></P>
+
+<P><I><FONT FACE="Times">RAM size</FONT></I></P>
+
+<P><FONT FACE="Times">Emulate the 128K of the original PalmPilot, or be the first on your block to run with 8MB of RAM!</FONT></P>
+
+<P><I><FONT FACE="Times">Screen doubling</FONT></I></P>
+
+<P><FONT FACE="Times">You can run with one pixel stretched to two pixels in either direction. This can make it easier to see little bitty controls and edges of things that aren't refreshing properly.</FONT></P>
+
+<P><I><FONT FACE="Times">Communications port settings</FONT></I></P>
+
+<P><FONT FACE="Times">This controls the emulator's connection to the available desktop ports.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Mac OS-Specific Commands</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P126_8483"></A>The Mac version has all commands in a menubar (see <A HREF="#P129_8560">Figure 10-1</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 10- 1</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P129_8560"></A>Palm OS Emulator on Mac OS with commands in menu</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch10-plmp.1001-1.gif" WIDTH=503 HEIGHT=328 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Windows-Specific Commands</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The Windows version has all commands in a pop-up menu. Right-click on the POSE window to pop-up the menu (see <A HREF="#P143_8768">Figure 10-2</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 10- 2</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P143_8768"></A>Palm OS Emulator on Windows with commands in pop-up menu</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch10-plmp.1002-2.gif" WIDTH=503 HEIGHT=303 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Once you have used POSE for a while, we think you will find it hard to imagine how you could have done handheld development without it. It is a very useful development and debugging tool.</FONT><A NAME="P151_9011"></A></P>
+
+<P><A NAME="P154_9011"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Device Reset</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P156_9023"></A>Now it is time to move back to a discussion of things on the handheld. There are a couple of different kinds of resets that can be done to your Palm device:</FONT></P>
+
+<P><I><FONT FACE="Times">Soft reset</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P159_9189"></A>This is done by pressing the reset button with a blunt instrument, like an unfolded paper clip. This resets the dynamic heap but not the storage heaps, so no data is lost. Each installed application receives the </FONT><FONT FACE="Courier New">sysAppLaunchCmdSystemReset</FONT><FONT FACE="Times"> launch code.</FONT></P>
+
+<P><I><FONT FACE="Times">Hard reset</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P161_9450"></A>You do this by pressing the reset button while holding down the power key. You are provided with the option to erase everything in RAM. If you choose it, everything in RAM is erased, including all your data.</FONT></P>
+
+<P><I><FONT FACE="Times">Debug reset</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P163_9668"></A>By pressing the reset button while pushing the down-arrow key, you get a debug reset. This puts the Palm device into debug mode. You see a flashing box in the upper left.</FONT></P>
+
+<P><I><FONT FACE="Times">No-notify reset</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P165_9853"></A>This happens we you press the reset button while holding down the up-arrow key. The OS boots without sending reset launch codes to each application. This is essential to use if you've got a bug in your </FONT><FONT FACE="Courier New">PilotMain</FONT><FONT FACE="Times"> (like trying to access globals without checking the launch code).</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">It's not uncommon to accidentally access globals when you shouldn't in your </FONT><FONT FACE="Courier New" SIZE="-1">PilotMain</FONT><FONT FACE="Times" SIZE="-1"> (typically by not checking the launch code, for example). You can get into a vicious cycle in such cases. After a reset, your application is sent the </FONT><FONT FACE="Courier New">sysAppLaunchCmdSystemReset</FONT><FONT FACE="Times"> launch code, at which point you access globals, at which point you crash and cause a reset, and so on, and so on, and so on.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">The solution to this vexing problem is to use the no-notify reset, which allows the device to successfully boot. Now you can delete your application, fix the </FONT><FONT FACE="Courier New" SIZE="-1">PilotMain</FONT><FONT FACE="Times" SIZE="-1">, and download a new version. Of course, a hard reset would also solve the problem, but the cure would be worse than the disease.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><A NAME="P170_10813"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Graffiti Shortcut Characters</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P172_10841"></A>There are a number of hidden debugging aids that you can access using the Graffiti shortcut mechanism.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">These debugging mechanisms can drain your battery quickly or cause the loss of all your data. Use them judiciously.</FONT><BR>
+</P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The Graffiti shortcuts are accessed by writing the Graffiti shortcut character (a cursive lowercase L) followed by two taps (the two taps generate a dot, or period), followed by a specific character or number. It's common to open the Find dialog before writing them. (Find has a text field that's available in all applications, and it's nice to have the feedback of seeing the characters as you write them.) Here is a complete list of these shortcuts:</FONT></P>
+
+      <UL><UL><UL><P><I><FONT FACE="Times"><IMG SRC="images/ch10-plmp.shortcut-3.gif" WIDTH=17 HEIGHT=18> .1</FONT></I></P>
+
+</UL></UL></UL><P><FONT FACE="Times">Enters debugger mode. The device opens the serial port and listens for a low-level debugger to connect to it (for example, the unsupported Palm Debugger application). Do a soft reset to exit this mode.</FONT></P>
+
+      <UL><UL><UL><P><I><FONT FACE="Times"><IMG SRC="images/ch10-plmp.shortcut-3.gif" WIDTH=17 HEIGHT=18> .2</FONT></I></P>
+
+</UL></UL></UL><P><FONT FACE="Times">Enters <A NAME="P181_11723"></A>console mode. The device opens the serial port and listens for a high-level debugger like CodeWarrior to connect to it. Do a soft reset to exit this mode.</FONT></P>
+
+      <UL><UL><UL><P><I><FONT FACE="Times"> <IMG SRC="images/ch10-plmp.shortcut-3.gif" WIDTH=17 HEIGHT=18> .3</FONT></I></P>
+
+</UL></UL></UL><P><FONT FACE="Times">Turns off the <A NAME="P183_11894"></A>power auto-off feature. The device does not power off after idle time (although the power key still works). Do a soft reset to exit this mode.</FONT></P>
+
+      <UL><UL><UL><P><I><FONT FACE="Times"><IMG SRC="images/ch10-plmp.shortcut-3.gif" WIDTH=17 HEIGHT=18> .4</FONT></I></P>
+
+</UL></UL></UL><P><FONT FACE="Times">Displays the user's name and random number.</FONT></P>
+
+      <UL><UL><UL><P><I><FONT FACE="Times"><IMG SRC="images/ch10-plmp.shortcut-3.gif" WIDTH=17 HEIGHT=18> .5</FONT></I></P>
+
+</UL></UL></UL><P><FONT FACE="Times">Erases the user's name and random number. On the next HotSync, this device appears to be a never-before-synced device. Syncing to an existing user recognizes all the records on the device as new; thus, they are all duplicated for the existing user on the desktop and handheld.</FONT></P>
+
+      <UL><UL><UL><P><I><FONT FACE="Times"><IMG SRC="images/ch10-plmp.shortcut-3.gif" WIDTH=17 HEIGHT=18> .6</FONT></I></P>
+
+</UL></UL></UL><P><FONT FACE="Times">Displays the ROM build date and time.</FONT></P>
+
+      <UL><UL><UL><P><I><FONT FACE="Times"><IMG SRC="images/ch10-plmp.shortcut-3.gif" WIDTH=17 HEIGHT=18> .7</FONT></I></P>
+
+</UL></UL></UL><P><FONT FACE="Times">Switches <A NAME="P191_12413"></A>battery profiles from alkaline to NiCad (theoretically to adjust when the battery warning alerts appear). We didn't find this to be very effective.</FONT></P>
+
+      <UL><UL><UL><P><I><FONT FACE="Times"><IMG SRC="images/ch10-plmp.shortcut-3.gif" WIDTH=17 HEIGHT=18> .t</FONT></I></P>
+
+</UL></UL></UL><P><FONT FACE="Times">Toggles <A NAME="P193_12571"></A>loopback mode on and off for the Exchange Manager. This allows loopback mode testing even for applications that haven't set the </FONT><FONT FACE="Courier New">localMode</FONT><FONT FACE="Times"> field to true in the </FONT><FONT FACE="Courier New">ExgSocketType</FONT><FONT FACE="Times"> structure (like the built-in applications, for instance). See &quot;Send an entry&quot; on page&#160;239 for information on initializing the </FONT><FONT FACE="Courier New">ExgSocketType</FONT><FONT FACE="Times"> structure.</FONT></P>
+
+      <UL><UL><UL><P><I><FONT FACE="Times"><IMG SRC="images/ch10-plmp.shortcut-3.gif" WIDTH=17 HEIGHT=18>.s</FONT></I></P>
+
+</UL></UL></UL><P><FONT FACE="Times">Toggles between serial and IR modes on the device. In serial mode, information that would normally be sent via infrared is sent via the serial port. This works on a Palm III device with a built-in IR port, but may or may not work on an OS 3.0 upgraded unit that has an IR port on the memory card. </FONT><A NAME="P195_13193"></A></P>
+
+<P><A NAME="P197_13193"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Source-Level Debugging with CodeWarrior</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P199_13232"></A>CodeWarrior can do source-level debugging either with a handheld (attached via a serial cable) or with POSE.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">In either case, you've got to enable source-level debugging with Enable Debugger from the Project menu. (This is a toggle menu item, so if it says Disable Debugger, debugging is on.)</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Choosing a Target</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You need to tell CodeWarrior whether you are using POSE or the handheld; then it needs to acquire its target.</FONT></P>
+
+<P><I><FONT FACE="Times">Using POSE</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P210_13658"></A>To use POSE, select Palm OS Emulator from the Target pop-up menu in the Preferences dialog box (see <A HREF="#P213_13783">Figure 10-3</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 10- 3</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P213_13783"></A>Selecting options for debugging using POSE</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch10-plmp.1003-4.gif" WIDTH=500 HEIGHT=282 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">In order to debug, POSE has to be running. When you choose Debug from the Project menu, CodeWarrior automatically downloads the PRC file to the Emulator and stops at the first line of the program. </FONT></P>
+
+<P><I><FONT FACE="Times">Using a handheld</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To use the handheld, specify the target as Palm OS Device in the Preferences dialog box (see <A HREF="#P228_14470">Figure 10-4</A>). When you choose Debug from the Project menu, CodeWarrior prompts you to enter <A NAME="P225_14223"></A>console mode (see <A HREF="#P237_14548">Figure 10-5</A>). At that point, use shortcut .2 on the handheld, and click OK in the CodeWarrior dialog box. CodeWarrior then automatically downloads the PRC file to the device and stops at the first line of the program.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 10- 4</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P228_14470"></A>Specifying the device as the target in the Preferences dialog box</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch10-plmp.1004-5.gif" WIDTH=500 HEIGHT=286 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"> </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 10- 5</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P237_14548"></A>CodeWarrior prompting to enter console mode</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch10-plmp.1005-6.gif" WIDTH=503 HEIGHT=117 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Debugging Commands</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P248_14609"></A><A HREF="#P257_14863">Figure 10-6</A> shows CodeWarrior source-level debugging in action. With it you can do all of the following.</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Control execution of the program</FONT></LI></UL>
+
+  <UL><P><FONT FACE="Times">-  Set and remove breakpoints</FONT></P>
+
+  <P><FONT FACE="Times">-  Single-step (step into and step over)</FONT></P>
+
+  <P><FONT FACE="Times">-  Step out</FONT></P></UL>
+
+  <UL><LI><FONT FACE="Times">  View variables and memory</FONT></LI></UL>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 10- 6</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P257_14863"></A>Debugging in CodeWarrior</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch10-plmp.1006-7.gif" WIDTH=500 HEIGHT=366 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Console Window</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P267_14901"></A>While you are debugging, a console window is available to you. From the Palm OS menu, choose the Open Debug Console menu item to open this window. In this command-line-oriented window, you can issue commands to the device (or emulator) in order to obtain information about memory and databases and to export databases.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">To execute lines in the console window, use the Enter key on the numeric keypad, not the Enter key on the main keyboard area.</FONT><BR>
+</P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Common debugger commands are:</FONT></P>
+
+<P><I><FONT FACE="Times">help</FONT></I></P>
+
+<P><FONT FACE="Times">Displays a list of all commands.</FONT><A NAME="P274_15409"></A></P>
+
+<P><I><FONT FACE="Times">help command</FONT></I></P>
+
+<P><FONT FACE="Times">Displays help for the specified command.</FONT></P>
+
+<P><I><FONT FACE="Times">dir 0</FONT></I><A NAME="P277_15466"></A></P>
+
+<P><FONT FACE="Times">Lists all the databases on card 0. This is useful to see whether your application's database or databases exist.</FONT></P>
+
+<P><I><FONT FACE="Times">ht heapNumber</FONT></I><A NAME="P279_15591"></A></P>
+
+<P><FONT FACE="Times">Displays a summary of the given heap. A heap number of 0 specifies the dynamic heap. Here's example output (note that it shows the amount of free space available):</FONT></P><PRE><FONT SIZE="-1">Displaying Heap ID: 0000, mapped to 00001480</FONT>
+
+<FONT SIZE="-1">-----------------------------------------------------------------------</FONT>
+
+<FONT SIZE="-1">Heap Summary: </FONT>
+
+<FONT SIZE="-1">  flags:              8000</FONT>
+
+<FONT SIZE="-1">  size:               016B80</FONT>
+
+<FONT SIZE="-1">  numHandles:         #40  </FONT>
+
+<FONT SIZE="-1">  Free Chunks:        #7      (01204A bytes)</FONT>
+
+<FONT SIZE="-1">  Movable Chunks:     #4      (0004E4 bytes)</FONT>
+
+<FONT SIZE="-1">  Non-Movable Chunks: #39     (0045A2 bytes)</FONT></PRE>
+
+<P><I><FONT FACE="Times">hd heapNumber</FONT></I><A NAME="P299_16109"></A></P>
+
+<P><FONT FACE="Times">Displays not just a summary, but all the chunks in a heap. A heap number of 0 specifies the dynamic heap. This allows you to see which chunks are where, which are locked, which are unlocked, etc. It's not necessary to see the heap in such detail very often, however.</FONT><A NAME="P300_16375"></A></P>
+
+<P><A NAME="P302_16375"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Source-Level Debugging with GNU PalmPilot SDK</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P304_16420"></A>The GNU tools can't debug an application running on the handheld. You only have <A NAME="P304_16500"></A>POSE available to you. To debug:</FONT></P>
+
+<P><FONT FACE="Times"> 1. Compile and link your application with the </FONT><FONT FACE="Courier New">-g</FONT><FONT FACE="Times"> flag.</FONT></P>
+
+<P><FONT FACE="Times"> 2. Run POSE and load your application.</FONT></P>
+
+<P><FONT FACE="Times"> 3. Run an intermediary application called <I><A NAME="P308_16666"></A>gdbplug</I>, which communicates via TCP/IP to GDB. It communicates with POSE using a POSE debugging protocol. See <I><A HREF="http://www.tiac.net/users/thomas/pilot-gdbplug.html">http://www.tiac.net/users/thomas/pilot-gdbplug.html</A></I> for documentation and the latest version.</FONT></P>
+
+<P><FONT FACE="Times">In a separate DOS window, run:</FONT></P><PRE><FONT SIZE="-1">gdbplug -port 2000 -enable</FONT></PRE>
+
+<P><FONT FACE="Times"> 4. Run GDB. Pass as a command-line argument your linked file, not the PRC (if your application is <I>foo</I>, pass <I>foo</I> as the parameter, not <I>foo.prc</I>):</FONT></P><PRE><FONT SIZE="-1">m68k-palmos-coff-gdb </FONT><I><FONT FACE="Times" SIZE="-1">your_linked_app</FONT></I></PRE>
+
+<P><FONT FACE="Times"> 5. Within GDB, specify the PalmPilot as a target by executing:</FONT></P><PRE><FONT SIZE="-1">target pilot localhost:2000</FONT></PRE>
+
+<P><FONT FACE="Times"> 6. Within POSE, start your application. GDB stops at the first line. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here are the most important commands that GDB supports:</FONT></P>
+
+<P><I><FONT FACE="Times">print expressionToPrint1, ..., expressionToPrintN</FONT></I><A NAME="P318_17364"></A></P>
+
+<P><FONT FACE="Times">Use the print command to look at the values of variables. Here's an example:</FONT></P><PRE><FONT SIZE="-1">print *myStructPtr, theString[5], myOtherStruct.x</FONT></PRE>
+
+<P><I><FONT FACE="Times">backtrace</FONT></I><A NAME="P321_17498"></A></P>
+
+<P><FONT FACE="Times">Prints a stack crawl, showing each function in the stack, including parameter names and values.</FONT></P>
+
+<P><I><FONT FACE="Times">step</FONT></I><A NAME="P323_17597"></A></P>
+
+<P><FONT FACE="Times">Single-steps, stepping into functions.</FONT></P>
+
+<P><I><FONT FACE="Times">next</FONT></I><A NAME="P325_17639"></A></P>
+
+<P><FONT FACE="Times">Single-steps, stepping over functions.</FONT></P>
+
+<P><I><FONT FACE="Times">cont</FONT></I><A NAME="P327_17681"></A></P>
+
+<P><FONT FACE="Times">Continues running the program until it reaches a breakpoint, causes an error, or exits.</FONT></P>
+
+<P><I><FONT FACE="Times">break funcNameOrLineNumber</FONT></I><A NAME="P329_17794"></A></P>
+
+<P><FONT FACE="Times">Sets a breakpoint. You can break at a function:</FONT></P><PRE><FONT SIZE="-1">break MyFunction</FONT></PRE>
+
+<P><FONT FACE="Times">Or you can set a breakpoint at a specific line number in a file:</FONT></P><PRE><FONT SIZE="-1">break MyFile.c:16</FONT></PRE>
+
+<P><I><FONT FACE="Times">quit</FONT></I><A NAME="P336_17942"></A></P>
+
+<P><FONT FACE="Times">Quits the program. If the program is still running, you are prompted for GDB to automatically quit it (by resetting POSE).</FONT></P>
+
+<P><I><FONT FACE="Times">help</FONT></I><A NAME="P338_18068"></A></P>
+
+<P><FONT FACE="Times">There are, of course, many other functions. Use help to find out more about them all.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">GDB is a text-oriented debugger, where commands and responses to commands are interleaved (<A HREF="#P343_18633">Figure 10-7</A> shows an example of GDB running). GNU PalmPilot SDK comes with the Emacs text editor. Emacs can be used as an Integrated Development Environment (IDE) that can control the debugging process. As you debug, Emacs makes sure that the source file with the current line is always displayed, and it provides some menu commands that can be used instead of typing<A NAME="P340_18611"></A> into <A NAME="P340_18617"></A>GDB.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 10- 7</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P343_18633"></A>GDB debugging an application</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch10-plmp.1007-8.gif" WIDTH=500 HEIGHT=289 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><A NAME="P352_18661"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Using Simulator on Mac OS</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P354_18686"></A>CodeWarrior running on the Mac OS has a feature not found on the Windows version: the Simulator. The Simulator consists of some libraries that contain a subset of the Palm OS. These libraries are hosted so that they run on the Mac OS. When you create a Simulator version of your application, you actually build a Mac OS application that simulates a Palm OS application. It does not simulate the entire Palm OS, only your application-no other applications are present. <A HREF="#P357_19216">Figure 10-8</A> shows a Simulator application running.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 10- 8</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P357_19216"></A>Datebook running as a Simulator application on Mac OS</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch10-plmp.1008-9.gif" WIDTH=503 HEIGHT=292 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Before POSE was available, the Simulator was an almost indispensable tool. Like POSE, the Simulator doesn't require a Palm device to be connected. It also allows debugging applications that use serial communications (tough to do if you're debugging with the device itself and have the one-and-only serial port connected to the debugger).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now that POSE is available, however, the Simulator is much less useful. In fact, we don't use it anymore. We can think of only one advantage that the Simulator has compared to POSE-it is faster. On a reasonably fast Mac OS machine, POSE is quick enough, so the speed isn't much of an issue.</FONT></P>
+
+<P><A NAME="P370_19896"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Gremlins</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P372_19904"></A>There are two approaches to testing software, which can often be used in a complementary fashion:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Functionality testing-careful systematic testing on a feature-by-feature basis, making sure everything works as advertised.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Bashing on it-an almost random use of the software to make sure it doesn't break when stressed.</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Gremlins does the second sort of testing. Imagine, if you will, a very inquisitive monkey given a Palm OS device with your application on it. The monkey grabs the stylus and starts tapping away. Let's look at some characteristics of the monkey:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  It's especially attracted to buttons, pop-ups, and other active items on the screen. It taps in nonactive areas on the screen but not very often; it likes active areas.</FONT></LI>
+
+  <LI><FONT FACE="Times">  It's a literate monkey that knows Graffiti. It inputs Graffiti characters-sometimes garbage runs of characters but occasionally fragments of Shakespeare.</FONT></LI>
+
+  <LI><FONT FACE="Times">  It's hyperactive. On one of our machines, it can do 1,000 events in 30 seconds.</FONT></LI>
+
+  <LI><FONT FACE="Times">  It's well-behaved. If told to debug a certain application, it won't switch out of that application.</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">You start a Gremlin from the Gremlins dialog of POSE by selecting New from the Gremlins menu. In this dialog you specify which Gremlin you want to use and on what application (see <A HREF="#P383_21465">Figure 10-9</A>). You get to choose from 1,000 of them, each of which acts slightly differently in terms of the events it generates. Looking at <A HREF="#P383_21465">Figure 10-9</A>, you see that we've specified our own Sales application to test. You can also specify the entire device to check for problems between applications.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 10- 9</FONT></B><A NAME="P383_21465"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Gremlins dialog box, where you select the application and Gremlin number</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch10-plmp.1009-10.gif" WIDTH=503 HEIGHT=306 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Gremlins goes to work by generating events and causing your application to respond to them. It generates pen-downs (mostly on active areas), inputs keys, and does everything a user could do. You'll find, however, that it will end up exercising parts of your program you'd never tested: fields with more characters than you'd anticipated or more records than you'd planned for (to the extent that the entire data heap will probably be filled).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here are the various things you can specify for Gremlins:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  You can choose a Gremlin number (each does the same thing every time you run it). </FONT></LI>
+
+  <LI><FONT FACE="Times">  You can choose an application (from among those installed), and the Gremlin will not exit that application. </FONT></LI>
+
+  <LI><FONT FACE="Times">  You can specify the number of events to run (it's not uncommon to have a bug that shows up only after hundreds of thousands of events).</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A HREF="#P403_22553">Figure 10-10</A> shows the dialog that occurs after the Gremlins run is over. You have to request it, however, in the initial-run dialog box by selecting &quot;Display elapsed time.&quot;</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 10- 10</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P403_22553"></A>Dialog shown after a Gremlins run with &quot;Displays elapsed time&quot; chosen</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch10-plmp.1010-11.gif" WIDTH=503 HEIGHT=116 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you encounter an error while running Gremlins (as is often the case), the dialog box shown in <A HREF="#P412_22773">Figure 10-11</A> tells you about the problem.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 10- 11</FONT></B><A NAME="P412_22773"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Gremlin error dialog failing on the 971st event; clicking the Debug button drops you into the debugger</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch10-plmp.1011-12.gif" WIDTH=503 HEIGHT=123 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you choose to &quot;Log posted/retrieved events&quot; (see <A HREF="#P383_21465">Figure 10-9</A>), POSE creates a file (named <I>Event Log #n.txt</I>, where n increments on every run). This is useful if you want to know how far Gremlins got before an error occurred, or to find out events that happened before the error. Here's an example output:</FONT></P><PRE><FONT SIZE="-1">Gremlin #2 started, 10 steps.</FONT>
+<FONT SIZE="-1">&gt;&gt;&gt; EvtEnqueueKey: ascii = 0x007C, keycode = 0x0000, modifiers = 0x0000.</FONT>
+<FONT SIZE="-1">&lt;&lt;&lt; 0: keyDownEvent    Key:'|' 0x7c,  Modifiers: 0x0000</FONT>
+<FONT SIZE="-1">&gt;&gt;&gt; EvtEnqueuePenPoint: pen-&gt;x=99, pen-&gt;y=150.</FONT>
+<FONT SIZE="-1">&lt;&lt;&lt; 1: penDownEvent    X:97   Y:136</FONT>
+<FONT SIZE="-1">&lt;&lt;&lt; 1: ctlEnterEvent   ID: 10307</FONT>
+<FONT SIZE="-1">&gt;&gt;&gt; EvtEnqueuePenPoint: pen-&gt;x=91, pen-&gt;y=157.</FONT>
+<FONT SIZE="-1">&lt;&lt;&lt; 2: EvtGetPen: screenX=89, screenY=143, penDown=1.</FONT>
+<FONT SIZE="-1">&gt;&gt;&gt; EvtEnqueuePenPoint: pen-&gt;x=156, pen-&gt;y=87.</FONT>
+<FONT SIZE="-1">&lt;&lt;&lt; 3: EvtGetPen: screenX=154, screenY=73, penDown=1.</FONT>
+<FONT SIZE="-1">&gt;&gt;&gt; EvtEnqueuePenPoint: pen-&gt;x=-1, pen-&gt;y=-1.</FONT>
+<FONT SIZE="-1">&lt;&lt;&lt; 4: EvtGetPen: screenX=154, screenY=73, penDown=0.</FONT>
+<FONT SIZE="-1">&lt;&lt;&lt; 4: ctlExitEvent</FONT>
+<FONT SIZE="-1">&lt;&lt;&lt; 4: penUpEvent      X:154   Y:73</FONT>
+<FONT SIZE="-1">&gt;&gt;&gt; KeyHandleInterrupt: periodic=0, status=0x00000020.</FONT>
+<FONT SIZE="-1">&gt;&gt;&gt; EvtEnqueueKey: ascii = 0x0069, keycode = 0x0000, modifiers = 0x0000.</FONT>
+<FONT SIZE="-1">&lt;&lt;&lt; 6: keyDownEvent    Key:'i' 0x69,  Modifiers: 0x0000</FONT>
+<FONT SIZE="-1">&gt;&gt;&gt; EvtEnqueueKey: ascii = 0x0079, keycode = 0x0000, modifiers = 0x0000.</FONT>
+<FONT SIZE="-1">&lt;&lt;&lt; 7: keyDownEvent    Key:'y' 0x79,  Modifiers: 0x0000</FONT>
+<FONT SIZE="-1">&gt;&gt;&gt; EvtEnqueueKey: ascii = 0x0044, keycode = 0x0000, modifiers = 0x0000.</FONT>
+<FONT SIZE="-1">&lt;&lt;&lt; 8: keyDownEvent    Key:'D' 0x44,  Modifiers: 0x0000</FONT>
+<FONT SIZE="-1">&gt;&gt;&gt; EvtEnqueueKey: ascii = 0x0065, keycode = 0x0000, modifiers = 0x0000.</FONT>
+<FONT SIZE="-1">&lt;&lt;&lt; 9: keyDownEvent    Key:'e' 0x65,  Modifiers: 0x0000</FONT>
+<FONT SIZE="-1">&gt;&gt;&gt; EvtEnqueueKey: ascii = 0x0020, keycode = 0x0000, modifiers = 0x0000.</FONT>
+<FONT SIZE="-1">&lt;&lt;&lt; 10: keyDownEvent    Key:' ' 0x20,  Modifiers: 0x0000</FONT>
+<FONT SIZE="-1">Gremlin #2 stopped at 11 of 10 after 378 msecs.</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you request &quot;Log system calls,&quot; the system calls that are executed are output. Here's a portion of output where logging was requested (some of the lines were removed for brevity):</FONT></P><PRE><FONT SIZE="-1">Gremlin #2 started, 5 steps.</FONT>
+<FONT SIZE="-1">--- System Call 0xA2C9: SysEvGroupSignal.</FONT>
+<FONT SIZE="-1">--- System Call 0xA08D: SysDoze.</FONT>
+<FONT SIZE="-1">--- System Call 0xA23F: HwrDoze.</FONT>
+<FONT SIZE="-1">...</FONT>
+<FONT SIZE="-1">--- System Call 0xA2C9: SysEvGroupSignal.</FONT>
+<FONT SIZE="-1">--- System Call 0xA0A5: SysDisableInts.</FONT>
+<FONT SIZE="-1">--- System Call 0xA0A6: SysRestoreStatus.</FONT>
+<FONT SIZE="-1">--- System Call 0xA12E: EvtDequeueKeyEvent.</FONT>
+<FONT SIZE="-1">--- System Call 0xA23A: AlmDisplayAlarm.</FONT>
+<FONT SIZE="-1">--- System Call 0xA2CB: SysEvGroupWait.</FONT>
+<FONT SIZE="-1">&gt;&gt;&gt; EvtEnqueueKey: ascii = 0x007C, keycode = 0x0000, modifiers = 0x0000.</FONT>
+<FONT SIZE="-1">--- System Call 0xA2C9: SysEvGroupSignal.</FONT>
+<FONT SIZE="-1">--- System Call 0xA0A5: SysDisableInts.</FONT>
+<FONT SIZE="-1">--- System Call 0xA0A6: SysRestoreStatus.</FONT>
+<FONT SIZE="-1">--- System Call 0xA12E: EvtDequeueKeyEvent.</FONT>
+<FONT SIZE="-1">--- System Call 0xA272: PenRawToScreen.</FONT>
+<FONT SIZE="-1">--- System Call 0xA20D: WinDisplayToWindowPt.</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Logs are verbose; it's not uncommon to have an average of 10K per event when both types of logging are enabled. Rather than growing the log without bounds, POSE reuses log files that reach 128K. Thus, only the last 128K of log information is saved. A nice refinement, we think.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Gremlins and Gadgets</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P475_25715"></A>Gremlins generate pen taps almost exclusively on active areas of the screen: buttons, fields, lists, places where there are form objects. This also means that areas of the screen where there are no form objects are almost completely ignored. You can take advantage of this behavior in your application if you wish. A good testing technique can be to place an empty gadget in an area of your screen where tapping does something; this way, you will grab the Gremlin's attention, and it will do some tapping there.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Using Gremlins Repeatedly</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">One very nice thing about Gremlins is that even though each Gremlin (of the 1,000 different ones) has its own sequence of events that it generates, a specific Gremlin always generates the <I>same</I> sequence of events. Thus, if you run Gremlin 5 and find that, on a fresh POSE with your application just loaded on it, your application crashes after event 3006, every time you run that Gremlin with the same starting configuration, the crash happens. We're sure you'll appreciate the ability to reproduce the bug easily.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Other Advice</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P485_26776"></A>Make sure you start your Gremlins run in a known configuration. Have a known amount of memory available (best done by starting with a fresh RAM file with POSE by deleting the old RAM file). Let Gremlins launch your application (so that from the beginning your application is receiving events from Gremlins).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Test your application with Gremlins set to generate one million events (start it before you go home at night). That's enough to catch almost anything. You certainly don't need to try each of the 1,000 different Gremlins. Start with just numbers 0 and 1.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Run Gremlins while your source-level debugger is active. That way, if and when your application crashes, you can drop into the debugger and see what's going on. If you can't tell what's going on at the error, Gremlins does provide the ability to step event by event. The log shows the event number at which the error occurs. You can run Gremlins until 5 or 10 events before the error. Then you can step event by event until the error occurs. This may give you a better context to figure out what's going<A NAME="P489_27839"></A> on.</FONT><A NAME="P489_27843"></A></P>
+<HR ALIGN=LEFT SIZE=2 WIDTH=100% NOSHADE>
+<!-- TRANSIT - TEXTBAR -->
+
+<ADDRESS><FONT SIZE=-1>Palm Programming: The Developer's Guide
+<BR>Copyright &#169; 1999, O'Rielly and Associates, Inc.
+<BR>Published on the web by permission of O'Rielly and Associates, Inc. Contents modified for web display.</FONT></ADDRESS><P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch09.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="part3.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P>
+</BODY>
+</HTML>

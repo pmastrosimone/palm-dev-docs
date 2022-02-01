@@ -1,0 +1,141 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: M68K-Moto-Syntax</TITLE>
+
+<META NAME="description" CONTENT="Using as: M68K-Moto-Syntax">
+<META NAME="keywords" CONTENT="Using as: M68K-Moto-Syntax">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC303"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_293.html#SEC302"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_295.html#SEC304"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_295.html#SEC304"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_291.html#SEC300"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_300.html#SEC309"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.17.3 Motorola Syntax </H3>
+<!--docid::SEC303::-->
+<P>
+
+<A NAME="IDX889"></A>
+<A NAME="IDX890"></A>
+</P><P>
+
+The standard Motorola syntax for this chip differs from the syntax
+already discussed (see section <A HREF="as_293.html#SEC302">Syntax</A>).  <CODE>as</CODE> can
+accept Motorola syntax for operands, even if MIT syntax is used for
+other operands in the same instruction.  The two kinds of syntax are
+fully compatible.
+</P><P>
+
+In the following table <VAR>apc</VAR> stands for any of the address registers
+(<SAMP>`%a0'</SAMP> through <SAMP>`%a7'</SAMP>), the program counter (<SAMP>`%pc'</SAMP>), the
+zero-address relative to the program counter (<SAMP>`%zpc'</SAMP>), or a
+suppressed address register (<SAMP>`%za0'</SAMP> through <SAMP>`%za7'</SAMP>).  The use
+of <VAR>size</VAR> means one of <SAMP>`w'</SAMP> or <SAMP>`l'</SAMP>, and it may always be
+omitted along with the leading dot.  The use of <VAR>scale</VAR> means one of
+<SAMP>`1'</SAMP>, <SAMP>`2'</SAMP>, <SAMP>`4'</SAMP>, or <SAMP>`8'</SAMP>, and it may always be omitted
+along with the leading asterisk.
+</P><P>
+
+The following additional addressing modes are understood:
+</P><P>
+
+<DL COMPACT>
+<DT><EM>Address Register Indirect</EM>
+<DD><SAMP>`(%a0)'</SAMP> through <SAMP>`(%a7)'</SAMP><BR> 
+<SAMP>`%a7'</SAMP> is also known as <SAMP>`%sp'</SAMP>, i.e. the Stack Pointer.  <CODE>%a6</CODE>
+is also known as <SAMP>`%fp'</SAMP>, the Frame Pointer.
+<P>
+
+<DT><EM>Address Register Postincrement</EM>
+<DD><SAMP>`(%a0)+'</SAMP> through <SAMP>`(%a7)+'</SAMP>
+<P>
+
+<DT><EM>Address Register Predecrement</EM>
+<DD><SAMP>`-(%a0)'</SAMP> through <SAMP>`-(%a7)'</SAMP>
+<P>
+
+<DT><EM>Indirect Plus Offset</EM>
+<DD><SAMP>`<VAR>number</VAR>(<VAR>%a0</VAR>)'</SAMP> through <SAMP>`<VAR>number</VAR>(<VAR>%a7</VAR>)'</SAMP>,
+or <SAMP>`<VAR>number</VAR>(<VAR>%pc</VAR>)'</SAMP>.
+<P>
+
+The <VAR>number</VAR> may also appear within the parentheses, as in
+<SAMP>`(<VAR>number</VAR>,<VAR>%a0</VAR>)'</SAMP>.  When used with the <VAR>pc</VAR>, the
+<VAR>number</VAR> may be omitted (with an address register, omitting the
+<VAR>number</VAR> produces Address Register Indirect mode).
+</P><P>
+
+<DT><EM>Index</EM>
+<DD><SAMP>`<VAR>number</VAR>(<VAR>apc</VAR>,<VAR>register</VAR>.<VAR>size</VAR>*<VAR>scale</VAR>)'</SAMP>
+<P>
+
+The <VAR>number</VAR> may be omitted, or it may appear within the
+parentheses.  The <VAR>apc</VAR> may be omitted.  The <VAR>register</VAR> and the
+<VAR>apc</VAR> may appear in either order.  If both <VAR>apc</VAR> and
+<VAR>register</VAR> are address registers, and the <VAR>size</VAR> and <VAR>scale</VAR>
+are omitted, then the first register is taken as the base register, and
+the second as the index register.
+</P><P>
+
+<DT><EM>Postindex</EM>
+<DD><SAMP>`([<VAR>number</VAR>,<VAR>apc</VAR>],<VAR>register</VAR>.<VAR>size</VAR>*<VAR>scale</VAR>,<VAR>onumber</VAR>)'</SAMP>
+<P>
+
+The <VAR>onumber</VAR>, or the <VAR>register</VAR>, or both, may be omitted.
+Either the <VAR>number</VAR> or the <VAR>apc</VAR> may be omitted, but not both.
+</P><P>
+
+<DT><EM>Preindex</EM>
+<DD><SAMP>`([<VAR>number</VAR>,<VAR>apc</VAR>,<VAR>register</VAR>.<VAR>size</VAR>*<VAR>scale</VAR>],<VAR>onumber</VAR>)'</SAMP>
+<P>
+
+The <VAR>number</VAR>, or the <VAR>apc</VAR>, or the <VAR>register</VAR>, or any two of
+them, may be omitted.  The <VAR>onumber</VAR> may be omitted.  The
+<VAR>register</VAR> and the <VAR>apc</VAR> may appear in either order.  If both
+<VAR>apc</VAR> and <VAR>register</VAR> are address registers, and the <VAR>size</VAR>
+and <VAR>scale</VAR> are omitted, then the first register is taken as the
+base register, and the second as the index register.
+</DL>
+<P>
+
+<A NAME="M68K-Float"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_293.html#SEC302"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_295.html#SEC304"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_295.html#SEC304"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_291.html#SEC300"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_300.html#SEC309"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

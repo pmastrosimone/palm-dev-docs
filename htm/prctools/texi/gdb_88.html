@@ -1,0 +1,97 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Overlay Sample Program</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Overlay Sample Program">
+<META NAME="keywords" CONTENT="Debugging with GDB: Overlay Sample Program">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC88"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_87.html#SEC87"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_89.html#SEC89"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_84.html#SEC84"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_84.html#SEC84"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_89.html#SEC89"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 11.4 Overlay Sample Program </H2>
+<!--docid::SEC88::-->
+<P>
+
+When linking a program which uses overlays, you must place the overlays
+at their load addresses, while relocating them to run at their mapped
+addresses.  To do this, you must write a linker script (see section `Overlay Description' in <CITE>Using ld: the GNU linker</CITE>).  Unfortunately,
+since linker scripts are specific to a particular host system, target
+architecture, and target memory layout, this manual cannot provide
+portable sample code demonstrating GDB's overlay support.
+</P><P>
+
+However, the GDB source distribution does contain an overlaid
+program, with linker scripts for a few systems, as part of its test
+suite.  The program consists of the following files from
+<TT>`gdb/testsuite/gdb.base'</TT>:
+</P><P>
+
+<DL COMPACT>
+<DT><TT>`overlays.c'</TT>
+<DD>The main program file.
+<DT><TT>`ovlymgr.c'</TT>
+<DD>A simple overlay manager, used by <TT>`overlays.c'</TT>.
+<DT><TT>`foo.c'</TT>
+<DD><DT><TT>`bar.c'</TT>
+<DD><DT><TT>`baz.c'</TT>
+<DD><DT><TT>`grbx.c'</TT>
+<DD>Overlay modules, loaded and used by <TT>`overlays.c'</TT>.
+<DT><TT>`d10v.ld'</TT>
+<DD><DT><TT>`m32r.ld'</TT>
+<DD>Linker scripts for linking the test program on the <CODE>d10v-elf</CODE>
+and <CODE>m32r-elf</CODE> targets.
+</DL>
+<P>
+
+You can build the test program using the <CODE>d10v-elf</CODE> GCC
+cross-compiler like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$ d10v-elf-gcc -g -c overlays.c
+$ d10v-elf-gcc -g -c ovlymgr.c
+$ d10v-elf-gcc -g -c foo.c
+$ d10v-elf-gcc -g -c bar.c
+$ d10v-elf-gcc -g -c baz.c
+$ d10v-elf-gcc -g -c grbx.c
+$ d10v-elf-gcc -g overlays.o ovlymgr.o foo.o bar.o \
+                  baz.o grbx.o -Wl,-Td10v.ld -o overlays
+</FONT></pre></td></tr></table></P><P>
+
+The build process is identical for any other architecture, except that
+you must substitute the appropriate compiler and linker script for the
+target system for <CODE>d10v-elf-gcc</CODE> and <CODE>d10v.ld</CODE>.
+</P><P>
+
+<A NAME="Languages"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

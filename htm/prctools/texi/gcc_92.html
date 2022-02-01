@@ -1,0 +1,155 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Inline</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Inline">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Inline">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC92"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_91.html#SEC91"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_93.html#SEC93"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.31 An Inline Function is As Fast As a Macro </H2>
+<!--docid::SEC92::-->
+<P>
+
+By declaring a function <CODE>inline</CODE>, you can direct GNU CC to
+integrate that function's code into the code for its callers.  This
+makes execution faster by eliminating the function-call overhead; in
+addition, if any of the actual argument values are constant, their known
+values may permit simplifications at compile time so that not all of the
+inline function's code needs to be included.  The effect on code size is
+less predictable; object code may be larger or smaller with function
+inlining, depending on the particular case.  Inlining of functions is an
+optimization and it really "works" only in optimizing compilation.  If
+you don't use <SAMP>`-O'</SAMP>, no function is really inline.
+</P><P>
+
+To declare a function inline, use the <CODE>inline</CODE> keyword in its
+declaration, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>inline int
+inc (int *a)
+{
+  (*a)++;
+}
+</pre></td></tr></table></P><P>
+
+(If you are writing a header file to be included in ANSI C programs, write
+<CODE>__inline__</CODE> instead of <CODE>inline</CODE>.  See section <A HREF="gcc_104.html#SEC104">4.36 Alternate Keywords</A>.)
+You can also make all "simple enough" functions inline with the option
+<SAMP>`-finline-functions'</SAMP>. 
+</P><P>
+
+Note that certain usages in a function definition can make it unsuitable
+for inline substitution.  Among these usages are: use of varargs, use of
+alloca, use of variable sized data types (see section <A HREF="gcc_75.html#SEC75">4.14 Arrays of Variable Length</A>),
+use of computed goto (see section <A HREF="gcc_64.html#SEC64">4.3 Labels as Values</A>), use of nonlocal goto,
+and nested functions (see section <A HREF="gcc_65.html#SEC65">4.4 Nested Functions</A>).  Using <SAMP>`-Winline'</SAMP>
+will warn when a function marked <CODE>inline</CODE> could not be substituted,
+and will give the reason for the failure.
+</P><P>
+
+Note that in C and Objective C, unlike C++, the <CODE>inline</CODE> keyword
+does not affect the linkage of the function.
+</P><P>
+
+<A NAME="IDX306"></A>
+<A NAME="IDX307"></A>
+<A NAME="IDX308"></A>
+<A NAME="IDX309"></A>
+GNU CC automatically inlines member functions defined within the class
+body of C++ programs even if they are not explicitly declared
+<CODE>inline</CODE>.  (You can override this with <SAMP>`-fno-default-inline'</SAMP>;
+see section <A HREF="gcc_7.html#SEC7">Options Controlling C++ Dialect</A>.)
+</P><P>
+
+<A NAME="IDX310"></A>
+When a function is both inline and <CODE>static</CODE>, if all calls to the
+function are integrated into the caller, and the function's address is
+never used, then the function's own assembler code is never referenced.
+In this case, GNU CC does not actually output assembler code for the
+function, unless you specify the option <SAMP>`-fkeep-inline-functions'</SAMP>.
+Some calls cannot be integrated for various reasons (in particular,
+calls that precede the function's definition cannot be integrated, and
+neither can recursive calls within the definition).  If there is a
+nonintegrated call, then the function is compiled to assembler code as
+usual.  The function must also be compiled as usual if the program
+refers to its address, because that can't be inlined.
+</P><P>
+
+<A NAME="IDX311"></A>
+When an inline function is not <CODE>static</CODE>, then the compiler must assume
+that there may be calls from other source files; since a global symbol can
+be defined only once in any program, the function must not be defined in
+the other source files, so the calls therein cannot be integrated.
+Therefore, a non-<CODE>static</CODE> inline function is always compiled on its
+own in the usual fashion.
+</P><P>
+
+If you specify both <CODE>inline</CODE> and <CODE>extern</CODE> in the function
+definition, then the definition is used only for inlining.  In no case
+is the function compiled on its own, not even if you refer to its
+address explicitly.  Such an address becomes an external reference, as
+if you had only declared the function, and had not defined it.
+</P><P>
+
+This combination of <CODE>inline</CODE> and <CODE>extern</CODE> has almost the
+effect of a macro.  The way to use it is to put a function definition in
+a header file with these keywords, and put another copy of the
+definition (lacking <CODE>inline</CODE> and <CODE>extern</CODE>) in a library file.
+The definition in the header file will cause most calls to the function
+to be inlined.  If any uses of the function remain, they will refer to
+the single copy in the library.
+</P><P>
+
+GNU C does not inline any functions when not optimizing.  It is not
+clear whether it is better to inline or not, in this case, but we found
+that a correct implementation when not optimizing was difficult.  So we
+did the easy thing, and turned it off.
+</P><P>
+
+<A NAME="Extended Asm"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_91.html#SEC91"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_93.html#SEC93"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

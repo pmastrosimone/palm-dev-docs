@@ -1,0 +1,114 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Cross Headers</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Cross Headers">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Cross Headers">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC55"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_54.html#SEC54"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_56.html#SEC56"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_56.html#SEC56"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_50.html#SEC50"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_57.html#SEC57"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.4.5 Cross-Compilers and Header Files </H3>
+<!--docid::SEC55::-->
+<P>
+
+If you are cross-compiling a standalone program or a program for an
+embedded system, then you may not need any header files except the few
+that are part of GNU CC (and those of your program).  However, if you
+intend to link your program with a standard C library such as
+<TT>`libc.a'</TT>, then you probably need to compile with the header files
+that go with the library you use.
+</P><P>
+
+The GNU C compiler does not come with these files, because (1) they are
+system-specific, and (2) they belong in a C library, not in a compiler.
+</P><P>
+
+If the GNU C library supports your target machine, then you can get the
+header files from there (assuming you actually use the GNU library when
+you link your program).
+</P><P>
+
+If your target machine comes with a C compiler, it probably comes with
+suitable header files also.  If you make these files accessible from the host
+machine, the cross-compiler can use them also.
+</P><P>
+
+Otherwise, you're on your own in finding header files to use when
+cross-compiling.
+</P><P>
+
+When you have found suitable header files, put them in the directory
+<TT>`/usr/local/<VAR>target</VAR>/include'</TT>, before building the cross
+compiler.  Then installation will run fixincludes properly and install
+the corrected versions of the header files where the compiler will use
+them.
+</P><P>
+
+Provide the header files before you build the cross-compiler, because
+the build stage actually runs the cross-compiler to produce parts of
+<TT>`libgcc.a'</TT>.  (These are the parts that <EM>can</EM> be compiled with
+GNU CC.)  Some of them need suitable header files.
+</P><P>
+
+Here's an example showing how to copy the header files from a target
+machine.  On the target machine, do this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(cd /usr/include; tar cf - .) &#62; tarfile
+</pre></td></tr></table></P><P>
+
+Then, on the host machine, do this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ftp <VAR>target-machine</VAR>
+lcd /usr/local/<VAR>target</VAR>/include
+get tarfile
+quit
+tar xf tarfile
+</pre></td></tr></table></P><P>
+
+<A NAME="Build Cross"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_54.html#SEC54"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_56.html#SEC56"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_56.html#SEC56"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_50.html#SEC50"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_57.html#SEC57"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

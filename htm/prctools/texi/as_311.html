@@ -1,0 +1,279 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: MIPS Opts</TITLE>
+
+<META NAME="description" CONTENT="Using as: MIPS Opts">
+<META NAME="keywords" CONTENT="Using as: MIPS Opts">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC320"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_310.html#SEC319"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_312.html#SEC321"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_179.html#SEC188"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_310.html#SEC319"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_319.html#SEC328"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.20.1 Assembler options </H3>
+<!--docid::SEC320::-->
+<P>
+
+The MIPS configurations of GNU <CODE>as</CODE> support these
+special options:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX977"></A>
+<DT><CODE>-G <VAR>num</VAR></CODE>
+<DD>This option sets the largest size of an object that can be referenced
+implicitly with the <CODE>gp</CODE> register.  It is only accepted for targets
+that use ECOFF format.  The default value is 8.
+<P>
+
+<A NAME="IDX978"></A>
+<A NAME="IDX979"></A>
+<A NAME="IDX980"></A>
+<A NAME="IDX981"></A>
+<A NAME="IDX982"></A>
+<A NAME="IDX983"></A>
+<DT><CODE>-EB</CODE>
+<DD><DT><CODE>-EL</CODE>
+<DD>Any MIPS configuration of <CODE>as</CODE> can select big-endian or
+little-endian output at run time (unlike the other GNU development
+tools, which must be configured for one or the other).  Use <SAMP>`-EB'</SAMP>
+to select big-endian output, and <SAMP>`-EL'</SAMP> for little-endian.
+<P>
+
+<A NAME="IDX984"></A>
+<DT><CODE>-mips1</CODE>
+<DD><DT><CODE>-mips2</CODE>
+<DD><DT><CODE>-mips3</CODE>
+<DD><DT><CODE>-mips4</CODE>
+<DD><DT><CODE>-mips5</CODE>
+<DD><DT><CODE>-mips32</CODE>
+<DD><DT><CODE>-mips32r2</CODE>
+<DD><DT><CODE>-mips64</CODE>
+<DD>Generate code for a particular MIPS Instruction Set Architecture level.
+<SAMP>`-mips1'</SAMP> corresponds to the R2000 and R3000 processors,
+<SAMP>`-mips2'</SAMP> to the R6000 processor, <SAMP>`-mips3'</SAMP> to the
+R4000 processor, and <SAMP>`-mips4'</SAMP> to the R8000 and
+R10000 processors.  <SAMP>`-mips5'</SAMP>, <SAMP>`-mips32'</SAMP>, <SAMP>`-mips32r2'</SAMP>, and
+<SAMP>`-mips64'</SAMP> correspond to generic MIPS V, MIPS32,
+MIPS32 RELEASE 2, and
+MIPS64 ISA processors, respectively.  You can also switch
+instruction sets during the assembly; see <A HREF="as_314.html#SEC323">Directives to override the ISA level</A>.
+<P>
+
+<DT><CODE>-mgp32</CODE>
+<DD><DT><CODE>-mfp32</CODE>
+<DD>Some macros have different expansions for 32-bit and 64-bit registers.
+The register sizes are normally inferred from the ISA and ABI, but these
+flags force a certain group of registers to be treated as 32 bits wide at
+all times.  <SAMP>`-mgp32'</SAMP> controls the size of general-purpose registers
+and <SAMP>`-mfp32'</SAMP> controls the size of floating-point registers.
+<P>
+
+On some MIPS variants there is a 32-bit mode flag; when this flag is
+set, 64-bit instructions generate a trap.  Also, some 32-bit OSes only
+save the 32-bit registers on a context switch, so it is essential never
+to use the 64-bit registers.
+</P><P>
+
+<DT><CODE>-mgp64</CODE>
+<DD>Assume that 64-bit general purpose registers are available.  This is
+provided in the interests of symmetry with -gp32.
+<P>
+
+<DT><CODE>-mips16</CODE>
+<DD><DT><CODE>-no-mips16</CODE>
+<DD>Generate code for the MIPS 16 processor.  This is equivalent to putting
+<SAMP>`.set mips16'</SAMP> at the start of the assembly file.  <SAMP>`-no-mips16'</SAMP>
+turns off this option.
+<P>
+
+<DT><CODE>-mips3d</CODE>
+<DD><DT><CODE>-no-mips3d</CODE>
+<DD>Generate code for the MIPS-3D Application Specific Extension.
+This tells the assembler to accept MIPS-3D instructions.
+<SAMP>`-no-mips3d'</SAMP> turns off this option.
+<P>
+
+<DT><CODE>-mdmx</CODE>
+<DD><DT><CODE>-no-mdmx</CODE>
+<DD>Generate code for the MDMX Application Specific Extension.
+This tells the assembler to accept MDMX instructions.
+<SAMP>`-no-mdmx'</SAMP> turns off this option.
+<P>
+
+<DT><CODE>-mfix7000</CODE>
+<DD><DT><CODE>-mno-fix7000</CODE>
+<DD>Cause nops to be inserted if the read of the destination register
+of an mfhi or mflo instruction occurs in the following two instructions.
+<P>
+
+<DT><CODE>-mfix-vr4122-bugs</CODE>
+<DD><DT><CODE>-no-mfix-vr4122-bugs</CODE>
+<DD>Insert <SAMP>`nop'</SAMP> instructions to avoid errors in certain versions of
+the vr4122 core.  This option is intended to be used on GCC-generated
+code: it is not designed to catch errors in hand-written assembler code.
+<P>
+
+<DT><CODE>-m4010</CODE>
+<DD><DT><CODE>-no-m4010</CODE>
+<DD>Generate code for the LSI R4010 chip.  This tells the assembler to
+accept the R4010 specific instructions (<SAMP>`addciu'</SAMP>, <SAMP>`ffc'</SAMP>,
+etc.), and to not schedule <SAMP>`nop'</SAMP> instructions around accesses to
+the <SAMP>`HI'</SAMP> and <SAMP>`LO'</SAMP> registers.  <SAMP>`-no-m4010'</SAMP> turns off this
+option.
+<P>
+
+<DT><CODE>-m4650</CODE>
+<DD><DT><CODE>-no-m4650</CODE>
+<DD>Generate code for the MIPS R4650 chip.  This tells the assembler to accept
+the <SAMP>`mad'</SAMP> and <SAMP>`madu'</SAMP> instruction, and to not schedule <SAMP>`nop'</SAMP>
+instructions around accesses to the <SAMP>`HI'</SAMP> and <SAMP>`LO'</SAMP> registers.
+<SAMP>`-no-m4650'</SAMP> turns off this option.
+<P>
+
+<DT><CODE>-m3900</CODE>
+<DD><DT><CODE>-no-m3900</CODE>
+<DD><DT><CODE>-m4100</CODE>
+<DD><DT><CODE>-no-m4100</CODE>
+<DD>For each option <SAMP>`-m<VAR>nnnn</VAR>'</SAMP>, generate code for the MIPS
+R<VAR>NNNN</VAR> chip.  This tells the assembler to accept instructions
+specific to that chip, and to schedule for that chip's hazards.
+<P>
+
+<DT><CODE>-march=<VAR>cpu</VAR></CODE>
+<DD>Generate code for a particular MIPS cpu.  It is exactly equivalent to
+<SAMP>`-m<VAR>cpu</VAR>'</SAMP>, except that there are more value of <VAR>cpu</VAR>
+understood.  Valid <VAR>cpu</VAR> value are:
+<P>
+
+<BLOCKQUOTE>
+2000,
+3000,
+3900,
+4000,
+4010,
+4100,
+4111,
+vr4120,
+vr4130,
+vr4181,
+4300,
+4400,
+4600,
+4650,
+5000,
+rm5200,
+rm5230,
+rm5231,
+rm5261,
+rm5721,
+vr5400,
+vr5500,
+6000,
+rm7000,
+8000,
+10000,
+12000,
+mips32-4k,
+sb1
+</BLOCKQUOTE>
+<P>
+
+<DT><CODE>-mtune=<VAR>cpu</VAR></CODE>
+<DD>Schedule and tune for a particular MIPS cpu.  Valid <VAR>cpu</VAR> values are
+identical to <SAMP>`-march=<VAR>cpu</VAR>'</SAMP>.
+<P>
+
+<DT><CODE>-mabi=<VAR>abi</VAR></CODE>
+<DD>Record which ABI the source code uses.  The recognized arguments
+are: <SAMP>`32'</SAMP>, <SAMP>`n32'</SAMP>, <SAMP>`o64'</SAMP>, <SAMP>`64'</SAMP> and <SAMP>`eabi'</SAMP>.
+<P>
+
+<A NAME="IDX985"></A>
+<DT><CODE>-nocpp</CODE>
+<DD>This option is ignored.  It is accepted for command-line compatibility with
+other assemblers, which use it to turn off C style preprocessing.  With
+GNU <CODE>as</CODE>, there is no need for <SAMP>`-nocpp'</SAMP>, because the
+GNU assembler itself never runs the C preprocessor.
+<P>
+
+<DT><CODE>--construct-floats</CODE>
+<DD><DT><CODE>--no-construct-floats</CODE>
+<DD><A NAME="IDX986"></A>
+<A NAME="IDX987"></A>
+The <CODE>--no-construct-floats</CODE> option disables the construction of
+double width floating point constants by loading the two halves of the
+value into the two single width floating point registers that make up
+the double width register.  This feature is useful if the processor
+support the FR bit in its status  register, and this bit is known (by
+the programmer) to be set.  This bit prevents the aliasing of the double
+width register by the single width registers.
+<P>
+
+By default <CODE>--construct-floats</CODE> is selected, allowing construction
+of these floating point constants.
+</P><P>
+
+<DT><CODE>--trap</CODE>
+<DD><DT><CODE>--no-break</CODE>
+<DD><CODE>as</CODE> automatically macro expands certain division and
+multiplication instructions to check for overflow and division by zero.  This
+option causes <CODE>as</CODE> to generate code to take a trap exception
+rather than a break exception when an error is detected.  The trap instructions
+are only supported at Instruction Set Architecture level 2 and higher.
+<P>
+
+<DT><CODE>--break</CODE>
+<DD><DT><CODE>--no-trap</CODE>
+<DD>Generate code to take a break exception rather than a trap exception when an
+error is detected.  This is the default.
+<P>
+
+<DT><CODE>-n</CODE>
+<DD>When this option is used, <CODE>as</CODE> will issue a warning every
+time it generates a nop instruction from a macro.
+</DL>
+<P>
+
+<A NAME="MIPS Object"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_310.html#SEC319"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_312.html#SEC321"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_179.html#SEC188"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_310.html#SEC319"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_319.html#SEC328"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

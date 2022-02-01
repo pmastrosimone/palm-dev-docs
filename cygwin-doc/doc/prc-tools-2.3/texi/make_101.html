@@ -1,0 +1,363 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Catalogue of Rules</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Catalogue of Rules">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Catalogue of Rules">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC105"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_100.html#SEC104"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_102.html#SEC106"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 10.2 Catalogue of Implicit Rules </H2>
+<!--docid::SEC105::-->
+<P>
+
+Here is a catalogue of predefined implicit rules which are always
+available unless the makefile explicitly overrides or cancels them.
+See section <A HREF="make_110.html#SEC114">Canceling Implicit Rules</A>, for information on
+canceling or overriding an implicit rule.  The <SAMP>`-r'</SAMP> or
+<SAMP>`--no-builtin-rules'</SAMP> option cancels all predefined rules.
+</P><P>
+
+Not all of these rules will always be defined, even when the <SAMP>`-r'</SAMP>
+option is not given.  Many of the predefined implicit rules are
+implemented in <CODE>make</CODE> as suffix rules, so which ones will be
+defined depends on the <EM>suffix list</EM> (the list of prerequisites of
+the special target <CODE>.SUFFIXES</CODE>).  The default suffix list is:
+<CODE>.out</CODE>, <CODE>.a</CODE>, <CODE>.ln</CODE>, <CODE>.o</CODE>, <CODE>.c</CODE>, <CODE>.cc</CODE>,
+<CODE>.C</CODE>, <CODE>.p</CODE>, <CODE>.f</CODE>, <CODE>.F</CODE>, <CODE>.r</CODE>, <CODE>.y</CODE>,
+<CODE>.l</CODE>, <CODE>.s</CODE>, <CODE>.S</CODE>, <CODE>.mod</CODE>, <CODE>.sym</CODE>, <CODE>.def</CODE>,
+<CODE>.h</CODE>, <CODE>.info</CODE>, <CODE>.dvi</CODE>, <CODE>.tex</CODE>, <CODE>.texinfo</CODE>,
+<CODE>.texi</CODE>, <CODE>.txinfo</CODE>, <CODE>.w</CODE>, <CODE>.ch</CODE> <CODE>.web</CODE>,
+<CODE>.sh</CODE>, <CODE>.elc</CODE>, <CODE>.el</CODE>.  All of the implicit rules
+described below whose prerequisites have one of these suffixes are
+actually suffix rules.  If you modify the suffix list, the only
+predefined suffix rules in effect will be those named by one or two of
+the suffixes that are on the list you specify; rules whose suffixes fail
+to be on the list are disabled.  See section <A HREF="make_112.html#SEC116">Old-Fashioned Suffix Rules</A>, for full details on suffix rules.
+</P><P>
+
+<DL COMPACT>
+<DT>Compiling C programs
+<DD><A NAME="IDX441"></A>
+<A NAME="IDX442"></A>
+<A NAME="IDX443"></A>
+<A NAME="IDX444"></A>
+<A NAME="IDX445"></A>
+<TT>`<VAR>n</VAR>.o'</TT> is made automatically from <TT>`<VAR>n</VAR>.c'</TT> with
+a command of the form <SAMP>`$(CC) -c $(CPPFLAGS) $(CFLAGS)'</SAMP>.<P>
+
+<DT>Compiling C++ programs
+<DD><A NAME="IDX446"></A>
+<A NAME="IDX447"></A>
+<A NAME="IDX448"></A>
+<A NAME="IDX449"></A>
+<TT>`<VAR>n</VAR>.o'</TT> is made automatically from <TT>`<VAR>n</VAR>.cc'</TT> or
+<TT>`<VAR>n</VAR>.C'</TT> with a command of the form <SAMP>`$(CXX) -c $(CPPFLAGS)
+$(CXXFLAGS)'</SAMP>.  We encourage you to use the suffix <SAMP>`.cc'</SAMP> for C++
+source files instead of <SAMP>`.C'</SAMP>.<P>
+
+<DT>Compiling Pascal programs
+<DD><A NAME="IDX450"></A>
+<A NAME="IDX451"></A>
+<A NAME="IDX452"></A>
+<TT>`<VAR>n</VAR>.o'</TT> is made automatically from <TT>`<VAR>n</VAR>.p'</TT>
+with the command <SAMP>`$(PC) -c $(PFLAGS)'</SAMP>.<P>
+
+<DT>Compiling Fortran and Ratfor programs
+<DD><A NAME="IDX453"></A>
+<A NAME="IDX454"></A>
+<A NAME="IDX455"></A>
+<A NAME="IDX456"></A>
+<A NAME="IDX457"></A>
+<A NAME="IDX458"></A>
+<TT>`<VAR>n</VAR>.o'</TT> is made automatically from <TT>`<VAR>n</VAR>.r'</TT>,
+<TT>`<VAR>n</VAR>.F'</TT> or <TT>`<VAR>n</VAR>.f'</TT> by running the
+Fortran compiler.  The precise command used is as follows:<P>
+
+<DL COMPACT>
+<DT><SAMP>`.f'</SAMP>
+<DD><SAMP>`$(FC) -c $(FFLAGS)'</SAMP>.
+<DT><SAMP>`.F'</SAMP>
+<DD><SAMP>`$(FC) -c $(FFLAGS) $(CPPFLAGS)'</SAMP>.
+<DT><SAMP>`.r'</SAMP>
+<DD><SAMP>`$(FC) -c $(FFLAGS) $(RFLAGS)'</SAMP>.
+</DL>
+<P>
+
+<DT>Preprocessing Fortran and Ratfor programs
+<DD><TT>`<VAR>n</VAR>.f'</TT> is made automatically from <TT>`<VAR>n</VAR>.r'</TT> or
+<TT>`<VAR>n</VAR>.F'</TT>.  This rule runs just the preprocessor to convert a
+Ratfor or preprocessable Fortran program into a strict Fortran
+program.  The precise command used is as follows:<P>
+
+<DL COMPACT>
+<DT><SAMP>`.F'</SAMP>
+<DD><SAMP>`$(FC) -F $(CPPFLAGS) $(FFLAGS)'</SAMP>.
+<DT><SAMP>`.r'</SAMP>
+<DD><SAMP>`$(FC) -F $(FFLAGS) $(RFLAGS)'</SAMP>.
+</DL>
+<P>
+
+<DT>Compiling Modula-2 programs
+<DD><A NAME="IDX459"></A>
+<A NAME="IDX460"></A>
+<A NAME="IDX461"></A>
+<A NAME="IDX462"></A>
+<A NAME="IDX463"></A>
+<TT>`<VAR>n</VAR>.sym'</TT> is made from <TT>`<VAR>n</VAR>.def'</TT> with a command
+of the form <SAMP>`$(M2C) $(M2FLAGS) $(DEFFLAGS)'</SAMP>.  <TT>`<VAR>n</VAR>.o'</TT>
+is made from <TT>`<VAR>n</VAR>.mod'</TT>; the form is:
+<SAMP>`$(M2C) $(M2FLAGS) $(MODFLAGS)'</SAMP>.<P>
+
+<DT>Assembling and preprocessing assembler programs
+<DD><A NAME="IDX464"></A>
+<A NAME="IDX465"></A>
+<A NAME="IDX466"></A>
+<TT>`<VAR>n</VAR>.o'</TT> is made automatically from <TT>`<VAR>n</VAR>.s'</TT> by
+running the assembler, <CODE>as</CODE>.  The precise command is
+<SAMP>`$(AS) $(ASFLAGS)'</SAMP>.<P>
+
+<A NAME="IDX467"></A>
+<TT>`<VAR>n</VAR>.s'</TT> is made automatically from <TT>`<VAR>n</VAR>.S'</TT> by
+running the C preprocessor, <CODE>cpp</CODE>.  The precise command is
+<SAMP>`$(CPP) $(CPPFLAGS)'</SAMP>.
+</P><P>
+
+<DT>Linking a single object file
+<DD><A NAME="IDX468"></A>
+<A NAME="IDX469"></A>
+<A NAME="IDX470"></A>
+<TT>`<VAR>n</VAR>'</TT> is made automatically from <TT>`<VAR>n</VAR>.o'</TT> by running
+the linker (usually called <CODE>ld</CODE>) via the C compiler.  The precise
+command used is <SAMP>`$(CC) $(LDFLAGS) <VAR>n</VAR>.o $(LOADLIBES) $(LDLIBS)'</SAMP>.
+<P>
+
+This rule does the right thing for a simple program with only one
+source file.  It will also do the right thing if there are multiple
+object files (presumably coming from various other source files), one
+of which has a name matching that of the executable file.  Thus,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>x: y.o z.o
+</pre></td></tr></table></P><P>
+
+when <TT>`x.c'</TT>, <TT>`y.c'</TT> and <TT>`z.c'</TT> all exist will execute:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>cc -c x.c -o x.o
+cc -c y.c -o y.o
+cc -c z.c -o z.o
+cc x.o y.o z.o -o x
+rm -f x.o
+rm -f y.o
+rm -f z.o
+</pre></td></tr></table></P><P>
+
+In more complicated cases, such as when there is no object file whose
+name derives from the executable file name, you must write an explicit
+command for linking.
+</P><P>
+
+Each kind of file automatically made into <SAMP>`.o'</SAMP> object files will
+be automatically linked by using the compiler (<SAMP>`$(CC)'</SAMP>,
+<SAMP>`$(FC)'</SAMP> or <SAMP>`$(PC)'</SAMP>; the C compiler <SAMP>`$(CC)'</SAMP> is used to
+assemble <SAMP>`.s'</SAMP> files) without the <SAMP>`-c'</SAMP> option.  This could be
+done by using the <SAMP>`.o'</SAMP> object files as intermediates, but it is
+faster to do the compiling and linking in one step, so that's how it's
+done.</P><P>
+
+<DT>Yacc for C programs
+<DD><A NAME="IDX471"></A>
+<A NAME="IDX472"></A>
+<A NAME="IDX473"></A>
+<TT>`<VAR>n</VAR>.c'</TT> is made automatically from <TT>`<VAR>n</VAR>.y'</TT> by
+running Yacc with the command <SAMP>`$(YACC) $(YFLAGS)'</SAMP>.
+<P>
+
+<DT>Lex for C programs
+<DD><A NAME="IDX474"></A>
+<A NAME="IDX475"></A>
+<A NAME="IDX476"></A>
+<TT>`<VAR>n</VAR>.c'</TT> is made automatically from <TT>`<VAR>n</VAR>.l'</TT> by
+running Lex.  The actual command is <SAMP>`$(LEX) $(LFLAGS)'</SAMP>.
+<P>
+
+<DT>Lex for Ratfor programs
+<DD><TT>`<VAR>n</VAR>.r'</TT> is made automatically from <TT>`<VAR>n</VAR>.l'</TT> by
+running Lex.  The actual command is <SAMP>`$(LEX) $(LFLAGS)'</SAMP>.
+<P>
+
+The convention of using the same suffix <SAMP>`.l'</SAMP> for all Lex files
+regardless of whether they produce C code or Ratfor code makes it
+impossible for <CODE>make</CODE> to determine automatically which of the two
+languages you are using in any particular case.  If <CODE>make</CODE> is
+called upon to remake an object file from a <SAMP>`.l'</SAMP> file, it must
+guess which compiler to use.  It will guess the C compiler, because
+that is more common.  If you are using Ratfor, make sure <CODE>make</CODE>
+knows this by mentioning <TT>`<VAR>n</VAR>.r'</TT> in the makefile.  Or, if you
+are using Ratfor exclusively, with no C files, remove <SAMP>`.c'</SAMP> from
+the list of implicit rule suffixes with:</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.SUFFIXES:
+.SUFFIXES: .o .r .f .l <small>...</small>
+</pre></td></tr></table></P><P>
+
+<DT>Making Lint Libraries from C, Yacc, or Lex programs
+<DD><A NAME="IDX477"></A>
+<A NAME="IDX478"></A>
+<A NAME="IDX479"></A>
+<TT>`<VAR>n</VAR>.ln'</TT> is made from <TT>`<VAR>n</VAR>.c'</TT> by running <CODE>lint</CODE>.
+The precise command is <SAMP>`$(LINT) $(LINTFLAGS) $(CPPFLAGS) -i'</SAMP>.
+The same command is used on the C code produced from
+<TT>`<VAR>n</VAR>.y'</TT> or <TT>`<VAR>n</VAR>.l'</TT>.<P>
+
+<DT>TeX and Web
+<DD><A NAME="IDX480"></A>
+<A NAME="IDX481"></A>
+<A NAME="IDX482"></A>
+<A NAME="IDX483"></A>
+<A NAME="IDX484"></A>
+<A NAME="IDX485"></A>
+<A NAME="IDX486"></A>
+<A NAME="IDX487"></A>
+<A NAME="IDX488"></A>
+<A NAME="IDX489"></A>
+<A NAME="IDX490"></A>
+<A NAME="IDX491"></A>
+<TT>`<VAR>n</VAR>.dvi'</TT> is made from <TT>`<VAR>n</VAR>.tex'</TT> with the command
+<SAMP>`$(TEX)'</SAMP>.  <TT>`<VAR>n</VAR>.tex'</TT> is made from <TT>`<VAR>n</VAR>.web'</TT> with
+<SAMP>`$(WEAVE)'</SAMP>, or from <TT>`<VAR>n</VAR>.w'</TT> (and from <TT>`<VAR>n</VAR>.ch'</TT> if
+it exists or can be made) with <SAMP>`$(CWEAVE)'</SAMP>.  <TT>`<VAR>n</VAR>.p'</TT> is
+made from <TT>`<VAR>n</VAR>.web'</TT> with <SAMP>`$(TANGLE)'</SAMP> and <TT>`<VAR>n</VAR>.c'</TT>
+is made from <TT>`<VAR>n</VAR>.w'</TT> (and from <TT>`<VAR>n</VAR>.ch'</TT> if it exists
+or can be made) with <SAMP>`$(CTANGLE)'</SAMP>.<P>
+
+<DT>Texinfo and Info
+<DD><A NAME="IDX492"></A>
+<A NAME="IDX493"></A>
+<A NAME="IDX494"></A>
+<A NAME="IDX495"></A>
+<A NAME="IDX496"></A>
+<A NAME="IDX497"></A>
+<A NAME="IDX498"></A>
+<A NAME="IDX499"></A>
+<TT>`<VAR>n</VAR>.dvi'</TT> is made from <TT>`<VAR>n</VAR>.texinfo'</TT>,
+<TT>`<VAR>n</VAR>.texi'</TT>, or <TT>`<VAR>n</VAR>.txinfo'</TT>, with the command
+<SAMP>`$(TEXI2DVI) $(TEXI2DVI_FLAGS)'</SAMP>.  <TT>`<VAR>n</VAR>.info'</TT> is made from
+<TT>`<VAR>n</VAR>.texinfo'</TT>, <TT>`<VAR>n</VAR>.texi'</TT>, or <TT>`<VAR>n</VAR>.txinfo'</TT>, with
+the command <SAMP>`$(MAKEINFO) $(MAKEINFO_FLAGS)'</SAMP>.
+<P>
+
+<DT>RCS
+<DD><A NAME="IDX500"></A>
+<A NAME="IDX501"></A>
+<A NAME="IDX502"></A>
+Any file <TT>`<VAR>n</VAR>'</TT> is extracted if necessary from an RCS file
+named either <TT>`<VAR>n</VAR>,v'</TT> or <TT>`RCS/<VAR>n</VAR>,v'</TT>.  The precise
+command used is <SAMP>`$(CO) $(COFLAGS)'</SAMP>.  <TT>`<VAR>n</VAR>'</TT> will not be
+extracted from RCS if it already exists, even if the RCS file is
+newer.  The rules for RCS are terminal
+(see section <A HREF="make_109.html#SEC113">Match-Anything Pattern Rules</A>),
+so RCS files cannot be generated from another source; they must
+actually exist.<P>
+
+<DT>SCCS
+<DD><A NAME="IDX503"></A>
+<A NAME="IDX504"></A>
+<A NAME="IDX505"></A>
+Any file <TT>`<VAR>n</VAR>'</TT> is extracted if necessary from an SCCS file
+named either <TT>`s.<VAR>n</VAR>'</TT> or <TT>`SCCS/s.<VAR>n</VAR>'</TT>.  The precise
+command used is <SAMP>`$(GET) $(GFLAGS)'</SAMP>.  The rules for SCCS are
+terminal (see section <A HREF="make_109.html#SEC113">Match-Anything Pattern Rules</A>),
+so SCCS files cannot be generated from another source; they must
+actually exist.<P>
+
+<A NAME="IDX506"></A>
+For the benefit of SCCS, a file <TT>`<VAR>n</VAR>'</TT> is copied from
+<TT>`<VAR>n</VAR>.sh'</TT> and made executable (by everyone).  This is for
+shell scripts that are checked into SCCS.  Since RCS preserves the
+execution permission of a file, you do not need to use this feature
+with RCS.</P><P>
+
+We recommend that you avoid using of SCCS.  RCS is widely held to be
+superior, and is also free.  By choosing free software in place of
+comparable (or inferior) proprietary software, you support the free
+software movement.
+</DL>
+<P>
+
+Usually, you want to change only the variables listed in the table
+above, which are documented in the following section.
+</P><P>
+
+However, the commands in built-in implicit rules actually use
+variables such as <CODE>COMPILE.c</CODE>, <CODE>LINK.p</CODE>, and
+<CODE>PREPROCESS.S</CODE>, whose values contain the commands listed above.
+</P><P>
+
+<CODE>make</CODE> follows the convention that the rule to compile a
+<TT>`.<VAR>x</VAR>'</TT> source file uses the variable <CODE>COMPILE.<VAR>x</VAR></CODE>.
+Similarly, the rule to produce an executable from a <TT>`.<VAR>x</VAR>'</TT>
+file uses <CODE>LINK.<VAR>x</VAR></CODE>; and the rule to preprocess a
+<TT>`.<VAR>x</VAR>'</TT> file uses <CODE>PREPROCESS.<VAR>x</VAR></CODE>.
+</P><P>
+
+<A NAME="IDX507"></A>
+Every rule that produces an object file uses the variable
+<CODE>OUTPUT_OPTION</CODE>.  <CODE>make</CODE> defines this variable either to
+contain <SAMP>`-o $@'</SAMP>, or to be empty, depending on a compile-time
+option.  You need the <SAMP>`-o'</SAMP> option to ensure that the output goes
+into the right file when the source file is in a different directory,
+as when using <CODE>VPATH</CODE> (see section <A HREF="make_30.html#SEC34">4.5 Searching Directories for Prerequisites</A>).  However,
+compilers on some systems do not accept a <SAMP>`-o'</SAMP> switch for object
+files.  If you use such a system, and use <CODE>VPATH</CODE>, some
+compilations will put their output in the wrong place.
+A possible workaround for this problem is to give <CODE>OUTPUT_OPTION</CODE>
+the value <SAMP>`; mv $*.o $@'</SAMP>.
+</P><P>
+
+<A NAME="Implicit Variables"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_100.html#SEC104"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_102.html#SEC106"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

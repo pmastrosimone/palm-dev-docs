@@ -1,0 +1,121 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Target-specific</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Target-specific">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Target-specific">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC77"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_72.html#SEC76"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_74.html#SEC78"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 6.10 Target-specific Variable Values </H2>
+<!--docid::SEC77::-->
+<P>
+
+Variable values in <CODE>make</CODE> are usually global; that is, they are the
+same regardless of where they are evaluated (unless they're reset, of
+course).  One exception to that is automatic variables
+(see section <A HREF="make_107.html#SEC111">Automatic Variables</A>).
+</P><P>
+
+The other exception is <EM>target-specific variable values</EM>.  This
+feature allows you to define different values for the same variable,
+based on the target that <CODE>make</CODE> is currently building.  As with
+automatic variables, these values are only available within the context
+of a target's command script (and in other target-specific assignments).
+</P><P>
+
+Set a target-specific variable value like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>target</VAR> <small>...</small> : <VAR>variable-assignment</VAR>
+</pre></td></tr></table></P><P>
+
+or like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>target</VAR> <small>...</small> : override <VAR>variable-assignment</VAR>
+</pre></td></tr></table></P><P>
+
+Multiple <VAR>target</VAR> values create a target-specific variable value for
+each member of the target list individually.
+</P><P>
+
+The <VAR>variable-assignment</VAR> can be any valid form of assignment;
+recursive (<SAMP>`='</SAMP>), static (<SAMP>`:='</SAMP>), appending (<SAMP>`+='</SAMP>), or
+conditional (<SAMP>`?='</SAMP>).  All variables that appear within the
+<VAR>variable-assignment</VAR> are evaluated within the context of the
+target: thus, any previously-defined target-specific variable values
+will be in effect.  Note that this variable is actually distinct from
+any "global" value: the two variables do not have to have the same
+flavor (recursive vs. static).
+</P><P>
+
+Target-specific variables have the same priority as any other makefile
+variable.  Variables provided on the command-line (and in the
+environment if the <SAMP>`-e'</SAMP> option is in force) will take precedence.
+Specifying the <CODE>override</CODE> directive will allow the target-specific
+variable value to be preferred.
+</P><P>
+
+There is one more special feature of target-specific variables: when you
+define a target-specific variable, that variable value is also in effect
+for all prerequisites of this target (unless those prerequisites override
+it with their own target-specific variable value).  So, for example, a
+statement like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>prog : CFLAGS = -g
+prog : prog.o foo.o bar.o
+</pre></td></tr></table></P><P>
+
+will set <CODE>CFLAGS</CODE> to <SAMP>`-g'</SAMP> in the command script for
+<TT>`prog'</TT>, but it will also set <CODE>CFLAGS</CODE> to <SAMP>`-g'</SAMP> in the
+command scripts that create <TT>`prog.o'</TT>, <TT>`foo.o'</TT>, and
+<TT>`bar.o'</TT>, and any command scripts which create their prerequisites.
+</P><P>
+
+<A NAME="Pattern-specific"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_72.html#SEC76"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_74.html#SEC78"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

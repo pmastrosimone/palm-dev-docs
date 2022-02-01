@@ -1,0 +1,172 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: VAX-Opts</TITLE>
+
+<META NAME="description" CONTENT="Using as: VAX-Opts">
+<META NAME="keywords" CONTENT="Using as: VAX-Opts">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC404"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_394.html#SEC403"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_396.html#SEC405"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_187.html#SEC196"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_394.html#SEC403"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_402.html#SEC411"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.31.1 VAX Command-Line Options </H3>
+<!--docid::SEC404::-->
+<P>
+
+<A NAME="IDX1428"></A>
+<A NAME="IDX1429"></A>
+The Vax version of <CODE>as</CODE> accepts any of the following options,
+gives a warning message that the option was ignored and proceeds.
+These options are for compatibility with scripts designed for other
+people's assemblers.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX1430"></A>
+<A NAME="IDX1431"></A>
+<A NAME="IDX1432"></A>
+<DT><CODE><CODE>-D</CODE> (Debug)</CODE>
+<DD><DT><CODE><CODE>-S</CODE> (Symbol Table)</CODE>
+<DD><DT><CODE><CODE>-T</CODE> (Token Trace)</CODE>
+<DD>These are obsolete options used to debug old assemblers.
+<P>
+
+<A NAME="IDX1433"></A>
+<DT><CODE><CODE>-d</CODE> (Displacement size for JUMPs)</CODE>
+<DD>This option expects a number following the <SAMP>`-d'</SAMP>.  Like options
+that expect filenames, the number may immediately follow the
+<SAMP>`-d'</SAMP> (old standard) or constitute the whole of the command line
+argument that follows <SAMP>`-d'</SAMP> (GNU standard).
+<P>
+
+<A NAME="IDX1434"></A>
+<DT><CODE><CODE>-V</CODE> (Virtualize Interpass Temporary File)</CODE>
+<DD>Some other assemblers use a temporary file.  This option
+commanded them to keep the information in active memory rather
+than in a disk file.  <CODE>as</CODE> always does this, so this
+option is redundant.
+<P>
+
+<A NAME="IDX1435"></A>
+<DT><CODE><CODE>-J</CODE> (JUMPify Longer Branches)</CODE>
+<DD>Many 32-bit computers permit a variety of branch instructions
+to do the same job.  Some of these instructions are short (and
+fast) but have a limited range; others are long (and slow) but
+can branch anywhere in virtual memory.  Often there are 3
+flavors of branch: short, medium and long.  Some other
+assemblers would emit short and medium branches, unless told by
+this option to emit short and long branches.
+<P>
+
+<A NAME="IDX1436"></A>
+<DT><CODE><CODE>-t</CODE> (Temporary File Directory)</CODE>
+<DD>Some other assemblers may use a temporary file, and this option
+takes a filename being the directory to site the temporary
+file.  Since <CODE>as</CODE> does not use a temporary disk file, this
+option makes no difference.  <SAMP>`-t'</SAMP> needs exactly one
+filename.
+</DL>
+<P>
+
+<A NAME="IDX1437"></A>
+<A NAME="IDX1438"></A>
+<A NAME="IDX1439"></A>
+<A NAME="IDX1440"></A>
+<A NAME="IDX1441"></A>
+The Vax version of the assembler accepts additional options when
+compiled for VMS:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX1442"></A>
+<DT><SAMP>`-h <VAR>n</VAR>'</SAMP>
+<DD>External symbol or section (used for global variables) names are not
+case sensitive on VAX/VMS and always mapped to upper case.  This is
+contrary to the C language definition which explicitly distinguishes
+upper and lower case.  To implement a standard conforming C compiler,
+names must be changed (mapped) to preserve the case information.  The
+default mapping is to convert all lower case characters to uppercase and
+adding an underscore followed by a 6 digit hex value, representing a 24
+digit binary value.  The one digits in the binary value represent which
+characters are uppercase in the original symbol name.
+<P>
+
+The <SAMP>`-h <VAR>n</VAR>'</SAMP> option determines how we map names.  This takes
+several values.  No <SAMP>`-h'</SAMP> switch at all allows case hacking as
+described above.  A value of zero (<SAMP>`-h0'</SAMP>) implies names should be
+upper case, and inhibits the case hack.  A value of 2 (<SAMP>`-h2'</SAMP>)
+implies names should be all lower case, with no case hack.  A value of 3
+(<SAMP>`-h3'</SAMP>) implies that case should be preserved.  The value 1 is
+unused.  The <CODE>-H</CODE> option directs <CODE>as</CODE> to display
+every mapped symbol during assembly.
+</P><P>
+
+Symbols whose names include a dollar sign <SAMP>`$'</SAMP> are exceptions to the
+general name mapping.  These symbols are normally only used to reference
+VMS library names.  Such symbols are always mapped to upper case.
+</P><P>
+
+<A NAME="IDX1443"></A>
+<DT><SAMP>`-+'</SAMP>
+<DD>The <SAMP>`-+'</SAMP> option causes <CODE>as</CODE> to truncate any symbol
+name larger than 31 characters.  The <SAMP>`-+'</SAMP> option also prevents some
+code following the <SAMP>`_main'</SAMP> symbol normally added to make the object
+file compatible with Vax-11 "C".
+<P>
+
+<A NAME="IDX1444"></A>
+<DT><SAMP>`-1'</SAMP>
+<DD>This option is ignored for backward compatibility with <CODE>as</CODE>
+version 1.x.
+<P>
+
+<A NAME="IDX1445"></A>
+<DT><SAMP>`-H'</SAMP>
+<DD>The <SAMP>`-H'</SAMP> option causes <CODE>as</CODE> to print every symbol
+which was changed by case mapping.
+</DL>
+<P>
+
+<A NAME="VAX-float"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_394.html#SEC403"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_396.html#SEC405"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_187.html#SEC196"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_394.html#SEC403"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_402.html#SEC411"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

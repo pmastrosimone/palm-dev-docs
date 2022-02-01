@@ -1,0 +1,162 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: i386-Syntax</TITLE>
+
+<META NAME="description" CONTENT="Using as: i386-Syntax">
+<META NAME="keywords" CONTENT="Using as: i386-Syntax">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC268"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_258.html#SEC267"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_260.html#SEC269"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_260.html#SEC269"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.12.2 AT&#38;T Syntax versus Intel Syntax </H3>
+<!--docid::SEC268::-->
+<P>
+
+<A NAME="IDX687"></A>
+<A NAME="IDX688"></A>
+<A NAME="IDX689"></A>
+<A NAME="IDX690"></A>
+<A NAME="IDX691"></A>
+<A NAME="IDX692"></A>
+<A NAME="IDX693"></A>
+<A NAME="IDX694"></A>
+<A NAME="IDX695"></A>
+<A NAME="IDX696"></A>
+<A NAME="IDX697"></A>
+<A NAME="IDX698"></A>
+</P><P>
+
+<CODE>as</CODE> now supports assembly using Intel assembler syntax.
+<CODE>.intel_syntax</CODE> selects Intel mode, and <CODE>.att_syntax</CODE> switches
+back to the usual AT&#38;T mode for compatibility with the output of
+<CODE>gcc</CODE>.  Either of these directives may have an optional
+argument, <CODE>prefix</CODE>, or <CODE>noprefix</CODE> specifying whether registers
+require a <SAMP>`%'</SAMP> prefix.  AT&#38;T System V/386 assembler syntax is quite
+different from Intel syntax.  We mention these differences because
+almost all 80386 documents use Intel syntax.  Notable differences
+between the two syntaxes are:
+</P><P>
+
+<A NAME="IDX699"></A>
+<A NAME="IDX700"></A>
+<A NAME="IDX701"></A>
+<A NAME="IDX702"></A>
+<A NAME="IDX703"></A>
+<A NAME="IDX704"></A>
+<A NAME="IDX705"></A>
+</P><P>
+
+<A NAME="IDX706"></A>
+<A NAME="IDX707"></A>
+<A NAME="IDX708"></A>
+<A NAME="IDX709"></A>
+<A NAME="IDX710"></A>
+<A NAME="IDX711"></A>
+<A NAME="IDX712"></A>
+<UL>
+<LI>
+AT&#38;T immediate operands are preceded by <SAMP>`$'</SAMP>; Intel immediate
+operands are undelimited (Intel <SAMP>`push 4'</SAMP> is AT&#38;T <SAMP>`pushl $4'</SAMP>).
+AT&#38;T register operands are preceded by <SAMP>`%'</SAMP>; Intel register operands
+are undelimited.  AT&#38;T absolute (as opposed to PC relative) jump/call
+operands are prefixed by <SAMP>`*'</SAMP>; they are undelimited in Intel syntax.
+<P>
+
+<A NAME="IDX713"></A>
+<A NAME="IDX714"></A>
+<A NAME="IDX715"></A>
+<A NAME="IDX716"></A>
+<LI>
+AT&#38;T and Intel syntax use the opposite order for source and destination
+operands.  Intel <SAMP>`add eax, 4'</SAMP> is <SAMP>`addl $4, %eax'</SAMP>.  The
+<SAMP>`source, dest'</SAMP> convention is maintained for compatibility with
+previous Unix assemblers.  Note that instructions with more than one
+source operand, such as the <SAMP>`enter'</SAMP> instruction, do <EM>not</EM> have
+reversed order.  <A HREF="as_268.html#SEC277">8.12.11 AT&#38;T Syntax bugs</A>.
+<P>
+
+<A NAME="IDX717"></A>
+<A NAME="IDX718"></A>
+<A NAME="IDX719"></A>
+<A NAME="IDX720"></A>
+<A NAME="IDX721"></A>
+<A NAME="IDX722"></A>
+<LI>
+In AT&#38;T syntax the size of memory operands is determined from the last
+character of the instruction mnemonic.  Mnemonic suffixes of <SAMP>`b'</SAMP>,
+<SAMP>`w'</SAMP>, <SAMP>`l'</SAMP> and <SAMP>`q'</SAMP> specify byte (8-bit), word (16-bit), long
+(32-bit) and quadruple word (64-bit) memory references.  Intel syntax accomplishes
+this by prefixing memory operands (<EM>not</EM> the instruction mnemonics) with
+<SAMP>`byte ptr'</SAMP>, <SAMP>`word ptr'</SAMP>, <SAMP>`dword ptr'</SAMP> and <SAMP>`qword ptr'</SAMP>.  Thus,
+Intel <SAMP>`mov al, byte ptr <VAR>foo</VAR>'</SAMP> is <SAMP>`movb <VAR>foo</VAR>, %al'</SAMP> in AT&#38;T
+syntax.
+<P>
+
+<A NAME="IDX723"></A>
+<A NAME="IDX724"></A>
+<A NAME="IDX725"></A>
+<A NAME="IDX726"></A>
+<LI>
+Immediate form long jumps and calls are
+<SAMP>`lcall/ljmp $<VAR>section</VAR>, $<VAR>offset</VAR>'</SAMP> in AT&#38;T syntax; the
+Intel syntax is
+<SAMP>`call/jmp far <VAR>section</VAR>:<VAR>offset</VAR>'</SAMP>.  Also, the far return
+instruction
+is <SAMP>`lret $<VAR>stack-adjust</VAR>'</SAMP> in AT&#38;T syntax; Intel syntax is
+<SAMP>`ret far <VAR>stack-adjust</VAR>'</SAMP>.
+<P>
+
+<A NAME="IDX727"></A>
+<A NAME="IDX728"></A>
+<A NAME="IDX729"></A>
+<A NAME="IDX730"></A>
+<LI>
+The AT&#38;T assembler does not provide support for multiple section
+programs.  Unix style systems expect all programs to be single sections.
+</UL>
+<P>
+
+<A NAME="i386-Mnemonics"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_258.html#SEC267"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_260.html#SEC269"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_260.html#SEC269"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

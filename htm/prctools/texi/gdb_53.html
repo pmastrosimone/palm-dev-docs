@@ -1,0 +1,176 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Variables</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Variables">
+<META NAME="keywords" CONTENT="Debugging with GDB: Variables">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC53"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_52.html#SEC52"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_54.html#SEC54"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_54.html#SEC54"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.2 Program variables </H2>
+<!--docid::SEC53::-->
+<P>
+
+The most common kind of expression to use is the name of a variable
+in your program.
+</P><P>
+
+Variables in expressions are understood in the selected stack frame
+(see section <A HREF="gdb_44.html#SEC44">Selecting a frame</A>); they must be either:
+</P><P>
+
+<UL>
+<LI>
+global (or file-static)
+</UL>
+<P>
+
+or
+</P><P>
+
+<UL>
+<LI>
+visible according to the scope rules of the
+programming language from the point of execution in that frame
+</UL>
+<P>
+
+This means that in the function
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>foo (a)
+     int a;
+{
+  bar (a);
+  {
+    int b = test ();
+    bar (b);
+  }
+}
+</FONT></pre></td></tr></table></P><P>
+
+you can examine and use the variable <CODE>a</CODE> whenever your program is
+executing within the function <CODE>foo</CODE>, but you can only use or
+examine the variable <CODE>b</CODE> while your program is executing inside
+the block where <CODE>b</CODE> is declared.
+</P><P>
+
+<A NAME="IDX302"></A>
+There is an exception: you can refer to a variable or function whose
+scope is a single source file even if the current execution point is not
+in this file.  But it is possible to have more than one such variable or
+function with the same name (in different source files).  If that
+happens, referring to that name has unpredictable effects.  If you wish,
+you can specify a static variable in a particular function or file,
+using the colon-colon notation:
+</P><P>
+
+<A NAME="IDX303"></A>
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre><VAR>file</VAR>::<VAR>variable</VAR>
+<VAR>function</VAR>::<VAR>variable</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+Here <VAR>file</VAR> or <VAR>function</VAR> is the name of the context for the
+static <VAR>variable</VAR>.  In the case of file names, you can use quotes to
+make sure GDB parses the file name as a single word--for example,
+to print a global value of <CODE>x</CODE> defined in <TT>`f2.c'</TT>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) p 'f2.c'::x
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX304"></A>
+This use of <SAMP>`::'</SAMP> is very rarely in conflict with the very similar
+use of the same notation in C<TT>++</TT>.  GDB also supports use of the C<TT>++</TT>
+scope resolution operator in GDB expressions.
+</P><P>
+
+<A NAME="IDX305"></A>
+<A NAME="IDX306"></A>
+<BLOCKQUOTE>
+<EM>Warning:</EM> Occasionally, a local variable may appear to have the
+wrong value at certain points in a function--just after entry to a new
+scope, and just before exit.
+</BLOCKQUOTE>
+You may see this problem when you are stepping by machine instructions.
+This is because, on most machines, it takes more than one instruction to
+set up a stack frame (including local variable definitions); if you are
+stepping by machine instructions, variables may appear to have the wrong
+values until the stack frame is completely built.  On exit, it usually
+also takes more than one machine instruction to destroy a stack frame;
+after you begin stepping through that group of instructions, local
+variable definitions may be gone.
+<P>
+
+This may also happen when the compiler does significant optimizations.
+To be sure of always seeing accurate values, turn off all optimization
+when compiling.
+</P><P>
+
+<A NAME="IDX307"></A>
+Another possible effect of compiler optimizations is to optimize
+unused variables out of existence, or assign variables to registers (as
+opposed to memory addresses).  Depending on the support for such cases
+offered by the debug info format used by the compiler, GDB
+might not be able to display values for such local variables.  If that
+happens, GDB will print a message like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>No symbol "foo" in current context.
+</FONT></pre></td></tr></table></P><P>
+
+To solve such problems, either recompile without optimizations, or use a
+different debug info format, if the compiler supports several such
+formats.  For example, GCC, the GNU C/C<TT>++</TT> compiler usually
+supports the <SAMP>`-gstabs'</SAMP> option.  <SAMP>`-gstabs'</SAMP> produces debug info
+in a format that is superior to formats such as COFF.  You may be able
+to use DWARF2 (<SAMP>`-gdwarf-2'</SAMP>), which is also an effective form for
+debug info.  See section `Options for Debugging Your Program or GNU CC' in <CITE>Using GNU CC</CITE>, for more
+information.
+</P><P>
+
+<A NAME="Arrays"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_52.html#SEC52"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_54.html#SEC54"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_54.html#SEC54"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

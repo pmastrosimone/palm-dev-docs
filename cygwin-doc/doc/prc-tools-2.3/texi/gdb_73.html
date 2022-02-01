@@ -1,0 +1,106 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Create and Delete Tracepoints</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Create and Delete Tracepoints">
+<META NAME="keywords" CONTENT="Debugging with GDB: Create and Delete Tracepoints">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC73"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_72.html#SEC72"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_74.html#SEC74"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_71.html#SEC71"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_72.html#SEC72"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_79.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 10.1.1 Create and Delete Tracepoints </H3>
+<!--docid::SEC73::-->
+<P>
+
+<DL COMPACT>
+<A NAME="IDX400"></A>
+<A NAME="IDX401"></A>
+<DT><CODE>trace</CODE>
+<DD>The <CODE>trace</CODE> command is very similar to the <CODE>break</CODE> command.
+Its argument can be a source line, a function name, or an address in
+the target program.  See section <A HREF="gdb_29.html#SEC29">5.1.1 Setting breakpoints</A>.  The <CODE>trace</CODE> command
+defines a tracepoint, which is a point in the target program where the
+debugger will briefly stop, collect some data, and then allow the
+program to continue.  Setting a tracepoint or changing its commands
+doesn't take effect until the next <CODE>tstart</CODE> command; thus, you
+cannot change the tracepoint attributes once a trace experiment is
+running.
+<P>
+
+Here are some examples of using the <CODE>trace</CODE> command:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) <B>trace foo.c:121</B>    // a source file and line number
+
+(gdb) <B>trace +2</B>           // 2 lines forward
+
+(gdb) <B>trace my_function</B>  // first source line of function
+
+(gdb) <B>trace *my_function</B> // EXACT start address of function
+
+(gdb) <B>trace *0x2117c4</B>    // an address
+</FONT></pre></td></tr></table></P><P>
+
+You can abbreviate <CODE>trace</CODE> as <CODE>tr</CODE>.
+</P><P>
+
+<A NAME="IDX402"></A>
+<A NAME="IDX403"></A>
+<A NAME="IDX404"></A>
+<A NAME="IDX405"></A>
+The convenience variable <CODE>$tpnum</CODE> records the tracepoint number
+of the most recently set tracepoint.
+</P><P>
+
+<A NAME="IDX406"></A>
+<A NAME="IDX407"></A>
+<DT><CODE>delete tracepoint [<VAR>num</VAR>]</CODE>
+<DD>Permanently delete one or more tracepoints.  With no argument, the
+default is to delete all tracepoints.
+<P>
+
+Examples:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) <B>delete trace 1 2 3</B> // remove three tracepoints
+
+(gdb) <B>delete trace</B>       // remove all tracepoints
+</FONT></pre></td></tr></table></P><P>
+
+You can abbreviate this command as <CODE>del tr</CODE>.
+</DL>
+<P>
+
+<A NAME="Enable and Disable Tracepoints"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

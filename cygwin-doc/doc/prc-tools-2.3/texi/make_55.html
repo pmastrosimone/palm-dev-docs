@@ -1,0 +1,102 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: MAKE Variable</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: MAKE Variable">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: MAKE Variable">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC59"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_54.html#SEC58"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_56.html#SEC60"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_53.html#SEC57"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_54.html#SEC58"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_59.html#SEC63"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 5.6.1 How the <CODE>MAKE</CODE> Variable Works </H3>
+<!--docid::SEC59::-->
+<P>
+
+Recursive <CODE>make</CODE> commands should always use the variable <CODE>MAKE</CODE>,
+not the explicit command name <SAMP>`make'</SAMP>, as shown here:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>subsystem:
+        cd subdir &#38;&#38; $(MAKE)
+</pre></td></tr></table></P><P>
+
+The value of this variable is the file name with which <CODE>make</CODE> was
+invoked.  If this file name was <TT>`/bin/make'</TT>, then the command executed
+is <SAMP>`cd subdir &#38;&#38; /bin/make'</SAMP>.  If you use a special version of
+<CODE>make</CODE> to run the top-level makefile, the same special version will be
+executed for recursive invocations.
+<A NAME="IDX197"></A>
+</P><P>
+
+<A NAME="IDX198"></A>
+As a special feature, using the variable <CODE>MAKE</CODE> in the commands of
+a rule alters the effects of the <SAMP>`-t'</SAMP> (<SAMP>`--touch'</SAMP>), <SAMP>`-n'</SAMP>
+(<SAMP>`--just-print'</SAMP>), or <SAMP>`-q'</SAMP> (<SAMP>`--question'</SAMP>) option.
+Using the <CODE>MAKE</CODE> variable has the same effect as using a <SAMP>`+'</SAMP>
+character at the beginning of the command line.  See section <A HREF="make_94.html#SEC98">Instead of Executing the Commands</A>.</P><P>
+
+Consider the command <SAMP>`make -t'</SAMP> in the above example.  (The
+<SAMP>`-t'</SAMP> option marks targets as up to date without actually running
+any commands; see <A HREF="make_94.html#SEC98">9.3 Instead of Executing the Commands</A>.)  Following the usual
+definition of <SAMP>`-t'</SAMP>, a <SAMP>`make -t'</SAMP> command in the example would
+create a file named <TT>`subsystem'</TT> and do nothing else.  What you
+really want it to do is run <SAMP>`cd subdir &#38;&#38; make -t'</SAMP>; but that would
+require executing the command, and <SAMP>`-t'</SAMP> says not to execute
+commands.<A NAME="IDX199"></A>
+<A NAME="IDX200"></A>
+<A NAME="IDX201"></A>
+</P><P>
+
+The special feature makes this do what you want: whenever a command
+line of a rule contains the variable <CODE>MAKE</CODE>, the flags <SAMP>`-t'</SAMP>,
+<SAMP>`-n'</SAMP> and <SAMP>`-q'</SAMP> do not apply to that line.  Command lines
+containing <CODE>MAKE</CODE> are executed normally despite the presence of a
+flag that causes most commands not to be run.  The usual
+<CODE>MAKEFLAGS</CODE> mechanism passes the flags to the sub-<CODE>make</CODE>
+(see section <A HREF="make_57.html#SEC61">Communicating Options to a Sub-<CODE>make</CODE></A>), so your request to touch the files, or print the
+commands, is propagated to the subsystem.</P><P>
+
+<A NAME="Variables/Recursion"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_54.html#SEC58"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_56.html#SEC60"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_53.html#SEC57"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_54.html#SEC58"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_59.html#SEC63"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

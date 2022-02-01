@@ -1,0 +1,114 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Attach</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Attach">
+<META NAME="keywords" CONTENT="Debugging with GDB: Attach">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC23"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_22.html#SEC22"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_24.html#SEC24"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_24.html#SEC24"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.7 Debugging an already-running process </H2>
+<!--docid::SEC23::-->
+<P>
+
+<DL COMPACT>
+<DT><CODE>attach <VAR>process-id</VAR></CODE>
+<DD>This command attaches to a running process--one that was started
+outside GDB.  (<CODE>info files</CODE> shows your active
+targets.)  The command takes as argument a process ID.  The usual way to
+find out the process-id of a Unix process is with the <CODE>ps</CODE> utility,
+or with the <SAMP>`jobs -l'</SAMP> shell command.
+<P>
+
+<CODE>attach</CODE> does not repeat if you press <KBD>RET</KBD> a second time after
+executing the command.
+</DL>
+<P>
+
+To use <CODE>attach</CODE>, your program must be running in an environment
+which supports processes; for example, <CODE>attach</CODE> does not work for
+programs on bare-board targets that lack an operating system.  You must
+also have permission to send the process a signal.
+</P><P>
+
+When you use <CODE>attach</CODE>, the debugger finds the program running in
+the process first by looking in the current working directory, then (if
+the program is not found) by using the source file search path
+(see section <A HREF="gdb_49.html#SEC49">Specifying source directories</A>).  You can also use
+the <CODE>file</CODE> command to load the program.  See section <A HREF="gdb_125.html#SEC125">Commands to Specify Files</A>.
+</P><P>
+
+The first thing GDB does after arranging to debug the specified
+process is to stop it.  You can examine and modify an attached process
+with all the GDB commands that are ordinarily available when
+you start processes with <CODE>run</CODE>.  You can insert breakpoints; you
+can step and continue; you can modify storage.  If you would rather the
+process continue running, you may use the <CODE>continue</CODE> command after
+attaching GDB to the process.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX101"></A>
+<DT><CODE>detach</CODE>
+<DD>When you have finished debugging the attached process, you can use the
+<CODE>detach</CODE> command to release it from GDB control.  Detaching
+the process continues its execution.  After the <CODE>detach</CODE> command,
+that process and GDB become completely independent once more, and you
+are ready to <CODE>attach</CODE> another process or start one with <CODE>run</CODE>.
+<CODE>detach</CODE> does not repeat if you press <KBD>RET</KBD> again after
+executing the command.
+</DL>
+<P>
+
+If you exit GDB or use the <CODE>run</CODE> command while you have an
+attached process, you kill that process.  By default, GDB asks
+for confirmation if you try to do either of these things; you can
+control whether or not you need to confirm by using the <CODE>set
+confirm</CODE> command (see section <A HREF="gdb_186.html#SEC186">Optional warnings and messages</A>).
+</P><P>
+
+<A NAME="Kill Process"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_22.html#SEC22"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_24.html#SEC24"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_24.html#SEC24"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

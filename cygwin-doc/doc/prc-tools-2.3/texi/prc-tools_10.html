@@ -1,0 +1,142 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: Initialising A4</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: Initialising A4">
+<META NAME="keywords" CONTENT="Using PRC-Tools: Initialising A4">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC10"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_9.html#SEC9"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_11.html#SEC11"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_11.html#SEC11"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_8.html#SEC8"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.2 Initialising A4 </H2>
+<!--docid::SEC10::-->
+<P>
+
+In the following discussion, we use the term "executable" to refer to
+either an application or a shared library of either type.
+</P><P>
+
+There are two ways a function can be called: either directly, or when its
+address is taken and a call is subsequently made through that pointer.
+An executable can construct a pointer to a function within itself, or to a
+function in a GLib it uses (this will really be a pointer to the relevant
+stub), but not to a SysLib or operating system API function (since you can't
+construct a pointer to a systrap).
+</P><P>
+
+In simple cases, access to globals isn't a major problem:
+</P><P>
+
+<UL>
+<LI>
+When an executable <VAR>E</VAR> calls another function within <VAR>E</VAR>, it's just a
+direct subroutine call, and of course <VAR>E</VAR>'s globals are still available.
+<P>
+
+<LI>
+When an executable <VAR>E</VAR> calls a function in a GLib <VAR>L</VAR>, it calls via a
+stub linked into <VAR>E</VAR> whose job is to set up access to <VAR>L</VAR>'s globals,
+call the function proper, and then restore <VAR>E</VAR>'s globals afterwards.
+Again, the appropriate globals are available.
+<P>
+
+<LI>
+When an executable calls a function in a SysLib, it calls via a system trap,
+which merely finds the library routine and calls it.  Thus, in this case, it
+is the library routine's responsibility to arrange access to its globals.
+<P>
+
+<LI>
+When an executable constructs a pointer to a function, and then <EM>itself</EM>
+calls through that pointer, it's again just a direct subroutine call, so its
+globals are available.
+</UL>
+<P>
+
+However, the situation gets more complex when an executable constructs a
+pointer to a function and then gives it to someone else, perhaps by passing
+it as an argument or by returning it to its caller.  "Someone else" may
+be either another executable or the operating system (so the pointer is a
+"callback function").
+</P><P>
+
+The rules here are:
+</P><P>
+
+<UL>
+<LI>
+Any pointer constructed by an application will work anywhere.
+<P>
+
+<LI>
+A pointer constructed by a shared library to a function within that library
+will work if that function takes steps to initialise its global pointer
+(Note entrypoints.).  Feature and trampoline entrypoints are most suitable.
+<P>
+
+<LI>
+A pointer constructed by a shared library to a function in a separate GLib
+will never work at all,
+because it is impossible to specify a special entrypoint
+sequence for a GLib stub.  Fortunately, this can be worked around by adding
+a function to the other GLib which returns the required function pointer.
+</UL>
+<P>
+
+<A NAME="IDX3"></A>
+<A NAME="IDX4"></A>
+In previous versions of prc-tools, applications also accessed their globals via
+the A4 register, and their function pointers were therefore subject to the
+same restrictions as shared library function pointers.  The appropriate steps
+to initialise the global pointer are much simpler for an application than a
+shared library, and were available via the macros <CODE>CALLBACK_PROLOGUE</CODE>
+and <CODE>CALLBACK_EPILOGUE</CODE>.  This is no longer necessary.  However,
+if you really want to use <SAMP>`-mown-gp'</SAMP> when building an application,
+you can use <CODE>APP_ENTRYPOINT</CODE> as a more convenient equivalent of the
+<CODE>CALLBACK_*</CODE> macros.
+</P><P>
+
+<A NAME="Entry points"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_9.html#SEC9"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_11.html#SEC11"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_11.html#SEC11"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_8.html#SEC8"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

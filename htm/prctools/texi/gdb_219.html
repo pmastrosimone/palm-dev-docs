@@ -1,0 +1,109 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: GDB/MI Simple Examples</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: GDB/MI Simple Examples">
+<META NAME="keywords" CONTENT="Debugging with GDB: GDB/MI Simple Examples">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC220"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_218.html#SEC219"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_220.html#SEC225"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_213.html#SEC213"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_216.html#SEC217"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_220.html#SEC225"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 24.1.3 Simple Examples of GDB/MI Interaction </H3>
+<!--docid::SEC220::-->
+<P>
+
+This subsection presents several simple examples of interaction using
+the GDB/MI interface.  In these examples, <SAMP>`-&#62;'</SAMP> means that the
+following line is passed to GDB/MI as input, while <SAMP>`&#60;-'</SAMP> means
+the output received from GDB/MI.
+</P><P>
+
+<A NAME="SEC221"></A>
+<H4> Target Stop </H4>
+<!--docid::SEC221::-->
+Here's an example of stopping the inferior process:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>-&#62; -stop
+&#60;- (gdb)
+</pre></td></tr></table></P><P>
+
+and later:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>&#60;- *stop,reason="stop",address="0x123",source="a.c:123"
+&#60;- (gdb)
+</pre></td></tr></table></P><P>
+
+<A NAME="SEC222"></A>
+<H4> Simple CLI Command </H4>
+<!--docid::SEC222::-->
+<P>
+
+Here's an example of a simple CLI command being passed through
+GDB/MI and on to the CLI.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>-&#62; print 1+2
+&#60;- &#38;"print 1+2\n"
+&#60;- ~"$1 = 3\n"
+&#60;- ^done
+&#60;- (gdb)
+</pre></td></tr></table></P><P>
+
+<A NAME="SEC223"></A>
+<H4> Command With Side Effects </H4>
+<!--docid::SEC223::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>-&#62; -symbol-file xyz.exe
+&#60;- *breakpoint,nr="3",address="0x123",source="a.c:123"
+&#60;- (gdb)
+</pre></td></tr></table></P><P>
+
+<A NAME="SEC224"></A>
+<H4> A Bad Command </H4>
+<!--docid::SEC224::-->
+<P>
+
+Here's what happens if you pass a non-existent command:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>-&#62; -rubbish
+&#60;- ^error,msg="Undefined MI command: rubbish"
+&#60;- (gdb)
+</pre></td></tr></table></P><P>
+
+<A NAME="GDB/MI Compatibility with CLI"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

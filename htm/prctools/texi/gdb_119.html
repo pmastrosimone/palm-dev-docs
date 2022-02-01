@@ -1,0 +1,109 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Jumping</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Jumping">
+<META NAME="keywords" CONTENT="Debugging with GDB: Jumping">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC119"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_118.html#SEC118"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_120.html#SEC120"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_120.html#SEC120"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_117.html#SEC117"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_124.html#SEC124"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 14.2 Continuing at a different address </H2>
+<!--docid::SEC119::-->
+<P>
+
+Ordinarily, when you continue your program, you do so at the place where
+it stopped, with the <CODE>continue</CODE> command.  You can instead continue at
+an address of your own choosing, with the following commands:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX532"></A>
+<DT><CODE>jump <VAR>linespec</VAR></CODE>
+<DD>Resume execution at line <VAR>linespec</VAR>.  Execution stops again
+immediately if there is a breakpoint there.  See section <A HREF="gdb_47.html#SEC47">Printing source lines</A>, for a description of the different forms of
+<VAR>linespec</VAR>.  It is common practice to use the <CODE>tbreak</CODE> command
+in conjunction with <CODE>jump</CODE>.  See section <A HREF="gdb_29.html#SEC29">Setting breakpoints</A>.
+<P>
+
+The <CODE>jump</CODE> command does not change the current stack frame, or
+the stack pointer, or the contents of any memory location or any
+register other than the program counter.  If line <VAR>linespec</VAR> is in
+a different function from the one currently executing, the results may
+be bizarre if the two functions expect different patterns of arguments or
+of local variables.  For this reason, the <CODE>jump</CODE> command requests
+confirmation if the specified line is not in the function currently
+executing.  However, even bizarre results are predictable if you are
+well acquainted with the machine-language code of your program.
+</P><P>
+
+<DT><CODE>jump *<VAR>address</VAR></CODE>
+<DD>Resume execution at the instruction at address <VAR>address</VAR>.
+</DL>
+<P>
+
+On many systems, you can get much the same effect as the <CODE>jump</CODE>
+command by storing a new value into the register <CODE>$pc</CODE>.  The
+difference is that this does not start your program running; it only
+changes the address of where it <EM>will</EM> run when you continue.  For
+example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>set $pc = 0x485
+</FONT></pre></td></tr></table></P><P>
+
+makes the next <CODE>continue</CODE> command or stepping command execute at
+address <CODE>0x485</CODE>, rather than at the address where your program stopped.
+See section <A HREF="gdb_38.html#SEC38">Continuing and stepping</A>.
+</P><P>
+
+The most common occasion to use the <CODE>jump</CODE> command is to back
+up--perhaps with more breakpoints set--over a portion of a program
+that has already executed, in order to examine its execution in more
+detail.
+</P><P>
+
+<A NAME="Signaling"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_118.html#SEC118"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_120.html#SEC120"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_120.html#SEC120"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_117.html#SEC117"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_124.html#SEC124"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

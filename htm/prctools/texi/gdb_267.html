@@ -1,0 +1,183 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Installing GDB</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Installing GDB">
+<META NAME="keywords" CONTENT="Debugging with GDB: Installing GDB">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC621"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_266.html#SEC620"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_268.html#SEC622"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_271.html#SEC625"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_271.html#SEC625"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H1> B. Installing GDB </H1>
+<!--docid::SEC621::-->
+<P>
+
+GDB comes with a <CODE>configure</CODE> script that automates the process
+of preparing GDB for installation; you can then use <CODE>make</CODE> to
+build the <CODE>gdb</CODE> program.
+</P><P>
+
+The GDB distribution includes all the source code you need for
+GDB in a single directory, whose name is usually composed by
+appending the version number to <SAMP>`gdb'</SAMP>.
+</P><P>
+
+For example, the GDB version 5.3 distribution is in the
+<TT>`gdb-5.3'</TT> directory.  That directory contains:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>gdb-5.3/configure (and supporting files)</CODE>
+<DD>script for configuring GDB and all its supporting libraries
+<P>
+
+<DT><CODE>gdb-5.3/gdb</CODE>
+<DD>the source specific to GDB itself
+<P>
+
+<DT><CODE>gdb-5.3/bfd</CODE>
+<DD>source for the Binary File Descriptor library
+<P>
+
+<DT><CODE>gdb-5.3/include</CODE>
+<DD>GNU include files
+<P>
+
+<DT><CODE>gdb-5.3/libiberty</CODE>
+<DD>source for the <SAMP>`-liberty'</SAMP> free software library
+<P>
+
+<DT><CODE>gdb-5.3/opcodes</CODE>
+<DD>source for the library of opcode tables and disassemblers
+<P>
+
+<DT><CODE>gdb-5.3/readline</CODE>
+<DD>source for the GNU command-line interface
+<P>
+
+<DT><CODE>gdb-5.3/glob</CODE>
+<DD>source for the GNU filename pattern-matching subroutine
+<P>
+
+<DT><CODE>gdb-5.3/mmalloc</CODE>
+<DD>source for the GNU memory-mapped malloc package
+</DL>
+<P>
+
+The simplest way to configure and build GDB is to run <CODE>configure</CODE>
+from the <TT>`gdb-<VAR>version-number</VAR>'</TT> source directory, which in
+this example is the <TT>`gdb-5.3'</TT> directory.
+</P><P>
+
+First switch to the <TT>`gdb-<VAR>version-number</VAR>'</TT> source directory
+if you are not already in it; then run <CODE>configure</CODE>.  Pass the
+identifier for the platform on which GDB will run as an
+argument.
+</P><P>
+
+For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>cd gdb-5.3
+./configure <VAR>host</VAR>
+make
+</FONT></pre></td></tr></table></P><P>
+
+where <VAR>host</VAR> is an identifier such as <SAMP>`sun4'</SAMP> or
+<SAMP>`decstation'</SAMP>, that identifies the platform where GDB will run.
+(You can often leave off <VAR>host</VAR>; <CODE>configure</CODE> tries to guess the
+correct value by examining your system.)
+</P><P>
+
+Running <SAMP>`configure <VAR>host</VAR>'</SAMP> and then running <CODE>make</CODE> builds the
+<TT>`bfd'</TT>, <TT>`readline'</TT>, <TT>`mmalloc'</TT>, and <TT>`libiberty'</TT>
+libraries, then <CODE>gdb</CODE> itself.  The configured source files, and the
+binaries, are left in the corresponding source directories.
+</P><P>
+
+<CODE>configure</CODE> is a Bourne-shell (<CODE>/bin/sh</CODE>) script; if your
+system does not recognize this automatically when you run a different
+shell, you may need to run <CODE>sh</CODE> on it explicitly:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>sh configure <VAR>host</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+If you run <CODE>configure</CODE> from a directory that contains source
+directories for multiple libraries or programs, such as the
+<TT>`gdb-5.3'</TT> source directory for version 5.3, <CODE>configure</CODE>
+creates configuration files for every directory level underneath (unless
+you tell it not to, with the <SAMP>`--norecursion'</SAMP> option).
+</P><P>
+
+You can run the <CODE>configure</CODE> script from any of the
+subordinate directories in the GDB distribution if you only want to
+configure that subdirectory, but be sure to specify a path to it.
+</P><P>
+
+For example, with version 5.3, type the following to configure only
+the <CODE>bfd</CODE> subdirectory:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>cd gdb-5.3/bfd
+../configure <VAR>host</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+You can install <CODE>gdb</CODE> anywhere; it has no hardwired paths.
+However, you should make sure that the shell on your path (named by
+the <SAMP>`SHELL'</SAMP> environment variable) is publicly readable.  Remember
+that GDB uses the shell to start your program--some systems refuse to
+let GDB debug child processes whose programs are not readable.
+</P><P>
+
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_268.html#SEC622">B.1 Compiling GDB in another directory</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_269.html#SEC623">B.2 Specifying names for hosts and targets</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_270.html#SEC624">B.3 <CODE>configure</CODE> options</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Summary of options for configure</TD></TR>
+</TABLE></BLOCKQUOTE>
+<P>
+
+<A NAME="Separate Objdir"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_266.html#SEC620"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_268.html#SEC622"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_271.html#SEC625"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_271.html#SEC625"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

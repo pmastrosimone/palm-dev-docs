@@ -1,0 +1,115 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Syntax of Functions</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Syntax of Functions">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Syntax of Functions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC84"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_81.html#SEC85"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.1 Function Call Syntax </H2>
+<!--docid::SEC84::-->
+<P>
+
+A function call resembles a variable reference.  It looks like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(<VAR>function</VAR> <VAR>arguments</VAR>)
+</pre></td></tr></table></P><P>
+
+or like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>${<VAR>function</VAR> <VAR>arguments</VAR>}
+</pre></td></tr></table></P><P>
+
+Here <VAR>function</VAR> is a function name; one of a short list of names
+that are part of <CODE>make</CODE>.  You can also essentially create your own
+functions by using the <CODE>call</CODE> builtin function.
+</P><P>
+
+The <VAR>arguments</VAR> are the arguments of the function.  They are
+separated from the function name by one or more spaces or tabs, and if
+there is more than one argument, then they are separated by commas.
+Such whitespace and commas are not part of an argument's value.  The
+delimiters which you use to surround the function call, whether
+parentheses or braces, can appear in an argument only in matching pairs;
+the other kind of delimiters may appear singly.  If the arguments
+themselves contain other function calls or variable references, it is
+wisest to use the same kind of delimiters for all the references; write
+<SAMP>`$(subst a,b,$(x))'</SAMP>, not <SAMP>`$(subst a,b,${x})'</SAMP>.  This
+is because it is clearer, and because only one type of delimiter is
+matched to find the end of the reference.
+</P><P>
+
+The text written for each argument is processed by substitution of
+variables and function calls to produce the argument value, which
+is the text on which the function acts.  The substitution is done in the
+order in which the arguments appear.
+</P><P>
+
+Commas and unmatched parentheses or braces cannot appear in the text of an
+argument as written; leading spaces cannot appear in the text of the first
+argument as written.  These characters can be put into the argument value
+by variable substitution.  First define variables <CODE>comma</CODE> and
+<CODE>space</CODE> whose values are isolated comma and space characters, then
+substitute these variables where such characters are wanted, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>comma:= ,
+empty:=
+space:= $(empty) $(empty)
+foo:= a b c
+bar:= $(subst $(space),$(comma),$(foo))
+# bar is now `a,b,c'.
+</pre></td></tr></table></P><P>
+
+Here the <CODE>subst</CODE> function replaces each space with a comma, through
+the value of <CODE>foo</CODE>, and substitutes the result.
+</P><P>
+
+<A NAME="Text Functions"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_81.html#SEC85"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

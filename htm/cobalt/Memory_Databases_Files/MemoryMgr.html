@@ -1,0 +1,2341 @@
+<html>
+<head>
+<title>(Protein) Memory Manager | Memory, Databases, and Files</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:15:55">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="992934"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="MDF_TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FileStream.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SchemaDatabases.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="MDF_IX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">6 &nbsp;&nbsp;
+Memory Manager</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Memory, Databases, and Files</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="MDF_Part2.html">Part II: Reference</a> </h1>
+<h1 class="SideTOC1"><a href="MemoryMgr.html">6  Memory Manager</a></h1>
+
+   <h2 class="SideTOC2"><a href="#992942">
+   Memory Manager Structures and Types</a></h2>
+
+      <h3 class="SideTOC3"><a href="#992950">
+      LocalID</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993000">
+      MemHeapInfoType</a></h3>
+
+   <h2 class="SideTOC2"><a href="#1030204">
+   Memory Manager Constants</a></h2>
+
+      <h3 class="SideTOC3"><a href="#1030206">
+      Debug Mode Flags</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1032618">
+      Dynamic Heap Options</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1036441">
+      Heap Flags</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1052232">
+      Memory Manager Error Codes</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993592">
+      LocalIDKind</a></h3>
+
+   <h2 class="SideTOC2"><a href="#993623">
+   Memory Manager Functions and Macros</a></h2>
+
+      <h3 class="SideTOC3"><a href="#993802">
+      MemCmp</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993852">
+      MemDebugMode</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993927">
+      MemDynHeapGetInfo</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993993">
+      MemDynHeapOption</a></h3>
+
+      <h3 class="SideTOC3"><a href="#994039">
+      MemDynHeapReleaseUnused</a></h3>
+
+      <h3 class="SideTOC3"><a href="#994147">
+      MemHandleDataStorage</a></h3>
+
+      <h3 class="SideTOC3"><a href="#994259">
+      MemHandleFree</a></h3>
+
+      <h3 class="SideTOC3"><a href="#994325">
+      MemHandleHeapID</a></h3>
+
+      <h3 class="SideTOC3"><a href="#994367">
+      MemHandleLock</a></h3>
+
+      <h3 class="SideTOC3"><a href="#994503">
+      MemHandleNew</a></h3>
+
+      <h3 class="SideTOC3"><a href="#994681">
+      MemHandleResize</a></h3>
+
+      <h3 class="SideTOC3"><a href="#994727">
+      MemHandleSetOwner</a></h3>
+
+      <h3 class="SideTOC3"><a href="#994825">
+      MemHandleSize</a></h3>
+
+      <h3 class="SideTOC3"><a href="#994867">
+      MemHandleUnlock</a></h3>
+
+      <h3 class="SideTOC3"><a href="#994909">
+      MemHeapCheck</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995147">
+      MemHeapCompact</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995189">
+      MemHeapDynamic</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995259">
+      MemHeapFlags</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995371">
+      MemHeapFreeBytes</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995473">
+      MemHeapID</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995515">
+      MemHeapScramble</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995592">
+      MemHeapSize</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995658">
+      MemMove</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995736">
+      MemNumHeaps</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995800">
+      MemNumRAMHeaps</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995840">
+      MemPtrDataStorage</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995928">
+      MemPtrFree</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995970">
+      MemPtrHeapID</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996040">
+      MemPtrNew</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996148">
+      MemPtrRealloc</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996215">
+      MemPtrRecoverHandle</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996299">
+      MemPtrResize</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996617">
+      MemPtrSetOwner</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996663">
+      MemPtrSize</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996977">
+      MemPtrUnlock</a></h3>
+
+      <h3 class="SideTOC3"><a href="#997019">
+      MemSet</a></h3>
+
+      <h3 class="SideTOC3"><a href="#997073">
+      MemSetDebugMode</a></h3>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="1053986"> </a>This chapter describes the Memory Manager APIs. You use these APIs to manipulate memory chunks and memory heaps within Palm OS<sup>&#174;</sup>. </p>
+
+<p><a name="1077713"> </a>Note that many of the APIs provided by the Memory Manager exist to simplify the process of porting an application from an earlier version of Palm OS. Palm OS Cobalt applications can make use of the standard C memory management functions&#8212;functions such as <code>malloc()</code>, <code>realloc()</code>, and <code>free()</code>&#8212;instead.</p>
+
+<p><a name="1054152"> </a>This chapter is organized as follows:</p>
+   <blockquote class = "bq"><a name="992948"> </a><a href="MemoryMgr.html#992942">Memory Manager Structures and Types</a></blockquote>
+   <blockquote class = "bq"><a name="993378"> </a><a href="MemoryMgr.html#1030204">Memory Manager Constants</a></blockquote>
+   <blockquote class = "bq"><a name="993629"> </a><a href="MemoryMgr.html#993623">Memory Manager Functions and Macros</a></blockquote>
+
+<p><a name="992938"> </a>The header file <code>MemoryMgr.h</code> declares the API that this chapter describes.</p>
+
+<p><a name="1061039"> </a>For more information on the Memory Manager, see <a href="Memory.html#608590">Chapter 1, "Memory."</a></p>
+
+<h2 class="haH2">
+  <a name="992942"> </a>Memory Manager Structures and Types <a href="#992934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<h3 class="hbH3">
+  <a name="992950"> </a>LocalID Typedef <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="992955"> </a>Purpose 
+</h4>
+
+<p><a name="992958"> </a>Chunk identifier.</p>
+<h4>
+  <a name="992960"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="992963"> </a></code><h4>
+  <a name="992965"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="992968"></a>typedef uint32_t LocalID
+</pre>
+
+<h3 class="hbH3">
+  <a name="993000"> </a>MemHeapInfoType Struct <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="993005"> </a>Purpose 
+</h4>
+
+<p><a name="993008"> </a>Contains information about a dynamic heap.</p>
+<h4>
+  <a name="993010"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="993023"> </a></code><h4>
+  <a name="993043"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="993080"></a>typedef struct MemHeapInfoType {
+   uint32_t maxBlockSize;
+   uint32_t defaultAlignment;
+   void *basePtr;
+   uint32_t maxSize;
+   uint32_t physMem;
+   uint32_t physMemUsed;
+   uint32_t physMemUnused;
+   uint32_t chunksNum;
+   uint32_t memAllocated;
+   uint32_t chunksFree;
+   uint32_t freeSpace;
+   uint32_t freeBytes;
+   uint32_t largestBlock;
+   uint32_t largestCommitted;
+   uint32_t statMaxAllocated;
+} MemHeapInfoType
+</pre>
+<pre class="proto"><a name="1053935"></a>typedef MemHeapInfoType *MemHeapInfoPtr
+</pre>
+<h4>
+  <a name="993140"> </a>Fields 
+</h4>
+
+<dl>
+<dt><a name="993183"> </a><code>maxBlockSize</code></dt>
+<dd><a name="1030152"> </a>The size of the largest chunk that could be potentially allocated.</dd>
+
+<dt><a name="993267"> </a><code>defaultAlignment</code></dt>
+<dd><a name="1030142"> </a>The default alignment of memory chunks.</dd>
+
+<dt><a name="993311"> </a><code>basePtr</code></dt>
+<dd><a name="1028181"> </a>The base address of the dynamic heap.</dd>
+
+<dt><a name="993315"> </a><code>maxSize</code></dt>
+<dd><a name="1028143"> </a>The amount of virtual address space reserved for the heap.</dd>
+
+<dt><a name="993319"> </a><code>physMem</code></dt>
+<dd><a name="1028109"> </a>The amount of physical memory that could be used to extend the pool of memory chunks.</dd>
+
+<dt><a name="993323"> </a><code>physMemUsed</code></dt>
+<dd><a name="1028071"> </a>The amount of physical memory being used by the dynamic heap.</dd>
+
+<dt><a name="993327"> </a><code>physMemUnused</code></dt>
+<dd><a name="1028045"> </a>The amount of physical memory that could be returned to the operating system.</dd>
+
+<dt><a name="993331"> </a><code>chunksNum</code></dt>
+<dd><a name="1027983"> </a>The number of chunks allocated from the heap.</dd>
+
+<dt><a name="993339"> </a><code>memAllocated</code></dt>
+<dd><a name="1027961"> </a>The amount of memory used by chunks that are not free.</dd>
+
+<dt><a name="993343"> </a><code>chunksFree</code></dt>
+<dd><a name="993345"> </a>The number of chunks in the dynamic heap that are free.</dd>
+
+<dt><a name="993347"> </a><code>freeSpace</code></dt>
+<dd><a name="1027925"> </a>The amount of uncommitted virtual address space reserved for chunks.</dd>
+
+<dt><a name="993351"> </a><code>freeBytes</code></dt>
+<dd><a name="1027907"> </a>The total number of bytes that could potentially be used to allocate chunks.</dd>
+
+<dt><a name="993355"> </a><code>largestBlock</code></dt>
+<dd><a name="993357"> </a>The size of the largest memory block that could be allocated from the dynamic heap.</dd>
+
+<dt><a name="993359"> </a><code>largestCommitted</code></dt>
+<dd><a name="1027760"> </a>the size of the largest memory block that could be allocated from the dynamic heap without using additional kernel memory.</dd>
+
+<dt><a name="1027807"> </a><code>statMaxAllocated</code></dt>
+</dl>
+<h4>
+  <a name="1030201"> </a>Comments 
+</h4>
+
+<p><a name="1030202"> </a>Use <a href="MemoryMgr.html#993927"><code>MemDynHeapGetInfo()</code></a> to obtain this information.</p>
+
+<h2 class="haH2">
+  <a name="1030204"> </a>Memory Manager Constants <a href="#992934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<h3 class="hbH3">
+  <a name="1030206"> </a>Debug Mode Flags <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="999030"> </a>Purpose 
+</h4>
+
+<p><a name="1001365"> </a>These flags indicate or specify the current debug mode for the instance of the Heap Manager local to the calling process.</p>
+<h4>
+  <a name="999076"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="999195"> </a></code><h4>
+  <a name="999210"> </a>Constants 
+</h4>
+
+<dl>
+<dt><a name="1001162"> </a><code>#define memDebugModeAllHeaps 0x0020</code></dt>
+<dd><a name="1001629"> </a>Obsolete flag. Provided for compatibility purposes only.</dd>
+
+<dt><a name="1001164"> </a><code>#define memDebugModeCheckOnAll 0x0002</code></dt>
+<dd><a name="1001165"> </a></dd>
+
+<dt><a name="1001166"> </a><code>#define memDebugModeCheckOnChange 0x0001</code></dt>
+<dd><a name="1001167"> </a></dd>
+
+<dt><a name="1001168"> </a><code>#define memDebugModeFillFree 0x0010</code></dt>
+<dd><a name="1002038"> </a>When a memory chunk is freed (with either <a href="MemoryMgr.html#995928"><code>MemPtrFree()</code></a> or <a href="MemoryMgr.html#994259"><code>MemHandleFree()</code></a>), unused memory will be filled with a default value (currently, <code>0x55</code>). Note that only memory that is accessible will be filled: the first 32 bits of free chunk data are reserved for internal use and will never be filled.</dd>
+
+<dt><a name="1001170"> </a><code>#define memDebugModeNoDMCall 0x0200</code></dt>
+<dd><a name="1001171"> </a>Force the heap library to report all calls that it delegates to the Data Manager. This flag helps you to track down Memory Manager calls that operate on the storage heap&#8212;calls that should be changed to reference the corresponding Data Manager functions.</dd>
+
+<dt><a name="1001172"> </a><code>#define memDebugModeRecordMaxDynHeapUsed memDebugModeRecordMinDynHeapFree</code></dt>
+<dd><a name="1001450"> </a>Records the maximum amount of memory used by the dynamic heap during its lifetime.</dd>
+
+<dt><a name="1001174"> </a><code>#define memDebugModeRecordMinDynHeapFree 0x0040</code></dt>
+<dd><a name="1001175"> </a>Records the maximum amount of memory used by the dynamic heap during its lifetime.</dd>
+
+<dt><a name="1001176"> </a><code>#define memDebugModeScrambleOnAll 0x0008</code></dt>
+<dd><a name="1001177"> </a>Obsolete flag. Provided for compatibility purposes only.</dd>
+
+<dt><a name="1001178"> </a><code>#define memDebugModeScrambleOnChange 0x0004</code></dt>
+<dd><a name="1001625"> </a>Obsolete flag. Provided for compatibility purposes only.</dd>
+
+<dt><a name="1001180"> </a><code>#define memDebugModeValidateParams 0x0100</code></dt>
+<dd><a name="1001181"> </a>Force the heap library to thoroughly validate all parameters passed to the Memory Manager and Heap Manager functions. This validation includes pointers and memory chunk handles, so, for example, an attempt to resize a bad pointer can be detected.</dd>
+
+</dl>
+<h4>
+  <a name="999213"> </a>Comments 
+</h4>
+
+<p><a name="1001412"> </a>Use <a href="MemoryMgr.html#993852"><code>MemDebugMode()</code></a> to obtain the current debug mode for the instance of the Heap Manager local to the calling process. Use <a href="MemoryMgr.html#997073"><code>MemSetDebugMode()</code></a> to change the current debug mode.</p>
+
+<h3 class="hbH3">
+  <a name="1032618"> </a>Dynamic Heap Options <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="1032619"> </a>Purpose 
+</h4>
+
+<p><a name="1032622"> </a>Pass these constants to <a href="MemoryMgr.html#993993"><code>MemDynHeapOption()</code></a> to get or set various dynamic heap parameters at run time.</p>
+<h4>
+  <a name="1032630"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="1032681"> </a></code><h4>
+  <a name="1032695"> </a>Constants 
+</h4>
+
+<dl>
+<dt><a name="1032754"> </a><code>#define memOptGetAbsMaxMemUsage 2</code></dt>
+<dd><a name="1033056"> </a>Retrieve the maximum amount of physical memory the dynamic heap is allowed to use.</dd>
+
+<dt><a name="1032756"> </a><code>#define memOptGetAbsMinMemUsage 4</code></dt>
+<dd><a name="1082443"> </a>This option is not supported in Palm OS Cobalt.</dd>
+
+<dt><a name="1032758"> </a><code>#define memOptGetForceMemReleaseThreshold 8</code></dt>
+<dd><a name="1077706"> </a>Retrieve the memory usage watermark above which all unused memory will be immediately released back to the operating system. </dd>
+
+<dt><a name="1032760"> </a><code>#define memOptGetMaxUnusedMem 6</code></dt>
+<dd><a name="1086112"> </a>This option is not supported in Palm OS Cobalt.</dd>
+
+<dt><a name="1032762"> </a><code>#define memOptSetAbsMaxMemUsage 1</code></dt>
+<dd><a name="1033023"> </a>Specify the maximum amount of physical memory the dynamic heap is allowed to use.</dd>
+
+<dt><a name="1032764"> </a><code>#define memOptSetAbsMinMemUsage 3</code></dt>
+<dd><a name="1086119"> </a>This option is not supported in Palm OS Cobalt.</dd>
+
+<dt><a name="1032766"> </a><code>#define memOptSetForceMemReleaseThreshold 7</code></dt>
+<dd><a name="1077628"> </a>Specify the memory usage watermark above which all unused memory will be immediately released back to the operating system. The default value is the size of the heap, so this feature is off by default.</dd>
+
+<dt><a name="1032768"> </a><code>#define memOptSetMaxUnusedMem 5</code></dt>
+<dd><a name="1086167"> </a>This option is not supported in Palm OS Cobalt.</dd>
+
+</dl>
+
+<h3 class="hbH3">
+  <a name="1036441"> </a>Heap Flags <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="1036442"> </a>Purpose 
+</h4>
+
+<p><a name="1036445"> </a>The set of flags that can be obtained for a heap using <a href="MemoryMgr.html#995259"><code>MemHeapFlags()</code></a>.</p>
+<h4>
+  <a name="1036446"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="1036449"> </a></code><h4>
+  <a name="1036454"> </a>Constants 
+</h4>
+
+<dl>
+<dt><a name="1036511"> </a><code>#define memHeapFlagReadOnly memHeapFlagROMBased</code></dt>
+<dd><a name="1036512"> </a>The heap is read-only; it cannot be written to.</dd>
+
+<dt><a name="1036513"> </a><code>#define memHeapFlagROMBased 0x0001</code></dt>
+<dd><a name="1036514"> </a>The heap is located in ROM.</dd>
+
+<dt><a name="1036515"> </a><code>#define memHeapFlagWritable 0x0002</code></dt>
+<dd><a name="1036516"> </a>The heap can be written to.</dd>
+
+</dl>
+
+<h3 class="hbH3">
+  <a name="1052232"> </a>Memory Manager Error Codes <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="1052365"> </a>Purpose 
+</h4>
+
+<p><a name="1052494"> </a>Error codes returned by the various Memory Manager functions.</p>
+<h4>
+  <a name="1052577"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="1052622"> </a></code><h4>
+  <a name="1052661"> </a>Constants 
+</h4>
+
+<dl>
+<dt><a name="1052873"> </a><code>#define memErrAlreadyInitialized (memErrorClass | 13)</code></dt>
+<dd><a name="1052874"> </a></dd>
+
+<dt><a name="1052875"> </a><code>#define memErrCardNotPresent (memErrorClass | 5)</code></dt>
+<dd><a name="1052876"> </a></dd>
+
+<dt><a name="1052877"> </a><code>#define memErrChunkLocked (memErrorClass | 1)</code></dt>
+<dd><a name="1052878"> </a></dd>
+
+<dt><a name="1052879"> </a><code>#define memErrChunkNotLocked (memErrorClass | 4)</code></dt>
+<dd><a name="1052880"> </a></dd>
+
+<dt><a name="1052881"> </a><code>#define memErrEndOfHeapReached (memErrorClass | 15)</code></dt>
+<dd><a name="1052882"> </a></dd>
+
+<dt><a name="1052883"> </a><code>#define memErrFirst memErrChunkLocked</code></dt>
+<dd><a name="1052884"> </a></dd>
+
+<dt><a name="1052885"> </a><code>#define memErrHeapInvalid (memErrorClass | 14)</code></dt>
+<dd><a name="1052886"> </a></dd>
+
+<dt><a name="1052887"> </a><code>#define memErrInvalidParam (memErrorClass | 3)</code></dt>
+<dd><a name="1052888"> </a></dd>
+
+<dt><a name="1052889"> </a><code>#define memErrInvalidStoreHeader (memErrorClass | 7)</code></dt>
+<dd><a name="1052890"> </a></dd>
+
+<dt><a name="1052891"> </a><code>#define memErrLast memErrEndOfHeapReached</code></dt>
+<dd><a name="1052892"> </a></dd>
+
+<dt><a name="1052893"> </a><code>#define memErrNoCardHeader (memErrorClass | 6)</code></dt>
+<dd><a name="1052894"> </a></dd>
+
+<dt><a name="1052895"> </a><code>#define memErrNoRAMOnDevice (memErrorClass | 10)</code></dt>
+<dd><a name="1052896"> </a></dd>
+
+<dt><a name="1052897"> </a><code>#define memErrNoStore (memErrorClass | 11)</code></dt>
+<dd><a name="1052898"> </a></dd>
+
+<dt><a name="1052899"> </a><code>#define memErrNotEnoughSpace (memErrorClass | 2)</code></dt>
+<dd><a name="1052900"> </a></dd>
+
+<dt><a name="1052901"> </a><code>#define memErrRAMOnlyDevice (memErrorClass | 8)</code></dt>
+<dd><a name="1052902"> </a></dd>
+
+<dt><a name="1052903"> </a><code>#define memErrROMOnlyDevice (memErrorClass | 12)</code></dt>
+<dd><a name="1052904"> </a></dd>
+
+<dt><a name="1052905"> </a><code>#define memErrWriteProtect (memErrorClass | 9)</code></dt>
+<dd><a name="1052906"> </a></dd>
+
+</dl>
+
+<h3 class="hbH3">
+  <a name="993592"> </a>LocalIDKind Enum <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="993597"> </a>Purpose 
+</h4>
+
+<p><a name="993600"> </a></p>
+<h4>
+  <a name="993602"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="993605"> </a></code><h4>
+  <a name="993607"> </a>Constants 
+</h4>
+
+<dl>
+<dt><a name="993610"> </a><code>memIDPtr</code></dt>
+<dd><a name="993612"> </a></dd>
+
+<dt><a name="993614"> </a><code>memIDHandle</code></dt>
+<dd><a name="993616"> </a></dd>
+
+</dl>
+
+<h2 class="haH2">
+  <a name="993623"> </a>Memory Manager Functions and Macros <a href="#992934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<h3 class="hbH3">
+  <a name="993802"> </a>MemCmp Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="993807"> </a>Purpose 
+</h4>
+
+<p><a name="993810"> </a>Compare two blocks of memory.</p>
+<h4>
+  <a name="993812"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="993815"> </a></code><h4>
+  <a name="993817"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="993820"></a>int16_t MemCmp (
+   const void <code class="par">*s1</code>,
+   const void <code class="par">*s2</code>,
+   int32_t <code class="par">numBytes</code>
+)
+</pre>
+<h4>
+  <a name="993822"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="993825"> </a><code>&rarr;  <i>s1</i></code></dt>
+<dd><a name="993827"> </a>Pointer to the first block of memory to be compared.</dd>
+
+<dt><a name="993829"> </a><code>&rarr;  <i>s2</i></code></dt>
+<dd><a name="993831"> </a>Pointer to the second block of memory to be compared.</dd>
+
+<dt><a name="993833"> </a><code>&rarr;  <i>numBytes</i></code></dt>
+<dd><a name="993835"> </a>Number of bytes to compare.</dd>
+
+</dl>
+<h4>
+  <a name="993837"> </a>Returns 
+</h4>
+
+<p><a name="993840"> </a>Returns zero if the two blocks of memory match, a positive value if s1 &gt; s2, and a negative value if s1 &lt; s2.</p>
+<h4>
+  <a name="993842"> </a>Comments 
+</h4>
+
+<p><a name="993845"> </a>The two memory blocks are compared as a set of unsigned bytes.</p>
+
+<h3 class="hbH3">
+  <a name="993852"> </a>MemDebugMode Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="993857"> </a>Purpose 
+</h4>
+
+<p><a name="993860"> </a>Obtain the current debug mode for the instance of the Heap Manager local to the calling process.</p>
+<h4>
+  <a name="993862"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="993865"> </a></code><h4>
+  <a name="993867"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="993870"></a>uint16_t MemDebugMode (
+   void
+)
+</pre>
+<h4>
+  <a name="993872"> </a>Parameters 
+</h4>
+
+<p><a name="993875"> </a>None.</p>
+<h4>
+  <a name="993877"> </a>Returns 
+</h4>
+
+<p><a name="993880"> </a>Returns a set of debug flags. See <a href="MemoryMgr.html#1030206">"Debug Mode Flags"</a> for the set of flags that this function can return.</p>
+<h4>
+  <a name="993893"> </a>See Also 
+</h4>
+
+<p><a name="993903"> </a><a href="MemoryMgr.html#997073"><code>MemSetDebugMode()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="993927"> </a>MemDynHeapGetInfo Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="993956"> </a>Purpose 
+</h4>
+
+<p><a name="993959"> </a>Retrieve information about a dynamic heap.</p>
+<h4>
+  <a name="993961"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="993964"> </a></code><h4>
+  <a name="993966"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="993969"></a>status_t MemDynHeapGetInfo (
+   MemHeapInfoType <code class="par">*oInfo</code>
+)
+</pre>
+<h4>
+  <a name="993971"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="993974"> </a><code>&larr;  <i>oInfo</i></code></dt>
+<dd><a name="1024827"> </a>Pointer to a structure that gets filled with information about the dynamic heap. See <a href="MemoryMgr.html#993000">"MemHeapInfoType."</a></dd>
+
+</dl>
+<h4>
+  <a name="993978"> </a>Returns 
+</h4>
+
+<p><a name="993981"> </a>Always returns <code>errNone</code>.</p>
+<h4>
+  <a name="1025057"> </a>Comments 
+</h4>
+
+<p><a name="1025061"> </a>Your application must supply a <a href="MemoryMgr.html#993000"><code>MemHeapInfoType</code></a> structure to this function. Upon return, the structure contains the following information:</p>
+<ul type="disc">
+  <li><a name="1025065"> </a>The size of the largest chunk that could be potentially allocated.
+  <li><a name="1025665"> </a>The default alignment of memory chunks.
+  <li><a name="1025754"> </a>The base address of the dynamic heap.
+  <li><a name="1025835"> </a>The amount of virtual address space reserved for the heap
+  <li><a name="1025908"> </a>The amount of physical memory that could be used to extend the pool of memory chunks.
+  <li><a name="1025909"> </a>The amount of physical memory being used by the dynamic heap, and the amount that could be returned to the operating system.
+  <li><a name="1025929"> </a>The number of chunks allocated from the heap, and the number of chunks in the heap that are free.
+  <li><a name="1025970"> </a>The amount of memory used by chunks that are not free.
+  <li><a name="1025983"> </a>The amount of uncommitted virtual address space reserved for chunks.
+  <li><a name="1025988"> </a>The total number of bytes that could potentially be used to allocate chunks.
+  <li><a name="1025989"> </a>The size of the largest memory block that could be allocated from the dynamic heap, and the size of the largest memory block that could be allocated from the dynamic heap without using additional kernel memory.
+</ul>
+<h4>
+  <a name="1025062"> </a>See Also 
+</h4>
+
+<p><a name="993991"> </a><a href="MemoryMgr.html#993993"><code>MemDynHeapOption()</code></a>, <a href="MemoryMgr.html#994039"><code>MemDynHeapReleaseUnused()</code></a>, <a href="MemoryMgr.html#995189"><code>MemHeapDynamic()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="993993"> </a>MemDynHeapOption Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="993998"> </a>Purpose 
+</h4>
+
+<p><a name="994001"> </a>Allow the fine-tuning of various dynamic heap parameters at run time.</p>
+<h4>
+  <a name="994003"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="994006"> </a></code><h4>
+  <a name="994008"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="994011"></a>uint32_t MemDynHeapOption (
+   uint32_t <code class="par">cmd</code>,
+   uint32_t <code class="par">value</code>
+)
+</pre>
+<h4>
+  <a name="994013"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="994016"> </a><code>&rarr;  <i>cmd</i></code></dt>
+<dd><a name="994018"> </a>One of the commands listed under <a href="MemoryMgr.html#1032618">"Dynamic Heap Options."</a></dd>
+
+<dt><a name="994020"> </a><code>&rarr;  <i>value</i></code></dt>
+<dd><a name="994022"> </a>The value associated with the command, when using one of the option-setting commands. Ignored otherwise.</dd>
+
+</dl>
+<h4>
+  <a name="994024"> </a>Returns 
+</h4>
+
+<p><a name="994027"> </a>Returns the current effective value of the specified dynamic heap option.</p>
+<h4>
+  <a name="994034"> </a>See Also 
+</h4>
+
+<p><a name="994037"> </a><a href="MemoryMgr.html#993927"><code>MemDynHeapGetInfo()</code></a>, <a href="MemoryMgr.html#995189"><code>MemHeapDynamic()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="994039"> </a>MemDynHeapReleaseUnused Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="994048"> </a>Purpose 
+</h4>
+
+<p><a name="1033489"> </a>Force the dynamic heap to release as much memory as it can back to the operating system.</p>
+<h4>
+  <a name="994061"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="994072"> </a></code><h4>
+  <a name="994082"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="994093"></a>void MemDynHeapReleaseUnused (
+   void
+)
+</pre>
+<h4>
+  <a name="994103"> </a>Parameters 
+</h4>
+
+<p><a name="994114"> </a>None.</p>
+<h4>
+  <a name="994124"> </a>Returns 
+</h4>
+
+<p><a name="994135"> </a>Nothing.</p>
+<h4>
+  <a name="1034272"> </a>Comments 
+</h4>
+
+<p><a name="1034457"> </a>The Heap Manager releases unused memory in page quantities. Any page in the address range controlled by the heap that does not contain allocated memory chunks or internal heap control structures could potentially be released back to the operating system. Applications should not assume that all pages occupied by the heap are always accessible; never attempt to access, for example, the area occupied by a chunk that was freed.</p>
+<h4>
+  <a name="994142"> </a>See Also 
+</h4>
+
+<p><a name="994145"> </a><a href="MemoryMgr.html#995189"><code>MemHeapDynamic()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="994147"> </a>MemHandleDataStorage Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="994152"> </a>Purpose 
+</h4>
+
+<p><a name="1011767"> </a>Determine whether or not a chunk is located in a storage heap.</p>
+<h4>
+  <a name="994157"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="994160"> </a></code><h4>
+  <a name="994162"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="994165"></a>Boolean MemHandleDataStorage (
+   MemHandle <code class="par">h</code>
+)
+</pre>
+<h4>
+  <a name="994167"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="994170"> </a><code>&rarr;  <i>h</i></code></dt>
+<dd><a name="994172"> </a>Chunk handle.</dd>
+
+</dl>
+<h4>
+  <a name="994174"> </a>Returns 
+</h4>
+
+<p><a name="1011776"> </a>Returns <code>true</code> if the specified chunk belongs to the storage area.</p>
+<h4>
+  <a name="994184"> </a>See Also 
+</h4>
+
+<p><a name="994187"> </a><a href="MemoryMgr.html#995840"><code>MemPtrDataStorage()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="994259"> </a>MemHandleFree Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="994288"> </a>Purpose 
+</h4>
+
+<p><a name="1048244"> </a>Dispose of a memory chunk given its handle.</p>
+<h4>
+  <a name="994293"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="994296"> </a></code><h4>
+  <a name="994298"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="994301"></a>status_t MemHandleFree (
+   MemHandle <code class="par">h</code>
+)
+</pre>
+<h4>
+  <a name="994303"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="994306"> </a><code>&rarr;  <i>h</i></code></dt>
+<dd><a name="994308"> </a>Chunk handle.</dd>
+
+</dl>
+<h4>
+  <a name="994310"> </a>Returns 
+</h4>
+
+<p><a name="1048255"> </a>Returns <code>errNone</code> if no error occurred. Returns <code>memErrInvalidParam</code> if the chunk could not, or should not, be freed.</p>
+<h4>
+  <a name="1048256"> </a>Comments 
+</h4>
+
+<p><a name="1048257"> </a>If the <code>memDebugModeFillFree</code> flag is set, the unused memory will be filled with a default value (currently, <code>0x55</code>).</p>
+
+<p><a name="1048258"> </a>If the supplied pointer indicates a chunk in a storage heap, the request is forwarded to the Data Manager. </p>
+
+<div><hr>
+  <a name="1095618"> </a> <b>NOTE: </b> The Palm OS Cobalt Memory Manager uses virtual pages to hold handle tables, and they may not be returned to the kernel even if the chunks referenced by those handles are freed. In addition, the threshold of free memory that a heap can keep without returning the memory to the kernel impacts the amount of free memory reported after certain allocation and de-allocation operations. Because of this, if you allocate handles and pointers and then free them, the amount of memory reported as available after the series of operations may not be the same as that reported before.
+<hr>
+</div>
+<h4>
+  <a name="994320"> </a>See Also 
+</h4>
+
+<p><a name="994323"> </a><a href="MemoryMgr.html#993852"><code>MemDebugMode()</code></a>, <a href="MemoryMgr.html#995928"><code>MemPtrFree()</code></a>, <a href="MemoryMgr.html#994503"><code>MemHandleNew()</code></a>, <a href="DataMgr.html#1000993"><code>DmHandleFree()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="994325"> </a>MemHandleHeapID Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="994330"> </a>Purpose 
+</h4>
+
+<p><a name="1038299"> </a>Get the ID of the heap that contains a given memory chunk referenced by its handle.</p>
+<h4>
+  <a name="994335"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="994338"> </a></code><h4>
+  <a name="994340"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="994343"></a>uint16_t MemHandleHeapID (
+   MemHandle <code class="par">h</code>
+)
+</pre>
+<h4>
+  <a name="994345"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="994348"> </a><code>&rarr;  <i>h</i></code></dt>
+<dd><a name="994350"> </a>Chunk handle.</dd>
+
+</dl>
+<h4>
+  <a name="994352"> </a>Returns 
+</h4>
+
+<p><a name="1038307"> </a>Returns the ID of the heap containing the specified memory chunk, or <code>0xFFFF</code> if the specified pointer does not match any heap.</p>
+<h4>
+  <a name="994362"> </a>See Also 
+</h4>
+
+<p><a name="994365"> </a><a href="MemoryMgr.html#995473"><code>MemHeapID()</code></a>, <a href="MemoryMgr.html#995970"><code>MemPtrHeapID()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="994367"> </a>MemHandleLock Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="994372"> </a>Purpose 
+</h4>
+
+<p><a name="994375"> </a>Lock a chunk and obtain a pointer to the chunk's data.</p>
+<h4>
+  <a name="994377"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="994380"> </a></code><h4>
+  <a name="994382"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="994385"></a>MemPtr MemHandleLock (
+   MemHandle <code class="par">h</code>
+)
+</pre>
+<h4>
+  <a name="994387"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="994390"> </a><code>&rarr;  <i>h</i></code></dt>
+<dd><a name="994392"> </a>Chunk handle.</dd>
+
+</dl>
+<h4>
+  <a name="994394"> </a>Returns 
+</h4>
+
+<p><a name="994397"> </a>Returns a pointer to the chunk's data, or <code>NULL</code> if an error.</p>
+<h4>
+  <a name="994399"> </a>Comments 
+</h4>
+
+<p><a name="1009234"> </a>A <code>NULL</code> handle can safely be passed to this function; <code>NULL</code> will be returned.</p>
+
+<p><a name="1009516"> </a>If the supplied handle indicates a chunk in a storage heap, the request is forwarded to the Data Manager. </p>
+<h4>
+  <a name="994404"> </a>See Also 
+</h4>
+
+<p><a name="994413"> </a><a href="MemoryMgr.html#994867"><code>MemHandleUnlock()</code></a>, <a href="DataMgr.html#1001035"><code>DmHandleLock()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="994503"> </a>MemHandleNew Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="994508"> </a>Purpose 
+</h4>
+
+<p><a name="994511"> </a>Allocate a new movable chunk in the dynamic heap.</p>
+<h4>
+  <a name="994513"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="994516"> </a></code><h4>
+  <a name="994518"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="994521"></a>MemHandle MemHandleNew (
+   uint32_t <code class="par">size</code>
+)
+</pre>
+<h4>
+  <a name="994523"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="994526"> </a><code>&rarr;  <i>size</i></code></dt>
+<dd><a name="994528"> </a>Size, in bytes, of the memory chunk to allocate.</dd>
+
+</dl>
+<h4>
+  <a name="994530"> </a>Returns 
+</h4>
+
+<p><a name="994533"> </a>Returns the handle of the chunk, or <code>NULL</code> if the chunk couldn't be allocated.</p>
+<h4>
+  <a name="994535"> </a>Comments 
+</h4>
+
+<p><a name="1007169"> </a>The handle returned by this function should not be interpreted by the application in any way. Memory handles should be used only in conjunction with the appropriate APIs.</p>
+<h4>
+  <a name="994540"> </a>See Also 
+</h4>
+
+<p><a name="994543"> </a><a href="MemoryMgr.html#994259"><code>MemHandleFree()</code></a>, <a href="MemoryMgr.html#996040"><code>MemPtrNew()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="994681"> </a>MemHandleResize Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="994686"> </a>Purpose 
+</h4>
+
+<p><a name="994689"> </a>Resize a chunk referenced by a handle.</p>
+<h4>
+  <a name="994691"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="994694"> </a></code><h4>
+  <a name="994696"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="994699"></a>status_t MemHandleResize (
+   MemHandle <code class="par">h</code>,
+   uint32_t <code class="par">newSize</code>
+)
+</pre>
+<h4>
+  <a name="994701"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="994704"> </a><code>&rarr;  <i>h</i></code></dt>
+<dd><a name="994706"> </a>Chunk handle.</dd>
+
+<dt><a name="994708"> </a><code>&rarr;  <i>newSize</i></code></dt>
+<dd><a name="994710"> </a>New size of the memory chunk. This value should be non-zero.</dd>
+
+</dl>
+<h4>
+  <a name="994712"> </a>Returns 
+</h4>
+
+<p><a name="1010249"> </a>Returns <code>errNone</code> if the chunk was successfully resized, or one of the following otherwise:</p>
+
+<dl>
+<dt><a name="1010366"> </a><code>memErrNotEnoughSpace</code></dt>
+<dd><a name="1010430"> </a>There is not enough free memory to fulfill the request.</dd>
+
+<dt><a name="1010409"> </a><code>memErrChunkLocked</code></dt>
+<dd><a name="1010435"> </a>The given chunk cannot be resized.</dd>
+
+<dt><a name="1010251"> </a><code>memErrInvalidParam</code></dt>
+<dd><a name="1010440"> </a>One of the supplied arguments is invalid.</dd>
+
+</dl>
+<h4>
+  <a name="994717"> </a>Comments 
+</h4>
+
+<p><a name="994720"> </a>This function may cause the unlocked chunk to be moved.</p>
+
+<p><a name="1011443"> </a>If the supplied handle indicates a chunk in a storage heap, the request is forwarded to the Data Manager. </p>
+<h4>
+  <a name="994722"> </a>See Also 
+</h4>
+
+<p><a name="994725"> </a><a href="MemoryMgr.html#994825"><code>MemHandleSize()</code></a>, <a href="MemoryMgr.html#996299"><code>MemPtrResize()</code></a>, <a href="DataMgr.html#1001327"><code>DmHandleResize()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="994727"> </a>MemHandleSetOwner Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="994732"> </a>Purpose 
+</h4>
+
+<p><a name="1013806"> </a>Set the owner ID of a chunk, given the chunk's handle.</p>
+<h4>
+  <a name="994737"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="994740"> </a></code><h4>
+  <a name="994742"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="994745"></a>status_t MemHandleSetOwner (
+   MemHandle <code class="par">h</code>,
+   uint16_t <code class="par">owner</code>
+)
+</pre>
+<h4>
+  <a name="994747"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="994750"> </a><code>&rarr;  <i>h</i></code></dt>
+<dd><a name="994756"> </a>Chunk handle.</dd>
+
+<dt><a name="994758"> </a><code>&rarr;  <i>owner</i></code></dt>
+<dd><a name="1013917"> </a>New owner ID of the chunk. Specify 0 to set the owner to the operating system. Only the lowest four bits are used.</dd>
+
+</dl>
+<h4>
+  <a name="1013918"> </a>Returns 
+</h4>
+
+<p><a name="1013919"> </a>Returns <code>errNone</code> if the owner ID was set successfully, or <code>memErrInvalidParam</code> if an error occurred.</p>
+<h4>
+  <a name="1013920"> </a>Comments 
+</h4>
+
+<p><a name="1013921"> </a>The Heap Manager reserves owner ID 15 for internal usage. You cannot set a chunk's owner ID to 15 with this function.</p>
+<h4>
+  <a name="994820"> </a>See Also 
+</h4>
+
+<p><a name="994823"> </a><a href="MemoryMgr.html#996617"><code>MemPtrSetOwner()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="994825"> </a>MemHandleSize Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="994830"> </a>Purpose 
+</h4>
+
+<p><a name="994833"> </a>Get the size of a memory chunk referenced by a handle.</p>
+<h4>
+  <a name="994835"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="994838"> </a></code><h4>
+  <a name="994840"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="994843"></a>uint32_t MemHandleSize (
+   MemHandle <code class="par">h</code>
+)
+</pre>
+<h4>
+  <a name="994845"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="994848"> </a><code>&rarr;  <i>h</i></code></dt>
+<dd><a name="994850"> </a>Chunk handle.</dd>
+
+</dl>
+<h4>
+  <a name="994852"> </a>Returns 
+</h4>
+
+<p><a name="994855"> </a>Returns the size, in bytes, of the memory chunk referenced by the handle. Returns 0 if the size of the chunk is 0 or if an error occurred.</p>
+<h4>
+  <a name="994857"> </a>Comments 
+</h4>
+
+<p><a name="1010208"> </a>If the supplied handle indicates a chunk in a storage heap, the request is forwarded to the Data Manager. </p>
+<h4>
+  <a name="994862"> </a>See Also 
+</h4>
+
+<p><a name="994865"> </a><a href="MemoryMgr.html#994681"><code>MemHandleResize()</code></a>, <a href="MemoryMgr.html#996148"><code>MemPtrRealloc()</code></a>, <a href="DataMgr.html#1001373"><code>DmHandleSize()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="994867"> </a>MemHandleUnlock Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="994872"> </a>Purpose 
+</h4>
+
+<p><a name="994875"> </a>Unlock a movable memory chunk.</p>
+<h4>
+  <a name="994877"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="994880"> </a></code><h4>
+  <a name="994882"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="994885"></a>status_t MemHandleUnlock (
+   MemHandle <code class="par">h</code>
+)
+</pre>
+<h4>
+  <a name="994887"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="994890"> </a><code>&rarr;  <i>h</i></code></dt>
+<dd><a name="994892"> </a>Chunk handle.</dd>
+
+</dl>
+<h4>
+  <a name="994894"> </a>Returns 
+</h4>
+
+<p><a name="994897"> </a>Returns <code>errNone</code> if the chunk was unlocked, or <code>memErrInvalidParam</code> if an error occurred.</p>
+<h4>
+  <a name="994899"> </a>Comments 
+</h4>
+
+<p><a name="1009949"> </a>If the supplied handle indicates a chunk in a storage heap, the request is forwarded to the Data Manager. </p>
+<h4>
+  <a name="994904"> </a>See Also 
+</h4>
+
+<p><a name="994907"> </a><a href="MemoryMgr.html#994367"><code>MemHandleLock()</code></a>, <a href="MemoryMgr.html#996977"><code>MemPtrUnlock()</code></a>, <a href="DataMgr.html#1001480"><code>DmHandleUnlock()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="994909"> </a>MemHeapCheck Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="994914"> </a>Purpose 
+</h4>
+
+<p><a name="994917"> </a>Validate the internal structure of a given heap.</p>
+<h4>
+  <a name="994931"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="994952"> </a></code><h4>
+  <a name="994976"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995003"></a>status_t MemHeapCheck (
+   uint16_t <code class="par">heapID</code>
+)
+</pre>
+<h4>
+  <a name="995029"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="995056"> </a><code>&rarr;  <i>heapID</i></code></dt>
+<dd><a name="995082"> </a>ID of the heap to check.</dd>
+
+</dl>
+<h4>
+  <a name="1038378"> </a>Returns 
+</h4>
+
+<p><a name="1038413"> </a>Returns <code>errNone</code> if the operation completed successfully, or one of the following otherwise:</p>
+
+<dl>
+<dt><a name="1038414"> </a><code>memErrInvalidParam</code></dt>
+<dd><a name="1038440"> </a><code class="par">heapID</code> is invalid.</dd>
+
+<dt><a name="1038379"> </a><code>memErrInvalidHeap</code></dt>
+<dd><a name="1038445"> </a>Heap corruption was detected.</dd>
+
+</dl>
+<h4>
+  <a name="1038380"> </a>Comments 
+</h4>
+
+<p><a name="1038447"> </a>This function can be used with any writable heap. If the calling process does not have write access to the heap, <code>errNone</code> is returned. This call is never forwarded to the Data Manager.</p>
+
+<p><a name="1038449"> </a>This function is called internally at appropriate times if the <code>MemDebugModeCheckOnChange</code> or <code>memDebugModeCheckOnAll</code> debug mode flags are set.</p>
+<h4>
+  <a name="995142"> </a>See Also 
+</h4>
+
+<p><a name="995145"> </a><a href="MemoryMgr.html#993852"><code>MemDebugMode()</code></a>, <a href="MemoryMgr.html#995147"><code>MemHeapCompact()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="995147"> </a>MemHeapCompact Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995152"> </a>Purpose 
+</h4>
+
+<p><a name="995155"> </a>Compact a heap.</p>
+<h4>
+  <a name="995157"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="995160"> </a></code><h4>
+  <a name="995162"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995165"></a>status_t MemHeapCompact (
+   uint16_t <code class="par">heapID</code>
+)
+</pre>
+<h4>
+  <a name="995167"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="995170"> </a><code>&rarr;  <i>heapID</i></code></dt>
+<dd><a name="1039735"> </a>ID of the heap to be compacted.</dd>
+
+</dl>
+<h4>
+  <a name="995174"> </a>Returns 
+</h4>
+
+<p><a name="1039788"> </a>Returns <code>errNone</code> if the operation completed successfully, or one of the following otherwise:</p>
+
+<dl>
+<dt><a name="1039770"> </a><code>memErrInvalidParam</code></dt>
+<dd><a name="1039798"> </a><code class="par">heapID</code> is invalid, or the heap specified by <code class="par">heapID</code> is not writable.</dd>
+
+<dt><a name="1039772"> </a><code>memErrNotEnoughSpace</code></dt>
+<dd><a name="1039802"> </a>There was not enough memory to complete the compaction.</dd>
+
+</dl>
+<h4>
+  <a name="995179"> </a>Comments 
+</h4>
+
+<p><a name="1039804"> </a>The calling process must have write permission to be able to compact the heap. If the calling process does not have write access to the heap, <code>errNone</code> is returned.</p>
+
+<p><a name="1039808"> </a>This call is never forwarded to the Data Manager. </p>
+<h4>
+  <a name="995184"> </a>See Also 
+</h4>
+
+<p><a name="995187"> </a><a href="MemoryMgr.html#995515"><code>MemHeapScramble()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="995189"> </a>MemHeapDynamic Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995194"> </a>Purpose 
+</h4>
+
+<p><a name="995197"> </a>Determine whether or not the specified heap is the dynamic heap.</p>
+<h4>
+  <a name="995199"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="995202"> </a></code><h4>
+  <a name="995204"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995207"></a>Boolean MemHeapDynamic (
+   uint16_t <code class="par">heapID</code>
+)
+</pre>
+<h4>
+  <a name="995209"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="995212"> </a><code>&rarr;  <i>heapID</i></code></dt>
+<dd><a name="995214"> </a>ID of the heap.</dd>
+
+</dl>
+<h4>
+  <a name="995216"> </a>Returns 
+</h4>
+
+<p><a name="995219"> </a>Returns <code>true</code> if the specified heap is the dynamic heap, <code>false</code> otherwise.</p>
+<h4>
+  <a name="995226"> </a>See Also 
+</h4>
+
+<p><a name="995235"> </a><a href="MemoryMgr.html#993927"><code>MemDynHeapGetInfo()</code></a>, <a href="MemoryMgr.html#993993"><code>MemDynHeapOption()</code></a>, <a href="MemoryMgr.html#994039"><code>MemDynHeapReleaseUnused()</code></a>, <a href="MemoryMgr.html#995259"><code>MemHeapFlags()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="995259"> </a>MemHeapFlags Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995288"> </a>Purpose 
+</h4>
+
+<p><a name="995291"> </a>Get the heap flags for a specified heap. These flags indicate whether or not the heap can be written to and whether or not the heap is located in ROM.</p>
+<h4>
+  <a name="995293"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="995296"> </a></code><h4>
+  <a name="995298"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995301"></a>uint16_t MemHeapFlags (
+   uint16_t <code class="par">heapID</code>
+)
+</pre>
+<h4>
+  <a name="995303"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="995306"> </a><code>&rarr;  <i>heapID</i></code></dt>
+<dd><a name="995308"> </a>ID of the heap.</dd>
+
+</dl>
+<h4>
+  <a name="995310"> </a>Returns 
+</h4>
+
+<p><a name="995313"> </a>Returns the heap flags, or 0 if <code class="par">heapID</code> is invalid. See <a href="MemoryMgr.html#1036441">"Heap Flags"</a> for the set of flags that can make up the returned value.</p>
+<h4>
+  <a name="995320"> </a>See Also 
+</h4>
+
+<p><a name="995323"> </a><a href="MemoryMgr.html#995189"><code>MemHeapDynamic()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="995371"> </a>MemHeapFreeBytes Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995376"> </a>Purpose 
+</h4>
+
+<p><a name="995379"> </a>Get the total number of free bytes in a specified heap and the size of the largest free chunk in that heap.</p>
+<h4>
+  <a name="995381"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="995384"> </a></code><h4>
+  <a name="995386"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995389"></a>status_t MemHeapFreeBytes (
+   uint16_t <code class="par">heapID</code>,
+   uint32_t <code class="par">*freeP</code>,
+   uint32_t <code class="par">*maxP</code>
+)
+</pre>
+<h4>
+  <a name="995391"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="995394"> </a><code>&rarr;  <i>heapID</i></code></dt>
+<dd><a name="995400"> </a>ID of the heap.</dd>
+
+<dt><a name="995402"> </a><code>&larr;  <i>freeP</i></code></dt>
+<dd><a name="995452"> </a>The total number of bytes that are free in the heap.</dd>
+
+<dt><a name="995454"> </a><code>&larr;  <i>maxP</i></code></dt>
+<dd><a name="995456"> </a>The size, in bytes, of the largest free chunk in the heap.</dd>
+
+</dl>
+<h4>
+  <a name="995458"> </a>Returns 
+</h4>
+
+<p><a name="995461"> </a>Returns <code>errNone</code> if the operation completed successfully, or <code>memErrInvalidParam</code> if <code class="par">heapID</code> is invalid.</p>
+<h4>
+  <a name="995463"> </a>Comments 
+</h4>
+
+<p><a name="1035235"> </a>The size of the largest chunk returned by this call, in most cases, will be the size of the heap "wilderness" area: the area that is not backed up with physical memory. There is no guarantee that the returned amount actually can be allocated due to limits on physical memory imposed by resource bank and overall availability of free memory in the system. </p>
+<h4>
+  <a name="995468"> </a>See Also 
+</h4>
+
+<p><a name="995471"> </a><a href="MemoryMgr.html#995592"><code>MemHeapSize()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="995473"> </a>MemHeapID Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995478"> </a>Purpose 
+</h4>
+
+<p><a name="995481"> </a>Get the ID for a heap, given its index.</p>
+<h4>
+  <a name="995483"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="995486"> </a></code><h4>
+  <a name="995488"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995491"></a>uint16_t MemHeapID (
+   uint16_t <code class="par">heapIndex</code>
+)
+</pre>
+<h4>
+  <a name="995493"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="995496"> </a><code>&rarr;  <i>heapIndex</i></code></dt>
+<dd><a name="995498"> </a>Heap index.</dd>
+
+</dl>
+<h4>
+  <a name="995500"> </a>Returns 
+</h4>
+
+<p><a name="995503"> </a>Returns the heap ID.</p>
+<h4>
+  <a name="1047217"> </a>Comments 
+</h4>
+
+<p><a name="1047752"> </a>Index 0 refers to the dynamic heap. Index 1 refers to the storage area. Index 2 refers to ROM.</p>
+<h4>
+  <a name="1047219"> </a>See Also 
+</h4>
+
+<p><a name="1047220"> </a><a href="MemoryMgr.html#994325"><code>MemHandleHeapID()</code></a>, <a href="MemoryMgr.html#995970"><code>MemPtrHeapID()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="995515"> </a>MemHeapScramble Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995520"> </a>Purpose 
+</h4>
+
+<p><a name="995523"> </a>Scramble a heap, moving each of the heap's movable chunks. This function can be useful when debugging.</p>
+<h4>
+  <a name="995525"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="995528"> </a></code><h4>
+  <a name="995530"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995533"></a>status_t MemHeapScramble (
+   uint16_t <code class="par">heapID</code>
+)
+</pre>
+<h4>
+  <a name="995535"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="995538"> </a><code>&rarr;  <i>heapID</i></code></dt>
+<dd><a name="1042127"> </a>ID of the heap to be scrambled.</dd>
+
+</dl>
+<h4>
+  <a name="1042152"> </a>Returns 
+</h4>
+
+<p><a name="1042811"> </a>Returns <code>errNone</code> if the operation completed successfully, or one of the following otherwise:</p>
+
+<dl>
+<dt><a name="1042812"> </a><code>memErrInvalidParam</code></dt>
+<dd><a name="1042813"> </a><code class="par">heapID</code> is invalid, or the heap specified by <code class="par">heapID</code> is not writable.</dd>
+
+<dt><a name="1042814"> </a><code>memErrNotEnoughSpace</code></dt>
+<dd><a name="1042815"> </a>There was not enough memory to scramble the heap.</dd>
+
+</dl>
+<h4>
+  <a name="1042154"> </a>Comments 
+</h4>
+
+<p><a name="1044869"> </a>The calling process must have write permission to be able to scramble the heap. If the calling process does not have write access to the heap, <code>errNone</code> is returned.</p>
+
+<p><a name="1044870"> </a>This call is never forwarded to the Data Manager. </p>
+<h4>
+  <a name="995558"> </a>See Also 
+</h4>
+
+<p><a name="995568"> </a><a href="MemoryMgr.html#995147"><code>MemHeapCompact()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="995592"> </a>MemHeapSize Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995621"> </a>Purpose 
+</h4>
+
+<p><a name="995624"> </a>Get the maximum number of bytes that the heap can manage or request from the kernel.</p>
+<h4>
+  <a name="995626"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="995629"> </a></code><h4>
+  <a name="995631"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995634"></a>uint32_t MemHeapSize (
+   uint16_t <code class="par">heapID</code>
+)
+</pre>
+<h4>
+  <a name="995636"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="995639"> </a><code>&rarr;  <i>heapID</i></code></dt>
+<dd><a name="995641"> </a>ID of the heap.</dd>
+
+</dl>
+<h4>
+  <a name="995643"> </a>Returns 
+</h4>
+
+<p><a name="995646"> </a>Returns the maximum size, in bytes, of the specified heap, or 0 if <code class="par">heapID</code> is invalid.</p>
+<h4>
+  <a name="995648"> </a>Comments 
+</h4>
+
+<p><a name="1034767"> </a>The value returned by this call represents the maximum amount possible. Not all of this memory is necessarily available.</p>
+<h4>
+  <a name="995653"> </a>See Also 
+</h4>
+
+<p><a name="995656"> </a><a href="MemoryMgr.html#995371"><code>MemHeapFreeBytes()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="995658"> </a>MemMove Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995663"> </a>Purpose 
+</h4>
+
+<p><a name="995666"> </a>Move memory.</p>
+<h4>
+  <a name="995668"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="995671"> </a></code><h4>
+  <a name="995673"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995676"></a>status_t MemMove (
+   void <code class="par">*dstP</code>,
+   const void <code class="par">*sP</code>,
+   int32_t <code class="par">numBytes</code>
+)
+</pre>
+<h4>
+  <a name="995678"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="995681"> </a><code>&larr;  <i>dstP</i></code></dt>
+<dd><a name="995683"> </a>Pointer to the destination.</dd>
+
+<dt><a name="995685"> </a><code>&rarr;  <i>sP</i></code></dt>
+<dd><a name="995687"> </a>Pointer to the source.</dd>
+
+<dt><a name="995689"> </a><code>&rarr;  <i>numBytes</i></code></dt>
+<dd><a name="995691"> </a>Number of bytes to move.</dd>
+
+</dl>
+<h4>
+  <a name="995693"> </a>Returns 
+</h4>
+
+<p><a name="995696"> </a>Always returns <code>errNone</code>.</p>
+<h4>
+  <a name="995698"> </a>Comments 
+</h4>
+
+<p><a name="995701"> </a>This function properly handles overlapping ranges.</p>
+
+<h3 class="hbH3">
+  <a name="995736"> </a>MemNumHeaps Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995765"> </a>Purpose 
+</h4>
+
+<p><a name="995768"> </a>Get the number of available heaps in both ROM and RAM.</p>
+<h4>
+  <a name="995770"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="995773"> </a></code><h4>
+  <a name="995775"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995778"></a>uint16_t MemNumHeaps (
+   void
+)
+</pre>
+<h4>
+  <a name="995780"> </a>Parameters 
+</h4>
+
+<p><a name="995783"> </a>None.</p>
+<h4>
+  <a name="995785"> </a>Returns 
+</h4>
+
+<p><a name="995788"> </a>The number of heaps. This value is always 3, since the system has three heaps: the dynamic heap, the storage area, and ROM.</p>
+<h4>
+  <a name="995795"> </a>See Also 
+</h4>
+
+<p><a name="995798"> </a><a href="MemoryMgr.html#994325"><code>MemHandleHeapID()</code></a>, <a href="MemoryMgr.html#995970"><code>MemPtrHeapID()</code></a>, <a href="MemoryMgr.html#995800"><code>MemNumRAMHeaps()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="995800"> </a>MemNumRAMHeaps Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995805"> </a>Purpose 
+</h4>
+
+<p><a name="1046094"> </a>Get the number of available RAM heaps.</p>
+<h4>
+  <a name="995810"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="995813"> </a></code><h4>
+  <a name="995815"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995818"></a>uint16_t MemNumRAMHeaps (
+   void
+)
+</pre>
+<h4>
+  <a name="995820"> </a>Parameters 
+</h4>
+
+<p><a name="995823"> </a>None.</p>
+<h4>
+  <a name="995825"> </a>Returns 
+</h4>
+
+<p><a name="1046168"> </a>The number of heaps. This value is always 2, since the system has two RAM heaps: the dynamic heap, and the non-secure RAM storage heap.</p>
+<h4>
+  <a name="995835"> </a>See Also 
+</h4>
+
+<p><a name="995838"> </a><a href="MemoryMgr.html#994325"><code>MemHandleHeapID()</code></a>, <a href="MemoryMgr.html#995970"><code>MemPtrHeapID()</code></a>, <a href="MemoryMgr.html#995736"><code>MemNumHeaps()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="995840"> </a>MemPtrDataStorage Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995845"> </a>Purpose 
+</h4>
+
+<p><a name="995848"> </a>Determine whether or not a chunk is located in the storage heap.</p>
+<h4>
+  <a name="995850"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="995853"> </a></code><h4>
+  <a name="995855"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995858"></a>Boolean MemPtrDataStorage (
+   MemPtr <code class="par">p</code>
+)
+</pre>
+<h4>
+  <a name="995860"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="995863"> </a><code>&rarr;  <i>p</i></code></dt>
+<dd><a name="995865"> </a>Pointer to the chunk.</dd>
+
+</dl>
+<h4>
+  <a name="995867"> </a>Returns 
+</h4>
+
+<p><a name="995870"> </a>Returns <code>true</code> if the specified chunk belongs to the storage area.</p>
+<h4>
+  <a name="995872"> </a>Comments 
+</h4>
+
+<p><a name="1005966"> </a>This function checks whether or not the given pointer falls within the address range occupied by the heap located in the storage area.</p>
+<h4>
+  <a name="995877"> </a>See Also 
+</h4>
+
+<p><a name="995880"> </a><a href="MemoryMgr.html#994147"><code>MemHandleDataStorage()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="995928"> </a>MemPtrFree Macro <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995933"> </a>Purpose 
+</h4>
+
+<p><a name="995936"> </a>Dispose of a memory chunk referenced by the given pointer.</p>
+<h4>
+  <a name="995938"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="995941"> </a></code><h4>
+  <a name="995943"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995946"></a>#define MemPtrFree (
+   <code class="par">p</code>
+)
+</pre>
+<h4>
+  <a name="995948"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="995951"> </a><code>&rarr;  <i>p</i></code></dt>
+<dd><a name="995953"> </a>Pointer to the memory chunk to be freed.</dd>
+
+</dl>
+<h4>
+  <a name="995955"> </a>Returns 
+</h4>
+
+<p><a name="995958"> </a>Returns <code>errNone</code> if no error occurred. Returns <code>memErrInvalidParam</code> if the chunk could not, or should not, be freed.</p>
+<h4>
+  <a name="995960"> </a>Comments 
+</h4>
+
+<p><a name="1003025"> </a>If the <code>memDebugModeFillFree</code> flag is set, the unused memory will be filled with a default value (currently, <code>0x55</code>).</p>
+
+<p><a name="1003556"> </a>If the supplied pointer indicates a chunk in a storage heap, the request is forwarded to the Data Manager. </p>
+
+<div><hr>
+  <a name="1095048"> </a> <b>NOTE: </b> The Palm OS Cobalt Memory Manager uses virtual pages to hold handle tables, and they may not be returned to the kernel even if the chunks referenced by those handles are freed. In addition, the threshold of free memory that a heap can keep without returning the memory to the kernel impacts the amount of free memory reported after certain allocation and de-allocation operations. Because of this, if you allocate handles and pointers and then free them, the amount of memory reported as available after the series of operations may not be the same as that reported before.
+<hr>
+</div>
+<h4>
+  <a name="995965"> </a>See Also 
+</h4>
+
+<p><a name="995968"> </a><a href="MemoryMgr.html#993852"><code>MemDebugMode()</code></a>, <a href="MemoryMgr.html#994259"><code>MemHandleFree()</code></a>, <a href="MemoryMgr.html#996040"><code>MemPtrNew()</code></a>, <a href="DataMgr.html#1000993"><code>DmHandleFree()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="995970"> </a>MemPtrHeapID Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995975"> </a>Purpose 
+</h4>
+
+<p><a name="995978"> </a>Get the ID of the heap that contains a given memory chunk referenced by a pointer.</p>
+<h4>
+  <a name="995980"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="995983"> </a></code><h4>
+  <a name="995985"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="995988"></a>uint16_t MemPtrHeapID (
+   MemPtr <code class="par">p</code>
+)
+</pre>
+<h4>
+  <a name="995990"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="995993"> </a><code>&rarr;  <i>p</i></code></dt>
+<dd><a name="995995"> </a>Pointer to the chunk.</dd>
+
+</dl>
+<h4>
+  <a name="995997"> </a>Returns 
+</h4>
+
+<p><a name="1038184"> </a>Returns the ID of the heap containing the specified memory chunk, or <code>0xFFFF</code> if the specified pointer does not match any heap.</p>
+<h4>
+  <a name="996007"> </a>See Also 
+</h4>
+
+<p><a name="996016"> </a><a href="MemoryMgr.html#994325"><code>MemHandleHeapID()</code></a>, <a href="MemoryMgr.html#995473"><code>MemHeapID()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="996040"> </a>MemPtrNew Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996069"> </a>Purpose 
+</h4>
+
+<p><a name="996072"> </a>Allocate a new memory chunk from the dynamic heap.</p>
+<h4>
+  <a name="996074"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="996077"> </a></code><h4>
+  <a name="996079"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996082"></a>MemPtr MemPtrNew (
+   uint32_t <code class="par">size</code>
+)
+</pre>
+<h4>
+  <a name="996084"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996087"> </a><code>&rarr;  <i>size</i></code></dt>
+<dd><a name="996089"> </a>The desired size of the chunk. </dd>
+
+</dl>
+<h4>
+  <a name="996091"> </a>Returns 
+</h4>
+
+<p><a name="996094"> </a>Returns a pointer to a newly allocated chunk if successful, or <code>NULL</code> if the Memory Manager was unable to allocate a memory chunk of the requested size.</p>
+<h4>
+  <a name="996096"> </a>Comments 
+</h4>
+
+<p><a name="1002714"> </a>This function allocates a non-movable chunk in the dynamic heap and returns a pointer to that chunk. Applications can use this call to allocate dynamic memory. User processes should use this call as a primary dynamic memory allocator. </p>
+<h4>
+  <a name="996101"> </a>See Also 
+</h4>
+
+<p><a name="996104"> </a><a href="MemoryMgr.html#994503"><code>MemHandleNew()</code></a>, <a href="MemoryMgr.html#995928"><code>MemPtrFree()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="996148"> </a>MemPtrRealloc Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996153"> </a>Purpose 
+</h4>
+
+<p><a name="996156"> </a>Change the size of a non-movable chunk referenced by a pointer.</p>
+<h4>
+  <a name="996158"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="996161"> </a></code><h4>
+  <a name="996163"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996166"></a>MemPtr MemPtrRealloc (
+   MemPtr <code class="par">ptr</code>,
+   uint32_t <code class="par">newSize</code>
+)
+</pre>
+<h4>
+  <a name="996168"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996171"> </a><code>&rarr;  <i>ptr</i></code></dt>
+<dd><a name="996173"> </a>Pointer to the memory chunk to be reallocated.</dd>
+
+<dt><a name="996175"> </a><code>&rarr;  <i>newSize</i></code></dt>
+<dd><a name="996177"> </a>New size, in bytes, of the chunk.</dd>
+
+</dl>
+<h4>
+  <a name="996183"> </a>Returns 
+</h4>
+
+<p><a name="996189"> </a>Returns a pointer to the reallocated chunk, or <code>NULL</code> if the chunk couldn't be resized as requested.</p>
+<h4>
+  <a name="996197"> </a>Comments 
+</h4>
+
+<p><a name="1004862"> </a>The semantic of this call resembles the standard C library function <code>realloc</code>. The contents of the chunk will be unchanged up to the lesser of the new and old size. If <code class="par">ptr</code> is <code>NULL</code>, this function behaves like <a href="MemoryMgr.html#996040"><code>MemPtrNew()</code></a>. If <code class="par">newSize</code> is 0 and <code class="par">ptr</code> is not <code>NULL</code>, the memory chunk is freed and <code>NULL</code> is returned. <code>MemPtrRealloc</code> significantly simplifies the management of variable-length memory chunks, so this call is recommended over <a href="MemoryMgr.html#996299"><code>MemPtrResize()</code></a>.</p>
+
+<p><a name="1004868"> </a>Only non-movable chunks can be reallocated using this call.</p>
+<h4>
+  <a name="996210"> </a>See Also 
+</h4>
+
+<p><a name="996213"> </a><a href="MemoryMgr.html#994681"><code>MemHandleResize()</code></a>, <a href="DataMgr.html#1003720"><code>DmPtrResize()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="996215"> </a>MemPtrRecoverHandle Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996220"> </a>Purpose 
+</h4>
+
+<p><a name="996223"> </a>Recover the handle of a memory chunk referenced by the given pointer to its data.</p>
+<h4>
+  <a name="996225"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="996228"> </a></code><h4>
+  <a name="996230"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996233"></a>MemHandle MemPtrRecoverHandle (
+   MemPtr <code class="par">p</code>
+)
+</pre>
+<h4>
+  <a name="996235"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996238"> </a><code>&rarr;  <i>p</i></code></dt>
+<dd><a name="996240"> </a>Pointer to a memory chunk.</dd>
+
+</dl>
+<h4>
+  <a name="996242"> </a>Returns 
+</h4>
+
+<p><a name="996245"> </a>Returns the handle of the memory chunk, or <code>NULL</code> if an error occurred.</p>
+<h4>
+  <a name="996247"> </a>Comments 
+</h4>
+
+<p><a name="1012667"> </a>For memory chunks in the dynamic heap, the given pointer will be converted to a handle and returned as a result. For memory chunks in a storage heap, the call is forwarded to the Data Manager. </p>
+<h4>
+  <a name="996252"> </a>See Also 
+</h4>
+
+<p><a name="996255"> </a><a href="DataMgr.html#1004437"><code>DmRecoverHandle()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="996299"> </a>MemPtrResize Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996304"> </a>Purpose 
+</h4>
+
+<p><a name="996307"> </a>Resize a memory chunk referenced by a pointer.</p>
+<h4>
+  <a name="996309"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="996312"> </a></code><h4>
+  <a name="996314"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996343"></a>status_t MemPtrResize (
+   MemPtr <code class="par">p</code>,
+   uint32_t <code class="par">newSize</code>
+)
+</pre>
+<h4>
+  <a name="996399"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996450"> </a><code>&rarr;  <i>p</i></code></dt>
+<dd><a name="996500"> </a>Pointer to the memory chunk to be resized.</dd>
+
+<dt><a name="996550"> </a><code>&rarr;  <i>newSize</i></code></dt>
+<dd><a name="996600"> </a>New desired size of the memory chunk, in bytes.</dd>
+
+</dl>
+<h4>
+  <a name="996602"> </a>Returns 
+</h4>
+
+<p><a name="1004056"> </a>Returns <code>errNone</code> if the chunk was successfully resized, or one of the following otherwise: </p>
+
+<dl>
+<dt><a name="1004057"> </a><code>memErrNotEnoughSpace</code></dt>
+<dd><a name="1004101"> </a>There is not enough memory to fulfill the request.</dd>
+
+<dt><a name="1004058"> </a><code>memErrChunkLocked</code></dt>
+<dd><a name="1004106"> </a>The given chunk cannot be resized in place.</dd>
+
+<dt><a name="996605"> </a><code>memErrInvalidParam</code></dt>
+<dd><a name="1004111"> </a>One of the arguments is invalid, the chunk does not exist, or the chunk should not be resized.</dd>
+
+</dl>
+<h4>
+  <a name="996607"> </a>Comments 
+</h4>
+
+<p><a name="1004626"> </a>Call this function to resize a locked chunk. This function is always successful when shrinking the size of a chunk. When growing a chunk, it attempts to use free space immediately following the chunk, and returns <code>memErrChunkLocked</code> if the resize fails.</p>
+
+<p><a name="1004136"> </a>For non-movable chunks in the dynamic heap, consider using <a href="MemoryMgr.html#996148"><code>MemPtrRealloc()</code></a>. In most cases, that function is more convenient.</p>
+
+<p><a name="1004619"> </a>If the supplied pointer indicates a chunk in a storage heap, the request is forwarded to the Data Manager. </p>
+<h4>
+  <a name="996612"> </a>See Also 
+</h4>
+
+<p><a name="996615"> </a><a href="MemoryMgr.html#994681"><code>MemHandleResize()</code></a>, <a href="MemoryMgr.html#996040"><code>MemPtrNew()</code></a>, <a href="DataMgr.html#1003720"><code>DmPtrResize()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="996617"> </a>MemPtrSetOwner Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996622"> </a>Purpose 
+</h4>
+
+<p><a name="996625"> </a>Set the owner ID of a chunk referenced by a pointer.</p>
+<h4>
+  <a name="996627"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="996630"> </a></code><h4>
+  <a name="996632"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996635"></a>status_t MemPtrSetOwner (
+   MemPtr <code class="par">p</code>,
+   uint16_t <code class="par">owner</code>
+)
+</pre>
+<h4>
+  <a name="996637"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996640"> </a><code>&rarr;  <i>p</i></code></dt>
+<dd><a name="996642"> </a>Chunk pointer.</dd>
+
+<dt><a name="996644"> </a><code>&rarr;  <i>owner</i></code></dt>
+<dd><a name="1013270"> </a>New owner ID of the chunk. Specify 0 to set the owner to the operating system. Only the lowest four bits are used.</dd>
+
+</dl>
+<h4>
+  <a name="1013485"> </a>Returns 
+</h4>
+
+<p><a name="1013486"> </a>Returns <code>errNone</code> if the owner ID was set successfully, or <code>memErrInvalidParam</code> if an error occurred.</p>
+<h4>
+  <a name="1013487"> </a>Comments 
+</h4>
+
+<p><a name="1013678"> </a>The Heap Manager reserves owner ID 15 for internal usage. You cannot set a chunk's owner ID to 15 with this function.</p>
+<h4>
+  <a name="996658"> </a>See Also 
+</h4>
+
+<p><a name="996661"> </a><a href="MemoryMgr.html#994727"><code>MemHandleSetOwner()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="996663"> </a>MemPtrSize Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996668"> </a>Purpose 
+</h4>
+
+<p><a name="1003868"> </a>Get the size of a memory chunk referenced by a pointer.</p>
+<h4>
+  <a name="996673"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="996676"> </a></code><h4>
+  <a name="996678"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996707"></a>uint32_t MemPtrSize (
+   MemPtr <code class="par">p</code>
+)
+</pre>
+<h4>
+  <a name="996739"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996792"> </a><code>&rarr;  <i>p</i></code></dt>
+<dd><a name="996848"> </a>Pointer to a memory chunk.</dd>
+
+</dl>
+<h4>
+  <a name="996906"> </a>Returns 
+</h4>
+
+<p><a name="996965"> </a>The size of the chunk, in bytes, or 0 if an error occurred.</p>
+<h4>
+  <a name="1003946"> </a>Comments 
+</h4>
+
+<p><a name="1003947"> </a>The value returned represents the size of the "Data" portion of the memory chunk that is equal to the value that was specified when it was allocated or resized.</p>
+
+<p><a name="1004037"> </a>If the supplied pointer indicates a chunk in a storage heap, the request is forwarded to the Data Manager. </p>
+<h4>
+  <a name="1003948"> </a>See Also 
+</h4>
+
+<p><a name="1003949"> </a><a href="MemoryMgr.html#996040"><code>MemPtrNew()</code></a>, <a href="MemoryMgr.html#996299"><code>MemPtrResize()</code></a>, <a href="DataMgr.html#1003809"><code>DmPtrSize()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="996977"> </a>MemPtrUnlock Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996982"> </a>Purpose 
+</h4>
+
+<p><a name="996985"> </a>Unlock a chunk, given a pointer to the chunk.</p>
+<h4>
+  <a name="996987"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="996990"> </a></code><h4>
+  <a name="996992"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996995"></a>status_t MemPtrUnlock (
+   MemPtr <code class="par">p</code>
+)
+</pre>
+<h4>
+  <a name="996997"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="997000"> </a><code>&rarr;  <i>p</i></code></dt>
+<dd><a name="997002"> </a>Pointer to the chunk to be unlocked.</dd>
+
+</dl>
+<h4>
+  <a name="997004"> </a>Returns 
+</h4>
+
+<p><a name="1048921"> </a>Returns <code>errNone</code> if the chunk was unlocked, or <code>memErrInvalidParam</code> if an error occurred.</p>
+<h4>
+  <a name="1048922"> </a>Comments 
+</h4>
+
+<p><a name="1048923"> </a>If the supplied pointer indicates a chunk in a storage heap, the request is forwarded to the Data Manager. </p>
+<h4>
+  <a name="1049097"> </a>See Also 
+</h4>
+
+<p><a name="1049107"> </a><a href="MemoryMgr.html#994867"><code>MemHandleUnlock()</code></a>, <a href="DataMgr.html#1003875"><code>DmPtrUnlock()</code></a></p>
+
+<h3 class="hbH3">
+  <a name="997019"> </a>MemSet Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="997024"> </a>Purpose 
+</h4>
+
+<p><a name="997027"> </a>Set a memory range to a specified value.</p>
+<h4>
+  <a name="997029"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="997032"> </a></code><h4>
+  <a name="997034"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="997037"></a>status_t MemSet (
+   void <code class="par">*dstP</code>,
+   int32_t <code class="par">numBytes</code>,
+   uint8_t <code class="par">value</code>
+)
+</pre>
+<h4>
+  <a name="997039"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="997042"> </a><code>&larr;  <i>dstP</i></code></dt>
+<dd><a name="997044"> </a>Pointer to the beginning of the memory range to be set.</dd>
+
+<dt><a name="997046"> </a><code>&rarr;  <i>numBytes</i></code></dt>
+<dd><a name="997052"> </a>Number of bytes to be set.</dd>
+
+<dt><a name="997054"> </a><code>&rarr;  <i>value</i></code></dt>
+<dd><a name="997056"> </a>Value to which each of the bytes in the specified range are set.</dd>
+
+</dl>
+<h4>
+  <a name="997058"> </a>Returns 
+</h4>
+
+<p><a name="997061"> </a>Always returns <code>errNone</code>.</p>
+
+<h3 class="hbH3">
+  <a name="997073"> </a>MemSetDebugMode Function <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="997078"> </a>Purpose 
+</h4>
+
+<p><a name="997081"> </a>Set the debugging mode for the instance of the Heap Manager local to the calling process.</p>
+<h4>
+  <a name="997083"> </a>Declared In 
+</h4>
+<code>MemoryMgr.h<a name="997086"> </a></code><h4>
+  <a name="997088"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="997091"></a>status_t MemSetDebugMode (
+   uint16_t <code class="par">flags</code>
+)
+</pre>
+<h4>
+  <a name="997093"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="997096"> </a><code>&rarr;  <i>flags</i></code></dt>
+<dd><a name="997098"> </a>Use the logical OR operator (|) to provide any combination of the flags listed in <a href="MemoryMgr.html#1030206">"Debug Mode Flags."</a></dd>
+
+</dl>
+<h4>
+  <a name="997100"> </a>Returns 
+</h4>
+
+<p><a name="997103"> </a>Returns <code>errNone</code> if the debug mode flags were set successfully, or <code>memErrHeapInvalid</code> if an invalid heap was detected.</p>
+<h4>
+  <a name="997105"> </a>Comments 
+</h4>
+
+<p><a name="1001839"> </a>When using the <code>memDebugModeFillFree</code> debug flag, note that only memory that is accessible will be filled. The first 32 bits of free chunk data are reserved for internal use and will never be filled.</p>
+
+<p><a name="1001996"> </a>When working with the storage heap you should try to always use functions provided by the Data Manager. The <code>MemDebugModeNoDmCalls</code> debug flag helps you to track down "leftover" Memory Manager calls that operate on the storage heap. These calls can then be converted into Data Manager calls.</p>
+<h4>
+  <a name="997110"> </a>See Also 
+</h4>
+
+<p><a name="997113"> </a><a href="MemoryMgr.html#993852"><code>MemDebugMode()</code></a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="MDF_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="MDF_TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FileStream.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SchemaDatabases.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="MDF_IX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

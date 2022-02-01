@@ -1,0 +1,191 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Assertions</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Assertions">
+<META NAME="keywords" CONTENT="The C Preprocessor: Assertions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC37"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_36.html#SEC36"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_38.html#SEC38"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 1.5.5 Assertions </H3>
+<!--docid::SEC37::-->
+<P>
+
+<A NAME="IDX60"></A>
+<EM>Assertions</EM> are a more systematic alternative to macros in writing
+conditionals to test what sort of computer or system the compiled
+program will run on.  Assertions are usually predefined, but you can
+define them with preprocessing directives or command-line options.
+</P><P>
+
+<A NAME="IDX61"></A>
+The macros traditionally used to describe the type of target are not
+classified in any way according to which question they answer; they may
+indicate a hardware architecture, a particular hardware model, an
+operating system, a particular version of an operating system, or
+specific configuration options.  These are jumbled together in a single
+namespace.  In contrast, each assertion consists of a named question and
+an answer.  The question is usually called the <EM>predicate</EM>.
+An assertion looks like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#<VAR>predicate</VAR> (<VAR>answer</VAR>)
+</pre></td></tr></table></P><P>
+
+You must use a properly formed identifier for <VAR>predicate</VAR>.  The
+value of <VAR>answer</VAR> can be any sequence of words; all characters are
+significant except for leading and trailing whitespace, and differences
+in internal whitespace sequences are ignored.  Thus, <SAMP>`x + y'</SAMP> is
+different from <SAMP>`x+y'</SAMP> but equivalent to <SAMP>`x + y'</SAMP>.  <SAMP>`)'</SAMP> is
+not allowed in an answer.
+</P><P>
+
+<A NAME="IDX62"></A>
+Here is a conditional to test whether the answer <VAR>answer</VAR> is asserted
+for the predicate <VAR>predicate</VAR>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#if #<VAR>predicate</VAR> (<VAR>answer</VAR>)
+</pre></td></tr></table></P><P>
+
+There may be more than one answer asserted for a given predicate.  If
+you omit the answer, you can test whether <EM>any</EM> answer is asserted
+for <VAR>predicate</VAR>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#if #<VAR>predicate</VAR>
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX63"></A>
+<A NAME="IDX64"></A>
+<A NAME="IDX65"></A>
+Most of the time, the assertions you test will be predefined assertions.
+GNU C provides three predefined predicates: <CODE>system</CODE>, <CODE>cpu</CODE>,
+and <CODE>machine</CODE>.  <CODE>system</CODE> is for assertions about the type of
+software, <CODE>cpu</CODE> describes the type of computer architecture, and
+<CODE>machine</CODE> gives more information about the computer.  For example,
+on a GNU system, the following assertions would be true:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#system (gnu)
+#system (mach)
+#system (mach 3)
+#system (mach 3.<VAR>subversion</VAR>)
+#system (hurd)
+#system (hurd <VAR>version</VAR>)
+</pre></td></tr></table></P><P>
+
+and perhaps others.  The alternatives with
+more or less version information let you ask more or less detailed
+questions about the type of system software.
+</P><P>
+
+On a Unix system, you would find <CODE>#system (unix)</CODE> and perhaps one of:
+<CODE>#system (aix)</CODE>, <CODE>#system (bsd)</CODE>, <CODE>#system (hpux)</CODE>,
+<CODE>#system (lynx)</CODE>, <CODE>#system (mach)</CODE>, <CODE>#system (posix)</CODE>,
+<CODE>#system (svr3)</CODE>, <CODE>#system (svr4)</CODE>, or <CODE>#system (xpg4)</CODE>
+with possible version numbers following.
+</P><P>
+
+Other values for <CODE>system</CODE> are <CODE>#system (mvs)</CODE>
+and <CODE>#system (vms)</CODE>.
+</P><P>
+
+<STRONG>Portability note:</STRONG> Many Unix C compilers provide only one answer
+for the <CODE>system</CODE> assertion: <CODE>#system (unix)</CODE>, if they support
+assertions at all.  This is less than useful.
+</P><P>
+
+An assertion with a multi-word answer is completely different from several
+assertions with individual single-word answers.  For example, the presence
+of <CODE>system (mach 3.0)</CODE> does not mean that <CODE>system (3.0)</CODE> is true.
+It also does not directly imply <CODE>system (mach)</CODE>, but in GNU C, that
+last will normally be asserted as well.
+</P><P>
+
+The current list of possible assertion values for <CODE>cpu</CODE> is:
+<CODE>#cpu (a29k)</CODE>, <CODE>#cpu (alpha)</CODE>, <CODE>#cpu (arm)</CODE>, <CODE>#cpu
+(clipper)</CODE>, <CODE>#cpu (convex)</CODE>, <CODE>#cpu (elxsi)</CODE>, <CODE>#cpu
+(tron)</CODE>, <CODE>#cpu (h8300)</CODE>, <CODE>#cpu (i370)</CODE>, <CODE>#cpu (i386)</CODE>,
+<CODE>#cpu (i860)</CODE>, <CODE>#cpu (i960)</CODE>, <CODE>#cpu (m68k)</CODE>, <CODE>#cpu
+(m88k)</CODE>, <CODE>#cpu (mips)</CODE>, <CODE>#cpu (ns32k)</CODE>, <CODE>#cpu (hppa)</CODE>,
+<CODE>#cpu (pyr)</CODE>, <CODE>#cpu (ibm032)</CODE>, <CODE>#cpu (rs6000)</CODE>,
+<CODE>#cpu (sh)</CODE>, <CODE>#cpu (sparc)</CODE>, <CODE>#cpu (spur)</CODE>, <CODE>#cpu
+(tahoe)</CODE>, <CODE>#cpu (vax)</CODE>, <CODE>#cpu (we32000)</CODE>.
+</P><P>
+
+<A NAME="IDX66"></A>
+You can create assertions within a C program using <SAMP>`#assert'</SAMP>, like
+this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#assert <VAR>predicate</VAR> (<VAR>answer</VAR>)
+</pre></td></tr></table></P><P>
+
+(Note the absence of a <SAMP>`#'</SAMP> before <VAR>predicate</VAR>.)
+</P><P>
+
+<A NAME="IDX67"></A>
+<A NAME="IDX68"></A>
+<A NAME="IDX69"></A>
+<A NAME="IDX70"></A>
+Each time you do this, you assert a new true answer for <VAR>predicate</VAR>.
+Asserting one answer does not invalidate previously asserted answers;
+they all remain true.  The only way to remove an assertion is with
+<SAMP>`#unassert'</SAMP>.  <SAMP>`#unassert'</SAMP> has the same syntax as
+<SAMP>`#assert'</SAMP>.  You can also remove all assertions about
+<VAR>predicate</VAR> like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#unassert <VAR>predicate</VAR>
+</pre></td></tr></table></P><P>
+
+You can also add or cancel assertions using command options
+when you run <CODE>gcc</CODE> or <CODE>cpp</CODE>.  See section <A HREF="cpp_42.html#SEC42">1.9 Invoking the C Preprocessor</A>.
+</P><P>
+
+<A NAME="#error Directive"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_36.html#SEC36"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_38.html#SEC38"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,116 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: i386-Float</TITLE>
+
+<META NAME="description" CONTENT="Using as: i386-Float">
+<META NAME="keywords" CONTENT="Using as: i386-Float">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC274"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_264.html#SEC273"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_266.html#SEC275"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_266.html#SEC275"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.12.8 Floating Point </H3>
+<!--docid::SEC274::-->
+<P>
+
+<A NAME="IDX765"></A>
+<A NAME="IDX766"></A>
+<A NAME="IDX767"></A>
+<A NAME="IDX768"></A>
+All 80387 floating point types except packed BCD are supported.
+(BCD support may be added without much difficulty).  These data
+types are 16-, 32-, and 64- bit integers, and single (32-bit),
+double (64-bit), and extended (80-bit) precision floating point.
+Each supported type has an instruction mnemonic suffix and a constructor
+associated with it.  Instruction mnemonic suffixes specify the operand's
+data type.  Constructors build these data types into memory.
+</P><P>
+
+<A NAME="IDX769"></A>
+<A NAME="IDX770"></A>
+<A NAME="IDX771"></A>
+<A NAME="IDX772"></A>
+<A NAME="IDX773"></A>
+<A NAME="IDX774"></A>
+<A NAME="IDX775"></A>
+<A NAME="IDX776"></A>
+<UL>
+<LI>
+Floating point constructors are <SAMP>`.float'</SAMP> or <SAMP>`.single'</SAMP>,
+<SAMP>`.double'</SAMP>, and <SAMP>`.tfloat'</SAMP> for 32-, 64-, and 80-bit formats.
+These correspond to instruction mnemonic suffixes <SAMP>`s'</SAMP>, <SAMP>`l'</SAMP>,
+and <SAMP>`t'</SAMP>. <SAMP>`t'</SAMP> stands for 80-bit (ten byte) real.  The 80387
+only supports this format via the <SAMP>`fldt'</SAMP> (load 80-bit real to stack
+top) and <SAMP>`fstpt'</SAMP> (store 80-bit real and pop stack) instructions.
+<P>
+
+<A NAME="IDX777"></A>
+<A NAME="IDX778"></A>
+<A NAME="IDX779"></A>
+<A NAME="IDX780"></A>
+<A NAME="IDX781"></A>
+<A NAME="IDX782"></A>
+<A NAME="IDX783"></A>
+<A NAME="IDX784"></A>
+<LI>
+Integer constructors are <SAMP>`.word'</SAMP>, <SAMP>`.long'</SAMP> or <SAMP>`.int'</SAMP>, and
+<SAMP>`.quad'</SAMP> for the 16-, 32-, and 64-bit integer formats.  The
+corresponding instruction mnemonic suffixes are <SAMP>`s'</SAMP> (single),
+<SAMP>`l'</SAMP> (long), and <SAMP>`q'</SAMP> (quad).  As with the 80-bit real format,
+the 64-bit <SAMP>`q'</SAMP> format is only present in the <SAMP>`fildq'</SAMP> (load
+quad integer to stack top) and <SAMP>`fistpq'</SAMP> (store quad integer and pop
+stack) instructions.
+</UL>
+<P>
+
+Register to register operations should not use instruction mnemonic suffixes.
+<SAMP>`fstl %st, %st(1)'</SAMP> will give a warning, and be assembled as if you
+wrote <SAMP>`fst %st, %st(1)'</SAMP>, since all register to register operations
+use 80-bit floating point operands. (Contrast this with <SAMP>`fstl %st, mem'</SAMP>,
+which converts <SAMP>`%st'</SAMP> from 80-bit to 64-bit floating point format,
+then stores the result in the 4 byte location <SAMP>`mem'</SAMP>)
+</P><P>
+
+<A NAME="i386-SIMD"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_264.html#SEC273"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_266.html#SEC275"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_266.html#SEC275"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

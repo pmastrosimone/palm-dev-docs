@@ -1,0 +1,109 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Wildcard Function</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Wildcard Function">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Wildcard Function">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC33"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_28.html#SEC32"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_25.html#SEC29"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_26.html#SEC30"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 4.4.3 The Function <CODE>wildcard</CODE> </H3>
+<!--docid::SEC33::-->
+<P>
+
+Wildcard expansion happens automatically in rules.  But wildcard expansion
+does not normally take place when a variable is set, or inside the
+arguments of a function.  If you want to do wildcard expansion in such
+places, you need to use the <CODE>wildcard</CODE> function, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(wildcard <VAR>pattern</VAR><small>...</small>)
+</pre></td></tr></table></P><P>
+
+This string, used anywhere in a makefile, is replaced by a
+space-separated list of names of existing files that match one of the
+given file name patterns.  If no existing file name matches a pattern,
+then that pattern is omitted from the output of the <CODE>wildcard</CODE>
+function.  Note that this is different from how unmatched wildcards
+behave in rules, where they are used verbatim rather than ignored
+(see section <A HREF="make_28.html#SEC32">4.4.2 Pitfalls of Using Wildcards</A>).
+</P><P>
+
+One use of the <CODE>wildcard</CODE> function is to get a list of all the C source
+files in a directory, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(wildcard *.c)
+</pre></td></tr></table></P><P>
+
+We can change the list of C source files into a list of object files by
+replacing the <SAMP>`.c'</SAMP> suffix with <SAMP>`.o'</SAMP> in the result, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(patsubst %.c,%.o,$(wildcard *.c))
+</pre></td></tr></table></P><P>
+
+(Here we have used another function, <CODE>patsubst</CODE>.
+See section <A HREF="make_81.html#SEC85">Functions for String Substitution and Analysis</A>.)</P><P>
+
+Thus, a makefile to compile all C source files in the directory and then
+link them together could be written as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>objects := $(patsubst %.c,%.o,$(wildcard *.c))
+
+foo : $(objects)
+        cc -o foo $(objects)
+</pre></td></tr></table></P><P>
+
+(This takes advantage of the implicit rule for compiling C programs, so
+there is no need to write explicit rules for compiling the files.
+See section <A HREF="make_63.html#SEC67">The Two Flavors of Variables</A>, for an explanation of
+<SAMP>`:='</SAMP>, which is a variant of <SAMP>`='</SAMP>.)
+</P><P>
+
+<A NAME="Directory Search"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_28.html#SEC32"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_25.html#SEC29"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_26.html#SEC30"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

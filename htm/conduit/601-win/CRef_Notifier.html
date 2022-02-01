@@ -1,0 +1,337 @@
+<html>
+<head>
+<title>Desktop Application Notifier API | C/C++ Sync Suite Reference</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="KEYWORDS" CONTENT="C, C++, C/C++ Sync Suite, Desktop Application Notifier, Desktop Notifier, notify, notifier, notifier DLL, notification, HotSync, reference, API, CDK, conduit, conduits, Windows">
+<META NAME="DESCRIPTION" CONTENT="Provides reference details on the Desktop Application Notifier API in the C/C++ Sync Suite.">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource HTML 20040609">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="LASTUPDATED" CONTENT="06/28/04 08:30:20">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="995932"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncReferenceTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CRef_PwdLib.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CRef_Part_Appx.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncReferenceIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">18 &nbsp;&nbsp;
+Desktop Application Notifier API</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">C/C++ Sync Suite Reference</p>
+<p class="SubTitle">Palm OS&#174; Conduit Development Kit for Windows, Version 6.0.1 </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="CRef_Part_Desktop.html">Part III: Desktop Support APIs</a> </h1>
+<h1 class="SideTOC1"><a href="CRef_Notifier.html">18  Desktop Application Notifier API</a></h1>
+
+   <h2 class="SideTOC2"><a href="#997895">
+   Desktop Application Notifier Constants</a></h2>
+
+      <h3 class="SideTOC3"><a href="#995966">
+      Notification Messages</a></h3>
+
+   <h2 class="SideTOC2"><a href="#995993">
+   Notifier-Defined API Functions</a></h2>
+
+      <h3 class="SideTOC3"><a href="#996004">
+      GetNotifierVersion</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996023">
+      HS_Notify</a></h3>
+
+</div>
+</td>
+<!--END SIDETOC-->
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="995946"> </a>If you need to create a notifier, it must implement the Desktop Application Notification API described in this chapter. A <b>notifier</b> is an optional DLL that developers can implement to notify their desktop applications about synchronization activities. HotSync<sup>&#174;</sup> Manager calls all registered notifiers before synchronization begins, passing them messages that they act upon&#8212for example, a notifier can tell its desktop application to save and stop modifying data. HotSync Manager calls notifiers again after synchronization so that they can, in turn, notify their desktop applications whether the synchronization operation completed successfully.</p>
+
+<p><a name="995947"> </a>The Desktop Application Notification functions are declared in <code>HSNotify.h</code>. </p>
+
+<p><a name="995949"> </a>The sections in this chapter are: </p>
+   <blockquote class = "bq"><a name="995953"> </a><a href="CRef_Notifier.html#997895">Desktop Application Notifier Constants</a></blockquote>
+   <blockquote class = "bq"><a name="995957"> </a><a href="CRef_Notifier.html#995993">Notifier-Defined API Functions</a></blockquote>
+
+<h2 class="haH2">
+  <a name="997895"> </a>Desktop Application Notifier Constants <a href="#995932"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="997899"> </a>This section describes the following group of related preprocessor constants for this API: <a href="CRef_Notifier.html#995966">Notification Messages</a>.</p>
+
+<h3 class="hbH3">
+  <a name="995966"> </a>Notification Messages <a href="#995932"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="995967"> </a>Purpose 
+</h4>
+
+<p><a name="995968"> </a>Define messages that HotSync Manager can pass to a notifier when it calls a notifier's <a href="CRef_Notifier.html#996023"><code>HS_Notify()</code></a> function during a HotSync operation.</p>
+<h4>
+  <a name="995972"> </a>Declared In 
+</h4>
+<code>HSNotify.h<a name="995973"> </a></code><h4>
+  <a name="995974"> </a>Constants 
+</h4>
+
+<dl>
+<dt><a name="995975"> </a><code>#define HS_SYNC_FAILURE 3</code></dt>
+<dd><a name="995976"> </a>HotSync Manager sends this message to indicate that a synchronization operation has completed <i>unsuccessfully</i>. Your <code>HS_Notify()</code> implementation must return a value of <code>TRUE</code> for HotSync Manager to continue. </dd>
+
+<dt><a name="995977"> </a><code>#define HS_SYNC_QUERYOK 0</code></dt>
+<dd><a name="995978"> </a>Before synchronization begins, HotSync Manager sends this message asking each notifier whether the synchronization operation can start. Your <code>HS_Notify()</code> implementation must return a value of <code>TRUE</code> for HotSync Manager to continue. </dd>
+
+<dt><a name="995979"> </a><code>#define HS_SYNC_STARTED 1</code></dt>
+<dd><a name="995980"> </a>HotSync Manager sends this message to indicate that a synchronization operation has started. Your <code>HS_Notify()</code> implementation must return a value of <code>TRUE</code> for HotSync Manager to continue. </dd>
+
+<dt><a name="995981"> </a><code>#define HS_SYNC_SUCCESS 2</code></dt>
+<dd><a name="995982"> </a>HotSync Manager sends this message to indicate that a synchronization operation has completed successfully. Your <code>HS_Notify()</code> implementation must return a value of <code>TRUE</code> for HotSync Manager to continue. </dd>
+
+<dt><a name="995983"> </a><code>#define HS_USER_UPDATE 4</code></dt>
+<dd><a name="995984"> </a>HotSync Manager sends this message to indicate that the user data file has changed. Your <code>HS_Notify()</code> implementation must return a value of <code>TRUE</code> for HotSync Manager to continue. </dd>
+
+</dl>
+<h4>
+  <a name="995985"> </a>Compatibility 
+</h4>
+
+<p><a name="995986"> </a>HotSync Manager version: All.<br>Palm OS version: All.</p>
+<h4>
+  <a name="995987"> </a>See Also 
+</h4>
+
+<p><a name="995991"> </a><a href="CRef_Notifier.html#996023"><code>HS_Notify()</code></a></p>
+
+<h2 class="haH2">
+  <a name="995993"> </a>Notifier-Defined API Functions <a href="#995932"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="995994"> </a>This section describes the following functions that a notifier implements.</p>
+
+<p class="fineprint">
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="997921"> </a><a href="CRef_Notifier.html#996004"><code>GetNotifierVersion()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="997935"> </a>Returns a notifier-defined version number.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="997923"> </a><a href="CRef_Notifier.html#996023"><code>HS_Notify()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="997937"> </a>Receives notification messages from HotSync Manager and, upon return, indicates whether HotSync Manager can continue.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<h3 class="hbH3">
+  <a name="996004"> </a>GetNotifierVersion Function <a href="#995932"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996006"> </a>Purpose 
+</h4>
+
+<p><a name="996007"> </a>Returns a notifier-defined version number.</p>
+<h4>
+  <a name="996008"> </a>Declared In 
+</h4>
+<code>HSNotify.h<a name="996009"> </a></code><h4>
+  <a name="996010"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996011"></a>DWORD GetNotifierVersion ()
+</pre>
+<pre class="proto"><a name="996013"></a>typedef DWORD (*PGETNOTIFIERVERSIONFUNC) ()
+</pre>
+<h4>
+  <a name="996014"> </a>Parameters 
+</h4>
+
+<p><a name="996015"> </a>None.</p>
+<h4>
+  <a name="996016"> </a>Returns 
+</h4>
+
+<p><a name="996017"> </a>Return the version number of the notifier. This value is defined by the notifier.</p>
+<h4>
+  <a name="996018"> </a>Comments 
+</h4>
+
+<p><a name="996019"> </a>Implementing <code>GetNotifierVersion()</code> is optional. HotSync Manager does not define what this function should return nor does it call this function. However, it may be useful for your desktop application to call this function to identify the version of your notifier.</p>
+<h4>
+  <a name="996020"> </a>Compatibility 
+</h4>
+
+<p><a name="996021"> </a>HotSync Manager version: All.<br>Palm OS version: All.</p>
+
+<h3 class="hbH3">
+  <a name="996023"> </a>HS_Notify Function <a href="#995932"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996025"> </a>Purpose 
+</h4>
+
+<p><a name="996026"> </a>Receives notification messages from HotSync Manager and, upon return, indicates whether HotSync Manager can continue.</p>
+<h4>
+  <a name="996027"> </a>Declared In 
+</h4>
+<code>HSNotify.h<a name="996028"> </a></code><h4>
+  <a name="996029"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996030"></a>BOOL HS_Notify (
+   int <code class="par">nCode</code>,
+   int <code class="par">nUserId</code>
+)
+</pre>
+<pre class="proto"><a name="996032"></a>typedef BOOL (
+   *PHSNOTIFYFUNC
+) (
+   int <code class="par">nCode</code>,
+   int <code class="par">nUserId</code>
+)
+</pre>
+<h4>
+  <a name="996033"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996034"> </a><code>&rarr;  <i>nCode</i></code></dt>
+<dd><a name="996035"> </a>The message from HotSync Manager, which is one of the constants defined in <a href="CRef_Notifier.html#995966">"Notification Messages."</a></dd>
+
+<dt><a name="996039"> </a><code>&rarr;  <i>nUserId</i></code></dt>
+<dd><a name="996040"> </a>The ID of the user who is synchronizing.</dd>
+
+</dl>
+<h4>
+  <a name="996041"> </a>Returns 
+</h4>
+
+<p><a name="996042"> </a>If your notifier wants the HotSync operation to start, return <code>TRUE</code>. </p>
+
+<p><a name="996043"> </a>If your notifier does not want the HotSync operation to start, return <code>FALSE</code>.</p>
+<h4>
+  <a name="996044"> </a>Comments 
+</h4>
+
+<p><a name="996045"> </a>A notifier must implement this function. HotSync Manager calls a notifier's <code>HS_Notify()</code> function to pass it the ID of the user (<code class="par">nUserID</code>) who started the HotSync operation and basic status messages (<code class="par">nCode</code>). Your implementation must return a value of <code>TRUE</code>, otherwise HotSync Manager aborts the synchronization operation. What your notifier does beyond these minimum requirements is up to you. A typical notifier queries its desktop application to determine whether it is ready for its conduit to synchronize desktop data. Your notifier can return <code>FALSE</code> to halt the entire synchronization operation if, for example, your desktop application is currently accessing the data to be synchronized.</p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1998-2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="CRef_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncReferenceTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CRef_PwdLib.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CRef_Part_Appx.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncReferenceIX.html">Index</a>
+</p>
+</td>
+</tr>
+<!-- END FOOTER -->
+
+</body>
+</html>

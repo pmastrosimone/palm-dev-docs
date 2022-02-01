@@ -1,0 +1,407 @@
+<html>
+<head>
+<title>Using HotSync Exchange | Introduction to Conduit Development</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="KEYWORDS" CONTENT="conduit, HotSync Exchange, exchange, HotSync Manager, hotsync, Exchange Manager, conduits, CDK">
+<META NAME="DESCRIPTION" CONTENT="Describes the HotSync Exchange feature available in HotSync Manager versions 6.0 and later and in Palm OS Cobalt. HotSync Exchange enables a handheld and a desktop computer to use Palm OS standard interfaces to exchange files in their native formats.">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource HTML 20040609">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="LASTUPDATED" CONTENT="06/28/04 08:30:37">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="608590"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="IntroToConduitsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_CondPPPlatform.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_CondBasics.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="IntroToConduitsIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">3 &nbsp;&nbsp;
+Using HotSync Exchange</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Introduction to Conduit Development</p>
+<p class="SubTitle">Palm OS&#174; Conduit Development Kit for Windows, Version 6.0.1 </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="Intro_HotSyncExch.html">3  Using HotSync Exchange</a></h1>
+
+   <h2 class="SideTOC2"><a href="#996067">
+   Overview</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1001221">
+   Flow of Data during a HotSync Exchange</a></h2>
+
+   <h2 class="SideTOC2"><a href="#998127">
+   Desktop-to-Handheld HotSync Exchange</a></h2>
+
+      <h3 class="SideTOC3"><a href="#1005539">
+      Desktop User Interface</a></h3>
+
+      <h3 class="SideTOC3"><a href="#998208">
+      Desktop HotSync Exchange API</a></h3>
+
+      <h3 class="SideTOC3"><a href="#999116">
+      Bundled Install of Application and Files</a></h3>
+
+   <h2 class="SideTOC2"><a href="#1000012">
+   Handheld-to-Desktop HotSync Exchange</a></h2>
+
+      <h3 class="SideTOC3"><a href="#1000414">
+      Handheld User Interface</a></h3>
+
+      <h3 class="SideTOC3"><a href="#999986">
+      Handheld HotSync Exchange API</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1000581">
+      Locating Files Transferred from the Handheld</a></h3>
+
+</div>
+</td>
+<!--END SIDETOC-->
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="986245"> </a>This chapter introduces the HotSync<sup>&#174;</sup> Exchange feature available in HotSync Manager versions 6.0 and later and Palm OS&#174; Cobalt. HotSync Exchange enables a handheld and a desktop computer to use Palm OS standard interfaces to exchange files in their native formats. </p>
+<div class="NINoteImportant"><hr>
+  <a name="1006703"> </a> <b>IMPORTANT: </b> If your conduit design only converts between handheld and desktop data formats, then you may be able to use HotSync Exchange and not need to develop a conduit at all.
+<hr>
+</div>
+
+<p><a name="1006698"> </a>The sections in this chapter are:</p>
+   <blockquote class = "bq"><a name="996058"> </a><a href="Intro_HotSyncExch.html#996067">Overview</a></blockquote>
+   <blockquote class = "bq"><a name="1005302"> </a><a href="Intro_HotSyncExch.html#1001221">Flow of Data during a HotSync Exchange</a></blockquote>
+   <blockquote class = "bq"><a name="1005339"> </a><a href="Intro_HotSyncExch.html#998127">Desktop-to-Handheld HotSync Exchange</a></blockquote>
+   <blockquote class = "bq"><a name="1005347"> </a><a href="Intro_HotSyncExch.html#1000012">Handheld-to-Desktop HotSync Exchange</a></blockquote>
+
+<h2 class="haH2">
+  <a name="996067"> </a>Overview <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996105"> </a>HotSync Exchange enables a handheld and a desktop computer to use Palm OS standard interfaces to exchange files in their native formats. For example, HotSync Exchange enables the user to install bitmap (BMP) files to a handheld image viewer application via the standard Palm OS Desktop software's Install Tool application, provided the viewer has registered with the handheld Exchange Manager for the BMP extension. This feature eliminates the need for a custom conduit that simply packs bitmap data into Palm OS database (PDB) format. During the HotSync operation following the bitmap installation, the handheld viewer receives the bitmap data from HotSync Exchange using the Palm OS standard Exchange Manager interface&#8212the same interface that it would use to receive beamed data. This eliminates the need for the application to discover and unwrap the PDB file containing the bitmap. The handheld viewer can also send files via the Exchange Manager directly to the desktop, where HotSync Exchange stores them in the standard bitmap (BMP) format.</p>
+
+<p><a name="996137"> </a>HotSync Exchange consists of three components:</p>
+<ul type="disc">
+  <li><a name="996138"> </a>An install conduit shipped with HotSync Manager versions 6.0 and later. This install conduit is named "HotSync Exchange" in the HotSync Manager <b>Custom</b> dialog box.
+  <li><a name="996139"> </a>A handheld Exchange library shipped in Palm OS Cobalt. This library is called the "HotSync Exchange library" in the rest of this chapter.
+  <li><a name="996140"> </a>A <b>File Exchange</b> &gt; <b>Edit Queue</b> menu item in the HotSync client in Palm OS Cobalt. The user can look at the File Exchange Queue on the handheld to see which files on the handheld will be transferred during the next HotSync operation. The user can also direct the file to go to a selected desktop.
+</ul>
+
+<p><a name="996050"> </a>HotSync Exchange offers developers the following advantages over custom conduit development:</p>
+<ul type="disc">
+  <li><a name="997583"> </a>Eliminates the need to convert between Palm OS and desktop file formats.
+  <li><a name="997623"> </a>Eliminates the need for conduits that simply translate file formats.
+  <li><a name="997661"> </a>Relies on the existing Exchange Manager interface on the handheld.
+  <li><a name="997734"> </a>Handles standard data formats:
+  <ul type="disc">
+    <li><a name="997859"> </a>Palm OS application registers for a MIME-type/file extension using <code>ExgRegisterDataType()</code>.
+    <li><a name="997860"> </a>Desktop file type is determined by the file extension specified in the URL passed to <code>ExgPut()</code>&#8212for example, URL: <code>_desktop://HSuser/images/flowers.jpg</code> specifies a JPEG file.
+  </ul>
+</ul>
+
+<h2 class="haH2">
+  <a name="1001221"> </a>Flow of Data during a HotSync Exchange <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1001235"> </a>This section presents an example that explains the flow of data before, during, and after a HotSync operation in which a HotSync Exchange occurs. In this example, a handheld application queues a file named <code>todesktop.id</code> to be transferred to the desktop and the user queues a file named <code>todevice.jpg</code> to be transferred to the handheld. Assume that an application on the handheld is registered with Exchange Manager for the JPG file type. <a href="Intro_HotSyncExch.html#1002374">Figure 3.1</a> illustrates the flow of data in the example described below.</p>
+
+<p class="FFigureCaption">
+  <a name="1002374"> </a><b>Figure 3.1&nbsp;&nbsp;HotSync Exchange data flow</b>
+</p>
+<div align="left"><img src="images/HSExchange_Flow.jpg" border="0" hspace="0" vspace="0">
+</div>
+
+<h4 class="hcH4">
+  <a name="1001247"> </a>Before a HotSync Operation
+</h4>
+
+<p><a name="1001846"> </a>On the desktop, the user uses Install Tool to queue <code>todevice.jpg</code> for installation during the next HotSync operation. Install Tool in turn calls the Install Aide function <a href="CRef_InstAide.html#997299"><code>PltInstallFile()</code></a>, which directs the file to the HotSync Exchange install conduit by placing it specific download folder on the desktop.</p>
+
+<p><a name="1001790"> </a>On the handheld (depicted by the black lines numbered 1, 2, and 3 in <a href="Intro_HotSyncExch.html#1002374">Figure 3.1</a>), an application uses the standard Palm OS Exchange Manager API to perform the following steps:</p>
+<ol type="1">
+  <li value="1"><a name="1002688"> </a>Initialize the <code>ExgSocketType</code> structure with a filename of <code>todesktop.id</code>.
+  <li value="2"><a name="1002790"> </a>Call <code>ExgPut()</code>.
+   <p><a name="1003069"> </a>This call causes the HotSync Exchange library to create a new database with creator ID <code>'hsxc'</code>, type <code>'SEND'</code>, and a unique name. The library stores the database name, file name, and default destination (<code>"&lt;Any Desktop&gt;"</code>) in a catalog of pending desktop exchanges.</p>
+  <li value="3"><a name="1003070"> </a>Call <code>ExgSend()</code> to fill the database with data.
+  <li value="4"><a name="1003071"> </a>Call <code>ExgDisconnect()</code> to close the database. The new database is queued until the data in it can be successfully sent to the desktop during a HotSync operation.
+</ol>
+
+<h4 class="hcH4">
+  <a name="1003155"> </a>During a HotSync Operation
+</h4>
+
+<p><a name="1003211"> </a>As indicated by the red lines numbered 4, 5, 6, and 7 in <a href="Intro_HotSyncExch.html#1002374">Figure 3.1</a>, the HotSync Exchange install conduit first checks whether any handheld-to-desktop transfer requests are pending for the local desktop by examining the handheld exchange catalog mentioned above. Because it finds an entry in the catalog with a destination of <code>"&lt;Any Desktop&gt;"</code>, the HotSync Exchange conduit creates a desktop file with the specified filename (<code>todesktop.id</code>) in the <code>Exchange\From</code> subdirectory of the HotSync user's data directory. The HotSync Exchange conduit transfers the contents of the temporary handheld database, less the header, into this file and then deletes the catalog entry and the temporary database on the handheld.</p>
+
+<p><a name="1002981"> </a>Finally, the HotSync Exchange install conduit checks whether any files need to be transferred to the handheld. In this example, it finds the file <code>todevice.jpg</code> queued on the desktop. The HotSync Exchange conduit creates a database on the handheld with creator ID <code>'hsxc'</code>, type <code>'RECV'</code>, and name <code>todevice.jpg</code>.</p>
+
+<h4 class="hcH4">
+  <a name="1001736"> </a>After a HotSync Operation
+</h4>
+
+<p><a name="1003617"> </a>As indicated by blue lines numbered 8, 9, and 10 in <a href="Intro_HotSyncExch.html#1002374">Figure 3.1</a>, Palm OS sublaunches newly installed applications and applications whose data has been modified by the HotSync operation. At this point, newly installed applications can register the file types they support with the Exchange Manager. </p>
+<div class="NINoteImportant"><hr>
+  <a name="1005829"> </a> <b>NOTE: </b> To enable users to install a file to either the handheld's primary storage or to an expansion card, your handheld application must register the file type with <i>both</i> the Exchange Manager (to install to primary storage) and the VFS Manager (to install to an expansion card). The VFS Manager registers several common desktop file types itself and associates them with specific default directories on a card in which files of these types are installed during a HotSync operation. If your file type is not one of these, your application must register the file type and specify a new default directory on the card. Refer to <i>Exploring Palm OS: Memory, Databases, and Files</i> in the Palm OS SDK for details on registering new default directories on an expansion card.
+<hr>
+</div>
+
+<p><a name="1005856"> </a>For example, if the JPG viewer application were installed during this HotSync operation, it would need to register for the JPG file type now. When the HotSync Exchange library receives the <code>sysNotifySyncFinishEvent</code> notification, it searches for databases with creator ID <code>'hsxc'</code> and type <code>'RECV'</code>. Upon finding <code>todevice.jpg</code>, it opens this database and calls <code>ExgNotifyReceive()</code>. This call causes the Exchange Manager to launch the associated application (the JPG viewer) and to transfer <code>todevice.jpg</code> to it. At this time, the application can choose whether to the data in a native Palm OS database. When the application calls <code>ExgDisconnect()</code>, the HotSync Exchange library deletes the temporary database created by the HotSync Exchange conduit.</p>
+
+<h2 class="haH2">
+  <a name="998127"> </a>Desktop-to-Handheld HotSync Exchange <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="998159"> </a>Using HotSync Exchange to transfer a file from the desktop to the handheld is similar to installing a Palm OS file type (PRC, PDB, etc.) on the handheld. The following sections describe the user interface and API that enables desktop applications or conduits to transfer files via HotSync Exchange.</p>
+   <blockquote class = "bq"><a name="998556"> </a><a href="Intro_HotSyncExch.html#1005539">Desktop User Interface</a></blockquote>
+   <blockquote class = "bq"><a name="1005537"> </a><a href="Intro_HotSyncExch.html#998208">Desktop HotSync Exchange API</a></blockquote>
+   <blockquote class = "bq"><a name="1005576"> </a><a href="Intro_HotSyncExch.html#999116">Bundled Install of Application and Files</a></blockquote>
+<h3 class="hbH3">
+  <a name="1005539"> </a>Desktop User Interface <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1005543"> </a>Install Tool (<a href="Intro_HotSyncExch.html#998304">Figure 3.2</a>) is the primary user interface for HotSync Exchange on the desktop. Users can launch Install Tool and add files to be installed during the next HotSync operation. If the filename extension is recognized by the HotSync Exchange Library on the handheld, the handheld accepts the file and the information is available to the user the next time an associated handheld application is run. If the extension is not recognized, the file is not installed on the handheld and a message is written to the HotSync log on the handheld, but not on the desktop.</p>
+
+<p class="FFigureCaption">
+  <a name="998304"> </a><b>Figure 3.2&nbsp;&nbsp;Install Tool</b>
+</p>
+<div align="left"><img src="images/InstallTool.jpg" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="998309"> </a>In addition to the Install Tool application, the user interacts with HotSync Exchange via a Send To item in the Windows Explorer context menu. This item is named "Palm OS Handheld" (<a href="Intro_HotSyncExch.html#998314">Figure 3.3</a>). Right-clicking a file and choosing this menu item passes the file path to the Install Tool, which prompts for the HotSync user for whom to install the file.</p>
+
+<p class="FFigureCaption">
+  <a name="998314"> </a><b>Figure 3.3&nbsp;&nbsp;Context menu for HotSync Exchange and Install Tool</b>
+</p>
+<div align="left"><img src="images/HSE_Menu.jpg" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="998319"> </a>As with any install conduit, the user can enable and disable the HotSync Exchange install conduit via the HotSync Manager <b>Custom</b> dialog box as shown in <a href="Intro_HotSyncExch.html#998324">Figure 3.4</a>.</p>
+
+<p class="FFigureCaption">
+  <a name="998324"> </a><b>Figure 3.4&nbsp;&nbsp;Configuring the HotSync Exchange install conduit</b>
+</p>
+<div align="left"><img src="images/HSE_Custom.jpg" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="1006615"> </a>The HotSync Exchange library disables the confirm receipt dialog that is normally displayed when data is sent via the Exchange Manager. Thus there is no user interface on the handheld during a successful desktop-to-handheld exchange.</p>
+<h3 class="hbH3">
+  <a name="998208"> </a>Desktop HotSync Exchange API <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="998602"> </a>There is no new API for HotSync Exchange. To transfer to the handheld's <i>primary storage</i> a file of a type registered with the Exchange Manager on the handheld, you call the same API as you do to install a file of any Palm OS file type (PRC, PDB, etc.) on the handheld:</p>
+<ul type="disc">
+  <li><a name="998739"> </a>C/C++ Sync Suite: Install Aide, <a href="CRef_InstAide.html#997299"><code>PltInstallFile()</code></a>
+  <li><a name="998806"> </a>COM Sync Suite: <a href="COMRef_Obj.html#1172233"><code>PDInstall</code></a>.<a href="COMRef_Meth.html#1000018"><code>InstallFileToHH()</code></a>
+</ul>
+
+<p><a name="998589"> </a>If the file to install is not registered by another install conduit, the HotSync Exchange install conduit installs the file, if the handheld is running Palm OS Cobalt. Otherwise, the Install to Card conduit attempts to install the file on an expansion card, if present.</p>
+
+<p><a name="999188"> </a>To transfer to the handheld's <i>expansion card</i> a file of a type registered with the VFS Manager on the handheld, you call one of these APIs:</p>
+<ul type="disc">
+  <li><a name="999301"> </a>C/C++ Sync Suite: Install Aide, <a href="CRef_InstAide.html#996589"><code>PlmSlotInstallFile()</code></a> 
+  <li><a name="999343"> </a>COM Sync Suite: <a href="COMRef_Obj.html#1172233"><code>PDInstall</code></a>.<a href="COMRef_Meth.html#1000077"><code>InstallFileToSlot()</code></a> 
+</ul>
+
+<p><a name="998924"> </a>For more information on these APIs, see one of the following:</p>
+<ul type="disc">
+  <li><a name="998941"> </a><a href="CComp_Install.html#996189">"Using the Install Aide API"</a> in <i>C/C++ Sync Suite Companion</i>
+  <li><a name="999000"> </a><a href="COMComp_Install.html#996352">"Installing Files on the Handheld with PDInstall"</a> in <i>COM Sync Suite Companion</i>
+</ul>
+<h3 class="hbH3">
+  <a name="999116"> </a>Bundled Install of Application and Files <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1006389"> </a>A bundled install transfers both an application and its data to the handheld in a single HotSync operation&#8212for example, an image viewer application and sample JPG images. The following steps outline how a bundled install proceeds:</p>
+<ol type="1">
+  <li value="1"><a name="999542"> </a>The HotSync operation begins.
+  <li value="2"><a name="999584"> </a>The Install conduit installs PRC and PDB files&#8212including, for example a JPG viewer application.
+  <li value="3"><a name="999588"> </a>The HotSync Exchange install conduit transfers other files, like JPG files, to the Exchange Library on the handheld.
+  <li value="4"><a name="999641"> </a>All applications (including any PRCs installed in step 2) receive the <code>sysAppLaunchCmdSyncNotify</code> launch code.
+  <li value="5"><a name="999673"> </a>During sublaunch, the viewer application installed in step 2 must register for the JPG file type with the Exchange Manager.
+  <li value="6"><a name="999764"> </a>The HotSync Exchange library receives a <code>sysNotifySyncFinishEvent</code> notification.
+  <li value="7"><a name="999808"> </a>The HotSync Exchange Library launches the viewer application and transfers the JPG files to it.
+</ol>
+
+<h2 class="haH2">
+  <a name="1000012"> </a>Handheld-to-Desktop HotSync Exchange <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1000013"> </a>Using HotSync Exchange to transfer a file from the handheld to the desktop is similar to transferring data between handheld applications using the Exchange Manager. The primary difference is that the data is queued and transferred during a HotSync operation with a desktop computer.</p>
+
+<p><a name="1000994"> </a>An application that supports HotSync Exchange allows the user to select an item and "send" it to the desktop via HotSync Exchange. The application calls the Exchange Manager, specifying the information to send and the file to create on the desktop in the user's <code>Exchange\From</code> directory. The HotSync Exchange Library on the handheld creates a new database containing this information and queues it until it can be successfully transferred to a desktop computer during a HotSync operation. </p>
+
+<p><a name="1000285"> </a>The following sections describe the user interface and API that enables handheld applications to transfer files via HotSync Exchange.</p>
+<h3 class="hbH3">
+  <a name="1000414"> </a>Handheld User Interface <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1000415"> </a>On the handheld, each application that supports HotSync Exchange must provide an interface whereby the user selects the information to send to the desktop. For example, Memo Pad provides a <b>Send Memo</b> menu item. Memo Pad calls the Exchange Manager, which presents a list of connection methods (<a href="Intro_HotSyncExch.html#1000420">Figure 3.5</a>). Choosing the <b>HotSync</b> method queues the memo to be transferred via HotSync Exchange during a HotSync operation.</p>
+
+<p class="FFigureCaption">
+  <a name="1000420"> </a><b>Figure 3.5&nbsp;&nbsp;HotSync Exchange from Memo Pad</b>
+</p>
+<div align="left"><img src="images/HSE_MemoPad.jpg" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="1000425"> </a>The HotSync client on the handheld provides a way for the user to remove items that are queued for transfer to the desktop (<a href="Intro_HotSyncExch.html#1000432">Figure 3.6</a>). It also allows the user to select a target desktop. The file is then transferred during the next HotSync operation with the selected desktop.</p>
+
+<p class="FFigureCaption">
+  <a name="1000432"> </a><b>Figure 3.6&nbsp;&nbsp;HotSync client's File Exchange Queue</b>
+</p>
+<div align="left"><img src="images/HSE_FileExQueue.jpg" border="0" hspace="0" vspace="0">
+</div>
+<h3 class="hbH3">
+  <a name="999986"> </a>Handheld HotSync Exchange API <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1000583"> </a>Applications use the standard Palm OS Exchange Manager API to send files via HotSync Exchange to the desktop. HotSync Exchange supports two Exchange Manager schemes:</p>
+<ul type="disc">
+  <li><a name="1000584"> </a>The <b>desktop scheme</b> (<code>_desktop</code>). This scheme supports direct exchange of a file to a desktop running HotSync Manager version 6.0 or later.
+  <li><a name="1000585"> </a>The <b>send scheme</b> (<code>_send</code>). This scheme allows a user to send data using any available transport. Palm OS Cobalt includes HotSync technology as one such transport. Other transports may include SMS or Bluetooth, depending on the handheld's capabilities.
+</ul>
+
+<p><a name="1000587"> </a>Because neither scheme supports the specification of a target desktop in the Exchange Manager URL, the file is, by default, sent during the next HotSync operation to <i>any</i> desktop. However, the user may select a specific target desktop for each file pending HotSync Exchange via the HotSync client, if desired (see <a href="Intro_HotSyncExch.html#1000432">Figure 3.6</a>).</p>
+
+<p><a name="1000588"> </a>Files transferred to the desktop via HotSync Exchange are placed in the HotSync user's <code>Exchange\From</code> subdirectory. If the target URL specifies a directory, the target file is placed in the corresponding subdirectory of <code>Exchange\From</code>. This subdirectory is created if it does not already exist. The target filename and extension are taken from the URL. For example, the URL: </p>
+<pre class="sl">_desktop:///portraits/Jennifer Connelly/jcoscar12.bmp</pre>
+
+<p><a name="1000590"> </a>specifies the transfer of a bitmap image from the handheld to the file</p>
+<pre class="sl">...Exchange\From\portraits\Jennifer Connelly\jcoscar12.bmp</pre>
+
+<p><a name="1000716"> </a>on the next desktop with which the handheld synchronizes.</p>
+
+<p><a name="1006524"> </a>For more information about the Exchange Manager on the handheld, see <i>Exploring Palm OS: High-Level Communications</i> in the Palm OS SDK.</p>
+<h3 class="hbH3">
+  <a name="1000581"> </a>Locating Files Transferred from the Handheld <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1000907"> </a>If you are developing a desktop application that needs to be notified of a HotSync Exchange from the handheld to the desktop, you need to write a custom <a href="Intro_Glossary.html#914927"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">notifier</span></a>. Your notifier can detect the presence of new files from the handheld in the user's <code>Exchange\From</code> directory at the end of a HotSync operation. For more information on notifiers, see <a href="Intro_HSMBasics.html#1003341">"Desktop Notifiers."</a></p>
+
+<p><a name="1000803"> </a>To get the path a HotSync user's <code>Exchange\From</code> directory, call one of these functions:</p>
+<ul type="disc">
+  <li><a name="1000826"> </a>C/C++ Sync Suite: User Data API, <a href="CRef_UserData.html#996786"><code>UmGetUserDirectory()</code></a>
+  <li><a name="1000833"> </a>COM Sync Suite: <a href="COMRef_Obj.html#1190026"><code>PDUserData</code></a>.<a href="COMRef_Meth.html#999492"><code>GetUserDirectory()</code></a>
+</ul>
+
+<p><a name="1000847"> </a>For more information on these APIs, see one of the following:</p>
+<ul type="disc">
+  <li><a name="1000853"> </a><a href="CComp_Install.html#996394">"Using the User Data API"</a> in <i>C/C++ Sync Suite Companion</i>
+  <li><a name="1000858"> </a><a href="COMComp_Install.html#996584">"Accessing User Data with PDUserData"</a> in <i>COM Sync Suite Companion</i>
+</ul>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 2001-2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="Intro_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="IntroToConduitsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_CondPPPlatform.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_CondBasics.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="IntroToConduitsIX.html">Index</a>
+</p>
+</td>
+</tr>
+<!-- END FOOTER -->
+
+</body>
+</html>

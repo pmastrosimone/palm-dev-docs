@@ -1,0 +1,257 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Preprocessor Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Preprocessor Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Preprocessor Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC11"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_10.html#SEC10"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_12.html#SEC12"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.9 Options Controlling the Preprocessor </H2>
+<!--docid::SEC11::-->
+<P>
+
+These options control the C preprocessor, which is run on each C source
+file before actual compilation.
+</P><P>
+
+If you use the <SAMP>`-E'</SAMP> option, nothing is done except preprocessing.
+Some of these options make sense only together with <SAMP>`-E'</SAMP> because
+they cause the preprocessor output to be unsuitable for actual
+compilation.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-include <VAR>file</VAR></CODE>
+<DD>Process <VAR>file</VAR> as input before processing the regular input file.
+In effect, the contents of <VAR>file</VAR> are compiled first.  Any <SAMP>`-D'</SAMP>
+and <SAMP>`-U'</SAMP> options on the command line are always processed before
+<SAMP>`-include <VAR>file</VAR>'</SAMP>, regardless of the order in which they are
+written.  All the <SAMP>`-include'</SAMP> and <SAMP>`-imacros'</SAMP> options are
+processed in the order in which they are written.
+<P>
+
+<DT><CODE>-imacros <VAR>file</VAR></CODE>
+<DD>Process <VAR>file</VAR> as input, discarding the resulting output, before
+processing the regular input file.  Because the output generated from
+<VAR>file</VAR> is discarded, the only effect of <SAMP>`-imacros <VAR>file</VAR>'</SAMP>
+is to make the macros defined in <VAR>file</VAR> available for use in the
+main input.
+<P>
+
+Any <SAMP>`-D'</SAMP> and <SAMP>`-U'</SAMP> options on the command line are always
+processed before <SAMP>`-imacros <VAR>file</VAR>'</SAMP>, regardless of the order in
+which they are written.  All the <SAMP>`-include'</SAMP> and <SAMP>`-imacros'</SAMP>
+options are processed in the order in which they are written.
+</P><P>
+
+<DT><CODE>-idirafter <VAR>dir</VAR></CODE>
+<DD><A NAME="IDX71"></A>
+Add the directory <VAR>dir</VAR> to the second include path.  The directories
+on the second include path are searched when a header file is not found
+in any of the directories in the main include path (the one that
+<SAMP>`-I'</SAMP> adds to).
+<P>
+
+<DT><CODE>-iprefix <VAR>prefix</VAR></CODE>
+<DD>Specify <VAR>prefix</VAR> as the prefix for subsequent <SAMP>`-iwithprefix'</SAMP>
+options.
+<P>
+
+<DT><CODE>-iwithprefix <VAR>dir</VAR></CODE>
+<DD>Add a directory to the second include path.  The directory's name is
+made by concatenating <VAR>prefix</VAR> and <VAR>dir</VAR>, where <VAR>prefix</VAR> was
+specified previously with <SAMP>`-iprefix'</SAMP>.  If you have not specified a
+prefix yet, the directory containing the installed passes of the
+compiler is used as the default.
+<P>
+
+<DT><CODE>-iwithprefixbefore <VAR>dir</VAR></CODE>
+<DD>Add a directory to the main include path.  The directory's name is made
+by concatenating <VAR>prefix</VAR> and <VAR>dir</VAR>, as in the case of
+<SAMP>`-iwithprefix'</SAMP>.
+<P>
+
+<DT><CODE>-isystem <VAR>dir</VAR></CODE>
+<DD>Add a directory to the beginning of the second include path, marking it
+as a system directory, so that it gets the same special treatment as
+is applied to the standard system directories.
+<P>
+
+<DT><CODE>-nostdinc</CODE>
+<DD>Do not search the standard system directories for header files.  Only
+the directories you have specified with <SAMP>`-I'</SAMP> options (and the
+current directory, if appropriate) are searched.  See section <A HREF="gcc_14.html#SEC14">2.12 Options for Directory Search</A>, for information on <SAMP>`-I'</SAMP>.
+<P>
+
+By using both <SAMP>`-nostdinc'</SAMP> and <SAMP>`-I-'</SAMP>, you can limit the include-file
+search path to only those directories you specify explicitly.
+</P><P>
+
+<DT><CODE>-undef</CODE>
+<DD>Do not predefine any nonstandard macros.  (Including architecture flags).
+<P>
+
+<DT><CODE>-E</CODE>
+<DD>Run only the C preprocessor.  Preprocess all the C source files
+specified and output the results to standard output or to the
+specified output file.
+<P>
+
+<DT><CODE>-C</CODE>
+<DD>Tell the preprocessor not to discard comments.  Used with the
+<SAMP>`-E'</SAMP> option.
+<P>
+
+<DT><CODE>-P</CODE>
+<DD>Tell the preprocessor not to generate <SAMP>`#line'</SAMP> directives.
+Used with the <SAMP>`-E'</SAMP> option.
+<P>
+
+<A NAME="IDX72"></A>
+<A NAME="IDX73"></A>
+<DT><CODE>-M</CODE>
+<DD>Tell the preprocessor to output a rule suitable for <CODE>make</CODE>
+describing the dependencies of each object file.  For each source file,
+the preprocessor outputs one <CODE>make</CODE>-rule whose target is the object
+file name for that source file and whose dependencies are all the
+<CODE>#include</CODE> header files it uses.  This rule may be a single line or
+may be continued with <SAMP>`\'</SAMP>-newline if it is long.  The list of rules
+is printed on standard output instead of the preprocessed C program.
+<P>
+
+<SAMP>`-M'</SAMP> implies <SAMP>`-E'</SAMP>.
+</P><P>
+
+Another way to specify output of a <CODE>make</CODE> rule is by setting
+the environment variable <CODE>DEPENDENCIES_OUTPUT</CODE> (see section <A HREF="gcc_44.html#SEC44">2.16 Environment Variables Affecting GCC</A>).
+</P><P>
+
+<DT><CODE>-MM</CODE>
+<DD>Like <SAMP>`-M'</SAMP> but the output mentions only the user header files
+included with <SAMP>`#include "<VAR>file</VAR>"'</SAMP>.  System header files
+included with <SAMP>`#include &#60;<VAR>file</VAR>&#62;'</SAMP> are omitted.
+<P>
+
+<DT><CODE>-MD</CODE>
+<DD>Like <SAMP>`-M'</SAMP> but the dependency information is written to a file made by
+replacing ".c" with ".d" at the end of the input file names.
+This is in addition to compiling the file as specified---<SAMP>`-MD'</SAMP> does
+not inhibit ordinary compilation the way <SAMP>`-M'</SAMP> does.
+<P>
+
+In Mach, you can use the utility <CODE>md</CODE> to merge multiple dependency
+files into a single dependency file suitable for using with the <SAMP>`make'</SAMP>
+command.
+</P><P>
+
+<DT><CODE>-MMD</CODE>
+<DD>Like <SAMP>`-MD'</SAMP> except mention only user header files, not system
+header files.
+<P>
+
+<DT><CODE>-MG</CODE>
+<DD>Treat missing header files as generated files and assume they live in the
+same directory as the source file.  If you specify <SAMP>`-MG'</SAMP>, you
+must also specify either <SAMP>`-M'</SAMP> or <SAMP>`-MM'</SAMP>.  <SAMP>`-MG'</SAMP> is not
+supported with <SAMP>`-MD'</SAMP> or <SAMP>`-MMD'</SAMP>.
+<P>
+
+<DT><CODE>-H</CODE>
+<DD>Print the name of each header file used, in addition to other normal
+activities.
+<P>
+
+<DT><CODE>-A<VAR>question</VAR>(<VAR>answer</VAR>)</CODE>
+<DD>Assert the answer <VAR>answer</VAR> for <VAR>question</VAR>, in case it is tested
+with a preprocessing conditional such as <SAMP>`#if
+#<VAR>question</VAR>(<VAR>answer</VAR>)'</SAMP>.  <SAMP>`-A-'</SAMP> disables the standard
+assertions that normally describe the target machine.
+<P>
+
+<DT><CODE>-D<VAR>macro</VAR></CODE>
+<DD>Define macro <VAR>macro</VAR> with the string <SAMP>`1'</SAMP> as its definition.
+<P>
+
+<DT><CODE>-D<VAR>macro</VAR>=<VAR>defn</VAR></CODE>
+<DD>Define macro <VAR>macro</VAR> as <VAR>defn</VAR>.  All instances of <SAMP>`-D'</SAMP> on
+the command line are processed before any <SAMP>`-U'</SAMP> options.
+<P>
+
+<DT><CODE>-U<VAR>macro</VAR></CODE>
+<DD>Undefine macro <VAR>macro</VAR>.  <SAMP>`-U'</SAMP> options are evaluated after all
+<SAMP>`-D'</SAMP> options, but before any <SAMP>`-include'</SAMP> and <SAMP>`-imacros'</SAMP>
+options.
+<P>
+
+<DT><CODE>-dM</CODE>
+<DD>Tell the preprocessor to output only a list of the macro definitions
+that are in effect at the end of preprocessing.  Used with the <SAMP>`-E'</SAMP>
+option.
+<P>
+
+<DT><CODE>-dD</CODE>
+<DD>Tell the preprocessing to pass all macro definitions into the output, in
+their proper sequence in the rest of the output.
+<P>
+
+<DT><CODE>-dN</CODE>
+<DD>Like <SAMP>`-dD'</SAMP> except that the macro arguments and contents are omitted.
+Only <SAMP>`#define <VAR>name</VAR>'</SAMP> is included in the output.
+<P>
+
+<DT><CODE>-trigraphs</CODE>
+<DD>Support ANSI C trigraphs.  The <SAMP>`-ansi'</SAMP> option also has this effect.
+<P>
+
+<DT><CODE>-Wp,<VAR>option</VAR></CODE>
+<DD>Pass <VAR>option</VAR> as an option to the preprocessor.  If <VAR>option</VAR>
+contains commas, it is split into multiple options at the commas.
+</DL>
+<P>
+
+<A NAME="Assembler Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_10.html#SEC10"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_12.html#SEC12"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

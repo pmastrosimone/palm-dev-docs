@@ -1,0 +1,82 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Bound member functions</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Bound member functions">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Bound member functions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC116"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_115.html#SEC115"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_117.html#SEC117"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_117.html#SEC117"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.6 Extracting the function pointer from a bound pointer to member function </H2>
+<!--docid::SEC116::-->
+<P>
+
+<A NAME="IDX390"></A>
+<A NAME="IDX391"></A>
+<A NAME="IDX392"></A>
+</P><P>
+
+In C++, pointer to member functions (PMFs) are implemented using a wide
+pointer of sorts to handle all the possible call mechanisms; the PMF
+needs to store information about how to adjust the <SAMP>`this'</SAMP> pointer,
+and if the function pointed to is virtual, where to find the vtable, and
+where in the vtable to look for the member function.  If you are using
+PMFs in an inner loop, you should really reconsider that decision.  If
+that is not an option, you can extract the pointer to the function that
+would be called for a given object/PMF pair and call it directly inside
+the inner loop, to save a bit of time.
+</P><P>
+
+Note that you will still be paying the penalty for the call through a
+function pointer; on most modern architectures, such a call defeats the
+branch prediction features of the CPU.  This is also true of normal
+virtual function calls.
+</P><P>
+
+The syntax for this extension is
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>extern A a;
+extern int (A::*fp)();
+typedef int (*fptr)(A *);
+
+fptr p = (fptr)(a.*fp);
+</pre></td></tr></table></P><P>
+
+You must specify <SAMP>`-Wno-pmf-conversions'</SAMP> to use this extension.
+</P><P>
+
+<A NAME="C++ Signatures"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

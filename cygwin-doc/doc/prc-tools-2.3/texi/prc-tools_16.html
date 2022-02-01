@@ -1,0 +1,146 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: Multiple code tutorial</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: Multiple code tutorial">
+<META NAME="keywords" CONTENT="Using PRC-Tools: Multiple code tutorial">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC20"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_15.html#SEC18"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_17.html#SEC21"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_17.html#SEC21"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_14.html#SEC17"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_17.html#SEC21"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.2.2 Breaking up an existing application </H3>
+<!--docid::SEC20::-->
+<P>
+
+To use multiple code resources in an existing application, you need to
+do the following:
+</P><P>
+
+<OL>
+<LI>
+If your Makefile uses <CODE>obj-res</CODE>, change it to use
+<CODE>build-prc</CODE> directly on your bfd executable.  For example,
+from an original
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>myapp.prc: code0000.myapp.grc <small>...</small>
+        build-prc <small>...</small> *.myapp.grc <small>...</small>
+
+code0000.myapp.grc: myapp
+        m68k-palmos-obj-res myapp
+</pre></td></tr></table></P><P>
+
+remove references to .grc files, and delete the obj-res rule altogether:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>myapp.prc: myapp <small>...</small>
+        build-prc <small>...</small> myapp <small>...</small>
+</pre></td></tr></table></P><P>
+
+<LI>
+Choose functions to be placed in other code sections, and annotate their
+declarations:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define EDIT_SECTION  __attribute__ ((section ("editfns")))
+
+void EditFormHandler (<small>...</small>) EDIT_SECTION;
+void DrawEditForm () EDIT_SECTION;
+</pre></td></tr></table>(This also demonstrates using a macro to ease moving several functions at once.)
+<P>
+
+Make very sure that the relevant annotated declaration is visible when you
+define such a function, and especially <STRONG>everywhere</STRONG> you call it.
+If there is a call to a non-default sectioned function from which the
+annotated declaration is not visible, the call will be generated as a call
+to the default code section.  When such a call is executed, it jumps to
+effectively a random location in the wrong code section and almost
+certainly crashes.  (Warning options which can detect these mistakes at
+compile time are noted in the discussion of required visibilities in
+<A HREF="prc-tools_3.html#SEC3">1.2 Function attributes</A>.)
+</P><P>
+
+Note that COFF only stores eight character of a section name:  if your
+section names are any longer than this, they will be truncated, leading
+to trouble.
+</P><P>
+
+<LI>
+Add a multiple code clause to your definition file:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>multiple code { "editfns" }
+</pre></td></tr></table></P><P>
+
+Or, if you're not already using a definition file, write one including such
+a clause and use it in your build-prc command:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>myapp.prc: myapp.def myapp <small>...</small>
+        build-prc <small>...</small> myapp.def myapp <small>...</small>
+</pre></td></tr></table></P><P>
+
+<LI>
+Add rules to your Makefile to generate and build the assembler stub and linker
+script.
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>myapp-sections.o: myapp-sections.s
+        m68k-palmos-gcc -c myapp-sections.s
+
+myapp-sections.s myapp-sections.ld: myapp.def
+        m68k-palmos-multigen myapp.def
+</pre></td></tr></table></P><P>
+
+<LI>
+Link the assembler stub into your bfd executable, and use the linker script
+to place the extra code sections at appropriate addresses.
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>OBJS = <EM><small>...</small>list of object files<small>...</small></EM> myapp-sections.o
+
+myapp: $(OBJS) myapp-sections.ld
+        m68k-palmos-gcc -o myapp $(OBJS) myapp-sections.ld
+</pre></td></tr></table></OL>
+<P>
+
+<A NAME="Shared libraries"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_15.html#SEC18"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_17.html#SEC21"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_17.html#SEC21"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_14.html#SEC17"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_17.html#SEC21"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

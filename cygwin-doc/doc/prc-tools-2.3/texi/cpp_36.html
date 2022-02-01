@@ -1,0 +1,164 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Conditionals-Macros</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Conditionals-Macros">
+<META NAME="keywords" CONTENT="The C Preprocessor: Conditionals-Macros">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC36"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_35.html#SEC35"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_37.html#SEC37"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 1.5.4 Conditionals and Macros </H3>
+<!--docid::SEC36::-->
+<P>
+
+Conditionals are useful in connection with macros or assertions, because
+those are the only ways that an expression's value can vary from one
+compilation to another.  A <SAMP>`#if'</SAMP> directive whose expression uses no
+macros or assertions is equivalent to <SAMP>`#if 1'</SAMP> or <SAMP>`#if 0'</SAMP>; you
+might as well determine which one, by computing the value of the
+expression yourself, and then simplify the program.
+</P><P>
+
+For example, here is a conditional that tests the expression
+<SAMP>`BUFSIZE == 1020'</SAMP>, where <SAMP>`BUFSIZE'</SAMP> must be a macro.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#if BUFSIZE == 1020
+  printf ("Large buffers!\n");
+#endif /* BUFSIZE is large */
+</pre></td></tr></table></P><P>
+
+(Programmers often wish they could test the size of a variable or data
+type in <SAMP>`#if'</SAMP>, but this does not work.  The preprocessor does not
+understand <CODE>sizeof</CODE>, or typedef names, or even the type keywords
+such as <CODE>int</CODE>.)
+</P><P>
+
+<A NAME="IDX57"></A>
+The special operator <SAMP>`defined'</SAMP> is used in <SAMP>`#if'</SAMP> expressions to
+test whether a certain name is defined as a macro.  Either <SAMP>`defined
+<VAR>name</VAR>'</SAMP> or <SAMP>`defined (<VAR>name</VAR>)'</SAMP> is an expression whose value
+is 1 if <VAR>name</VAR> is defined as macro at the current point in the
+program, and 0 otherwise.  For the <SAMP>`defined'</SAMP> operator it makes no
+difference what the definition of the macro is; all that matters is
+whether there is a definition.  Thus, for example,</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#if defined (vax) || defined (ns16000)
+</pre></td></tr></table></P><P>
+
+would succeed if either of the names <SAMP>`vax'</SAMP> and <SAMP>`ns16000'</SAMP> is
+defined as a macro.  You can test the same condition using assertions
+(see section <A HREF="cpp_37.html#SEC37">1.5.5 Assertions</A>), like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#if #cpu (vax) || #cpu (ns16000)
+</pre></td></tr></table></P><P>
+
+If a macro is defined and later undefined with <SAMP>`#undef'</SAMP>,
+subsequent use of the <SAMP>`defined'</SAMP> operator returns 0, because
+the name is no longer defined.  If the macro is defined again with
+another <SAMP>`#define'</SAMP>, <SAMP>`defined'</SAMP> will recommence returning 1.
+</P><P>
+
+<A NAME="IDX58"></A>
+<A NAME="IDX59"></A>
+Conditionals that test whether just one name is defined are very common,
+so there are two special short conditional directives for this case.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>#ifdef <VAR>name</VAR></CODE>
+<DD>is equivalent to <SAMP>`#if defined (<VAR>name</VAR>)'</SAMP>.
+<P>
+
+<DT><CODE>#ifndef <VAR>name</VAR></CODE>
+<DD>is equivalent to <SAMP>`#if ! defined (<VAR>name</VAR>)'</SAMP>.
+</DL>
+<P>
+
+Macro definitions can vary between compilations for several reasons.
+</P><P>
+
+<UL>
+<LI>
+Some macros are predefined on each kind of machine.  For example, on a
+Vax, the name <SAMP>`vax'</SAMP> is a predefined macro.  On other machines, it
+would not be defined.
+<P>
+
+<LI>
+Many more macros are defined by system header files.  Different
+systems and machines define different macros, or give them different
+values.  It is useful to test these macros with conditionals to avoid
+using a system feature on a machine where it is not implemented.
+<P>
+
+<LI>
+Macros are a common way of allowing users to customize a program for
+different machines or applications.  For example, the macro
+<SAMP>`BUFSIZE'</SAMP> might be defined in a configuration file for your
+program that is included as a header file in each source file.  You
+would use <SAMP>`BUFSIZE'</SAMP> in a preprocessing conditional in order to
+generate different code depending on the chosen configuration.
+<P>
+
+<LI>
+Macros can be defined or undefined with <SAMP>`-D'</SAMP> and <SAMP>`-U'</SAMP>
+command options when you compile the program.  You can arrange to
+compile the same source file into two different programs by choosing
+a macro name to specify which program you want, writing conditionals
+to test whether or how this macro is defined, and then controlling
+the state of the macro with compiler command options.
+See section <A HREF="cpp_42.html#SEC42">1.9 Invoking the C Preprocessor</A>.
+</UL>
+<P>
+
+Assertions are usually predefined, but can be defined with preprocessor
+directives or command-line options.
+</P><P>
+
+<A NAME="Assertions"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_35.html#SEC35"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_37.html#SEC37"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

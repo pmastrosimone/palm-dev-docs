@@ -1,0 +1,421 @@
+<html>
+<head>
+<title>(Protein) PalmTypes.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:19:58">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PalmOSGlue.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PalmUtils.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">80 &nbsp;&nbsp;
+PalmTypes.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="PalmTypes.html">80  PalmTypes.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424949">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#425674">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="424917"> </a>The basic data types used by the Palm OS Cobalt APIs are different from those declared in the 68K-based SDKs. In Palm OS Cobalt a signed 16-bit integer is declared as an <code>int16_t</code>, whereas in a Palm OS Garnet application you would have declared it as <code>Int16</code>.</p>
+
+<p><a name="430460"> </a>Be aware that the Palm OS Protein C/C++ Compiler treats the <code>char</code> type as unsigned. Code compiled using a compiler that treats the <code>char</code> type as signed may need to be modified in order to function correctly.</p>
+
+<div><hr>
+  <a name="426280"> </a> <b>NOTE: </b> Early in the porting process you may want to <code>#include PalmTypesCompatibility.h</code> (after the <code>#include</code> for <code>PalmOS.h</code>). This header file defines a number of APIs and macros that allow applications using Palm OS Garnet data types to compile and run. This compatibility header should not be counted on long-term, however, so later in the porting process you should remove the <code>#include</code> and fix any problems that result.
+<hr>
+</div>
+
+<p><a name="429252"> </a>Unlike with the 68K-based versions of Palm OS, Palm OS Cobalt does not use traps to handle calls to operating system functions.</p>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425438"> </a><b>Table 80.1&nbsp;&nbsp;Deleted macros</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425442"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425444"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425446"> </a><code>ASM_SYS_TRAP()</code></p>
+    </td>
+    <td><p class="tt"><a name="429210"> </a>Nothing. Palm OS Cobalt functions aren't accessed via a trap.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425450"> </a><code>SYS_TRAP()</code></p>
+    </td>
+    <td><p class="tt"><a name="425452"> </a>Nothing. Palm OS Cobalt functions aren't accessed via a trap.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425459"> </a><b>Table 80.2&nbsp;&nbsp;Deleted #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425463"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425465"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425467"> </a><code>bitsInByte</code></p>
+    </td>
+    <td><p class="tt"><a name="425469"> </a>8</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425471"> </a><code>loop_forever</code></p>
+    </td>
+    <td><p class="tt"><a name="425473"> </a><code>for (;;)</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425475"> </a><code>sysDbgBreakpointTrapNum</code></p>
+    </td>
+    <td><p class="tt"><a name="429219"> </a>Nothing. Palm OS Cobalt functions aren't accessed via a trap.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425479"> </a><code>sysDbgTrapNum</code></p>
+    </td>
+    <td><p class="tt"><a name="429228"> </a>Nothing. Palm OS Cobalt functions aren't accessed via a trap.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425483"> </a><code>sysDispatchTrapNum</code></p>
+    </td>
+    <td><p class="tt"><a name="429233"> </a>Nothing. Palm OS Cobalt functions aren't accessed via a trap.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425487"> </a><code>USE_TRAPS</code></p>
+    </td>
+    <td><p class="tt"><a name="429238"> </a>Nothing. Palm OS Cobalt functions aren't accessed via a trap.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425497"> </a><b>Table 80.3&nbsp;&nbsp;Deleted enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425501"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425503"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425505"> </a><code>true</code>/<code>false</code> enum</p>
+    </td>
+    <td><p class="tt"><a name="425507"> </a><code>TRUE</code> and <code>FALSE</code> #define values</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424949"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425514"> </a><b>Table 80.4&nbsp;&nbsp;Modified types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425518"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425520"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425522"> </a><code>typedef int32_t Err</code></p>
+    </td>
+    <td><p class="tt"><a name="425524"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425526"> </a><code>typedef int16_t Int16</code></p>
+    </td>
+    <td><p class="tt"><a name="425528"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425530"> </a><code>typedef int32_t Int32</code></p>
+    </td>
+    <td><p class="tt"><a name="425532"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425534"> </a><code>typedef int8_t Int8</code></p>
+    </td>
+    <td><p class="tt"><a name="425536"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425538"> </a><code>typedef uint16_t UInt16</code></p>
+    </td>
+    <td><p class="tt"><a name="425540"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425542"> </a><code>typedef uint32_t UInt32</code></p>
+    </td>
+    <td><p class="tt"><a name="425544"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425546"> </a><code>typedef uint8_t UInt8</code></p>
+    </td>
+    <td><p class="tt"><a name="425548"> </a> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="425674"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425934"> </a><b>Table 80.5&nbsp;&nbsp;Unchanged macros</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425938"> </a>OffsetOf()</p>
+    </td>
+    <td><p class="tt"><a name="425940"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425943"> </a><b>Table 80.6&nbsp;&nbsp;Unchanged structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425947"> </a>MemHandle</p>
+    </td>
+    <td><p class="tt"><a name="425949"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425952"> </a><b>Table 80.7&nbsp;&nbsp;Unchanged types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425956"> </a>Boolean</p>
+    </td>
+    <td><p class="tt"><a name="425958"> </a>Char<a href="#430458"><sup>1</sup></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425960"> </a>Coord</p>
+    </td>
+    <td><p class="tt"><a name="425962"> </a>LocalID</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425964"> </a>MemPtr</p>
+    </td>
+    <td><p class="tt"><a name="425966"> </a>WChar<a href="#429700"><sup>2</sup></a></p>
+    </td>
+  </tr>
+</table>
+<div class="tablediv"><table cellspacing="0" class="tTableNR">
+   <tr>
+     <td><div class="FNTFootnoteTable">
+<a name="430458"> </a><a href="#425958">1</a>. The Palm OS Protein C/C++ Compiler treats the <code>char</code> type as unsigned. Code compiled using a compiler that treats the <code>char</code> type as signed may need to be modified in order to function correctly.</div>
+<div class="FNTFootnoteTable">
+<a name="429700"> </a><a href="#425966">2</a>. Although still declared in the Palm OS Protein headers, the <code>WChar</code> type is deprecated. Use <code>wchar32_t</code>, or <code>wchar16_t</code> if you need an explicit 16-bit value for UTF-16/UCS-2 Unicode support.</div>
+</td>
+   </tr>
+</table></div>
+
+</div>
+
+
+<p class="caption"><a name="425974"> </a><b>Table 80.8&nbsp;&nbsp;Unchanged #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425978"> </a>NULL</p>
+    </td>
+    <td><p class="tt"><a name="425980"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425988"> </a><b>Table 80.9&nbsp;&nbsp;Unchanged application-defined functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425992"> </a>ProcPtr()</p>
+    </td>
+    <td><p class="tt"><a name="425994"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="424990"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PalmOSGlue.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PalmUtils.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

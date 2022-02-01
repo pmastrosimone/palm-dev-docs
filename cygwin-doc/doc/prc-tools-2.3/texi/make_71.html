@@ -1,0 +1,123 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Defining</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Defining">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Defining">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC75"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_70.html#SEC74"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_72.html#SEC76"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 6.8 Defining Variables Verbatim </H2>
+<!--docid::SEC75::-->
+<P>
+
+Another way to set the value of a variable is to use the <CODE>define</CODE>
+directive.  This directive has an unusual syntax which allows newline
+characters to be included in the value, which is convenient for defining
+both canned sequences of commands
+(see section <A HREF="make_59.html#SEC63">Defining Canned Command Sequences</A>), and also
+sections of makefile syntax to use with <CODE>eval</CODE> (see section <A HREF="make_87.html#SEC91">8.8 The <CODE>eval</CODE> Function</A>).
+</P><P>
+
+The <CODE>define</CODE> directive is followed on the same line by the name of the
+variable and nothing more.  The value to give the variable appears on the
+following lines.  The end of the value is marked by a line containing just
+the word <CODE>endef</CODE>.  Aside from this difference in syntax, <CODE>define</CODE>
+works just like <SAMP>`='</SAMP>: it creates a recursively-expanded variable
+(see section <A HREF="make_63.html#SEC67">The Two Flavors of Variables</A>).
+The variable name may contain function and variable references, which
+are expanded when the directive is read to find the actual variable name
+to use.
+</P><P>
+
+You may nest <CODE>define</CODE> directives: <CODE>make</CODE> will keep track of
+nested directives and report an error if they are not all properly
+closed with <CODE>endef</CODE>.  Note that lines beginning with tab
+characters are considered part of a command script, so any
+<CODE>define</CODE> or <CODE>endef</CODE> strings appearing on such a line will
+not be considered <CODE>make</CODE> operators.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>define two-lines
+echo foo
+echo $(bar)
+endef
+</pre></td></tr></table></P><P>
+
+The value in an ordinary assignment cannot contain a newline; but the
+newlines that separate the lines of the value in a <CODE>define</CODE> become
+part of the variable's value (except for the final newline which precedes
+the <CODE>endef</CODE> and is not considered part of the value).</P><P>
+
+When used in a command script, the previous example is functionally
+equivalent to this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>two-lines = echo foo; echo $(bar)
+</pre></td></tr></table></P><P>
+
+since two commands separated by semicolon behave much like two separate
+shell commands.  However, note that using two separate lines means
+<CODE>make</CODE> will invoke the shell twice, running an independent subshell
+for each line.  See section <A HREF="make_50.html#SEC54">Command Execution</A>.
+</P><P>
+
+If you want variable definitions made with <CODE>define</CODE> to take
+precedence over command-line variable definitions, you can use the
+<CODE>override</CODE> directive together with <CODE>define</CODE>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>override define two-lines
+foo
+$(bar)
+endef
+</pre></td></tr></table></P><P>
+
+See section <A HREF="make_70.html#SEC74">The <CODE>override</CODE> Directive</A>.
+</P><P>
+
+<A NAME="Environment"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_70.html#SEC74"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_72.html#SEC76"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

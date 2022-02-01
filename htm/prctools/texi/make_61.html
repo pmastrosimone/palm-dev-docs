@@ -1,0 +1,121 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Using Variables</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Using Variables">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Using Variables">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC65"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_60.html#SEC64"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_62.html#SEC66"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H1> 6. How to Use Variables </H1>
+<!--docid::SEC65::-->
+<P>
+
+A <EM>variable</EM> is a name defined in a makefile to represent a string
+of text, called the variable's <EM>value</EM>.  These values are
+substituted by explicit request into targets, prerequisites, commands,
+and other parts of the makefile.  (In some other versions of <CODE>make</CODE>,
+variables are called <EM>macros</EM>.)
+<A NAME="IDX256"></A>
+</P><P>
+
+Variables and functions in all parts of a makefile are expanded when
+read, except for the shell commands in rules, the right-hand sides of
+variable definitions using <SAMP>`='</SAMP>, and the bodies of variable
+definitions using the <CODE>define</CODE> directive.</P><P>
+
+Variables can represent lists of file names, options to pass to compilers,
+programs to run, directories to look in for source files, directories to
+write output in, or anything else you can imagine.
+</P><P>
+
+A variable name may be any sequence of characters not containing <SAMP>`:'</SAMP>,
+<SAMP>`#'</SAMP>, <SAMP>`='</SAMP>, or leading or trailing whitespace.  However,
+variable names containing characters other than letters, numbers, and
+underscores should be avoided, as they may be given special meanings in the
+future, and with some shells they cannot be passed through the environment to a
+sub-<CODE>make</CODE>
+(see section <A HREF="make_56.html#SEC60">Communicating Variables to a Sub-<CODE>make</CODE></A>).
+</P><P>
+
+Variable names are case-sensitive.  The names <SAMP>`foo'</SAMP>, <SAMP>`FOO'</SAMP>,
+and <SAMP>`Foo'</SAMP> all refer to different variables.
+</P><P>
+
+It is traditional to use upper case letters in variable names, but we
+recommend using lower case letters for variable names that serve internal
+purposes in the makefile, and reserving upper case for parameters that
+control implicit rules or for parameters that the user should override with
+command options (see section <A HREF="make_96.html#SEC100">Overriding Variables</A>).
+</P><P>
+
+A few variables have names that are a single punctuation character or
+just a few characters.  These are the <EM>automatic variables</EM>, and
+they have particular specialized uses.  See section <A HREF="make_107.html#SEC111">Automatic Variables</A>.
+</P><P>
+
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_62.html#SEC66">6.1 Basics of Variable References</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to use the value of a variable.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_63.html#SEC67">6.2 The Two Flavors of Variables</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Variables come in two flavors.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_64.html#SEC68">6.3 Advanced Features for Reference to Variables</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Advanced features for referencing a variable.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_67.html#SEC71">6.4 How Variables Get Their Values</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">All the ways variables get their values.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_68.html#SEC72">6.5 Setting Variables</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to set a variable in the makefile.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_69.html#SEC73">6.6 Appending More Text to Variables</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to append more text to the old value
+                                  of a variable.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_70.html#SEC74">6.7 The <CODE>override</CODE> Directive</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to set a variable in the makefile even if
+                                  the user has set it with a command argument.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_71.html#SEC75">6.8 Defining Variables Verbatim</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">An alternate way to set a variable
+                                  to a verbatim string.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_72.html#SEC76">6.9 Variables from the Environment</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Variable values can come from the environment.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_73.html#SEC77">6.10 Target-specific Variable Values</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Variable values can be defined on a per-target
+                                  basis.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_74.html#SEC78">6.11 Pattern-specific Variable Values</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Target-specific variable values can be applied
+                                  to a group of targets that match a pattern.</TD></TR>
+</TABLE></BLOCKQUOTE>
+<P>
+
+<A NAME="Reference"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_60.html#SEC64"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_62.html#SEC66"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

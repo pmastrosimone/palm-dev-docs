@@ -1,0 +1,347 @@
+<html>
+<head>
+<title>(Protein) Floating Point | System Management</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:27:26">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="608590"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="SysMgt_TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="TimesAndDates.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Debugging.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SysMgt_IX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">12 &nbsp;&nbsp;
+Floating Point</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">System Management</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="SysMgt_Part1.html">Part I: Concepts</a> </h1>
+<h1 class="SideTOC1"><a href="FloatingPoint.html">12  Floating Point</a></h1>
+
+   <h2 class="SideTOC2"><a href="#993245">
+   Summary of Float Manager</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="992894"> </a>Palm OS Cobalt supports IEEE-754 single and double precision floating-point numbers declared with the C types <code>float</code> and <code>double</code>. Numbers of type <code>float</code> occupy four bytes and have an effective range of 1.17549e-38 to 3.40282e+38. Numbers of type <code>double</code> occupy eight bytes and have an effective range of <br>2.22507e-308 to 1.79769e+308. Limited operations are also permitted on values of type <b>long double</b>.</p>
+
+<p><a name="992895"> </a>You can use basic arithmetic operations to add, subtract, multiply, and divide numbers of type <code>float</code> and <code>double</code>. Higher-level functions such as those in the standard C header file <code>math.h</code> are not part of the core OS; you must either write them yourself, or you must employ a third-party math library.</p>
+
+<p><a name="992896"> </a>The standard IEEE-754 special "non-number" values of NaN (not a number), +INF (positive infinity), and -INF (negative infinity) are generated as appropriate if you perform an operation that produces a result outside the range of numbers that can be represented. For instance, dividing a positive number by 0 returns +INF.</p>
+
+<p><a name="992897"> </a>The Float Manager contains functions that convert double-precision floating-point numbers to and from various other formats: 32- and 64-bit signed and unsigned integers, as well as floating point values of differing lengths. It also provides a set of basic comparison functions that can be used with values of type <code>double</code> and <code>float</code>. Finally, it supplies a set of functions that you can use to add, subtract, multiply, and divide values of type float and double.</p>
+
+<p><a name="993523"> </a>Two of the supplied mathematical operations are special: <a href="FloatMgr.html#994036"><code>FlpCorrectedAdd()</code></a> and <a href="FloatMgr.html#994360"><code>FlpCorrectedSub()</code></a> let you add or subtract double values, optionally correcting for least-significant-bit errors when the result should be zero but instead is very close to zero.</p>
+
+<p><a name="992934"> </a>In the rare event that you need to work with the binary representation of a <code>double</code>, you can use <a href="FloatMgr.html#993427"><code>FlpBase10Info()</code></a> to obtain the mantissa, exponent, and sign (all in base 10) of a double value. If you only need the exponent, you can use <a href="FloatMgr.html#995042"><code>FlpGetExponent()</code></a> instead.</p>
+
+<p><a name="993551"> </a>See <a href="FloatMgr.html#992934">Chapter 28, "Float Manager,"</a> for complete reference information on the functions and macros that make up the Float Manager.</p>
+
+<h2 class="haH2">
+  <a name="993245"> </a>Summary of Float Manager <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th colspan="2" rowspan="1"><p class="tt"><a name="993215"> </a><b><span style="color: #000000;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">Mathematical Operations</span></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993219"> </a><a href="FloatMgr.html#992986"><code>FlpAddDouble()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993221"> </a><a href="FloatMgr.html#993385"><code>FlpAddFloat()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993223"> </a><a href="FloatMgr.html#994036"><code>FlpCorrectedAdd()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993225"> </a><a href="FloatMgr.html#994360"><code>FlpCorrectedSub()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993227"> </a><a href="FloatMgr.html#994410"><code>FlpDivDouble()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993229"> </a><a href="FloatMgr.html#994456"><code>FlpDivFloat()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993231"> </a><a href="FloatMgr.html#995336"><code>FlpMulDouble()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993233"> </a><a href="FloatMgr.html#995382"><code>FlpMulFloat()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993235"> </a><a href="FloatMgr.html#995424"><code>FlpNegDouble()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993237"> </a><a href="FloatMgr.html#995492"><code>FlpNegFloat()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993239"> </a><a href="FloatMgr.html#995556"><code>FlpSubDouble()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993241"> </a><a href="FloatMgr.html#995598"><code>FlpSubFloat()</code></a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th colspan="2" rowspan="1"><p class="tt"><a name="993248"> </a><b>Deconstructing Values</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993252"> </a><a href="FloatMgr.html#993427"><code>FlpBase10Info()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993254"> </a><a href="FloatMgr.html#995042"><code>FlpGetExponent()</code></a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="993624"> </a><b>Comparing Values </b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993629"> </a><a href="FloatMgr.html#993713"><code>FlpCompareDoubleEqual()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993633"> </a><a href="FloatMgr.html#993755"><code>FlpCompareDoubleLessThan()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993638"> </a><a href="FloatMgr.html#993801"><code>FlpCompareDoubleLessThanOrEqual()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993644"> </a><a href="FloatMgr.html#993843"><code>FlpCompareFloatEqual()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993648"> </a><a href="FloatMgr.html#993928"><code>FlpCompareFloatLessThan()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993653"> </a><a href="FloatMgr.html#993994"><code>FlpCompareFloatLessThanOrEqual()</code></a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th colspan="2" rowspan="1"><p class="tt"><a name="993305"> </a><b>Converting to and from Float and Double</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993309"> </a><a href="FloatMgr.html#994498"><code>FlpDoubleToFloat()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993311"> </a><a href="FloatMgr.html#994566"><code>FlpDoubleToInt32()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993313"> </a><a href="FloatMgr.html#994630"><code>FlpDoubleToLongDouble()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993315"> </a><a href="FloatMgr.html#994670"><code>FlpDoubleToLongLong()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993317"> </a><a href="FloatMgr.html#994710"><code>FlpDoubleToUInt32()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993319"> </a><a href="FloatMgr.html#994754"><code>FlpDoubleToULongLong()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993321"> </a><a href="FloatMgr.html#994794"><code>FlpFloatToDouble()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993323"> </a><a href="FloatMgr.html#994834"><code>FlpFloatToInt32()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993325"> </a><a href="FloatMgr.html#994878"><code>FlpFloatToLongDouble()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993327"> </a><a href="FloatMgr.html#994918"><code>FlpFloatToLongLong()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993329"> </a><a href="FloatMgr.html#994958"><code>FlpFloatToUInt32()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993331"> </a><a href="FloatMgr.html#995002"><code>FlpFloatToULongLong()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993333"> </a><a href="FloatMgr.html#995084"><code>FlpInt32ToDouble()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993335"> </a><a href="FloatMgr.html#995128"><code>FlpInt32ToFloat()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993337"> </a><a href="FloatMgr.html#995168"><code>FlpLongDoubleToDouble()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993339"> </a><a href="FloatMgr.html#995210"><code>FlpLongDoubleToFloat()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993341"> </a><a href="FloatMgr.html#995256"><code>FlpLongLongToDouble()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993343"> </a><a href="FloatMgr.html#995296"><code>FlpLongLongToFloat()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993345"> </a><a href="FloatMgr.html#995668"><code>FlpUInt32ToDouble()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993347"> </a><a href="FloatMgr.html#995732"><code>FlpUInt32ToFloat()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993349"> </a><a href="FloatMgr.html#995772"><code>FlpULongLongToDouble()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993351"> </a><a href="FloatMgr.html#995812"><code>FlpULongLongToFloat()</code></a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="986245"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="SysMgt_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="SysMgt_TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="TimesAndDates.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Debugging.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SysMgt_IX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

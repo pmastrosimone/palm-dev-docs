@@ -1,0 +1,123 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: #if Directive</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: #if Directive">
+<META NAME="keywords" CONTENT="The C Preprocessor: #if Directive">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC32"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_31.html#SEC31"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_33.html#SEC33"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 1.5.2.1 The <SAMP>`#if'</SAMP> Directive </H4>
+<!--docid::SEC32::-->
+<P>
+
+The <SAMP>`#if'</SAMP> directive in its simplest form consists of
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#if <VAR>expression</VAR>
+<VAR>controlled text</VAR>
+#endif /* <VAR>expression</VAR> */
+</pre></td></tr></table></P><P>
+
+The comment following the <SAMP>`#endif'</SAMP> is not required, but it is a good
+practice because it helps people match the <SAMP>`#endif'</SAMP> to the
+corresponding <SAMP>`#if'</SAMP>.  Such comments should always be used, except in
+short conditionals that are not nested.  In fact, you can put anything at
+all after the <SAMP>`#endif'</SAMP> and it will be ignored by the GNU C preprocessor,
+but only comments are acceptable in ANSI Standard C.
+</P><P>
+
+<VAR>expression</VAR> is a C expression of integer type, subject to stringent
+restrictions.  It may contain
+</P><P>
+
+<UL>
+<LI>
+Integer constants, which are all regarded as <CODE>long</CODE> or
+<CODE>unsigned long</CODE>.
+<P>
+
+<LI>
+Character constants, which are interpreted according to the character
+set and conventions of the machine and operating system on which the
+preprocessor is running.  The GNU C preprocessor uses the C data type
+<SAMP>`char'</SAMP> for these character constants; therefore, whether some
+character codes are negative is determined by the C compiler used to
+compile the preprocessor.  If it treats <SAMP>`char'</SAMP> as signed, then
+character codes large enough to set the sign bit will be considered
+negative; otherwise, no character code is considered negative.
+<P>
+
+<LI>
+Arithmetic operators for addition, subtraction, multiplication,
+division, bitwise operations, shifts, comparisons, and logical
+operations (<SAMP>`&#38;&#38;'</SAMP> and <SAMP>`||'</SAMP>).
+<P>
+
+<LI>
+Identifiers that are not macros, which are all treated as zero(!).
+<P>
+
+<LI>
+Macro calls.  All macro calls in the expression are expanded before
+actual computation of the expression's value begins.
+</UL>
+<P>
+
+Note that <SAMP>`sizeof'</SAMP> operators and <CODE>enum</CODE>-type values are not allowed.
+<CODE>enum</CODE>-type values, like all other identifiers that are not taken
+as macro calls and expanded, are treated as zero.
+</P><P>
+
+The <VAR>controlled text</VAR> inside of a conditional can include
+preprocessing directives.  Then the directives inside the conditional are
+obeyed only if that branch of the conditional succeeds.  The text can
+also contain other conditional groups.  However, the <SAMP>`#if'</SAMP> and
+<SAMP>`#endif'</SAMP> directives must balance.
+</P><P>
+
+<A NAME="#else Directive"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_31.html#SEC31"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_33.html#SEC33"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

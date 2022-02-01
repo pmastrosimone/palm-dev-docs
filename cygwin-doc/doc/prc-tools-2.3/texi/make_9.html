@@ -1,0 +1,92 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: make Deduces</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: make Deduces">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: make Deduces">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC10"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_8.html#SEC9"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_10.html#SEC11"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_4.html#SEC5"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_4.html#SEC5"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.5 Letting <CODE>make</CODE> Deduce the Commands </H2>
+<!--docid::SEC10::-->
+<P>
+
+It is not necessary to spell out the commands for compiling the individual
+C source files, because <CODE>make</CODE> can figure them out: it has an
+<EM>implicit rule</EM> for updating a <SAMP>`.o'</SAMP> file from a correspondingly
+named <SAMP>`.c'</SAMP> file using a <SAMP>`cc -c'</SAMP> command.  For example, it will
+use the command <SAMP>`cc -c main.c -o main.o'</SAMP> to compile <TT>`main.c'</TT> into
+<TT>`main.o'</TT>.  We can therefore omit the commands from the rules for the
+object files.  See section <A HREF="make_99.html#SEC103">Using Implicit Rules</A>.</P><P>
+
+When a <SAMP>`.c'</SAMP> file is used automatically in this way, it is also
+automatically added to the list of prerequisites.  We can therefore omit
+the <SAMP>`.c'</SAMP> files from the prerequisites, provided we omit the commands.
+</P><P>
+
+Here is the entire example, with both of these changes, and a variable
+<CODE>objects</CODE> as suggested above:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>objects = main.o kbd.o command.o display.o \
+          insert.o search.o files.o utils.o
+
+edit : $(objects)
+        cc -o edit $(objects)
+
+main.o : defs.h
+kbd.o : defs.h command.h
+command.o : defs.h command.h
+display.o : defs.h buffer.h
+insert.o : defs.h buffer.h
+search.o : defs.h buffer.h
+files.o : defs.h buffer.h command.h
+utils.o : defs.h
+
+.PHONY : clean
+clean :
+        rm edit $(objects)
+</pre></td></tr></table></P><P>
+
+This is how we would write the makefile in actual practice.  (The
+complications associated with <SAMP>`clean'</SAMP> are described elsewhere.
+See <A HREF="make_37.html#SEC41">4.6 Phony Targets</A>, and <A HREF="make_52.html#SEC56">Errors in Commands</A>.)
+</P><P>
+
+Because implicit rules are so convenient, they are important.  You
+will see them used frequently.</P><P>
+
+<A NAME="Combine By Prerequisite"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

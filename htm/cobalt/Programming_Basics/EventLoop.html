@@ -1,0 +1,913 @@
+<html>
+<head>
+<title>(Protein) Events and the Event Loop | Programming Basics</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:21:45">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="977418"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="ProgrammingBasicsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="AppStartAndStop.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Notifications.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="ProgrammingBasicsIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">3 &nbsp;&nbsp;
+Events and the Event Loop</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Programming Basics</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="ProgrammingBasics_Part1.html">Part I: Concepts</a> </h1>
+<h1 class="SideTOC1"><a href="EventLoop.html">3  Events and the Event Loop</a></h1>
+
+   <h2 class="SideTOC2"><a href="#988571">
+   Palm OS Events</a></h2>
+
+   <h2 class="SideTOC2"><a href="#988732">
+   The Structure of an Event</a></h2>
+
+   <h2 class="SideTOC2"><a href="#995589">
+   The Application Event Loop</a></h2>
+
+      <h3 class="SideTOC3"><a href="#987701">
+      Retrieving Events</a></h3>
+
+      <h3 class="SideTOC3"><a href="#987647">
+      Handling System Events</a></h3>
+
+      <h3 class="SideTOC3"><a href="#987717">
+      Handling Menu Events</a></h3>
+
+      <h3 class="SideTOC3"><a href="#987903">
+      Handling Form Load Events: the AppHandleEvent() Function</a></h3>
+
+      <h3 class="SideTOC3"><a href="#988193">
+      Handling Form-Specific Events</a></h3>
+
+   <h2 class="SideTOC2"><a href="#991768">
+   Using Events to Communicate Between Threads</a></h2>
+
+      <h3 class="SideTOC3"><a href="#991889">
+      Communicating Between Threads in a Single Process</a></h3>
+
+      <h3 class="SideTOC3"><a href="#991910">
+      Communicating Between Threads in Different Processes</a></h3>
+
+   <h2 class="SideTOC2"><a href="#983320">
+   Palm OS-Generated Events</a></h2>
+
+   <h2 class="SideTOC2"><a href="#984517">
+   Summary of Event APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="977420"> </a>This chapter discusses <b>events</b>&#8212;the primary mechanism by which the operating system communicates with an application&#8212;and the event loop that forms the heart of all Palm OS<sup>&#174;</sup> applications. The topics covered are:</p>
+   <blockquote class = "bq"><a name="977424"> </a><a href="EventLoop.html#988571">Palm OS Events</a></blockquote>
+   <blockquote class = "bq"><a name="983279"> </a><a href="EventLoop.html#988732">The Structure of an Event</a></blockquote>
+   <blockquote class = "bq"><a name="988779"> </a><a href="EventLoop.html#995589">The Application Event Loop</a></blockquote>
+   <blockquote class = "bq"><a name="992037"> </a><a href="EventLoop.html#991768">Using Events to Communicate Between Threads</a></blockquote>
+   <blockquote class = "bq"><a name="991576"> </a><a href="EventLoop.html#983320">Palm OS-Generated Events</a></blockquote>
+   <blockquote class = "bq"><a name="991601"> </a><a href="EventLoop.html#984517">Summary of Event APIs</a></blockquote>
+
+<p><a name="991635"> </a>When working with events, you use APIs declared in <code>Event.h</code>. These APIs are documented in <a href="Event.html#992934">Chapter 7, "Event,"</a>; additional event-related APIs are documented in <a href="SysEvtMgr.html#992934">Chapter 13, "System Event Manager."</a> The event codes representing the various events are primarily declared in <code>EventCodes.h</code>, documented in <a href="EventCodes.html#992934">Chapter 8, "Event Codes."</a> Many events are only of interest to developers working with a particular technology; accordingly, those events have been documented in the corresponding <i>Exploring Palm OS </i>volumes. See <a href="EventLoop.html#983320">"Palm OS-Generated Events"</a> for a complete list of all events organized according to the book, and thus the technology, with which it is most commonly associated.</p>
+
+<h2 class="haH2">
+  <a name="988571"> </a>Palm OS Events <a href="#977418"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="988644"> </a>Palm OS applications are event-driven: user actions and some system requests are placed in an <b>event queue</b> from which the events can be retrieved and acted upon. Each thread running in either the Application or Background process can have its own event queue into which events destined for that thread are placed (but note that the event queue is part of the UI context of the thread, and a UI context is relatively heavyweight, so unless you need it you shouldn't create the UI context). The operating system places into each queue only those events that are relevant for that queue.</p>
+
+<p><a name="993125"> </a>Certain events&#8212;such as pen and key events&#8212;are classified as <b>low-level events</b>. Applications rarely work with low-level events directly; the operating system translates low-level events into higher-level events that are then posted to the appropriate event queue. Applications that do work with low-level events directly might do so to enqueue key events or to retrieve each of the pen points that comprise a pen stroke.</p>
+
+<p><a name="992401"> </a>Because Palm OS translates low-level pen and key events into higher-level events, most Palm OS events can be ignored by the typical application. For instance, if the user taps an on-screen button a low-level <a href="../Input_Services/In_LowEvents.html#994048"><code>penDownEvent</code></a> is generated. This event is passed on to the control object, which then posts a <a href="../User_Interface/UI_Control.html#999483"><code>ctlEnterEvent</code></a>. Then as the user moves the pen, a series of <a href="../Input_Services/In_LowEvents.html#994072"><code>penMoveEvent</code></a>s are posted. Finally,when the user lifts the pen a <a href="../Input_Services/In_LowEvents.html#994097"><code>penUpEvent</code></a> is posted. If the pen was lifted within the control, the operating system realizes that the user just tapped an on-screen button and posts a <a href="../User_Interface/UI_Control.html#999609"><code>ctlSelectEvent</code></a> to the event queue. Of these events, an application that is only interested in knowing when the user taps an on-screen button need only watch for the <code>ctlSelectEvent</code>; it can ignore the other events entirely.</p>
+
+<h2 class="haH2">
+  <a name="988732"> </a>The Structure of an Event <a href="#977418"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="988736"> </a>The <a href="Event.html#992950"><code>EventType</code></a> structure describes an event. It consists of three main parts:</p>
+<ul type="disc">
+  <li><a name="988737"> </a>A 32-bit value that identifies the event that has taken place.
+  <li><a name="988738"> </a>A standard data block that, for many events, contains the state of the pen at the time the event occurred.
+  <li><a name="988739"> </a>An optional event-specific data block.
+</ul>
+
+<p><a name="988740"> </a>The <code>EventType</code> structure looks like this (with the event-specific data structures that comprise the <code>data</code> union omitted for clarity):</p>
+<pre class="sl">typedef struct EventType {
+   eventsEnum eType;
+   Boolean penDown;
+   uint8_t padding_1;
+   uint16_t padding_2;
+   uint32_t tapCount;
+   Coord screenX;
+   Coord screenY;
+   union {
+      ...
+   } data;
+} EventType;</pre>
+
+<p><a name="988742"> </a>In this structure the <code>data</code> union is used only by those events that have additional data associated with them. For instance, a <a href="../Input_Services/In_LowEvents.html#993792"><code>keyDownEvent</code></a>'s <code>data</code> field contains the following structure: </p>
+<pre class="proto"><a name="988746"></a>struct _KeyDownEventType {
+  wchar_t chr;
+  uint16_t keyCode;
+  uint16_t modifiers;
+} keyDown
+</pre>
+
+<p><a name="995587"> </a>On the other hand, an <a href="EventCodes.html#994789"><code>appStopEvent</code></a>&#8212;an indication to the application that it should stop&#8212;needs no additional data.</p>
+
+<h2 class="haH2">
+  <a name="995589"> </a>The Application Event Loop <a href="#977418"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="995593"> </a>Upon receiving a <a href="CmnLaunchCodes.html#994023"><code>sysAppLaunchCmdNormalLaunch</code></a> launch code, a typical Palm OS application does the following:</p>
+<ol type="1">
+  <li value="1"><a name="987117"> </a>Perform any needed application-specific initialization.
+  <li value="2"><a name="987130"> </a>Display the application's main form.
+  <li value="3"><a name="992758"> </a>Enter a loop, retrieving and handling events until an <a href="EventCodes.html#994789"><code>appStopEvent</code></a> is retrieved. This part of the program is known as the <b>application event loop</b>.
+  <li value="4"><a name="987142"> </a>Perform any necessary cleanup, and exit.
+</ol>
+
+<p><a name="977596"> </a>In the event loop, the application fetches events from the queue and dispatches them, taking advantage of the default system functionality as appropriate. Most events are passed on to the system, which knows how to handle them. For example, the system knows how to respond to pen taps on forms or menus. </p>
+
+<p><a name="977599"> </a>The application typically remains in the event loop until the system tells it to shut itself down by sending an <a href="EventCodes.html#994789"><code>appStopEvent</code></a> through the event queue. The application must detect this event and terminate. </p>
+
+<p><a name="987223"> </a><a href="EventLoop.html#977604">Listing 3.1</a> shows a typical application event loop. <a href="EventLoop.html#987406">Figure 3.1</a> graphically illustrates this same event loop, with additional explanation for each of the steps.</p>
+<p class="CCodeCaption">
+  <a name="977604"> </a><b>Listing 3.1&nbsp;&nbsp;Sample application event loop</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+static void AppEventLoop(void){<a name="987011"> </a>
+   status_t error;<a name="987013"> </a>
+   EventType event;<a name="987014"> </a>
+<a name="987015"> </a>
+   do {<a name="987016"> </a>
+      EvtGetEvent(&amp;event, evtWaitForever);<a name="987017"> </a>
+<a name="987018"> </a>
+      if (SysHandleEvent(&amp;event))<a name="987019"> </a>
+         continue;<a name="987020"> </a>
+<a name="987021"> </a>
+      if (MenuHandleEvent(0, &amp;event, &amp;error))<a name="987023"> </a>
+         continue;<a name="987024"> </a>
+<a name="987025"> </a>
+      if (AppHandleEvent(&amp;event))<a name="987026"> </a>
+         continue;<a name="987027"> </a>
+<a name="987028"> </a>
+      FrmDispatchEvent(&amp;event);<a name="987029"> </a>
+<a name="987030"> </a>
+   } while (event.eType != appStopEvent);<a name="987031"> </a>
+}<a name="987032"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p class="FFigureCaption">
+  <a name="987406"> </a><b>Figure 3.1&nbsp;&nbsp;Control flow in a typical application</b>
+</p>
+<div align="left"><img src="images/EventLoope.jpg" height="735" width="488" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="977628"> </a>As illustrated both in the code and the flowchart, within the basic application event loop the application performs the following steps (Each of which is discussed in greater detail in the following sections):</p>
+<ol type="1">
+  <li value="1"><a name="977635"> </a>Fetch an event from the event queue.
+  <li value="2"><a name="977641"> </a>Call <a href="../System_Management/SystemMgr.html#994346"><code>SysHandleEvent()</code></a> to give the system an opportunity to handle the event. 
+  <li value="3"><a name="977645"> </a>If <code>SysHandleEvent()</code> did not completely handle the event, the application gives the menu system a chance to handle it by calling <a href="../User_Interface/UI_Menu.html#994712"><code>MenuHandleEvent()</code></a>.
+  <li value="4"><a name="977652"> </a>If <code>MenuHandleEvent()</code> did not completely handle the event, your application now gets a chance to deal with it. <code>ApplicationHandleEvent()</code> is a function your application has to provide. Your <code>ApplicationHandleEvent()</code> function typically only handles the <a href="../User_Interface/UI_Form.html#1089241"><code>frmLoadEvent</code></a>s, since each form typically handles its own events.
+  <li value="5"><a name="977659"> </a>If <code>ApplicationHandleEvent</code> did not completely handle the event, the application calls <a href="../User_Interface/UI_Form.html#997039"><code>FrmDispatchEvent()</code></a>. This function sends the event to the active form's event handler and, if the form's event handler didn't deal with it, <code>FrmDispatchEvent()</code> passes it off to the operating system to do any default processing of the event.
+</ol>
+
+<p><a name="988313"> </a>Notice how the event flow allows your application to rely on system functionality as much as it wants. If your application wants to know whether a button is pressed, it has only to wait for a <a href="../User_Interface/UI_Control.html#999609"><code>ctlSelectEvent</code></a>. All the details of the event queue are handled by the system. </p>
+
+<p><a name="988317"> </a>Some events are actually requests for the application to do something, for example, <a href="../User_Interface/UI_Form.html#1089265"><code>frmOpenEvent</code></a>. Typically, all the application does is initialize the elements on the form and then wait for events it can handle to arrive from the queue. </p>
+<h3 class="hbH3">
+  <a name="987701"> </a>Retrieving Events <a href="#977418"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="987705"> </a>Applications call <a href="Event.html#996063"><code>EvtGetEvent()</code></a> to obtain the next available event from the current thread's event queue. Pass a pointer to an <a href="Event.html#992950"><code>EventType</code></a> structure into which the event will be copied, and a timeout value indicating the length of time the function should wait for an event if there are no events currently on the queue. In most instances you simply pass <code>evtWaitForever</code>, indicating that <code>EvtGetEvent()</code> shouldn't return until there is at least one event in the queue.</p>
+
+<p><a name="987710"> </a><code>EvtGetEvent()</code> has no return value: it always returns a valid event. If there are no events in the queue and the specified timeout period elapses, <code>EvtGetEvent()</code> generates and returns a <a href="EventCodes.html#994900"><code>nilEvent</code></a>.</p>
+
+<p><a name="992876"> </a>If your application needs to perform a lengthy process, such as a data transfer during a communications session, it should periodically call <code>EvtGetEvent()</code>. That is, you call <code>EvtGetEvent()</code> and do work when you get a <code>nilEvent</code>. Each time you get a <code>nilEvent</code>, do a chunk of work, but be sure to continue to call <code>EvtGetEvent()</code> frequently (like every half second), so that pen taps and other events get noticed quickly. Note that in situations like these you'll probably also want to display a progress dialog. For more information on progress dialogs, see <i>Exploring Palm OS: User Interface</i>.</p>
+<h3 class="hbH3">
+  <a name="987647"> </a>Handling System Events <a href="#977418"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="987724"> </a>The system handles events like power on/power off, Graffiti<sup>&#174;</sup> 2 input, tapping inputarea icons; these events are not posted to your thread's event queue. Other events, like the pressing of the "hard" buttons on the device, are posted to your thread's event queue to give your application the opportunity to handle them. Those events that your application does not handle entirely by itself should be passed on to the operating system; you do this by calling <a href="../System_Management/SystemMgr.html#994346"><code>SysHandleEvent()</code></a>. </p>
+
+<p><a name="987726"> </a><code>SysHandleEvent()</code> returns <code>true</code> if the event was completely handled and no further processing of the event is required. The application is then free to pick up the next event from the queue. </p>
+<h3 class="hbH3">
+  <a name="987717"> </a>Handling Menu Events <a href="#977418"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="987854"> </a><a href="../User_Interface/UI_Menu.html#994712"><code>MenuHandleEvent()</code></a> handles two types of events:</p>
+<ul type="disc">
+  <li><a name="987855"> </a>If the user has tapped in the area that invokes a menu, <code>MenuHandleEvent()</code> brings up the menu. 
+  <li><a name="987856"> </a>If the user has tapped inside a menu to invoke a menu command, <code>MenuHandleEvent()</code> removes the menu from the screen and puts the events that result from the command onto the event queue. 
+</ul>
+
+<p><a name="987857"> </a><code>MenuHandleEvent()</code> returns <code>true</code> if the event was completely handled. </p>
+<h3 class="hbH3">
+  <a name="987903"> </a>Handling Form Load Events: the AppHandleEvent() Function <a href="#977418"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="987913"> </a>Your <code>ApplicationHandleEvent()</code> function typically only handles the <a href="../User_Interface/UI_Form.html#1089241"><code>frmLoadEvent</code></a>s, since each form typically handles its own events. The <a href="Event.html#992950"><code>EventType</code></a> structure that comprises a <code>frmLoadEvent</code> contains both the <code>formID</code> of the form to be loaded and a <code>DmOpenRef</code> to the open resource database that contains the form. Using this information, your <code>AppHandleEvent()</code> function should do the following:</p>
+<ol type="1">
+  <li value="1"><a name="987952"> </a>Load and initialize the form. This is most commonly done by calling <a href="../User_Interface/UI_Form.html#1001135"><code>FrmInitForm()</code></a>. At this point the form has not yet been drawn, nor is it active.
+  <li value="2"><a name="987956"> </a>Make the form the active form. Call <a href="../User_Interface/UI_Form.html#1002714"><code>FrmSetActiveForm()</code></a> to do this. The active form receives all key and pen input, and all drawing is performed on the active form (until otherwise specified).
+  <li value="3"><a name="987960"> </a>Set the form's event handler using <a href="../User_Interface/UI_Form.html#1003047"><code>FrmSetEventHandler()</code></a>. You supply the address of a callback function that will receive all events intended for the form. Generally, you create a separate callback function for each form in your application.
+  <li value="4"><a name="987966"> </a>Call <a href="../User_Interface/UI_Form.html#1081506"><code>FrmInitLayout()</code></a> to prepare the form for automatic resizing. This last step is optional, but recommended: you need only call this function if your form should be automatically resized in response to a <a href="../User_Interface/UI_Window.html#1357625"><code>winResizedEvent</code></a>.
+</ol>
+
+<p><a name="987988"> </a>Your <code>AppHandleEvent()</code> function should return <code>true</code> if it handled the event, or <code>false</code> if the event should be passed on to be handled elsewhere.</p>
+
+<p><a name="987648"> </a><a href="EventLoop.html#988126">Listing 3.2</a> illustrates a typical <code>AppHandleEvent()</code> function.</p>
+<p class="CCodeCaption">
+  <a name="988126"> </a><b>Listing 3.2&nbsp;&nbsp;A sample AppHandleEvent() function</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+static Boolean AppHandleEvent(EventType* pEvent) {<a name="988008"> </a>
+   uint16_t formId;<a name="988010"> </a>
+   FormType *pForm;<a name="988011"> </a>
+<a name="988012"> </a>
+   if (pEvent-&gt;eType == frmLoadEvent) {<a name="988013"> </a>
+      // Load the form resource.<a name="988014"> </a>
+      formId = pEvent-&gt;data.frmLoad.formID;<a name="988015"> </a>
+      <a name="988016"> </a>
+      pForm = FrmInitForm(gAppDB, formId);<a name="988018"> </a>
+      FrmSetActiveForm(pForm);<a name="988019"> </a>
+<a name="988020"> </a>
+      // Set the event handler for the form.  The handler of<a name="988021"> </a>
+      // the currently active form is called by<a name="988119"> </a>
+      // FrmHandleEvent each time is receives an event.<a name="988123"> </a>
+      switch (formId) {<a name="988024"> </a>
+         case MainForm:<a name="988025"> </a>
+            FrmSetEventHandler(pForm, MainFormHandleEvent);<a name="988026"> </a>
+            FrmInitLayout(pForm, gMainFormLayout);<a name="988027"> </a>
+            break;<a name="988028"> </a>
+<a name="988029"> </a>
+         case Form2Form:<a name="988030"> </a>
+            FrmSetEventHandler(pForm, Form2FormHandleEvent);<a name="988031"> </a>
+            FrmInitLayout(pForm, gForm2FormLayout);<a name="988032"> </a>
+            break;<a name="988033"> </a>
+<a name="988034"> </a>
+         default:<a name="988035"> </a>
+            ErrFatalDisplay("Invalid Form Load Event");<a name="988036"> </a>
+            break;<a name="988037"> </a>
+      }<a name="988038"> </a>
+      <a name="988039"> </a>
+      return true;<a name="988040"> </a>
+   }<a name="988041"> </a>
+   <a name="988042"> </a>
+   return false;<a name="988043"> </a>
+}<a name="988044"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h3 class="hbH3">
+  <a name="988193"> </a>Handling Form-Specific Events <a href="#977418"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="988199"> </a><a href="../User_Interface/UI_Form.html#997039"><code>FrmDispatchEvent()</code></a> begins by sending the event to the application's event handler for the active form. This is the event handler routine that was established in <code>ApplicationHandleEvent()</code>. This gives the application's code the first opportunity to process events that pertain to the current form. The application's event handler may completely handle the event and return <code>true</code>, in which case <code>FrmDispatchEvent()</code> returns to the application's event loop. Otherwise, <code>FrmDispatchEvent()</code> calls <a href="../User_Interface/UI_Form.html#1000647"><code>FrmHandleEvent()</code></a> to provide the system's default processing for the event. In many cases this default handling is sufficient; see the documentation for <code>FrmHandleEvent()</code> for an explanation of how that function deals with various events.</p>
+
+<p><a name="988203"> </a>In the process of handling an event, an application may have to first close the current form and then open another one. This happens as follows: </p>
+<ol type="1">
+  <li value="1"><a name="988207"> </a>The application calls <a href="../User_Interface/UI_Form.html#1000521"><code>FrmGotoForm()</code></a> to bring up another form. <code>FrmGotoForm()</code> enqueues a <a href="../User_Interface/UI_Form.html#1089078"><code>frmCloseEvent</code></a> for the currently active form, and then enqueues a <a href="../User_Interface/UI_Form.html#1089241"><code>frmLoadEvent</code></a> and a <a href="../User_Interface/UI_Form.html#1089265"><code>frmOpenEvent</code></a> for the new form. 
+  <li value="2"><a name="988217"> </a>When the application gets the <code>frmCloseEvent,</code> it closes and erases the currently active form. 
+  <li value="3"><a name="988218"> </a>When the application gets the <code>frmLoadEvent</code>, it loads and then activates the new form. Normally, the form remains active until it's closed. (Note that this wouldn't work if you preload all forms, but pre-loading is really discouraged. Applications don't need to be concerned with the overhead of loading forms; loading is so fast that applications can do it when they need it.) The application's event handler for the new form is also established.
+  <li value="4"><a name="988219"> </a>Upon receipt of the <code>frmOpenEvent</code> the application performs any required initialization of the form.
+  <li value="5"><a name="993271"> </a>Upon receipt of a <a href="../User_Interface/UI_Form.html#1089359"><code>frmUpdateEvent</code></a> the application draws the form on the display. 
+</ol>
+
+<p><a name="988220"> </a>After <code>FrmGotoForm()</code> has been called, any further events that make their way to the application event loop's <code>FrmDispatchEvent()</code> call are dispatched to the event handler for the form that's currently active&#8212;the form specified in the <code>FrmGotoForm()</code> call. </p>
+
+<h2 class="haH2">
+  <a name="991768"> </a>Using Events to Communicate Between Threads <a href="#977418"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<div><hr>
+  <a name="992033"> </a> <b>NOTE: </b> This section describes how the Palm OS event mechanism can be used to facilitate communications between separate threads of execution. For more complete information on writing multi-tasking Palm OS applications, see <i>Exploring Palm OS: System Management</i>.
+<hr>
+</div>
+
+<p><a name="991776"> </a>Each thread can have its own event queue. While the Palm OS event mechanism is most commonly used to keep applications apprised of user actions, you can also employ it to communicate with other threads, either in the same or a different process.</p>
+<h3 class="hbH3">
+  <a name="991889"> </a>Communicating Between Threads in a Single Process <a href="#977418"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="991820"> </a>Given a handle to an event queue, you can post an arbitrary event to that queue by calling <a href="Event.html#994892"><code>EvtAddEventToEventQueue()</code></a> or <a href="Event.html#1050907"><code>EvtAddUniqueEventToEventQueue()</code></a>. Note that the former is different from <a href="Event.html#995243"><code>EvtAddEventToQueue()</code></a>, which always posts events to the default queue for the current thread.</p>
+
+<p><a name="991874"> </a>To obtain a handle to the event queue of another thread in the same process you simply call <a href="Event.html#996384"><code>EvtGetThreadEventQueue()</code></a> from within that thread. When you are done with the queue be sure to call <a href="Event.html#996714"><code>EvtReleaseEventQueue()</code></a>.</p>
+<h3 class="hbH3">
+  <a name="991910"> </a>Communicating Between Threads in Different Processes <a href="#977418"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="991933"> </a>As when posting events to the queue of another thread in the same process, you use <a href="Event.html#994892"><code>EvtAddEventToEventQueue()</code></a> or <a href="Event.html#1050907"><code>EvtAddUniqueEventToEventQueue()</code></a> to post events to a queue in a separate process. How you obtain the handle to the other thread's queue, however, differs. The mechanism you use depends on whether you created the other thread yourself or whether you need to attach to an already-running thread in another process:</p>
+<ul type="disc">
+  <li><a name="991955"> </a>If you are creating the thread yourself, you'll likely use <a href="Event.html#995443"><code>EvtCreateBackgroundThread()</code></a>. This function returns a handle to the newly-created background thread's event queue. Note that although threads don't necessarily have an event queue&#8212;you need to call <a href="../User_Interface/UI_Window.html#1617695"><code>WinStartThreadUI()</code></a> to create a UI context (and thus an event queue) for a thread created with <a href="../System_Management/SysThread.html#995791"><code>SysThreadCreate()</code></a>&#8212;background threads created with <code>EvtCreateBackgroundThread()</code> do always have an event queue.
+  <li><a name="991971"> </a>To obtain a handle to the event queue of an already-running thread in another process, that thread must have published its queue by name using <a href="Event.html#996668"><code>EvtPublishEventQueue()</code></a>. Then, as long as the posting thread knows the name by which the queue was published, it need only call <a href="Event.html#996602"><code>EvtLookupEventQueue()</code></a> to obtain the queue handle.
+</ul>
+
+<p><a name="991923"> </a>Two-way communication is enabled by the <code class="par">replyQueue</code> parameter to the <code>EvtAddEventToEventQueue()</code> call: if task A supplies a handle to its own queue when posting an event to task B's event queue, task B can send a reply by posting an event back to task A's queue. In order to obtain the handle to task A's event queue, task B must call <a href="Event.html#1037636"><code>EvtGetReplyEventQueue()</code></a> while processing the original event posted by task A. Note that the reply queue is associated with a single event posting; this allows a background server task to service multiple clients at the same time.</p>
+
+<h2 class="haH2">
+  <a name="983320"> </a>Palm OS-Generated Events <a href="#977418"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="991464"> </a>The following is complete list of all events generated by Palm OS that are of interest to developers. Because most events are generated by or handled by specific areas of the system, they are documented in other books in the <i>Exploring Palm OS</i> series, as listed in the following tables.</p>
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="990531"> </a><b>Palm OS-Generated Events</b></p>
+    </td>
+    <td><p class="tt"><a name="990533"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990535"> </a><b>General Events</b></p>
+    </td>
+    <td><p class="tt"><a name="990537"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990539"> </a><a href="EventCodes.html#994789"><code>appStopEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990541"> </a><a href="EventCodes.html#994900"><code>nilEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="990547"> </a><b>Events documented in <i>Exploring Palm OS: Input Services</i></b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990733"> </a><a href="../Input_Services/In_ShiftIndicator.html#998211"><code>gsiStateChangeEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990738"> </a><a href="../Input_Services/In_LowEvents.html#993792"><code>keyDownEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993308"> </a><a href="../Input_Services/In_LowEvents.html#998753"><code>keyHoldEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993310"> </a><a href="../Input_Services/In_LowEvents.html#997938"><code>keyHoldEvent5</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990743"> </a><a href="../Input_Services/In_LowEvents.html#996326"><code>keyUpEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990748"> </a><a href="../Input_Services/In_LowEvents.html#997866"><code>keyUpEvent5</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993729"> </a><a href="../Input_Services/In_LowEvents.html#994048"><code>penDownEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993731"> </a><a href="../Input_Services/In_LowEvents.html#994072"><code>penMoveEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990753"> </a><a href="../Input_Services/In_LowEvents.html#994097"><code>penUpEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990758"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="990551"> </a><b>Events documented in <i>Exploring Palm OS: User Interface</i></b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990815"> </a><a href="../User_Interface/UI_Control.html#999483"><code>ctlEnterEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990820"> </a><a href="../User_Interface/UI_Control.html#999517"><code>ctlExitEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990825"> </a><a href="../User_Interface/UI_Control.html#999557"><code>ctlRepeatEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990830"> </a><a href="../User_Interface/UI_Control.html#999609"><code>ctlSelectEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990835"> </a><a href="../User_Interface/UI_DateAndTimeSelector.html#994323"><code>daySelectEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990840"> </a><a href="../User_Interface/UI_Field.html#1007883"><code>fldChangedEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993433"> </a><a href="../User_Interface/UI_Field.html#1007914"><code>fldEnterEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993435"> </a><a href="../User_Interface/UI_Field.html#1007946"><code>fldHeightChangedEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990845"> </a><a href="../User_Interface/UI_Form.html#1089078"><code>frmCloseEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990850"> </a><a href="../User_Interface/UI_Form.html#1089105"><code>frmGadgetEnterEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990855"> </a><a href="../User_Interface/UI_Form.html#1312059"><code>frmGadgetMiscEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990860"> </a><a href="../User_Interface/UI_Form.html#1089192"><code>frmGotoEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990865"> </a><a href="../User_Interface/UI_Form.html#1089241"><code>frmLoadEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990870"> </a><a href="../User_Interface/UI_Form.html#1089265"><code>frmOpenEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990875"> </a><a href="../User_Interface/UI_Form.html#1321621"><code>frmSaveEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990880"> </a><a href="../User_Interface/UI_Scrollbar.html#994827"><code>frmScrollPrvRefreshEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990885"> </a><a href="../User_Interface/UI_Form.html#1339200"><code>frmStopDialogEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993561"> </a><a href="../User_Interface/UI_Form.html#1089299"><code>frmTitleEnterEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990895"> </a><a href="../User_Interface/UI_Form.html#1089323"><code>frmTitleSelectEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990900"> </a><a href="../User_Interface/UI_Form.html#1089359"><code>frmUpdateEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990905"> </a><a href="../User_Interface/UI_Field.html#1007985"><code>insertionPointOffEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990910"> </a><a href="../User_Interface/UI_Field.html#1007997"><code>insertionPointOnEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990915"> </a><a href="../User_Interface/UI_List.html#996436"><code>lstEnterEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990920"> </a><a href="../User_Interface/UI_List.html#996474"><code>lstExitEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990925"> </a><a href="../User_Interface/UI_List.html#996511"><code>lstSelectEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990930"> </a><a href="../User_Interface/UI_Menu.html#996584"><code>menuCloseEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990935"> </a><a href="../User_Interface/UI_Menu.html#996588"><code>menuCmdBarOpenEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990940"> </a><a href="../User_Interface/UI_Menu.html#1019067"><code>menuCmdBarTimeoutEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993425"> </a><a href="../User_Interface/UI_Menu.html#996623"><code>menuEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993427"> </a><a href="../User_Interface/UI_Menu.html#996648"><code>menuOpenEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990945"> </a><a href="../User_Interface/UI_List.html#996554"><code>popSelectEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990950"> </a><a href="../User_Interface/UI_ProgressManager.html#994988"><code>prgUpdateEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990955"> </a><a href="../User_Interface/UI_Scrollbar.html#994834"><code>sclEnterEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990960"> </a><a href="../User_Interface/UI_Scrollbar.html#994861"><code>sclExitEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990965"> </a><a href="../User_Interface/UI_Scrollbar.html#994900"><code>sclRepeatEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990970"> </a><a href="../User_Interface/UI_Window.html#1746226"><code>sysClearUIEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990975"> </a><a href="../User_Interface/UI_Table.html#1000409"><code>tblEnterEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990980"> </a><a href="../User_Interface/UI_Table.html#1000452"><code>tblExitEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993327"> </a><a href="../User_Interface/UI_Table.html#1000499"><code>tblSelectEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993329"> </a><a href="../User_Interface/UI_Window.html#1659238"><code>winEnterEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990985"> </a><a href="../User_Interface/UI_Window.html#1659056"><code>winExitEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990990"> </a><a href="../User_Interface/UI_Window.html#1356631"><code>winFocusGainedEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990995"> </a><a href="../User_Interface/UI_Window.html#1357484"><code>winFocusLostEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="991000"> </a><a href="../User_Interface/UI_Window.html#1357625"><code>winResizedEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="991005"> </a><a href="../User_Interface/UI_Window.html#1357696"><code>winUpdateEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="991010"> </a><a href="../User_Interface/UI_Window.html#1711570"><code>winVisibilityChangedEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="990555"> </a><b>Events to be documented in <i>Exploring Palm OS: Creating a FEP</i></b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="991068"> </a><code>tsmConfirmEvent</code></p>
+    </td>
+    <td><p class="tt"><a name="991070"> </a><code>tsmFepButtonEvent</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="991072"> </a><code>tsmFepChangeEvent</code></p>
+    </td>
+    <td><p class="tt"><a name="991074"> </a><code>tsmFepDisplayOptionsEvent</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="991076"> </a><code>tsmFepModeEvent</code></p>
+    </td>
+    <td><p class="tt"><a name="991078"> </a><code>tsmFepSelectOptionEvent</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="990567"> </a><b>Events documented in <i>Exploring Palm OS: Telephony and SMS</i></b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="991229"> </a><code>telAsyncReplyEvent (</code><a href="../Telephony_and_SMS/TelSMS_TelMgrRef.html#1057399"><code>kTelTelephonyEvent</code></a><span style="color: #000000;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">)</span></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="990599"> </a><span style="color: #000000;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">Events used internally by the operating system or reserved for future use</span></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="995052"> </a><code>amWorkerDoneEvent</code></p>
+    </td>
+    <td><p class="tt"><a name="995064"> </a><code>attnIndicatorEnterEvent</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="995067"> </a><code>attnIndicatorSelectEvent</code></p>
+    </td>
+    <td><p class="tt"><a name="994552"> </a><code>certMgrWorkerDoneEvent</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993827"> </a>debugEvent</p>
+    </td>
+    <td><p class="tt"><a name="993829"> </a><code>exgLocalEvtNotify</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="995014"> </a><code>exgLocalEvtDie</code></p>
+    </td>
+    <td><p class="tt"><a name="995016"> </a><code>reservedEventCode1</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993766"> </a>reservedEventCode2</p>
+    </td>
+    <td><p class="tt"><a name="993768"> </a><code>reservedEventCode3</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993773"> </a><code>reservedFindEvent</code></p>
+    </td>
+    <td><p class="tt"><a name="993775"> </a><code>stringInputEvent</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994995"> </a><code>tunneledEvent</code></p>
+    </td>
+    <td><p class="tt"><a name="994997"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="984517"> </a>Summary of Event APIs <a href="#977418"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="989922"> </a><b><span style="color: #000000;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">Functions Declared in Event.h</span></b></p>
+    </td>
+    <td><p class="tt"><a name="989924"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989417"> </a><b>Main Event Queue Management</b></p>
+    </td>
+    <td><p class="tt"><a name="989419"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989995"> </a><a href="Event.html#995243"><code>EvtAddEventToQueue</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989997"> </a><a href="Event.html#995285"><code>EvtAddEventToQueueAtTime</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990017"> </a><a href="Event.html#995335"><code>EvtAddUniqueEventToQueue</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990019"> </a><a href="Event.html#995385"><code>EvtAddUniqueEventToQueueAtTime</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990039"> </a><a href="Event.html#995797"><code>EvtEventAvail</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990041"> </a><a href="Event.html#996063"><code>EvtGetEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989421"> </a><a href="Event.html#997028"><code>EvtSetNullEventTick</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989423"> </a><a href="Event.html#997070"><code>EvtSysEventAvail</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989473"> </a><b>Pen Queue Management</b></p>
+    </td>
+    <td><p class="tt"><a name="989475"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989504"> </a><a href="Event.html#995555"><code>EvtDequeuePenPoint</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989506"> </a><a href="Event.html#995662"><code>EvtDequeuePenStrokeInfo</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989508"> </a><a href="Event.html#995979"><code>EvtFlushNextPenStroke</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989510"> </a><a href="Event.html#996019"><code>EvtFlushPenQueue</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989512"> </a><a href="Event.html#996236"><code>EvtGetPen</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989514"> </a><a href="Event.html#996286"><code>EvtGetPenNative</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989429"> </a><b>Key Queue Management</b></p>
+    </td>
+    <td><p class="tt"><a name="989431"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989672"> </a><a href="Event.html#1053071"><code>EvtDequeueKeyEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989674"> </a><a href="Event.html#995708"><code>EvtEnqueueKey</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989578"> </a><a href="Event.html#995939"><code>EvtFlushKeyQueue</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989580"> </a><a href="Event.html#996492"><code>EvtKeydownIsVirtual</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989582"> </a><a href="Event.html#996534"><code>EvtKeyQueueEmpty</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989584"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989586"> </a><b>Handling Power On</b></p>
+    </td>
+    <td><p class="tt"><a name="989588"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989633"> </a><a href="Event.html#997155"><code>EvtWakeup</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989635"> </a><a href="Event.html#997219"><code>EvtWakeupWithoutNilEvent</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="989637"> </a><b>Communicating Between Threads in the Same Process</b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989641"> </a><a href="Event.html#994892"><code>EvtAddEventToEventQueue</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989643"> </a><a href="Event.html#996384"><code>EvtGetThreadEventQueue</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989645"> </a><a href="Event.html#996714"><code>EvtReleaseEventQueue</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989647"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="989590"> </a><b>Communicating Between Threads in Different Processes</b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989955"> </a><a href="Event.html#1039050"><code>EvtAcquireEventQueue</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989957"> </a><a href="Event.html#995443"><code>EvtCreateBackgroundThread</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989782"> </a><a href="Event.html#1037636"><code>EvtGetReplyEventQueue</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989784"> </a><a href="Event.html#996602"><code>EvtLookupEventQueue</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989786"> </a><a href="Event.html#996668"><code>EvtPublishEventQueue</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989788"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="989794"> </a><b>Blocking on the Event Queue's IOS File Descriptor</b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989100"> </a><a href="Event.html#995895"><code>EvtFinishLastEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989102"> </a><a href="Event.html#996109"><code>EvtGetEventDescriptor</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990072"> </a><b>Getting the Current Focus</b></p>
+    </td>
+    <td><p class="tt"><a name="990074"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="990076"> </a><a href="Event.html#996188"><code>EvtGetFocusWindow</code></a></p>
+    </td>
+    <td><p class="tt"><a name="990078"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989124"> </a><b>Debugging</b></p>
+    </td>
+    <td><p class="tt"><a name="989126"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="989136"> </a><a href="Event.html#995845"><code>EvtEventToString</code></a></p>
+    </td>
+    <td><p class="tt"><a name="989138"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+
+<p><a name="978258"> </a></p>
+
+<p><a name="985633"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="ProgrammingBasics_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="ProgrammingBasicsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="AppStartAndStop.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Notifications.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="ProgrammingBasicsIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

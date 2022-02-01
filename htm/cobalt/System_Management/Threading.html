@@ -1,0 +1,792 @@
+<html>
+<head>
+<title>(Protein) Threading | System Management</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:27:20">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="1009989"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="SysMgt_TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="BootAndReset.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PowerManagement.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SysMgt_IX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">8 &nbsp;&nbsp;
+Threading</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">System Management</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="SysMgt_Part1.html">Part I: Concepts</a> </h1>
+<h1 class="SideTOC1"><a href="Threading.html">8  Threading</a></h1>
+
+   <h2 class="SideTOC2"><a href="#1019884">
+   Architecture Overview </a></h2>
+
+      <h3 class="SideTOC3"><a href="#1019887">
+      Threads and Scheduling</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1019891">
+      Processes and Applications</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1019901">
+      Thread Synchronization</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1019910">
+      Inter-Process Communication</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1019931">
+      Graphics Context</a></h3>
+
+   <h2 class="SideTOC2"><a href="#1019942">
+   Using the Threading APIs</a></h2>
+
+      <h3 class="SideTOC3"><a href="#1019948">
+      Application Launching</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1019954">
+      Launching in the Background Process</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1022673">
+      Manipulating Threads</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1019965">
+      Inter-Process Communication (IPC)</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1019984">
+      Atomic Operations</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1019990">
+      Synchronization</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1019996">
+      Thread-Specific Data</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1020007">
+      Accessing the User Interface from Outside the Main UI Thread</a></h3>
+
+   <h2 class="SideTOC2"><a href="#1010731">
+   Summary of Threading</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="1021600"> </a>Two of the primary differences between Palm OS Cobalt and earlier versions of Palm OS are the introduction of protected memory and multi-threading. This chapter discusses these features and how you can make use of them in your Palm OS applications.</p>
+
+<p><a name="1009991"> </a>This chapter is divided into the following broad topics: </p>
+   <blockquote class = "bq"><a name="1021524"> </a><a href="Threading.html#1019884">Architecture Overview</a></blockquote>
+   <blockquote class = "bq"><a name="1021535"> </a><a href="Threading.html#1019942">Using the Threading APIs</a></blockquote>
+   <blockquote class = "bq"><a name="1021540"> </a><a href="Threading.html#1010731">Summary of Threading</a></blockquote>
+
+<h2 class="haH2">
+  <a name="1019884"> </a>Architecture Overview  <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1019886"> </a>To understand the Palm OS Cobalt architecture, you must understand some of the terminology used in Palm OS Cobalt and how those terms compare with their use in other operating systems. Note that not all of the features described here are available in the SDK.</p>
+<h3 class="hbH3">
+  <a name="1019887"> </a>Threads and Scheduling <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1019888"> </a>A <b>thread</b> is autonomous unit of execution with its own set of registers, stack, program counter, and other state needed to execute code. Palm OS Cobalt allows for multiple threads executing simultaneously. A thread that would like to execute code is in a READY state. When two or more threads are ready to run, the system schedules them based on their priority, using round-robin scheduling for multiple threads with the same priority.</p>
+
+<p><a name="1021686"> </a><a href="Threading.html#1021756">Table 8.1</a> lists the possible states for a Palm OS Cobalt thread:</p>
+
+<p class="caption"><a name="1021756"> </a><b>Table 8.1&nbsp;&nbsp;Thread states</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1021699"> </a><b>State</b></p>
+    </th>
+    <th><p class="tt"><a name="1021701"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1021703"> </a>RUNNING</p>
+    </td>
+    <td><p class="tt"><a name="1021705"> </a>The thread is running. That is, it is currently executing code.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1021707"> </a>READY</p>
+    </td>
+    <td><p class="tt"><a name="1021799"> </a>The thread is ready to run, but because it is not the highest priority thread it is queued on the ready list.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1021781"> </a>WAITING</p>
+    </td>
+    <td><p class="tt"><a name="1021713"> </a>The thread is blocked, waiting for some condition to clear or resource to become available. A thread can wait on one or more other threads by calling <a href="SysThread.html#996539"><code>SysThreadGroupWait()</code></a>.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1021783"> </a>SUSPENDED</p>
+    </td>
+    <td><p class="tt"><a name="1021920"> </a>The thread is suspended. A suspended thread does not resume execution until it has been resumed. You suspend a thread by calling <a href="SysThread.html#997042"><code>SysThreadSuspend()</code></a> and resume a suspended thread by calling <a href="SysThread.html#996694"><code>SysThreadResume()</code></a>.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1021785"> </a>WAIT-SUSPEND</p>
+    </td>
+    <td><p class="tt"><a name="1021721"> </a>The thread is both waiting and suspended.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1021723"> </a>DORMANT</p>
+    </td>
+    <td><p class="tt"><a name="1021725"> </a>The thread has been created but not yet started.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1021727"> </a>FAULTED</p>
+    </td>
+    <td><p class="tt"><a name="1021729"> </a>During execution of the thread's code, a fault occurred.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1021731"> </a>FAULT-SUSPEND</p>
+    </td>
+    <td><p class="tt"><a name="1021733"> </a>The thread is both faulted and suspended.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="1019889"> </a>Thread <b>priority</b> levels range from 1 (best) to 255 (worst). The thread with the best priority that is ready to run is always scheduled at the next context switch, and all threads of worse priority are stopped until the best-priority thread has blocked. Although thread priorities range from 1 to 255, in reality user threads are typically restricted to a priority no better than 30 (<code>sysThreadPriorityBestUser</code>). See <a href="SysThread.html#1002445">"Thread Priorities"</a> for a list of commonly-used thread priorities.</p>
+
+<p><a name="1019890"> </a>Palm OS Cobalt allows for thread-specific data. This takes the form of slots containing integer values, with each thread having its own value in a particular slot.</p>
+<h3 class="hbH3">
+  <a name="1019891"> </a>Processes and Applications <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1019892"> </a>A <b>process</b> is a protected environment in which one or more threads reside. A thread must reside in one and only one process. The process provides that thread's heap and other global state, executable code, and communication channels with other parts of the system. The system enforces restrictions on access to memory and other resources between processes. It is not, by default, possible for a thread in one process to access the resources in another process, although such access may be granted if requested. Palm OS Cobalt provides for shared memory areas that are accessible to multiple processes. All threads running in a particular process have unrestricted access to all resources in that process. <a href="Threading.html#1023831">Figure 8.1</a>, below, illustrates the Palm OS Cobalt processes and the access they have to the various local and shared memory areas. </p>
+
+<p class="FFigureCaption">
+  <a name="1023831"> </a><b>Figure 8.1&nbsp;&nbsp;Process-to-Memory Mapping</b>
+</p>
+<div align="left"><img src="images/Threadingb.jpg" height="355" width="626" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="1023863"> </a>Note that third-party developers can write code that runs in either the Application, Background, or Sublaunch processes (and note that there are up to three Sublaunch processes in Palm OS Cobalt).</p>
+
+<p><a name="1019893"> </a>Dynamic creation of processes is not supported in Palm OS Cobalt. The system creates a fixed set of processes while booting up and may create and destroy some well-defined processes on behalf of applications as needed. Due to restrictions on the total number of available processes, you cannot create new processes in an ad-hoc manner.</p>
+
+<h4 class="hcH4">
+  <a name="1019894"> </a>Applications and Sublaunching
+</h4>
+
+<p><a name="1019895"> </a>An application runs in its own process, called the <b>Application process</b>. Only one application runs at a time. When an application switch occurs, the currently-running application exits, and its process is torn down. A new Applicationprocess is then created, and the new application is started within it.</p>
+
+<p><a name="1021989"> </a>When an application asks another application to perform some service on its behalf, this is known in Palm OS as a <b>sublaunch</b>. When a sublaunch occurs, the sublaunched code is loaded into the Application process and executed in-place. <i>This is intrinsically unsafe, however, becuase the sublaunched code has complete access to the hosting application</i>. Because of this, Palm OS Cobalt provides for <b>remote sublaunching</b>. During a remote sublaunch, a new temporary process is created in which the target code is executed. This process is granted temporary status as the Application process until the sublaunch completes. It can do anything that a normal application can. While the remote sublaunched code is executing, the main application is completely blocked, so there is effectively still only one flow of execution.</p>
+
+<p><a name="1022006"> </a>All occurrences in the system of sublaunches that are outside of the application's direct control (such as notifications) are performed as a remote sublaunch.</p>
+
+<h4 class="hcH4">
+  <a name="1019898"> </a>Background Threads
+</h4>
+
+<p><a name="1019899"> </a>Palm OS Cobalt also creates a process called the <b>Background Process</b>. Applications can use this process to execute code that needs to persist across application switches. (Any threads created in the Application process are torn down with the rest of the process as part of an application switch.) The system provides APIs for applications to spawn threads in the Background Process, which are then free to run independently from the main UI.</p>
+
+<p><a name="1019900"> </a>Note that code from multiple independent applications may be running in the Background Process, and any application is free to load code into the process as desired. <i>Because of this, the Background Process is not a secure address space</i>. Secure operations must be executed in the Application process, where the application has full control over what is loaded. In addition, crashing code will bring down all other threads running in the Background Process. There are facilities for applications to be notified of a thread crashing so they may restart any desired threads.</p>
+<h3 class="hbH3">
+  <a name="1019901"> </a>Thread Synchronization <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1019902"> </a>Palm OS Cobalt provides two major categories of synchronization primitives. Traditional primitives are implemented in the kernel and can be used to synchronize threads across processes. Lightweight primitives are implemented in user space and can only be used to synchronize threads in the same process. The main goal of the lightweight primitives is to reduce resource usage, as they require no kernel state and as little as four bytes of storage. However, they also tend to have better performance&#8212;any operation that does not require blocking or interacting with another blocking thread can be done entirely in user space without a kernel call.</p>
+
+<h4 class="hcH4">
+  <a name="1022057"> </a>Traditional Synchronization Primitives
+</h4>
+
+<p><a name="1022058"> </a>Among the traditional synchronization primitives that Palm OS Cobalt supports are mutexes and counted semaphores.</p>
+
+<p><a name="1022059"> </a>A <b>mutex</b> is a simple locking primitive. Only one thread can hold a mutex at a time; all other threads trying to acquire the mutex are blocked until the first thread releases it, at which point the next thread gains access to the mutex and continues its execution.</p>
+
+<p><a name="1019905"> </a>A <b>counted semaphore</b> provides a very general synchronization primitive, which can be used to construct many other types of synchronization semantics (mutex, reader/writer, producer/consumer, and so on). A variation on this, the fast semaphore, is a more efficient implementation for threads in the same process&#8212;but most code should use a lightweight critical section instead.</p>
+
+<h4 class="hcH4">
+  <a name="1019907"> </a>Lightweight Synchronization Primitives
+</h4>
+
+<p><a name="1022084"> </a>In addition to mutexes and counted semaphores, Palm OS Cobalt also supports critical sections and condition variables, both of which fall under the classification of "lightweight primitives."</p>
+
+<p><a name="1019908"> </a>A <b>critical section</b> is the lightweight version of a mutex. A critical section is simply a set of statements that can only be executed by a single process at any given time. </p>
+
+<p><a name="1019909"> </a>A Palm OS Cobalt <b>condition variable</b> provides a subset of traditional condition variable semantics. The operations supported in Palm OS Cobalt are:</p>
+<ul type="disc">
+  <li><a name="1022906"> </a>Close
+  <li><a name="1022908"> </a>Open
+  <li><a name="1022913"> </a>Wait: causes the thread to block until the condition variable is open
+  <li><a name="1022915"> </a>Broadcast: causes all waiting threads to continue
+</ul>
+
+<p><a name="1022920"> </a>Condition variables can be combined with critical sections similar to POSIX semantics&#8212;the critical section is atomically released and acquired while blocked on the condition variable.</p>
+<h3 class="hbH3">
+  <a name="1019910"> </a>Inter-Process Communication <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1019911"> </a>There are a variety of methods in Palm OS Cobalt for getting data from one process to another. The following sections briefly summarize them, from the lowest level up.</p>
+
+<h4 class="hcH4">
+  <a name="1019912"> </a>Shared Memory
+</h4>
+
+<p><a name="1019913"> </a>There are a variety of services in the system that can be placed under the category of shared memory. While many of these don't actually use shared memory for their implementation, relying instead on IPC or other communication mechanisms, they all share the key characteristic of placing data in a common location that threads can access in an ad-hoc manner. These provide little to no support for synchronization and no way to target data to specific threads.</p>
+
+<h4 class="hcH4">
+  <a name="1019914"> </a>Feature Manager
+</h4>
+
+<p><a name="1019915"> </a>The Feature Manager is a simple name-space mapping of tuples (creator ID, feature number) to integer values. In Palm OS Cobalt the Feature Manager is a system service, so the data it contains is global to the system. A thread in one process can place a value in the Feature Manager, which can then be read from any other process. In Palm OS Cobalt there is no concept of an owner for a feature, so the system cannot remove features created by an application after it has gone away. Accordingly, <i>all data in the Feature Manager is lost upon a system reset.</i></p>
+
+<h4 class="hcH4">
+  <a name="1019916"> </a>Data Manager
+</h4>
+
+<p><a name="1019917"> </a>The Data Manager maintains a system-global pool of persistent data. While there is some access control available in the Data Manager APIs, this can be generally considered a shared memory area. Because data here is persistent, it generally isn't useful for passing transient data across processes. Like the Feature Manager, there is no strong concept of ownership, so the system cannot easily clean up data that is no longer needed.</p>
+
+<h4 class="hcH4">
+  <a name="1019918"> </a>Memory Dealer
+</h4>
+
+<p><a name="1019919"> </a>While the Palm OS Cobalt kernel fully supports memory segments and access control to them across processes, limitations on the total number of available segments means that applications can't directly make use of this facility. This is the underlying reason for the limitation on number of processes.</p>
+
+<h4 class="hcH4">
+  <a name="1019927"> </a>Events
+</h4>
+
+<p><a name="1019928"> </a>Traditional Palm OS events can be delivered to the currently running application from any other process. There are also APIs for sending events to specific windows and event queues&#8212;but note that these only work within the same process.</p>
+
+<h4 class="hcH4">
+  <a name="1019929"> </a>Named Pipes
+</h4>
+
+<p><a name="1019930"> </a>Threads can use IOS to create a named pipe, through which other threads can rendezvous for communication. These can be created and accessed by any thread in any process. The traditional IOS APIs are used to send and receive data, and both data and IOS file descriptors can be sent through a named pipe.</p>
+<h3 class="hbH3">
+  <a name="1019931"> </a>Graphics Context <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1019932"> </a>All of the traditional UI APIs in Palm OS Cobalt are associated with a "graphics context," which is bound by thread. There are APIs available for creating and destroying the graphics context associated with a thread; these APIs can be used from any process. For example, a thread running in the Background Process can create a graphics context, bring up a dialog, and then close the dialog, destroy the context, and continue. The application's thread&#8212;known as the <b>Main UI Thread</b>&#8212;is given a special graphics context with additional features not available to other threads; these additional features are needed for backward compatibility. Windows in the Main UI Thread can be back-buffered, and the thread also serves as the target for all application-related events.</p>
+
+<p><a name="1019933"> </a>There is no way to directly communicate between different threads doing UI&#8212;even in the same process, the threads have completely separate graphics contexts. As mentioned above, there are some APIs that allow events to be delivered to the event queue of a graphics context for communication with its thread.</p>
+
+<h2 class="haH2">
+  <a name="1019942"> </a>Using the Threading APIs <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1022148"> </a>The APIs for the features previously described come from a variety of places in the system. Many are slight abstractions on top of the low-level kernel API in the System Manager. Others are part of the UI and application model; these are declared in <code>Event.h</code> and <code>Window.h</code>.</p>
+
+<p><a name="1019947"> </a>The main APIs in the SDK are essentially the traditional Palm OS APIs working on an underlying protected memory system.</p>
+<h3 class="hbH3">
+  <a name="1019948"> </a>Application Launching <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1019949"> </a>Most of the traditional Palm OS application APIs exist in Palm OS Cobalt and work as in previous versions of the OS. In particular, <a href="../Programming_Basics/AppMgr.html#995070"><code>SysAppLaunch()</code></a> performs a sublaunch in the same address space as the current application, and <a href="../Programming_Basics/AppMgr.html#996594"><code>SysUIAppSwitch()</code></a> performs a switch to a new application. Unlike previous versions of the OS, an application switch results in the current application's process being torn down and restarted, so no local state, such as memory chunks, can persist across switches.</p>
+
+<p><a name="1019951"> </a><a href="../Programming_Basics/AppMgr.html#995186"><code>SysAppLaunchRemote()</code></a> is like <code>SysAppLaunch()</code>, but performs the sublaunch in a separate, freshly-created process. This allows applications to perform sublaunches of code that isn't trusted without compromising their own security.</p>
+
+<p><a name="1019953"> </a><a href="../Programming_Basics/NotifyMgr.html#996056"><code>SysNotifyBroadcastDeferred()</code></a> allows notifications to be sent from outside of the Main UI Thread. Like <code>SysAppLaunchDeferred()</code>, this function is asynchronous, so no result is returned directly from the function.</p>
+<h3 class="hbH3">
+  <a name="1019954"> </a>Launching in the Background Process <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1024812"> </a>Use <a href="../Programming_Basics/Event.html#995443"><code>EvtCreateBackgroundThread()</code></a> to create a new thread in the Background Process and launch the specified PRC in that thread.</p>
+
+<p><a name="1019958"> </a>These threads in the Background Process run independently of the main application&#8212;they can continue running through any application switches. In the case of the Background Process crashing and restarting, applications can register to receive a notification of this event in order to restart any needed background threads.</p>
+
+<p><a name="1019959"> </a>There is a limited set of things these background threads can do. Most Palm OS APIs work from within the Background Process&#8212;including IOS, Data Manager, and Feature Manager functions&#8212;but there are a number that are not allowed. Some of the more important ones include:</p>
+<ul type="disc">
+  <li><a name="1019961"> </a><a href="../Programming_Basics/AppMgr.html#995070"><code>SysAppLaunch()</code></a> and <a href="../Programming_Basics/AppMgr.html#995186"><code>SysAppLaunchRemote()</code></a> can only be called from the main UI thread. 
+  <li><a name="1019963"> </a><a href="../Programming_Basics/NotifyMgr.html#995673"><code>SysNotifyBroadcast()</code></a> can only be called from the main UI thread. Use <a href="../Programming_Basics/NotifyMgr.html#996056"><code>SysNotifyBroadcastDeferred()</code></a> from other threads.
+</ul>
+<h3 class="hbH3">
+  <a name="1022673"> </a>Manipulating Threads <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1022674"> </a>The APIs in <code>SysThread.h</code> provide a simple mechanism for creating threads. They allow developers to implement multi-threading in their own application, and not just in the special environment of the Background Process. This is especially useful for I/O, so that network and other I/O operations don't stop the application's UI or force you into a convoluted programming model.</p>
+
+<p><a name="1022678"> </a>Palm OS Cobalt provides a number of functions for creating and managing threads. These are defined in <code>SysThread.h</code>.</p>
+
+<p><a name="1022685"> </a><a href="SysThread.html#995791"><code>SysThreadCreate()</code></a> and <a href="SysThread.html#996736"><code>SysThreadStart()</code></a> are used together to create and then start a thread. They allow control over the new thread's priority, stack size, and entry function. The resulting thread can exit either by returning from its initial function or with an explicit call to <a href="SysThread.html#996328"><code>SysThreadExit()</code></a>. Use <a href="SysThread.html#996239"><code>SysThreadDelay()</code></a> to cause a thread to sleep for a specified amount of time.</p>
+
+<div><hr>
+  <a name="1023132"> </a> <b>NOTE: </b> The application's primary thread is always created with the default stack size (the default stack size is set by the licensee for each device, and thus is not a constant value across the range of Palm Powered devices). Applications should avoid doing operations that need excessive stack in the primary thread. Instead, spawn new threads to perform such operations.
+<hr>
+</div>
+
+<p><a name="1022695"> </a><a href="SysThread.html#996581"><code>SysThreadInstallExitCallback()</code></a> allows the current thread to install a function that is executed when the thread exits. <a href="SysThread.html#996652"><code>SysThreadRemoveExitCallback()</code></a> gets rid of an exit callback that was previously installed for the thread.</p>
+
+<p><a name="1022702"> </a><a href="SysThread.html#995739"><code>SysThreadChangePriority()</code></a> changes the scheduling priority of a thread. You must supply the ID of the thread being changed. Note that the ID of the current thread can be determined by calling <a href="SysThread.html#1044504"><code>SysCurrentThread()</code></a>.</p>
+
+<h4 class="hcH4">
+  <a name="1022706"> </a>Thread Groups
+</h4>
+
+<p><a name="1022707"> </a>There are three functions for creating and managing <b>thread groups</b>. Thread groups are a convenience provided by the operating system that allows you to wait for one or more threads to exit. Thread groups are useful for unloading libraries that have spawned their own threads. Note that destroying a thread group implicitly waits for all threads in that group to exit.</p>
+
+<p><a name="1022711"> </a><a href="SysThread.html#996392"><code>SysThreadGroupCreate()</code></a> creates a new thread group. When you create the thread group, you must specify all of the threads that are to be a member of the group. Another thread can then call <a href="SysThread.html#996539"><code>SysThreadGroupWait()</code></a> to block on the threads in the thread group; once all of the threads in the group have exited, the thread waiting on the thread group will resume. </p>
+
+<p><a name="1022715"> </a>You can destroy a thread group with <a href="SysThread.html#996432"><code>SysThreadGroupDestroy()</code></a>. Note that this function waits until all of the thread group's threads have exited.</p>
+<h3 class="hbH3">
+  <a name="1019965"> </a>Inter-Process Communication (IPC) <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1022241"> </a>There are a number of ways in which process can communicate with each other in Palm OS Cobalt.</p>
+
+<h4 class="hcH4">
+  <a name="1021375"> </a>IPC with Shared Memory
+</h4>
+
+<p><a name="1019966"> </a>The traditional Palm OS Feature Manager and Data Manager APIs are available to all threads in the system. Because these use a common memory area, they can be used for simple IPC operations. These are a very limited solution, however, and won't meet the needs of many developers, particularly developers of enterprise applications.</p>
+
+<h4 class="hcH4">
+  <a name="1019967"> </a>IPC with Named Pipes
+</h4>
+
+<p><a name="1019968"> </a>The IOS subsystem in Palm OS Cobalt includes a facility called <b>named pipes</b> that can be used to transfer data across processes. This is accomplished by calling <a href="../Low-Level_Communications/LowLevelComms_StdioRef.html#999257"><code>IOSPipe()</code></a> from within one process to create the pipe and then publishing it under a specific name with <a href="../Low-Level_Communications/LowLevelComms_StdioRef.html#1000339"><code>IOSFattach()</code></a>. At this point, a thread in any other process can open the pipe as a normal device using the <a href="../Low-Level_Communications/LowLevelComms_StdioRef.html#993320"><code>IOSOpen()</code></a> call and start performing I/O on it using <a href="../Low-Level_Communications/LowLevelComms_StdioRef.html#994787"><code>IOSRead()</code></a>, <a href="../Low-Level_Communications/LowLevelComms_StdioRef.html#994296"><code>IOSWrite()</code></a>, and other IOS functions.</p>
+
+<p><a name="1019969"> </a>Applications can send IOS file descriptors through these pipes. You cannot, however, transfer other system objects such as semaphores, memory segments, and the like.</p>
+
+<h4 class="hcH4">
+  <a name="1021389"> </a>Communication in Same Process
+</h4>
+
+<p><a name="1022571"> </a>Event queues are a simple mechanism that allow you to easily communicate between threads in the same process. Each thread has an event queue; a thread can obtain a handle to its event queue by calling <a href="../Programming_Basics/Event.html#996384"><code>EvtGetThreadEventQueue()</code></a>. Be sure to release this handle once you no longer need it by calling <a href="../Programming_Basics/Event.html#996714"><code>EvtReleaseEventQueue()</code></a>.</p>
+
+<p><a name="1022592"> </a><a href="../Programming_Basics/Event.html#995243"><code>EvtAddEventToQueue()</code></a> sends an event to the currently running application. Because "current application" is always a moving target, the receiver of this API is not always clear, so this function is not generally useful. It does, however, provide at least one channel of communication from the Background Process to the Application process. Applications will likely want to use <a href="../Programming_Basics/Event.html#994892"><code>EvtAddEventToEventQueue()</code></a> instead. This function sends an event to a specific event queue, identified by the event queue's handle. It also allows you to specify a "reply queue" to which replies can be posted. Often you'll want the calling thread's queue to be the reply queue&#8212;the thread handle returned from <code>EvtGetThreadEventQueue()</code> will serve this purpose.</p>
+
+<h4 class="hcH4">
+  <a name="1021403"> </a>Communicating with the Background Process
+</h4>
+
+<p><a name="1022278"> </a>Event queues can also be used when communicating across process boundaries. <a href="../Programming_Basics/Event.html#995443"><code>EvtCreateBackgroundThread()</code></a> creates a thread in the Background Process and returns a communication path back to the caller through which events can be sent. This allows the original application to control the background thread by sending it event codes. An optional parameter to this function, <code class="par">callerQueue</code>, allows the caller to pass to the background thread an event queue that the background thread can use to pass events back to the caller. To have the background thread post replies back to the calling thread's queue, supply the value returned from <a href="../Programming_Basics/Event.html#996384"><code>EvtGetThreadEventQueue()</code></a> as the <code class="par">callerQueue</code> parameter.</p>
+
+<p><a name="1022635"> </a>From within the background thread, you then obtain the caller's queue with <a href="../Programming_Basics/Event.html#1037636"><code>EvtGetReplyEventQueue()</code></a>. </p>
+
+<h4 class="hcH4">
+  <a name="1022650"> </a>Attaching to a Running Background Thread
+</h4>
+
+<p><a name="1021419"> </a>For the case where an application needs to attach to its already running background thread whenever it starts, use the following functions to publish and then retrieve the background process' event queue by name:</p>
+<ul type="disc">
+  <li><a name="1021423"> </a><a href="../Programming_Basics/Event.html#996668"><code>EvtPublishEventQueue()</code></a>
+  <li><a name="1021427"> </a><a href="../Programming_Basics/Event.html#996602"><code>EvtLookupEventQueue()</code></a>
+</ul>
+<h3 class="hbH3">
+  <a name="1019984"> </a>Atomic Operations <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1019985"> </a>There are a variety of atomic operation APIs that are useful for applications. <a href="SysThread.html#993589"><code>SysAtomicAdd32()</code></a>, <a href="SysThread.html#993685"><code>SysAtomicAnd32()</code></a>, <a href="SysThread.html#993958"><code>SysAtomicOr32()</code></a> perform an atomic operation of the given type on a 32-bit quantity. <a href="SysThread.html#993731"><code>SysAtomicCompareAndSwap32()</code></a> atomically changes a 32-bit value to a new arbitrary value, but only if the current value is the same as one provided.</p>
+<h3 class="hbH3">
+  <a name="1019990"> </a>Synchronization <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1019991"> </a>Palm OS Cobalt provides wrappers for the lightweight critical section and condition variable primitives discussed under <a href="Threading.html#1019907">"Lightweight Synchronization Primitives."</a> The critical section APIs consist of two functions, <a href="SysThread.html#994464"><code>SysCriticalSectionEnter()</code></a> and <a href="SysThread.html#994506"><code>SysCriticalSectionExit()</code></a>, that allow you to acquire and release a critical section, respectively.</p>
+
+<p><a name="1019993"> </a>The condition variable functions include:</p>
+<ul type="disc">
+  <li><a name="1022978"> </a><a href="SysThread.html#994158"><code>SysConditionVariableWait()</code></a> (which can optionally exit and enter a critical section when blocking)
+  <li><a name="1022980"> </a><a href="SysThread.html#994070"><code>SysConditionVariableClose()</code></a>
+  <li><a name="1022982"> </a><a href="SysThread.html#994116"><code>SysConditionVariableOpen()</code></a>
+  <li><a name="1022984"> </a><a href="SysThread.html#994028"><code>SysConditionVariableBroadcast()</code></a>
+</ul>
+
+<p><a name="1019994"> </a>The above functions do not require creation and destruction functions, as the objects themselves are simple 32-bit values that are initialized to a well-defined constant: <code>sysCriticalSectionInitializer</code> in the case of a critical section, and <code>sysConditionVariableInitializer</code> in the case of a condition variable.</p>
+<h3 class="hbH3">
+  <a name="1019996"> </a>Thread-Specific Data <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1019997"> </a>There is a set of functions in <code>SysThread.h</code> for working with thread-specific data (TSD):</p>
+<ul type="disc">
+  <li><a name="1019998"> </a><a href="SysThread.html#997084"><code>SysTSDAllocate()</code></a> allocates a new TSD slot. You can supply an optional destructor function which is called whenever a thread exits to clean up any data associated with the slot. You can also specify a name; multiple calls to <code>SysTSDAllocate()</code> with the same slot name results in the same slot being returned instead of a new one being allocated each time.
+  <li><a name="1019999"> </a><a href="SysThread.html#1026539"><code>SysTSDFree()</code></a> deallocates a previously created TSD slot. 
+</ul>
+
+<div><hr>
+  <a name="1022405"> </a> <b>NOTE: </b> <code>SysTSDFree()</code> is very dangerous and shouldn't normally be used. 
+<hr>
+</div>
+<ul type="disc">
+  <li><a name="1020000"> </a><a href="SysThread.html#997180"><code>SysTSDGet()</code></a> returns the data in a particular slot.
+  <li><a name="1020001"> </a><a href="SysThread.html#997222"><code>SysTSDSet()</code></a> changes the data in a particular slot.
+</ul>
+<h3 class="hbH3">
+  <a name="1020007"> </a>Accessing the User Interface from Outside the Main UI Thread <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1021200"> </a>With just two functions, it is possible for background threads to bring up their own UI, which greatly increases what can be done in them. For example, a background thread could present a progress dialog.</p>
+
+<p><a name="1022546"> </a><code>Window.h</code> declares functions for performing UI operations outside of the main UI thread: <a href="../User_Interface/UI_Window.html#1617695"><code>WinStartThreadUI()</code></a> and <a href="../User_Interface/UI_Window.html#1617340"><code>WinFinishThreadUI()</code></a>. These functions control the lifetime of the calling thread's graphics context. You can nest calls to these functions, so you can use them in a function to ensure that the current thread has a graphics context while inside that function, whether or not there is one from the outside caller.</p>
+
+<p><a name="1020009"> </a>Once a thread that is not the main UI thread has been bound to a graphics context, it can make use of almost all of the Palm OS UI APIs. There are, however, some limitations placed on them. The most important is that these windows can only be update-based; they do not support back buffering. This carries with it all of the other implications of update-based windows, which are discussed in <i>Exploring Palm OS: User Interface</i>. One additional limitation is that these threads cannot call <a href="../Low-Level_Communications/LowLevelComms_StdioRef.html#997909"><code>IOSPoll()</code></a> for multiplexing UI operations with I/O. Instead, they are expected to spawn additional threads for handling the I/O and can use the new Event Manager APIs described earlier to interact with the UI thread.</p>
+
+<h2 class="haH2">
+  <a name="1010731"> </a>Summary of Threading <a href="#1009989"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th colspan="2" rowspan="1"><p class="tt"><a name="1019495"> </a><b>Controlling Individual Threads</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019499"> </a><a href="SysThread.html#1044504"><code>SysCurrentThread()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019501"> </a><a href="SysThread.html#995739"><code>SysThreadChangePriority()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019503"> </a><a href="SysThread.html#995791"><code>SysThreadCreate()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019505"> </a><a href="SysThread.html#995881"><code>SysThreadCreateEZ()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019507"> </a><a href="SysThread.html#996239"><code>SysThreadDelay()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019509"> </a><a href="SysThread.html#996328"><code>SysThreadExit()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019515"> </a><a href="SysThread.html#996581"><code>SysThreadInstallExitCallback()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019517"> </a><a href="SysThread.html#996652"><code>SysThreadRemoveExitCallback()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019519"> </a><a href="SysThread.html#996694"><code>SysThreadResume()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019521"> </a><a href="SysThread.html#996736"><code>SysThreadStart()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019523"> </a><a href="SysThread.html#997042"><code>SysThreadSuspend()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019525"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1019656"> </a><b>Thread Groups</b></p>
+    </th>
+    <th><p class="tt"><a name="1019658"> </a><b></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019660"> </a><a href="SysThread.html#996392"><code>SysThreadGroupCreate()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019662"> </a><a href="SysThread.html#996432"><code>SysThreadGroupDestroy()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019664"> </a><a href="SysThread.html#996539"><code>SysThreadGroupWait()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019666"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1019546"> </a><b>Thread-Specific Data</b></p>
+    </th>
+    <th><p class="tt"><a name="1019548"> </a><b></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019550"> </a><a href="SysThread.html#997084"><code>SysTSDAllocate()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019552"> </a><a href="SysThread.html#1026539"><code>SysTSDFree()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019554"> </a><a href="SysThread.html#997180"><code>SysTSDGet()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019556"> </a><a href="SysThread.html#997222"><code>SysTSDSet()</code></a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1019147"> </a><b><span style="color: #000000;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">Atomic Operations</span></b></p>
+    </th>
+    <th><p class="tt"><a name="1019149"> </a><b></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019151"> </a><a href="SysThread.html#993589"><code>SysAtomicAdd32()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019369"> </a><a href="SysThread.html#993685"><code>SysAtomicAnd32()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+<p><a name="1019402"> </a><a href="SysThread.html#993731"><code>SysAtomicCompareAndSwap32()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019157"> </a><a href="SysThread.html#993958"><code>SysAtomicOr32()</code></a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1019201"> </a><b>Condition Variables</b></p>
+    </th>
+    <th><p class="tt"><a name="1019203"> </a><b></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019205"> </a><a href="SysThread.html#994028"><code>SysConditionVariableBroadcast()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019207"> </a><a href="SysThread.html#994070"><code>SysConditionVariableClose()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019209"> </a><a href="SysThread.html#994116"><code>SysConditionVariableOpen()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019211"> </a><a href="SysThread.html#994158"><code>SysConditionVariableWait()</code></a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1019257"> </a><b>Critical Sections</b></p>
+    </th>
+    <th><p class="tt"><a name="1019259"> </a><b></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019261"> </a><a href="SysThread.html#994464"><code>SysCriticalSectionEnter()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019263"> </a><a href="SysThread.html#994506"><code>SysCriticalSectionExit()</code></a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1019822"> </a><b>Semaphores</b></p>
+    </th>
+    <th><p class="tt"><a name="1019824"> </a><b></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019829"> </a><a href="SysThread.html#1025693"><code>SysSemaphoreCreate()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019834"> </a><a href="SysThread.html#995038"><code>SysSemaphoreCreateEZ()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019839"> </a><a href="SysThread.html#995127"><code>SysSemaphoreDestroy()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019844"> </a><a href="SysThread.html#995193"><code>SysSemaphoreSignal()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019848"> </a><a href="SysThread.html#995235"><code>SysSemaphoreSignalCount()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019854"> </a><a href="SysThread.html#995555"><code>SysSemaphoreWait()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019859"> </a><a href="SysThread.html#995605"><code>SysSemaphoreWaitCount()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019861"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1019593"> </a><b>Miscellaneous Functions</b></p>
+    </th>
+    <th><p class="tt"><a name="1019595"> </a><b></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1019597"> </a><a href="SysThread.html#994892"><code>SysGetRunTime()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1019599"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="1010791"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="SysMgt_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="SysMgt_TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="BootAndReset.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PowerManagement.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SysMgt_IX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

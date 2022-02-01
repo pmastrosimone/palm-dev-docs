@@ -1,0 +1,131 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Input Section Wildcards</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Input Section Wildcards">
+<META NAME="keywords" CONTENT="Untitled Document: Input Section Wildcards">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC24"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_23.html#SEC23"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_25.html#SEC25"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_25.html#SEC25"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_22.html#SEC22"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_28.html#SEC28"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 3.6.4.2 Input Section Wildcard Patterns </H4>
+<!--docid::SEC24::-->
+In an input section description, either the file name or the section
+name or both may be wildcard patterns.
+<P>
+
+The file name of <SAMP>`*'</SAMP> seen in many examples is a simple wildcard
+pattern for the file name.
+</P><P>
+
+The wildcard patterns are like those used by the Unix shell.
+</P><P>
+
+<DL COMPACT>
+<DT><SAMP>`*'</SAMP>
+<DD>matches any number of characters
+<DT><SAMP>`?'</SAMP>
+<DD>matches any single character
+<DT><SAMP>`[<VAR>chars</VAR>]'</SAMP>
+<DD>matches a single instance of any of the <VAR>chars</VAR>; the <SAMP>`-'</SAMP>
+character may be used to specify a range of characters, as in
+<SAMP>`[a-z]'</SAMP> to match any lower case letter
+<DT><SAMP>`\'</SAMP>
+<DD>quotes the following character
+</DL>
+<P>
+
+When a file name is matched with a wildcard, the wildcard characters
+will not match a <SAMP>`/'</SAMP> character (used to separate directory names on
+Unix).  A pattern consisting of a single <SAMP>`*'</SAMP> character is an
+exception; it will always match any file name, whether it contains a
+<SAMP>`/'</SAMP> or not.  In a section name, the wildcard characters will match
+a <SAMP>`/'</SAMP> character.
+</P><P>
+
+File name wildcard patterns only match files which are explicitly
+specified on the command line or in an <CODE>INPUT</CODE> command.  The linker
+does not search directories to expand wildcards.
+</P><P>
+
+If a file name matches more than one wildcard pattern, or if a file name
+appears explicitly and is also matched by a wildcard pattern, the linker
+will use the first match in the linker script.  For example, this
+sequence of input section descriptions is probably in error, because the
+<TT>`data.o'</TT> rule will not be used:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>.data : { *(.data) }
+.data1 : { data.o(.data) }
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX305"></A>
+Normally, the linker will place files and sections matched by wildcards
+in the order in which they are seen during the link.  You can change
+this by using the <CODE>SORT</CODE> keyword, which appears before a wildcard
+pattern in parentheses (e.g., <CODE>SORT(.text*)</CODE>).  When the
+<CODE>SORT</CODE> keyword is used, the linker will sort the files or sections
+into ascending order by name before placing them in the output file.
+</P><P>
+
+If you ever get confused about where input sections are going, use the
+<SAMP>`-M'</SAMP> linker option to generate a map file.  The map file shows
+precisely how input sections are mapped to output sections.
+</P><P>
+
+This example shows how wildcard patterns might be used to partition
+files.  This linker script directs the linker to place all <SAMP>`.text'</SAMP>
+sections in <SAMP>`.text'</SAMP> and all <SAMP>`.bss'</SAMP> sections in <SAMP>`.bss'</SAMP>.
+The linker will place the <SAMP>`.data'</SAMP> section from all files beginning
+with an upper case character in <SAMP>`.DATA'</SAMP>; for all other files, the
+linker will place the <SAMP>`.data'</SAMP> section in <SAMP>`.data'</SAMP>.
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS {
+  .text : { *(.text) }
+  .DATA : { [A-Z]*(.data) }
+  .data : { *(.data) }
+  .bss : { *(.bss) }
+}
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="Input Section Common"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_23.html#SEC23"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_25.html#SEC25"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_25.html#SEC25"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_22.html#SEC22"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_28.html#SEC28"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

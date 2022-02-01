@@ -1,0 +1,154 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Call Function</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Call Function">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Call Function">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC89"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_84.html#SEC88"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_86.html#SEC90"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.6 The <CODE>call</CODE> Function </H2>
+<!--docid::SEC89::-->
+<P>
+
+The <CODE>call</CODE> function is unique in that it can be used to create new
+parameterized functions.  You can write a complex expression as the
+value of a variable, then use <CODE>call</CODE> to expand it with different
+values.
+</P><P>
+
+The syntax of the <CODE>call</CODE> function is:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(call <VAR>variable</VAR>,<VAR>param</VAR>,<VAR>param</VAR>,<small>...</small>)
+</pre></td></tr></table></P><P>
+
+When <CODE>make</CODE> expands this function, it assigns each <VAR>param</VAR> to
+temporary variables <CODE>$(1)</CODE>, <CODE>$(2)</CODE>, etc.  The variable
+<CODE>$(0)</CODE> will contain <VAR>variable</VAR>.  There is no maximum number of
+parameter arguments.  There is no minimum, either, but it doesn't make
+sense to use <CODE>call</CODE> with no parameters.
+</P><P>
+
+Then <VAR>variable</VAR> is expanded as a <CODE>make</CODE> variable in the context
+of these temporary assignments.  Thus, any reference to <CODE>$(1)</CODE> in
+the value of <VAR>variable</VAR> will resolve to the first <VAR>param</VAR> in the
+invocation of <CODE>call</CODE>.
+</P><P>
+
+Note that <VAR>variable</VAR> is the <EM>name</EM> of a variable, not a
+<EM>reference</EM> to that variable.  Therefore you would not normally use
+a <SAMP>`$'</SAMP> or parentheses when writing it.  (You can, however, use a
+variable reference in the name if you want the name not to be a
+constant.)
+</P><P>
+
+If <VAR>variable</VAR> is the name of a builtin function, the builtin function
+is always invoked (even if a <CODE>make</CODE> variable by that name also
+exists).
+</P><P>
+
+The <CODE>call</CODE> function expands the <VAR>param</VAR> arguments before
+assigning them to temporary variables.  This means that <VAR>variable</VAR>
+values containing references to builtin functions that have special
+expansion rules, like <CODE>foreach</CODE> or <CODE>if</CODE>, may not work as you
+expect.
+</P><P>
+
+Some examples may make this clearer.
+</P><P>
+
+This macro simply reverses its arguments:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>reverse = $(2) $(1)
+
+foo = $(call reverse,a,b)
+</FONT></pre></td></tr></table></P><P>
+
+Here <VAR>foo</VAR> will contain <SAMP>`b a'</SAMP>.
+</P><P>
+
+This one is slightly more interesting: it defines a macro to search for
+the first instance of a program in <CODE>PATH</CODE>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>pathsearch = $(firstword $(wildcard $(addsuffix /$(1),$(subst :, ,$(PATH)))))
+
+LS := $(call pathsearch,ls)
+</FONT></pre></td></tr></table></P><P>
+
+Now the variable LS contains <CODE>/bin/ls</CODE> or similar.
+</P><P>
+
+The <CODE>call</CODE> function can be nested.  Each recursive invocation gets
+its own local values for <CODE>$(1)</CODE>, etc. that mask the values of
+higher-level <CODE>call</CODE>.  For example, here is an implementation of a
+<EM>map</EM> function:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>map = $(foreach a,$(2),$(call $(1),$(a)))
+</FONT></pre></td></tr></table></P><P>
+
+Now you can <VAR>map</VAR> a function that normally takes only one argument,
+such as <CODE>origin</CODE>, to multiple values in one step:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>o = $(call map,origin,o map MAKE)
+</FONT></pre></td></tr></table></P><P>
+
+and end up with <VAR>o</VAR> containing something like <SAMP>`file file default'</SAMP>.
+</P><P>
+
+A final caution: be careful when adding whitespace to the arguments to
+<CODE>call</CODE>.  As with other functions, any whitespace contained in the
+second and subsequent arguments is kept; this can cause strange
+effects.  It's generally safest to remove all extraneous whitespace when
+providing parameters to <CODE>call</CODE>.
+</P><P>
+
+<A NAME="Value Function"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_84.html#SEC88"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_86.html#SEC90"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

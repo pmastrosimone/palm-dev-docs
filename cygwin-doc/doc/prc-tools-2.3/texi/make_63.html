@@ -1,0 +1,243 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Flavors</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Flavors">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Flavors">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC67"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_62.html#SEC66"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_64.html#SEC68"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 6.2 The Two Flavors of Variables </H2>
+<!--docid::SEC67::-->
+<P>
+
+There are two ways that a variable in GNU <CODE>make</CODE> can have a value;
+we call them the two <EM>flavors</EM> of variables.  The two flavors are
+distinguished in how they are defined and in what they do when expanded.
+</P><P>
+
+<A NAME="IDX257"></A>
+The first flavor of variable is a <EM>recursively expanded</EM> variable.
+Variables of this sort are defined by lines using <SAMP>`='</SAMP>
+(see section <A HREF="make_68.html#SEC72">Setting Variables</A>) or by the <CODE>define</CODE> directive
+(see section <A HREF="make_71.html#SEC75">Defining Variables Verbatim</A>).  The value you specify
+is installed verbatim; if it contains references to other variables,
+these references are expanded whenever this variable is substituted (in
+the course of expanding some other string).  When this happens, it is
+called <EM>recursive expansion</EM>.</P><P>
+
+For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo = $(bar)
+bar = $(ugh)
+ugh = Huh?
+
+all:;echo $(foo)
+</pre></td></tr></table></P><P>
+
+will echo <SAMP>`Huh?'</SAMP>: <SAMP>`$(foo)'</SAMP> expands to <SAMP>`$(bar)'</SAMP> which
+expands to <SAMP>`$(ugh)'</SAMP> which finally expands to <SAMP>`Huh?'</SAMP>.</P><P>
+
+This flavor of variable is the only sort supported by other versions of
+<CODE>make</CODE>.  It has its advantages and its disadvantages.  An advantage
+(most would say) is that:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>CFLAGS = $(include_dirs) -O
+include_dirs = -Ifoo -Ibar
+</pre></td></tr></table></P><P>
+
+will do what was intended: when <SAMP>`CFLAGS'</SAMP> is expanded in a command,
+it will expand to <SAMP>`-Ifoo -Ibar -O'</SAMP>.  A major disadvantage is that you
+cannot append something on the end of a variable, as in
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>CFLAGS = $(CFLAGS) -O
+</pre></td></tr></table></P><P>
+
+because it will cause an infinite loop in the variable expansion.
+(Actually <CODE>make</CODE> detects the infinite loop and reports an error.)
+<A NAME="IDX258"></A>
+<A NAME="IDX259"></A>
+</P><P>
+
+Another disadvantage is that any functions
+(see section <A HREF="make_79.html#SEC83">Functions for Transforming Text</A>)
+referenced in the definition will be executed every time the variable is
+expanded.  This makes <CODE>make</CODE> run slower; worse, it causes the
+<CODE>wildcard</CODE> and <CODE>shell</CODE> functions to give unpredictable results
+because you cannot easily control when they are called, or even how many
+times.
+</P><P>
+
+To avoid all the problems and inconveniences of recursively expanded
+variables, there is another flavor: simply expanded variables.
+</P><P>
+
+<A NAME="IDX260"></A>
+<A NAME="IDX261"></A>
+<A NAME="IDX262"></A>
+<EM>Simply expanded variables</EM> are defined by lines using <SAMP>`:='</SAMP>
+(see section <A HREF="make_68.html#SEC72">Setting Variables</A>).
+The value of a simply expanded variable is scanned
+once and for all, expanding any references to other variables and
+functions, when the variable is defined.  The actual value of the simply
+expanded variable is the result of expanding the text that you write.
+It does not contain any references to other variables; it contains their
+values <EM>as of the time this variable was defined</EM>.  Therefore,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>x := foo
+y := $(x) bar
+x := later
+</pre></td></tr></table></P><P>
+
+is equivalent to
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>y := foo bar
+x := later
+</pre></td></tr></table></P><P>
+
+When a simply expanded variable is referenced, its value is substituted
+verbatim.
+</P><P>
+
+Here is a somewhat more complicated example, illustrating the use of
+<SAMP>`:='</SAMP> in conjunction with the <CODE>shell</CODE> function.
+(See section <A HREF="make_89.html#SEC93">The <CODE>shell</CODE> Function</A>.)  This example
+also shows use of the variable <CODE>MAKELEVEL</CODE>, which is changed
+when it is passed down from level to level.
+(See section <A HREF="make_56.html#SEC60">Communicating Variables to a Sub-<CODE>make</CODE></A>, for information about <CODE>MAKELEVEL</CODE>.)
+</P><P>
+
+<A NAME="IDX263"></A>
+<A NAME="IDX264"></A>
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ifeq (0,${MAKELEVEL})
+cur-dir   := $(shell pwd)
+whoami    := $(shell whoami)
+host-type := $(shell arch)
+MAKE := ${MAKE} host-type=${host-type} whoami=${whoami}
+endif
+</pre></td></tr></table></P><P>
+
+An advantage of this use of <SAMP>`:='</SAMP> is that a typical
+`descend into a directory' command then looks like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>${subdirs}:
+      ${MAKE} cur-dir=${cur-dir}/$@ -C $@ all
+</pre></td></tr></table></P><P>
+
+Simply expanded variables generally make complicated makefile programming
+more predictable because they work like variables in most programming
+languages.  They allow you to redefine a variable using its own value (or
+its value processed in some way by one of the expansion functions) and to
+use the expansion functions much more efficiently
+(see section <A HREF="make_79.html#SEC83">Functions for Transforming Text</A>).
+</P><P>
+
+<A NAME="IDX265"></A>
+<A NAME="IDX266"></A>
+<A NAME="IDX267"></A>
+You can also use them to introduce controlled leading whitespace into
+variable values.  Leading whitespace characters are discarded from your
+input before substitution of variable references and function calls;
+this means you can include leading spaces in a variable value by
+protecting them with variable references, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>nullstring :=
+space := $(nullstring) # end of the line
+</pre></td></tr></table></P><P>
+
+Here the value of the variable <CODE>space</CODE> is precisely one space.  The
+comment <SAMP>`# end of the line'</SAMP> is included here just for clarity.
+Since trailing space characters are <EM>not</EM> stripped from variable
+values, just a space at the end of the line would have the same effect
+(but be rather hard to read).  If you put whitespace at the end of a
+variable value, it is a good idea to put a comment like that at the end
+of the line to make your intent clear.  Conversely, if you do <EM>not</EM>
+want any whitespace characters at the end of your variable value, you
+must remember not to put a random comment on the end of the line after
+some whitespace, such as this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>dir := /foo/bar    # directory to put the frobs in
+</pre></td></tr></table></P><P>
+
+Here the value of the variable <CODE>dir</CODE> is <SAMP>`/foo/bar    '</SAMP>
+(with four trailing spaces), which was probably not the intention.
+(Imagine something like <SAMP>`$(dir)/file'</SAMP> with this definition!)
+</P><P>
+
+<A NAME="IDX268"></A>
+<A NAME="IDX269"></A>
+<A NAME="IDX270"></A>
+There is another assignment operator for variables, <SAMP>`?='</SAMP>.  This
+is called a conditional variable assignment operator, because it only
+has an effect if the variable is not yet defined.  This statement:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>FOO ?= bar
+</pre></td></tr></table></P><P>
+
+is exactly equivalent to this
+(see section <A HREF="make_88.html#SEC92">The <CODE>origin</CODE> Function</A>):
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ifeq ($(origin FOO), undefined)
+  FOO = bar
+endif
+</pre></td></tr></table></P><P>
+
+Note that a variable set to an empty value is still defined, so
+<SAMP>`?='</SAMP> will not set that variable.
+</P><P>
+
+<A NAME="Advanced"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_62.html#SEC66"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_64.html#SEC68"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

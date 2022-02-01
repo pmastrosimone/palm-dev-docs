@@ -1,0 +1,136 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: C Constants</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: C Constants">
+<META NAME="keywords" CONTENT="Debugging with GDB: C Constants">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC101"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_100.html#SEC100"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_102.html#SEC102"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_102.html#SEC102"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_99.html#SEC99"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_107.html#SEC107"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 12.4.1.2 C and C<TT>++</TT> constants </H4>
+<!--docid::SEC101::-->
+<P>
+
+<A NAME="IDX471"></A>
+</P><P>
+
+GDB allows you to express the constants of C and C<TT>++</TT> in the
+following ways:
+</P><P>
+
+<UL>
+<LI>
+Integer constants are a sequence of digits.  Octal constants are
+specified by a leading <SAMP>`0'</SAMP> (i.e. zero), and hexadecimal constants
+by a leading <SAMP>`0x'</SAMP> or <SAMP>`0X'</SAMP>.  Constants may also end with a letter
+<SAMP>`l'</SAMP>, specifying that the constant should be treated as a
+<CODE>long</CODE> value.
+<P>
+
+<LI>
+Floating point constants are a sequence of digits, followed by a decimal
+point, followed by a sequence of digits, and optionally followed by an
+exponent.  An exponent is of the form:
+<SAMP>`e[[+]|-]<VAR>nnn</VAR>'</SAMP>, where <VAR>nnn</VAR> is another
+sequence of digits.  The <SAMP>`+'</SAMP> is optional for positive exponents.
+A floating-point constant may also end with a letter <SAMP>`f'</SAMP> or
+<SAMP>`F'</SAMP>, specifying that the constant should be treated as being of
+the <CODE>float</CODE> (as opposed to the default <CODE>double</CODE>) type; or with
+a letter <SAMP>`l'</SAMP> or <SAMP>`L'</SAMP>, which specifies a <CODE>long double</CODE>
+constant.
+<P>
+
+<LI>
+Enumerated constants consist of enumerated identifiers, or their
+integral equivalents.
+<P>
+
+<LI>
+Character constants are a single character surrounded by single quotes
+(<CODE>'</CODE>), or a number--the ordinal value of the corresponding character
+(usually its ASCII value).  Within quotes, the single character may
+be represented by a letter or by <EM>escape sequences</EM>, which are of
+the form <SAMP>`\<VAR>nnn</VAR>'</SAMP>, where <VAR>nnn</VAR> is the octal representation
+of the character's ordinal value; or of the form <SAMP>`\<VAR>x</VAR>'</SAMP>, where
+<SAMP>`<VAR>x</VAR>'</SAMP> is a predefined special character--for example,
+<SAMP>`\n'</SAMP> for newline.
+<P>
+
+<LI>
+String constants are a sequence of character constants surrounded by
+double quotes (<CODE>"</CODE>).  Any valid character constant (as described
+above) may appear.  Double quotes within the string must be preceded by
+a backslash, so for instance <SAMP>`"a\"b'c"'</SAMP> is a string of five
+characters.
+<P>
+
+<LI>
+Pointer constants are an integral value.  You can also write pointers
+to constants using the C operator <SAMP>`&#38;'</SAMP>.
+<P>
+
+<LI>
+Array constants are comma-separated lists surrounded by braces <SAMP>`{'</SAMP>
+and <SAMP>`}'</SAMP>; for example, <SAMP>`{1,2,3}'</SAMP> is a three-element array of
+integers, <SAMP>`{{1,2}, {3,4}, {5,6}}'</SAMP> is a three-by-two array,
+and <SAMP>`{&#38;"hi", &"there", &#38;"fred"}'</SAMP> is a three-element array of pointers.
+</UL>
+<P>
+
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_102.html#SEC102">12.4.1.3 C<TT>++</TT> expressions</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_103.html#SEC103">12.4.1.4 C and C<TT>++</TT> defaults</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_104.html#SEC104">12.4.1.5 C and C<TT>++</TT> type and range checks</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+</TABLE>
+
+<br>
+<TABLE BORDER=0 CELLSPACING=0>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_105.html#SEC105">12.4.1.6 GDB and C</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+</TABLE></BLOCKQUOTE>
+<P>
+
+<A NAME="C plus plus expressions"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_100.html#SEC100"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_102.html#SEC102"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_102.html#SEC102"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_99.html#SEC99"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_107.html#SEC107"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

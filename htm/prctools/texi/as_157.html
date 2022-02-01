@@ -1,0 +1,104 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Word</TITLE>
+
+<META NAME="description" CONTENT="Using as: Word">
+<META NAME="keywords" CONTENT="Using as: Word">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC166"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_156.html#SEC165"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_158.html#SEC167"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_77.html#SEC80"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_68.html#SEC71"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_159.html#SEC168"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.89 <CODE>.word <VAR>expressions</VAR></CODE> </H2>
+<!--docid::SEC166::-->
+<P>
+
+<A NAME="IDX455"></A>
+This directive expects zero or more <VAR>expressions</VAR>, of any section,
+separated by commas.
+</P><P>
+
+The size of the number emitted, and its byte order,
+depend on what target computer the assembly is for.
+</P><P>
+
+<A NAME="IDX456"></A>
+<A NAME="IDX457"></A>
+<BLOCKQUOTE>
+<EM>Warning: Special Treatment to support Compilers</EM>
+</BLOCKQUOTE>
+<P>
+
+Machines with a 32-bit address space, but that do less than 32-bit
+addressing, require the following special treatment.  If the machine of
+interest to you does 32-bit addressing (or doesn't require it;
+see section <A HREF="as_159.html#SEC168">8. Machine Dependent Features</A>), you can ignore this issue.
+</P><P>
+
+In order to assemble compiler output into something that works,
+<CODE>as</CODE> occasionally does strange things to <SAMP>`.word'</SAMP> directives.
+Directives of the form <SAMP>`.word sym1-sym2'</SAMP> are often emitted by
+compilers as part of jump tables.  Therefore, when <CODE>as</CODE> assembles a
+directive of the form <SAMP>`.word sym1-sym2'</SAMP>, and the difference between
+<CODE>sym1</CODE> and <CODE>sym2</CODE> does not fit in 16 bits, <CODE>as</CODE>
+creates a <EM>secondary jump table</EM>, immediately before the next label.
+This secondary jump table is preceded by a short-jump to the
+first byte after the secondary table.  This short-jump prevents the flow
+of control from accidentally falling into the new table.  Inside the
+table is a long-jump to <CODE>sym2</CODE>.  The original <SAMP>`.word'</SAMP>
+contains <CODE>sym1</CODE> minus the address of the long-jump to
+<CODE>sym2</CODE>.
+</P><P>
+
+If there were several occurrences of <SAMP>`.word sym1-sym2'</SAMP> before the
+secondary jump table, all of them are adjusted.  If there was a
+<SAMP>`.word sym3-sym4'</SAMP>, that also did not fit in sixteen bits, a
+long-jump to <CODE>sym4</CODE> is included in the secondary jump table,
+and the <CODE>.word</CODE> directives are adjusted to contain <CODE>sym3</CODE>
+minus the address of the long-jump to <CODE>sym4</CODE>; and so on, for as many
+entries in the original jump table as necessary.
+</P><P>
+
+<A NAME="Deprecated"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_156.html#SEC165"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_158.html#SEC167"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_77.html#SEC80"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_68.html#SEC71"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_159.html#SEC168"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,164 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: SH Opcodes</TITLE>
+
+<META NAME="description" CONTENT="Using as: SH Opcodes">
+<META NAME="keywords" CONTENT="Using as: SH Opcodes">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC369"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_359.html#SEC368"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_361.html#SEC370"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_179.html#SEC188"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_352.html#SEC361"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_361.html#SEC370"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.26.5 Opcodes </H3>
+<!--docid::SEC369::-->
+<P>
+
+<A NAME="IDX1199"></A>
+<A NAME="IDX1200"></A>
+<A NAME="IDX1201"></A>
+<A NAME="IDX1202"></A>
+For detailed information on the SH machine instruction set, see
+<CITE>SH-Microcomputer User's Manual</CITE> (Renesas) or
+<CITE>SH-4 32-bit CPU Core Architecture</CITE> (SuperH) and
+<CITE>SuperH (SH) 64-Bit RISC Series</CITE> (SuperH).
+</P><P>
+
+<CODE>as</CODE> implements all the standard SH opcodes.  No additional
+pseudo-instructions are needed on this family.  Note, however, that
+because <CODE>as</CODE> supports a simpler form of PC-relative
+addressing, you may simply write (for example)
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>mov.l  bar,r0
+</pre></td></tr></table></P><P>
+
+where other assemblers might require an explicit displacement to
+<CODE>bar</CODE> from the program counter:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>mov.l  @(<VAR>disp</VAR>, PC)
+</pre></td></tr></table></P><P>
+
+Here is a summary of SH opcodes:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre><I>Legend:</I>
+Rn        a numbered register
+Rm        another numbered register
+#imm      immediate data
+disp      displacement
+disp8     8-bit displacement
+disp12    12-bit displacement
+
+add #imm,Rn                    lds.l @Rn+,PR              
+add Rm,Rn                      mac.w @Rm+,@Rn+           
+addc Rm,Rn                     mov #imm,Rn                 
+addv Rm,Rn                     mov Rm,Rn                   
+and #imm,R0                    mov.b Rm,@(R0,Rn)          
+and Rm,Rn                      mov.b Rm,@-Rn              
+and.b #imm,@(R0,GBR)           mov.b Rm,@Rn               
+bf disp8                       mov.b @(disp,Rm),R0        
+bra disp12                     mov.b @(disp,GBR),R0       
+bsr disp12                     mov.b @(R0,Rm),Rn          
+bt disp8                       mov.b @Rm+,Rn              
+clrmac                         mov.b @Rm,Rn               
+clrt                           mov.b R0,@(disp,Rm)        
+cmp/eq #imm,R0                 mov.b R0,@(disp,GBR)       
+cmp/eq Rm,Rn                   mov.l Rm,@(disp,Rn)        
+cmp/ge Rm,Rn                   mov.l Rm,@(R0,Rn)          
+cmp/gt Rm,Rn                   mov.l Rm,@-Rn              
+cmp/hi Rm,Rn                   mov.l Rm,@Rn               
+cmp/hs Rm,Rn                   mov.l @(disp,Rn),Rm        
+cmp/pl Rn                      mov.l @(disp,GBR),R0       
+cmp/pz Rn                      mov.l @(disp,PC),Rn        
+cmp/str Rm,Rn                  mov.l @(R0,Rm),Rn          
+div0s Rm,Rn                    mov.l @Rm+,Rn              
+div0u                          mov.l @Rm,Rn               
+div1 Rm,Rn                     mov.l R0,@(disp,GBR)       
+exts.b Rm,Rn                   mov.w Rm,@(R0,Rn)          
+exts.w Rm,Rn                   mov.w Rm,@-Rn              
+extu.b Rm,Rn                   mov.w Rm,@Rn               
+extu.w Rm,Rn                   mov.w @(disp,Rm),R0        
+jmp @Rn                        mov.w @(disp,GBR),R0       
+jsr @Rn                        mov.w @(disp,PC),Rn        
+ldc Rn,GBR                     mov.w @(R0,Rm),Rn          
+ldc Rn,SR                      mov.w @Rm+,Rn              
+ldc Rn,VBR                     mov.w @Rm,Rn               
+ldc.l @Rn+,GBR                 mov.w R0,@(disp,Rm)        
+ldc.l @Rn+,SR                  mov.w R0,@(disp,GBR)       
+ldc.l @Rn+,VBR                 mova @(disp,PC),R0         
+lds Rn,MACH                    movt Rn                     
+lds Rn,MACL                    muls Rm,Rn                  
+lds Rn,PR                      mulu Rm,Rn                  
+lds.l @Rn+,MACH                neg Rm,Rn                   
+lds.l @Rn+,MACL                negc Rm,Rn                  
+nop                            stc VBR,Rn                
+not Rm,Rn                      stc.l GBR,@-Rn           
+or #imm,R0                     stc.l SR,@-Rn            
+or Rm,Rn                       stc.l VBR,@-Rn           
+or.b #imm,@(R0,GBR)            sts MACH,Rn               
+rotcl Rn                       sts MACL,Rn               
+rotcr Rn                       sts PR,Rn                 
+rotl Rn                        sts.l MACH,@-Rn          
+rotr Rn                        sts.l MACL,@-Rn          
+rte                            sts.l PR,@-Rn            
+rts                            sub Rm,Rn                 
+sett                           subc Rm,Rn                
+shal Rn                        subv Rm,Rn                
+shar Rn                        swap.b Rm,Rn              
+shll Rn                        swap.w Rm,Rn              
+shll16 Rn                      tas.b @Rn                
+shll2 Rn                       trapa #imm                
+shll8 Rn                       tst #imm,R0               
+shlr Rn                        tst Rm,Rn                 
+shlr16 Rn                      tst.b #imm,@(R0,GBR)     
+shlr2 Rn                       xor #imm,R0               
+shlr8 Rn                       xor Rm,Rn                 
+sleep                          xor.b #imm,@(R0,GBR)     
+stc GBR,Rn                     xtrct Rm,Rn               
+stc SR,Rn
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SH64-Dependent"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_359.html#SEC368"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_361.html#SEC370"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_179.html#SEC188"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_352.html#SEC361"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_361.html#SEC370"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,127 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Pattern Intro</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Pattern Intro">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Pattern Intro">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC109"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_104.html#SEC108"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_106.html#SEC110"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_103.html#SEC107"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_104.html#SEC108"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_111.html#SEC115"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 10.5.1 Introduction to Pattern Rules </H3>
+<!--docid::SEC109::-->
+<P>
+
+A pattern rule contains the character <SAMP>`%'</SAMP> (exactly one of them)
+in the target; otherwise, it looks exactly like an ordinary rule.  The
+target is a pattern for matching file names; the <SAMP>`%'</SAMP> matches any
+nonempty substring, while other characters match only themselves.
+<A NAME="IDX568"></A>
+<A NAME="IDX569"></A>
+</P><P>
+
+For example, <SAMP>`%.c'</SAMP> as a pattern matches any file name that ends in
+<SAMP>`.c'</SAMP>.  <SAMP>`s.%.c'</SAMP> as a pattern matches any file name that starts
+with <SAMP>`s.'</SAMP>, ends in <SAMP>`.c'</SAMP> and is at least five characters long.
+(There must be at least one character to match the <SAMP>`%'</SAMP>.)  The substring
+that the <SAMP>`%'</SAMP> matches is called the <EM>stem</EM>.</P><P>
+
+<SAMP>`%'</SAMP> in a prerequisite of a pattern rule stands for the same stem
+that was matched by the <SAMP>`%'</SAMP> in the target.  In order for
+the pattern rule to apply, its target pattern must match the file name
+under consideration, and its prerequisite patterns must name files that
+exist or can be made.  These files become prerequisites of the target.
+<A NAME="IDX570"></A>
+</P><P>
+
+Thus, a rule of the form
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>%.o : %.c ; <VAR>command</VAR><small>...</small>
+</pre></td></tr></table></P><P>
+
+specifies how to make a file <TT>`<VAR>n</VAR>.o'</TT>, with another file
+<TT>`<VAR>n</VAR>.c'</TT> as its prerequisite, provided that <TT>`<VAR>n</VAR>.c'</TT>
+exists or can be made.
+</P><P>
+
+There may also be prerequisites that do not use <SAMP>`%'</SAMP>; such a prerequisite
+attaches to every file made by this pattern rule.  These unvarying
+prerequisites are useful occasionally.
+</P><P>
+
+A pattern rule need not have any prerequisites that contain <SAMP>`%'</SAMP>, or
+in fact any prerequisites at all.  Such a rule is effectively a general
+wildcard.  It provides a way to make any file that matches the target
+pattern.  See section <A HREF="make_111.html#SEC115">10.6 Defining Last-Resort Default Rules</A>.
+</P><P>
+
+Pattern rules may have more than one target.  Unlike normal rules, this
+does not act as many different rules with the same prerequisites and
+commands.  If a pattern rule has multiple targets, <CODE>make</CODE> knows that
+the rule's commands are responsible for making all of the targets.  The
+commands are executed only once to make all the targets.  When searching
+for a pattern rule to match a target, the target patterns of a rule other
+than the one that matches the target in need of a rule are incidental:
+<CODE>make</CODE> worries only about giving commands and prerequisites to the file
+presently in question.  However, when this file's commands are run, the
+other targets are marked as having been updated themselves.
+<A NAME="IDX571"></A>
+<A NAME="IDX572"></A>
+</P><P>
+
+The order in which pattern rules appear in the makefile is important
+since this is the order in which they are considered.
+Of equally applicable
+rules, only the first one found is used.  The rules you write take precedence
+over those that are built in.  Note however, that a rule whose
+prerequisites actually exist or are mentioned always takes priority over a
+rule with prerequisites that must be made by chaining other implicit rules.
+<A NAME="IDX573"></A>
+<A NAME="IDX574"></A>
+</P><P>
+
+<A NAME="Pattern Examples"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_104.html#SEC108"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_106.html#SEC110"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_103.html#SEC107"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_104.html#SEC108"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_111.html#SEC115"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

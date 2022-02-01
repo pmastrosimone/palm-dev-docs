@@ -1,0 +1,163 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Global Reg Vars</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Global Reg Vars">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Global Reg Vars">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC102"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_101.html#SEC101"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_103.html#SEC103"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_101.html#SEC101"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_104.html#SEC104"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 4.35.1 Defining Global Register Variables </H3>
+<!--docid::SEC102::-->
+<P>
+
+You can define a global register variable in GNU C like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>register int *foo asm ("a5");
+</pre></td></tr></table></P><P>
+
+Here <CODE>a5</CODE> is the name of the register which should be used.  Choose a
+register which is normally saved and restored by function calls on your
+machine, so that library routines will not clobber it.
+</P><P>
+
+Naturally the register name is cpu-dependent, so you would need to
+conditionalize your program according to cpu type.  The register
+<CODE>a5</CODE> would be a good choice on a 68000 for a variable of pointer
+type.  On machines with register windows, be sure to choose a "global"
+register that is not affected magically by the function call mechanism.
+</P><P>
+
+In addition, operating systems on one type of cpu may differ in how they
+name the registers; then you would need additional conditionals.  For
+example, some 68000 operating systems call this register <CODE>%a5</CODE>.
+</P><P>
+
+Eventually there may be a way of asking the compiler to choose a register
+automatically, but first we need to figure out how it should choose and
+how to enable you to guide the choice.  No solution is evident.
+</P><P>
+
+Defining a global register variable in a certain register reserves that
+register entirely for this use, at least within the current compilation.
+The register will not be allocated for any other purpose in the functions
+in the current compilation.  The register will not be saved and restored by
+these functions.  Stores into this register are never deleted even if they
+would appear to be dead, but references may be deleted or moved or
+simplified.
+</P><P>
+
+It is not safe to access the global register variables from signal
+handlers, or from more than one thread of control, because the system
+library routines may temporarily use the register for other things (unless
+you recompile them specially for the task at hand).
+</P><P>
+
+<A NAME="IDX356"></A>
+It is not safe for one function that uses a global register variable to
+call another such function <CODE>foo</CODE> by way of a third function
+<CODE>lose</CODE> that was compiled without knowledge of this variable (i.e. in a
+different source file in which the variable wasn't declared).  This is
+because <CODE>lose</CODE> might save the register and put some other value there.
+For example, you can't expect a global register variable to be available in
+the comparison-function that you pass to <CODE>qsort</CODE>, since <CODE>qsort</CODE>
+might have put something else in that register.  (If you are prepared to
+recompile <CODE>qsort</CODE> with the same global register variable, you can
+solve this problem.)
+</P><P>
+
+If you want to recompile <CODE>qsort</CODE> or other source files which do not
+actually use your global register variable, so that they will not use that
+register for any other purpose, then it suffices to specify the compiler
+option <SAMP>`-ffixed-<VAR>reg</VAR>'</SAMP>.  You need not actually add a global
+register declaration to their source code.
+</P><P>
+
+A function which can alter the value of a global register variable cannot
+safely be called from a function compiled without this variable, because it
+could clobber the value the caller expects to find there on return.
+Therefore, the function which is the entry point into the part of the
+program that uses the global register variable must explicitly save and
+restore the value which belongs to its caller.
+</P><P>
+
+<A NAME="IDX357"></A>
+<A NAME="IDX358"></A>
+<A NAME="IDX359"></A>
+<A NAME="IDX360"></A>
+<A NAME="IDX361"></A>
+On most machines, <CODE>longjmp</CODE> will restore to each global register
+variable the value it had at the time of the <CODE>setjmp</CODE>.  On some
+machines, however, <CODE>longjmp</CODE> will not change the value of global
+register variables.  To be portable, the function that called <CODE>setjmp</CODE>
+should make other arrangements to save the values of the global register
+variables, and to restore them in a <CODE>longjmp</CODE>.  This way, the same
+thing will happen regardless of what <CODE>longjmp</CODE> does.
+</P><P>
+
+All global register variable declarations must precede all function
+definitions.  If such a declaration could appear after function
+definitions, the declaration would be too late to prevent the register from
+being used for other purposes in the preceding functions.
+</P><P>
+
+Global register variables may not have initial values, because an
+executable file has no means to supply initial contents for a register.
+</P><P>
+
+On the Sparc, there are reports that g3 <small>...</small> g7 are suitable
+registers, but certain library functions, such as <CODE>getwd</CODE>, as well
+as the subroutines for division and remainder, modify g3 and g4.  g1 and
+g2 are local temporaries.
+</P><P>
+
+On the 68000, a2 <small>...</small> a5 should be suitable, as should d2 <small>...</small> d7.
+Of course, it will not do to use more than a few of those.
+</P><P>
+
+<A NAME="Local Reg Vars"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_101.html#SEC101"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_103.html#SEC103"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_101.html#SEC101"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_104.html#SEC104"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

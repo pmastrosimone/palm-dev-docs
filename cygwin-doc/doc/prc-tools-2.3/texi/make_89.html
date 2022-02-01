@@ -1,0 +1,86 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Shell Function</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Shell Function">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Shell Function">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC93"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_88.html#SEC92"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_90.html#SEC94"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.10 The <CODE>shell</CODE> Function </H2>
+<!--docid::SEC93::-->
+<P>
+
+The <CODE>shell</CODE> function is unlike any other function except the
+<CODE>wildcard</CODE> function
+(see section <A HREF="make_29.html#SEC33">The Function <CODE>wildcard</CODE></A>) in that it
+communicates with the world outside of <CODE>make</CODE>.
+</P><P>
+
+The <CODE>shell</CODE> function performs the same function that backquotes
+(<SAMP>``'</SAMP>) perform in most shells: it does <EM>command expansion</EM>.  This
+means that it takes an argument that is a shell command and returns the
+output of the command.  The only processing <CODE>make</CODE> does on the result,
+before substituting it into the surrounding text, is to convert each
+newline or carriage-return / newline pair to a single space.  It also
+removes the trailing (carriage-return and) newline, if it's the last
+thing in the result.</P><P>
+
+The commands run by calls to the <CODE>shell</CODE> function are run when the
+function calls are expanded (see section <A HREF="make_21.html#SEC22">How <CODE>make</CODE> Reads a Makefile</A>).  Because this function involves
+spawning a new shell, you should carefully consider the performance
+implications of using the <CODE>shell</CODE> function within recursively
+expanded variables vs. simply expanded variables (see section <A HREF="make_63.html#SEC67">The Two Flavors of Variables</A>).
+</P><P>
+
+Here are some examples of the use of the <CODE>shell</CODE> function:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>contents := $(shell cat foo)
+</pre></td></tr></table></P><P>
+
+sets <CODE>contents</CODE> to the contents of the file <TT>`foo'</TT>, with a space
+(rather than a newline) separating each line.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>files := $(shell echo *.c)
+</pre></td></tr></table></P><P>
+
+sets <CODE>files</CODE> to the expansion of <SAMP>`*.c'</SAMP>.  Unless <CODE>make</CODE> is
+using a very strange shell, this has the same result as
+<SAMP>`$(wildcard *.c)'</SAMP>.</P><P>
+
+<A NAME="Make Control Functions"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

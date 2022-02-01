@@ -1,0 +1,216 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: File Name Functions</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: File Name Functions">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: File Name Functions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC86"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_81.html#SEC85"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_83.html#SEC87"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.3 Functions for File Names </H2>
+<!--docid::SEC86::-->
+<P>
+
+Several of the built-in expansion functions relate specifically to
+taking apart file names or lists of file names.
+</P><P>
+
+Each of the following functions performs a specific transformation on a
+file name.  The argument of the function is regarded as a series of file
+names, separated by whitespace.  (Leading and trailing whitespace is
+ignored.)  Each file name in the series is transformed in the same way and
+the results are concatenated with single spaces between them.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>$(dir <VAR>names</VAR><small>...</small>)</CODE>
+<DD><A NAME="IDX313"></A>
+<A NAME="IDX314"></A>
+<A NAME="IDX315"></A>
+Extracts the directory-part of each file name in <VAR>names</VAR>.  The
+directory-part of the file name is everything up through (and
+including) the last slash in it.  If the file name contains no slash,
+the directory part is the string <SAMP>`./'</SAMP>.  For example,
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(dir src/foo.c hacks)
+</pre></td></tr></table></P><P>
+
+produces the result <SAMP>`src/ ./'</SAMP>.
+</P><P>
+
+<DT><CODE>$(notdir <VAR>names</VAR><small>...</small>)</CODE>
+<DD><A NAME="IDX316"></A>
+<A NAME="IDX317"></A>
+<A NAME="IDX318"></A>
+Extracts all but the directory-part of each file name in <VAR>names</VAR>.
+If the file name contains no slash, it is left unchanged.  Otherwise,
+everything through the last slash is removed from it.
+<P>
+
+A file name that ends with a slash becomes an empty string.  This is
+unfortunate, because it means that the result does not always have the
+same number of whitespace-separated file names as the argument had;
+but we do not see any other valid alternative.
+</P><P>
+
+For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(notdir src/foo.c hacks)
+</pre></td></tr></table></P><P>
+
+produces the result <SAMP>`foo.c hacks'</SAMP>.
+</P><P>
+
+<DT><CODE>$(suffix <VAR>names</VAR><small>...</small>)</CODE>
+<DD><A NAME="IDX319"></A>
+<A NAME="IDX320"></A>
+<A NAME="IDX321"></A>
+Extracts the suffix of each file name in <VAR>names</VAR>.  If the file name
+contains a period, the suffix is everything starting with the last
+period.  Otherwise, the suffix is the empty string.  This frequently
+means that the result will be empty when <VAR>names</VAR> is not, and if
+<VAR>names</VAR> contains multiple file names, the result may contain fewer
+file names.
+<P>
+
+For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(suffix src/foo.c src-1.0/bar.c hacks)
+</pre></td></tr></table></P><P>
+
+produces the result <SAMP>`.c .c'</SAMP>.
+</P><P>
+
+<DT><CODE>$(basename <VAR>names</VAR><small>...</small>)</CODE>
+<DD><A NAME="IDX322"></A>
+<A NAME="IDX323"></A>
+<A NAME="IDX324"></A>
+Extracts all but the suffix of each file name in <VAR>names</VAR>.  If the
+file name contains a period, the basename is everything starting up to
+(and not including) the last period.  Periods in the directory part are
+ignored.  If there is no period, the basename is the entire file name.
+For example,
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(basename src/foo.c src-1.0/bar hacks)
+</pre></td></tr></table></P><P>
+
+produces the result <SAMP>`src/foo src-1.0/bar hacks'</SAMP>.
+</P><P>
+
+<DT><CODE>$(addsuffix <VAR>suffix</VAR>,<VAR>names</VAR><small>...</small>)</CODE>
+<DD><A NAME="IDX325"></A>
+<A NAME="IDX326"></A>
+<A NAME="IDX327"></A>
+The argument <VAR>names</VAR> is regarded as a series of names, separated
+by whitespace; <VAR>suffix</VAR> is used as a unit.  The value of
+<VAR>suffix</VAR> is appended to the end of each individual name and the
+resulting larger names are concatenated with single spaces between
+them.  For example,
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(addsuffix .c,foo bar)
+</pre></td></tr></table></P><P>
+
+produces the result <SAMP>`foo.c bar.c'</SAMP>.
+</P><P>
+
+<DT><CODE>$(addprefix <VAR>prefix</VAR>,<VAR>names</VAR><small>...</small>)</CODE>
+<DD><A NAME="IDX328"></A>
+<A NAME="IDX329"></A>
+<A NAME="IDX330"></A>
+The argument <VAR>names</VAR> is regarded as a series of names, separated
+by whitespace; <VAR>prefix</VAR> is used as a unit.  The value of
+<VAR>prefix</VAR> is prepended to the front of each individual name and the
+resulting larger names are concatenated with single spaces between
+them.  For example,
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(addprefix src/,foo bar)
+</pre></td></tr></table></P><P>
+
+produces the result <SAMP>`src/foo src/bar'</SAMP>.
+</P><P>
+
+<DT><CODE>$(join <VAR>list1</VAR>,<VAR>list2</VAR>)</CODE>
+<DD><A NAME="IDX331"></A>
+<A NAME="IDX332"></A>
+<A NAME="IDX333"></A>
+Concatenates the two arguments word by word: the two first words (one
+from each argument) concatenated form the first word of the result, the
+two second words form the second word of the result, and so on.  So the
+<VAR>n</VAR>th word of the result comes from the <VAR>n</VAR>th word of each
+argument.  If one argument has more words that the other, the extra
+words are copied unchanged into the result.
+<P>
+
+For example, <SAMP>`$(join a b,.c .o)'</SAMP> produces <SAMP>`a.c b.o'</SAMP>.
+</P><P>
+
+Whitespace between the words in the lists is not preserved; it is
+replaced with a single space.
+</P><P>
+
+This function can merge the results of the <CODE>dir</CODE> and
+<CODE>notdir</CODE> functions, to produce the original list of files which
+was given to those two functions.</P><P>
+
+<DT><CODE>$(wildcard <VAR>pattern</VAR>)</CODE>
+<DD><A NAME="IDX334"></A>
+<A NAME="IDX335"></A>
+The argument <VAR>pattern</VAR> is a file name pattern, typically containing
+wildcard characters (as in shell file name patterns).  The result of
+<CODE>wildcard</CODE> is a space-separated list of the names of existing files
+that match the pattern.
+See section <A HREF="make_26.html#SEC30">Using Wildcard Characters in File Names</A>.
+</DL>
+<P>
+
+<A NAME="Foreach Function"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_81.html#SEC85"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_83.html#SEC87"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,140 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Remaking Makefiles</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Remaking Makefiles">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Remaking Makefiles">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC20"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_18.html#SEC19"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_20.html#SEC21"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.7 How Makefiles Are Remade </H2>
+<!--docid::SEC20::-->
+<P>
+
+<A NAME="IDX68"></A>
+<A NAME="IDX69"></A>
+<A NAME="IDX70"></A>
+Sometimes makefiles can be remade from other files, such as RCS or SCCS
+files.  If a makefile can be remade from other files, you probably want
+<CODE>make</CODE> to get an up-to-date version of the makefile to read in.
+</P><P>
+
+To this end, after reading in all makefiles, <CODE>make</CODE> will consider
+each as a goal target and attempt to update it.  If a makefile has a
+rule which says how to update it (found either in that very makefile or
+in another one) or if an implicit rule applies to it (see section <A HREF="make_99.html#SEC103">Using Implicit Rules</A>), it will be updated if necessary.  After
+all makefiles have been checked, if any have actually been changed,
+<CODE>make</CODE> starts with a clean slate and reads all the makefiles over
+again.  (It will also attempt to update each of them over again, but
+normally this will not change them again, since they are already up to
+date.)</P><P>
+
+If you know that one or more of your makefiles cannot be remade and you
+want to keep <CODE>make</CODE> from performing an implicit rule search on
+them, perhaps for efficiency reasons, you can use any normal method of
+preventing implicit rule lookup to do so.  For example, you can write an
+explicit rule with the makefile as the target, and an empty command
+string (see section <A HREF="make_60.html#SEC64">Using Empty Commands</A>).
+</P><P>
+
+If the makefiles specify a double-colon rule to remake a file with
+commands but no prerequisites, that file will always be remade
+(see section <A HREF="make_46.html#SEC50">4.13 Double-Colon Rules</A>).  In the case of makefiles, a makefile that has a
+double-colon rule with commands but no prerequisites will be remade every
+time <CODE>make</CODE> is run, and then again after <CODE>make</CODE> starts over
+and reads the makefiles in again.  This would cause an infinite loop:
+<CODE>make</CODE> would constantly remake the makefile, and never do anything
+else.  So, to avoid this, <CODE>make</CODE> will <STRONG>not</STRONG> attempt to
+remake makefiles which are specified as targets of a double-colon rule
+with commands but no prerequisites.</P><P>
+
+If you do not specify any makefiles to be read with <SAMP>`-f'</SAMP> or
+<SAMP>`--file'</SAMP> options, <CODE>make</CODE> will try the default makefile names;
+see section <A HREF="make_14.html#SEC15">What Name to Give Your Makefile</A>.  Unlike
+makefiles explicitly requested with <SAMP>`-f'</SAMP> or <SAMP>`--file'</SAMP> options,
+<CODE>make</CODE> is not certain that these makefiles should exist.  However,
+if a default makefile does not exist but can be created by running
+<CODE>make</CODE> rules, you probably want the rules to be run so that the
+makefile can be used.
+</P><P>
+
+Therefore, if none of the default makefiles exists, <CODE>make</CODE> will try
+to make each of them in the same order in which they are searched for
+(see section <A HREF="make_14.html#SEC15">What Name to Give Your Makefile</A>)
+until it succeeds in making one, or it runs out of names to try.  Note
+that it is not an error if <CODE>make</CODE> cannot find or make any makefile;
+a makefile is not always necessary.</P><P>
+
+When you use the <SAMP>`-t'</SAMP> or <SAMP>`--touch'</SAMP> option
+(see section <A HREF="make_94.html#SEC98">Instead of Executing the Commands</A>),
+you would not want to use an out-of-date makefile to decide which
+targets to touch.  So the <SAMP>`-t'</SAMP> option has no effect on updating
+makefiles; they are really updated even if <SAMP>`-t'</SAMP> is specified.
+Likewise, <SAMP>`-q'</SAMP> (or <SAMP>`--question'</SAMP>) and <SAMP>`-n'</SAMP> (or
+<SAMP>`--just-print'</SAMP>) do not prevent updating of makefiles, because an
+out-of-date makefile would result in the wrong output for other targets.
+Thus, <SAMP>`make -f mfile -n foo'</SAMP> will update <TT>`mfile'</TT>, read it in,
+and then print the commands to update <TT>`foo'</TT> and its prerequisites
+without running them.  The commands printed for <TT>`foo'</TT> will be those
+specified in the updated contents of <TT>`mfile'</TT>.
+</P><P>
+
+However, on occasion you might actually wish to prevent updating of even
+the makefiles.  You can do this by specifying the makefiles as goals in
+the command line as well as specifying them as makefiles.  When the
+makefile name is specified explicitly as a goal, the options <SAMP>`-t'</SAMP>
+and so on do apply to them.
+</P><P>
+
+Thus, <SAMP>`make -f mfile -n mfile foo'</SAMP> would read the makefile
+<TT>`mfile'</TT>, print the commands needed to update it without actually
+running them, and then print the commands needed to update <TT>`foo'</TT>
+without running them.  The commands for <TT>`foo'</TT> will be those
+specified by the existing contents of <TT>`mfile'</TT>.
+</P><P>
+
+<A NAME="Overriding Makefiles"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_18.html#SEC19"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_20.html#SEC21"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

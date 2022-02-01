@@ -1,0 +1,232 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: GDB/MI Output Syntax</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: GDB/MI Output Syntax">
+<META NAME="keywords" CONTENT="Debugging with GDB: GDB/MI Output Syntax">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC219"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_217.html#SEC218"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_219.html#SEC220"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_219.html#SEC220"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_216.html#SEC217"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_220.html#SEC225"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 24.1.2 GDB/MI Output Syntax </H3>
+<!--docid::SEC219::-->
+<P>
+
+<A NAME="IDX979"></A>
+<A NAME="IDX980"></A>
+The output from GDB/MI consists of zero or more out-of-band records
+followed, optionally, by a single result record.  This result record
+is for the most recent command.  The sequence of output records is
+terminated by <SAMP>`(gdb)'</SAMP>.
+</P><P>
+
+If an input command was prefixed with a <CODE><VAR>token</VAR></CODE> then the
+corresponding output for that command will also be prefixed by that same
+<VAR>token</VAR>.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE><VAR>output</VAR> ==></CODE>
+<DD><CODE>( <VAR>out-of-band-record</VAR> )* [ <VAR>result-record</VAR> ] "(gdb)" <VAR>nl</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>result-record</VAR> ==></CODE>
+<DD><CODE> [ <VAR>token</VAR> ] "^" <VAR>result-class</VAR> ( "," <VAR>result</VAR> )* <VAR>nl</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>out-of-band-record</VAR> ==></CODE>
+<DD><CODE><VAR>async-record</VAR> | <VAR>stream-record</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>async-record</VAR> ==></CODE>
+<DD><CODE><VAR>exec-async-output</VAR> | <VAR>status-async-output</VAR> | <VAR>notify-async-output</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>exec-async-output</VAR> ==></CODE>
+<DD><CODE>[ <VAR>token</VAR> ] "*" <VAR>async-output</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>status-async-output</VAR> ==></CODE>
+<DD><CODE>[ <VAR>token</VAR> ] "+" <VAR>async-output</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>notify-async-output</VAR> ==></CODE>
+<DD><CODE>[ <VAR>token</VAR> ] "=" <VAR>async-output</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>async-output</VAR> ==></CODE>
+<DD><CODE><VAR>async-class</VAR> ( "," <VAR>result</VAR> )* <VAR>nl</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>result-class</VAR> ==></CODE>
+<DD><CODE>"done" | "running" | "connected" | "error" | "exit"</CODE>
+<P>
+
+<DT><CODE><VAR>async-class</VAR> ==></CODE>
+<DD><CODE>"stopped" | <VAR>others</VAR></CODE> (where <VAR>others</VAR> will be added
+depending on the needs--this is still in development).
+<P>
+
+<DT><CODE><VAR>result</VAR> ==></CODE>
+<DD><CODE> <VAR>variable</VAR> "=" <VAR>value</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>variable</VAR> ==></CODE>
+<DD><CODE> <VAR>string</VAR> </CODE>
+<P>
+
+<DT><CODE><VAR>value</VAR> ==></CODE>
+<DD><CODE> <VAR>const</VAR> | <VAR>tuple</VAR> | <VAR>list</VAR> </CODE>
+<P>
+
+<DT><CODE><VAR>const</VAR> ==></CODE>
+<DD><CODE><VAR>c-string</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>tuple</VAR> ==></CODE>
+<DD><CODE> "{}" | "{" <VAR>result</VAR> ( "," <VAR>result</VAR> )* "}" </CODE>
+<P>
+
+<DT><CODE><VAR>list</VAR> ==></CODE>
+<DD><CODE> "[]" | "[" <VAR>value</VAR> ( "," <VAR>value</VAR> )* "]" | "["
+<VAR>result</VAR> ( "," <VAR>result</VAR> )* "]" </CODE>
+<P>
+
+<DT><CODE><VAR>stream-record</VAR> ==></CODE>
+<DD><CODE><VAR>console-stream-output</VAR> | <VAR>target-stream-output</VAR> | <VAR>log-stream-output</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>console-stream-output</VAR> ==></CODE>
+<DD><CODE>"~" <VAR>c-string</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>target-stream-output</VAR> ==></CODE>
+<DD><CODE>"@" <VAR>c-string</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>log-stream-output</VAR> ==></CODE>
+<DD><CODE>"&#38;" <VAR>c-string</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>nl</VAR> ==></CODE>
+<DD><CODE>CR | CR-LF</CODE>
+<P>
+
+<DT><CODE><VAR>token</VAR> ==></CODE>
+<DD><EM>any sequence of digits</EM>.
+</DL>
+<P>
+
+Notes:
+</P><P>
+
+<UL>
+<LI>
+All output sequences end in a single line containing a period.
+<P>
+
+<LI>
+The <CODE><VAR>token</VAR></CODE> is from the corresponding request.  If an execution
+command is interrupted by the <SAMP>`-exec-interrupt'</SAMP> command, the
+<VAR>token</VAR> associated with the <SAMP>`*stopped'</SAMP> message is the one of the
+original execution command, not the one of the interrupt command.
+<P>
+
+<LI>
+<A NAME="IDX981"></A>
+<VAR>status-async-output</VAR> contains on-going status information about the
+progress of a slow operation.  It can be discarded.  All status output is
+prefixed by <SAMP>`+'</SAMP>.
+<P>
+
+<LI>
+<A NAME="IDX982"></A>
+<VAR>exec-async-output</VAR> contains asynchronous state change on the target
+(stopped, started, disappeared).  All async output is prefixed by
+<SAMP>`*'</SAMP>.
+<P>
+
+<LI>
+<A NAME="IDX983"></A>
+<VAR>notify-async-output</VAR> contains supplementary information that the
+client should handle (e.g., a new breakpoint information).  All notify
+output is prefixed by <SAMP>`='</SAMP>.
+<P>
+
+<LI>
+<A NAME="IDX984"></A>
+<VAR>console-stream-output</VAR> is output that should be displayed as is in the
+console.  It is the textual response to a CLI command.  All the console
+output is prefixed by <SAMP>`~'</SAMP>.
+<P>
+
+<LI>
+<A NAME="IDX985"></A>
+<VAR>target-stream-output</VAR> is the output produced by the target program.
+All the target output is prefixed by <SAMP>`@'</SAMP>.
+<P>
+
+<LI>
+<A NAME="IDX986"></A>
+<VAR>log-stream-output</VAR> is output text coming from GDB's internals, for
+instance messages that should be displayed as part of an error log.  All
+the log output is prefixed by <SAMP>`&#38;'</SAMP>.
+<P>
+
+<LI>
+<A NAME="IDX987"></A>
+New GDB/MI commands should only output <VAR>lists</VAR> containing
+<VAR>values</VAR>.
+<P>
+
+</UL>
+<P>
+
+See section <A HREF="gdb_223.html#SEC228">GDB/MI Stream Records</A>, for more
+details about the various output records.
+</P><P>
+
+<A NAME="GDB/MI Simple Examples"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_217.html#SEC218"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_219.html#SEC220"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_219.html#SEC220"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_216.html#SEC217"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_220.html#SEC225"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

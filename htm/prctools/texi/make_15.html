@@ -1,0 +1,165 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Include</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Include">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Include">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC16"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_14.html#SEC15"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_16.html#SEC17"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.3 Including Other Makefiles </H2>
+<!--docid::SEC16::-->
+<P>
+
+<A NAME="IDX50"></A>
+The <CODE>include</CODE> directive tells <CODE>make</CODE> to suspend reading the
+current makefile and read one or more other makefiles before continuing.
+The directive is a line in the makefile that looks like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>include <VAR>filenames</VAR><small>...</small>
+</pre></td></tr></table></P><P>
+
+<VAR>filenames</VAR> can contain shell file name patterns.
+<A NAME="IDX51"></A>
+<A NAME="IDX52"></A>
+<A NAME="IDX53"></A>
+</P><P>
+
+Extra spaces are allowed and ignored at the beginning of the line, but
+a tab is not allowed.  (If the line begins with a tab, it will be
+considered a command line.)  Whitespace is required between
+<CODE>include</CODE> and the file names, and between file names; extra
+whitespace is ignored there and at the end of the directive.  A
+comment starting with <SAMP>`#'</SAMP> is allowed at the end of the line.  If
+the file names contain any variable or function references, they are
+expanded.  See section <A HREF="make_61.html#SEC65">How to Use Variables</A>.
+</P><P>
+
+For example, if you have three <TT>`.mk'</TT> files, <TT>`a.mk'</TT>,
+<TT>`b.mk'</TT>, and <TT>`c.mk'</TT>, and <CODE>$(bar)</CODE> expands to
+<CODE>bish bash</CODE>, then the following expression
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>include foo *.mk $(bar)
+</pre></td></tr></table></P><P>
+
+is equivalent to
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>include foo a.mk b.mk c.mk bish bash
+</pre></td></tr></table></P><P>
+
+When <CODE>make</CODE> processes an <CODE>include</CODE> directive, it suspends
+reading of the containing makefile and reads from each listed file in
+turn.  When that is finished, <CODE>make</CODE> resumes reading the
+makefile in which the directive appears.
+</P><P>
+
+One occasion for using <CODE>include</CODE> directives is when several programs,
+handled by individual makefiles in various directories, need to use a
+common set of variable definitions
+(see section <A HREF="make_68.html#SEC72">Setting Variables</A>) or pattern rules
+(see section <A HREF="make_104.html#SEC108">Defining and Redefining Pattern Rules</A>).
+</P><P>
+
+Another such occasion is when you want to generate prerequisites from
+source files automatically; the prerequisites can be put in a file that
+is included by the main makefile.  This practice is generally cleaner
+than that of somehow appending the prerequisites to the end of the main
+makefile as has been traditionally done with other versions of
+<CODE>make</CODE>.  See section <A HREF="make_47.html#SEC51">4.14 Generating Prerequisites Automatically</A>.
+<A NAME="IDX54"></A>
+<A NAME="IDX55"></A>
+<A NAME="IDX56"></A>
+</P><P>
+
+<A NAME="IDX57"></A>
+<A NAME="IDX58"></A>
+<A NAME="IDX59"></A>
+<A NAME="IDX60"></A>
+<A NAME="IDX61"></A>
+<A NAME="IDX62"></A>
+<A NAME="IDX63"></A>
+If the specified name does not start with a slash, and the file is not
+found in the current directory, several other directories are searched.
+First, any directories you have specified with the <SAMP>`-I'</SAMP> or
+<SAMP>`--include-dir'</SAMP> option are searched
+(see section <A HREF="make_98.html#SEC102">Summary of Options</A>).
+Then the following directories (if they exist)
+are searched, in this order:
+<TT>`<VAR>prefix</VAR>/include'</TT> (normally <TT>`/usr/local/include'</TT>
+<A NAME="DOCF1" HREF="make_fot.html#FOOT1">(1)</A>)
+<TT>`/usr/gnu/include'</TT>,
+<TT>`/usr/local/include'</TT>, <TT>`/usr/include'</TT>.
+</P><P>
+
+If an included makefile cannot be found in any of these directories, a
+warning message is generated, but it is not an immediately fatal error;
+processing of the makefile containing the <CODE>include</CODE> continues.
+Once it has finished reading makefiles, <CODE>make</CODE> will try to remake
+any that are out of date or don't exist.
+See section <A HREF="make_19.html#SEC20">How Makefiles Are Remade</A>.
+Only after it has tried to find a way to remake a makefile and failed,
+will <CODE>make</CODE> diagnose the missing makefile as a fatal error.
+</P><P>
+
+If you want <CODE>make</CODE> to simply ignore a makefile which does not exist
+and cannot be remade, with no error message, use the <CODE>-include</CODE>
+directive instead of <CODE>include</CODE>, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>-include <VAR>filenames</VAR><small>...</small>
+</pre></td></tr></table></P><P>
+
+This acts like <CODE>include</CODE> in every way except that there is no
+error (not even a warning) if any of the <VAR>filenames</VAR> do not exist.
+For compatibility with some other <CODE>make</CODE> implementations,
+<CODE>sinclude</CODE> is another name for <CODE>-include</CODE>.
+</P><P>
+
+<A NAME="MAKEFILES Variable"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_14.html#SEC15"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_16.html#SEC17"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

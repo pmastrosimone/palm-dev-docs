@@ -1,0 +1,211 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Set Watchpoints</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Set Watchpoints">
+<META NAME="keywords" CONTENT="Debugging with GDB: Set Watchpoints">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC30"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_29.html#SEC29"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_31.html#SEC31"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_31.html#SEC31"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 5.1.2 Setting watchpoints </H3>
+<!--docid::SEC30::-->
+<P>
+
+<A NAME="IDX152"></A>
+<A NAME="IDX153"></A>
+<A NAME="IDX154"></A>
+You can use a watchpoint to stop execution whenever the value of an
+expression changes, without having to predict a particular place where
+this may happen.
+</P><P>
+
+Depending on your system, watchpoints may be implemented in software or
+hardware.  GDB does software watchpointing by single-stepping your
+program and testing the variable's value each time, which is hundreds of
+times slower than normal execution.  (But this may still be worth it, to
+catch errors where you have no clue what part of your program is the
+culprit.)
+</P><P>
+
+On some systems, such as HP-UX, GNU/Linux and some other x86-based targets,
+GDB includes support for
+hardware watchpoints, which do not slow down the running of your
+program.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX155"></A>
+<DT><CODE>watch <VAR>expr</VAR></CODE>
+<DD>Set a watchpoint for an expression.  GDB will break when <VAR>expr</VAR>
+is written into by the program and its value changes.
+<P>
+
+<A NAME="IDX156"></A>
+<DT><CODE>rwatch <VAR>expr</VAR></CODE>
+<DD>Set a watchpoint that will break when watch <VAR>expr</VAR> is read by the program.
+<P>
+
+<A NAME="IDX157"></A>
+<DT><CODE>awatch <VAR>expr</VAR></CODE>
+<DD>Set a watchpoint that will break when <VAR>expr</VAR> is either read or written into
+by the program.
+<P>
+
+<A NAME="IDX158"></A>
+<DT><CODE>info watchpoints</CODE>
+<DD>This command prints a list of watchpoints, breakpoints, and catchpoints;
+it is the same as <CODE>info break</CODE>.
+</DL>
+<P>
+
+GDB sets a <EM>hardware watchpoint</EM> if possible.  Hardware
+watchpoints execute very quickly, and the debugger reports a change in
+value at the exact instruction where the change occurs.  If GDB
+cannot set a hardware watchpoint, it sets a software watchpoint, which
+executes more slowly and reports the change in value at the next
+statement, not the instruction, after the change occurs.
+</P><P>
+
+When you issue the <CODE>watch</CODE> command, GDB reports
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>Hardware watchpoint <VAR>num</VAR>: <VAR>expr</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+if it was able to set a hardware watchpoint.
+</P><P>
+
+Currently, the <CODE>awatch</CODE> and <CODE>rwatch</CODE> commands can only set
+hardware watchpoints, because accesses to data that don't change the
+value of the watched expression cannot be detected without examining
+every instruction as it is being executed, and GDB does not do
+that currently.  If GDB finds that it is unable to set a
+hardware breakpoint with the <CODE>awatch</CODE> or <CODE>rwatch</CODE> command, it
+will print a message like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>Expression cannot be implemented with read/access watchpoint.
+</FONT></pre></td></tr></table></P><P>
+
+Sometimes, GDB cannot set a hardware watchpoint because the
+data type of the watched expression is wider than what a hardware
+watchpoint on the target machine can handle.  For example, some systems
+can only watch regions that are up to 4 bytes wide; on such systems you
+cannot set hardware watchpoints for an expression that yields a
+double-precision floating-point number (which is typically 8 bytes
+wide).  As a work-around, it might be possible to break the large region
+into a series of smaller ones and watch them with separate watchpoints.
+</P><P>
+
+If you set too many hardware watchpoints, GDB might be unable
+to insert all of them when you resume the execution of your program.
+Since the precise number of active watchpoints is unknown until such
+time as the program is about to be resumed, GDB might not be
+able to warn you about this when you set the watchpoints, and the
+warning will be printed only when the program is resumed:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>Hardware watchpoint <VAR>num</VAR>: Could not insert watchpoint
+</FONT></pre></td></tr></table></P><P>
+
+If this happens, delete or disable some of the watchpoints.
+</P><P>
+
+The SPARClite DSU will generate traps when a program accesses some data
+or instruction address that is assigned to the debug registers.  For the
+data addresses, DSU facilitates the <CODE>watch</CODE> command.  However the
+hardware breakpoint registers can only take two data watchpoints, and
+both watchpoints must be the same kind.  For example, you can set two
+watchpoints with <CODE>watch</CODE> commands, two with <CODE>rwatch</CODE> commands,
+<STRONG>or</STRONG> two with <CODE>awatch</CODE> commands, but you cannot set one
+watchpoint with one command and the other with a different command.
+GDB will reject the command if you try to mix watchpoints.
+Delete or disable unused watchpoint commands before setting new ones.
+</P><P>
+
+If you call a function interactively using <CODE>print</CODE> or <CODE>call</CODE>,
+any watchpoints you have set will be inactive until GDB reaches another
+kind of breakpoint or the call completes.
+</P><P>
+
+GDB automatically deletes watchpoints that watch local
+(automatic) variables, or expressions that involve such variables, when
+they go out of scope, that is, when the execution leaves the block in
+which these variables were defined.  In particular, when the program
+being debugged terminates, <EM>all</EM> local variables go out of scope,
+and so only watchpoints that watch global variables remain set.  If you
+rerun the program, you will need to set all such watchpoints again.  One
+way of doing that would be to set a code breakpoint at the entry to the
+<CODE>main</CODE> function and when it breaks, set all the watchpoints.
+</P><P>
+
+<BLOCKQUOTE>
+<A NAME="IDX159"></A>
+<A NAME="IDX160"></A>
+<EM>Warning:</EM> In multi-thread programs, watchpoints have only limited
+usefulness.  With the current watchpoint implementation, GDB
+can only watch the value of an expression <EM>in a single thread</EM>.  If
+you are confident that the expression can only change due to the current
+thread's activity (and if you are also confident that no other thread
+can become current), then you can use watchpoints as usual.  However,
+GDB may not notice when a non-current thread's activity changes
+the expression.
+<P>
+
+<EM>HP-UX Warning:</EM> In multi-thread programs, software watchpoints
+have only limited usefulness.  If GDB creates a software
+watchpoint, it can only watch the value of an expression <EM>in a
+single thread</EM>.  If you are confident that the expression can only
+change due to the current thread's activity (and if you are also
+confident that no other thread can become current), then you can use
+software watchpoints as usual.  However, GDB may not notice
+when a non-current thread's activity changes the expression.  (Hardware
+watchpoints, in contrast, watch an expression in all threads.)
+</BLOCKQUOTE>
+<P>
+
+<A NAME="Set Catchpoints"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_29.html#SEC29"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_31.html#SEC31"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_31.html#SEC31"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

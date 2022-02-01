@@ -1,0 +1,86 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Prerequisite Types</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Prerequisite Types">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Prerequisite Types">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC29"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_24.html#SEC28"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_26.html#SEC30"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.3 Types of Prerequisites </H2>
+<!--docid::SEC29::-->
+<P>
+
+<A NAME="IDX87"></A>
+<A NAME="IDX88"></A>
+<A NAME="IDX89"></A>
+<A NAME="IDX90"></A>
+There are actually two different types of prerequisites understood by
+GNU <CODE>make</CODE>: normal prerequisites such as described in the
+previous section, and <EM>order-only</EM> prerequisites.  A normal
+prerequisite actually makes two statements: first, it imposes an order
+of execution of build commands: any commands necessary to build any of
+a target's prerequisites will be fully executed before any commands
+necessary to build the target.  Second, it imposes a dependency
+relationship: if any prerequisite is newer than the target, then the
+target is considered out-of-date and must be rebuilt.
+</P><P>
+
+Normally, this is exactly what you want: if a target's prerequisite is
+updated, then the target should also be updated.
+</P><P>
+
+Occasionally, however, you have a situation where you want to impose a
+specific ordering on the rules to be invoked <EM>without</EM> forcing
+the target to be updated if one of those rules is executed.  In that
+case, you want to define <EM>order-only</EM> prerequisites.  Order-only
+prerequisites can be specified by placing a pipe symbol (<CODE>|</CODE>)
+in the prerequisites list: any prerequisites to the left of the pipe
+symbol are normal; any prerequisites to the right are order-only:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>targets</VAR> : <VAR>normal-prerequisites</VAR> | <VAR>order-only-prerequisites</VAR>
+</pre></td></tr></table></P><P>
+
+The normal prerequisites section may of course be empty.  Also, you
+may still declare multiple lines of prerequisites for the same target:
+they are appended appropriately.  Note that if you declare the same
+file to be both a normal and an order-only prerequisite, the normal
+prerequisite takes precedence (since they are a strict superset of the
+behavior of an order-only prerequisite).
+</P><P>
+
+<A NAME="Wildcards"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

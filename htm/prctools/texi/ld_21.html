@@ -1,0 +1,84 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Output Section Address</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Output Section Address">
+<META NAME="keywords" CONTENT="Untitled Document: Output Section Address">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC21"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_20.html#SEC20"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_22.html#SEC22"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_22.html#SEC22"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_18.html#SEC18"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.6.3 Output Section Description </H3>
+<!--docid::SEC21::-->
+The <VAR>address</VAR> is an expression for the VMA (the virtual memory
+address) of the output section.  If you do not provide <VAR>address</VAR>,
+the linker will set it based on <VAR>region</VAR> if present, or otherwise
+based on the current value of the location counter.
+<P>
+
+If you provide <VAR>address</VAR>, the address of the output section will be
+set to precisely that.  If you provide neither <VAR>address</VAR> nor
+<VAR>region</VAR>, then the address of the output section will be set to the
+current value of the location counter aligned to the alignment
+requirements of the output section.  The alignment requirement of the
+output section is the strictest alignment of any input section contained
+within the output section.
+</P><P>
+
+For example,
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>.text . : { *(.text) }
+</FONT></pre></td></tr></table>and
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>.text : { *(.text) }
+</FONT></pre></td></tr></table>are subtly different.  The first will set the address of the
+<SAMP>`.text'</SAMP> output section to the current value of the location
+counter.  The second will set it to the current value of the location
+counter aligned to the strictest alignment of a <SAMP>`.text'</SAMP> input
+section.
+</P><P>
+
+The <VAR>address</VAR> may be an arbitrary expression; <A HREF="ld_41.html#SEC41">3.10 Expressions in Linker Scripts</A>.
+For example, if you want to align the section on a 0x10 byte boundary,
+so that the lowest four bits of the section address are zero, you could
+do something like this:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>.text ALIGN(0x10) : { *(.text) }
+</FONT></pre></td></tr></table>This works because <CODE>ALIGN</CODE> returns the current location counter
+aligned upward to the specified value.
+</P><P>
+
+Specifying <VAR>address</VAR> for a section will change the value of the
+location counter.
+</P><P>
+
+<A NAME="Input Section"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

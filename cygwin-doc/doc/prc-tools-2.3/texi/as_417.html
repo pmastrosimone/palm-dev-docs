@@ -1,0 +1,79 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Xtensa Automatic Alignment</TITLE>
+
+<META NAME="description" CONTENT="Using as: Xtensa Automatic Alignment">
+<META NAME="keywords" CONTENT="Using as: Xtensa Automatic Alignment">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC426"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_416.html#SEC425"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_418.html#SEC427"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_418.html#SEC427"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_415.html#SEC424"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_418.html#SEC427"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 8.33.3.2 Automatic Instruction Alignment </H4>
+<!--docid::SEC426::-->
+<P>
+
+The Xtensa assembler will automatically align certain instructions, both
+to optimize performance and to satisfy architectural requirements.
+</P><P>
+
+When the <CODE>--target-align</CODE> command-line option is enabled
+(see section <A HREF="as_411.html#SEC420">Command Line Options</A>), the assembler attempts
+to widen density instructions preceding a branch target so that the
+target instruction does not cross a 4-byte boundary.  Similarly, the
+assembler also attempts to align each instruction following a call
+instruction.  If there are not enough preceding safe density
+instructions to align a target, no widening will be performed.  This
+alignment has the potential to reduce branch penalties at some expense
+in code size.  The assembler will not attempt to align labels with the
+prefixes <CODE>.Ln</CODE> and <CODE>.LM</CODE>, since these labels are used for
+debugging information and are not typically branch targets.
+</P><P>
+
+The <CODE>LOOP</CODE> family of instructions must be aligned on either a 1 or
+2 mod 4 byte boundary.  The assembler knows about this restriction and
+inserts the minimal number of 2 or 3 byte no-op instructions
+to satisfy it.  When no-op instructions are added, any label immediately
+preceding the original loop will be moved in order to refer to the loop
+instruction, not the newly generated no-op instruction.
+</P><P>
+
+Similarly, the <CODE>ENTRY</CODE> instruction must be aligned on a 0 mod 4
+byte boundary.  The assembler satisfies this requirement by inserting
+zero bytes when required.  In addition, labels immediately preceding the
+<CODE>ENTRY</CODE> instruction will be moved to the newly aligned instruction
+location.
+</P><P>
+
+<A NAME="Xtensa Relaxation"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

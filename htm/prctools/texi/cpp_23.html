@@ -1,0 +1,108 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Swallow Semicolon</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Swallow Semicolon">
+<META NAME="keywords" CONTENT="The C Preprocessor: Swallow Semicolon">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC23"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_22.html#SEC22"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_24.html#SEC24"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_20.html#SEC20"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 1.4.8.3 Swallowing the Semicolon </H4>
+<!--docid::SEC23::-->
+<P>
+
+<A NAME="IDX47"></A>
+Often it is desirable to define a macro that expands into a compound
+statement.  Consider, for example, the following macro, that advances a
+pointer (the argument <SAMP>`p'</SAMP> says where to find it) across whitespace
+characters:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define SKIP_SPACES(p, limit)  \
+{ register char *lim = (limit); \
+  while (p != lim) {            \
+    if (*p++ != ' ') {          \
+      p--; break; }}}
+</pre></td></tr></table></P><P>
+
+Here Backslash-Newline is used to split the macro definition, which must
+be a single line, so that it resembles the way such C code would be
+laid out if not part of a macro definition.
+</P><P>
+
+A call to this macro might be <SAMP>`SKIP_SPACES (p, lim)'</SAMP>.  Strictly
+speaking, the call expands to a compound statement, which is a complete
+statement with no need for a semicolon to end it.  But it looks like a
+function call.  So it minimizes confusion if you can use it like a function
+call, writing a semicolon afterward, as in <SAMP>`SKIP_SPACES (p, lim);'</SAMP>
+</P><P>
+
+But this can cause trouble before <SAMP>`else'</SAMP> statements, because the
+semicolon is actually a null statement.  Suppose you write
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>if (*p != 0)
+  SKIP_SPACES (p, lim);
+else <small>...</small>
+</pre></td></tr></table></P><P>
+
+The presence of two statements--the compound statement and a null
+statement--in between the <SAMP>`if'</SAMP> condition and the <SAMP>`else'</SAMP>
+makes invalid C code.
+</P><P>
+
+The definition of the macro <SAMP>`SKIP_SPACES'</SAMP> can be altered to solve
+this problem, using a <SAMP>`do <small>...</small> while'</SAMP> statement.  Here is how:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define SKIP_SPACES(p, limit)     \
+do { register char *lim = (limit); \
+     while (p != lim) {            \
+       if (*p++ != ' ') {          \
+         p--; break; }}}           \
+while (0)
+</pre></td></tr></table></P><P>
+
+Now <SAMP>`SKIP_SPACES (p, lim);'</SAMP> expands into
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>do {<small>...</small>} while (0);
+</pre></td></tr></table></P><P>
+
+which is one statement.
+</P><P>
+
+<A NAME="Side Effects"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

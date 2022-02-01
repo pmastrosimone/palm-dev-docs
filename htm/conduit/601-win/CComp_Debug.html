@@ -1,0 +1,325 @@
+<html>
+<head>
+<title>Debugging Conduits | C/C++ Sync Suite Companion</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="KEYWORDS" CONTENT="C, C++, C/C++ Sync Suite, debug, debugging, tips, log, logging, messages, files, HotSync, CDK, conduit, conduits, Windows">
+<META NAME="DESCRIPTION" CONTENT="Provides information to help you debug your conduit for Windows.">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource HTML 20040609">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="LASTUPDATED" CONTENT="06/28/04 08:29:33">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="995937"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncCompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_Expansion.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_Notifiers.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncCompanionIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">7 &nbsp;&nbsp;
+Debugging Conduits</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">C/C++ Sync Suite Companion</p>
+<p class="SubTitle">Palm OS&#174; Conduit Development Kit for  Windows, Version 6.0.1 </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="CComp_Debug.html">7  Debugging Conduits</a></h1>
+
+   <h2 class="SideTOC2"><a href="#995960">
+   Adding Additional Logging Support to Your Conduit</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996011">
+   Common Troubleshooting Help</a></h2>
+
+      <h3 class="SideTOC3"><a href="#996026">
+      When Your Conduit Doesn't Appear in the Custom Dialog Box</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996075">
+      When Your Conduit Does Not Run</a></h3>
+
+</div>
+</td>
+<!--END SIDETOC-->
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="995950"> </a>This chapter provides information to help you debug your conduit, including the following: </p>
+   <blockquote class = "bq"><a name="995954"> </a><a href="CComp_Debug.html#995960">Adding Additional Logging Support to Your Conduit</a> </blockquote>
+   <blockquote class = "bq"><a name="995958"> </a><a href="CComp_Debug.html#996011">Common Troubleshooting Help</a> </blockquote>
+
+<h2 class="haH2">
+  <a name="995960"> </a>Adding Additional Logging Support to Your Conduit <a href="#995937"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="995961"> </a>You can launch HotSync Manager with several different flags that increase the level of detail in the HotSync log file. These flags are listed in <a href="Util_HotSyncMgr.html#995974">Chapter 4, "Using Command-line Options for HotSync Manager,"</a> in the <i>Conduit Development Utilities Guide</i>. </p>
+
+<p><a name="995968"> </a>You can easily add support in your conduit for the HotSync debugging flags by calling the Windows API function <code>GetCommandLine()</code> and parsing the argument list, as shown in <a href="CComp_Debug.html#995973">Listing 7.1</a>. PalmSource, Inc. recommends that you at least support the verbose (<code>-v</code>) option, as this can help you to track problems and troubleshoot technical support calls.</p>
+<p class="CCodeCaption">
+  <a name="995973"> </a><b>Listing 7.1&nbsp;&nbsp;Extracting the HotSync.exe command line arguments</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+#define LOG_NORMAL  0x0000<a name="995975"> </a>
+#define LOG_L1      0x0001<a name="995976"> </a>
+#define LOG_L2      0x0002<a name="995977"> </a>
+#define LOG_VERBOSE 0x0004<a name="995978"> </a>
+<a name="995979"> </a>
+DWORD dwLogLevel;<a name="995980"> </a>
+<a name="995981"> </a>
+struct logOpt_t<a name="995982"> </a>
+{<a name="995983"> </a>
+   char *szCmd;<a name="995984"> </a>
+   DWORD dwCmdValue;<a name="995985"> </a>
+} logOptions[] = {<a name="995986"> </a>
+   _T("V"), LOG_VERBOSE,<a name="995987"> </a>
+   _T("L1"), LOG_L1,<a name="995988"> </a>
+   _T("L2"), LOG_L2<a name="995989"> </a>
+};<a name="995990"> </a>
+<a name="995991"> </a>
+void ProcessCmdLineParameters()<a name="995992"> </a>
+{<a name="995993"> </a>
+   CString csCmdLine(GetCommandLine());<a name="995994"> </a>
+   csCmdLine.MakeUpper();<a name="995995"> </a>
+   <a name="995996"> </a>
+   CString csDelim = _T("-");<a name="995997"> </a>
+<a name="995998"> </a>
+   dwLogLevel = LOG_NORMAL;<a name="995999"> </a>
+  int nSize = sizeof(logOptions)/sizeof(logOpt_t);<a name="996000"> </a>
+<a name="996001"> </a>
+   for (int n=0; n&lt;nSize; n++)<a name="996002"> </a>
+   {<a name="996003"> </a>
+      if (csCmdLine.Find(csDelim + logOptions[n].szCmd) != -1)<a name="996004"> </a>
+         dwLogLevel |= logOptions[n].dwCmdValue;<a name="996005"> </a>
+   }<a name="996006"> </a>
+}<a name="996007"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h2 class="haH2">
+  <a name="996011"> </a>Common Troubleshooting Help <a href="#995937"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996012"> </a>This section describes solutions to several common problems that developers have with getting their conduits working. See <a href="Util_DebugTips.html#991578">Appendix A, "Debugging Tips,"</a> in the <i>Conduit Development Utilities Guide</i> for other useful information. </p>
+<div class="NINoteImportant"><hr>
+  <a name="996019"> </a> <b>TIP: </b> You can use the Conduit Inspector utility that ships with the CDK to get more information about your conduit when HotSync Manager tries to load it. See <a href="Util_CondInspector.html#995934">Chapter 6, "Conduit Inspector Utility,"</a> in the <i>Conduit Development Utilities Guide</i>. 
+<hr>
+</div>
+<h3 class="hbH3">
+  <a name="996026"> </a>When Your Conduit Doesn't Appear in the Custom Dialog Box <a href="#995937"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996027"> </a>If you do not see your conduit in HotSync Manager's <b>Custom</b> dialog box, it means that HotSync Manager has not loaded your conduit. <a href="CComp_Debug.html#996034">Table 7.1</a> shows several possible reasons and solutions. </p>
+
+<p class="fineprint">
+<p class="caption"><a name="996034"> </a><b>Table 7.1&nbsp;&nbsp;Solutions for a conduit that is not <br>loading </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="996041"> </a><b>Reason</b></p>
+    </th>
+    <th><p class="tt"><a name="996043"> </a><b>Solution(s)</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996045"> </a>Conduit built as an extension DLL</p>
+    </td>
+    <td><div class="NINoteImportant"><hr>
+  <a name="996047"> </a> <b>NOTE: </b> You must build your conduit as a regular DLL. Do not build it as an extension DLL.
+<hr>
+</div>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996049"> </a>Incorrect path or conduit name</p>
+    </td>
+    <td><p class="tt"><a name="996051"> </a>You must either specify a full path and filename or, if only a filename, the file must be in the HotSync Manager executable directory or in the Windows <code>PATH</code>.</p>
+<p class="tt"><a name="997521"> </a>You can copy your conduit DLL to the HotSync directory and install your conduit by supplying the DLL name. See <a href="Util_CondCfg.html#995934">Chapter 3, "Conduit Configuration Utility,"</a> in the <i>Conduit Development Utilities Guide</i>. </p>
+<p class="tt"><a name="996058"> </a>Or, you can keep your conduit DLL in your own directory and supply the full path name of your DLL (in the <a href="Intro_CfgEntries.html#992820"><code>Conduit</code></a> configuration entry) when you install your conduit.</p>
+<p class="tt"><a name="996062"> </a>In any case, check that the conduit path and filename are spelled correctly in the Conduit Configuration utility. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996064"> </a>Missing dependency</p>
+    </td>
+    <td><p class="tt"><a name="996066"> </a>Any DLLs that your conduit links with must be available in the search path that HotSync Manager uses. This includes the <code>HotSync</code> directory, the Windows <code>System</code> directory, the <code>Windows</code> or <code>WinNT</code> directory, and the directories listed in the Windows <code>PATH</code> environment variable.</p>
+<p class="tt"><a name="997482"> </a>Note that the Win32 call used to load a conduit is <code>LoadLibrary()</code>, which has a specific search order when loading libraries/dependant libraries that does <i>not</i> necessarily include the current location of the conduit (if a full path is specified). Refer to the Microsoft documentation on <code>LoadLibrary()</code>.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996068"> </a>Missing function in dependency</p>
+    </td>
+    <td><p class="tt"><a name="996070"> </a>Sometimes an older version of a required DLL is present, and the older version does not support all of the exported functions that a new one does. For example, the <code>sync20.dll</code> library. If you are using any of the new functions, your conduit cannot be loaded because the addresses for these imported functions cannot be resolved.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+<div class="NINoteImportant"><hr>
+  <a name="997464"> </a> <b>NOTE: </b> You can use the Dependency Walker (<code>Depends.exe</code>) to discover dependency problems: <a href="http://www.dependencywalker.com">www.dependencywalker.com</a>.
+<hr>
+</div>
+<h3 class="hbH3">
+  <a name="996075"> </a>When Your Conduit Does Not Run <a href="#995937"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996079"> </a><a href="CComp_Debug.html#996086">Table 7.2</a> shows several possible reasons and solutions for a conduit that does not run, despite displaying in HotSync Manager's Custom dialog box. </p>
+
+<p class="fineprint">
+<p class="caption"><a name="996086"> </a><b>Table 7.2&nbsp;&nbsp;Solutions for a conduit that is not running </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="996090"> </a><b>Reason</b></p>
+    </th>
+    <th><p class="tt"><a name="996092"> </a><b>Solution(s)</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996094"> </a>Creator ID mismatch</p>
+    </td>
+    <td><p class="tt"><a name="996096"> </a>HotSync Manager runs a conduit only if there is an application on the handheld with a matching creator ID, unless your conduit opts out of this requirement. See <a href="CComp_EntryPoints.html#996131">"GetConduitInfo()."</a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996098"> </a>Invalid version number</p>
+    </td>
+    <td><p class="tt"><a name="996100"> </a>The version number of your conduit must be in the range specified by these two constants:</p>
+<p class="tt"><a name="996101"> </a><code>   MIN_CONDUIT_VERSION 0x00000101 <br>   MAX_CONDUIT_VERSION 0x00000200</code> </p>
+<p class="tt"><a name="996102"> </a>The value that you return from your <a href="CRef_CnAPI.html#996679"><code>GetConduitVersion()</code></a> entry point must be in the range <code>MIN_CONDUIT_VERSION</code> to <code>MAX_CONDUIT_VERSION</code>. <a href="CComp_EntryPoints.html#996218">Listing 3.2</a> shows an example of the <code>GetConduitVersion()</code> function.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996110"> </a>Entry points</p>
+    </td>
+    <td><p class="tt"><a name="996112"> </a>If you are using MFC in your conduit, you must include the <code>AFX_MANAGE_STATE(AfxGetStaticModuleState())</code> macro at the beginning of all of your entry points. You must explicitly set the current module state to the one for the DLL by using this macro at the beginning of every function that is exported from the DLL.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996114"> </a>Incomplete class list</p>
+    </td>
+    <td><p class="tt"><a name="996116"> </a>If your conduit uses classes that are implemented in another DLL, you must add that DLL to your <code>CDynLinkLibrary</code> chain. For example, if you are using the <code>CHotSyncActionDialog</code>, which is in the <code>pdcmnxx</code> DLL, you must call <code>InitPdcmdn5DLL</code> in your conduit's <code>InitInstance</code> function. </p>
+<p class="tt"><a name="996117"> </a>Similarly, if you are using MFC OLE, MFC database (or DAO), or MFC Sockets support in your conduit DLL, you must call the predefined initialization function for each DLL that you use. See the MFC documentation for the <code>AfxDbInitModule()</code>, <code>AfxOleInitModule()</code>, <code>AfxNetInitModule()</code>, <code>AfxDaoInit()</code>, and <code>AfxDaoTerm()</code> functions.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<p><a name="996120"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1999-2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="CComp_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncCompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_Expansion.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_Notifiers.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncCompanionIX.html">Index</a>
+</p>
+</td>
+</tr>
+<!-- END FOOTER -->
+
+</body>
+</html>

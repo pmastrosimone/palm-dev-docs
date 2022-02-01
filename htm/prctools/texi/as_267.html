@@ -1,0 +1,110 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: i386-16bit</TITLE>
+
+<META NAME="description" CONTENT="Using as: i386-16bit">
+<META NAME="keywords" CONTENT="Using as: i386-16bit">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC276"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_266.html#SEC275"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_268.html#SEC277"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_259.html#SEC268"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.12.10 Writing 16-bit Code </H3>
+<!--docid::SEC276::-->
+<P>
+
+<A NAME="IDX791"></A>
+<A NAME="IDX792"></A>
+<A NAME="IDX793"></A>
+<A NAME="IDX794"></A>
+<A NAME="IDX795"></A>
+<A NAME="IDX796"></A>
+<A NAME="IDX797"></A>
+<A NAME="IDX798"></A>
+While <CODE>as</CODE> normally writes only "pure" 32-bit i386 code
+or 64-bit x86-64 code depending on the default configuration,
+it also supports writing code to run in real mode or in 16-bit protected
+mode code segments.  To do this, put a <SAMP>`.code16'</SAMP> or
+<SAMP>`.code16gcc'</SAMP> directive before the assembly language instructions to
+be run in 16-bit mode.  You can switch <CODE>as</CODE> back to writing
+normal 32-bit code with the <SAMP>`.code32'</SAMP> directive.
+</P><P>
+
+<SAMP>`.code16gcc'</SAMP> provides experimental support for generating 16-bit
+code from gcc, and differs from <SAMP>`.code16'</SAMP> in that <SAMP>`call'</SAMP>,
+<SAMP>`ret'</SAMP>, <SAMP>`enter'</SAMP>, <SAMP>`leave'</SAMP>, <SAMP>`push'</SAMP>, <SAMP>`pop'</SAMP>,
+<SAMP>`pusha'</SAMP>, <SAMP>`popa'</SAMP>, <SAMP>`pushf'</SAMP>, and <SAMP>`popf'</SAMP> instructions
+default to 32-bit size.  This is so that the stack pointer is
+manipulated in the same way over function calls, allowing access to
+function parameters at the same stack offsets as in 32-bit mode.
+<SAMP>`.code16gcc'</SAMP> also automatically adds address size prefixes where
+necessary to use the 32-bit addressing modes that gcc generates.
+</P><P>
+
+The code which <CODE>as</CODE> generates in 16-bit mode will not
+necessarily run on a 16-bit pre-80386 processor.  To write code that
+runs on such a processor, you must refrain from using <EM>any</EM> 32-bit
+constructs which require <CODE>as</CODE> to output address or operand
+size prefixes.
+</P><P>
+
+Note that writing 16-bit code instructions by explicitly specifying a
+prefix or an instruction mnemonic suffix within a 32-bit code section
+generates different machine instructions than those generated for a
+16-bit code segment.  In a 32-bit code section, the following code
+generates the machine opcode bytes <SAMP>`66 6a 04'</SAMP>, which pushes the
+value <SAMP>`4'</SAMP> onto the stack, decrementing <SAMP>`%esp'</SAMP> by 2.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>        pushw $4
+</FONT></pre></td></tr></table></P><P>
+
+The same code in a 16-bit code section would generate the machine
+opcode bytes <SAMP>`6a 04'</SAMP> (ie. without the operand size prefix), which
+is correct since the processor default operand size is assumed to be 16
+bits in a 16-bit code section.
+</P><P>
+
+<A NAME="i386-Bugs"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_266.html#SEC275"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_268.html#SEC277"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_259.html#SEC268"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

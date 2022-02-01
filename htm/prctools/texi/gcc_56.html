@@ -1,0 +1,92 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Build Cross</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Build Cross">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Build Cross">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC56"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_55.html#SEC55"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_57.html#SEC57"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_57.html#SEC57"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_50.html#SEC50"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_57.html#SEC57"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.4.6 Actually Building the Cross-Compiler </H3>
+<!--docid::SEC56::-->
+<P>
+
+Now you can proceed just as for compiling a single-machine compiler
+through the step of building stage 1.  If you have not provided some
+sort of <TT>`libgcc1.a'</TT>, then compilation will give up at the point
+where it needs that file, printing a suitable error message.  If you
+do provide <TT>`libgcc1.a'</TT>, then building the compiler will automatically
+compile and link a test program called <TT>`libgcc1-test'</TT>; if you get
+errors in the linking, it means that not all of the necessary routines
+in <TT>`libgcc1.a'</TT> are available.
+</P><P>
+
+You must provide the header file <TT>`float.h'</TT>.  One way to do this is
+to compile <TT>`enquire'</TT> and run it on your target machine.  The job of
+<TT>`enquire'</TT> is to run on the target machine and figure out by
+experiment the nature of its floating point representation.
+<TT>`enquire'</TT> records its findings in the header file <TT>`float.h'</TT>.
+If you can't produce this file by running <TT>`enquire'</TT> on the target
+machine, then you will need to come up with a suitable <TT>`float.h'</TT> in
+some other way (or else, avoid using it in your programs).
+</P><P>
+
+Do not try to build stage 2 for a cross-compiler.  It doesn't work to
+rebuild GNU CC as a cross-compiler using the cross-compiler, because
+that would produce a program that runs on the target machine, not on the
+host.  For example, if you compile a 386-to-68030 cross-compiler with
+itself, the result will not be right either for the 386 (because it was
+compiled into 68030 code) or for the 68030 (because it was configured
+for a 386 as the host).  If you want to compile GNU CC into 68030 code,
+whether you compile it on a 68030 or with a cross-compiler on a 386, you
+must specify a 68030 as the host when you configure it.
+</P><P>
+
+To install the cross-compiler, use <SAMP>`make install'</SAMP>, as usual.
+</P><P>
+
+<A NAME="Sun Install"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_55.html#SEC55"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_57.html#SEC57"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_57.html#SEC57"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_50.html#SEC50"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_57.html#SEC57"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

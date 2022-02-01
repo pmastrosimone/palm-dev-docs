@@ -1,0 +1,491 @@
+<html>
+<head>
+<title>(Protein) Shared Libraries | System Management</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:27:19">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="608590"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="SysMgt_TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Expansion.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="BootAndReset.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SysMgt_IX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">6 &nbsp;&nbsp;
+Shared Libraries</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">System Management</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="SysMgt_Part1.html">Part I: Concepts</a> </h1>
+<h1 class="SideTOC1"><a href="SharedLibraries.html">6  Shared Libraries</a></h1>
+
+   <h2 class="SideTOC2"><a href="#993630">
+   Exporting Globals</a></h2>
+
+   <h2 class="SideTOC2"><a href="#993294">
+   Patching Shared Libraries</a></h2>
+
+      <h3 class="SideTOC3"><a href="#993578">
+      Patch Configuration Database</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993665">
+      Constructing a Patch</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993751">
+      Registering the Patch</a></h3>
+
+      <h3 class="SideTOC3"><a href="#995151">
+      The Patch Call Chain</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993583">
+      Adding and Removing Patches</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993509">
+      Patch Security</a></h3>
+
+   <h2 class="SideTOC2"><a href="#993544">
+   The Program Loader</a></h2>
+
+      <h3 class="SideTOC3"><a href="#993547">
+      Program Loader Library Functions</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993552">
+      Shared Libraries and the Program Loader</a></h3>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="993304"> </a>A <b>shared library</b> is an executable module that is compiled and linked separately. Like all executable modules, a shared library is contained in a PRC file that is installed into either the system storage heap or some type of external storage media. After being installed to the storage heap, a PRC becomes a resource database that contains several resources including: </p>
+<ul type="disc">
+  <li><a name="993305"> </a>The executable module's code segment.
+  <li><a name="993306"> </a>A copy of the module's initialized static data.
+  <li><a name="993307"> </a>Relocation information.
+</ul>
+
+<p><a name="993308"> </a>Executable modules residing in the system storage heap are executed in place, while those in external storage media must be copied into the storage heap before being executed. In either case, the runtime environment must be set up before a code segment can be executed correctly. The runtime services are responsible for preparing the necessary runtime environment for an executable module. They are also responsible for cleaning up the runtime environment after an executable module has exited.</p>
+
+<p><a name="993309"> </a>The Palm OS Cobalt runtime services consist of the following components:</p>
+
+<dl>
+<dt><a name="993310"> </a>Program Loader</dt>
+<dd><a name="995851"> </a>Sets up the necessary runtime environment for executable modules. It's also involved in the process of applying patches when loading patchable shared libraries.</dd>
+
+<dt><a name="993311"> </a>Dynamic Linker</dt>
+<dd><a name="995875"> </a>Resolves function calls across executable module boundaries (for instance, from an application to a shared library).</dd>
+
+<dt><a name="993312"> </a>Boot/Process Startup Code</dt>
+<dd><a name="998582"> </a>Sets up the initial runtime environment at boot time and each time a new process is started.</dd>
+
+</dl>
+
+<p><a name="998587"> </a>Applications can make calls to <b>shared libraries</b>, which are separately compiled and linked executable modules. Shared libraries loaded by an application are executed as subroutines of that application. Consequently, shared libraries are confined by the boundary of the calling application's process.</p>
+
+<p><a name="995966"> </a>The operating system is presented to an application as a set of shared libraries. Some operating system shared library functions invoke software interrupts (SWIs) internally, which effectively transfer control to the kernel. For the most part, applications do not invoke SWIs directly. As far as an application is concerned, operating system calls are simply subroutine calls to shared libraries.</p>
+
+<p><a name="993316"> </a>Static data of applications and shared libraries have per-process instances. This is also known as <b>process-own data</b>. Process-own data enables the same program to execute in multiple processes simultaneously, each with independent state.</p>
+
+<p><a name="993420"> </a>The term "executable module" encompasses applications, shared libraries, and <b>plug-ins</b>&#8212;manually-loaded shared libraries. From the runtime services' point of view, applications, shared libraries, and plug-ins are no different. An executable module:</p>
+<ul type="disc">
+  <li><a name="993421"> </a>must have executable instructions in its code segment.
+  <li><a name="993423"> </a>must have an identifiable main entry point in its code segment. This main entry point must have the following C prototype:
+</ul>
+<pre class="sl">uint32_t PilotMain(uint16_t cmd, void *cmdPBP, 
+uint16_t launchFlags)</pre>
+<ul type="disc">
+  <li><a name="993425"> </a>may have zero or more additional exported entry points in its code segment. Exported entry points can have arbitrary C prototypes.
+  <li><a name="996140"> </a>may have a data segment to hold its state (static data) at runtime.
+</ul>
+
+<p><a name="993426"> </a>Each executable module can be given a type, such as "application" or "shared library," when it's placed into a container (PRC file). However, these types are of interest only to higher-level operating system services. Executable modules of all types are treated by the runtime services without regard to type.</p>
+
+<p><a name="993427"> </a>The following features also apply to executable modules in Palm OS Cobalt:</p>
+<ul type="disc">
+  <li><a name="993428"> </a>All executable modules can always have static data. C static and global variables can be used freely in programs. The runtime services allocate, initialize and de-allocate memory for such variables automatically.
+  <li><a name="993429"> </a>Because shared libraries have main entry points, they are "launchable" and so able to register for and receive notifications as applications do. 
+  <li><a name="993430"> </a>Every executable module receives a <a href="../Programming_Basics/CmnLaunchCodes.html#993888"><code>sysLaunchCmdInitialize</code></a> launch code right after it is loaded and a <a href="../Programming_Basics/CmnLaunchCodes.html#993881"><code>sysLaunchCmdFinalize</code></a> launch code right before it is unloaded by the program loader. This gives the program a chance to perform customized initialization and de-initialization. 
+</ul>
+
+<h2 class="haH2">
+  <a name="993630"> </a>Exporting Globals <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="993631"> </a>Palm OS Cobalt executable modules cannot export global data directly. However, the runtime services do provide means for exporting data indirectly, at a procedure call level.</p>
+
+<p><a name="993251"> </a>An executable module that wants to make all or part of its globals accessible by other modules can do this by putting those globals in a single C structure and defining this structure as part of its external API. The executable module should handle the <a href="../Programming_Basics/CmnLaunchCodes.html#993873"><code>sysLaunchCmdGetGlobals</code></a> launch code in its <a href="../Programming_Basics/AppMgr.html#994755"><code>PilotMain()</code></a> function by returning the address of this global structure in the memory location pointed to by the <code class="par">cmdPBP</code> parameter of <code>PilotMain()</code>. When, in order to to get an executable's globals, an application calls <a href="Loader.html#993782"><code>SysGetModuleGlobals()</code></a> and passes the reference number of a module that implements <code>sysLaunchCmdGetGlobals</code>, the function returns either the address of the global structure or the address of the module's data segment, depending on the value of the <code class="par">wantStructure</code> parameter. </p>
+
+<p><a name="993258"> </a>Whether <code>SysGetModuleGlobals()</code> is able to return the address of the globals structure depends on whether the module identified by <code class="par">refNum</code> defines such a structure and returns its address in response to the <a href="../Programming_Basics/CmnLaunchCodes.html#993873"><code>sysLaunchCmdGetGlobals</code></a> launch code. This function returns <span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">sysErrNotSupported</span> if <code class="par">wantStructure</code> is <code>true</code> and the module doesn't allow the globals structure address to be retrieved. (To prevent globals from being retrieved, simply return <code>NULL</code> in response to a <code>sysLaunchCmdGetGlobals</code> launch code.)</p>
+
+<p><a name="993263"> </a>If <code class="par">wantStructure</code> is <code>false</code> when <code>SysGetModuleGlobals()</code> is called, the base address of the module's data segment is returned. For executable modules that don't support the <code>sysLaunchCmdGetGlobals</code> launch code, and for those that return <code>NULL</code> in response to this launch code, this is the only way to gain access to the shared library's data. However, in this case the caller will have to possess sufficient knowledge on the memory map of the shared library's data segment in order to access data items located at certain offsets.</p>
+
+<div><hr>
+  <a name="993266"> </a> <b>NOTE: </b> If when <code class="par">wantStructure</code> is <code>false</code> the returned base address of the module's data segment is <code>NULL</code>, the module has no static data.
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="993294"> </a>Patching Shared Libraries <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+<h3 class="hbH3">
+  <a name="993578"> </a>Patch Configuration Database <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993579"> </a>When multiple patches exist on the same shared library entry point, calls to that entry point will go through a chain of functions. Each of the functions in the chain can do something interesting and optionally, at some point, invoke the next function in the chain. The patch's configuration information determines the order in which it should be called. The program loader manages this information in a patch configuration database, and provides a set of APIs for manipulating it.</p>
+<h3 class="hbH3">
+  <a name="993665"> </a>Constructing a Patch <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993666"> </a>A patch is an executable module with its own code and data segments.  Besides the common <code>'acod'</code> (code) and <code>'adat'</code> (data) resources, each patch has an additional <code>'amdp'</code> (ARM Module Patch) resource. </p>
+
+<p><a name="993667"> </a>Within the <code>'acod'</code> resource of a patch, like that of a shared library, there is an embedded vector table, each entry of which points to a patching function within the same <code>'acod'</code> resource. However, the vector table of a patch is different from that of a shared library in that its entries are not arranged in the order of increasing index numbers. The <code>'amdp'</code> resource supplies information for the program loader to know which entry in the patch's vector table applies to which entry of which shared library.</p>
+
+<p><a name="993687"> </a>An <code>'amdp'</code> resource is simply an array of <code>SysPatchTargetType</code> structures; these structures look like this:</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+typedef SysPatchTargetType {<a name="994581"> </a>
+   SysPatchTargetHeaderType header;<a name="994582"> </a>
+   SysPatchEntryNumType entryNums[];<a name="994583"> </a>
+} SysPatchTargetType;<a name="994584"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="994577"> </a>Each <code>SysPatchTargetType</code> structure identifies a set of entry points of a shared library that this patch wants to patch. This implies that a single patch can target multiple shared libraries simultaneously. Each element of the <code>entryNums</code> array corresponds to a patching function whose address is listed in this patch's own vector table. The value of the element is the entry number of the shared library that the corresponding patching function is targeting.</p>
+
+<p><a name="994626"> </a>The <code>SysPatchTargetType</code> structure contains a header field that identifies the shared library being patched. This header is defined as follows:</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+typedef SysPatchTargetHeaderType {<a name="994614"> </a>
+   uint32_t type; <a name="994615"> </a>
+   uint32_t creator; <a name="994616"> </a>
+   uint16_t rsrcID; <a name="994617"> </a>
+   uint16_t flags;<a name="994619"> </a>
+   uint32_t numEntries; <a name="996556"> </a>
+} SysPatchTargetHeaderType;<a name="994620"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="993688"> </a>The <code>type</code>, <code>creator</code>, and <code>rsrcID</code> fields identify the type, creator ID, and resource ID of the shared library being patched. The <code>numEntries</code> field identifies the number of entries in the <code>SysPatchTargetType</code> structure's <code>entryNums</code> array. The remaining field, <code>flags</code>, has two bits defined. These bits indicate whether the patch must be the head or the tail in the call chain. Normally, a patch should work properly regardless of its position within the call chain, so these flags are very rarely used. Use these flags only when absolutely needed, and use them with caution; just because you request that a patch be placed at a particular position doesn't guarantee that it will be placed there.</p>
+
+<p><a name="993689"> </a>You build a patch just as you would a normal shared library.  Just make sure that you construct the <code>'amdp'</code> resource properly. For instance, the following steps show how you might patch <code>SystemMain()</code>, <code>SysGetEvent()</code>, and <code>SysHandleEvent()</code> of <code>SystemLib</code>.</p>
+<ol type="1">
+  <li value="1"><a name="993690"> </a>Construct the patch's shared library definition file, as shown <a href="SharedLibraries.html#997259">Listing 6.1</a>.
+</ol>
+<p class="CCodeCaption">
+  <a name="997259"> </a><b>Listing 6.1&nbsp;&nbsp;A sample shared library definition file</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+EXPORTS<a name="993695"> </a>
+   MySystemMain; name of my patching function<a name="993700"> </a>
+   MySysGetEvent; name of my patching function<a name="993701"> </a>
+   MySysHandleEvent; name of my patching function<a name="994754"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<ol type="1">
+  <li value="2"><a name="994755"> </a>Build an <code>'amdp'</code> resource. <a href="SharedLibraries.html#997266">Listing 6.2</a> shows how to do this.
+</ol>
+<p class="CCodeCaption">
+  <a name="997266"> </a><b>Listing 6.2&nbsp;&nbsp;Defining an 'amdp' resource</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+typedef MyPatchRsrcType {<a name="993706"> </a>
+   SysPatchTargetHeaderType system;<a name="993710"> </a>
+   SysPatchEntryNumType systemEntries[3];<a name="993711"> </a>
+} MyPatchRsrcType;<a name="993712"> </a>
+<a name="993713"> </a>
+const MyPatchRsrcType myPatchRsrc = {<a name="993714"> </a>
+   {<a name="993730"> </a>
+      'prdm',   // type of SystemLib<a name="993731"> </a>
+      'psys',   // creator ID of SystemLib<a name="993732"> </a>
+      0,   // resource ID of SystemLib<a name="993733"> </a>
+      3,   // number of entries to patch<a name="993734"> </a>
+      0    // flags - no requirement to be head or tail<a name="993735"> </a>
+   },<a name="993736"> </a>
+   {<a name="993737"> </a>
+      kEntryNumMain,   // entry number of SystemMain<a name="993738"> </a>
+      3,   // entry number of SysGetEvent<a name="993739"> </a>
+      7    // entry number of SysHandleEvent<a name="993740"> </a>
+   }<a name="993741"> </a>
+};<a name="993742"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+   <p><a name="993746"> </a>When constructing your <code>'amdp'</code> resource, note that the entry numbers of the patched shared libraries must appear in <i>exactly</i> the same order as the corresponding patching functions in the shared library definition file. Also, the entry numbers of any patched shared library must appear in the <code>'amdp'</code> resource in the order of increasing entry numbers. If the main entry point is patched, it must precede any other entries.</p>
+<ol type="1">
+  <li value="3"><a name="993749"> </a>Package the <code>'acod'</code> (code), <code>'adat'</code> (data), and <code>'amdp'</code> resources, all with the same resource ID, in a single PRC of type <code>'apch'</code> using your creator ID.
+</ol>
+
+<p><a name="993750"> </a>If this sample patch is installed onto a device, it will be loaded whenever the target shared library (<code>SystemLib</code>, in this example) is loaded into a process in which this patch is allowed to run.</p>
+<h3 class="hbH3">
+  <a name="993751"> </a>Registering the Patch <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993752"> </a>You don't have to register a patch if it is packaged in a PRC of type <code>'apch'</code>. The program loader automatically recognizes patches of this type.</p>
+
+<p><a name="993753"> </a>If a patch is packaged in a PRC whose type is not <code>'apch'</code>, you must call <a href="Loader.html#994809"><code>SysRegisterPatch()</code></a> to register it with the program loader. Such patches aren't loaded if they are not registered. Note that you don't have to un-register a patch when it is deleted from the storage heap since the program loader automatically un-registers a registered patch if it can't find it in the storage heap.</p>
+<h3 class="hbH3">
+  <a name="995151"> </a>The Patch Call Chain <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993755"> </a>Using the <code>'amdp'</code> resources, the program loader builds a chain of functions for each patched shared library entry. The program loader maintains such call-chain information for every patched shared library entry point. It also provides a means for each patch to retrieve the address of the next function in the chain. </p>
+
+<p><a name="993756"> </a>Each patch has its own main entry point, <code>PilotMain()</code>. Like the main entry point of any executable module, the <code>PilotMain()</code> of a patch receives <a href="../Programming_Basics/CmnLaunchCodes.html#993888"><code>sysLaunchCmdInitialize</code></a> and <a href="../Programming_Basics/CmnLaunchCodes.html#993881"><code>sysLaunchCmdFinalize</code></a> launch codes when the patch is loaded and unloaded. As well, a patch receives a third launch code&#8212;<a href="Loader.html#1001451"><code>sysPatchLaunchCmdSetInfo</code></a>&#8212;once for each of the shared libraries it patches. The launch code's <code>cmdPBP</code> parameter is a pointer to a <a href="Loader.html#993042"><code>SysPatchInfoType</code></a> structure, which provides information about the patched shared library that is being loaded.</p>
+
+<p><a name="993767"> </a>The <code>sysPatchLaunchCmdSetInfo</code> launch code tells the patch that one of the shared libraries it wants to patch is being loaded, providing the patch with a good opportunity to retrieve and save addresses of functions in the next patch in the call chain. Taking the patch used to illustrate how you construct a patch in <a href="SharedLibraries.html#993665">"Constructing a Patch"</a> as an example, its <code>PilotMain()</code> function might handle the <code>sysPatchLaunchCmdSetInfo</code> launch code like this (note that this patch is patching two shared libraries: DALLib and SystemLib):</p>
+<p class="CCodeCaption">
+  <a name="997192"> </a><b>Listing 6.3&nbsp;&nbsp;Getting and saving function addresses from the next patch in the call chain</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+// These static variables save pointers to globals of the patched libraries<a name="996641"> </a>
+static void *gOriginalDALGlobalsP;<a name="996642"> </a>
+static void *gOriginalSystemGlobalsP;<a name="996643"> </a>
+<a name="996644"> </a>
+// These static variables save function pointers of next patches<a name="996645"> </a>
+static KALThreadCreateProcType *gNextKALThreadCreateP;<a name="996646"> </a>
+static KALThreadDestroyProcType *gNextKALThreadDestroyP;<a name="996647"> </a>
+static KALThreadStartProcType *gNextKALThreadStartP;<a name="996648"> </a>
+static SysMainEntryType *gNextSystemMainP;<a name="996649"> </a>
+static SysGetEventProcType *gNextSysGetEventP;<a name="996650"> </a>
+static SysHandleEventProcType *gNextSysHandleEventP;<a name="996651"> </a>
+<a name="996652"> </a>
+UInt32 PilotMain(UInt32 cmd, MemPtr cmdPBP, UInt16 launchFlags) {<a name="996653"> </a>
+   switch(cmd) {<a name="996655"> </a>
+      case sysPatchLaunchCmdSetInfo:<a name="996656"> </a>
+         {<a name="996657"> </a>
+            UInt32 refNum = (SysPatchInfoType*)cmdPBP-&gt;refNum;<a name="996658"> </a>
+            UInt32 myIndex = (SysPatchInfoType*)cmdPBP-&gt;index;<a name="996659"> </a>
+            UInt32 type = (SysPatchInfoType*)cmdPBP-&gt;type;<a name="996660"> </a>
+            UInt32 creator = (SysPatchInfoType*)cmdPBP-&gt;creator;<a name="996661"> </a>
+            UInt32 rsrcID = (SysPatchInfoType*)cmdPBP-&gt;rsrcID;<a name="996662"> </a>
+            Err (*getNextPatchFuncP)(UInt32, UInt32, UInt32, void **) = <a name="996663"> </a>
+               (SysPatchInfoType*)cmdPBP-&gt;sysGetNextPatchP;<a name="996664"> </a>
+<a name="996665"> </a>
+            if(type == 'boot' &amp;&amp; creator == 'psys' &amp;&amp; rsrcID == 0) {<a name="996666"> </a>
+               // DALLib is being loaded<a name="996668"> </a>
+               // Save pointer to original globals so that we can <a name="996669"> </a>
+               // access them later<a name="996893"> </a>
+               SysGetModuleGlobals(refNum, &amp;gOriginalDALGlobalsP);<a name="996670"> </a>
+<a name="996923"> </a>
+               // Get and save pointers to next procedures in the call chain<a name="996672"> </a>
+               (*getNextPatchFuncP)(refNum, kEntryNumKALThreadCreate,<a name="996673"> </a>
+                  myIndex+1, &amp;gNextKALThreadCreateP);<a name="996942"> </a>
+               (*getNextPatchFuncP)(refNum, kEntryNumKALThreadDestroy,<a name="996674"> </a>
+                  myIndex+1, &amp;gNextKALThreadDestroyP);<a name="996944"> </a>
+               (*getNextPatchFuncP)(refNum, kEntryNumKALThreadStart, <a name="996675"> </a>
+                  myIndex+1, &amp;gNextKALThreadStartP);<a name="996958"> </a>
+<a name="996676"> </a>
+            } else if(type == 'boot' &amp;&amp; creator == 'psys' &amp;&amp; rsrcID == 1) {<a name="996677"> </a>
+<a name="996680"> </a>
+               // SystemLib is being loaded<a name="996681"> </a>
+               // Save pointer to original globals so we can access them later<a name="996682"> </a>
+               SysGetModuleGlobals(refNum, &amp;gOriginalSystemGlobalsP);<a name="996683"> </a>
+<a name="996684"> </a>
+               // Get and save pointers to next procedures in the call chain<a name="996685"> </a>
+               (*getNextPatchFuncP)(refNum, kEntryNumMain, myIndex+1, <a name="996686"> </a>
+                  &amp;gNextSystemMainP);<a name="997023"> </a>
+               (*getNextPatchFuncP)(refNum, kEntryNumSysGetEvent, myIndex+1, <a name="996687"> </a>
+                  &amp;gNextSysGetEventP);<a name="997036"> </a>
+               (*getNextPatchFuncP)(refNum, kEntryNumSysHandleEvent, myIndex+1,<a name="996688"> </a>
+                  &amp;gNextSysHandleEventP);<a name="997049"> </a>
+            }<a name="996690"> </a>
+<a name="996691"> </a>
+            break;<a name="996692"> </a>
+         }<a name="996693"> </a>
+   }<a name="996694"> </a>
+}<a name="996695"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="996637"> </a>For more information on the functions used in the above example, see <a href="Loader.html#992934">Chapter 30, "Loader."</a></p>
+
+<p><a name="993824"> </a>Once the call chain function pointers have been saved as illustrated above, when a patching function wants to invoke the next function in the call chain it can simply use the appropriate saved function pointer.</p>
+
+<p><a name="993836"> </a>Patches are always loaded and unloaded along with the original shared library. During loading, the original shared library is loaded first, and then the patches are loaded in the reverse of the order that they occur in the call chain (that is, the first patch in the call chain is the last loaded). During unloading, the patches are unloaded in the order in which they occur in the call chain (the first patch in the call chain is the first to be unloaded), after which the original shared library is unloaded. Note that both the original shared library and the patches receive <a href="../Programming_Basics/CmnLaunchCodes.html#993888"><code>sysLaunchCmdInitialize</code></a> and <a href="../Programming_Basics/CmnLaunchCodes.html#993881"><code>sysLaunchCmdFinalize</code></a> launch codes. If the <code>PilotMain()</code> of a shared library is patched, then the patching function is invoked before that of the shared library, just like any other patched entry.</p>
+<h3 class="hbH3">
+  <a name="993583"> </a>Adding and Removing Patches <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993584"> </a>Patches can be added to or removed from the patch configuration database at any time with <a href="Loader.html#994809"><code>SysRegisterPatch()</code></a> and <a href="Loader.html#995173"><code>SysUnregisterPatch()</code></a>. The program loader builds the call chains for a shared library only while loading that shared library for the first time in a process. It never tries to modify a shared library's call chains while that shared library is running. Thus, changes made to the patch call chain for a running shared library won't take effect until the shared library is unloaded and then reloaded.</p>
+
+<p><a name="995322"> </a>When adding or removing a patch from the patch configuration database, you must take the following into account in order for the new configuration to take effect:</p>
+<ul type="disc">
+  <li><a name="993586"> </a>If the shared library being patched is not yet loaded in any process, nothing further has to be done. The new configuration will take effect automatically when that shared library is loaded.
+  <li><a name="993587"> </a>If the shared library being patched is already loaded in any process, the new configuration will not take effect in that process until the shared library is unloaded and then reloaded. If it is important that the new configuration take effect immediately, the best thing to do is to restart that process.
+  <li><a name="993588"> </a>If the shared library being patched is one of the modules involved in the boot sequence (such as <code>SystemLib</code>), the whole device must be reset in order for the new configuration to take effect.
+</ul>
+
+<p><a name="996588"> </a>After a patch is installed onto the system, unless it can be determined that the target shared libraries are not currently running the patch usually needs to request a soft reset of the device in order for it to be applied.</p>
+
+<div><hr>
+  <a name="993593"> </a> <b>NOTE: </b> In order to run in a secure process, a patch must be digitally signed by a party that is trusted by that process.
+<hr>
+</div>
+<h3 class="hbH3">
+  <a name="993509"> </a>Patch Security <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993510"> </a>Earlier releases of Palm OS allowed any program to patch operating system entry points without restriction. Palm OS Cobalt restricts the patching of operating system entry points in that:</p>
+<ul type="disc">
+  <li><a name="993511"> </a>Only patches signed by trusted parties are applied in secure processes.
+  <li><a name="993512"> </a>Not all of the operating system entry points are patchable. Non-patchable entry points include operating system functions that execute in supervisor mode (kernel functions, interrupt service routines, and the like).
+</ul>
+
+<h2 class="haH2">
+  <a name="993544"> </a>The Program Loader <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="993546"> </a>The program loader is responsible for loading and unloading executable modules in the calling process. It also provides a means for retrieving information about executable modules and a means for patching shared library entries.</p>
+<h3 class="hbH3">
+  <a name="993547"> </a>Program Loader Library Functions <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993548"> </a>The program loader is implemented as a set of library functions exported by one of the core operating system shared libraries. The library functions perform most of their operations within the context of the calling process, but they also interact with the Application Manager thread (in the System process) to perform certain security-related operations. </p>
+
+<p><a name="995581"> </a>See <a href="Loader.html#992934">Chapter 30, "Loader,"</a> for a complete description of each of the loader APIs.</p>
+<h3 class="hbH3">
+  <a name="993552"> </a>Shared Libraries and the Program Loader <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993553"> </a>Programmers can use the program loader in either of the following ways when working with shared libraries:</p>
+
+<dl>
+<dt><a name="993554"> </a>The implicit approach</dt>
+<dd><a name="995595"> </a>The client program of a shared library can be statically linked with call stubs of that shared library. The client program can then make shared library calls as if those shared library functions are defined locally. In this scenario the client program does not need to make an operating system call to load that shared library before calling its functions. Whenever the client program makes a call to a shared library function, the stub of that function is entered first. The first time the client program makes a call to a shared library the stub automatically invokes the program loader and dynamic linker to load that shared library and link it with the client, after which it redirects the call to its target location. Once a client program has loaded a shared library, subsequent calls made by that client program are routed to the shared library directly without the involvement of the program loader and dynamic linker. A shared library loaded this way is automatically unloaded when the operating system detects that all client programs that loaded that shared library have exited.</dd>
+
+<dt><a name="993555"> </a>The explicit approach:</dt>
+<dd><a name="995597"> </a>The client program of a shared library can explicitly call operating system functions (<a href="Loader.html#1026808"><code>SysLoadModule()</code></a> or <a href="Loader.html#994673"><code>SysLoadModuleByDatabaseID()</code></a>) to load that shared library and retrieve addresses of exported functions (<a href="Loader.html#993446"><code>SysGetEntryAddresses()</code></a>). Then, it can make calls to those functions indirectly using the acquired function addresses. After using the shared library, the client program must manually unload it with a call to <a href="Loader.html#994859"><code>SysUnloadModule()</code></a>. If a shared library is used in this way, the client program does not have to be linked with the call stubs of that shared library. Shared libraries used in this way are also known as <b>plug-ins</b>.</dd>
+
+</dl>
+
+<p><a name="993507"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="SysMgt_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="SysMgt_TOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Expansion.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="BootAndReset.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SysMgt_IX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

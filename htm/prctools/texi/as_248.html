@@ -1,0 +1,266 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: HPPA Directives</TITLE>
+
+<META NAME="description" CONTENT="Using as: HPPA Directives">
+<META NAME="keywords" CONTENT="Using as: HPPA Directives">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC257"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_247.html#SEC256"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_249.html#SEC258"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_249.html#SEC258"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_243.html#SEC252"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_250.html#SEC259"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.10.5 HPPA Assembler Directives </H3>
+<!--docid::SEC257::-->
+<P>
+
+<CODE>as</CODE> for the HPPA supports many additional directives for
+compatibility with the native assembler.  This section describes them only
+briefly.  For detailed information on HPPA-specific assembler directives, see
+<CITE>HP9000 Series 800 Assembly Language Reference Manual</CITE> (HP 92432-90001).
+</P><P>
+
+<A NAME="IDX668"></A>
+<CODE>as</CODE> does <EM>not</EM> support the following assembler directives
+described in the HP manual:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.endm           .liston
+.enter          .locct
+.leave          .macro  
+.listoff
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX669"></A>
+Beyond those implemented for compatibility, <CODE>as</CODE> supports one
+additional assembler directive for the HPPA: <CODE>.param</CODE>.  It conveys
+register argument locations for static functions.  Its syntax closely follows
+the <CODE>.export</CODE> directive.
+</P><P>
+
+<A NAME="IDX670"></A>
+These are the additional directives in <CODE>as</CODE> for the HPPA:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>.block <VAR>n</VAR></CODE>
+<DD><DT><CODE>.blockz <VAR>n</VAR></CODE>
+<DD>Reserve <VAR>n</VAR> bytes of storage, and initialize them to zero.
+<P>
+
+<DT><CODE>.call</CODE>
+<DD>Mark the beginning of a procedure call.  Only the special case with <EM>no
+arguments</EM> is allowed.
+<P>
+
+<DT><CODE>.callinfo [ <VAR>param</VAR>=<VAR>value</VAR>, <small>...</small> ]  [ <VAR>flag</VAR>, <small>...</small> ]</CODE>
+<DD>Specify a number of parameters and flags that define the environment for a
+procedure.
+<P>
+
+<VAR>param</VAR> may be any of <SAMP>`frame'</SAMP> (frame size), <SAMP>`entry_gr'</SAMP> (end of
+general register range), <SAMP>`entry_fr'</SAMP> (end of float register range),
+<SAMP>`entry_sr'</SAMP> (end of space register range).
+</P><P>
+
+The values for <VAR>flag</VAR> are <SAMP>`calls'</SAMP> or <SAMP>`caller'</SAMP> (proc has
+subroutines), <SAMP>`no_calls'</SAMP> (proc does not call subroutines), <SAMP>`save_rp'</SAMP>
+(preserve return pointer), <SAMP>`save_sp'</SAMP> (proc preserves stack pointer),
+<SAMP>`no_unwind'</SAMP> (do not unwind this proc), <SAMP>`hpux_int'</SAMP> (proc is interrupt
+routine).
+</P><P>
+
+<DT><CODE>.code</CODE>
+<DD>Assemble into the standard section called <SAMP>`$TEXT$'</SAMP>, subsection
+<SAMP>`$CODE$'</SAMP>.
+<P>
+
+<DT><CODE>.copyright "<VAR>string</VAR>"</CODE>
+<DD>In the SOM object format, insert <VAR>string</VAR> into the object code, marked as a
+copyright string.
+<P>
+
+<DT><CODE>.copyright "<VAR>string</VAR>"</CODE>
+<DD>In the ELF object format, insert <VAR>string</VAR> into the object code, marked as a
+version string.
+<P>
+
+<DT><CODE>.enter</CODE>
+<DD>Not yet supported; the assembler rejects programs containing this directive.
+<P>
+
+<DT><CODE>.entry</CODE>
+<DD>Mark the beginning of a procedure.
+<P>
+
+<DT><CODE>.exit</CODE>
+<DD>Mark the end of a procedure.
+<P>
+
+<DT><CODE>.export <VAR>name</VAR> [ ,<VAR>typ</VAR> ]  [ ,<VAR>param</VAR>=<VAR>r</VAR> ]</CODE>
+<DD>Make a procedure <VAR>name</VAR> available to callers.  <VAR>typ</VAR>, if present, must
+be one of <SAMP>`absolute'</SAMP>, <SAMP>`code'</SAMP> (ELF only, not SOM), <SAMP>`data'</SAMP>,
+<SAMP>`entry'</SAMP>, <SAMP>`data'</SAMP>, <SAMP>`entry'</SAMP>, <SAMP>`millicode'</SAMP>, <SAMP>`plabel'</SAMP>,
+<SAMP>`pri_prog'</SAMP>, or <SAMP>`sec_prog'</SAMP>.
+<P>
+
+<VAR>param</VAR>, if present, provides either relocation information for the
+procedure arguments and result, or a privilege level.  <VAR>param</VAR> may be
+<SAMP>`argw<VAR>n</VAR>'</SAMP> (where <VAR>n</VAR> ranges from <CODE>0</CODE> to <CODE>3</CODE>, and
+indicates one of four one-word arguments); <SAMP>`rtnval'</SAMP> (the procedure's
+result); or <SAMP>`priv_lev'</SAMP> (privilege level).  For arguments or the result,
+<VAR>r</VAR> specifies how to relocate, and must be one of <SAMP>`no'</SAMP> (not
+relocatable), <SAMP>`gr'</SAMP> (argument is in general register), <SAMP>`fr'</SAMP> (in
+floating point register), or <SAMP>`fu'</SAMP> (upper half of float register).
+For <SAMP>`priv_lev'</SAMP>, <VAR>r</VAR> is an integer.
+</P><P>
+
+<DT><CODE>.half <VAR>n</VAR></CODE>
+<DD>Define a two-byte integer constant <VAR>n</VAR>; synonym for the portable
+<CODE>as</CODE> directive <CODE>.short</CODE>.
+<P>
+
+<DT><CODE>.import <VAR>name</VAR> [ ,<VAR>typ</VAR> ]</CODE>
+<DD>Converse of <CODE>.export</CODE>; make a procedure available to call.  The arguments
+use the same conventions as the first two arguments for <CODE>.export</CODE>.
+<P>
+
+<DT><CODE>.label <VAR>name</VAR></CODE>
+<DD>Define <VAR>name</VAR> as a label for the current assembly location.
+<P>
+
+<DT><CODE>.leave</CODE>
+<DD>Not yet supported; the assembler rejects programs containing this directive.
+<P>
+
+<DT><CODE>.origin <VAR>lc</VAR></CODE>
+<DD>Advance location counter to <VAR>lc</VAR>. Synonym for the <CODE></CODE>
+portable directive <CODE>.org</CODE>.
+<P>
+
+<DT><CODE>.param <VAR>name</VAR> [ ,<VAR>typ</VAR> ]  [ ,<VAR>param</VAR>=<VAR>r</VAR> ]</CODE>
+<DD>Similar to <CODE>.export</CODE>, but used for static procedures.
+<P>
+
+<DT><CODE>.proc</CODE>
+<DD>Use preceding the first statement of a procedure.
+<P>
+
+<DT><CODE>.procend</CODE>
+<DD>Use following the last statement of a procedure.
+<P>
+
+<DT><CODE><VAR>label</VAR> .reg <VAR>expr</VAR></CODE>
+<DD>Synonym for <CODE>.equ</CODE>; define <VAR>label</VAR> with the absolute expression
+<VAR>expr</VAR> as its value.
+<P>
+
+<DT><CODE>.space <VAR>secname</VAR> [ ,<VAR>params</VAR> ]</CODE>
+<DD>Switch to section <VAR>secname</VAR>, creating a new section by that name if
+necessary.  You may only use <VAR>params</VAR> when creating a new section, not
+when switching to an existing one.  <VAR>secname</VAR> may identify a section by
+number rather than by name.
+<P>
+
+If specified, the list <VAR>params</VAR> declares attributes of the section,
+identified by keywords.  The keywords recognized are <SAMP>`spnum=<VAR>exp</VAR>'</SAMP>
+(identify this section by the number <VAR>exp</VAR>, an absolute expression),
+<SAMP>`sort=<VAR>exp</VAR>'</SAMP> (order sections according to this sort key when linking;
+<VAR>exp</VAR> is an absolute expression), <SAMP>`unloadable'</SAMP> (section contains no
+loadable data), <SAMP>`notdefined'</SAMP> (this section defined elsewhere), and
+<SAMP>`private'</SAMP> (data in this section not available to other programs).
+</P><P>
+
+<DT><CODE>.spnum <VAR>secnam</VAR></CODE>
+<DD>Allocate four bytes of storage, and initialize them with the section number of
+the section named <VAR>secnam</VAR>.  (You can define the section number with the
+HPPA <CODE>.space</CODE> directive.)
+<P>
+
+<A NAME="IDX671"></A>
+<DT><CODE>.string "<VAR>str</VAR>"</CODE>
+<DD>Copy the characters in the string <VAR>str</VAR> to the object file.
+See section <A HREF="as_34.html#SEC35">Strings</A>, for information on escape sequences you can use in
+<CODE>as</CODE> strings.
+<P>
+
+<EM>Warning!</EM> The HPPA version of <CODE>.string</CODE> differs from the
+usual <CODE>as</CODE> definition: it does <EM>not</EM> write a zero byte
+after copying <VAR>str</VAR>.
+</P><P>
+
+<DT><CODE>.stringz "<VAR>str</VAR>"</CODE>
+<DD>Like <CODE>.string</CODE>, but appends a zero byte after copying <VAR>str</VAR> to object
+file.
+<P>
+
+<DT><CODE>.subspa <VAR>name</VAR> [ ,<VAR>params</VAR> ]</CODE>
+<DD><DT><CODE>.nsubspa <VAR>name</VAR> [ ,<VAR>params</VAR> ]</CODE>
+<DD>Similar to <CODE>.space</CODE>, but selects a subsection <VAR>name</VAR> within the
+current section.  You may only specify <VAR>params</VAR> when you create a
+subsection (in the first instance of <CODE>.subspa</CODE> for this <VAR>name</VAR>).
+<P>
+
+If specified, the list <VAR>params</VAR> declares attributes of the subsection,
+identified by keywords.  The keywords recognized are <SAMP>`quad=<VAR>expr</VAR>'</SAMP>
+("quadrant" for this subsection), <SAMP>`align=<VAR>expr</VAR>'</SAMP> (alignment for
+beginning of this subsection; a power of two), <SAMP>`access=<VAR>expr</VAR>'</SAMP> (value
+for "access rights" field), <SAMP>`sort=<VAR>expr</VAR>'</SAMP> (sorting order for this
+subspace in link), <SAMP>`code_only'</SAMP> (subsection contains only code),
+<SAMP>`unloadable'</SAMP> (subsection cannot be loaded into memory), <SAMP>`common'</SAMP>
+(subsection is common block), <SAMP>`dup_comm'</SAMP> (initialized data may have
+duplicate names), or <SAMP>`zero'</SAMP> (subsection is all zeros, do not write in
+object file).
+</P><P>
+
+<CODE>.nsubspa</CODE> always creates a new subspace with the given name, even
+if one with the same name already exists.
+</P><P>
+
+<DT><CODE>.version "<VAR>str</VAR>"</CODE>
+<DD>Write <VAR>str</VAR> as version identifier in object code.
+</DL>
+<P>
+
+<A NAME="HPPA Opcodes"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_247.html#SEC256"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_249.html#SEC258"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_249.html#SEC258"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_243.html#SEC252"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_250.html#SEC259"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

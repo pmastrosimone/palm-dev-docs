@@ -1,0 +1,143 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: i386-Mnemonics</TITLE>
+
+<META NAME="description" CONTENT="Using as: i386-Mnemonics">
+<META NAME="keywords" CONTENT="Using as: i386-Mnemonics">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC269"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_259.html#SEC268"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_261.html#SEC270"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_261.html#SEC270"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.12.3 Instruction Naming </H3>
+<!--docid::SEC269::-->
+<P>
+
+<A NAME="IDX731"></A>
+<A NAME="IDX732"></A>
+<A NAME="IDX733"></A>
+<A NAME="IDX734"></A>
+</P><P>
+
+Instruction mnemonics are suffixed with one character modifiers which
+specify the size of operands.  The letters <SAMP>`b'</SAMP>, <SAMP>`w'</SAMP>, <SAMP>`l'</SAMP>
+and <SAMP>`q'</SAMP> specify byte, word, long and quadruple word operands.  If
+no suffix is specified by an instruction then <CODE>as</CODE> tries to
+fill in the missing suffix based on the destination register operand
+(the last one by convention).  Thus, <SAMP>`mov %ax, %bx'</SAMP> is equivalent
+to <SAMP>`movw %ax, %bx'</SAMP>; also, <SAMP>`mov $1, %bx'</SAMP> is equivalent to
+<SAMP>`movw $1, bx'</SAMP>.  Note that this is incompatible with the AT&#38;T Unix
+assembler which assumes that a missing mnemonic suffix implies long
+operand size.  (This incompatibility does not affect compiler output
+since compilers always explicitly specify the mnemonic suffix.)
+</P><P>
+
+Almost all instructions have the same names in AT&#38;T and Intel format.
+There are a few exceptions.  The sign extend and zero extend
+instructions need two sizes to specify them.  They need a size to
+sign/zero extend <EM>from</EM> and a size to zero extend <EM>to</EM>.  This
+is accomplished by using two instruction mnemonic suffixes in AT&#38;T
+syntax.  Base names for sign extend and zero extend are
+<SAMP>`movs<small>...</small>'</SAMP> and <SAMP>`movz<small>...</small>'</SAMP> in AT&#38;T syntax (<SAMP>`movsx'</SAMP>
+and <SAMP>`movzx'</SAMP> in Intel syntax).  The instruction mnemonic suffixes
+are tacked on to this base name, the <EM>from</EM> suffix before the
+<EM>to</EM> suffix.  Thus, <SAMP>`movsbl %al, %edx'</SAMP> is AT&#38;T syntax for
+"move sign extend <EM>from</EM> %al <EM>to</EM> %edx."  Possible suffixes,
+thus, are <SAMP>`bl'</SAMP> (from byte to long), <SAMP>`bw'</SAMP> (from byte to word),
+<SAMP>`wl'</SAMP> (from word to long), <SAMP>`bq'</SAMP> (from byte to quadruple word),
+<SAMP>`wq'</SAMP> (from word to quadruple word), and <SAMP>`lq'</SAMP> (from long to
+quadruple word).
+</P><P>
+
+<A NAME="IDX735"></A>
+<A NAME="IDX736"></A>
+<A NAME="IDX737"></A>
+<A NAME="IDX738"></A>
+The Intel-syntax conversion instructions
+</P><P>
+
+<UL>
+<LI>
+<SAMP>`cbw'</SAMP> -- sign-extend byte in <SAMP>`%al'</SAMP> to word in <SAMP>`%ax'</SAMP>,
+<P>
+
+<LI>
+<SAMP>`cwde'</SAMP> -- sign-extend word in <SAMP>`%ax'</SAMP> to long in <SAMP>`%eax'</SAMP>,
+<P>
+
+<LI>
+<SAMP>`cwd'</SAMP> -- sign-extend word in <SAMP>`%ax'</SAMP> to long in <SAMP>`%dx:%ax'</SAMP>,
+<P>
+
+<LI>
+<SAMP>`cdq'</SAMP> -- sign-extend dword in <SAMP>`%eax'</SAMP> to quad in <SAMP>`%edx:%eax'</SAMP>,
+<P>
+
+<LI>
+<SAMP>`cdqe'</SAMP> -- sign-extend dword in <SAMP>`%eax'</SAMP> to quad in <SAMP>`%rax'</SAMP>
+(x86-64 only),
+<P>
+
+<LI>
+<SAMP>`cdo'</SAMP> -- sign-extend quad in <SAMP>`%rax'</SAMP> to octuple in
+<SAMP>`%rdx:%rax'</SAMP> (x86-64 only),
+</UL>
+<P>
+
+are called <SAMP>`cbtw'</SAMP>, <SAMP>`cwtl'</SAMP>, <SAMP>`cwtd'</SAMP>, <SAMP>`cltd'</SAMP>, <SAMP>`cltq'</SAMP>, and
+<SAMP>`cqto'</SAMP> in AT&#38;T naming.  <CODE>as</CODE> accepts either naming for these
+instructions.
+</P><P>
+
+<A NAME="IDX739"></A>
+<A NAME="IDX740"></A>
+<A NAME="IDX741"></A>
+<A NAME="IDX742"></A>
+Far call/jump instructions are <SAMP>`lcall'</SAMP> and <SAMP>`ljmp'</SAMP> in
+AT&#38;T syntax, but are <SAMP>`call far'</SAMP> and <SAMP>`jump far'</SAMP> in Intel
+convention.
+</P><P>
+
+<A NAME="i386-Regs"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_259.html#SEC268"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_261.html#SEC270"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_261.html#SEC270"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,147 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Command Variables</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Command Variables">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Command Variables">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC129"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_124.html#SEC128"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_126.html#SEC130"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_126.html#SEC130"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_122.html#SEC126"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_129.html#SEC133"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 14.3 Variables for Specifying Commands </H2>
+<!--docid::SEC129::-->
+<P>
+
+Makefiles should provide variables for overriding certain commands, options,
+and so on.
+</P><P>
+
+In particular, you should run most utility programs via variables.
+Thus, if you use Bison, have a variable named <CODE>BISON</CODE> whose default
+value is set with <SAMP>`BISON = bison'</SAMP>, and refer to it with
+<CODE>$(BISON)</CODE> whenever you need to use Bison.
+</P><P>
+
+File management utilities such as <CODE>ln</CODE>, <CODE>rm</CODE>, <CODE>mv</CODE>, and
+so on, need not be referred to through variables in this way, since users
+don't need to replace them with other programs.
+</P><P>
+
+Each program-name variable should come with an options variable that is
+used to supply options to the program.  Append <SAMP>`FLAGS'</SAMP> to the
+program-name variable name to get the options variable name--for
+example, <CODE>BISONFLAGS</CODE>.  (The names <CODE>CFLAGS</CODE> for the C
+compiler, <CODE>YFLAGS</CODE> for yacc, and <CODE>LFLAGS</CODE> for lex, are
+exceptions to this rule, but we keep them because they are standard.)
+Use <CODE>CPPFLAGS</CODE> in any compilation command that runs the
+preprocessor, and use <CODE>LDFLAGS</CODE> in any compilation command that
+does linking as well as in any direct use of <CODE>ld</CODE>.
+</P><P>
+
+If there are C compiler options that <EM>must</EM> be used for proper
+compilation of certain files, do not include them in <CODE>CFLAGS</CODE>.
+Users expect to be able to specify <CODE>CFLAGS</CODE> freely themselves.
+Instead, arrange to pass the necessary options to the C compiler
+independently of <CODE>CFLAGS</CODE>, by writing them explicitly in the
+compilation commands or by defining an implicit rule, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>CFLAGS = -g
+ALL_CFLAGS = -I. $(CFLAGS)
+.c.o:
+        $(CC) -c $(CPPFLAGS) $(ALL_CFLAGS) $&#60;
+</FONT></pre></td></tr></table></P><P>
+
+Do include the <SAMP>`-g'</SAMP> option in <CODE>CFLAGS</CODE>, because that is not
+<EM>required</EM> for proper compilation.  You can consider it a default
+that is only recommended.  If the package is set up so that it is
+compiled with GCC by default, then you might as well include <SAMP>`-O'</SAMP>
+in the default value of <CODE>CFLAGS</CODE> as well.
+</P><P>
+
+Put <CODE>CFLAGS</CODE> last in the compilation command, after other variables
+containing compiler options, so the user can use <CODE>CFLAGS</CODE> to
+override the others.
+</P><P>
+
+<CODE>CFLAGS</CODE> should be used in every invocation of the C compiler,
+both those which do compilation and those which do linking.
+</P><P>
+
+Every Makefile should define the variable <CODE>INSTALL</CODE>, which is the
+basic command for installing a file into the system.
+</P><P>
+
+Every Makefile should also define the variables <CODE>INSTALL_PROGRAM</CODE>
+and <CODE>INSTALL_DATA</CODE>.  (The default for <CODE>INSTALL_PROGRAM</CODE> should
+be <CODE>$(INSTALL)</CODE>; the default for <CODE>INSTALL_DATA</CODE> should be
+<CODE>${INSTALL} -m 644</CODE>.)  Then it should use those variables as the
+commands for actual installation, for executables and nonexecutables
+respectively.  Use these variables as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(INSTALL_PROGRAM) foo $(bindir)/foo
+$(INSTALL_DATA) libfoo.a $(libdir)/libfoo.a
+</pre></td></tr></table></P><P>
+
+Optionally, you may prepend the value of <CODE>DESTDIR</CODE> to the target
+filename.  Doing this allows the installer to create a snapshot of the
+installation to be copied onto the real target filesystem later.  Do not
+set the value of <CODE>DESTDIR</CODE> in your Makefile, and do not include it
+in any installed files.  With support for <CODE>DESTDIR</CODE>, the above
+examples become:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(INSTALL_PROGRAM) foo $(DESTDIR)$(bindir)/foo
+$(INSTALL_DATA) libfoo.a $(DESTDIR)$(libdir)/libfoo.a
+</pre></td></tr></table></P><P>
+
+Always use a file name, not a directory name, as the second argument of
+the installation commands.  Use a separate command for each file to be
+installed.
+</P><P>
+
+<A NAME="Directory Variables"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_124.html#SEC128"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_126.html#SEC130"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_126.html#SEC130"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_122.html#SEC126"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_129.html#SEC133"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

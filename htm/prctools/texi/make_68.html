@@ -1,0 +1,114 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Setting</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Setting">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Setting">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC72"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_67.html#SEC71"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_69.html#SEC73"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 6.5 Setting Variables </H2>
+<!--docid::SEC72::-->
+<P>
+
+To set a variable from the makefile, write a line starting with the
+variable name followed by <SAMP>`='</SAMP> or <SAMP>`:='</SAMP>.  Whatever follows the
+<SAMP>`='</SAMP> or <SAMP>`:='</SAMP> on the line becomes the value.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>objects = main.o foo.o bar.o utils.o
+</pre></td></tr></table></P><P>
+
+defines a variable named <CODE>objects</CODE>.  Whitespace around the variable
+name and immediately after the <SAMP>`='</SAMP> is ignored.
+</P><P>
+
+Variables defined with <SAMP>`='</SAMP> are <EM>recursively expanded</EM> variables.
+Variables defined with <SAMP>`:='</SAMP> are <EM>simply expanded</EM> variables; these
+definitions can contain variable references which will be expanded before
+the definition is made.  See section <A HREF="make_63.html#SEC67">The Two Flavors of Variables</A>.
+</P><P>
+
+The variable name may contain function and variable references, which
+are expanded when the line is read to find the actual variable name to use.
+</P><P>
+
+There is no limit on the length of the value of a variable except the
+amount of swapping space on the computer.  When a variable definition is
+long, it is a good idea to break it into several lines by inserting
+backslash-newline at convenient places in the definition.  This will not
+affect the functioning of <CODE>make</CODE>, but it will make the makefile easier
+to read.
+</P><P>
+
+Most variable names are considered to have the empty string as a value if
+you have never set them.  Several variables have built-in initial values
+that are not empty, but you can set them in the usual ways
+(see section <A HREF="make_102.html#SEC106">Variables Used by Implicit Rules</A>).
+Several special variables are set
+automatically to a new value for each rule; these are called the
+<EM>automatic</EM> variables (see section <A HREF="make_107.html#SEC111">Automatic Variables</A>).
+</P><P>
+
+If you'd like a variable to be set to a value only if it's not already
+set, then you can use the shorthand operator <SAMP>`?='</SAMP> instead of
+<SAMP>`='</SAMP>.  These two settings of the variable <SAMP>`FOO'</SAMP> are identical
+(see section <A HREF="make_88.html#SEC92">The <CODE>origin</CODE> Function</A>):
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>FOO ?= bar
+</pre></td></tr></table></P><P>
+
+and
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ifeq ($(origin FOO), undefined)
+FOO = bar
+endif
+</pre></td></tr></table></P><P>
+
+<A NAME="Appending"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_67.html#SEC71"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_69.html#SEC73"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

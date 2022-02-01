@@ -1,0 +1,173 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Appending</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Appending">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Appending">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC73"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_68.html#SEC72"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_70.html#SEC74"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 6.6 Appending More Text to Variables </H2>
+<!--docid::SEC73::-->
+<P>
+
+Often it is useful to add more text to the value of a variable already defined.
+You do this with a line containing <SAMP>`+='</SAMP>, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>objects += another.o
+</pre></td></tr></table></P><P>
+
+This takes the value of the variable <CODE>objects</CODE>, and adds the text
+<SAMP>`another.o'</SAMP> to it (preceded by a single space).  Thus:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>objects = main.o foo.o bar.o utils.o
+objects += another.o
+</pre></td></tr></table></P><P>
+
+sets <CODE>objects</CODE> to <SAMP>`main.o foo.o bar.o utils.o another.o'</SAMP>.
+</P><P>
+
+Using <SAMP>`+='</SAMP> is similar to:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>objects = main.o foo.o bar.o utils.o
+objects := $(objects) another.o
+</pre></td></tr></table></P><P>
+
+but differs in ways that become important when you use more complex values.
+</P><P>
+
+When the variable in question has not been defined before, <SAMP>`+='</SAMP>
+acts just like normal <SAMP>`='</SAMP>: it defines a recursively-expanded
+variable.  However, when there <EM>is</EM> a previous definition, exactly
+what <SAMP>`+='</SAMP> does depends on what flavor of variable you defined
+originally.  See section <A HREF="make_63.html#SEC67">The Two Flavors of Variables</A>, for an
+explanation of the two flavors of variables.
+</P><P>
+
+When you add to a variable's value with <SAMP>`+='</SAMP>, <CODE>make</CODE> acts
+essentially as if you had included the extra text in the initial
+definition of the variable.  If you defined it first with <SAMP>`:='</SAMP>,
+making it a simply-expanded variable, <SAMP>`+='</SAMP> adds to that
+simply-expanded definition, and expands the new text before appending it
+to the old value just as <SAMP>`:='</SAMP> does
+(see section <A HREF="make_68.html#SEC72">Setting Variables</A>, for a full explanation of <SAMP>`:='</SAMP>).
+In fact,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>variable := value
+variable += more
+</pre></td></tr></table></P><P>
+
+is exactly equivalent to:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>variable := value
+variable := $(variable) more
+</pre></td></tr></table></P><P>
+
+On the other hand, when you use <SAMP>`+='</SAMP> with a variable that you defined
+first to be recursively-expanded using plain <SAMP>`='</SAMP>, <CODE>make</CODE> does
+something a bit different.  Recall that when you define a
+recursively-expanded variable, <CODE>make</CODE> does not expand the value you set
+for variable and function references immediately.  Instead it stores the text
+verbatim, and saves these variable and function references to be expanded
+later, when you refer to the new variable (see section <A HREF="make_63.html#SEC67">The Two Flavors of Variables</A>).  When you use <SAMP>`+='</SAMP> on a recursively-expanded variable,
+it is this unexpanded text to which <CODE>make</CODE> appends the new text you
+specify.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>variable = value
+variable += more
+</pre></td></tr></table></P><P>
+
+is roughly equivalent to:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>temp = value
+variable = $(temp) more
+</pre></td></tr></table></P><P>
+
+except that of course it never defines a variable called <CODE>temp</CODE>.
+The importance of this comes when the variable's old value contains
+variable references.  Take this common example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>CFLAGS = $(includes) -O
+<small>...</small>
+CFLAGS += -pg # enable profiling
+</pre></td></tr></table></P><P>
+
+The first line defines the <CODE>CFLAGS</CODE> variable with a reference to another
+variable, <CODE>includes</CODE>.  (<CODE>CFLAGS</CODE> is used by the rules for C
+compilation; see section <A HREF="make_101.html#SEC105">Catalogue of Implicit Rules</A>.)
+Using <SAMP>`='</SAMP> for the definition makes <CODE>CFLAGS</CODE> a recursively-expanded
+variable, meaning <SAMP>`$(includes) -O'</SAMP> is <EM>not</EM> expanded when
+<CODE>make</CODE> processes the definition of <CODE>CFLAGS</CODE>.  Thus, <CODE>includes</CODE>
+need not be defined yet for its value to take effect.  It only has to be
+defined before any reference to <CODE>CFLAGS</CODE>.  If we tried to append to the
+value of <CODE>CFLAGS</CODE> without using <SAMP>`+='</SAMP>, we might do it like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>CFLAGS := $(CFLAGS) -pg # enable profiling
+</pre></td></tr></table></P><P>
+
+This is pretty close, but not quite what we want.  Using <SAMP>`:='</SAMP>
+redefines <CODE>CFLAGS</CODE> as a simply-expanded variable; this means
+<CODE>make</CODE> expands the text <SAMP>`$(CFLAGS) -pg'</SAMP> before setting the
+variable.  If <CODE>includes</CODE> is not yet defined, we get <SAMP>` -O
+-pg'</SAMP>, and a later definition of <CODE>includes</CODE> will have no effect.
+Conversely, by using <SAMP>`+='</SAMP> we set <CODE>CFLAGS</CODE> to the
+<EM>unexpanded</EM> value <SAMP>`$(includes) -O -pg'</SAMP>.  Thus we preserve
+the reference to <CODE>includes</CODE>, so if that variable gets defined at
+any later point, a reference like <SAMP>`$(CFLAGS)'</SAMP> still uses its
+value.
+</P><P>
+
+<A NAME="Override Directive"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_68.html#SEC72"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_70.html#SEC74"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

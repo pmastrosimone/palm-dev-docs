@@ -1,0 +1,461 @@
+<html>
+<head>
+<title>(68K) Debugging Strategies | Palm OS&#174; Programmer's Companion</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 10:43:29">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="1055446"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="CompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PalmOS5ARM_Chapter.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="StandardIOApp.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">15 &nbsp;&nbsp;
+Debugging Strategies</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Palm OS&#174; Programmer's Companion</p>
+<p class="SubTitle">Volume I </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="DebuggingStrats.html">15  Debugging Strategies</a></h1>
+
+   <h2 class="SideTOC2"><a href="#1055475">
+   Displaying Development Errors</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1055512">
+   Using the Error Manager Macros</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1055539">
+   The Try-and-Catch Mechanism</a></h2>
+
+      <h3 class="SideTOC3"><a href="#1055549">
+      Using the Try and Catch Mechanism</a></h3>
+
+   <h2 class="SideTOC2"><a href="#1057421">
+   Using the ARM Debug Nub</a></h2>
+
+      <h3 class="SideTOC3"><a href="#1057432">
+      Activating the ARM Debugger Nub </a></h3>
+
+      <h3 class="SideTOC3"><a href="#1057442">
+      Register with Palm OS Debugger </a></h3>
+
+   <h2 class="SideTOC2"><a href="#1055604">
+   Summary of Debugging API</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="1055449"> </a>You can use a Palm OS<sup>&#174;</sup> system manager called the error manager to display unexpected runtime errors such as those that typically show up during program development. Final versions of applications or system software won't use the error manager. </p>
+
+<p><a name="1055450"> </a>The error manager API consists of a set of functions for displaying an alert with an error message, file name, and the line number where the error occurred. If a debugger is connected, it is entered when the error occurs.</p>
+
+<p><a name="1055451"> </a>The error manager also provides a "try and catch" mechanism that applications can use for handling such runtime errors as out of memory conditions, user input errors, etc. </p>
+
+<p><a name="1055452"> </a>This section helps you understand and use the error manager, discussing the following topics:</p>
+   <blockquote class = "bq"><a name="1055456"> </a><a href="DebuggingStrats.html#1055475">Displaying Development Errors</a></blockquote>
+   <blockquote class = "bq"><a name="1055460"> </a><a href="DebuggingStrats.html#1055512">Using the Error Manager Macros</a></blockquote>
+   <blockquote class = "bq"><a name="1055464"> </a><a href="DebuggingStrats.html#1055539">The Try-and-Catch Mechanism</a></blockquote>
+   <blockquote class = "bq"><a name="1057564"> </a><a href="DebuggingStrats.html#1057421">Using the ARM Debug Nub</a></blockquote>
+   <blockquote class = "bq"><a name="1055468"> </a><a href="DebuggingStrats.html#1055604">Summary of Debugging API</a></blockquote>
+
+<p><a name="1055469"> </a>This chapter only describes programmatic debugging strategies; to learn how to use the available tools to debug your application, see the book <i>Palm OS Programming Development Tools Guide</i>. </p>
+
+<h2 class="haH2">
+  <a name="1055475"> </a>Displaying Development Errors <a href="#1055446"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1055476"> </a>The error manager provides some compiler macros that can be used in source code. These macros display a fatal alert dialog on the screen and provide buttons to reset the handheld or enter the debugger after the error is displayed. There are three macros: <a href="../PalmOSReference/ErrorManager.html#1027805"><code>ErrDisplay</code></a>, <a href="../PalmOSReference/ErrorManager.html#1027916"><code>ErrFatalDisplayIf</code></a>, and <a href="../PalmOSReference/ErrorManager.html#1027946"><code>ErrNonFatalDisplayIf</code></a>. </p>
+<ul type="disc">
+  <li><a name="1055487"> </a><code>ErrDisplay</code> always displays the error message on the screen.
+  <li><a name="1055489"> </a><code>ErrFatalDisplayIf</code> and <code>ErrNonFatalDisplayIf</code> display the error message only if their first argument is <code>TRUE.</code>
+</ul>
+
+<p><a name="1055491"> </a>The error manager uses the compiler define <code>ERROR_CHECK_LEVEL</code> to control the level of error messages displayed. You can set the value of the compiler define to control which level of error checking and display is compiled into the application. Three levels of error checking are supported: none, partial, and full.</p>
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1055494"> </a><b><span style="color: #000000;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">If you set </span><code>ERR_CHECK_LEVEL</code> to...</b></p>
+    </th>
+    <th><p class="tt"><a name="1055496"> </a><b>The compiler...</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1055498"> </a><code>ERROR_CHECK_NONE (0)</code></p>
+    </td>
+    <td><p class="tt"><a name="1055500"> </a>Doesn't compile in any error calls.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1055502"> </a><code>ERROR_CHECK_PARTIAL</code> <code>(1)</code></p>
+    </td>
+    <td><p class="tt"><a name="1055504"> </a>Compiles in only <code>ErrDisplay</code> and <code>ErrFatalDisplayIf</code> calls.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1055506"> </a><code>ERROR_CHECK_FULL</code> <code>(2)</code></p>
+    </td>
+    <td><p class="tt"><a name="1055508"> </a>Compiles in all three calls.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="1055510"> </a>During development, it makes sense to set full error checking for early development, partial error checking during alpha and beta test periods, and no error checking for the final product. At partial error checking, only fatal errors are displayed; error conditions that are only possible are ignored under the assumption that the application developer is already aware of the condition and designed the software to operate that way. </p>
+
+<h2 class="haH2">
+  <a name="1055512"> </a>Using the Error Manager Macros <a href="#1055446"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1055513"> </a>Calls to the error manager to display errors are actually compiler macros that are conditionally compiled into your program. Most of the calls take a boolean parameter, which should be set to <code>true</code> to display the error, and a pointer to a text message to display if the condition is true. </p>
+
+<p><a name="1055514"> </a>Typically, the boolean parameter is an in-line expression that evaluates to <code>true</code> if there is an error condition. As a result, both the expression that evaluates the error condition and the message text are left out of the compiled code when error checking is turned off. You can call <a href="../PalmOSReference/ErrorManager.html#1027916"><code>ErrFatalDisplayIf</code></a>, or <a href="../PalmOSReference/ErrorManager.html#1027805"><code>ErrDisplay</code></a>, but using <code>ErrFatalDisplayIf</code> makes your source code look neater. </p>
+
+<p><a name="1055521"> </a>For example, assume your source code looks like this:</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+result = DoSomething();<a name="1055522"> </a>
+ErrFatalDisplayIf (result &lt; 0, 
+  "unexpected result from DoSomething");<a name="1055524"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1055525"> </a>With error checking turned on, this code displays an error alert dialog if the result from <code>DoSomething()</code> is less than 0. Besides the error message itself, this alert also shows the file name and line number of the source code that called the error manager. With error checking turned off, both the expression evaluation <code>err &lt; 0</code> and the error message text are left out of the compiled code. </p>
+
+<p><a name="1055526"> </a>The same net result can be achieved by the following code:</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+result = DoSomething();<a name="1055527"> </a>
+#if ERROR_CHECK_LEVEL != ERROR_CHECK_NONE<a name="1055529"> </a>
+if (result &lt; 0) <a name="1055530"> </a>
+  ErrDisplay ("unexpected result from
+DoSomething");<a name="1055532"> </a>
+#endif<a name="1055533"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1055534"> </a>However, this solution is longer and requires more work than simply calling <a href="../PalmOSReference/ErrorManager.html#1027916"><code>ErrFatalDisplayIf</code></a>. It also makes the source code harder to follow.</p>
+
+<h2 class="haH2">
+  <a name="1055539"> </a>The Try-and-Catch Mechanism <a href="#1055446"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1055541"> </a>The error manager is aware of the machine state of the Palm Powered<sup>&#8482;</sup> handheld and can therefore correctly save and restore this state. The built-in try and catch of the compiler can't be used because it's machine dependent.</p>
+
+<p><a name="1055542"> </a>Try and catch is basically a neater way of implementing a <code>goto</code> if an error occurs. A typical way of handling errors in the middle of a routine is to go to the end of the routine as soon as an error occurs and have some general-purpose cleanup code at the end of every routine. Errors in nested routines are even trickier because the result code from every subroutine call must be checked before continuing. </p>
+
+<p><a name="1055543"> </a>When you set up a try/catch, you are providing the compiler with a place to jump to when an error occurs. You can go to that error handling routine at any time by calling <a href="../PalmOSReference/ErrorManager.html#1027975"><code>ErrThrow</code></a>. When the compiler sees the <span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">ErrThrow</span> call, it performs a <code>goto</code> to your error handling code. The greatest advantage to calling <span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">ErrThrow</span>, however, is for handling errors in nested subroutine calls. </p>
+
+<p><a name="1055548"> </a>Even if <span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">ErrThrow</span> is called from a nested subroutine, execution immediately goes to the same error handling code in the higher-level call. The compiler and runtime environment automatically strip off the stack frames that were pushed onto the stack during the nesting process and go to the error handling section of the higher-level call. You no longer have to check for result codes after calling every subroutine; this greatly simplifies your source code and reduces its size. </p>
+<h3 class="hbH3">
+  <a name="1055549"> </a>Using the Try and Catch Mechanism <a href="#1055446"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1055551"> </a>The following example illustrates the possible layout for a typical routine using the error manager's try and catch mechanism.</p>
+<p class="CCodeCaption">
+  <a name="1055552"> </a><b>Listing 15.1&nbsp;&nbsp;Try and Catch Mechanism Example</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+      ErrTry {<a name="1055553"> </a>
+        p = MemPtrNew(1000);<a name="1055554"> </a>
+        if (!p) ErrThrow(errNoMemory);<a name="1055555"> </a>
+        MemSet(p, 1000, 0);<a name="1055556"> </a>
+        CreateTable(p);<a name="1055557"> </a>
+        PrintTable(p);<a name="1055558"> </a>
+        }<a name="1055559"> </a>
+ <a name="1055560"> </a>
+      ErrCatch(err) {<a name="1055561"> </a>
+        // Recover or clean<span style="color: #000000;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline"> </span>up after<span style="color: #000000;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline"> </span>a failure in the <a name="1055562"> </a>
+        // above Try block."err" is an int <a name="1055563"> </a>
+        // identifying the reason for the failure.<a name="1055564"> </a>
+        <a name="1055565"> </a>
+        // You may call ErrThrow() if you want to <a name="1055566"> </a>
+        // jump out to the next Catch block.<a name="1055567"> </a>
+        <a name="1055568"> </a>
+        // The code in this Catch block doesn't <a name="1055569"> </a>
+        // execute if the above Try block completes<a name="1055570"> </a>
+        // without a Throw.<a name="1055571"> </a>
+        <a name="1055572"> </a>
+        if (err == errNoMemory)<a name="1055573"> </a>
+           ErrDisplay("Out of Memory");<a name="1055574"> </a>
+        else<a name="1055575"> </a>
+           ErrDisplay("Some other error");<a name="1055576"> </a>
+        } ErrEndCatch<a name="1055577"> </a>
+        // You must structure your code exactly as <a name="1055578"> </a>
+        // above. You can't have an ErrTry without an <a name="1055579"> </a>
+        //ErrCatch { } ErrEndCatch, or vice versa.<a name="1055580"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1055587"> </a>Any call to <a href="../PalmOSReference/ErrorManager.html#1027975"><code>ErrThrow</code></a> within the <a href="../PalmOSReference/ErrorManager.html#1028008"><code>ErrTry</code></a> block results in control passing immediately to the <a href="../PalmOSReference/ErrorManager.html#1027766"><code>ErrCatch</code></a> block. Even if the subroutine <code>CreateTable</code> called <span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">ErrThrow</span>, control would pass directly to the <code>ErrCatch</code> block. If the <code>ErrTry</code> block completes without calling <code>ErrThrow</code>, the <code>ErrCatch</code> block is not executed.</p>
+
+<p><a name="1055591"> </a>You can nest multiple <code>ErrTry</code> blocks. For example, if you wanted to perform some cleanup at the end of <code>CreateTable</code> in case of error, </p>
+<ul type="disc">
+  <li><a name="1055592"> </a>Put <code>ErrTry</code>/<code>ErrCatch</code> blocks in <code>CreateTable</code> 
+  <li><a name="1055593"> </a>Clean up in the <code>ErrCatch</code> block first
+  <li><a name="1055597"> </a>Call <a href="../PalmOSReference/ErrorManager.html#1027975"><code>ErrThrow</code></a> to jump to the top-level <code>ErrCatch</code>
+</ul>
+
+<h2 class="haH2">
+  <a name="1057421"> </a>Using the ARM Debug Nub <a href="#1055446"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1057478"> </a>On an ARM-based device, the ARM debug nub allows the desktop-based debugger (such as PODS) to break, examine registers, and so forth in your ARM-native code. In order to debug your ARM-based code, your application needs to both activate the debugger nub and register your PNOs with the Palm OS Debugger.</p>
+
+<p><a name="1057546"> </a>For information on creating PNOs and ARM-native code, see <a href="PalmOS5ARM_Chapter.html#920544">Chapter 14, "Palm OS Garnet ARM Programming."</a></p>
+<h3 class="hbH3">
+  <a name="1057432"> </a>Activating the ARM Debugger Nub  <a href="#1055446"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1057433"> </a>The ARM debugger nub is not active on an ARM-based device until an application activates it. Your PNO must first enable the ARM debugger nub by calling the <a href="../PalmOSReference/AdnDebugMgr.html#993902"><code>AdnDebugEnableSet()</code></a> macro, as shown in <a href="DebuggingStrats.html#1057487">Listing 15.2</a>.</p>
+<p class="CCodeCaption">
+  <a name="1057487"> </a><b>Listing 15.2&nbsp;&nbsp;Activating the ARM debugger nub</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+	// Tell the debugger we want to enable full debugging<a name="1057437"> </a>
+	UInt32 flags = AdnDebugEnableGet();<a name="1057438"> </a>
+	flags |= kAdnEnableMasterSwitch | kAdnEnableFullDebugging;<a name="1057439"> </a>
+	AdnDebugEnableSet(flags);<a name="1057440"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h3 class="hbH3">
+  <a name="1057442"> </a>Register with Palm OS Debugger  <a href="#1055446"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1057443"> </a>Palm OS Debugger needs to be able to resolve where each ARM subroutine (PNO) is located in memory. Your ARM subroutine must register with Palm OS Debugger by invoking the <a href="../PalmOSReference/AdnDebugMgr.html#994186"><code>AdnDebugNativeRegister()</code></a> macro. You need to invoke <code>AdnDebugNativeRegister()</code> after the code resource has been locked, typically on the first call into the ARM subroutine. </p>
+
+<p><a name="1057450"> </a>Prior to being unlocked your code should unregister itself by invoking the <a href="../PalmOSReference/AdnDebugMgr.html#994591"><code>AdnDebugNativeUnregister()</code></a> macro.</p>
+
+<p><a name="1057454"> </a>These macros do not act as breakpoints; they do not halt device operation. However, they may cause breakpoints to become resolved or unresolved. </p>
+
+<p><a name="1057519"> </a><a href="DebuggingStrats.html#1057520">Listing 15.3</a> shows a call to <code>AdnDebugNativeRegister()</code>.</p>
+<p class="CCodeCaption">
+  <a name="1057520"> </a><b>Listing 15.3&nbsp;&nbsp;Registering a PNO with the debugger</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+	// Tell the debugger where our code lives in memory:<a name="1057455"> </a>
+	AdnDebugNativeRegister(<a name="1057456"> </a>
+				sysFileTApplication, appFileCreator,<a name="1057457"> </a>
+				NativeResourceType, NativeResourceID); <a name="1057458"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1057459"> </a>The ARM subroutine needs to define <code>appFileCreator</code>, <code>NativeResourceType</code>, and <code>NativeResourceID</code> in order for Palm OS Debugger to locate the corresponding debug symbol file. </p>
+
+<p><a name="1057460"> </a>For example, if you have an <code>ARMC </code>resource with <code>ID 0001</code>, the debug symbol file is typically of the form <code>ARMC0001.bin.elf</code>. The ELF file must be in the same directory as the PRC file that contains the ARM subroutine you are debugging. </p>
+
+<h2 class="haH2">
+  <a name="1055604"> </a>Summary of Debugging API <a href="#1055446"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1055607"> </a><b>Error Manager Functions</b></p>
+    </th>
+    <th><p class="tt"><a name="1055609"> </a><b></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1055611"> </a><b>Displaying Errors</b></p>
+    </td>
+    <td><p class="tt"><a name="1055613"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1055618"> </a><a href="../PalmOSReference/ErrorManager.html#1027741"><code>ErrAlert()</code></a><br><a href="../PalmOSReference/ErrorManager.html#1027831"><code>ErrDisplayFileLineMsg()</code></a><br><a href="../PalmOSReference/ErrorManager.html#1027946"><code>ErrNonFatalDisplayIf()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1055629"> </a><a href="../PalmOSReference/ErrorManager.html#1027805"><code>ErrDisplay()</code></a><br><a href="../PalmOSReference/ErrorManager.html#1027916"><code>ErrFatalDisplayIf()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1055634"> </a><b>Catching Exceptions</b></p>
+    </td>
+    <td><p class="tt"><a name="1055636"> </a><b></b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1055641"> </a><a href="../PalmOSReference/ErrorManager.html#1027766"><code>ErrCatch()</code></a><br><a href="../PalmOSReference/ErrorManager.html#1027893"><code>ErrExceptionList()</code></a><br><a href="../PalmOSReference/ErrorManager.html#1028008"><code>ErrTry()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1055652"> </a><a href="../PalmOSReference/ErrorManager.html#1027871"><code>ErrEndCatch()</code></a><br><a href="../PalmOSReference/ErrorManager.html#1027975"><code>ErrThrow()</code></a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1057796"> </a><b>ARM Debug Nub Macros</b></p>
+    </th>
+    <th><p class="tt"><a name="1057798"> </a><b></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1057800"> </a><b>Debugging the PNO</b></p>
+    </td>
+    <td><p class="tt"><a name="1057802"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1057807"> </a><a href="../PalmOSReference/AdnDebugMgr.html#993649"><code>AdnDebugBreak()</code></a><br><a href="../PalmOSReference/AdnDebugMgr.html#993779"><code>AdnDebugEnableGet()</code></a><br><a href="../PalmOSReference/AdnDebugMgr.html#993819"><code>AdnDebugEnableGetSupported()</code></a><br><a href="../PalmOSReference/AdnDebugMgr.html#993902"><code>AdnDebugEnableSet()</code></a><br><a href="../PalmOSReference/AdnDebugMgr.html#993968"><code>AdnDebugLicenseeSpecific()</code></a><br><a href="../PalmOSReference/AdnDebugMgr.html#994018"><code>AdnDebugMessage()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1057818"> </a><a href="../PalmOSReference/AdnDebugMgr.html#994140"><code>AdnDebugMessageIf()</code></a><br><a href="../PalmOSReference/AdnDebugMgr.html#994186"><code>AdnDebugNativeRegister()</code></a><br><a href="../PalmOSReference/AdnDebugMgr.html#994512"><code>AdnDebugNativeRegisterAddr()</code></a><br><a href="../PalmOSReference/AdnDebugMgr.html#994591"><code>AdnDebugNativeUnregister()</code></a><br><a href="../PalmOSReference/AdnDebugMgr.html#994631"><code>AdnDebugNativeUnregisterAddr()</code></a><br><a href="../PalmOSReference/AdnDebugMgr.html#994812"><code>AdnGetNativeCodeBaseAddr()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1057823"> </a><b>Miscellaneous Macros</b></p>
+    </td>
+    <td><p class="tt"><a name="1057825"> </a><b></b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1057830"> </a><a href="../PalmOSReference/AdnDebugMgr.html#994673"><code>AdnDebugUpdateLoadedModules()</code></a><br><a href="../PalmOSReference/AdnDebugMgr.html#994852"><code>SetR10ToDataPointer()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1057841"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="1055658"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996-2004, PalmSource, Inc. and its affiliates.  All rights reserved. <br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="Companion_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="CompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PalmOS5ARM_Chapter.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="StandardIOApp.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

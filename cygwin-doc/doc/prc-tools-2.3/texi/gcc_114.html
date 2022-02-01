@@ -1,0 +1,182 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: C++ Interface</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: C++ Interface">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: C++ Interface">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC114"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_113.html#SEC113"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_115.html#SEC115"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_115.html#SEC115"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.4 Declarations and Definitions in One Header </H2>
+<!--docid::SEC114::-->
+<P>
+
+<A NAME="IDX378"></A>
+<A NAME="IDX379"></A>
+C++ object definitions can be quite complex.  In principle, your source
+code will need two kinds of things for each object that you use across
+more than one source file.  First, you need an <EM>interface</EM>
+specification, describing its structure with type declarations and
+function prototypes.  Second, you need the <EM>implementation</EM> itself.
+It can be tedious to maintain a separate interface description in a
+header file, in parallel to the actual implementation.  It is also
+dangerous, since separate interface and implementation definitions may
+not remain parallel.
+</P><P>
+
+<A NAME="IDX380"></A>
+With GNU C++, you can use a single header file for both purposes.
+</P><P>
+
+<BLOCKQUOTE>
+<EM>Warning:</EM> The mechanism to specify this is in transition.  For the
+nonce, you must use one of two <CODE>#pragma</CODE> commands; in a future
+release of GNU C++, an alternative mechanism will make these
+<CODE>#pragma</CODE> commands unnecessary.
+</BLOCKQUOTE>
+<P>
+
+The header file contains the full definitions, but is marked with
+<SAMP>`#pragma interface'</SAMP> in the source code.  This allows the compiler
+to use the header file only as an interface specification when ordinary
+source files incorporate it with <CODE>#include</CODE>.  In the single source
+file where the full implementation belongs, you can use either a naming
+convention or <SAMP>`#pragma implementation'</SAMP> to indicate this alternate
+use of the header file.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>#pragma interface</CODE>
+<DD><DT><CODE>#pragma interface "<VAR>subdir</VAR>/<VAR>objects</VAR>.h"</CODE>
+<DD><A NAME="IDX381"></A>
+Use this directive in <EM>header files</EM> that define object classes, to save
+space in most of the object files that use those classes.  Normally,
+local copies of certain information (backup copies of inline member
+functions, debugging information, and the internal tables that implement
+virtual functions) must be kept in each object file that includes class
+definitions.  You can use this pragma to avoid such duplication.  When a
+header file containing <SAMP>`#pragma interface'</SAMP> is included in a
+compilation, this auxiliary information will not be generated (unless
+the main input source file itself uses <SAMP>`#pragma implementation'</SAMP>).
+Instead, the object files will contain references to be resolved at link
+time.
+<P>
+
+The second form of this directive is useful for the case where you have
+multiple headers with the same name in different directories.  If you
+use this form, you must specify the same string to <SAMP>`#pragma
+implementation'</SAMP>.
+</P><P>
+
+<DT><CODE>#pragma implementation</CODE>
+<DD><DT><CODE>#pragma implementation "<VAR>objects</VAR>.h"</CODE>
+<DD><A NAME="IDX382"></A>
+Use this pragma in a <EM>main input file</EM>, when you want full output from
+included header files to be generated (and made globally visible).  The
+included header file, in turn, should use <SAMP>`#pragma interface'</SAMP>.
+Backup copies of inline member functions, debugging information, and the
+internal tables used to implement virtual functions are all generated in
+implementation files.
+<P>
+
+<A NAME="IDX383"></A>
+<A NAME="IDX384"></A>
+<A NAME="IDX385"></A>
+If you use <SAMP>`#pragma implementation'</SAMP> with no argument, it applies to
+an include file with the same basename<A NAME="DOCF2" HREF="gcc_fot.html#FOOT2">(2)</A> as your source
+file.  For example, in <TT>`allclass.cc'</TT>, giving just
+<SAMP>`#pragma implementation'</SAMP>
+by itself is equivalent to <SAMP>`#pragma implementation "allclass.h"'</SAMP>.
+</P><P>
+
+In versions of GNU C++ prior to 2.6.0 <TT>`allclass.h'</TT> was treated as
+an implementation file whenever you would include it from
+<TT>`allclass.cc'</TT> even if you never specified <SAMP>`#pragma
+implementation'</SAMP>.  This was deemed to be more trouble than it was worth,
+however, and disabled.
+</P><P>
+
+If you use an explicit <SAMP>`#pragma implementation'</SAMP>, it must appear in
+your source file <EM>before</EM> you include the affected header files.
+</P><P>
+
+Use the string argument if you want a single implementation file to
+include code from multiple header files.  (You must also use
+<SAMP>`#include'</SAMP> to include the header file; <SAMP>`#pragma
+implementation'</SAMP> only specifies how to use the file--it doesn't actually
+include it.)
+</P><P>
+
+There is no way to split up the contents of a single header file into
+multiple implementation files.
+</DL>
+<P>
+
+<A NAME="IDX386"></A>
+<A NAME="IDX387"></A>
+<A NAME="IDX388"></A>
+<SAMP>`#pragma implementation'</SAMP> and <SAMP>`#pragma interface'</SAMP> also have an
+effect on function inlining.
+</P><P>
+
+If you define a class in a header file marked with <SAMP>`#pragma
+interface'</SAMP>, the effect on a function defined in that class is similar to
+an explicit <CODE>extern</CODE> declaration--the compiler emits no code at
+all to define an independent version of the function.  Its definition
+is used only for inlining with its callers.
+</P><P>
+
+Conversely, when you include the same header file in a main source file
+that declares it as <SAMP>`#pragma implementation'</SAMP>, the compiler emits
+code for the function itself; this defines a version of the function
+that can be found via pointers (or by callers compiled without
+inlining).  If all calls to the function can be inlined, you can avoid
+emitting the function by compiling with <SAMP>`-fno-implement-inlines'</SAMP>.
+If any calls were not inlined, you will get linker errors.
+</P><P>
+
+<A NAME="Template Instantiation"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_113.html#SEC113"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_115.html#SEC115"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_115.html#SEC115"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

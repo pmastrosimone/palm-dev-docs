@@ -1,0 +1,323 @@
+<html>
+<head>
+<title>(Protein) Find.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:19:36">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FileStream.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FixedMath.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">44 &nbsp;&nbsp;
+Find.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="Find.html">44  Find.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424931">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424955">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="425980"> </a>The find APIs are unchanged in Palm OS Cobalt. Card number parameters and fields have been removed where they were once defined. The <code>FindStrInStr()</code> function has been removed in favor of the <code>TxtFindString()</code> function. The <code>FindParamsType</code> structure is now opaque, and the <code>FindMatchType</code> and <code>GoToParamsType</code> structures have had new fields added to them.</p>
+
+<p><a name="426625"> </a>Note that prior to Palm OS Cobalt you couldn't launch Find when a modal dialog was active. In Palm OS Cobalt you can, so, like any other button tap, launching Find dismisses the currently active dialog by simulating a tap on its default button. As well, in Palm OS releases up to but not including Palm OS Cobalt, the <code>sysAppLaunchCmdFind</code> launch code is sent to all applications. In Palm OS Cobalt, however, it is only sent to the active application, to all 68K applications, and to those Palm OS Protein applications that have the <code>ALPF_FLAG_NOTIFY_FIND</code> attribute set to <code>true</code> in their Application Launch Preferences Resource.</p>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425298"> </a><b>Table 44.1&nbsp;&nbsp;Deleted functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425302"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425304"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425306"> </a><code>FindStrInStr()</code></p>
+    </td>
+    <td><p class="tt"><a name="425308"> </a><code>TxtFindString()</code></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425323"> </a><b>Table 44.2&nbsp;&nbsp;Deleted #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425327"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425329"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425331"> </a><code>maxFinds</code></p>
+    </td>
+    <td><p class="tt"><a name="425333"> </a>Nothing. This was used in the definition of the <code>FindParamsType</code> structure, the internals of which are now private.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424931"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425348"> </a><b>Table 44.3&nbsp;&nbsp;Modified functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425352"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425354"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425356"> </a><code>Boolean FindSaveMatch (FindParamsPtr, uint32_t, uint32_t, size_t, size_t, uint32_t, uint32_t, DatabaseID)</code></p>
+    </td>
+    <td><p class="tt"><a name="425358"> </a>The card number parameter has been removed, 16-bit fields have been expanded to 32 bits, and an additional parameter has been added to let you specify the length of the matched text.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425369"> </a><b>Table 44.4&nbsp;&nbsp;Modified structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425373"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425375"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425377"> </a><code>FindMatchType</code></p>
+    </td>
+    <td><p class="tt"><a name="425379"> </a>No longer has card number fields (either for the application or for the database in which the record was found). The <code>matchFieldNum</code> field contains a column ID if the match was made in a schema database record. This structure now contains a <code>matchLen</code> field that contains the length, in bytes, of the matched data. Finally, the fields in this structure have been rearranged and additional reserved fields have been added.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425381"> </a><code>FindParamsType</code></p>
+    </td>
+    <td><p class="tt"><a name="425383"> </a>The contents of this structure are now private and should not be accessed by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425385"> </a><code>GoToParamsType</code></p>
+    </td>
+    <td><p class="tt"><a name="425387"> </a>No longer has a card number field (<code>dbCardNo</code>). New fields have been added for the unique ID of the record that contains the match, the length of the matched text, and a string buffer containing the matched text itself. Also, the fields in this structure have been rearranged and additional reserved fields have been added for padding and alignment purposes.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425390"> </a><b>Table 44.5&nbsp;&nbsp;Modified #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425394"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425396"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425398"> </a><code>#define maxFindStrLen 48</code></p>
+    </td>
+    <td><p class="tt"><a name="425400"> </a>Was 16.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424955"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425470"> </a><b>Table 44.6&nbsp;&nbsp;Unchanged functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425474"> </a>Find()</p>
+    </td>
+    <td><p class="tt"><a name="425476"> </a>FindDrawHeader()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425478"> </a>FindGetLineBounds()</p>
+    </td>
+    <td><p class="tt"><a name="425480"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425485"> </a><b>Table 44.7&nbsp;&nbsp;Unchanged types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425489"> </a>FindMatchPtr</p>
+    </td>
+    <td><p class="tt"><a name="425491"> </a>FindParamsPtr</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425493"> </a>GoToParamsPtr</p>
+    </td>
+    <td><p class="tt"><a name="425495"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="424961"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FileStream.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FixedMath.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: TMS320C3x/C4x Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: TMS320C3x/C4x Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: TMS320C3x/C4x Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC39"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_38.html#SEC38"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_40.html#SEC40"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 2.14.23 TMS320C3x/C4x Options </H3>
+<!--docid::SEC39::-->
+<P>
+
+These <SAMP>`-m'</SAMP> options are defined for TMS320C3x/C4x implementations:
+</P><P>
+
+<DL COMPACT>
+
+<DT><CODE>-mcpu=<VAR>cpu_type</VAR></CODE>
+<DD>Set the instruction set, register set, and instruction scheduling
+parameters for machine type <VAR>cpu_type</VAR>.  Supported values for
+<VAR>cpu_type</VAR> are <SAMP>`c30'</SAMP>, <SAMP>`c31'</SAMP>, <SAMP>`c32'</SAMP>, <SAMP>`c40'</SAMP>, and
+<SAMP>`c44'</SAMP>.  The default is <SAMP>`c40'</SAMP> to generate code for the
+TMS320C40.
+<P>
+
+<DT><CODE>-mbig-memory</CODE>
+<DD><DT><CODE>-mbig</CODE>
+<DD><DT><CODE>-msmall-memory</CODE>
+<DD><DT><CODE>-msmall</CODE>
+<DD>Generates code for the big or small memory model.  The small memory
+model assumed that all data fits into one 64K word page.  At run-time
+the data page (DP) register must be set to point to the 64K page
+containing the .bss and .data program sections.  The big memory model is
+the default and requires reloading of the DP register for every direct
+memory access.
+<P>
+
+<DT><CODE>-mbk</CODE>
+<DD><DT><CODE>-mno-bk</CODE>
+<DD>Allow (disallow) allocation of general integer operands into the block
+count register BK. 
+<P>
+
+<DT><CODE>-mdb</CODE>
+<DD><DT><CODE>-mno-db</CODE>
+<DD>Enable (disable) generation of code using decrement and branch,
+DBcond(D), instructions.  This is enabled by default for the C4x.  To be
+on the safe side, this is disabled for the C3x, since the maximum
+iteration count on the C3x is 2^23 + 1 (but who iterates loops more than
+2^23 times on the C3x?).  Note that GCC will try to reverse a loop so
+that it can utilise the decrement and branch instruction, but will give
+up if there is more than one memory reference in the loop.  Thus a loop
+where the loop counter is decremented can generate slightly more
+efficient code, in cases where the RPTB instruction cannot be utilised.
+<P>
+
+<DT><CODE>-mdp-isr-reload</CODE>
+<DD><DT><CODE>-mparanoid</CODE>
+<DD>Force the DP register to be saved on entry to an interrupt service
+routine (ISR), reloaded to point to the data section, and restored on
+exit from the ISR.  This should not be required unless someone has
+violated the small memory model by modifying the DP register, say within
+an object library.
+<P>
+
+<DT><CODE>-mmpyi</CODE>
+<DD><DT><CODE>-mno-mpyi</CODE>
+<DD>For the C3x use the 24-bit MPYI instruction for integer multiplies
+instead of a library call to guarantee 32-bit results.  Note that if one
+of the operands is a constant, then the multiplication will be performed
+using shifts and adds.  If the -mmpyi option is not specified for the C3x,
+then squaring operations are performed inline instead of a library call.
+<P>
+
+<DT><CODE>-mfast-fix</CODE>
+<DD><DT><CODE>-mno-fast-fix</CODE>
+<DD>The C3x/C4x FIX instruction to convert a floating point value to an
+integer value chooses the nearest integer less than or equal to the
+floating point value rather than to the nearest integer.  Thus if the
+floating point number is negative, the result will be incorrectly
+truncated an additional code is necessary to detect and correct this
+case.  This option can be used to disable generation of the additional
+code required to correct the result.
+<P>
+
+<DT><CODE>-mrptb</CODE>
+<DD><DT><CODE>-mno-rptb</CODE>
+<DD>Enable (disable) generation of repeat block sequences using the RPTB
+instruction for zero overhead looping.  The RPTB construct is only used
+for innermost loops that do not call functions or jump across the loop
+boundaries.  There is no advantage having nested RPTB loops due to the
+overhead required to save and restore the RC, RS, and RE registers.
+This is enabled by default with -O2.
+<P>
+
+<DT><CODE>-mrpts=<VAR>count</VAR></CODE>
+<DD><DT><CODE>-mno-rpts</CODE>
+<DD>Enable (disable) the use of the single instruction repeat instruction
+RPTS.  If a repeat block contains a single instruction, and the loop
+count can be guaranteed to be less than the value <VAR>count</VAR>, GCC will
+emit a RPTS instruction instead of a RPTB.  If no value is specified,
+then a RPTS will be emitted even if the loop count cannot be determined
+at compile time.  Note that the repeated instruction following RPTS does
+not have to be reloaded from memory each iteration, thus freeing up the
+CPU buses for oeprands.  However, since interrupts are blocked by this
+instruction, it is disabled by default.
+<P>
+
+<DT><CODE>-mloop-unsigned</CODE>
+<DD><DT><CODE>-mno-loop-unsigned</CODE>
+<DD>The maximum iteration count when using RPTS and RPTB (and DB on the C40)
+is 2^31 + 1 since these instructions test if the iteration count is
+negative to terminate the loop.  If the iteration count is unsigned
+there is a possibility than the 2^31 + 1 maximum iteration count may be
+exceeded.  This switch allows an unsigned iteration count.
+<P>
+
+<DT><CODE>-mti</CODE>
+<DD>Try to emit an assembler syntax that the TI assembler (asm30) is happy
+with.  This also enforces compatibility with the API employed by the TI
+C3x C compiler.  For example, long doubles are passed as structures
+rather than in floating point registers.
+<P>
+
+<DT><CODE>-mregparm</CODE>
+<DD><DT><CODE>-mmemparm</CODE>
+<DD>Generate code that uses registers (stack) for passing arguments to functions.
+By default, arguments are passed in registers where possible rather
+than by pushing arguments on to the stack.
+<P>
+
+<DT><CODE>-mparallel-insns</CODE>
+<DD><DT><CODE>-mno-parallel-insns</CODE>
+<DD>Allow the generation of parallel instructions.  This is enabled by
+default with -O2.
+<P>
+
+<DT><CODE>-mparallel-mpy</CODE>
+<DD><DT><CODE>-mno-parallel-mpy</CODE>
+<DD>Allow the generation of MPY||ADD and MPY||SUB parallel instructions,
+provided -mparallel-insns is also specified.  These instructions have
+tight register constraints which can pessimize the code generation
+of large functions.
+<P>
+
+</DL>
+<P>
+
+<A NAME="V850 Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_38.html#SEC38"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_40.html#SEC40"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

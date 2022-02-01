@@ -1,0 +1,188 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Secs Background</TITLE>
+
+<META NAME="description" CONTENT="Using as: Secs Background">
+<META NAME="keywords" CONTENT="Using as: Secs Background">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC42"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_40.html#SEC41"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_42.html#SEC43"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_40.html#SEC41"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_40.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_46.html#SEC47"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.1 Background </H2>
+<!--docid::SEC42::-->
+<P>
+
+Roughly, a section is a range of addresses, with no gaps; all data
+"in" those addresses is treated the same for some particular purpose.
+For example there may be a "read only" section.
+</P><P>
+
+<A NAME="IDX175"></A>
+<A NAME="IDX176"></A>
+The linker <CODE>ld</CODE> reads many object files (partial programs) and
+combines their contents to form a runnable program.  When <CODE>as</CODE>
+emits an object file, the partial program is assumed to start at address 0.
+<CODE>ld</CODE> assigns the final addresses for the partial program, so that
+different partial programs do not overlap.  This is actually an
+oversimplification, but it suffices to explain how <CODE>as</CODE> uses
+sections.
+</P><P>
+
+<CODE>ld</CODE> moves blocks of bytes of your program to their run-time
+addresses.  These blocks slide to their run-time addresses as rigid
+units; their length does not change and neither does the order of bytes
+within them.  Such a rigid unit is called a <EM>section</EM>.  Assigning
+run-time addresses to sections is called <EM>relocation</EM>.  It includes
+the task of adjusting mentions of object-file addresses so they refer to
+the proper run-time addresses.
+For the H8/300 and H8/500,
+and for the Renesas / SuperH SH,
+<CODE>as</CODE> pads sections if needed to
+ensure they end on a word (sixteen bit) boundary.
+</P><P>
+
+<A NAME="IDX177"></A>
+An object file written by <CODE>as</CODE> has at least three sections, any
+of which may be empty.  These are named <EM>text</EM>, <EM>data</EM> and
+<EM>bss</EM> sections.
+</P><P>
+
+When it generates COFF or ELF output,
+<CODE>as</CODE> can also generate whatever other named sections you specify
+using the <SAMP>`.section'</SAMP> directive (see section <A HREF="as_134.html#SEC137"><CODE>.section</CODE></A>).
+If you do not use any directives that place output in the <SAMP>`.text'</SAMP>
+or <SAMP>`.data'</SAMP> sections, these sections still exist, but are empty.
+</P><P>
+
+When <CODE>as</CODE> generates SOM or ELF output for the HPPA,
+<CODE>as</CODE> can also generate whatever other named sections you
+specify using the <SAMP>`.space'</SAMP> and <SAMP>`.subspace'</SAMP> directives.  See
+<CITE>HP9000 Series 800 Assembly Language Reference Manual</CITE>
+(HP 92432-90001) for details on the <SAMP>`.space'</SAMP> and <SAMP>`.subspace'</SAMP>
+assembler directives.
+</P><P>
+
+Additionally, <CODE>as</CODE> uses different names for the standard
+text, data, and bss sections when generating SOM output.  Program text
+is placed into the <SAMP>`$CODE$'</SAMP> section, data into <SAMP>`$DATA$'</SAMP>, and
+BSS into <SAMP>`$BSS$'</SAMP>.
+</P><P>
+
+Within the object file, the text section starts at address <CODE>0</CODE>, the
+data section follows, and the bss section follows the data section.
+</P><P>
+
+When generating either SOM or ELF output files on the HPPA, the text
+section starts at address <CODE>0</CODE>, the data section at address
+<CODE>0x4000000</CODE>, and the bss section follows the data section.
+</P><P>
+
+To let <CODE>ld</CODE> know which data changes when the sections are
+relocated, and how to change that data, <CODE>as</CODE> also writes to the
+object file details of the relocation needed.  To perform relocation
+<CODE>ld</CODE> must know, each time an address in the object
+file is mentioned:
+<UL>
+<LI>
+Where in the object file is the beginning of this reference to
+an address?
+<LI>
+How long (in bytes) is this reference?
+<LI>
+Which section does the address refer to?  What is the numeric value of
+<TABLE><tr><td>&nbsp;</td><td class=display><pre style="font-family: serif">(<VAR>address</VAR>) - (<VAR>start-address of section</VAR>)?
+</pre></td></tr></table><LI>
+Is the reference to an address "Program-Counter relative"?
+</UL>
+<P>
+
+<A NAME="IDX178"></A>
+<A NAME="IDX179"></A>
+In fact, every address <CODE>as</CODE> ever uses is expressed as
+<TABLE><tr><td>&nbsp;</td><td class=display><pre style="font-family: serif">(<VAR>section</VAR>) + (<VAR>offset into section</VAR>)
+</pre></td></tr></table>Further, most expressions <CODE>as</CODE> computes have this section-relative
+nature.
+(For some object formats, such as SOM for the HPPA, some expressions are
+symbol-relative instead.)
+</P><P>
+
+In this manual we use the notation {<VAR>secname</VAR> <VAR>N</VAR>} to mean "offset
+<VAR>N</VAR> into section <VAR>secname</VAR>."
+</P><P>
+
+Apart from text, data and bss sections you need to know about the
+<EM>absolute</EM> section.  When <CODE>ld</CODE> mixes partial programs,
+addresses in the absolute section remain unchanged.  For example, address
+<CODE>{absolute 0}</CODE> is "relocated" to run-time address 0 by
+<CODE>ld</CODE>.  Although the linker never arranges two partial programs'
+data sections with overlapping addresses after linking, <EM>by definition</EM>
+their absolute sections must overlap.  Address <CODE>{absolute 239}</CODE> in one
+part of a program is always the same address when the program is running as
+address <CODE>{absolute 239}</CODE> in any other part of the program.
+</P><P>
+
+The idea of sections is extended to the <EM>undefined</EM> section.  Any
+address whose section is unknown at assembly time is by definition
+rendered {undefined <VAR>U</VAR>}---where <VAR>U</VAR> is filled in later.
+Since numbers are always defined, the only way to generate an undefined
+address is to mention an undefined symbol.  A reference to a named
+common block would be such a symbol: its value is unknown at assembly
+time so it has section <EM>undefined</EM>.
+</P><P>
+
+By analogy the word <EM>section</EM> is used to describe groups of sections in
+the linked program.  <CODE>ld</CODE> puts all partial programs' text
+sections in contiguous addresses in the linked program.  It is
+customary to refer to the <EM>text section</EM> of a program, meaning all
+the addresses of all partial programs' text sections.  Likewise for
+data and bss sections.
+</P><P>
+
+Some sections are manipulated by <CODE>ld</CODE>; others are invented for
+use of <CODE>as</CODE> and have no meaning except during assembly.
+</P><P>
+
+<A NAME="Ld Sections"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_40.html#SEC41"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_42.html#SEC43"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_40.html#SEC41"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_40.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_46.html#SEC47"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

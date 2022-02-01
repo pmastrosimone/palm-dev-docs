@@ -1,0 +1,130 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: GDB/MI Input Syntax</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: GDB/MI Input Syntax">
+<META NAME="keywords" CONTENT="Debugging with GDB: GDB/MI Input Syntax">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC218"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_216.html#SEC217"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_218.html#SEC219"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_213.html#SEC213"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_216.html#SEC217"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_220.html#SEC225"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 24.1.1 GDB/MI Input Syntax </H3>
+<!--docid::SEC218::-->
+<P>
+
+<A NAME="IDX977"></A>
+<A NAME="IDX978"></A>
+<DL COMPACT>
+<DT><CODE><VAR>command</VAR> ==></CODE>
+<DD><CODE><VAR>cli-command</VAR> | <VAR>mi-command</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>cli-command</VAR> ==></CODE>
+<DD><CODE>[ <VAR>token</VAR> ] <VAR>cli-command</VAR> <VAR>nl</VAR></CODE>, where
+<VAR>cli-command</VAR> is any existing GDB CLI command.
+<P>
+
+<DT><CODE><VAR>mi-command</VAR> ==></CODE>
+<DD><CODE>[ <VAR>token</VAR> ] "-" <VAR>operation</VAR> ( " " <VAR>option</VAR> )*
+<CODE>[</CODE> " --" <CODE>]</CODE> ( " " <VAR>parameter</VAR> )* <VAR>nl</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>token</VAR> ==></CODE>
+<DD>"any sequence of digits"
+<P>
+
+<DT><CODE><VAR>option</VAR> ==></CODE>
+<DD><CODE>"-" <VAR>parameter</VAR> [ " " <VAR>parameter</VAR> ]</CODE>
+<P>
+
+<DT><CODE><VAR>parameter</VAR> ==></CODE>
+<DD><CODE><VAR>non-blank-sequence</VAR> | <VAR>c-string</VAR></CODE>
+<P>
+
+<DT><CODE><VAR>operation</VAR> ==></CODE>
+<DD><EM>any of the operations described in this chapter</EM>
+<P>
+
+<DT><CODE><VAR>non-blank-sequence</VAR> ==></CODE>
+<DD><EM>anything, provided it doesn't contain special characters such as
+"-", <VAR>nl</VAR>, """ and of course " "</EM>
+<P>
+
+<DT><CODE><VAR>c-string</VAR> ==></CODE>
+<DD><CODE>""" <VAR>seven-bit-iso-c-string-content</VAR> """</CODE>
+<P>
+
+<DT><CODE><VAR>nl</VAR> ==></CODE>
+<DD><CODE>CR | CR-LF</CODE>
+</DL>
+<P>
+
+Notes:
+</P><P>
+
+<UL>
+<LI>
+The CLI commands are still handled by the MI interpreter; their
+output is described below.
+<P>
+
+<LI>
+The <CODE><VAR>token</VAR></CODE>, when present, is passed back when the command
+finishes.
+<P>
+
+<LI>
+Some MI commands accept optional arguments as part of the parameter
+list.  Each option is identified by a leading <SAMP>`-'</SAMP> (dash) and may be
+followed by an optional argument parameter.  Options occur first in the
+parameter list and can be delimited from normal parameters using
+<SAMP>`--'</SAMP> (this is useful when some parameters begin with a dash).
+</UL>
+<P>
+
+Pragmatics:
+</P><P>
+
+<UL>
+<LI>
+We want easy access to the existing CLI syntax (for debugging).
+<P>
+
+<LI>
+We want it to be easy to spot a MI operation.
+</UL>
+<P>
+
+<A NAME="GDB/MI Output Syntax"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

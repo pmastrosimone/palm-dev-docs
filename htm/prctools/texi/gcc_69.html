@@ -1,0 +1,134 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Lvalues</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Lvalues">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Lvalues">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC69"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_68.html#SEC68"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_70.html#SEC70"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_70.html#SEC70"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.8 Generalized Lvalues </H2>
+<!--docid::SEC69::-->
+Compound expressions, conditional expressions and casts are allowed as
+lvalues provided their operands are lvalues.  This means that you can take
+their addresses or store values into them.
+<P>
+
+Standard C++ allows compound expressions and conditional expressions as
+lvalues, and permits casts to reference type, so use of this extension
+is deprecated for C++ code.
+</P><P>
+
+For example, a compound expression can be assigned, provided the last
+expression in the sequence is an lvalue.  These two expressions are
+equivalent:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(a, b) += 5
+a, (b += 5)
+</pre></td></tr></table></P><P>
+
+Similarly, the address of the compound expression can be taken.  These two
+expressions are equivalent:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>&#38;(a, b)
+a, &#38;b
+</pre></td></tr></table></P><P>
+
+A conditional expression is a valid lvalue if its type is not void and the
+true and false branches are both valid lvalues.  For example, these two
+expressions are equivalent:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(a ? b : c) = 5
+(a ? b = 5 : (c = 5))
+</pre></td></tr></table></P><P>
+
+A cast is a valid lvalue if its operand is an lvalue.  A simple
+assignment whose left-hand side is a cast works by converting the
+right-hand side first to the specified type, then to the type of the
+inner left-hand side expression.  After this is stored, the value is
+converted back to the specified type to become the value of the
+assignment.  Thus, if <CODE>a</CODE> has type <CODE>char *</CODE>, the following two
+expressions are equivalent:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(int)a = 5
+(int)(a = (char *)(int)5)
+</pre></td></tr></table></P><P>
+
+An assignment-with-arithmetic operation such as <SAMP>`+='</SAMP> applied to a cast
+performs the arithmetic using the type resulting from the cast, and then
+continues as in the previous case.  Therefore, these two expressions are
+equivalent:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(int)a += 5
+(int)(a = (char *)(int) ((int)a + 5))
+</pre></td></tr></table></P><P>
+
+You cannot take the address of an lvalue cast, because the use of its
+address would not work out coherently.  Suppose that <CODE>&#38;(int)f</CODE> were
+permitted, where <CODE>f</CODE> has type <CODE>float</CODE>.  Then the following
+statement would try to store an integer bit-pattern where a floating
+point number belongs:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>*&#38;(int)f = 1;
+</pre></td></tr></table></P><P>
+
+This is quite different from what <CODE>(int)f = 1</CODE> would do--that
+would convert 1 to floating point and store it.  Rather than cause this
+inconsistency, we think it is better to prohibit use of <SAMP>`&#38;'</SAMP> on a cast.
+</P><P>
+
+If you really do want an <CODE>int *</CODE> pointer with the address of
+<CODE>f</CODE>, you can simply write <CODE>(int *)&#38;f</CODE>.
+</P><P>
+
+<A NAME="Conditionals"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_68.html#SEC68"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_70.html#SEC70"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_70.html#SEC70"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

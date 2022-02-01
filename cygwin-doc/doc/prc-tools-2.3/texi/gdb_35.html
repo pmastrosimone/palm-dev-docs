@@ -1,0 +1,145 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Break Commands</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Break Commands">
+<META NAME="keywords" CONTENT="Debugging with GDB: Break Commands">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC35"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_34.html#SEC34"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_36.html#SEC36"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_36.html#SEC36"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 5.1.7 Breakpoint command lists </H3>
+<!--docid::SEC35::-->
+<P>
+
+<A NAME="IDX186"></A>
+You can give any breakpoint (or watchpoint or catchpoint) a series of
+commands to execute when your program stops due to that breakpoint.  For
+example, you might want to print the values of certain expressions, or
+enable other breakpoints.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX187"></A>
+<A NAME="IDX188"></A>
+<DT><CODE>commands [<VAR>bnum</VAR>]</CODE>
+<DD><DT><CODE><small>...</small> <VAR>command-list</VAR> <small>...</small></CODE>
+<DD><DT><CODE>end</CODE>
+<DD>Specify a list of commands for breakpoint number <VAR>bnum</VAR>.  The commands
+themselves appear on the following lines.  Type a line containing just
+<CODE>end</CODE> to terminate the commands.
+<P>
+
+To remove all commands from a breakpoint, type <CODE>commands</CODE> and
+follow it immediately with <CODE>end</CODE>; that is, give no commands.
+</P><P>
+
+With no <VAR>bnum</VAR> argument, <CODE>commands</CODE> refers to the last
+breakpoint, watchpoint, or catchpoint set (not to the breakpoint most
+recently encountered).
+</DL>
+<P>
+
+Pressing <KBD>RET</KBD> as a means of repeating the last GDB command is
+disabled within a <VAR>command-list</VAR>.
+</P><P>
+
+You can use breakpoint commands to start your program up again.  Simply
+use the <CODE>continue</CODE> command, or <CODE>step</CODE>, or any other command
+that resumes execution.
+</P><P>
+
+Any other commands in the command list, after a command that resumes
+execution, are ignored.  This is because any time you resume execution
+(even with a simple <CODE>next</CODE> or <CODE>step</CODE>), you may encounter
+another breakpoint--which could have its own command list, leading to
+ambiguities about which list to execute.
+</P><P>
+
+<A NAME="IDX189"></A>
+If the first command you specify in a command list is <CODE>silent</CODE>, the
+usual message about stopping at a breakpoint is not printed.  This may
+be desirable for breakpoints that are to print a specific message and
+then continue.  If none of the remaining commands print anything, you
+see no sign that the breakpoint was reached.  <CODE>silent</CODE> is
+meaningful only at the beginning of a breakpoint command list.
+</P><P>
+
+The commands <CODE>echo</CODE>, <CODE>output</CODE>, and <CODE>printf</CODE> allow you to
+print precisely controlled output, and are often useful in silent
+breakpoints.  See section <A HREF="gdb_192.html#SEC192">Commands for controlled output</A>.
+</P><P>
+
+For example, here is how you could use breakpoint commands to print the
+value of <CODE>x</CODE> at entry to <CODE>foo</CODE> whenever <CODE>x</CODE> is positive.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>break foo if x&#62;0
+commands
+silent
+printf "x is %d\n",x
+cont
+end
+</FONT></pre></td></tr></table></P><P>
+
+One application for breakpoint commands is to compensate for one bug so
+you can test for another.  Put a breakpoint just after the erroneous line
+of code, give it a condition to detect the case in which something
+erroneous has been done, and give it commands to assign correct values
+to any variables that need them.  End with the <CODE>continue</CODE> command
+so that your program does not stop, and start with the <CODE>silent</CODE>
+command so that no output is produced.  Here is an example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>break 403
+commands
+silent
+set x = y + 4
+cont
+end
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="Breakpoint Menus"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_34.html#SEC34"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_36.html#SEC36"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_36.html#SEC36"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

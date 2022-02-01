@@ -1,0 +1,617 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Machine Constraints</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Machine Constraints">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Machine Constraints">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC99"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_98.html#SEC98"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_100.html#SEC100"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_95.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_100.html#SEC100"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 4.33.4 Constraints for Particular Machines </H3>
+<!--docid::SEC99::-->
+<P>
+
+Whenever possible, you should use the general-purpose constraint letters
+in <CODE>asm</CODE> arguments, since they will convey meaning more readily to
+people reading your code.  Failing that, use the constraint letters
+that usually have very similar meanings across architectures.  The most
+commonly used constraints are <SAMP>`m'</SAMP> and <SAMP>`r'</SAMP> (for memory and
+general-purpose registers respectively; see section <A HREF="gcc_96.html#SEC96">4.33.1 Simple Constraints</A>), and
+<SAMP>`I'</SAMP>, usually the letter indicating the most common
+immediate-constant format.
+</P><P>
+
+For each machine architecture, the <TT>`config/<VAR>machine</VAR>.h'</TT> file
+defines additional constraints.  These constraints are used by the
+compiler itself for instruction generation, as well as for <CODE>asm</CODE>
+statements; therefore, some of the constraints are not particularly
+interesting for <CODE>asm</CODE>.  The constraints are defined through these
+macros:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>REG_CLASS_FROM_LETTER</CODE>
+<DD>Register class constraints (usually lower case).
+<P>
+
+<DT><CODE>CONST_OK_FOR_LETTER_P</CODE>
+<DD>Immediate constant constraints, for non-floating point constants of
+word size or smaller precision (usually upper case).
+<P>
+
+<DT><CODE>CONST_DOUBLE_OK_FOR_LETTER_P</CODE>
+<DD>Immediate constant constraints, for all floating point constants and for
+constants of greater than word size precision (usually upper case).
+<P>
+
+<DT><CODE>EXTRA_CONSTRAINT</CODE>
+<DD>Special cases of registers or memory.  This macro is not required, and
+is only defined for some machines.
+</DL>
+<P>
+
+Inspecting these macro definitions in the compiler source for your
+machine is the best way to be certain you have the right constraints.
+However, here is a summary of the machine-dependent constraints
+available on some particular machines.
+</P><P>
+
+<DL COMPACT>
+<DT><EM>ARM family---<TT>`arm.h'</TT></EM>
+<DD><DL COMPACT>
+<DT><CODE>f</CODE>
+<DD>Floating-point register
+<P>
+
+<DT><CODE>F</CODE>
+<DD>One of the floating-point constants 0.0, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0
+or 10.0
+<P>
+
+<DT><CODE>G</CODE>
+<DD>Floating-point constant that would satisfy the constraint <SAMP>`F'</SAMP> if it
+were negated
+<P>
+
+<DT><CODE>I</CODE>
+<DD>Integer that is valid as an immediate operand in a data processing
+instruction.  That is, an integer in the range 0 to 255 rotated by a
+multiple of 2
+<P>
+
+<DT><CODE>J</CODE>
+<DD>Integer in the range -4095 to 4095
+<P>
+
+<DT><CODE>K</CODE>
+<DD>Integer that satisfies constraint <SAMP>`I'</SAMP> when inverted (ones complement)
+<P>
+
+<DT><CODE>L</CODE>
+<DD>Integer that satisfies constraint <SAMP>`I'</SAMP> when negated (twos complement)
+<P>
+
+<DT><CODE>M</CODE>
+<DD>Integer in the range 0 to 32
+<P>
+
+<DT><CODE>Q</CODE>
+<DD>A memory reference where the exact address is in a single register
+(`<SAMP>`m'</SAMP>' is preferable for <CODE>asm</CODE> statements)
+<P>
+
+<DT><CODE>R</CODE>
+<DD>An item in the constant pool
+<P>
+
+<DT><CODE>S</CODE>
+<DD>A symbol in the text segment of the current file
+</DL>
+<P>
+
+<DT><EM>AMD 29000 family---<TT>`a29k.h'</TT></EM>
+<DD><DL COMPACT>
+<DT><CODE>l</CODE>
+<DD>Local register 0
+<P>
+
+<DT><CODE>b</CODE>
+<DD>Byte Pointer (<SAMP>`BP'</SAMP>) register
+<P>
+
+<DT><CODE>q</CODE>
+<DD><SAMP>`Q'</SAMP> register
+<P>
+
+<DT><CODE>h</CODE>
+<DD>Special purpose register
+<P>
+
+<DT><CODE>A</CODE>
+<DD>First accumulator register
+<P>
+
+<DT><CODE>a</CODE>
+<DD>Other accumulator register
+<P>
+
+<DT><CODE>f</CODE>
+<DD>Floating point register
+<P>
+
+<DT><CODE>I</CODE>
+<DD>Constant greater than 0, less than 0x100
+<P>
+
+<DT><CODE>J</CODE>
+<DD>Constant greater than 0, less than 0x10000
+<P>
+
+<DT><CODE>K</CODE>
+<DD>Constant whose high 24 bits are on (1)
+<P>
+
+<DT><CODE>L</CODE>
+<DD>16 bit constant whose high 8 bits are on (1)
+<P>
+
+<DT><CODE>M</CODE>
+<DD>32 bit constant whose high 16 bits are on (1)
+<P>
+
+<DT><CODE>N</CODE>
+<DD>32 bit negative constant that fits in 8 bits
+<P>
+
+<DT><CODE>O</CODE>
+<DD>The constant 0x80000000 or, on the 29050, any 32 bit constant
+whose low 16 bits are 0.
+<P>
+
+<DT><CODE>P</CODE>
+<DD>16 bit negative constant that fits in 8 bits
+<P>
+
+<DT><CODE>G</CODE>
+<DD><DT><CODE>H</CODE>
+<DD>A floating point constant (in <CODE>asm</CODE> statements, use the machine
+independent <SAMP>`E'</SAMP> or <SAMP>`F'</SAMP> instead)
+</DL>
+<P>
+
+<DT><EM>IBM RS6000---<TT>`rs6000.h'</TT></EM>
+<DD><DL COMPACT>
+<DT><CODE>b</CODE>
+<DD>Address base register
+<P>
+
+<DT><CODE>f</CODE>
+<DD>Floating point register
+<P>
+
+<DT><CODE>h</CODE>
+<DD><SAMP>`MQ'</SAMP>, <SAMP>`CTR'</SAMP>, or <SAMP>`LINK'</SAMP> register
+<P>
+
+<DT><CODE>q</CODE>
+<DD><SAMP>`MQ'</SAMP> register
+<P>
+
+<DT><CODE>c</CODE>
+<DD><SAMP>`CTR'</SAMP> register
+<P>
+
+<DT><CODE>l</CODE>
+<DD><SAMP>`LINK'</SAMP> register
+<P>
+
+<DT><CODE>x</CODE>
+<DD><SAMP>`CR'</SAMP> register (condition register) number 0
+<P>
+
+<DT><CODE>y</CODE>
+<DD><SAMP>`CR'</SAMP> register (condition register)
+<P>
+
+<DT><CODE>z</CODE>
+<DD><SAMP>`FPMEM'</SAMP> stack memory for FPR-GPR transfers
+<P>
+
+<DT><CODE>I</CODE>
+<DD>Signed 16 bit constant
+<P>
+
+<DT><CODE>J</CODE>
+<DD>Constant whose low 16 bits are 0
+<P>
+
+<DT><CODE>K</CODE>
+<DD>Constant whose high 16 bits are 0
+<P>
+
+<DT><CODE>L</CODE>
+<DD>Constant suitable as a mask operand
+<P>
+
+<DT><CODE>M</CODE>
+<DD>Constant larger than 31
+<P>
+
+<DT><CODE>N</CODE>
+<DD>Exact power of 2
+<P>
+
+<DT><CODE>O</CODE>
+<DD>Zero
+<P>
+
+<DT><CODE>P</CODE>
+<DD>Constant whose negation is a signed 16 bit constant
+<P>
+
+<DT><CODE>G</CODE>
+<DD>Floating point constant that can be loaded into a register with one
+instruction per word
+<P>
+
+<DT><CODE>Q</CODE>
+<DD>Memory operand that is an offset from a register (<SAMP>`m'</SAMP> is preferable
+for <CODE>asm</CODE> statements)
+<P>
+
+<DT><CODE>R</CODE>
+<DD>AIX TOC entry
+<P>
+
+<DT><CODE>S</CODE>
+<DD>Constant suitable as a 64-bit mask operand
+<P>
+
+<DT><CODE>U</CODE>
+<DD>System V Release 4 small data area reference
+</DL>
+<P>
+
+<DT><EM>Intel 386---<TT>`i386.h'</TT></EM>
+<DD><DL COMPACT>
+<DT><CODE>q</CODE>
+<DD><SAMP>`a'</SAMP>, <CODE>b</CODE>, <CODE>c</CODE>, or <CODE>d</CODE> register
+<P>
+
+<DT><CODE>A</CODE>
+<DD><SAMP>`a'</SAMP>, or <CODE>d</CODE> register (for 64-bit ints)
+<P>
+
+<DT><CODE>f</CODE>
+<DD>Floating point register
+<P>
+
+<DT><CODE>t</CODE>
+<DD>First (top of stack) floating point register
+<P>
+
+<DT><CODE>u</CODE>
+<DD>Second floating point register
+<P>
+
+<DT><CODE>a</CODE>
+<DD><SAMP>`a'</SAMP> register
+<P>
+
+<DT><CODE>b</CODE>
+<DD><SAMP>`b'</SAMP> register
+<P>
+
+<DT><CODE>c</CODE>
+<DD><SAMP>`c'</SAMP> register
+<P>
+
+<DT><CODE>d</CODE>
+<DD><SAMP>`d'</SAMP> register
+<P>
+
+<DT><CODE>D</CODE>
+<DD><SAMP>`di'</SAMP> register
+<P>
+
+<DT><CODE>S</CODE>
+<DD><SAMP>`si'</SAMP> register
+<P>
+
+<DT><CODE>I</CODE>
+<DD>Constant in range 0 to 31 (for 32 bit shifts)
+<P>
+
+<DT><CODE>J</CODE>
+<DD>Constant in range 0 to 63 (for 64 bit shifts)
+<P>
+
+<DT><CODE>K</CODE>
+<DD><SAMP>`0xff'</SAMP>
+<P>
+
+<DT><CODE>L</CODE>
+<DD><SAMP>`0xffff'</SAMP>
+<P>
+
+<DT><CODE>M</CODE>
+<DD>0, 1, 2, or 3 (shifts for <CODE>lea</CODE> instruction)
+<P>
+
+<DT><CODE>N</CODE>
+<DD>Constant in range 0 to 255 (for <CODE>out</CODE> instruction)
+<P>
+
+<DT><CODE>G</CODE>
+<DD>Standard 80387 floating point constant
+</DL>
+<P>
+
+<DT><EM>Intel 960---<TT>`i960.h'</TT></EM>
+<DD><DL COMPACT>
+<DT><CODE>f</CODE>
+<DD>Floating point register (<CODE>fp0</CODE> to <CODE>fp3</CODE>)
+<P>
+
+<DT><CODE>l</CODE>
+<DD>Local register (<CODE>r0</CODE> to <CODE>r15</CODE>)
+<P>
+
+<DT><CODE>b</CODE>
+<DD>Global register (<CODE>g0</CODE> to <CODE>g15</CODE>)
+<P>
+
+<DT><CODE>d</CODE>
+<DD>Any local or global register
+<P>
+
+<DT><CODE>I</CODE>
+<DD>Integers from 0 to 31
+<P>
+
+<DT><CODE>J</CODE>
+<DD>0
+<P>
+
+<DT><CODE>K</CODE>
+<DD>Integers from -31 to 0
+<P>
+
+<DT><CODE>G</CODE>
+<DD>Floating point 0
+<P>
+
+<DT><CODE>H</CODE>
+<DD>Floating point 1
+</DL>
+<P>
+
+<DT><EM>MIPS---<TT>`mips.h'</TT></EM>
+<DD><DL COMPACT>
+<DT><CODE>d</CODE>
+<DD>General-purpose integer register
+<P>
+
+<DT><CODE>f</CODE>
+<DD>Floating-point register (if available)
+<P>
+
+<DT><CODE>h</CODE>
+<DD><SAMP>`Hi'</SAMP> register
+<P>
+
+<DT><CODE>l</CODE>
+<DD><SAMP>`Lo'</SAMP> register
+<P>
+
+<DT><CODE>x</CODE>
+<DD><SAMP>`Hi'</SAMP> or <SAMP>`Lo'</SAMP> register
+<P>
+
+<DT><CODE>y</CODE>
+<DD>General-purpose integer register
+<P>
+
+<DT><CODE>z</CODE>
+<DD>Floating-point status register
+<P>
+
+<DT><CODE>I</CODE>
+<DD>Signed 16 bit constant (for arithmetic instructions)
+<P>
+
+<DT><CODE>J</CODE>
+<DD>Zero
+<P>
+
+<DT><CODE>K</CODE>
+<DD>Zero-extended 16-bit constant (for logic instructions)
+<P>
+
+<DT><CODE>L</CODE>
+<DD>Constant with low 16 bits zero (can be loaded with <CODE>lui</CODE>)
+<P>
+
+<DT><CODE>M</CODE>
+<DD>32 bit constant which requires two instructions to load (a constant
+which is not <SAMP>`I'</SAMP>, <SAMP>`K'</SAMP>, or <SAMP>`L'</SAMP>)
+<P>
+
+<DT><CODE>N</CODE>
+<DD>Negative 16 bit constant
+<P>
+
+<DT><CODE>O</CODE>
+<DD>Exact power of two
+<P>
+
+<DT><CODE>P</CODE>
+<DD>Positive 16 bit constant
+<P>
+
+<DT><CODE>G</CODE>
+<DD>Floating point zero
+<P>
+
+<DT><CODE>Q</CODE>
+<DD>Memory reference that can be loaded with more than one instruction
+(<SAMP>`m'</SAMP> is preferable for <CODE>asm</CODE> statements)
+<P>
+
+<DT><CODE>R</CODE>
+<DD>Memory reference that can be loaded with one instruction
+(<SAMP>`m'</SAMP> is preferable for <CODE>asm</CODE> statements)
+<P>
+
+<DT><CODE>S</CODE>
+<DD>Memory reference in external OSF/rose PIC format
+(<SAMP>`m'</SAMP> is preferable for <CODE>asm</CODE> statements)
+</DL>
+<P>
+
+<DT><EM>Motorola 680x0---<TT>`m68k.h'</TT></EM>
+<DD><DL COMPACT>
+<DT><CODE>a</CODE>
+<DD>Address register
+<P>
+
+<DT><CODE>d</CODE>
+<DD>Data register
+<P>
+
+<DT><CODE>f</CODE>
+<DD>68881 floating-point register, if available
+<P>
+
+<DT><CODE>x</CODE>
+<DD>Sun FPA (floating-point) register, if available
+<P>
+
+<DT><CODE>y</CODE>
+<DD>First 16 Sun FPA registers, if available
+<P>
+
+<DT><CODE>I</CODE>
+<DD>Integer in the range 1 to 8
+<P>
+
+<DT><CODE>J</CODE>
+<DD>16 bit signed number
+<P>
+
+<DT><CODE>K</CODE>
+<DD>Signed number whose magnitude is greater than 0x80
+<P>
+
+<DT><CODE>L</CODE>
+<DD>Integer in the range -8 to -1
+<P>
+
+<DT><CODE>M</CODE>
+<DD>Signed number whose magnitude is greater than 0x100
+<P>
+
+<DT><CODE>G</CODE>
+<DD>Floating point constant that is not a 68881 constant
+<P>
+
+<DT><CODE>H</CODE>
+<DD>Floating point constant that can be used by Sun FPA
+</DL>
+<P>
+
+<DT><EM>SPARC---<TT>`sparc.h'</TT></EM>
+<DD><DL COMPACT>
+<DT><CODE>f</CODE>
+<DD>Floating-point register that can hold 32 or 64 bit values.
+<P>
+
+<DT><CODE>e</CODE>
+<DD>Floating-point register that can hold 64 or 128 bit values.
+<P>
+
+<DT><CODE>I</CODE>
+<DD>Signed 13 bit constant
+<P>
+
+<DT><CODE>J</CODE>
+<DD>Zero
+<P>
+
+<DT><CODE>K</CODE>
+<DD>32 bit constant with the low 12 bits clear (a constant that can be
+loaded with the <CODE>sethi</CODE> instruction)
+<P>
+
+<DT><CODE>G</CODE>
+<DD>Floating-point zero
+<P>
+
+<DT><CODE>H</CODE>
+<DD>Signed 13 bit constant, sign-extended to 32 or 64 bits
+<P>
+
+<DT><CODE>Q</CODE>
+<DD>Memory reference that can be loaded with one instruction  (<SAMP>`m'</SAMP> is
+more appropriate for <CODE>asm</CODE> statements)
+<P>
+
+<DT><CODE>S</CODE>
+<DD>Constant, or memory address
+<P>
+
+<DT><CODE>T</CODE>
+<DD>Memory address aligned to an 8-byte boundary
+<P>
+
+<DT><CODE>U</CODE>
+<DD>Even register
+</DL>
+</DL>
+<P>
+
+<A NAME="Asm Labels"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_98.html#SEC98"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_100.html#SEC100"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_95.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_100.html#SEC100"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

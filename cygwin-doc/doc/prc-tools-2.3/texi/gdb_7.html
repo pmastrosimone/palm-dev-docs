@@ -1,0 +1,143 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Invoking GDB</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Invoking GDB">
+<META NAME="keywords" CONTENT="Debugging with GDB: Invoking GDB">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC7"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_6.html#SEC6"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_8.html#SEC8"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_6.html#SEC6"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_6.html#SEC6"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_10.html#SEC10"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.1 Invoking GDB </H2>
+<!--docid::SEC7::-->
+<P>
+
+Invoke GDB by running the program <CODE>gdb</CODE>.  Once started,
+GDB reads commands from the terminal until you tell it to exit.
+</P><P>
+
+You can also run <CODE>gdb</CODE> with a variety of arguments and options,
+to specify more of your debugging environment at the outset.
+</P><P>
+
+The command-line options described here are designed
+to cover a variety of situations; in some environments, some of these
+options may effectively be unavailable.
+</P><P>
+
+The most usual way to start GDB is with one argument,
+specifying an executable program:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>gdb <VAR>program</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+You can also start with both an executable program and a core file
+specified:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>gdb <VAR>program</VAR> <VAR>core</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+You can, instead, specify a process ID as a second argument, if you want
+to debug a running process:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>gdb <VAR>program</VAR> 1234
+</FONT></pre></td></tr></table></P><P>
+
+would attach GDB to process <CODE>1234</CODE> (unless you also have a file
+named <TT>`1234'</TT>; GDB does check for a core file first).
+</P><P>
+
+Taking advantage of the second command-line argument requires a fairly
+complete operating system; when you use GDB as a remote
+debugger attached to a bare board, there may not be any notion of
+"process", and there is often no way to get a core dump.  GDB
+will warn you if it is unable to attach or to read core dumps.
+</P><P>
+
+You can optionally have <CODE>gdb</CODE> pass any arguments after the
+executable file to the inferior using <CODE>--args</CODE>.  This option stops
+option processing.
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>gdb --args gcc -O2 -c foo.c
+</FONT></pre></td></tr></table>This will cause <CODE>gdb</CODE> to debug <CODE>gcc</CODE>, and to set
+<CODE>gcc</CODE>'s command-line arguments (see section <A HREF="gdb_19.html#SEC19">4.3 Your program's arguments</A>) to <SAMP>`-O2 -c foo.c'</SAMP>.
+</P><P>
+
+You can run <CODE>gdb</CODE> without printing the front material, which describes
+GDB's non-warranty, by specifying <CODE>-silent</CODE>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>gdb -silent
+</FONT></pre></td></tr></table></P><P>
+
+You can further control how GDB starts up by using command-line
+options.  GDB itself can remind you of the options available.
+</P><P>
+
+Type
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>gdb -help
+</FONT></pre></td></tr></table></P><P>
+
+to display all available options and briefly describe their use
+(<SAMP>`gdb -h'</SAMP> is a shorter equivalent).
+</P><P>
+
+All options and command line arguments you give are processed
+in sequential order.  The order makes a difference when the
+<SAMP>`-x'</SAMP> option is used.
+</P><P>
+
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_8.html#SEC8">2.1.1 Choosing files</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_9.html#SEC9">2.1.2 Choosing modes</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+</TABLE></BLOCKQUOTE>
+<P>
+
+<A NAME="File Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_6.html#SEC6"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_8.html#SEC8"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_6.html#SEC6"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_6.html#SEC6"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_10.html#SEC10"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

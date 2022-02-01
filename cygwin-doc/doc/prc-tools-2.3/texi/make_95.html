@@ -1,0 +1,112 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Avoiding Compilation</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Avoiding Compilation">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Avoiding Compilation">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC99"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_94.html#SEC98"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_96.html#SEC100"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 9.4 Avoiding Recompilation of Some Files </H2>
+<!--docid::SEC99::-->
+<P>
+
+Sometimes you may have changed a source file but you do not want to
+recompile all the files that depend on it.  For example, suppose you add
+a macro or a declaration to a header file that many other files depend
+on.  Being conservative, <CODE>make</CODE> assumes that any change in the
+header file requires recompilation of all dependent files, but you know
+that they do not need to be recompiled and you would rather not waste
+the time waiting for them to compile.
+</P><P>
+
+If you anticipate the problem before changing the header file, you can
+use the <SAMP>`-t'</SAMP> flag.  This flag tells <CODE>make</CODE> not to run the
+commands in the rules, but rather to mark the target up to date by
+changing its last-modification date.  You would follow this procedure:
+</P><P>
+
+<OL>
+<LI>
+Use the command <SAMP>`make'</SAMP> to recompile the source files that really
+need recompilation, ensuring that the object files are up-to-date
+before you begin.
+<P>
+
+<LI>
+Make the changes in the header files.
+<P>
+
+<LI>
+Use the command <SAMP>`make -t'</SAMP> to mark all the object files as
+up to date.  The next time you run <CODE>make</CODE>, the changes in the
+header files will not cause any recompilation.
+</OL>
+<P>
+
+If you have already changed the header file at a time when some files
+do need recompilation, it is too late to do this.  Instead, you can
+use the <SAMP>`-o <VAR>file</VAR>'</SAMP> flag, which marks a specified file as
+"old" (see section <A HREF="make_98.html#SEC102">Summary of Options</A>).  This means
+that the file itself will not be remade, and nothing else will be
+remade on its account.  Follow this procedure:
+</P><P>
+
+<OL>
+<LI>
+Recompile the source files that need compilation for reasons independent
+of the particular header file, with <SAMP>`make -o <VAR>headerfile</VAR>'</SAMP>.
+If several header files are involved, use a separate <SAMP>`-o'</SAMP> option
+for each header file.
+<P>
+
+<LI>
+Touch all the object files with <SAMP>`make -t'</SAMP>.
+</OL>
+<P>
+
+<A NAME="Overriding"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_94.html#SEC98"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_96.html#SEC100"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,183 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Install Command Categories</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Install Command Categories">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Install Command Categories">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC132"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_127.html#SEC131"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_129.html#SEC133"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_122.html#SEC126"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_122.html#SEC126"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_129.html#SEC133"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 14.6 Install Command Categories </H2>
+<!--docid::SEC132::-->
+<P>
+
+<A NAME="IDX639"></A>
+<A NAME="IDX640"></A>
+When writing the <CODE>install</CODE> target, you must classify all the
+commands into three categories: normal ones, <EM>pre-installation</EM>
+commands and <EM>post-installation</EM> commands.
+</P><P>
+
+Normal commands move files into their proper places, and set their
+modes.  They may not alter any files except the ones that come entirely
+from the package they belong to.
+</P><P>
+
+Pre-installation and post-installation commands may alter other files;
+in particular, they can edit global configuration files or data bases.
+</P><P>
+
+Pre-installation commands are typically executed before the normal
+commands, and post-installation commands are typically run after the
+normal commands.
+</P><P>
+
+The most common use for a post-installation command is to run
+<CODE>install-info</CODE>.  This cannot be done with a normal command, since
+it alters a file (the Info directory) which does not come entirely and
+solely from the package being installed.  It is a post-installation
+command because it needs to be done after the normal command which
+installs the package's Info files.
+</P><P>
+
+Most programs don't need any pre-installation commands, but we have the
+feature just in case it is needed.
+</P><P>
+
+To classify the commands in the <CODE>install</CODE> rule into these three
+categories, insert <EM>category lines</EM> among them.  A category line
+specifies the category for the commands that follow.
+</P><P>
+
+A category line consists of a tab and a reference to a special Make
+variable, plus an optional comment at the end.  There are three
+variables you can use, one for each category; the variable name
+specifies the category.  Category lines are no-ops in ordinary execution
+because these three Make variables are normally undefined (and you
+<EM>should not</EM> define them in the makefile).
+</P><P>
+
+Here are the three possible category lines, each with a comment that
+explains what it means:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>        $(PRE_INSTALL)     # Pre-install commands follow.
+        $(POST_INSTALL)    # Post-install commands follow.
+        $(NORMAL_INSTALL)  # Normal commands follow.
+</FONT></pre></td></tr></table></P><P>
+
+If you don't use a category line at the beginning of the <CODE>install</CODE>
+rule, all the commands are classified as normal until the first category
+line.  If you don't use any category lines, all the commands are
+classified as normal.
+</P><P>
+
+These are the category lines for <CODE>uninstall</CODE>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>        $(PRE_UNINSTALL)     # Pre-uninstall commands follow.
+        $(POST_UNINSTALL)    # Post-uninstall commands follow.
+        $(NORMAL_UNINSTALL)  # Normal commands follow.
+</FONT></pre></td></tr></table></P><P>
+
+Typically, a pre-uninstall command would be used for deleting entries
+from the Info directory.
+</P><P>
+
+If the <CODE>install</CODE> or <CODE>uninstall</CODE> target has any dependencies
+which act as subroutines of installation, then you should start
+<EM>each</EM> dependency's commands with a category line, and start the
+main target's commands with a category line also.  This way, you can
+ensure that each command is placed in the right category regardless of
+which of the dependencies actually run.
+</P><P>
+
+Pre-installation and post-installation commands should not run any
+programs except for these:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>[ basename bash cat chgrp chmod chown cmp cp dd diff echo
+egrep expand expr false fgrep find getopt grep gunzip gzip
+hostname install install-info kill ldconfig ln ls md5sum
+mkdir mkfifo mknod mv printenv pwd rm rmdir sed sort tee
+test touch true uname xargs yes
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX641"></A>
+The reason for distinguishing the commands in this way is for the sake
+of making binary packages.  Typically a binary package contains all the
+executables and other files that need to be installed, and has its own
+method of installing them--so it does not need to run the normal
+installation commands.  But installing the binary package does need to
+execute the pre-installation and post-installation commands.
+</P><P>
+
+Programs to build binary packages work by extracting the
+pre-installation and post-installation commands.  Here is one way of
+extracting the pre-installation commands:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>make -n install -o all \
+      PRE_INSTALL=pre-install \
+      POST_INSTALL=post-install \
+      NORMAL_INSTALL=normal-install \
+  | gawk -f pre-install.awk
+</FONT></pre></td></tr></table></P><P>
+
+where the file <TT>`pre-install.awk'</TT> could contain this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>$0 ~ /^\t[ \t]*(normal_install|post_install)[ \t]*$/ {on = 0}
+on {print $0}
+$0 ~ /^\t[ \t]*pre_install[ \t]*$/ {on = 1}
+</FONT></pre></td></tr></table></P><P>
+
+The resulting file of pre-installation commands is executed as a shell
+script as part of installing the binary package.
+</P><P>
+
+<A NAME="Quick Reference"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_127.html#SEC131"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_129.html#SEC133"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_122.html#SEC126"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_122.html#SEC126"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_129.html#SEC133"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,819 @@
+<html>
+<head>
+<title>(Protein) Form.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:19:39">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FontSelect.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FSLib.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">49 &nbsp;&nbsp;
+Form.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="Form.html">49  Form.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424983">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#425037">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="424917"> </a>The Form APIs have undergone a general cleanup. This involved the removal of unused declarations and the hiding of structure contents that developers had previously been warned not to rely on.</p>
+
+<p><a name="430836"> </a>In order to deal with the fact that Palm OS Cobalt doesn't support a resource search chain, a number of functions now take an additional parameter through which you explicitly identify the resource database that contains a needed resource.</p>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425722"> </a><b>Table 49.1&nbsp;&nbsp;Deleted functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425726"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425728"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425730"> </a><code>FrmActiveState()</code></p>
+    </td>
+    <td><p class="tt"><a name="425732"> </a>Nothing. This function was documented as "System Use Only."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425734"> </a><code>FrmAddSpaceForObject()</code></p>
+    </td>
+    <td><p class="tt"><a name="430757"> </a>Nothing. This function was documented as "System Use Only."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425738"> </a><code>FrmGetDIAPolicyAttr()</code></p>
+    </td>
+    <td><p class="tt"><a name="425740"> </a>Nothing; your application now controls the state of the input area directly, so this function is no longer needed. See <i>Exploring Palm OS: Input Services</i> for more information on controlling the input area.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425742"> </a><code>FrmGetUserModifiedState()</code></p>
+    </td>
+    <td><p class="tt"><a name="430759"> </a>Nothing. This function was documented as "System Use Only."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425746"> </a><code>FrmSetDIAPolicyAttr()</code></p>
+    </td>
+    <td><p class="tt"><a name="425748"> </a><code>PINSetInputAreaState()</code>. See <i>Exploring Palm OS: Input Services</i> for more information on controlling the input area.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425750"> </a><code>FrmSetNotUserModified()</code></p>
+    </td>
+    <td><p class="tt"><a name="430761"> </a>Nothing. This function was documented as "System Use Only."</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425763"> </a><b>Table 49.2&nbsp;&nbsp;Deleted macros</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425767"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425769"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425771"> </a><code>FrmRestoreActiveState()</code></p>
+    </td>
+    <td><p class="tt"><a name="425773"> </a>Nothing. This macro simply called a function that was documented as "System Use Only."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425775"> </a><code>FrmSaveActiveState()</code></p>
+    </td>
+    <td><p class="tt"><a name="430765"> </a>Nothing. This macro simply called a function that was documented as "System Use Only."</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425785"> </a><b>Table 49.3&nbsp;&nbsp;Deleted structures </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425789"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425791"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425793"> </a><code>FormAttrType</code></p>
+    </td>
+    <td><p class="tt"><a name="425795"> </a>Nothing. This structure was only needed by the <code>FormType</code> structure, the internals of which are now private. Applications should not have been accessing this structure directly.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425797"> </a><code>FormFrameType</code></p>
+    </td>
+    <td><p class="tt"><a name="425799"> </a>Nothing. This structure was defined but not used by any of the APIs exposed in the last pre-Palm OS Cobalt SDK.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425801"> </a><code>FormLineType</code></p>
+    </td>
+    <td><p class="tt"><a name="430701"> </a>Nothing. This structure was defined but not used by any of the APIs exposed in the last pre-Palm OS Cobalt SDK.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425805"> </a><code>FormObjAttrType</code></p>
+    </td>
+    <td><p class="tt"><a name="425807"> </a>Nothing. This structure was only used by structures who's contents are no longer publicly exposed. Applications should not have been accessing this structure directly.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425809"> </a><code>FormObjectType</code></p>
+    </td>
+    <td><p class="tt"><a name="430729"> </a>Nothing. This structure was defined but only used by <code>FormObjListType</code>, which was not used by any of the APIs exposed in the last pre-Palm OS Cobalt SDK.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425813"> </a><code>FormObjListType</code></p>
+    </td>
+    <td><p class="tt"><a name="430719"> </a>Nothing. This structure was defined but not used by any of the APIs exposed in the last pre-Palm OS Cobalt SDK.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425817"> </a><code>FormPopupType</code></p>
+    </td>
+    <td><p class="tt"><a name="430744"> </a>Nothing. This structure was defined but only used by <code>FormObjectType</code>, which was not used by any of the APIs exposed in the last pre-Palm OS Cobalt SDK.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425821"> </a><code>FormRectangleType</code></p>
+    </td>
+    <td><p class="tt"><a name="430710"> </a>Nothing. This structure was defined but not used by any of the APIs exposed in the last pre-Palm OS Cobalt SDK.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425825"> </a><code>FormTitleType</code></p>
+    </td>
+    <td><p class="tt"><a name="430819"> </a>Nothing. This structure was defined but only used by <code>FormObjectType</code>, which was not used by any of the APIs exposed in the last pre-Palm OS Cobalt SDK.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425856"> </a><b>Table 49.4&nbsp;&nbsp;Deleted #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425860"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425862"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425864"> </a><code>FORM_GADGET_TYPE_IN_CALLBACK_DEFINED</code></p>
+    </td>
+    <td><p class="tt"><a name="425866"> </a>Nothing. In Palm OS Cobalt the <code>FormGadgetTypeInCallback</code> structure is always defined.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425868"> </a><code>frmDIAPolicyCustom</code></p>
+    </td>
+    <td><p class="tt"><a name="430789"> </a>Nothing; your application now controls the state of the input area directly, so this #define is no longer needed. See <i>Exploring Palm OS: Input Services</i> for more information on controlling the input area.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425872"> </a><code>frmDIAPolicyStayOpen</code></p>
+    </td>
+    <td><p class="tt"><a name="430804"> </a>Nothing; your application now controls the state of the input area directly, so this #define is no longer needed. See <i>Exploring Palm OS: Input Services</i> for more information on controlling the input area.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425881"> </a><b>Table 49.5&nbsp;&nbsp;Deleted enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425885"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425887"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425889"> </a><code>AlertType</code></p>
+    </td>
+    <td><p class="tt"><a name="425891"> </a>Formerly an enum, this is now a typedef that takes one of the values defined by the <code>alertTypes</code> enum.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425893"> </a><code>FormObjectKind</code></p>
+    </td>
+    <td><p class="tt"><a name="430647"> </a>Formerly an enum, this is now a typedef that takes one of the values defined by the <code>formObjects</code> enum.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424983"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425899"> </a><b>Table 49.6&nbsp;&nbsp;Modified functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425903"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425905"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425907"> </a><code>uint16_t FrmAlert (DmOpenRef, uint16_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="430382"> </a>Now contains an additional parameter through which you explicitly identify the resource database that contains the alert resource.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425911"> </a><code>uint16_t FrmCustomAlert (DmOpenRef, uint16_t, const char *, const char *, const char *)</code></p>
+    </td>
+    <td><p class="tt"><a name="430390"> </a>Now contains an additional parameter through which you explicitly identify the resource database that contains the alert resource.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425915"> </a><code>uint16_t FrmCustomResponseAlert (DmOpenRef, uint16_t, const char *, const char *, const char *, char *, int16_t, FormCheckResponseFuncPtr)</code></p>
+    </td>
+    <td><p class="tt"><a name="430396"> </a>Now contains an additional parameter through which you explicitly identify the resource database that contains the alert resource.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425923"> </a><code>void FrmGotoForm (DmOpenRef, uint16_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="430402"> </a>Now contains an additional parameter through which you explicitly identify the resource database that contains the form to be displayed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425927"> </a><code>void FrmHelp (DmOpenRef, uint16_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="430410"> </a>Now contains an additional parameter through which you explicitly identify the resource database that contains the help message string.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425931"> </a><code>FormType *FrmInitForm (DmOpenRef, uint16_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="430418"> </a>Now contains an additional parameter through which you explicitly identify the resource database that contains the form.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425935"> </a><code>FormBitmapType *FrmNewBitmap (FormType **formPP, DmOpenRef, uint16_t, Coord, Coord)</code></p>
+    </td>
+    <td><p class="tt"><a name="430442"> </a>You no longer supply a symbolic ID for the bitmap. Also, there is now an additional parameter through which you explicitly identify the resource database that contains the bitmap.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425939"> </a><code>FormType *FrmNewForm (uint16_t, const char *, Coord, Coord, Coord, Coord, Boolean, uint16_t, DmOpenRef, uint16_t, DmOpenRef, uint16_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="430456"> </a>Now contains two additional parameters through which you explicitly identify the resource databases that contain the form's online help and menus.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425943"> </a><code>void FrmPopupForm (DmOpenRef, uint16_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="430426"> </a>Now contains an additional parameter through which you explicitly identify the resource database that contains the form to be opened.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425947"> </a><code>void FrmSetMenu (FormType *, DmOpenRef, uint16_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="430434"> </a>Now contains an additional parameter through which you explicitly identify the resource database that contains the menu.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425975"> </a><b>Table 49.7&nbsp;&nbsp;Modified structures </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425979"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425981"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425983"> </a><code>AlertTemplateType</code></p>
+    </td>
+    <td><p class="tt"><a name="425985"> </a>The internals of this structure are now completely private. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425987"> </a><code>FormActiveStateType</code></p>
+    </td>
+    <td><p class="tt"><a name="425989"> </a>This structure has increased in size. Note that it remains, as it has always been, abstract; applications shouldn't ever try to access this structure's contents directly.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425991"> </a><code>FormBitmapType</code></p>
+    </td>
+    <td><p class="tt"><a name="430635"> </a>The internals of this structure are now completely private. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425995"> </a><code>FormGadgetType</code></p>
+    </td>
+    <td><p class="tt"><a name="430637"> </a>The internals of this structure are now completely private. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425999"> </a><code>FormLabelType</code></p>
+    </td>
+    <td><p class="tt"><a name="430639"> </a>The internals of this structure are now completely private. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426003"> </a><code>FormType</code></p>
+    </td>
+    <td><p class="tt"><a name="430643"> </a>The internals of this structure are now completely private. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426007"> </a><code>FrmGraffitiStateType</code></p>
+    </td>
+    <td><p class="tt"><a name="430641"> </a>The internals of this structure are now completely private. </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426027"> </a><b>Table 49.8&nbsp;&nbsp;Modified #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="426031"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="426033"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426039"> </a><code>#define noFocus (frmInvalidObjectId)</code></p>
+    </td>
+    <td><p class="tt"><a name="426041"> </a>This #define is effectively unchanged, but note that it previously was defined as a constant value, and now its value is dependent on the value of <code>frmInvalidObjectId</code>.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="425037"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="430487"> </a><b>Table 49.9&nbsp;&nbsp;Unchanged functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="430491"> </a>FrmCloseAllForms()</p>
+    </td>
+    <td><p class="tt"><a name="430493"> </a>FrmCopyLabel()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430495"> </a>FrmCopyTitle()</p>
+    </td>
+    <td><p class="tt"><a name="430497"> </a>FrmDeleteForm()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430499"> </a>FrmDispatchEvent()</p>
+    </td>
+    <td><p class="tt"><a name="430501"> </a>FrmDoDialog()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430503"> </a>FrmDrawForm()</p>
+    </td>
+    <td><p class="tt"><a name="430505"> </a>FrmEraseForm()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430507"> </a>FrmGetActiveField()</p>
+    </td>
+    <td><p class="tt"><a name="430509"> </a>FrmGetActiveForm()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430511"> </a>FrmGetActiveFormID()</p>
+    </td>
+    <td><p class="tt"><a name="430513"> </a>FrmGetControlGroupSelection()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430515"> </a>FrmGetControlValue()</p>
+    </td>
+    <td><p class="tt"><a name="430517"> </a>FrmGetFirstForm()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430519"> </a>FrmGetFocus()</p>
+    </td>
+    <td><p class="tt"><a name="430521"> </a>FrmGetFormBounds()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430523"> </a>FrmGetFormId()</p>
+    </td>
+    <td><p class="tt"><a name="430525"> </a>FrmGetFormPtr()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430527"> </a>FrmGetGadgetData()</p>
+    </td>
+    <td><p class="tt"><a name="430529"> </a>FrmGetLabel()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430531"> </a>FrmGetNumberOfObjects()</p>
+    </td>
+    <td><p class="tt"><a name="430533"> </a>FrmGetObjectBounds()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430535"> </a>FrmGetObjectId()</p>
+    </td>
+    <td><p class="tt"><a name="430537"> </a>FrmGetObjectIndex()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430539"> </a><code>FrmGetObjectIndexFromPtr</code>()</p>
+    </td>
+    <td><p class="tt"><a name="430541"> </a>FrmGetObjectPosition()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430543"> </a>FrmGetObjectPtr()</p>
+    </td>
+    <td><p class="tt"><a name="430545"> </a>FrmGetObjectType()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430547"> </a>FrmGetTitle()</p>
+    </td>
+    <td><p class="tt"><a name="430549"> </a>FrmGetWindowHandle()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430551"> </a>FrmHandleEvent()</p>
+    </td>
+    <td><p class="tt"><a name="430553"> </a>FrmHideObject()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430555"> </a>FrmNewGadget()</p>
+    </td>
+    <td><p class="tt"><a name="430557"> </a>FrmNewGsi()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430559"> </a>FrmNewLabel()</p>
+    </td>
+    <td><p class="tt"><a name="430561"> </a>FrmPointInTitle()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430563"> </a>FrmRemoveObject()</p>
+    </td>
+    <td><p class="tt"><a name="430565"> </a>FrmReturnToForm()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430567"> </a>FrmSaveAllForms()</p>
+    </td>
+    <td><p class="tt"><a name="430569"> </a>FrmSetActiveForm()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430571"> </a>FrmSetCategoryLabel()</p>
+    </td>
+    <td><p class="tt"><a name="430573"> </a>FrmSetControlGroupSelection()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430575"> </a>FrmSetControlValue()</p>
+    </td>
+    <td><p class="tt"><a name="430577"> </a>FrmSetEventHandler()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430579"> </a>FrmSetFocus()</p>
+    </td>
+    <td><p class="tt"><a name="430581"> </a>FrmSetGadgetData()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430583"> </a>FrmSetGadgetHandler()</p>
+    </td>
+    <td><p class="tt"><a name="430585"> </a>FrmSetObjectBounds()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430587"> </a>FrmSetObjectPosition()</p>
+    </td>
+    <td><p class="tt"><a name="430589"> </a>FrmSetTitle()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430591"> </a>FrmShowObject()</p>
+    </td>
+    <td><p class="tt"><a name="430593"> </a>FrmUpdateForm()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430595"> </a>FrmUpdateScrollers()</p>
+    </td>
+    <td><p class="tt"><a name="430597"> </a>FrmValidatePtr()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430599"> </a>FrmVisible()</p>
+    </td>
+    <td><p class="tt"><a name="430601"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426464"> </a><b>Table 49.10&nbsp;&nbsp;Unchanged macros</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426468"> </a>ECFrmValidatePtr()</p>
+    </td>
+    <td><p class="tt"><a name="426470"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426476"> </a><b>Table 49.11&nbsp;&nbsp;Unchanged structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426480"> </a>FormGadgetAttrType</p>
+    </td>
+    <td><p class="tt"><a name="426482"> </a>FormGadgetTypeInCallback</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426490"> </a><b>Table 49.12&nbsp;&nbsp;Unchanged types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426494"> </a>FormCheckResponseFuncPtr</p>
+    </td>
+    <td><p class="tt"><a name="426496"> </a>FormEventHandlerPtr</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426498"> </a>FormPtr</p>
+    </td>
+    <td><p class="tt"><a name="426500"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426506"> </a><b>Table 49.13&nbsp;&nbsp;Unchanged #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426510"> </a>formGadgetDeleteCmd</p>
+    </td>
+    <td><p class="tt"><a name="426512"> </a>formGadgetDrawCmd</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426514"> </a>formGadgetEraseCmd</p>
+    </td>
+    <td><p class="tt"><a name="426516"> </a>formGadgetHandleEventCmd</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="430311"> </a><code>frmInvalidObjectId</code></p>
+    </td>
+    <td><p class="tt"><a name="430313"> </a>frmNoSelectedControl</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426518"> </a>frmRedrawUpdateCode</p>
+    </td>
+    <td><p class="tt"><a name="426520"> </a>frmResponseCreate</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426522"> </a>frmResponseQuit</p>
+    </td>
+    <td><p class="tt"><a name="426524"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426529"> </a><b>Table 49.14&nbsp;&nbsp;Unchanged enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426533"> </a>alertTypes</p>
+    </td>
+    <td><p class="tt"><a name="426535"> </a>formObjects</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426538"> </a><b>Table 49.15&nbsp;&nbsp;Unchanged application-defined functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426542"> </a>FormCheckResponseFuncType()</p>
+    </td>
+    <td><p class="tt"><a name="426544"> </a>FormEventHandlerType()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426546"> </a>FormGadgetHandlerType()</p>
+    </td>
+    <td><p class="tt"><a name="426548"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="425125"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FontSelect.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FSLib.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

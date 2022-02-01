@@ -1,0 +1,104 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Last Resort</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Last Resort">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Last Resort">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC115"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_110.html#SEC114"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_112.html#SEC116"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_104.html#SEC108"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 10.6 Defining Last-Resort Default Rules </H2>
+<!--docid::SEC115::-->
+<P>
+
+You can define a last-resort implicit rule by writing a terminal
+match-anything pattern rule with no prerequisites (see section <A HREF="make_109.html#SEC113">10.5.5 Match-Anything Pattern Rules</A>).  This is just like any other pattern rule; the only thing
+special about it is that it will match any target.  So such a rule's
+commands are used for all targets and prerequisites that have no commands
+of their own and for which no other implicit rule applies.
+</P><P>
+
+For example, when testing a makefile, you might not care if the source
+files contain real data, only that they exist.  Then you might do this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>%::
+        touch $@
+</pre></td></tr></table></P><P>
+
+to cause all the source files needed (as prerequisites) to be created
+automatically.
+</P><P>
+
+<A NAME="IDX629"></A>
+You can instead define commands to be used for targets for which there
+are no rules at all, even ones which don't specify commands.  You do
+this by writing a rule for the target <CODE>.DEFAULT</CODE>.  Such a rule's
+commands are used for all prerequisites which do not appear as targets in
+any explicit rule, and for which no implicit rule applies.  Naturally,
+there is no <CODE>.DEFAULT</CODE> rule unless you write one.
+</P><P>
+
+If you use <CODE>.DEFAULT</CODE> with no commands or prerequisites:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.DEFAULT:
+</pre></td></tr></table></P><P>
+
+the commands previously stored for <CODE>.DEFAULT</CODE> are cleared.
+Then <CODE>make</CODE> acts as if you had never defined <CODE>.DEFAULT</CODE> at all.
+</P><P>
+
+If you do not want a target to get the commands from a match-anything
+pattern rule or <CODE>.DEFAULT</CODE>, but you also do not want any commands
+to be run for the target, you can give it empty commands (see section <A HREF="make_60.html#SEC64">Defining Empty Commands</A>).</P><P>
+
+You can use a last-resort rule to override part of another makefile.
+See section <A HREF="make_20.html#SEC21">Overriding Part of Another Makefile</A>.
+</P><P>
+
+<A NAME="Suffix Rules"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_110.html#SEC114"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_112.html#SEC116"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_104.html#SEC108"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

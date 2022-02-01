@@ -1,0 +1,876 @@
+<html>
+<head>
+<title>(Protein) FloatMgr.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:19:37">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FixedMath.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Font.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">46 &nbsp;&nbsp;
+FloatMgr.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="FloatMgr.html">46  FloatMgr.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#425085">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#425129">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="424917"> </a><span style="color: #000000;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline"> </span></p>
+
+<div><hr>
+  <a name="426713"> </a> <b>NOTE: </b> Early in the porting process you may want to <code>#include FloatMgrCompatibility.h</code> (after the <code>#include</code> for <code>PalmOS.h</code>). This header file defines a number of APIs and macros that allow applications calling certain deleted functions and functions with modified prototypes to compile and run. This compatibility header should not be counted on long-term, however, so later in the porting process you should remove the <code>#include</code> and fix any problems that result.
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425955"> </a><b>Table 46.1&nbsp;&nbsp;Deleted functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425959"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425961"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425963"> </a><code>FlpAToF()</code></p>
+    </td>
+    <td><p class="tt"><a name="425965"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425967"> </a><code>FlpBufferAToF()</code></p>
+    </td>
+    <td><p class="tt"><a name="425969"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425971"> </a><code>FlpBufferCorrectedAdd()</code></p>
+    </td>
+    <td><p class="tt"><a name="425973"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425975"> </a><code>FlpBufferCorrectedSub()</code></p>
+    </td>
+    <td><p class="tt"><a name="425977"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425979"> </a><code>FlpSelectorErrPrv()</code></p>
+    </td>
+    <td><p class="tt"><a name="425981"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425983"> </a><code>FlpVersion()</code></p>
+    </td>
+    <td><p class="tt"><a name="425985"> </a> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425988"> </a><b>Table 46.2&nbsp;&nbsp;Deleted macros</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425992"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425994"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425996"> </a><code>FLOAT_EM_TRAP()</code></p>
+    </td>
+    <td><p class="tt"><a name="425998"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426000"> </a><code>FLOAT_TRAP()</code></p>
+    </td>
+    <td><p class="tt"><a name="426002"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426004"> </a><code>FlpGetSign()</code></p>
+    </td>
+    <td><p class="tt"><a name="426006"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426008"> </a><code>FlpIsZero()</code></p>
+    </td>
+    <td><p class="tt"><a name="426010"> </a> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426015"> </a><b>Table 46.3&nbsp;&nbsp;Deleted #defines </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="426019"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="426021"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426023"> </a><code>BIG_ENDIAN</code></p>
+    </td>
+    <td><p class="tt"><a name="426025"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426027"> </a><code>flpEqual</code></p>
+    </td>
+    <td><p class="tt"><a name="426029"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426031"> </a><code>flpGreater</code></p>
+    </td>
+    <td><p class="tt"><a name="426033"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426035"> </a><code>flpLess</code></p>
+    </td>
+    <td><p class="tt"><a name="426037"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426039"> </a><code>flpMaxFloatSelector</code></p>
+    </td>
+    <td><p class="tt"><a name="426041"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426043"> </a><code>flpUnordered</code></p>
+    </td>
+    <td><p class="tt"><a name="426045"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426047"> </a><code>sysFloatAToF</code></p>
+    </td>
+    <td><p class="tt"><a name="426049"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426051"> </a><code>sysFloatBase10Info</code></p>
+    </td>
+    <td><p class="tt"><a name="426053"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426055"> </a><code>sysFloatCorrectedAdd</code></p>
+    </td>
+    <td><p class="tt"><a name="426057"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426059"> </a><code>sysFloatCorrectedSub</code></p>
+    </td>
+    <td><p class="tt"><a name="426061"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426063"> </a><code>sysFloatEm_d_add</code></p>
+    </td>
+    <td><p class="tt"><a name="426065"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426067"> </a><code>sysFloatEm_d_cmp</code></p>
+    </td>
+    <td><p class="tt"><a name="426069"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426071"> </a><code>sysFloatEm_d_cmpe</code></p>
+    </td>
+    <td><p class="tt"><a name="426073"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426075"> </a><code>sysFloatEm_d_div</code></p>
+    </td>
+    <td><p class="tt"><a name="426077"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426079"> </a><code>sysFloatEm_d_dtof</code></p>
+    </td>
+    <td><p class="tt"><a name="426081"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426083"> </a><code>sysFloatEm_d_dtoi</code></p>
+    </td>
+    <td><p class="tt"><a name="426085"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426087"> </a><code>sysFloatEm_d_dtoll</code></p>
+    </td>
+    <td><p class="tt"><a name="426089"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426091"> </a><code>sysFloatEm_d_dtoq</code></p>
+    </td>
+    <td><p class="tt"><a name="426093"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426095"> </a><code>sysFloatEm_d_dtou</code></p>
+    </td>
+    <td><p class="tt"><a name="426097"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426099"> </a><code>sysFloatEm_d_dtoull</code></p>
+    </td>
+    <td><p class="tt"><a name="426101"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426103"> </a><code>sysFloatEm_d_feq</code></p>
+    </td>
+    <td><p class="tt"><a name="426105"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426107"> </a><code>sysFloatEm_d_fge</code></p>
+    </td>
+    <td><p class="tt"><a name="426109"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426111"> </a><code>sysFloatEm_d_fgt</code></p>
+    </td>
+    <td><p class="tt"><a name="426113"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426115"> </a><code>sysFloatEm_d_fle</code></p>
+    </td>
+    <td><p class="tt"><a name="426117"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426119"> </a><code>sysFloatEm_d_flt</code></p>
+    </td>
+    <td><p class="tt"><a name="426121"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426123"> </a><code>sysFloatEm_d_fne</code></p>
+    </td>
+    <td><p class="tt"><a name="426125"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426127"> </a><code>sysFloatEm_d_for</code></p>
+    </td>
+    <td><p class="tt"><a name="426129"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426131"> </a><code>sysFloatEm_d_fun</code></p>
+    </td>
+    <td><p class="tt"><a name="426133"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426135"> </a><code>sysFloatEm_d_itod</code></p>
+    </td>
+    <td><p class="tt"><a name="426137"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426139"> </a><code>sysFloatEm_d_lltod</code></p>
+    </td>
+    <td><p class="tt"><a name="426141"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426143"> </a><code>sysFloatEm_d_mul</code></p>
+    </td>
+    <td><p class="tt"><a name="426145"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426147"> </a><code>sysFloatEm_d_neg</code></p>
+    </td>
+    <td><p class="tt"><a name="426149"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426151"> </a><code>sysFloatEm_d_qtod</code></p>
+    </td>
+    <td><p class="tt"><a name="426153"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426155"> </a><code>sysFloatEm_d_sub</code></p>
+    </td>
+    <td><p class="tt"><a name="426157"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426159"> </a><code>sysFloatEm_d_ulltod</code></p>
+    </td>
+    <td><p class="tt"><a name="426161"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426163"> </a><code>sysFloatEm_d_utod</code></p>
+    </td>
+    <td><p class="tt"><a name="426165"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426167"> </a><code>sysFloatEm_fp_get_fpscr</code></p>
+    </td>
+    <td><p class="tt"><a name="426169"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426171"> </a><code>sysFloatEm_fp_round</code></p>
+    </td>
+    <td><p class="tt"><a name="426173"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426175"> </a><code>sysFloatEm_fp_set_fpscr</code></p>
+    </td>
+    <td><p class="tt"><a name="426177"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426179"> </a><code>sysFloatEm_f_add</code></p>
+    </td>
+    <td><p class="tt"><a name="426181"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426183"> </a><code>sysFloatEm_f_cmp</code></p>
+    </td>
+    <td><p class="tt"><a name="426185"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426187"> </a><code>sysFloatEm_f_cmpe</code></p>
+    </td>
+    <td><p class="tt"><a name="426189"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426191"> </a><code>sysFloatEm_f_div</code></p>
+    </td>
+    <td><p class="tt"><a name="426193"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426195"> </a><code>sysFloatEm_f_feq</code></p>
+    </td>
+    <td><p class="tt"><a name="426197"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426199"> </a><code>sysFloatEm_f_fge</code></p>
+    </td>
+    <td><p class="tt"><a name="426201"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426203"> </a><code>sysFloatEm_f_fgt</code></p>
+    </td>
+    <td><p class="tt"><a name="426205"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426207"> </a><code>sysFloatEm_f_fle</code></p>
+    </td>
+    <td><p class="tt"><a name="426209"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426211"> </a><code>sysFloatEm_f_flt</code></p>
+    </td>
+    <td><p class="tt"><a name="426213"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426215"> </a><code>sysFloatEm_f_fne</code></p>
+    </td>
+    <td><p class="tt"><a name="426217"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426219"> </a><code>sysFloatEm_f_for</code></p>
+    </td>
+    <td><p class="tt"><a name="426221"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426223"> </a><code>sysFloatEm_f_ftod</code></p>
+    </td>
+    <td><p class="tt"><a name="426225"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426227"> </a><code>sysFloatEm_f_ftoi</code></p>
+    </td>
+    <td><p class="tt"><a name="426229"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426231"> </a><code>sysFloatEm_f_ftoll</code></p>
+    </td>
+    <td><p class="tt"><a name="426233"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426235"> </a><code>sysFloatEm_f_ftoq</code></p>
+    </td>
+    <td><p class="tt"><a name="426237"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426239"> </a><code>sysFloatEm_f_ftou</code></p>
+    </td>
+    <td><p class="tt"><a name="426241"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426243"> </a><code>sysFloatEm_f_ftoull</code></p>
+    </td>
+    <td><p class="tt"><a name="426245"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426247"> </a><code>sysFloatEm_f_fun</code></p>
+    </td>
+    <td><p class="tt"><a name="426249"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426251"> </a><code>sysFloatEm_f_itof</code></p>
+    </td>
+    <td><p class="tt"><a name="426253"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426255"> </a><code>sysFloatEm_f_lltof</code></p>
+    </td>
+    <td><p class="tt"><a name="426257"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426259"> </a><code>sysFloatEm_f_mul</code></p>
+    </td>
+    <td><p class="tt"><a name="426261"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426263"> </a><code>sysFloatEm_f_neg</code></p>
+    </td>
+    <td><p class="tt"><a name="426265"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426267"> </a><code>sysFloatEm_f_qtof</code></p>
+    </td>
+    <td><p class="tt"><a name="426269"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426271"> </a><code>sysFloatEm_f_sub</code></p>
+    </td>
+    <td><p class="tt"><a name="426273"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426275"> </a><code>sysFloatEm_f_ulltof</code></p>
+    </td>
+    <td><p class="tt"><a name="426277"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426279"> </a><code>sysFloatEm_f_utof</code></p>
+    </td>
+    <td><p class="tt"><a name="426281"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426283"> </a><code>sysFloatFToA</code></p>
+    </td>
+    <td><p class="tt"><a name="426285"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426287"> </a><code>sysFloatVersion</code></p>
+    </td>
+    <td><p class="tt"><a name="426289"> </a> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="425085"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="426303"> </a><b>Table 46.4&nbsp;&nbsp;Modified functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="426307"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="426309"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426311"> </a><code>status_t FlpBase10Info (double, uint32_t *, int16_t *, int16_t *)</code></p>
+    </td>
+    <td><p class="tt"><a name="426313"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426315"> </a><code>double FlpCorrectedAdd (double, double, int16_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="426317"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426319"> </a><code>double FlpCorrectedSub (double, double, int16_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="426321"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426323"> </a><code>status_t FlpFToA (double, char *)</code></p>
+    </td>
+    <td><p class="tt"><a name="426325"> </a> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426332"> </a><b>Table 46.5&nbsp;&nbsp;Modified #defines </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="426336"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="426338"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426340"> </a><code>#define flpDivByZero FE_DIVBYZERO</code></p>
+    </td>
+    <td><p class="tt"><a name="426342"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426344"> </a><code>#define flpDownward FE_DOWNWARD</code></p>
+    </td>
+    <td><p class="tt"><a name="426346"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426348"> </a><code>#define flpErrOutOfRange ERANGE</code></p>
+    </td>
+    <td><p class="tt"><a name="426350"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426352"> </a><code>#define flpInexact FE_INEXACT</code></p>
+    </td>
+    <td><p class="tt"><a name="426354"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426356"> </a><code>#define flpInvalid FE_INVALID</code></p>
+    </td>
+    <td><p class="tt"><a name="426358"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426360"> </a><code>#define flpModeMask 0</code></p>
+    </td>
+    <td><p class="tt"><a name="426362"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426364"> </a><code>#define flpModeShift 0</code></p>
+    </td>
+    <td><p class="tt"><a name="426366"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426368"> </a><code>#define flpOverflow FE_OVERFLOW</code></p>
+    </td>
+    <td><p class="tt"><a name="426370"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426372"> </a><code>#define flpToNearest FE_TONEAREST</code></p>
+    </td>
+    <td><p class="tt"><a name="426374"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426376"> </a><code>#define flpTowardZero FE_TOWARDZERO</code></p>
+    </td>
+    <td><p class="tt"><a name="426378"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426380"> </a><code>#define flpUnderflow FE_UNDERFLOW</code></p>
+    </td>
+    <td><p class="tt"><a name="426382"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426384"> </a><code>#define flpUpward FE_UPWARD</code></p>
+    </td>
+    <td><p class="tt"><a name="426386"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426388"> </a><code>#define flpVersion 0x05000000</code></p>
+    </td>
+    <td><p class="tt"><a name="426390"> </a> </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="425129"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="437845"> </a><b>Table 46.6&nbsp;&nbsp;Unchanged macros</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="437849"> </a>FlpGetExponent()</p>
+    </td>
+    <td><p class="tt"><a name="437851"> </a>FlpNegate()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="437853"> </a>FlpSetNegative()</p>
+    </td>
+    <td><p class="tt"><a name="437855"> </a>FlpSetPositive()</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+
+
+<p class="caption"><a name="437859"> </a><b>Table 46.7&nbsp;&nbsp;Unchanged structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="437863"> </a>FlpCompDouble</p>
+    </td>
+    <td><p class="tt"><a name="437865"> </a>FlpCompFloat</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="437867"> </a>FlpDoubleBits</p>
+    </td>
+    <td><p class="tt"><a name="437869"> </a>_sfpe_64_bits</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="437916"> </a><b>Table 46.8&nbsp;&nbsp;Unchanged types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="437920"> </a>FlpDouble</p>
+    </td>
+    <td><p class="tt"><a name="437922"> </a>FlpFloat</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="437924"> </a>FlpLongDouble</p>
+    </td>
+    <td><p class="tt"><a name="437926"> </a>sfpe_long_long</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="437928"> </a>sfpe_unsigned_long_long</p>
+    </td>
+    <td><p class="tt"><a name="437930"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="437942"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FixedMath.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Font.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,952 @@
+<html>
+<head>
+<title>(Protein) Window.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:20:37">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="VFSMgr.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;Next&nbsp;&gt;&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">131 &nbsp;&nbsp;
+Window.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="Window.html">131  Window.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#425047">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#425087">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="433788"> </a>The Window Manager APIs themselves have changed little in Palm OS Cobalt, beyond some cleanup of APIs that were never intended for use by applications. The Palm OS windowing system has undergone a major redesign, however, and there are many new APIs to support the new design. See <a href="../User_Interface/UI_Front.html#1005928"><i>Exploring Palm OS: User Interface</i></a> for a complete description of the Palm OS Cobalt windowing system.</p>
+
+<div><hr>
+  <a name="427579"> </a> <b>NOTE: </b> Early in the porting process you may want to <code>#include WindowCompatibility.h</code> (after the <code>#include</code> for <code>PalmOS.h</code>). This header file defines a number of APIs and macros that allow applications calling certain deleted functions and functions with modified prototypes to compile and run. This compatibility header should not be counted on long-term, however, so later in the porting process you should remove the <code>#include</code> and fix any problems that result.
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425802"> </a><b>Table 131.1&nbsp;&nbsp;Deleted functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425806"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425808"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425810"> </a><code>WinAddWindow()</code></p>
+    </td>
+    <td><p class="tt"><a name="425812"> </a>Nothing. This function was documented as "System Use Only."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425814"> </a><code>WinDisableWindow()</code></p>
+    </td>
+    <td><p class="tt"><a name="432428"> </a>Nothing. This function was documented as "System Use Only."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425818"> </a><code>WinDrawWindowFrame()</code></p>
+    </td>
+    <td><p class="tt"><a name="432426"> </a>Nothing. This function was documented as "System Use Only."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425822"> </a><code>WinEnableWindow()</code></p>
+    </td>
+    <td><p class="tt"><a name="432430"> </a>Nothing. This function was documented as "System Use Only."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425826"> </a><code>WinGetFirstWindow()</code></p>
+    </td>
+    <td><p class="tt"><a name="425828"> </a>There is nothing comparable to this function in the Palm OS Cobalt APIs.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425830"> </a><code>WinInitializeWindow()</code></p>
+    </td>
+    <td><p class="tt"><a name="432432"> </a>Nothing. This function was documented as "System Use Only."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425834"> </a><code>WinMoveWindowAddr()</code></p>
+    </td>
+    <td><p class="tt"><a name="432434"> </a>Nothing. This function was documented as "System Use Only."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425838"> </a><code>WinRemoveWindow()</code></p>
+    </td>
+    <td><p class="tt"><a name="432436"> </a>Nothing. This function was documented as "System Use Only."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="433022"> </a>WinRestoreBits()</p>
+    </td>
+    <td><p class="tt"><a name="433024"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="433018"> </a>WinSaveBits()</p>
+    </td>
+    <td><p class="tt"><a name="433020"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425842"> </a><code>WinScreenInit()</code></p>
+    </td>
+    <td><p class="tt"><a name="432438"> </a>Nothing. This function was documented as "System Use Only."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425846"> </a><code>WinSetConstraintsSize()</code></p>
+    </td>
+    <td><p class="tt"><a name="425848"> </a><code>WinCreateWindowWithConstraints()</code></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425851"> </a><b>Table 131.2&nbsp;&nbsp;Deleted macros</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425855"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425857"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425859"> </a><code>PINS_TRAP()</code></p>
+    </td>
+    <td><p class="tt"><a name="432472"> </a>See <a href="../System_Management/SharedLibraries.html#993294">"Patching Shared Libraries"</a> of <i>Exploring Palm OS: System Management</i> for information on function entry points.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425863"> </a><code>WinGetWindowHandle()</code></p>
+    </td>
+    <td><p class="tt"><a name="425865"> </a>Nothing. Windows are always referred to by their handle in Palm OS Cobalt.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425867"> </a><code>WinGetWindowPointer()</code></p>
+    </td>
+    <td><p class="tt"><a name="432459"> </a>Nothing. Windows are always referred to by their handle in Palm OS Cobalt.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425882"> </a><b>Table 131.3&nbsp;&nbsp;Deleted structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425886"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425888"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425890"> </a><code>DrawStateFlagsType</code></p>
+    </td>
+    <td><p class="tt"><a name="425892"> </a><code>WinGetScalingMode()</code>, <code>WinSetScalingMode()</code>. This is an internal structure in Palm OS Cobalt that is no longer exported.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425894"> </a><code>DrawStateType</code></p>
+    </td>
+    <td><p class="tt"><a name="425896"> </a><code>WinPushDrawState()</code>, <code>WinPopDrawState()</code>, <code>WinSetDrawMode()</code>, <code>WinGetPatternType()</code>, <code>WinSetPatternType()</code>, <code>WinSetUnderlineMode()</code>, <code>FntSetFont()</code>, <code>WinGetPattern()</code>, <code>WinSetPattern()</code>, <code>WinSetForeColor()</code>, <code>WinSetBackColor()</code>, <code>WinSetTextColor()</code>, <code>WinSetForeColorRGB()</code>, <code>WinSetBackColorRGB()</code>, <code>WinSetTextColorRGB()</code>, <code>WinGetScalingMode()</code>, <code>WinSetScalingMode()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425898"> </a><code>GraphicStateType</code></p>
+    </td>
+    <td><p class="tt"><a name="425900"> </a>Nothing. This structure should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425902"> </a><code>WindowFlagsType</code></p>
+    </td>
+    <td><p class="tt"><a name="425904"> </a>Various Window Manager functions. In Palm OS Cobalt this structure is not exposed to application developers.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425911"> </a><b>Table 131.4&nbsp;&nbsp;Deleted types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425915"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425917"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425923"> </a><code>WinPtr</code></p>
+    </td>
+    <td><p class="tt"><a name="425925"> </a><code>WinHandle</code>. Windows are always referred to by their handle in Palm OS Cobalt.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425928"> </a><b>Table 131.5&nbsp;&nbsp;Deleted #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425932"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425934"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432547"> </a><code>pinFrm..., pinPIN..., pinStat..., pinSys..., pinWinSetConstraintsSize</code></p>
+    </td>
+    <td><p class="tt"><a name="432567"> </a>See <a href="../System_Management/SharedLibraries.html#993294">"Patching Shared Libraries"</a> of <i>Exploring Palm OS: System Management</i> for information on function entry points.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426028"> </a><code>winDefaultDepthFlag</code></p>
+    </td>
+    <td><p class="tt"><a name="426030"> </a>Nothing. This flag was not documented and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426032"> </a><code>winPaletteInit</code></p>
+    </td>
+    <td><p class="tt"><a name="426034"> </a>Nothing. This was always defined to be an internal-use-only operation.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="425047"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="426094"> </a><b>Table 131.6&nbsp;&nbsp;Modified functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="426098"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="426100"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426102"> </a><code>status_t EvtGetPenNative (WinHandle, Coord *, Coord *, Boolean *)</code></p>
+    </td>
+    <td><p class="tt"><a name="426104"> </a>Now declared in <code>Event.h</code>, this function has been updated to return a status indication. In Palm OS Cobalt this function always returns <code>errNone</code>.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426140"> </a><b>Table 131.7&nbsp;&nbsp;Modified structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="426144"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="426146"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426152"> </a><code>WindowType</code></p>
+    </td>
+    <td><p class="tt"><a name="426154"> </a>The internals of this structure are now completely private.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426157"> </a><b>Table 131.8&nbsp;&nbsp;Modified #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="426161"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="426163"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426165"> </a><code>#define kWinVersion 10</code></p>
+    </td>
+    <td><p class="tt"><a name="426167"> </a>Was 5.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="432375"> </a><b>Table 131.9&nbsp;&nbsp;Modified enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="432379"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="432381"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432383"> </a><code>PatternType</code></p>
+    </td>
+    <td><p class="tt"><a name="432385"> </a>Formerly an enum, this is now a typedef that accepts one of the values defined by the <code>PatternTag</code> enum.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432387"> </a><code>UnderlineModeType</code></p>
+    </td>
+    <td><p class="tt"><a name="432389"> </a>Formerly an enum, this is now a typedef that accepts one of the values defined by the <code>UnderlineModeTag</code> enum.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432391"> </a><code>WinDirectionType</code></p>
+    </td>
+    <td><p class="tt"><a name="432393"> </a>Formerly an enum, this is now a typedef that accepts one of the values defined by the <code>WinDirectionTag</code> enum.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432395"> </a><code>WindowFormatType</code></p>
+    </td>
+    <td><p class="tt"><a name="432397"> </a>Formerly an enum, this is now a typedef that accepts one of the values defined by the <code>WindowFormatTag</code> enum.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432399"> </a><code>WinDrawOperation</code></p>
+    </td>
+    <td><p class="tt"><a name="432401"> </a>Formerly an enum, this is now a typedef that accepts one of the values defined by the <code>WinDrawOperationTag</code> enum. Note that some of the drawing operations are deprecated in Palm OS Cobalt; see <a href="../User_Interface/UI_Window.html#1094199">"WinDrawOperation"</a> of <i>Exploring Palm OS: User Interface</i>, paying particular attention to the Compatibility section.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432403"> </a><code>WinLockInitType</code></p>
+    </td>
+    <td><p class="tt"><a name="432405"> </a>Formerly an enum, this is now a typedef that accepts one of the values defined by the <code>WinLockInitTag</code> enum.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432407"> </a><code>WinScreenAttrType</code></p>
+    </td>
+    <td><p class="tt"><a name="432409"> </a>Formerly an enum, this is now a typedef that accepts one of the values defined by the <code>WinScreenAttrTag</code> enum.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432411"> </a><code>WinScreenModeOperation</code></p>
+    </td>
+    <td><p class="tt"><a name="432413"> </a>Formerly an enum, this is now a typedef that accepts one of the values defined by the <code>WinScreenModeOperationTag</code> enum.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="425087"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="432088"> </a><b>Table 131.10&nbsp;&nbsp;Unchanged functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="432092"> </a>WinClipRectangle()</p>
+    </td>
+    <td><p class="tt"><a name="432094"> </a>WinCopyRectangle()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432096"> </a><code>WinCreateBitmapWindow()</code></p>
+    </td>
+    <td><p class="tt"><a name="432098"> </a><code>WinCreateOffscreenWindow()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432100"> </a><code>WinCreateWindow()</code></p>
+    </td>
+    <td><p class="tt"><a name="432102"> </a><code>WinDeleteWindow()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432104"> </a>WinDisplayToWindowPt()</p>
+    </td>
+    <td><p class="tt"><a name="432106"> </a>WinDrawBitmap()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432108"> </a>WinDrawChar()</p>
+    </td>
+    <td><p class="tt"><a name="432110"> </a>WinDrawChars()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432112"> </a>WinDrawGrayLine()</p>
+    </td>
+    <td><p class="tt"><a name="432114"> </a>WinDrawGrayRectangleFrame()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432116"> </a>WinDrawInvertedChars()</p>
+    </td>
+    <td><p class="tt"><a name="432118"> </a>WinDrawLine()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432120"> </a>WinDrawPixel()</p>
+    </td>
+    <td><p class="tt"><a name="432122"> </a>WinDrawRectangle()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432124"> </a>WinDrawRectangleFrame()</p>
+    </td>
+    <td><p class="tt"><a name="432126"> </a>WinDrawTruncChars()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432128"> </a>WinEraseChars()</p>
+    </td>
+    <td><p class="tt"><a name="432130"> </a>WinEraseLine()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432132"> </a>WinErasePixel()</p>
+    </td>
+    <td><p class="tt"><a name="432134"> </a>WinEraseRectangle()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432136"> </a>WinEraseRectangleFrame()</p>
+    </td>
+    <td><p class="tt"><a name="432138"> </a>WinEraseWindow()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432140"> </a>WinFillLine()</p>
+    </td>
+    <td><p class="tt"><a name="432142"> </a>WinFillRectangle()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432144"> </a>WinGetActiveWindow()</p>
+    </td>
+    <td><p class="tt"><a name="432146"> </a>WinGetBitmap()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432148"> </a>WinGetBounds()</p>
+    </td>
+    <td><p class="tt"><a name="432150"> </a>WinGetClip()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432152"> </a>WinGetCoordinateSystem()</p>
+    </td>
+    <td><p class="tt"><a name="432154"> </a>WinGetDisplayExtent()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432156"> </a>WinGetDisplayWindow()</p>
+    </td>
+    <td><p class="tt"><a name="432158"> </a>WinGetDrawWindow()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432160"> </a>WinGetDrawWindowBounds()</p>
+    </td>
+    <td><p class="tt"><a name="432162"> </a>WinGetFramesRectangle()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432164"> </a>WinGetPattern()</p>
+    </td>
+    <td><p class="tt"><a name="432166"> </a>WinGetPatternType()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432168"> </a>WinGetPixel()</p>
+    </td>
+    <td><p class="tt"><a name="432170"> </a>WinGetPixelRGB()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432172"> </a>WinGetScalingMode()</p>
+    </td>
+    <td><p class="tt"><a name="432174"> </a>WinGetSupportedDensity()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432176"> </a>WinGetWindowExtent()</p>
+    </td>
+    <td><p class="tt"><a name="432178"> </a>WinGetWindowFrameRect()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432180"> </a>WinIndexToRGB()</p>
+    </td>
+    <td><p class="tt"><a name="432182"> </a>WinInvertChars()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432184"> </a>WinInvertLine()</p>
+    </td>
+    <td><p class="tt"><a name="432186"> </a>WinInvertPixel()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432188"> </a>WinInvertRectangle()</p>
+    </td>
+    <td><p class="tt"><a name="432190"> </a>WinInvertRectangleFrame()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432192"> </a>WinModal()</p>
+    </td>
+    <td><p class="tt"><a name="432194"> </a><code>WinPaintBitmap()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432196"> </a>WinPaintChar()</p>
+    </td>
+    <td><p class="tt"><a name="432198"> </a>WinPaintChars()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432200"> </a>WinPaintLine()</p>
+    </td>
+    <td><p class="tt"><a name="432202"> </a>WinPaintLines()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432204"> </a>WinPaintPixel()</p>
+    </td>
+    <td><p class="tt"><a name="432206"> </a>WinPaintPixels()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432208"> </a>WinPaintRectangle()</p>
+    </td>
+    <td><p class="tt"><a name="432210"> </a>WinPaintRectangleFrame()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432212"> </a>WinPaintRoundedRectangleFrame()</p>
+    </td>
+    <td><p class="tt"><a name="432214"> </a><code>WinPaintTiledBitmap()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432216"> </a>WinPalette()</p>
+    </td>
+    <td><p class="tt"><a name="432218"> </a>WinPopDrawState()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432220"> </a>WinPushDrawState()</p>
+    </td>
+    <td><p class="tt"><a name="432222"> </a>WinResetClip()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="433038"> </a>WinRGBToIndex()</p>
+    </td>
+    <td><p class="tt"><a name="433047"> </a>WinScaleCoord()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432232"> </a>WinScalePoint()</p>
+    </td>
+    <td><p class="tt"><a name="432234"> </a>WinScaleRectangle()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432236"> </a>WinScreenGetAttribute()</p>
+    </td>
+    <td><p class="tt"><a name="432238"> </a>WinScreenLock()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432240"> </a>WinScreenMode()</p>
+    </td>
+    <td><p class="tt"><a name="432242"> </a>WinScreenUnlock()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432244"> </a>WinScrollRectangle()</p>
+    </td>
+    <td><p class="tt"><a name="432246"> </a>WinSetActiveWindow()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432248"> </a>WinSetBackColor()</p>
+    </td>
+    <td><p class="tt"><a name="432250"> </a>WinSetBackColorRGB()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432252"> </a>WinSetBounds()</p>
+    </td>
+    <td><p class="tt"><a name="432254"> </a>WinSetClip()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432256"> </a>WinSetColors()</p>
+    </td>
+    <td><p class="tt"><a name="432258"> </a>WinSetCoordinateSystem()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432260"> </a>WinSetDrawMode()</p>
+    </td>
+    <td><p class="tt"><a name="432262"> </a>WinSetDrawWindow()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432264"> </a>WinSetForeColor()</p>
+    </td>
+    <td><p class="tt"><a name="432266"> </a>WinSetForeColorRGB()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432268"> </a>WinSetPattern()</p>
+    </td>
+    <td><p class="tt"><a name="432270"> </a>WinSetPatternType()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432272"> </a>WinSetScalingMode()</p>
+    </td>
+    <td><p class="tt"><a name="432274"> </a>WinSetTextColor()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432276"> </a>WinSetTextColorRGB()</p>
+    </td>
+    <td><p class="tt"><a name="432278"> </a>WinSetUnderlineMode()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432280"> </a>WinUnscaleCoord()</p>
+    </td>
+    <td><p class="tt"><a name="432282"> </a>WinUnscalePoint()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432284"> </a>WinUnscaleRectangle()</p>
+    </td>
+    <td><p class="tt"><a name="432286"> </a>WinValidateHandle()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432288"> </a>WinWindowToDisplayPt()</p>
+    </td>
+    <td><p class="tt"><a name="432290"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426940"> </a><b>Table 131.11&nbsp;&nbsp;Unchanged macros</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426944"> </a>ECWinValidateHandle()</p>
+    </td>
+    <td><p class="tt"><a name="426946"> </a>WinGetWindowBounds()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426948"> </a>WinSetWindowBounds()</p>
+    </td>
+    <td><p class="tt"><a name="426950"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426953"> </a><b>Table 131.12&nbsp;&nbsp;Unchanged structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426957"> </a>FrameBitsType</p>
+    </td>
+    <td><p class="tt"><a name="426959"> </a>WinLineType</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426962"> </a><b>Table 131.13&nbsp;&nbsp;Unchanged types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426966"> </a>CustomPatternType</p>
+    </td>
+    <td><p class="tt"><a name="426968"> </a>FrameType</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426970"> </a>IndexedColorType</p>
+    </td>
+    <td><p class="tt"><a name="426972"> </a>WinHandle</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="431852"> </a><b>Table 131.14&nbsp;&nbsp;Unchanged #defines </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="431856"> </a>boldRoundFrame</p>
+    </td>
+    <td><p class="tt"><a name="431858"> </a>dialogFrame</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431860"> </a>DrawStateStackSize</p>
+    </td>
+    <td><p class="tt"><a name="431862"> </a>grayHLinePattern</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431864"> </a>grayHLinePatternOdd</p>
+    </td>
+    <td><p class="tt"><a name="431866"> </a>kBitmapScalingOff</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431868"> </a>kCoordinatesDouble</p>
+    </td>
+    <td><p class="tt"><a name="431870"> </a>kCoordinatesNative</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431872"> </a>kCoordinatesOneAndAHalf</p>
+    </td>
+    <td><p class="tt"><a name="431874"> </a>kCoordinatesQuadruple</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431876"> </a>kCoordinatesStandard</p>
+    </td>
+    <td><p class="tt"><a name="431878"> </a>kCoordinatesTriple</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431880"> </a>kTextPaddingOff</p>
+    </td>
+    <td><p class="tt"><a name="431882"> </a>kTextScalingOff</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431884"> </a>menuFrame</p>
+    </td>
+    <td><p class="tt"><a name="431886"> </a><code>noFrame</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431888"> </a>noPattern</p>
+    </td>
+    <td><p class="tt"><a name="431890"> </a>popupFrame</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431892"> </a><code>rectangleFrame</code></p>
+    </td>
+    <td><p class="tt"><a name="431894"> </a>roundFrame</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431896"> </a>simple3DFrame</p>
+    </td>
+    <td><p class="tt"><a name="431898"> </a><code>simpleFrame</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431900"> </a>winErrPalette</p>
+    </td>
+    <td><p class="tt"><a name="431902"> </a>winPaletteGet</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431904"> </a>winPaletteSet</p>
+    </td>
+    <td><p class="tt"><a name="431906"> </a>winPaletteSetToDefault</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431908"> </a>WinUseTableIndexes</p>
+    </td>
+    <td><p class="tt"><a name="431910"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="425222"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="VFSMgr.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;Next&nbsp;&gt;&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Error in Breakpoints</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Error in Breakpoints">
+<META NAME="keywords" CONTENT="Debugging with GDB: Error in Breakpoints">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC37"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_36.html#SEC36"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 5.1.9 "Cannot insert breakpoints" </H3>
+<!--docid::SEC37::-->
+Under some operating systems, breakpoints cannot be used in a program if
+any other process is running that program.  In this situation,
+attempting to run or continue a program with a breakpoint causes
+GDB to print an error message:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>Cannot insert breakpoints.
+The same program may be running in another process.
+</FONT></pre></td></tr></table></P><P>
+
+When this happens, you have three ways to proceed:
+</P><P>
+
+<OL>
+<LI>
+Remove or disable the breakpoints, then continue.
+<P>
+
+<LI>
+Suspend GDB, and copy the file containing your program to a new
+name.  Resume GDB and use the <CODE>exec-file</CODE> command to specify
+that GDB should run your program under that name.
+Then start your program again.
+<P>
+
+<LI>
+Relink your program so that the text segment is nonsharable, using the
+linker option <SAMP>`-N'</SAMP>.  The operating system limitation may not apply
+to nonsharable executables.
+</OL>
+<P>
+
+A similar message can be printed if you request too many active
+hardware-assisted breakpoints and watchpoints:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>Stopped; cannot insert breakpoints.
+You may have requested too many hardware breakpoints and watchpoints.
+</FONT></pre></td></tr></table></P><P>
+
+This message is printed when you attempt to resume the program, since
+only then GDB knows exactly how many hardware breakpoints and
+watchpoints it needs to insert.
+</P><P>
+
+When this message is printed, you need to disable or remove some of the
+hardware-assisted breakpoints and watchpoints, and then continue.
+</P><P>
+
+<A NAME="Continuing and Stepping"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

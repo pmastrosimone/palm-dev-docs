@@ -1,0 +1,159 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: History</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: History">
+<META NAME="keywords" CONTENT="Debugging with GDB: History">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC183"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_182.html#SEC182"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_184.html#SEC184"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_184.html#SEC184"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_180.html#SEC180"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_188.html#SEC188"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 19.3 Command history </H2>
+<!--docid::SEC183::-->
+<P>
+
+GDB can keep track of the commands you type during your
+debugging sessions, so that you can be certain of precisely what
+happened.  Use these commands to manage the GDB command
+history facility.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX780"></A>
+<A NAME="IDX781"></A>
+<A NAME="IDX782"></A>
+<A NAME="IDX783"></A>
+<DT><CODE>set history filename <VAR>fname</VAR></CODE>
+<DD>Set the name of the GDB command history file to <VAR>fname</VAR>.
+This is the file where GDB reads an initial command history
+list, and where it writes the command history from this session when it
+exits.  You can access this list through history expansion or through
+the history command editing characters listed below.  This file defaults
+to the value of the environment variable <CODE>GDBHISTFILE</CODE>, or to
+<TT>`./.gdb_history'</TT> (<TT>`./_gdb_history'</TT> on MS-DOS) if this variable
+is not set.
+<P>
+
+<A NAME="IDX784"></A>
+<A NAME="IDX785"></A>
+<DT><CODE>set history save</CODE>
+<DD><DT><CODE>set history save on</CODE>
+<DD>Record command history in a file, whose name may be specified with the
+<CODE>set history filename</CODE> command.  By default, this option is disabled.
+<P>
+
+<DT><CODE>set history save off</CODE>
+<DD>Stop recording command history in a file.
+<P>
+
+<A NAME="IDX786"></A>
+<A NAME="IDX787"></A>
+<DT><CODE>set history size <VAR>size</VAR></CODE>
+<DD>Set the number of commands which GDB keeps in its history list.
+This defaults to the value of the environment variable
+<CODE>HISTSIZE</CODE>, or to 256 if this variable is not set.
+</DL>
+<P>
+
+<A NAME="IDX788"></A>
+History expansion assigns special meaning to the character <KBD>!</KBD>.
+</P><P>
+
+Since <KBD>!</KBD> is also the logical not operator in C, history expansion
+is off by default. If you decide to enable history expansion with the
+<CODE>set history expansion on</CODE> command, you may sometimes need to
+follow <KBD>!</KBD> (when it is used as logical not, in an expression) with
+a space or a tab to prevent it from being expanded.  The readline
+history facilities do not attempt substitution on the strings
+<KBD>!=</KBD> and <KBD>!(</KBD>, even when history expansion is enabled.
+</P><P>
+
+The commands to control history expansion are:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX789"></A>
+<DT><CODE>set history expansion on</CODE>
+<DD><DT><CODE>set history expansion</CODE>
+<DD>Enable history expansion.  History expansion is off by default.
+<P>
+
+<DT><CODE>set history expansion off</CODE>
+<DD>Disable history expansion.
+<P>
+
+The readline code comes with more complete documentation of
+editing and history expansion features.  Users unfamiliar with GNU Emacs
+or <CODE>vi</CODE> may wish to read it.
+</P><P>
+
+<A NAME="IDX790"></A>
+<DT><CODE>show history</CODE>
+<DD><DT><CODE>show history filename</CODE>
+<DD><DT><CODE>show history save</CODE>
+<DD><DT><CODE>show history size</CODE>
+<DD><DT><CODE>show history expansion</CODE>
+<DD>These commands display the state of the GDB history parameters.
+<CODE>show history</CODE> by itself displays all four states.
+</DL>
+<P>
+
+<DL COMPACT>
+<A NAME="IDX791"></A>
+<DT><CODE>show commands</CODE>
+<DD>Display the last ten commands in the command history.
+<P>
+
+<DT><CODE>show commands <VAR>n</VAR></CODE>
+<DD>Print ten commands centered on command number <VAR>n</VAR>.
+<P>
+
+<DT><CODE>show commands +</CODE>
+<DD>Print ten commands just after the commands last printed.
+</DL>
+<P>
+
+<A NAME="Screen Size"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_182.html#SEC182"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_184.html#SEC184"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_184.html#SEC184"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_180.html#SEC180"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_188.html#SEC188"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

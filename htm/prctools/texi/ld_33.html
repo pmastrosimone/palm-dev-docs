@@ -1,0 +1,112 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Output Section LMA</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Output Section LMA">
+<META NAME="keywords" CONTENT="Untitled Document: Output Section LMA">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC33"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_32.html#SEC32"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_34.html#SEC34"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_34.html#SEC34"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_31.html#SEC31"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_37.html#SEC37"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 3.6.8.2 Output Section LMA </H4>
+<!--docid::SEC33::-->
+Every section has a virtual address (VMA) and a load address (LMA); see
+<A HREF="ld_7.html#SEC7">3.1 Basic Linker Script Concepts</A>.  The address expression which may appear in
+an output section description sets the VMA (see section <A HREF="ld_21.html#SEC21">3.6.3 Output Section Description</A>).
+<P>
+
+The linker will normally set the LMA equal to the VMA.  You can change
+that by using the <CODE>AT</CODE> keyword.  The expression <VAR>lma</VAR> that
+follows the <CODE>AT</CODE> keyword specifies the load address of the
+section.  Alternatively, with <SAMP>`AT&#62;<VAR>lma_region</VAR>'</SAMP> expression,
+you may specify a memory region for the section's load address. See section <A HREF="ld_38.html#SEC38">3.7 MEMORY Command</A>.
+</P><P>
+
+<A NAME="IDX322"></A>
+<A NAME="IDX323"></A>
+This feature is designed to make it easy to build a ROM image.  For
+example, the following linker script creates three output sections: one
+called <SAMP>`.text'</SAMP>, which starts at <CODE>0x1000</CODE>, one called
+<SAMP>`.mdata'</SAMP>, which is loaded at the end of the <SAMP>`.text'</SAMP> section
+even though its VMA is <CODE>0x2000</CODE>, and one called <SAMP>`.bss'</SAMP> to hold
+uninitialized data at address <CODE>0x3000</CODE>.  The symbol <CODE>_data</CODE> is
+defined with the value <CODE>0x2000</CODE>, which shows that the location
+counter holds the VMA value, not the LMA value.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS
+  {
+  .text 0x1000 : { *(.text) _etext = . ; }
+  .mdata 0x2000 :
+    AT ( ADDR (.text) + SIZEOF (.text) )
+    { _data = . ; *(.data); _edata = . ;  }
+  .bss 0x3000 :
+    { _bstart = . ;  *(.bss) *(COMMON) ; _bend = . ;}
+}
+</FONT></pre></td></tr></table></P><P>
+
+The run-time initialization code for use with a program generated with
+this linker script would include something like the following, to copy
+the initialized data from the ROM image to its runtime address.  Notice
+how this code takes advantage of the symbols defined by the linker
+script.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>extern char _etext, _data, _edata, _bstart, _bend;
+char *src = &#38;_etext;
+char *dst = &#38;_data;
+
+/* ROM has data at end of text; copy it. */
+while (dst &#60; &#38;_edata) {
+  *dst++ = *src++;
+}
+
+/* Zero bss */
+for (dst = &#38;_bstart; dst&#60; &#38;_bend; dst++)
+  *dst = 0;
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="Output Section Region"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_32.html#SEC32"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_34.html#SEC34"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_34.html#SEC34"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_31.html#SEC31"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_37.html#SEC37"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

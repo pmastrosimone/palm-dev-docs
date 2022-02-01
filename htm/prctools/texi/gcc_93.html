@@ -1,0 +1,326 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Extended Asm</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Extended Asm">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Extended Asm">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC93"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_92.html#SEC92"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_94.html#SEC94"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_95.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.32 Assembler Instructions with C Expression Operands </H2>
+<!--docid::SEC93::-->
+<P>
+
+In an assembler instruction using <CODE>asm</CODE>, you can specify the
+operands of the instruction using C expressions.  This means you need not
+guess which registers or memory locations will contain the data you want
+to use.
+</P><P>
+
+You must specify an assembler instruction template much like what
+appears in a machine description, plus an operand constraint string for
+each operand.
+</P><P>
+
+For example, here is how to use the 68881's <CODE>fsinx</CODE> instruction:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>asm ("fsinx %1,%0" : "=f" (result) : "f" (angle));
+</pre></td></tr></table></P><P>
+
+Here <CODE>angle</CODE> is the C expression for the input operand while
+<CODE>result</CODE> is that of the output operand.  Each has <SAMP>`"f"'</SAMP> as its
+operand constraint, saying that a floating point register is required.
+The <SAMP>`='</SAMP> in <SAMP>`=f'</SAMP> indicates that the operand is an output; all
+output operands' constraints must use <SAMP>`='</SAMP>.  The constraints use the
+same language used in the machine description (see section <A HREF="gcc_95.html#SEC95">4.33 Constraints for <CODE>asm</CODE> Operands</A>).
+</P><P>
+
+Each operand is described by an operand-constraint string followed by
+the C expression in parentheses.  A colon separates the assembler
+template from the first output operand and another separates the last
+output operand from the first input, if any.  Commas separate the
+operands within each group.  The total number of operands is limited to
+ten or to the maximum number of operands in any instruction pattern in
+the machine description, whichever is greater.
+</P><P>
+
+If there are no output operands but there are input operands, you must
+place two consecutive colons surrounding the place where the output
+operands would go.
+</P><P>
+
+Output operand expressions must be lvalues; the compiler can check this.
+The input operands need not be lvalues.  The compiler cannot check
+whether the operands have data types that are reasonable for the
+instruction being executed.  It does not parse the assembler instruction
+template and does not know what it means or even whether it is valid
+assembler input.  The extended <CODE>asm</CODE> feature is most often used for
+machine instructions the compiler itself does not know exist.  If
+the output expression cannot be directly addressed (for example, it is a
+bit field), your constraint must allow a register.  In that case, GNU CC
+will use the register as the output of the <CODE>asm</CODE>, and then store
+that register into the output.
+</P><P>
+
+The ordinary output operands must be write-only; GNU CC will assume that
+the values in these operands before the instruction are dead and need
+not be generated.  Extended asm supports input-output or read-write
+operands.  Use the constraint character <SAMP>`+'</SAMP> to indicate such an
+operand and list it with the output operands.
+</P><P>
+
+When the constraints for the read-write operand (or the operand in which
+only some of the bits are to be changed) allows a register, you may, as
+an alternative, logically split its function into two separate operands,
+one input operand and one write-only output operand.  The connection
+between them is expressed by constraints which say they need to be in
+the same location when the instruction executes.  You can use the same C
+expression for both operands, or different expressions.  For example,
+here we write the (fictitious) <SAMP>`combine'</SAMP> instruction with
+<CODE>bar</CODE> as its read-only source operand and <CODE>foo</CODE> as its
+read-write destination:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>asm ("combine %2,%0" : "=r" (foo) : "0" (foo), "g" (bar));
+</pre></td></tr></table></P><P>
+
+The constraint <SAMP>`"0"'</SAMP> for operand 1 says that it must occupy the
+same location as operand 0.  A digit in constraint is allowed only in an
+input operand and it must refer to an output operand.
+</P><P>
+
+Only a digit in the constraint can guarantee that one operand will be in
+the same place as another.  The mere fact that <CODE>foo</CODE> is the value
+of both operands is not enough to guarantee that they will be in the
+same place in the generated assembler code.  The following would not
+work reliably:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>asm ("combine %2,%0" : "=r" (foo) : "r" (foo), "g" (bar));
+</pre></td></tr></table></P><P>
+
+Various optimizations or reloading could cause operands 0 and 1 to be in
+different registers; GNU CC knows no reason not to do so.  For example, the
+compiler might find a copy of the value of <CODE>foo</CODE> in one register and
+use it for operand 1, but generate the output operand 0 in a different
+register (copying it afterward to <CODE>foo</CODE>'s own address).  Of course,
+since the register for operand 1 is not even mentioned in the assembler
+code, the result will not work, but GNU CC can't tell that.
+</P><P>
+
+Some instructions clobber specific hard registers.  To describe this,
+write a third colon after the input operands, followed by the names of
+the clobbered hard registers (given as strings).  Here is a realistic
+example for the VAX:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>asm volatile ("movc3 %0,%1,%2"
+              : /* no outputs */
+              : "g" (from), "g" (to), "g" (count)
+              : "r0", "r1", "r2", "r3", "r4", "r5");
+</pre></td></tr></table></P><P>
+
+It is an error for a clobber description to overlap an input or output
+operand (for example, an operand describing a register class with one
+member, mentioned in the clobber list).  Most notably, it is invalid to
+describe that an input operand is modified, but unused as output.  It has
+to be specified as an input and output operand anyway.  Note that if there
+are only unused output operands, you will then also need to specify
+<CODE>volatile</CODE> for the <CODE>asm</CODE> construct, as described below.
+</P><P>
+
+If you refer to a particular hardware register from the assembler code,
+you will probably have to list the register after the third colon to
+tell the compiler the register's value is modified.  In some assemblers,
+the register names begin with <SAMP>`%'</SAMP>; to produce one <SAMP>`%'</SAMP> in the
+assembler code, you must write <SAMP>`%%'</SAMP> in the input.
+</P><P>
+
+If your assembler instruction can alter the condition code register, add
+<SAMP>`cc'</SAMP> to the list of clobbered registers.  GNU CC on some machines
+represents the condition codes as a specific hardware register;
+<SAMP>`cc'</SAMP> serves to name this register.  On other machines, the
+condition code is handled differently, and specifying <SAMP>`cc'</SAMP> has no
+effect.  But it is valid no matter what the machine.
+</P><P>
+
+If your assembler instruction modifies memory in an unpredictable
+fashion, add <SAMP>`memory'</SAMP> to the list of clobbered registers.  This
+will cause GNU CC to not keep memory values cached in registers across
+the assembler instruction.
+</P><P>
+
+You can put multiple assembler instructions together in a single
+<CODE>asm</CODE> template, separated either with newlines (written as
+<SAMP>`\n'</SAMP>) or with semicolons if the assembler allows such semicolons.
+The GNU assembler allows semicolons and most Unix assemblers seem to do
+so.  The input operands are guaranteed not to use any of the clobbered
+registers, and neither will the output operands' addresses, so you can
+read and write the clobbered registers as many times as you like.  Here
+is an example of multiple instructions in a template; it assumes the
+subroutine <CODE>_foo</CODE> accepts arguments in registers 9 and 10:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>asm ("movl %0,r9;movl %1,r10;call _foo"
+     : /* no outputs */
+     : "g" (from), "g" (to)
+     : "r9", "r10");
+</pre></td></tr></table></P><P>
+
+Unless an output operand has the <SAMP>`&#38;'</SAMP> constraint modifier, GNU CC
+may allocate it in the same register as an unrelated input operand, on
+the assumption the inputs are consumed before the outputs are produced.
+This assumption may be false if the assembler code actually consists of
+more than one instruction.  In such a case, use <SAMP>`&#38;'</SAMP> for each output
+operand that may not overlap an input.  See section <A HREF="gcc_98.html#SEC98">4.33.3 Constraint Modifier Characters</A>.
+</P><P>
+
+If you want to test the condition code produced by an assembler
+instruction, you must include a branch and a label in the <CODE>asm</CODE>
+construct, as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>asm ("clr %0;frob %1;beq 0f;mov #1,%0;0:"
+     : "g" (result)
+     : "g" (input));
+</pre></td></tr></table></P><P>
+
+This assumes your assembler supports local labels, as the GNU assembler
+and most Unix assemblers do.
+</P><P>
+
+Speaking of labels, jumps from one <CODE>asm</CODE> to another are not
+supported.  The compiler's optimizers do not know about these jumps, and
+therefore they cannot take account of them when deciding how to
+optimize.
+</P><P>
+
+<A NAME="IDX312"></A>
+Usually the most convenient way to use these <CODE>asm</CODE> instructions is to
+encapsulate them in macros that look like functions.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define sin(x)       \
+({ double __value, __arg = (x);   \
+   asm ("fsinx %1,%0": "=f" (__value): "f" (__arg));  \
+   __value; })
+</pre></td></tr></table></P><P>
+
+Here the variable <CODE>__arg</CODE> is used to make sure that the instruction
+operates on a proper <CODE>double</CODE> value, and to accept only those
+arguments <CODE>x</CODE> which can convert automatically to a <CODE>double</CODE>.
+</P><P>
+
+Another way to make sure the instruction operates on the correct data
+type is to use a cast in the <CODE>asm</CODE>.  This is different from using a
+variable <CODE>__arg</CODE> in that it converts more different types.  For
+example, if the desired type were <CODE>int</CODE>, casting the argument to
+<CODE>int</CODE> would accept a pointer with no complaint, while assigning the
+argument to an <CODE>int</CODE> variable named <CODE>__arg</CODE> would warn about
+using a pointer unless the caller explicitly casts it.
+</P><P>
+
+If an <CODE>asm</CODE> has output operands, GNU CC assumes for optimization
+purposes the instruction has no side effects except to change the output
+operands.  This does not mean instructions with a side effect cannot be
+used, but you must be careful, because the compiler may eliminate them
+if the output operands aren't used, or move them out of loops, or
+replace two with one if they constitute a common subexpression.  Also,
+if your instruction does have a side effect on a variable that otherwise
+appears not to change, the old value of the variable may be reused later
+if it happens to be found in a register.
+</P><P>
+
+You can prevent an <CODE>asm</CODE> instruction from being deleted, moved
+significantly, or combined, by writing the keyword <CODE>volatile</CODE> after
+the <CODE>asm</CODE>.  For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define get_and_set_priority(new)  \
+({ int __old; \
+   asm volatile ("get_and_set_priority %0, %1": "=g" (__old) : "g" (new)); \
+   __old; })
+</pre></td></tr></table></P><P>
+
+If you write an <CODE>asm</CODE> instruction with no outputs, GNU CC will know
+the instruction has side-effects and will not delete the instruction or
+move it outside of loops.  If the side-effects of your instruction are
+not purely external, but will affect variables in your program in ways
+other than reading the inputs and clobbering the specified registers or
+memory, you should write the <CODE>volatile</CODE> keyword to prevent future
+versions of GNU CC from moving the instruction around within a core
+region.
+</P><P>
+
+An <CODE>asm</CODE> instruction without any operands or clobbers (and "old
+style" <CODE>asm</CODE>) will not be deleted or moved significantly,
+regardless, unless it is unreachable, the same wasy as if you had
+written a <CODE>volatile</CODE> keyword.
+</P><P>
+
+Note that even a volatile <CODE>asm</CODE> instruction can be moved in ways
+that appear insignificant to the compiler, such as across jump
+instructions.  You can't expect a sequence of volatile <CODE>asm</CODE>
+instructions to remain perfectly consecutive.  If you want consecutive
+output, use a single <CODE>asm</CODE>.
+</P><P>
+
+It is a natural idea to look for a way to give access to the condition
+code left by the assembler instruction.  However, when we attempted to
+implement this, we found no way to make it work reliably.  The problem
+is that output operands might need reloading, which would result in
+additional following "store" instructions.  On most machines, these
+instructions would alter the condition code before there was time to
+test it.  This problem doesn't arise for ordinary "test" and
+"compare" instructions because they don't have any output operands.
+</P><P>
+
+If you are writing a header file that should be includable in ANSI C
+programs, write <CODE>__asm__</CODE> instead of <CODE>asm</CODE>.  See section <A HREF="gcc_104.html#SEC104">4.36 Alternate Keywords</A>.
+</P><P>
+
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_92.html#SEC92"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_94.html#SEC94"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_95.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

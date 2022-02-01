@@ -1,0 +1,209 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Conditional Syntax</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Conditional Syntax">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Conditional Syntax">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC81"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_76.html#SEC80"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_78.html#SEC82"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.2 Syntax of Conditionals </H2>
+<!--docid::SEC81::-->
+<P>
+
+The syntax of a simple conditional with no <CODE>else</CODE> is as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>conditional-directive</VAR>
+<VAR>text-if-true</VAR>
+endif
+</pre></td></tr></table></P><P>
+
+The <VAR>text-if-true</VAR> may be any lines of text, to be considered as part
+of the makefile if the condition is true.  If the condition is false, no
+text is used instead.
+</P><P>
+
+The syntax of a complex conditional is as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>conditional-directive</VAR>
+<VAR>text-if-true</VAR>
+else
+<VAR>text-if-false</VAR>
+endif
+</pre></td></tr></table></P><P>
+
+If the condition is true, <VAR>text-if-true</VAR> is used; otherwise,
+<VAR>text-if-false</VAR> is used instead.  The <VAR>text-if-false</VAR> can be any
+number of lines of text.
+</P><P>
+
+The syntax of the <VAR>conditional-directive</VAR> is the same whether the
+conditional is simple or complex.  There are four different directives that
+test different conditions.  Here is a table of them:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>ifeq (<VAR>arg1</VAR>, <VAR>arg2</VAR>)</CODE>
+<DD><DT><CODE>ifeq '<VAR>arg1</VAR>' '<VAR>arg2</VAR>'</CODE>
+<DD><DT><CODE>ifeq "<VAR>arg1</VAR>" "<VAR>arg2</VAR>"</CODE>
+<DD><DT><CODE>ifeq "<VAR>arg1</VAR>" '<VAR>arg2</VAR>'</CODE>
+<DD><DT><CODE>ifeq '<VAR>arg1</VAR>' "<VAR>arg2</VAR>"</CODE>
+<DD>Expand all variable references in <VAR>arg1</VAR> and <VAR>arg2</VAR> and
+compare them.  If they are identical, the <VAR>text-if-true</VAR> is
+effective; otherwise, the <VAR>text-if-false</VAR>, if any, is effective.
+<P>
+
+Often you want to test if a variable has a non-empty value.  When the
+value results from complex expansions of variables and functions,
+expansions you would consider empty may actually contain whitespace
+characters and thus are not seen as empty.  However, you can use the
+<CODE>strip</CODE> function (see section <A HREF="make_81.html#SEC85">8.2 Functions for String Substitution and Analysis</A>) to avoid interpreting
+whitespace as a non-empty value.  For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ifeq ($(strip $(foo)),)
+<VAR>text-if-empty</VAR>
+endif
+</pre></td></tr></table></P><P>
+
+will evaluate <VAR>text-if-empty</VAR> even if the expansion of
+<CODE>$(foo)</CODE> contains whitespace characters.
+</P><P>
+
+<DT><CODE>ifneq (<VAR>arg1</VAR>, <VAR>arg2</VAR>)</CODE>
+<DD><DT><CODE>ifneq '<VAR>arg1</VAR>' '<VAR>arg2</VAR>'</CODE>
+<DD><DT><CODE>ifneq "<VAR>arg1</VAR>" "<VAR>arg2</VAR>"</CODE>
+<DD><DT><CODE>ifneq "<VAR>arg1</VAR>" '<VAR>arg2</VAR>'</CODE>
+<DD><DT><CODE>ifneq '<VAR>arg1</VAR>' "<VAR>arg2</VAR>"</CODE>
+<DD>Expand all variable references in <VAR>arg1</VAR> and <VAR>arg2</VAR> and
+compare them.  If they are different, the <VAR>text-if-true</VAR> is
+effective; otherwise, the <VAR>text-if-false</VAR>, if any, is effective.
+<P>
+
+<DT><CODE>ifdef <VAR>variable-name</VAR></CODE>
+<DD>If the variable <VAR>variable-name</VAR> has a non-empty value, the
+<VAR>text-if-true</VAR> is effective; otherwise, the <VAR>text-if-false</VAR>,
+if any, is effective.  Variables that have never been defined have an
+empty value.  The variable <VAR>variable-name</VAR> is itself expanded, so
+it could be a variable or function that expands to the name of a
+variable.
+<P>
+
+Note that <CODE>ifdef</CODE> only tests whether a variable has a value.  It
+does not expand the variable to see if that value is nonempty.
+Consequently, tests using <CODE>ifdef</CODE> return true for all definitions
+except those like <CODE>foo =</CODE>.  To test for an empty value, use
+<CODE>ifeq ($(foo),)</CODE>.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>bar =
+foo = $(bar)
+ifdef foo
+frobozz = yes
+else
+frobozz = no
+endif
+</pre></td></tr></table></P><P>
+
+sets <SAMP>`frobozz'</SAMP> to <SAMP>`yes'</SAMP>, while:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo =
+ifdef foo
+frobozz = yes
+else
+frobozz = no
+endif
+</pre></td></tr></table></P><P>
+
+sets <SAMP>`frobozz'</SAMP> to <SAMP>`no'</SAMP>.
+</P><P>
+
+<DT><CODE>ifndef <VAR>variable-name</VAR></CODE>
+<DD>If the variable <VAR>variable-name</VAR> has an empty value, the
+<VAR>text-if-true</VAR> is effective; otherwise, the <VAR>text-if-false</VAR>,
+if any, is effective.
+</DL>
+<P>
+
+Extra spaces are allowed and ignored at the beginning of the conditional
+directive line, but a tab is not allowed.  (If the line begins with a tab,
+it will be considered a command for a rule.)  Aside from this, extra spaces
+or tabs may be inserted with no effect anywhere except within the directive
+name or within an argument.  A comment starting with <SAMP>`#'</SAMP> may appear at
+the end of the line.
+</P><P>
+
+The other two directives that play a part in a conditional are <CODE>else</CODE>
+and <CODE>endif</CODE>.  Each of these directives is written as one word, with no
+arguments.  Extra spaces are allowed and ignored at the beginning of the
+line, and spaces or tabs at the end.  A comment starting with <SAMP>`#'</SAMP> may
+appear at the end of the line.
+</P><P>
+
+Conditionals affect which lines of the makefile <CODE>make</CODE> uses.  If
+the condition is true, <CODE>make</CODE> reads the lines of the
+<VAR>text-if-true</VAR> as part of the makefile; if the condition is false,
+<CODE>make</CODE> ignores those lines completely.  It follows that syntactic
+units of the makefile, such as rules, may safely be split across the
+beginning or the end of the conditional.</P><P>
+
+<CODE>make</CODE> evaluates conditionals when it reads a makefile.
+Consequently, you cannot use automatic variables in the tests of
+conditionals because they are not defined until commands are run
+(see section <A HREF="make_107.html#SEC111">Automatic Variables</A>).
+</P><P>
+
+To prevent intolerable confusion, it is not permitted to start a
+conditional in one makefile and end it in another.  However, you may
+write an <CODE>include</CODE> directive within a conditional, provided you do
+not attempt to terminate the conditional inside the included file.
+</P><P>
+
+<A NAME="Testing Flags"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_76.html#SEC80"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_78.html#SEC82"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

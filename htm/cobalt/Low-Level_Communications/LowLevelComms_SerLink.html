@@ -1,0 +1,439 @@
+<html>
+<head>
+<title>(Protein) The Serial Link Protocol | Low-Level Communications</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:13:42">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="608590"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="LowLevelCommsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_SerMgr.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_SerRef.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelCommsIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">3 &nbsp;&nbsp;
+The Serial Link Protocol</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Low-Level Communications</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="LowLevelComms_Serial_Pt.html">Part I: Serial Communication</a> </h1>
+<h1 class="SideTOC1"><a href="LowLevelComms_SerLink.html">3  The Serial Link Protocol</a></h1>
+
+   <h2 class="SideTOC2"><a href="#993204">
+   The Serial Link Protocol</a></h2>
+
+      <h3 class="SideTOC3"><a href="#993209">
+      SLP Packet Structures</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993352">
+      Transmitting an SLP Packet</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993360">
+      Receiving an SLP Packet</a></h3>
+
+   <h2 class="SideTOC2"><a href="#993369">
+   The Serial Link Manager</a></h2>
+
+      <h3 class="SideTOC3"><a href="#993377">
+      Using the Serial Link Manager</a></h3>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<h2 class="haH2">
+  <a name="993204"> </a>The Serial Link Protocol <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="993207"> </a>The Serial Link Protocol (SLP) provides an efficient packet send and receive mechanism that is used by the Palm OS<sup>&#174;</sup> Desktop software and Debugger. SLP provides robust error detection with CRC-16. SLP is a best-effort protocol; it does not guarantee packet delivery (packet delivery is left to the higher-level protocols). For enhanced error detection and implementation convenience of higher-level protocols, SLP specifies packet type, source, destination, and transaction ID information as an integral part of its data packet structure.</p>
+<h3 class="hbH3">
+  <a name="993209"> </a>SLP Packet Structures <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993210"> </a>The following sections describe:</p>
+<ul type="disc">
+  <li><a name="993214"> </a> <a href="LowLevelComms_SerLink.html#993228">SLP Packet Format</a>
+  <li><a name="993218"> </a><a href="LowLevelComms_SerLink.html#993278">Packet Type Assignment</a>
+  <li><a name="993222"> </a> <a href="LowLevelComms_SerLink.html#993302">Socket ID Assignment</a>
+  <li><a name="993226"> </a> <a href="LowLevelComms_SerLink.html#993336">Transaction ID Assignment</a>
+</ul>
+
+<h4 class="hcH4">
+  <a name="993228"> </a>SLP Packet Format
+</h4>
+
+<p><a name="993230"> </a>Each SLP packet consists of a packet header, client data of variable size, and a packet footer, as shown in <a href="LowLevelComms_SerLink.html#993235">Figure 3.1</a>.</p>
+
+<p class="FFigureCaption">
+  <a name="993235"> </a><b>Figure 3.1&nbsp;&nbsp;Structure of a Serial Link Packet</b>
+</p>
+<div align="left"><img src="images/LowLevelComms_SerLinkg.jpg" height="507" width="480" border="0" hspace="0" vspace="0">
+</div>
+<ul type="disc">
+  <li><a name="993272"> </a>The <b>packet header</b> contains the packet signature, the destination socket ID, the source socket ID, packet type, client data size, transaction ID, and header checksum. The packet signature is composed of the three bytes 0xBE, 0xEF, 0xED, in that order. The header checksum is an 8-bit arithmetic checksum of the entire packet header, not including the checksum field itself.
+  <li><a name="993273"> </a>The <b>client data </b>is a variable-size block of binary data specified by the user and is not interpreted by the Serial Link Protocol.
+  <li><a name="993276"> </a>The <b>packet footer</b> consists of the CRC-16 value computed over the packet header and client data.
+</ul>
+
+<h4 class="hcH4">
+  <a name="993278"> </a>Packet Type Assignment
+</h4>
+
+<p><a name="993279"> </a>Packet type values in the range of 0x00 through 0x7F are reserved for use by the system software. The following packet type assignments are currently implemented:</p>
+
+
+<div class="tablediv"><table cellspacing="0" class="tTableNR">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="993282"> </a>0x00</p>
+    </td>
+    <td><p class="tt"><a name="993289"> </a>Remote Debugger, Remote Console, and System Remote Procedure Call packets.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993291"> </a>0x02</p>
+    </td>
+    <td><p class="tt"><a name="993294"> </a>PADP packets.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993296"> </a>0x03</p>
+    </td>
+    <td><p class="tt"><a name="993299"> </a>Loop-back test packets.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h4 class="hcH4">
+  <a name="993302"> </a>Socket ID Assignment
+</h4>
+
+<p><a name="993303"> </a>Socket IDs are divided into two categories: static and dynamic. The static socket IDs are "well-known" socket ID values that are reserved by the components of the system software. The dynamic socket IDs are assigned at runtime when requested by clients of SLP. Static socket ID values in the ranges 0x00 through 0x03 and 0xE0 through 0xFF are reserved for use by the system software. The following static socket IDs are currently implemented or reserved:</p>
+
+
+<div class="tablediv"><table cellspacing="0" class="tTableNR">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="993306"> </a>0x00</p>
+    </td>
+    <td><p class="tt"><a name="993309"> </a>Remote Debugger socket.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993311"> </a>0x01</p>
+    </td>
+    <td><p class="tt"><a name="993314"> </a>Remote Console socket.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993316"> </a>0x02</p>
+    </td>
+    <td><p class="tt"><a name="993319"> </a>Remote UI socket.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993321"> </a>0x03</p>
+    </td>
+    <td><p class="tt"><a name="993324"> </a>Desktop Link Server socket.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993326"> </a>0x04&#8211;0xCF</p>
+    </td>
+    <td><p class="tt"><a name="993328"> </a>Reserved for dynamic assignment.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993330"> </a>0xD0&#8211;0xDF</p>
+    </td>
+    <td><p class="tt"><a name="993332"> </a>Reserved for testing.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h4 class="hcH4">
+  <a name="993336"> </a>Transaction ID Assignment
+</h4>
+
+<p><a name="993337"> </a>Transaction ID values are not interpreted by the Serial Link Protocol and are for the sole benefit of the higher-level protocols. The following transaction ID values are currently reserved:</p>
+
+
+<div class="tablediv"><table cellspacing="0" class="tTableNR">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="993340"> </a>0x00 and 0xFF </p>
+    </td>
+    <td><p class="tt"><a name="993342"> </a>Reserved for use by the system software.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993344"> </a>0x00</p>
+    </td>
+    <td><p class="tt"><a name="993346"> </a>Reserved by the Palm OS implementation of SLP to request automatic transaction ID generation. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993348"> </a>0xFF</p>
+    </td>
+    <td><p class="tt"><a name="993350"> </a>Reserved for the connection manager's WakeUp packets.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+<h3 class="hbH3">
+  <a name="993352"> </a>Transmitting an SLP Packet <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993354"> </a>This section provides an overview of the steps involved in transmitting an SLP packet. The next section describes the implementation. </p>
+
+<p><a name="993355"> </a>Transmission of an SLP packet consists of these steps:</p>
+<ol type="1">
+  <li value="1"><a name="993356"> </a>Fill in the packet header and compute its checksum.
+  <li value="2"><a name="993357"> </a>Compute the CRC-16 of the packet header and client data.
+  <li value="3"><a name="993358"> </a>Transmit the packet header, client data, and packet footer.
+  <li value="4"><a name="993359"> </a>Return an error code to the client.
+</ol>
+<h3 class="hbH3">
+  <a name="993360"> </a>Receiving an SLP Packet <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993362"> </a>Receiving an SLP packet consists of these steps:</p>
+<ol type="1">
+  <li value="1"><a name="993363"> </a>Scan the serial input until the packet header signature is matched.
+  <li value="2"><a name="993364"> </a>Read in the rest of the packet header and validate its checksum.
+  <li value="3"><a name="993365"> </a>Read in the client data.
+  <li value="4"><a name="993366"> </a>Read in the packet footer and validate the packet CRC.
+  <li value="5"><a name="993367"> </a>Dispatch/return an error code and the packet (if successful) to the client.
+</ol>
+
+<h2 class="haH2">
+  <a name="993369"> </a>The Serial Link Manager <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="993372"> </a>The Serial Link Manager is the Palm OS implementation of the Serial Link Protocol.</p>
+
+<p><a name="993373"> </a>The Serial Link Manager provides the mechanisms for managing multiple client sockets, sending packets, and receiving packets both synchronously and asynchronously. It also provides support for the Remote Debugger and Remote Procedure Calls (RPC).</p>
+<h3 class="hbH3">
+  <a name="993377"> </a>Using the Serial Link Manager <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993378"> </a>Before an application can use the services of the Serial Link Manager, the application must open the manager by calling <a href="LowLevelComms_SlkRef.html#996007"><code>SlkOpen()</code></a>. Success is indicated by error codes of 0 (zero) or <code>slkErrAlreadyOpen</code>. The return value <code>slkErrAlreadyOpen</code> indicates that the Serial Link Manager has already been opened (most likely by another task). Other error codes indicate failure.</p>
+
+<p><a name="993388"> </a>When you finish using the Serial Link Manager, call <a href="LowLevelComms_SlkRef.html#995939"><code>SlkClose()</code></a>. <code>SlkClose</code> may be called only if <a href="LowLevelComms_SlkRef.html#996007"><code>SlkOpen()</code></a> returned 0 (zero) or <code>slkErrAlreadyOpen</code>. When the open count reaches zero, <code>SlkClose()</code> frees resources allocated by <code>SlkOpen()</code>.</p>
+
+<p><a name="993678"> </a>To use the Serial Link Manager socket services, open a Serial Link socket by calling <a href="LowLevelComms_SlkRef.html#996029"><code>SlkOpenSocket()</code></a>. Pass a reference number or port ID (for the Serial Manager) of an opened and initialized communications library (see <a href="LowLevelComms_SlkRef.html#995939"><code>SlkClose()</code></a>), a pointer to a memory location for returning the socket ID, and a Boolean indicating whether the socket is static or dynamic. If a static socket is being opened, the memory location for the socket ID must contain the desired socket number. If opening a dynamic socket, the new socket ID is returned in the passed memory location. Sharing of sockets is not supported. Success is indicated by an error code of 0 (zero). For information about static and dynamic socket IDs, see <a href="LowLevelComms_SerLink.html#993302">"Socket ID Assignment"</a>.</p>
+
+<p><a name="993402"> </a>When you have finished using a Serial Link socket, close it by calling <a href="LowLevelComms_SlkRef.html#995957"><code>SlkCloseSocket()</code></a>. This releases system resources allocated for this socket by the serial link manager.</p>
+
+<p><a name="993413"> </a>To set the interbyte packet receive timeout for a particular socket, call <a href="LowLevelComms_SlkRef.html#996190"><code>SlkSocketSetTimeout()</code></a>.</p>
+
+<p><a name="993418"> </a>To flush the receive stream for a particular socket, call <a href="LowLevelComms_SlkRef.html#995990"><code>SlkFlushSocket()</code></a>, passing the socket number and the interbyte timeout.</p>
+
+<p><a name="993423"> </a>To register a socket listener for a particular socket, call <a href="LowLevelComms_SlkRef.html#996116"><code>SlkSetSocketListener()</code></a>, passing the socket number of an open socket and a pointer to the <code>SlkSocketListenType</code> structure. Because the Serial Link Manager does not make a copy of the <code>SlkSocketListenType</code> structure but instead saves the pointer passed to it, the structure may not be an automatic variable (that is, allocated on the stack). The <code>SlkSocketListenType</code> structure may be a global variable in an application or a locked chunk allocated from the dynamic heap. The <code>SlkSocketListenType</code> structure specifies pointers to the socket listener procedure and the data buffers for dispatching packets destined for this socket. Pointers to two buffers must be specified: </p>
+<ul type="disc">
+  <li><a name="993430"> </a>Packet header buffer (size of <code>SlkPktHeaderType</code>). 
+  <li><a name="993431"> </a>Packet body buffer, which must be large enough for the largest expected client data size.
+</ul>
+
+<p><a name="993432"> </a>Both buffers can be application global variables or locked chunks allocated from the dynamic heap. </p>
+
+<p><a name="993433"> </a>The socket listener procedure is called when a valid packet is received for the socket. Pointers to the packet header buffer and the packet body buffer are passed as parameters to the socket listener procedure. The Serial Link Manager does not free the <code>SlkSocketListenType</code> structure or the buffers when the socket is closed; freeing them is the responsibility of the application. For this mechanism to function, some task needs to assume the responsibility to "drive" the Serial Link Manager receiver by periodically calling <a href="LowLevelComms_SlkRef.html#996058"><code>SlkReceivePacket()</code></a>.</p>
+
+<p><a name="993442"> </a>To send a packet, call <a href="LowLevelComms_SlkRef.html#996094"><code>SlkSendPacket()</code></a>, passing a pointer to the packet header (<code>SlkPktHeaderType</code>) and a pointer to an array of <code>SlkWriteDataType</code> structures. <a href="LowLevelComms_SlkRef.html#996094"><code>SlkSendPacket()</code></a> stuffs the signature, client data size, and the checksum fields of the packet header. The caller must fill in all other packet header fields. If the transaction ID field is set to 0 (zero), the serial link manager automatically generates and stuffs a new non-zero transaction ID. The array of <code>SlkWriteDataType</code> structures enables the caller to specify the client data part of the packet as a list of noncontiguous blocks. The end of list is indicated by an array element with the <code>size</code> field set to 0 (zero). <a href="LowLevelComms_SerLink.html#993452">Listing 3.1</a> incorporates the processes described in this section.</p>
+<p class="CCodeCaption">
+  <a name="993452"> </a><b>Listing 3.1  Sending a Serial Link Packet</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+status_t                     err;<a name="993453"> </a>
+//serial link packet header<a name="993454"> </a>
+SlkPktHeaderType        sendHdr;<a name="993455"> </a>
+//serial link write data segments<a name="993456"> </a>
+SlkWriteDataType         writeList[2]; <a name="993457"> </a>
+//packet body(example packet body)<a name="993458"> </a>
+UInt8           body[20];<a name="993459"> </a>
+ <a name="993460"> </a>
+// Initialize packet body<a name="993461"> </a>
+...<a name="993462"> </a>
+ <a name="993463"> </a>
+// Compose the packet header. Let Serial Link Manager<a name="993464"> </a>
+// set the transId. <a name="993465"> </a>
+sendHdr.dest = slkSocketDLP;<a name="993466"> </a>
+sendHdr.src = slkSocketDLP;<a name="993467"> </a>
+sendHdr.type = slkPktTypeSystem;<a name="993468"> </a>
+sendHdr.transId = 0; <a name="993469"> </a>
+ <a name="993470"> </a>
+// Specify packet body<a name="993471"> </a>
+writeList[0].size = sizeof(body);     //first data block size<a name="993472"> </a>
+writeList[0].dataP = body;    //first data block pointer<a name="993473"> </a>
+writeList[1].size = 0;    //no more data blocks <a name="993474"> </a>
+ <a name="993475"> </a>
+// Send the packet<a name="993476"> </a>
+err = SlkSendPacket( &amp;sendHdr, writeList );<a name="993477"> </a>
+   ...<a name="993478"> </a>
+}<a name="993479"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<p class="CCodeCaption">
+  <a name="993481"> </a><b>Listing 3.2  Generating a New Transaction ID</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+//<a name="993482"> </a>
+// Example: Generating a new transaction ID given the <a name="993483"> </a>
+// previous transaction ID. Can start with any seed value.<a name="993484"> </a>
+//<a name="993485"> </a>
+ <a name="993486"> </a>
+UInt8 NextTransactionID (UInt8 previousTransactionID)<a name="993487"> </a>
+{<a name="993488"> </a>
+   UInt8  nextTransactionID;<a name="993489"> </a>
+   <a name="993490"> </a>
+   // Generate a new transaction id, avoid the <a name="993491"> </a>
+   // reserved values (0x00 and 0xFF)<a name="993492"> </a>
+   if ( previousTransactionID &gt;= (UInt8)0xFE )<a name="993493"> </a>
+      nextTransactionID = 1;    // wrap around<a name="993494"> </a>
+   else<a name="993495"> </a>
+      nextTransactionID = previousTransactionID + 1;<a name="993496"> </a>
+      // increment<a name="993497"> </a>
+   <a name="993498"> </a>
+   return nextTransactionID;<a name="993499"> </a>
+}<a name="993500"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="993506"> </a>To receive a packet, call <a href="LowLevelComms_SlkRef.html#996058"><code>SlkReceivePacket()</code></a>. You may request a packet for the passed socket ID only, or for any open socket that does not have a socket listener. The parameters also specify buffers for the packet header and client data, and a timeout. The timeout indicates how long the receiver should wait for a packet to begin arriving before timing out. A timeout value of (-1) means "wait forever." If a packet is received for a socket with a registered socket listener, the packet is dispatched via its socket listener procedure.</p>
+
+<p><a name="993050"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 2004, PalmSource, Inc. and its affiliates.  All rights reserved. <br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="LowLevelComms_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="LowLevelCommsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_SerMgr.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_SerRef.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelCommsIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

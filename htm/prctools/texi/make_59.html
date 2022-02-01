@@ -1,0 +1,147 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Sequences</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Sequences">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Sequences">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC63"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_58.html#SEC62"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_60.html#SEC64"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_54.html#SEC58"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.7 Defining Canned Command Sequences </H2>
+<!--docid::SEC63::-->
+<P>
+
+When the same sequence of commands is useful in making various targets, you
+can define it as a canned sequence with the <CODE>define</CODE> directive, and
+refer to the canned sequence from the rules for those targets.  The canned
+sequence is actually a variable, so the name must not conflict with other
+variable names.
+</P><P>
+
+Here is an example of defining a canned sequence of commands:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>define run-yacc
+yacc $(firstword $^)
+mv y.tab.c $@
+endef
+</pre></td></tr></table><A NAME="IDX251"></A>
+</P><P>
+
+Here <CODE>run-yacc</CODE> is the name of the variable being defined;
+<CODE>endef</CODE> marks the end of the definition; the lines in between are the
+commands.  The <CODE>define</CODE> directive does not expand variable references
+and function calls in the canned sequence; the <SAMP>`$'</SAMP> characters,
+parentheses, variable names, and so on, all become part of the value of the
+variable you are defining.
+See section <A HREF="make_71.html#SEC75">Defining Variables Verbatim</A>,
+for a complete explanation of <CODE>define</CODE>.
+</P><P>
+
+The first command in this example runs Yacc on the first prerequisite of
+whichever rule uses the canned sequence.  The output file from Yacc is
+always named <TT>`y.tab.c'</TT>.  The second command moves the output to the
+rule's target file name.
+</P><P>
+
+To use the canned sequence, substitute the variable into the commands of a
+rule.  You can substitute it like any other variable
+(see section <A HREF="make_62.html#SEC66">Basics of Variable References</A>).
+Because variables defined by <CODE>define</CODE> are recursively expanded
+variables, all the variable references you wrote inside the <CODE>define</CODE>
+are expanded now.  For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo.c : foo.y
+        $(run-yacc)
+</pre></td></tr></table></P><P>
+
+<SAMP>`foo.y'</SAMP> will be substituted for the variable <SAMP>`$^'</SAMP> when it occurs in
+<CODE>run-yacc</CODE>'s value, and <SAMP>`foo.c'</SAMP> for <SAMP>`$@'</SAMP>.</P><P>
+
+This is a realistic example, but this particular one is not needed in
+practice because <CODE>make</CODE> has an implicit rule to figure out these
+commands based on the file names involved
+(see section <A HREF="make_99.html#SEC103">Using Implicit Rules</A>).
+</P><P>
+
+<A NAME="IDX252"></A>
+<A NAME="IDX253"></A>
+<A NAME="IDX254"></A>
+In command execution, each line of a canned sequence is treated just as
+if the line appeared on its own in the rule, preceded by a tab.  In
+particular, <CODE>make</CODE> invokes a separate subshell for each line.  You
+can use the special prefix characters that affect command lines
+(<SAMP>`@'</SAMP>, <SAMP>`-'</SAMP>, and <SAMP>`+'</SAMP>) on each line of a canned sequence.
+See section <A HREF="make_48.html#SEC52">Writing the Commands in Rules</A>.
+For example, using this canned sequence:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>define frobnicate
+@echo "frobnicating target $@"
+frob-step-1 $&#60; -o $@-step-1
+frob-step-2 $@-step-1 -o $@
+endef
+</pre></td></tr></table></P><P>
+
+<CODE>make</CODE> will not echo the first line, the <CODE>echo</CODE> command.
+But it <EM>will</EM> echo the following two command lines.
+</P><P>
+
+On the other hand, prefix characters on the command line that refers to
+a canned sequence apply to every line in the sequence.  So the rule:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>frob.out: frob.in
+        @$(frobnicate)
+</pre></td></tr></table></P><P>
+
+does not echo <EM>any</EM> commands.
+(See section <A HREF="make_49.html#SEC53">Command Echoing</A>, for a full explanation of <SAMP>`@'</SAMP>.)
+</P><P>
+
+<A NAME="Empty Commands"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_58.html#SEC62"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_60.html#SEC64"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_54.html#SEC58"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

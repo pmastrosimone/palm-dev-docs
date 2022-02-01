@@ -1,0 +1,80 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Commands/Search</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Commands/Search">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Commands/Search">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC38"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_33.html#SEC37"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_35.html#SEC39"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_26.html#SEC30"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_37.html#SEC41"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 4.5.4 Writing Shell Commands with Directory Search </H3>
+<!--docid::SEC38::-->
+<P>
+
+When a prerequisite is found in another directory through directory search,
+this cannot change the commands of the rule; they will execute as written.
+Therefore, you must write the commands with care so that they will look for
+the prerequisite in the directory where <CODE>make</CODE> finds it.
+</P><P>
+
+This is done with the <EM>automatic variables</EM> such as <SAMP>`$^'</SAMP>
+(see section <A HREF="make_107.html#SEC111">Automatic Variables</A>).
+For instance, the value of <SAMP>`$^'</SAMP> is a
+list of all the prerequisites of the rule, including the names of
+the directories in which they were found, and the value of
+<SAMP>`$@'</SAMP> is the target.  Thus:</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo.o : foo.c
+        cc -c $(CFLAGS) $^ -o $@
+</pre></td></tr></table></P><P>
+
+(The variable <CODE>CFLAGS</CODE> exists so you can specify flags for C
+compilation by implicit rules; we use it here for consistency so it will
+affect all C compilations uniformly;
+see section <A HREF="make_102.html#SEC106">Variables Used by Implicit Rules</A>.)
+</P><P>
+
+Often the prerequisites include header files as well, which you do not
+want to mention in the commands.  The automatic variable <SAMP>`$&#60;'</SAMP> is
+just the first prerequisite:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>VPATH = src:../headers
+foo.o : foo.c defs.h hack.h
+        cc -c $(CFLAGS) $&#60; -o $@
+</pre></td></tr></table></P><P>
+
+<A NAME="Implicit/Search"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

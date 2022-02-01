@@ -1,0 +1,356 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Readline Init File Syntax</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Readline Init File Syntax">
+<META NAME="keywords" CONTENT="Debugging with GDB: Readline Init File Syntax">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC602"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_247.html#SEC601"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_249.html#SEC603"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_251.html#SEC605"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_247.html#SEC601"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_251.html#SEC605"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 26.3.1 Readline Init File Syntax </H3>
+<!--docid::SEC602::-->
+<P>
+
+There are only a few basic constructs allowed in the
+Readline init file.  Blank lines are ignored.
+Lines beginning with a <SAMP>`#'</SAMP> are comments.
+Lines beginning with a <SAMP>`$'</SAMP> indicate conditional
+constructs (see section <A HREF="gdb_249.html#SEC603">26.3.2 Conditional Init Constructs</A>).  Other lines
+denote variable settings and key bindings.
+</P><P>
+
+<DL COMPACT>
+<DT>Variable Settings
+<DD>You can modify the run-time behavior of Readline by
+altering the values of variables in Readline
+using the <CODE>set</CODE> command within the init file.  Here is how to
+change from the default Emacs-like key binding to use
+<CODE>vi</CODE> line editing commands:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>set editing-mode vi
+</pre></td></tr></table></P><P>
+
+A great deal of run-time behavior is changeable with the following
+variables.
+</P><P>
+
+<DL COMPACT>
+
+<DT><CODE>bell-style</CODE>
+<DD><A NAME="IDX1012"></A>
+Controls what happens when Readline wants to ring the terminal bell.
+If set to <SAMP>`none'</SAMP>, Readline never rings the bell.  If set to
+<SAMP>`visible'</SAMP>, Readline uses a visible bell if one is available.
+If set to <SAMP>`audible'</SAMP> (the default), Readline attempts to ring
+the terminal's bell.
+<P>
+
+<DT><CODE>comment-begin</CODE>
+<DD><A NAME="IDX1013"></A>
+The string to insert at the beginning of the line when the
+<CODE>insert-comment</CODE> command is executed.  The default value
+is <CODE>"#"</CODE>.
+<P>
+
+<DT><CODE>completion-ignore-case</CODE>
+<DD>If set to <SAMP>`on'</SAMP>, Readline performs filename matching and completion
+in a case-insensitive fashion.
+The default value is <SAMP>`off'</SAMP>.
+<P>
+
+<DT><CODE>completion-query-items</CODE>
+<DD><A NAME="IDX1014"></A>
+The number of possible completions that determines when the user is
+asked whether he wants to see the list of possibilities.  If the
+number of possible completions is greater than this value,
+Readline will ask the user whether or not he wishes to view
+them; otherwise, they are simply listed.  The default limit is
+<CODE>100</CODE>.
+<P>
+
+<DT><CODE>convert-meta</CODE>
+<DD><A NAME="IDX1015"></A>
+If set to <SAMP>`on'</SAMP>, Readline will convert characters with the
+eighth bit set to an ASCII key sequence by stripping the eighth
+bit and prefixing an <KBD>ESC</KBD> character, converting them to a
+meta-prefixed key sequence.  The default value is <SAMP>`on'</SAMP>.
+<P>
+
+<DT><CODE>disable-completion</CODE>
+<DD><A NAME="IDX1016"></A>
+If set to <SAMP>`On'</SAMP>, Readline will inhibit word completion.
+Completion  characters will be inserted into the line as if they had
+been mapped to <CODE>self-insert</CODE>.  The default is <SAMP>`off'</SAMP>.
+<P>
+
+<DT><CODE>editing-mode</CODE>
+<DD><A NAME="IDX1017"></A>
+The <CODE>editing-mode</CODE> variable controls which default set of
+key bindings is used.  By default, Readline starts up in Emacs editing
+mode, where the keystrokes are most similar to Emacs.  This variable can be
+set to either <SAMP>`emacs'</SAMP> or <SAMP>`vi'</SAMP>.
+<P>
+
+<DT><CODE>enable-keypad</CODE>
+<DD><A NAME="IDX1018"></A>
+When set to <SAMP>`on'</SAMP>, Readline will try to enable the application
+keypad when it is called.  Some systems need this to enable the
+arrow keys.  The default is <SAMP>`off'</SAMP>.
+<P>
+
+<DT><CODE>expand-tilde</CODE>
+<DD><A NAME="IDX1019"></A>
+If set to <SAMP>`on'</SAMP>, tilde expansion is performed when Readline
+attempts word completion.  The default is <SAMP>`off'</SAMP>.
+<P>
+
+<DT><CODE>horizontal-scroll-mode</CODE>
+<DD><A NAME="IDX1020"></A>
+This variable can be set to either <SAMP>`on'</SAMP> or <SAMP>`off'</SAMP>.  Setting it
+to <SAMP>`on'</SAMP> means that the text of the lines being edited will scroll
+horizontally on a single screen line when they are longer than the width
+of the screen, instead of wrapping onto a new screen line.  By default,
+this variable is set to <SAMP>`off'</SAMP>.
+<P>
+
+<DT><CODE>input-meta</CODE>
+<DD><A NAME="IDX1021"></A>
+<A NAME="IDX1022"></A>
+If set to <SAMP>`on'</SAMP>, Readline will enable eight-bit input (it
+will not strip the eighth bit from the characters it reads),
+regardless of what the terminal claims it can support.  The
+default value is <SAMP>`off'</SAMP>.  The name <CODE>meta-flag</CODE> is a
+synonym for this variable.
+<P>
+
+<DT><CODE>isearch-terminators</CODE>
+<DD><A NAME="IDX1023"></A>
+The string of characters that should terminate an incremental search without
+subsequently executing the character as a command (see section <A HREF="gdb_246.html#SEC600">26.2.5 Searching for Commands in the History</A>).
+If this variable has not been given a value, the characters <KBD>ESC</KBD> and
+<KBD>C-J</KBD> will terminate an incremental search.
+<P>
+
+<DT><CODE>keymap</CODE>
+<DD><A NAME="IDX1024"></A>
+Sets Readline's idea of the current keymap for key binding commands.
+Acceptable <CODE>keymap</CODE> names are
+<CODE>emacs</CODE>,
+<CODE>emacs-standard</CODE>,
+<CODE>emacs-meta</CODE>,
+<CODE>emacs-ctlx</CODE>,
+<CODE>vi</CODE>,
+<CODE>vi-command</CODE>, and
+<CODE>vi-insert</CODE>.
+<CODE>vi</CODE> is equivalent to <CODE>vi-command</CODE>; <CODE>emacs</CODE> is
+equivalent to <CODE>emacs-standard</CODE>.  The default value is <CODE>emacs</CODE>.
+The value of the <CODE>editing-mode</CODE> variable also affects the
+default keymap.
+<P>
+
+<DT><CODE>mark-directories</CODE>
+<DD>If set to <SAMP>`on'</SAMP>, completed directory names have a slash
+appended.  The default is <SAMP>`on'</SAMP>.
+<P>
+
+<DT><CODE>mark-modified-lines</CODE>
+<DD><A NAME="IDX1025"></A>
+This variable, when set to <SAMP>`on'</SAMP>, causes Readline to display an
+asterisk (<SAMP>`*'</SAMP>) at the start of history lines which have been modified.
+This variable is <SAMP>`off'</SAMP> by default.
+<P>
+
+<DT><CODE>output-meta</CODE>
+<DD><A NAME="IDX1026"></A>
+If set to <SAMP>`on'</SAMP>, Readline will display characters with the
+eighth bit set directly rather than as a meta-prefixed escape
+sequence.  The default is <SAMP>`off'</SAMP>.
+<P>
+
+<DT><CODE>print-completions-horizontally</CODE>
+<DD>If set to <SAMP>`on'</SAMP>, Readline will display completions with matches
+sorted horizontally in alphabetical order, rather than down the screen.
+The default is <SAMP>`off'</SAMP>.
+<P>
+
+<DT><CODE>show-all-if-ambiguous</CODE>
+<DD><A NAME="IDX1027"></A>
+This alters the default behavior of the completion functions.  If
+set to <SAMP>`on'</SAMP>, 
+words which have more than one possible completion cause the
+matches to be listed immediately instead of ringing the bell.
+The default value is <SAMP>`off'</SAMP>.
+<P>
+
+<DT><CODE>visible-stats</CODE>
+<DD><A NAME="IDX1028"></A>
+If set to <SAMP>`on'</SAMP>, a character denoting a file's type
+is appended to the filename when listing possible
+completions.  The default is <SAMP>`off'</SAMP>.
+<P>
+
+</DL>
+<P>
+
+<DT>Key Bindings
+<DD>The syntax for controlling key bindings in the init file is
+simple.  First you need to find the name of the command that you
+want to change.  The following sections contain tables of the command
+name, the default keybinding, if any, and a short description of what
+the command does.
+<P>
+
+Once you know the name of the command, simply place the name of the key
+you wish to bind the command to, a colon, and then the name of the
+command on a line in the init file.  The name of the key
+can be expressed in different ways, depending on which is most
+comfortable for you.
+</P><P>
+
+<DL COMPACT>
+<DT><VAR>keyname</VAR>: <VAR>function-name</VAR> or <VAR>macro</VAR>
+<DD><VAR>keyname</VAR> is the name of a key spelled out in English.  For example:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>Control-u: universal-argument
+Meta-Rubout: backward-kill-word
+Control-o: "&#62; output"
+</pre></td></tr></table><P>
+
+In the above example, <KBD>C-u</KBD> is bound to the function
+<CODE>universal-argument</CODE>, and <KBD>C-o</KBD> is bound to run the macro
+expressed on the right hand side (that is, to insert the text
+<SAMP>`&#62; output'</SAMP> into the line).
+</P><P>
+
+<DT>"<VAR>keyseq</VAR>": <VAR>function-name</VAR> or <VAR>macro</VAR>
+<DD><VAR>keyseq</VAR> differs from <VAR>keyname</VAR> above in that strings
+denoting an entire key sequence can be specified, by placing
+the key sequence in double quotes.  Some GNU Emacs style key
+escapes can be used, as in the following example, but the
+special character names are not recognized.
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>"\C-u": universal-argument
+"\C-x\C-r": re-read-init-file
+"\e[11~": "Function Key 1"
+</pre></td></tr></table></P><P>
+
+In the above example, <KBD>C-u</KBD> is bound to the function
+<CODE>universal-argument</CODE> (just as it was in the first example),
+<SAMP>`<KBD>C-x</KBD> <KBD>C-r</KBD>'</SAMP> is bound to the function <CODE>re-read-init-file</CODE>,
+and <SAMP>`<KBD>ESC</KBD> <KBD>[</KBD> <KBD>1</KBD> <KBD>1</KBD> <KBD>~</KBD>'</SAMP> is bound to insert
+the text <SAMP>`Function Key 1'</SAMP>.
+</P><P>
+
+</DL>
+<P>
+
+The following GNU Emacs style escape sequences are available when
+specifying key sequences:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE><KBD>\C-</KBD></CODE>
+<DD>control prefix
+<DT><CODE><KBD>\M-</KBD></CODE>
+<DD>meta prefix
+<DT><CODE><KBD>\e</KBD></CODE>
+<DD>an escape character
+<DT><CODE><KBD>\\</KBD></CODE>
+<DD>backslash
+<DT><CODE><KBD>\"</KBD></CODE>
+<DD><KBD>"</KBD>, a double quotation mark
+<DT><CODE><KBD>\'</KBD></CODE>
+<DD><KBD>'</KBD>, a single quote or apostrophe
+</DL>
+<P>
+
+In addition to the GNU Emacs style escape sequences, a second
+set of backslash escapes is available:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>\a</CODE>
+<DD>alert (bell)
+<DT><CODE>\b</CODE>
+<DD>backspace
+<DT><CODE>\d</CODE>
+<DD>delete
+<DT><CODE>\f</CODE>
+<DD>form feed
+<DT><CODE>\n</CODE>
+<DD>newline
+<DT><CODE>\r</CODE>
+<DD>carriage return
+<DT><CODE>\t</CODE>
+<DD>horizontal tab
+<DT><CODE>\v</CODE>
+<DD>vertical tab
+<DT><CODE>\<VAR>nnn</VAR></CODE>
+<DD>the character whose <CODE>ASCII</CODE> code is the octal value <VAR>nnn</VAR>
+(one to three digits)
+<DT><CODE>\x<VAR>nnn</VAR></CODE>
+<DD>the character whose <CODE>ASCII</CODE> code is the hexadecimal value <VAR>nnn</VAR>
+(one to three digits)
+</DL>
+<P>
+
+When entering the text of a macro, single or double quotes must
+be used to indicate a macro definition.
+Unquoted text is assumed to be a function name.
+In the macro body, the backslash escapes described above are expanded.
+Backslash will quote any other character in the macro text,
+including <SAMP>`"'</SAMP> and <SAMP>`''</SAMP>.
+For example, the following binding will make <SAMP>`C-x \'</SAMP>
+insert a single <SAMP>`\'</SAMP> into the line:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>"\C-x\\": "\\"
+</pre></td></tr></table></P><P>
+
+</DL>
+<P>
+
+<A NAME="Conditional Init Constructs"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_247.html#SEC601"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_249.html#SEC603"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_251.html#SEC605"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_247.html#SEC601"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_251.html#SEC605"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

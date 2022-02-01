@@ -1,0 +1,143 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Canonical format</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Canonical format">
+<META NAME="keywords" CONTENT="Untitled Document: Canonical format">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC63"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_62.html#SEC62"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_64.html#SEC64"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_60.html#SEC60"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_64.html#SEC64"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 5.1.2 The BFD canonical object-file format </H3>
+<!--docid::SEC63::-->
+<P>
+
+The greatest potential for loss of information occurs when there is the least
+overlap between the information provided by the source format, that
+stored by the canonical format, and that needed by the
+destination format. A brief description of the canonical form may help
+you understand which kinds of data you can count on preserving across
+conversions.
+<A NAME="IDX398"></A>
+<A NAME="IDX399"></A>
+</P><P>
+
+<DL COMPACT>
+<DT><EM>files</EM>
+<DD>Information stored on a per-file basis includes target machine
+architecture, particular implementation format type, a demand pageable
+bit, and a write protected bit.  Information like Unix magic numbers is
+not stored here--only the magic numbers' meaning, so a <CODE>ZMAGIC</CODE>
+file would have both the demand pageable bit and the write protected
+text bit set.  The byte order of the target is stored on a per-file
+basis, so that big- and little-endian object files may be used with one
+another.
+<P>
+
+<DT><EM>sections</EM>
+<DD>Each section in the input file contains the name of the section, the
+section's original address in the object file, size and alignment
+information, various flags, and pointers into other BFD data
+structures.
+<P>
+
+<DT><EM>symbols</EM>
+<DD>Each symbol contains a pointer to the information for the object file
+which originally defined it, its name, its value, and various flag
+bits.  When a BFD back end reads in a symbol table, it relocates all
+symbols to make them relative to the base of the section where they were
+defined.  Doing this ensures that each symbol points to its containing
+section.  Each symbol also has a varying amount of hidden private data
+for the BFD back end.  Since the symbol points to the original file, the
+private data format for that symbol is accessible.  <CODE>ld</CODE> can
+operate on a collection of symbols of wildly different formats without
+problems.
+<P>
+
+Normal global and simple local symbols are maintained on output, so an
+output file (no matter its format) will retain symbols pointing to
+functions and to global, static, and common variables.  Some symbol
+information is not worth retaining; in <CODE>a.out</CODE>, type information is
+stored in the symbol table as long symbol names.  This information would
+be useless to most COFF debuggers; the linker has command line switches
+to allow users to throw it away.
+</P><P>
+
+There is one word of type information within the symbol, so if the
+format supports symbol type information within symbols (for example, COFF,
+IEEE, Oasys) and the type is simple enough to fit within one word
+(nearly everything but aggregates), the information will be preserved.
+</P><P>
+
+<DT><EM>relocation level</EM>
+<DD>Each canonical BFD relocation record contains a pointer to the symbol to
+relocate to, the offset of the data to relocate, the section the data
+is in, and a pointer to a relocation type descriptor. Relocation is
+performed by passing messages through the relocation type
+descriptor and the symbol pointer. Therefore, relocations can be performed
+on output data using a relocation method that is only available in one of the
+input formats. For instance, Oasys provides a byte relocation format.
+A relocation record requesting this relocation type would point
+indirectly to a routine to perform this, so the relocation may be
+performed on a byte being written to a 68k COFF file, even though 68k COFF
+has no such relocation type.
+<P>
+
+<DT><EM>line numbers</EM>
+<DD>Object formats can contain, for debugging purposes, some form of mapping
+between symbols, source line numbers, and addresses in the output file.
+These addresses have to be relocated along with the symbol information.
+Each symbol with an associated list of line number records points to the
+first record of the list.  The head of a line number list consists of a
+pointer to the symbol, which allows finding out the address of the
+function whose line number is being described. The rest of the list is
+made up of pairs: offsets into the section and line numbers. Any format
+which can simply derive this information can pass it successfully
+between formats (COFF, IEEE and Oasys).
+</DL>
+<P>
+
+<A NAME="Reporting Bugs"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_62.html#SEC62"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_64.html#SEC64"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_60.html#SEC60"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_64.html#SEC64"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

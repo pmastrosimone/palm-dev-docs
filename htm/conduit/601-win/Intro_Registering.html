@@ -1,0 +1,423 @@
+<html>
+<head>
+<title>Registering Conduits and Notifiers with HotSync Manager | Introduction to Conduit Development</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="KEYWORDS" CONTENT="conduit registration, registration, registering, folder, conventional, user, system, HotSync Manager, hotsync, conduit, conduits, CDK">
+<META NAME="DESCRIPTION" CONTENT="Describes how conduits are registered with HotSync Manager before a HotSync operation.">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource HTML 20040609">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="LASTUPDATED" CONTENT="06/28/04 08:30:38">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="995934"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="IntroToConduitsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_HSMBasics.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_HotSyncProc.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="IntroToConduitsIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">6 &nbsp;&nbsp;
+Registering Conduits and Notifiers with HotSync Manager</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Introduction to Conduit Development</p>
+<p class="SubTitle">Palm OS&#174; Conduit Development Kit for Windows, Version 6.0.1 </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="Intro_Registering.html">6  Registering Conduits and Notifiers with HotSync Manager</a></h1>
+
+   <h2 class="SideTOC2"><a href="#995955">
+   Methods of Registering a Conduit or Notifier</a></h2>
+
+      <h3 class="SideTOC3"><a href="#995968">
+      Conventional Registration</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996038">
+      Folder-based Conduit Registration</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996070">
+      Comparison of Conduit Registration Methods</a></h3>
+
+   <h2 class="SideTOC2"><a href="#997389">
+   User- and System-registered Conduits and Notifiers</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1002920">
+   Resolving Conduit Conflicts</a></h2>
+
+</div>
+</td>
+<!--END SIDETOC-->
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="995939"> </a><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">Conduit and notifier registration</span> is a one-time operation performed outside of the HotSync process by a desktop installer application that provides HotSync Manager with basic information about a conduit or notifier. This information enables HotSync Manager to uniquely identify and to find a conduit or notifier when it needs to call any of a its entry points.</p>
+<div class="NINoteImportant"><hr>
+  <a name="995940"> </a> <b>NOTE: </b> The most common reason why a conduit does not run is that it is not properly registered.
+<hr>
+</div>
+
+<p><a name="999458"> </a>Conduits and notifiers must be registered with HotSync Manager before the HotSync process begins. This chapter has the following sections:</p>
+   <blockquote class = "bq"><a name="995945"> </a><a href="Intro_Registering.html#995955">Methods of Registering a Conduit or Notifier</a></blockquote>
+   <blockquote class = "bq"><a name="995949"> </a><a href="Intro_Registering.html#997389">User- and System-registered Conduits and Notifiers</a></blockquote>
+   <blockquote class = "bq"><a name="995953"> </a><a href="Intro_Registering.html#1002920">Resolving Conduit Conflicts</a></blockquote>
+
+<h2 class="haH2">
+  <a name="995955"> </a>Methods of Registering a Conduit or Notifier <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="995956"> </a>There are two fundamental ways to register a synchronization conduit with HotSync Manager for Windows, which are described in the following subsections:</p>
+   <blockquote class = "bq"><a name="995960"> </a><a href="Intro_Registering.html#995968">Conventional Registration</a></blockquote>
+   <blockquote class = "bq"><a name="995964"> </a><a href="Intro_Registering.html#996038">Folder-based Conduit Registration</a></blockquote>
+   <blockquote class = "bq"><a name="998646"> </a><a href="Intro_Registering.html#996070">Comparison of Conduit Registration Methods</a></blockquote>
+
+<p><a name="995965"> </a>These two methods are equivalent; HotSync Manager does not treat synchronization conduits differently based on how they are registered.</p>
+<div class="NINoteImportant"><hr>
+  <a name="995966"> </a> <b>NOTE: </b> Notifiers, install conduits, and the backup conduit can be conventionally registered only; they cannot be folder-registered.
+<hr>
+</div>
+<h3 class="hbH3">
+  <a name="995968"> </a>Conventional Registration <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="995969"> </a><b>Conventional registration</b> requires an installer to write registration information in the configuration entries at install time. This method is supported by all versions of HotSync Manager for Windows for registering the following types of conduits and notifiers, described these subsections:</p>
+   <blockquote class = "bq"><a name="995973"> </a><a href="Intro_Registering.html#995988">Synchronization Conduits</a></blockquote>
+   <blockquote class = "bq"><a name="995977"> </a><a href="Intro_Registering.html#1000536">Install Conduits</a></blockquote>
+   <blockquote class = "bq"><a name="995981"> </a><a href="Intro_Registering.html#996025">Backup Conduit</a></blockquote>
+   <blockquote class = "bq"><a name="995985"> </a><a href="Intro_Registering.html#996030">Notifiers</a></blockquote>
+<div class="NINoteImportant"><hr>
+  <a name="995986"> </a> <b>IMPORTANT: </b> The Conduit Configuration (CondCfg) utility enables you to conventionally register a synchronization conduit or notifier during development and testing without writing code to call Conduit Manager. However, CondCfg is not an end-user utility, so PalmSource does not permit you to redistribute this developer-only utility with your conduit or notifier.
+<hr>
+</div>
+
+<h4 class="hcH4">
+  <a name="995988"> </a>Synchronization Conduits
+</h4>
+
+<p><a name="995989"> </a>To conventionally register a <i>synchronization conduit</i>, an installer calls the <a href="Intro_Glossary.html#914814"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">Conduit Manager</span></a> API to write several conduit <a href="Intro_Glossary.html#914811"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">configuration entries</span></a>. The minimum required set of entries are:</p>
+
+<dl>
+<dt><a name="995996"> </a><code>Conduit</code></dt>
+<dd><a name="995997"> </a>The filename (or full path) of a C API-based conduit DLL.</dd>
+
+<dt><a name="995998"> </a><code>Creator</code></dt>
+<dd><a name="996002"> </a>The <a href="Intro_Glossary.html#914833"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">creator ID</span></a>, usually of the application on the handheld associated with the conduit. This is the key by which HotSync Manager uniquely identifies a registered conduit. It is required for conduits created with any Sync Suite.</dd>
+
+<dt><a name="996003"> </a><code>COMClient</code></dt>
+<dd><a name="996004"> </a>The name or ProgID of a COM-based conduit. Not required for other types of conduits.</dd>
+
+<dt><a name="996005"> </a><code>ClassName</code> and <code>ClassPath13</code></dt>
+<dd><a name="996006"> </a>The class name and path of all classes used by a Java-based conduit. Not required for other types of conduits.</dd>
+
+</dl>
+
+<p><a name="1000533"> </a>You can specify values for other standard, optional conduit configuration entries&#8212for example, <code>Priority</code>, whose value ranges from 0 to 4, specifies the relative order in which HotSync Manager should run a conduit. Or you can create and set your own additional entries for your own use. See the <i>Sync Suite Companion</i> document for the Sync Suite describes in more detail how to use this method to register a conduit.</p>
+<div class="NINoteImportant"><hr>
+  <a name="1000534"> </a> <b>NOTE: </b> HotSync Manager versions <i>earlier than 6.0</i> must be refreshed or restarted after registering a conduit for a newly registered conduit to be recognized. However, <i>versions 6.0 and later</i> automatically refresh the registered conduits list so that you do not need to refresh or restart HotSync Manager.
+<hr>
+</div>
+
+<h4 class="hcH4">
+  <a name="1000536"> </a>Install Conduits
+</h4>
+
+<p><a name="996010"> </a>To conventionally register an <i>install conduit</i>, an installer calls the <a href="Intro_Glossary.html#914896"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">Install Conduit Manager</span></a> API to write several install conduit configuration entries. The minimum required set of entries are:</p>
+
+<dl>
+<dt><a name="996014"> </a><code>Mask</code></dt>
+<dd><a name="996015"> </a>A bit mask value that uniquely identifies an install conduit on the current desktop computer.</dd>
+
+<dt><a name="996016"> </a><code>CreatorID</code></dt>
+<dd><a name="996017"> </a>A unique ID associated with an install conduit. </dd>
+
+<dt><a name="996018"> </a><code>Extensions</code></dt>
+<dd><a name="996019"> </a>The file type extensions of the files that an install conduit can install.</dd>
+
+<dt><a name="996020"> </a><code>Directory</code></dt>
+<dd><a name="996021"> </a>Name of the install directory from which a specific install conduit transfers files from the desktop to a handheld.</dd>
+
+<dt><a name="996022"> </a><code>Module</code></dt>
+<dd><a name="996023"> </a>The filename of an install conduit.</dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="996025"> </a>Backup Conduit
+</h4>
+
+<p><a name="996026"> </a>To conventionally register a <i>backup conduit</i>, an installer calls the Conduit Manager API to write one of the HotSync Manager configuration entries:</p>
+
+<dl>
+<dt><a name="996027"> </a><code>HotSync Manager\BackupConduit</code></dt>
+<dd><a name="996028"> </a>Filename of the conduit that HotSync Manager calls as the backup conduit near the end of the HotSync process.</dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="996030"> </a>Notifiers
+</h4>
+
+<p><a name="996033"> </a>To conventionally register a <i>notifier</i>, an installer calls the <a href="Intro_Glossary.html#914930"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">Notifier Install Manager</span></a> API to write one of the HotSync Manager configuration entries:</p>
+
+<dl>
+<dt><a name="996035"> </a><code>HotSync Manager\NotifierN</code></dt>
+<dd><a name="996036"> </a>Filename of a notifier that HotSync Manager calls at the start and end of the HotSync process.</dd>
+
+</dl>
+<h3 class="hbH3">
+  <a name="996038"> </a>Folder-based Conduit Registration <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996039"> </a><b>Folder-based conduit registration</b> requires that you:</p>
+<ul type="disc">
+  <li><a name="996040"> </a>Implement logic in your conduit's <code>GetConduitInfo()</code> entry point to respond to HotSync Manager's request for registration information at run time.
+  <li><a name="996041"> </a>Copy your conduit to the current Windows user's (or the system's) <code>Conduits</code> folder at install time.
+</ul>
+<div class="NINoteImportant"><hr>
+  <a name="996042"> </a> <b>NOTE: </b> Folder-based conduit registration is supported only for C API-based synchronization conduits and HotSync Manager for Windows, versions 6.0 and later.
+<hr>
+</div>
+
+<p><a name="996043"> </a>HotSync Manager discovers a folder-registered conduit by looking in the <code>Conduits</code> folders and then calling each conduit's <code>GetConduitInfo()</code> entry point. If the conduit DLL is not present or it does not return registration information when HotSync Manager requests it, then a conduit is not folder-registered and cannot be called by HotSync Manager. </p>
+
+<p><a name="996044"> </a>The <code>Conduits</code> folder contains a <code>Disabled</code> subfolder. Conduit Manager APIs allow you to disable a folder-registered conduit, which simply moves the file from the <code>Conduits</code> folder to the <code>Disabled</code> subfolder. A user can disable and enable folder-registered conduits also by moving the conduit file from one folder to the other.</p>
+
+<p><a name="996048"> </a>See <a href="Intro_HSMBasics.html#997535">Figure 5.5</a> for the paths of the <code>Conduits</code> and <code>Disabled</code> folders for both system-registered and user-registered conduits. </p>
+<h3 class="hbH3">
+  <a name="996070"> </a>Comparison of Conduit Registration Methods <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="997412"> </a>Folder-based conduit registration has the following advantages over the conventional method:</p>
+<ul type="disc">
+  <li><a name="997416"> </a>You set your conduit's registration information at <i>compile time</i>, so your installer does not have to make multiple Conduit Manager calls to write registration information at install time.
+  <li><a name="997432"> </a>Your installer can be simpler. It only needs to find a folder and copy a file to it.
+  <li><a name="997437"> </a>It is a quicker way to get HotSync Manager to run your conduit while you're developing and testing it. You do not have to write an installer or use the CondCfg utility to register your conduit.
+</ul>
+
+<p><a name="997470"> </a>However, you may want to use conventional conduit registration if you want your installer to set your conduit's registration information set at <i>install time</i>. This way you can customize this information then or change it later by calling the Conduit Manager. For folder-registered conduits, this information is read-only after you compile your conduit. </p>
+
+<p><a name="998557"> </a>Of course, you can take advantage of both methods: register your conduit by folder during development and testing, because it is easier; then write an installer that registers it conventionally when you deploy your conduit, if you need to customize or change its registration information at install time.</p>
+
+<h2 class="haH2">
+  <a name="997389"> </a>User- and System-registered Conduits and Notifiers <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996071"> </a>HotSync Manager for Windows, versions 6.0 and later, distinguishes between conduits and notifiers registered for the current Windows user and those registered for the system. At the beginning of the HotSync process, Conduit Manager compiles a list of the creator IDs of all nonconflicting, registered conduits. Conduit Manager passes this list to HotSync Manager, which uses it to determine which ones it will actually call when the current Windows user performs a HotSync operation. Conduit Manager looks at all registered conduits. It does not distinguish between how a conduit is registered (conventional or folder-based), but it does look at who it is registered for. If a system- and a user-registered conduit have the same creator ID, then Conduit Manager puts only the user-registered conduit on its list. </p>
+<div class="NINoteImportant"><hr>
+  <a name="996072"> </a> <b>NOTE: </b> A user-registered conduit always takes precedence over a system-registered one with the same creator ID.
+<hr>
+</div>
+
+<p><a name="996079"> </a><a href="Intro_Registering.html#996083">Table 6.1</a> shows what Conduit Manager<a href="#996078"><sup>1</sup></a> compares when it reconciles its list of user-registered conduits and notifiers with its system-registered list.</p>
+
+<p class="fineprint">
+<p class="caption"><a name="996083"> </a><b>Table 6.1&nbsp;&nbsp;How Conduit Manager reconciles user- vs. system-registered conduits and notifiers</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="996087"> </a><b>For two...</b></p>
+    </th>
+    <th><p class="tt"><a name="996089"> </a><b>a user-registered one takes precedence over a system-registered one...</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996091"> </a>Synchronization conduits</p>
+    </td>
+    <td><p class="tt"><a name="996093"> </a>with the same creator ID </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996095"> </a>Install conduits</p>
+    </td>
+    <td><p class="tt"><a name="996097"> </a>with the same registered filename extension (see <a href="Intro_HotSyncProc.html#996281">"Running Install Conduits"</a>)</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996099"> </a>Backup conduits</p>
+    </td>
+    <td><p class="tt"><a name="996101"> </a>always, because only one backup conduit can be run per Windows user</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996103"> </a>Notifiers</p>
+    </td>
+    <td><p class="tt"><a name="996105"> </a>with the same path and filename </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<p><a name="996110"> </a><a href="Intro_Registering.html#996112">Figure 6.1</a> shows an example of how Conduit Manager decides which conduits and notifiers to put on its list.</p>
+
+<p class="FFigureCaption">
+  <a name="996112"> </a><b>Figure 6.1&nbsp;&nbsp;Example: precedence of user- over system-registered conduits and notifiers</b>
+</p>
+<div align="left"><img src="images/Intro_Registeringa.gif" height="260" width="624" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="1002914"> </a>Registering a conduit or notifier for the system registers it for all Windows users who do not already have a corresponding conduit or notifier registered. This behavior enables an installer to register a conduit or notifier for all Windows users on a system without requiring each Windows user to run the installer. This scheme also enables each Windows user to register a different set of conduits and notifiers. However, note that all HotSync users created within a given Windows user login share the same set of conduits and notifiers, though each HotSync user can configure these conduits differently. See <a href="Intro_HSMBasics.html#996056">"Support for Multiple Users"</a> for more on the differences between HotSync users and Windows users.</p>
+
+<h2 class="haH2">
+  <a name="1002920"> </a>Resolving Conduit Conflicts <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1002921"> </a>The HotSync process is based on the principle that only one conduit can synchronize an application's data during a HotSync operation; otherwise a second conduit that synchronizes the same data in the same HotSync operation could not trust the status of the database and record modification flags. Conduit registration tries to prevent this situation.</p>
+
+<p><a name="996191"> </a>Conventional conduit registration does not allow a second user conduit to register with the same creator ID as another user conduit registered for the current Windows user; the same is true about two system-registered conduits for the system. Conduit Manager prevents such double registration and returns an error on the second attempt to conventionally register using the same creator ID. Conduit Manager allows two conduits to be registered with the same creator ID only if one is registered for the current Windows user and the other for the system. The user-registered conduit always takes precedence, as described in <a href="Intro_Registering.html#997389">"User- and System-registered Conduits and Notifiers,"</a> so corresponding user- and system-registered conduits are never in conflict.</p>
+
+<p><a name="996198"> </a>However, it is possible for one folder-registered conduit to have the same creator ID as another folder-registered or conventionally registered conduit. The reason is that Conduit Manager does not validate folder-registered conduits until it is called upon to create a list of all registered conduits. Conduit Manager creates this list whenever any of the following occurs:</p>
+<ul type="disc">
+  <li><a name="998773"> </a>The user starts a HotSync operation.
+  <li><a name="996199"> </a>The user or the HotSync Manager API does any of the following:
+  <ul type="disc">
+    <li><a name="996200"> </a>Starts or restarts HotSync Manager or causes it to refresh its list of conduits.
+    <li><a name="996201"> </a>Selects HotSync Manager's <b>Custom</b> menu item.
+  </ul>
+  <li><a name="996202"> </a>An installer or application calls the Conduit Manager API to do any of the following:
+  <ul type="disc">
+    <li><a name="996203"> </a>Conventionally register a conduit.
+    <li><a name="996204"> </a>Enable a disabled folder-registered conduit.
+    <li><a name="996205"> </a>Return a list of registered conduits. 
+  </ul>
+</ul>
+
+<p><a name="996207"> </a>Any of these events can result in Conduit Manager discovering two or more conduits with the same creator ID. When this happens, the Conduit Manager API returns an error. </p>
+
+<p><a name="996208"> </a>When HotSync Manager receives this error from Conduit Manager for the first time for a given HotSync user and conduit creator ID, it displays a <b>Choose Conduit</b> dialog box like the one in <a href="Intro_Registering.html#996213">Figure 6.2</a>.</p>
+
+<p class="FFigureCaption">
+  <a name="996213"> </a><b>Figure 6.2&nbsp;&nbsp;HotSync Manager prompts the user to resolve conflicting conduits</b>
+</p>
+<div align="left"><img src="images/ConflictingConduits.jpg" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="996218"> </a>If the user chooses a conduit to run and clicks <b>OK</b>, HotSync Manager stores this preference for the current HotSync user in the user data store on the desktop, so it does not prompt the user to resolve the same conflict again. All the other conflicting conduits on the list are effectively unregistered, so HotSync Manager does not run them or show them in its <b>Custom</b> dialog box.</p>
+
+<p><a name="998826"> </a>However, if the user clicks <b>Ignore</b>, the conflict remains unresolved. HotSync Manager removes all of the conflicting conduits from its list of conduits to run<a href="#998829"><sup>2</sup></a> and does not list them when the user selects the HotSync Manager's <b>Custom</b> menu item. Each time HotSync Manager prompts the Conduit Manager to create a list of registered conduits, as described previously, HotSync Manager displays a <b>Choose Conduit</b> dialog box again for the user to resolve the conflict. </p>
+
+<p><a name="998974"> </a>HotSync Manager provides the <b>Choose Conduit</b> dialog box as a last resort. PalmSource recommends that before you copy your folder-based conduit to the <code>Conduits</code> folder, check whether any conduits with the same creator ID are already registered. If so, prompt the user to choose whether to unregister the existing conduit, so you can add yours to the <code>Conduits</code> folder, or to exit. Handling potential conduit conflicts within the context of your specific product makes more sense to the user than relying on HotSync Manager's generic <b>Choose Conduit</b> dialog box. </p>
+ 
+
+<hr> 
+<p class="FNFootnote">
+<a name="996078"> </a><a href="#996079">1</a>. 
+"Conduit Manager" includes Install Conduit Manager and Notifier Install Manager here.</p>
+<p class="FNFootnote">
+<a name="998829"> </a><a href="#998826">2</a>. 
+Because conflicting conduits are not run, the Backup conduit can back up databases on the handheld with the conflicting creator ID as usual. Therefore the databases are at least backed up, if not synchronized, despite the conflict. </p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 2001-2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="Intro_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="IntroToConduitsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_HSMBasics.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_HotSyncProc.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="IntroToConduitsIX.html">Index</a>
+</p>
+</td>
+</tr>
+<!-- END FOOTER -->
+
+</body>
+</html>

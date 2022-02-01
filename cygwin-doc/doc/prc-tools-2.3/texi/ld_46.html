@@ -1,0 +1,82 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Evaluation</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Evaluation">
+<META NAME="keywords" CONTENT="Untitled Document: Evaluation">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC46"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_45.html#SEC45"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_47.html#SEC47"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_47.html#SEC47"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_41.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_49.html#SEC49"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.10.5 Evaluation </H3>
+<!--docid::SEC46::-->
+The linker evaluates expressions lazily.  It only computes the value of
+an expression when absolutely necessary.
+<P>
+
+The linker needs some information, such as the value of the start
+address of the first section, and the origins and lengths of memory
+regions, in order to do any linking at all.  These values are computed
+as soon as possible when the linker reads in the linker script.
+</P><P>
+
+However, other values (such as symbol values) are not known or needed
+until after storage allocation.  Such values are evaluated later, when
+other information (such as the sizes of output sections) is available
+for use in the symbol assignment expression.
+</P><P>
+
+The sizes of sections cannot be known until after allocation, so
+assignments dependent upon these are not performed until after
+allocation.
+</P><P>
+
+Some expressions, such as those depending upon the location counter
+<SAMP>`.'</SAMP>, must be evaluated during section allocation.
+</P><P>
+
+If the result of an expression is required, but the value is not
+available, then an error results.  For example, a script like the
+following
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS
+  {
+    .text 9+this_isnt_constant :
+      { *(.text) }
+  }
+</FONT></pre></td></tr></table>will cause the error message <SAMP>`non constant expression for initial
+address'</SAMP>.
+</P><P>
+
+<A NAME="Expression Section"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

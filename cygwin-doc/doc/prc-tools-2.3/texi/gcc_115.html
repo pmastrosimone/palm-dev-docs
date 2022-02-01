@@ -1,0 +1,244 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Template Instantiation</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Template Instantiation">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Template Instantiation">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC115"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_114.html#SEC114"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_116.html#SEC116"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_116.html#SEC116"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.5 Where's the Template? </H2>
+<!--docid::SEC115::-->
+<P>
+
+<A NAME="IDX389"></A>
+</P><P>
+
+C++ templates are the first language feature to require more
+intelligence from the environment than one usually finds on a UNIX
+system.  Somehow the compiler and linker have to make sure that each
+template instance occurs exactly once in the executable if it is needed,
+and not at all otherwise.  There are two basic approaches to this
+problem, which I will refer to as the Borland model and the Cfront model.
+</P><P>
+
+<DL COMPACT>
+<DT>Borland model
+<DD>Borland C++ solved the template instantiation problem by adding the code
+equivalent of common blocks to their linker; the compiler emits template
+instances in each translation unit that uses them, and the linker
+collapses them together.  The advantage of this model is that the linker
+only has to consider the object files themselves; there is no external
+complexity to worry about.  This disadvantage is that compilation time
+is increased because the template code is being compiled repeatedly.
+Code written for this model tends to include definitions of all
+templates in the header file, since they must be seen to be
+instantiated.
+<P>
+
+<DT>Cfront model
+<DD>The AT&#38;T C++ translator, Cfront, solved the template instantiation
+problem by creating the notion of a template repository, an
+automatically maintained place where template instances are stored.  A
+more modern version of the repository works as follows: As individual
+object files are built, the compiler places any template definitions and
+instantiations encountered in the repository.  At link time, the link
+wrapper adds in the objects in the repository and compiles any needed
+instances that were not previously emitted.  The advantages of this
+model are more optimal compilation speed and the ability to use the
+system linker; to implement the Borland model a compiler vendor also
+needs to replace the linker.  The disadvantages are vastly increased
+complexity, and thus potential for error; for some code this can be
+just as transparent, but in practice it can been very difficult to build
+multiple programs in one directory and one program in multiple
+directories.  Code written for this model tends to separate definitions
+of non-inline member templates into a separate file, which should be
+compiled separately.
+</DL>
+<P>
+
+When used with GNU ld version 2.8 or later on an ELF system such as
+Linux/GNU or Solaris 2, or on Microsoft Windows, g++ supports the
+Borland model.  On other systems, g++ implements neither automatic
+model.
+</P><P>
+
+A future version of g++ will support a hybrid model whereby the compiler
+will emit any instantiations for which the template definition is
+included in the compile, and store template definitions and
+instantiation context information into the object file for the rest.
+The link wrapper will extract that information as necessary and invoke
+the compiler to produce the remaining instantiations.  The linker will
+then combine duplicate instantiations.
+</P><P>
+
+In the mean time, you have the following options for dealing with
+template instantiations:
+</P><P>
+
+<OL>
+<LI>
+Compile your template-using code with <SAMP>`-frepo'</SAMP>.  The compiler will
+generate files with the extension <SAMP>`.rpo'</SAMP> listing all of the
+template instantiations used in the corresponding object files which
+could be instantiated there; the link wrapper, <SAMP>`collect2'</SAMP>, will
+then update the <SAMP>`.rpo'</SAMP> files to tell the compiler where to place
+those instantiations and rebuild any affected object files.  The
+link-time overhead is negligible after the first pass, as the compiler
+will continue to place the instantiations in the same files.
+<P>
+
+This is your best option for application code written for the Borland
+model, as it will just work.  Code written for the Cfront model will
+need to be modified so that the template definitions are available at
+one or more points of instantiation; usually this is as simple as adding
+<CODE>#include &#60;tmethods.cc&#62;</CODE> to the end of each template header.
+</P><P>
+
+For library code, if you want the library to provide all of the template
+instantiations it needs, just try to link all of its object files
+together; the link will fail, but cause the instantiations to be
+generated as a side effect.  Be warned, however, that this may cause
+conflicts if multiple libraries try to provide the same instantiations.
+For greater control, use explicit instantiation as described in the next
+option.
+</P><P>
+
+<LI>
+Compile your code with <SAMP>`-fno-implicit-templates'</SAMP> to disable the
+implicit generation of template instances, and explicitly instantiate
+all the ones you use.  This approach requires more knowledge of exactly
+which instances you need than do the others, but it's less
+mysterious and allows greater control.  You can scatter the explicit
+instantiations throughout your program, perhaps putting them in the
+translation units where the instances are used or the translation units
+that define the templates themselves; you can put all of the explicit
+instantiations you need into one big file; or you can create small files
+like
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#include "Foo.h"
+#include "Foo.cc"
+
+template class Foo&#60;int&#62;;
+template ostream&#38; operator &#60;&#60;
+                (ostream&#38;, const Foo&#60;int&#62;&#38;);
+</pre></td></tr></table></P><P>
+
+for each of the instances you need, and create a template instantiation
+library from those.
+</P><P>
+
+If you are using Cfront-model code, you can probably get away with not
+using <SAMP>`-fno-implicit-templates'</SAMP> when compiling files that don't
+<SAMP>`#include'</SAMP> the member template definitions.
+</P><P>
+
+If you use one big file to do the instantiations, you may want to
+compile it without <SAMP>`-fno-implicit-templates'</SAMP> so you get all of the
+instances required by your explicit instantiations (but not by any
+other files) without having to specify them as well.
+</P><P>
+
+g++ has extended the template instantiation syntax outlined in the
+Working Paper to allow forward declaration of explicit instantiations
+and instantiation of the compiler support data for a template class
+(i.e. the vtable) without instantiating any of its members:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>extern template int max (int, int);
+inline template class Foo&#60;int&#62;;
+</pre></td></tr></table></P><P>
+
+<LI>
+Do nothing.  Pretend g++ does implement automatic instantiation
+management.  Code written for the Borland model will work fine, but
+each translation unit will contain instances of each of the templates it
+uses.  In a large program, this can lead to an unacceptable amount of code
+duplication.
+<P>
+
+<LI>
+Add <SAMP>`#pragma interface'</SAMP> to all files containing template
+definitions.  For each of these files, add <SAMP>`#pragma implementation
+"<VAR>filename</VAR>"'</SAMP> to the top of some <SAMP>`.C'</SAMP> file which
+<SAMP>`#include'</SAMP>s it.  Then compile everything with
+<SAMP>`-fexternal-templates'</SAMP>.  The templates will then only be expanded
+in the translation unit which implements them (i.e. has a <SAMP>`#pragma
+implementation'</SAMP> line for the file where they live); all other files will
+use external references.  If you're lucky, everything should work
+properly.  If you get undefined symbol errors, you need to make sure
+that each template instance which is used in the program is used in the
+file which implements that template.  If you don't have any use for a
+particular instance in that file, you can just instantiate it
+explicitly, using the syntax from the latest C++ working paper:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>template class A&#60;int&#62;;
+template ostream&#38; operator &#60;&#60; (ostream&#38;, const A&#60;int&#62;&#38;);
+</pre></td></tr></table></P><P>
+
+This strategy will work with code written for either model.  If you are
+using code written for the Cfront model, the file containing a class
+template and the file containing its member templates should be
+implemented in the same translation unit.
+</P><P>
+
+A slight variation on this approach is to instead use the flag
+<SAMP>`-falt-external-templates'</SAMP>; this flag causes template
+instances to be emitted in the translation unit that implements the
+header where they are first instantiated, rather than the one which
+implements the file where the templates are defined.  This header must
+be the same in all translation units, or things are likely to break.
+</P><P>
+
+See section <A HREF="gcc_114.html#SEC114">Declarations and Definitions in One Header</A>, for
+more discussion of these pragmas.
+</OL>
+<P>
+
+<A NAME="Bound member functions"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_114.html#SEC114"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_116.html#SEC116"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_116.html#SEC116"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

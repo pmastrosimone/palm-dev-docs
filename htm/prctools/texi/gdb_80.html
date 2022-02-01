@@ -1,0 +1,186 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: tfind</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: tfind">
+<META NAME="keywords" CONTENT="Debugging with GDB: tfind">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC80"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_79.html#SEC79"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_81.html#SEC81"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_83.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_79.html#SEC79"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_83.html#SEC83"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 10.2.1 <CODE>tfind <VAR>n</VAR></CODE> </H3>
+<!--docid::SEC80::-->
+<P>
+
+<A NAME="IDX427"></A>
+<A NAME="IDX428"></A>
+<A NAME="IDX429"></A>
+The basic command for selecting a trace snapshot from the buffer is
+<CODE>tfind <VAR>n</VAR></CODE>, which finds trace snapshot number <VAR>n</VAR>,
+counting from zero.  If no argument <VAR>n</VAR> is given, the next
+snapshot is selected.
+</P><P>
+
+Here are the various forms of using the <CODE>tfind</CODE> command.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>tfind start</CODE>
+<DD>Find the first snapshot in the buffer.  This is a synonym for
+<CODE>tfind 0</CODE> (since 0 is the number of the first snapshot).
+<P>
+
+<DT><CODE>tfind none</CODE>
+<DD>Stop debugging trace snapshots, resume <EM>live</EM> debugging.
+<P>
+
+<DT><CODE>tfind end</CODE>
+<DD>Same as <SAMP>`tfind none'</SAMP>.
+<P>
+
+<DT><CODE>tfind</CODE>
+<DD>No argument means find the next trace snapshot.
+<P>
+
+<DT><CODE>tfind -</CODE>
+<DD>Find the previous trace snapshot before the current one.  This permits
+retracing earlier steps.
+<P>
+
+<DT><CODE>tfind tracepoint <VAR>num</VAR></CODE>
+<DD>Find the next snapshot associated with tracepoint <VAR>num</VAR>.  Search
+proceeds forward from the last examined trace snapshot.  If no
+argument <VAR>num</VAR> is given, it means find the next snapshot collected
+for the same tracepoint as the current snapshot.
+<P>
+
+<DT><CODE>tfind pc <VAR>addr</VAR></CODE>
+<DD>Find the next snapshot associated with the value <VAR>addr</VAR> of the
+program counter.  Search proceeds forward from the last examined trace
+snapshot.  If no argument <VAR>addr</VAR> is given, it means find the next
+snapshot with the same value of PC as the current snapshot.
+<P>
+
+<DT><CODE>tfind outside <VAR>addr1</VAR>, <VAR>addr2</VAR></CODE>
+<DD>Find the next snapshot whose PC is outside the given range of
+addresses.
+<P>
+
+<DT><CODE>tfind range <VAR>addr1</VAR>, <VAR>addr2</VAR></CODE>
+<DD>Find the next snapshot whose PC is between <VAR>addr1</VAR> and
+<VAR>addr2</VAR>.  
+<P>
+
+<DT><CODE>tfind line [<VAR>file</VAR>:]<VAR>n</VAR></CODE>
+<DD>Find the next snapshot associated with the source line <VAR>n</VAR>.  If
+the optional argument <VAR>file</VAR> is given, refer to line <VAR>n</VAR> in
+that source file.  Search proceeds forward from the last examined
+trace snapshot.  If no argument <VAR>n</VAR> is given, it means find the
+next line other than the one currently being examined; thus saying
+<CODE>tfind line</CODE> repeatedly can appear to have the same effect as
+stepping from line to line in a <EM>live</EM> debugging session.
+</DL>
+<P>
+
+The default arguments for the <CODE>tfind</CODE> commands are specifically
+designed to make it easy to scan through the trace buffer.  For
+instance, <CODE>tfind</CODE> with no argument selects the next trace
+snapshot, and <CODE>tfind -</CODE> with no argument selects the previous
+trace snapshot.  So, by giving one <CODE>tfind</CODE> command, and then
+simply hitting <KBD>RET</KBD> repeatedly you can examine all the trace
+snapshots in order.  Or, by saying <CODE>tfind -</CODE> and then hitting
+<KBD>RET</KBD> repeatedly you can examine the snapshots in reverse order.
+The <CODE>tfind line</CODE> command with no argument selects the snapshot
+for the next source line executed.  The <CODE>tfind pc</CODE> command with
+no argument selects the next snapshot with the same program counter
+(PC) as the current frame.  The <CODE>tfind tracepoint</CODE> command with
+no argument selects the next trace snapshot collected by the same
+tracepoint as the current one.
+</P><P>
+
+In addition to letting you scan through the trace buffer manually,
+these commands make it easy to construct GDB scripts that
+scan through the trace buffer and print out whatever collected data
+you are interested in.  Thus, if we want to examine the PC, FP, and SP
+registers from each trace frame in the buffer, we can say this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) <B>tfind start</B>
+(gdb) <B>while ($trace_frame != -1)</B>
+&#62; printf "Frame %d, PC = %08X, SP = %08X, FP = %08X\n", \
+          $trace_frame, $pc, $sp, $fp
+&#62; tfind
+&#62; end
+
+Frame 0, PC = 0020DC64, SP = 0030BF3C, FP = 0030BF44
+Frame 1, PC = 0020DC6C, SP = 0030BF38, FP = 0030BF44
+Frame 2, PC = 0020DC70, SP = 0030BF34, FP = 0030BF44
+Frame 3, PC = 0020DC74, SP = 0030BF30, FP = 0030BF44
+Frame 4, PC = 0020DC78, SP = 0030BF2C, FP = 0030BF44
+Frame 5, PC = 0020DC7C, SP = 0030BF28, FP = 0030BF44
+Frame 6, PC = 0020DC80, SP = 0030BF24, FP = 0030BF44
+Frame 7, PC = 0020DC84, SP = 0030BF20, FP = 0030BF44
+Frame 8, PC = 0020DC88, SP = 0030BF1C, FP = 0030BF44
+Frame 9, PC = 0020DC8E, SP = 0030BF18, FP = 0030BF44
+Frame 10, PC = 00203F6C, SP = 0030BE3C, FP = 0030BF14
+</FONT></pre></td></tr></table></P><P>
+
+Or, if we want to examine the variable <CODE>X</CODE> at each source line in
+the buffer:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) <B>tfind start</B>
+(gdb) <B>while ($trace_frame != -1)</B>
+&#62; printf "Frame %d, X == %d\n", $trace_frame, X
+&#62; tfind line
+&#62; end
+
+Frame 0, X = 1
+Frame 7, X = 2
+Frame 13, X = 255
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="tdump"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_79.html#SEC79"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_81.html#SEC81"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_83.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_79.html#SEC79"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_83.html#SEC83"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

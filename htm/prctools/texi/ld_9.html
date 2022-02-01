@@ -1,0 +1,132 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Simple Example</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Simple Example">
+<META NAME="keywords" CONTENT="Untitled Document: Simple Example">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC9"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_8.html#SEC8"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_10.html#SEC10"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_10.html#SEC10"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_6.html#SEC6"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_50.html#SEC50"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.3 Simple Linker Script Example </H2>
+<!--docid::SEC9::-->
+Many linker scripts are fairly simple.
+<P>
+
+The simplest possible linker script has just one command:
+<SAMP>`SECTIONS'</SAMP>.  You use the <SAMP>`SECTIONS'</SAMP> command to describe the
+memory layout of the output file.
+</P><P>
+
+The <SAMP>`SECTIONS'</SAMP> command is a powerful command.  Here we will
+describe a simple use of it.  Let's assume your program consists only of
+code, initialized data, and uninitialized data.  These will be in the
+<SAMP>`.text'</SAMP>, <SAMP>`.data'</SAMP>, and <SAMP>`.bss'</SAMP> sections, respectively.
+Let's assume further that these are the only sections which appear in
+your input files.
+</P><P>
+
+For this example, let's say that the code should be loaded at address
+0x10000, and that the data should start at address 0x8000000.  Here is a
+linker script which will do that:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS
+{
+  . = 0x10000;
+  .text : { *(.text) }
+  . = 0x8000000;
+  .data : { *(.data) }
+  .bss : { *(.bss) }
+}
+</FONT></pre></td></tr></table></P><P>
+
+You write the <SAMP>`SECTIONS'</SAMP> command as the keyword <SAMP>`SECTIONS'</SAMP>,
+followed by a series of symbol assignments and output section
+descriptions enclosed in curly braces.
+</P><P>
+
+The first line inside the <SAMP>`SECTIONS'</SAMP> command of the above example
+sets the value of the special symbol <SAMP>`.'</SAMP>, which is the location
+counter.  If you do not specify the address of an output section in some
+other way (other ways are described later), the address is set from the
+current value of the location counter.  The location counter is then
+incremented by the size of the output section.  At the start of the
+<SAMP>`SECTIONS'</SAMP> command, the location counter has the value <SAMP>`0'</SAMP>.
+</P><P>
+
+The second line defines an output section, <SAMP>`.text'</SAMP>.  The colon is
+required syntax which may be ignored for now.  Within the curly braces
+after the output section name, you list the names of the input sections
+which should be placed into this output section.  The <SAMP>`*'</SAMP> is a
+wildcard which matches any file name.  The expression <SAMP>`*(.text)'</SAMP>
+means all <SAMP>`.text'</SAMP> input sections in all input files.
+</P><P>
+
+Since the location counter is <SAMP>`0x10000'</SAMP> when the output section
+<SAMP>`.text'</SAMP> is defined, the linker will set the address of the
+<SAMP>`.text'</SAMP> section in the output file to be <SAMP>`0x10000'</SAMP>.
+</P><P>
+
+The remaining lines define the <SAMP>`.data'</SAMP> and <SAMP>`.bss'</SAMP> sections in
+the output file.  The linker will place the <SAMP>`.data'</SAMP> output section
+at address <SAMP>`0x8000000'</SAMP>.  After the linker places the <SAMP>`.data'</SAMP>
+output section, the value of the location counter will be
+<SAMP>`0x8000000'</SAMP> plus the size of the <SAMP>`.data'</SAMP> output section.  The
+effect is that the linker will place the <SAMP>`.bss'</SAMP> output section
+immediately after the <SAMP>`.data'</SAMP> output section in memory
+</P><P>
+
+The linker will ensure that each output section has the required
+alignment, by increasing the location counter if necessary.  In this
+example, the specified addresses for the <SAMP>`.text'</SAMP> and <SAMP>`.data'</SAMP>
+sections will probably satisfy any alignment constraints, but the linker
+may have to create a small gap between the <SAMP>`.data'</SAMP> and <SAMP>`.bss'</SAMP>
+sections.
+</P><P>
+
+That's it!  That's a simple and complete linker script.
+</P><P>
+
+<A NAME="Simple Commands"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_8.html#SEC8"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_10.html#SEC10"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_10.html#SEC10"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_6.html#SEC6"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_50.html#SEC50"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

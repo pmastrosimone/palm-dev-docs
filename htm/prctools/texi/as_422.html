@@ -1,0 +1,127 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Xtensa Directives</TITLE>
+
+<META NAME="description" CONTENT="Using as: Xtensa Directives">
+<META NAME="keywords" CONTENT="Using as: Xtensa Directives">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC431"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_421.html#SEC430"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_423.html#SEC432"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_187.html#SEC196"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_410.html#SEC419"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_432.html#SEC441"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.33.5 Directives </H3>
+<!--docid::SEC431::-->
+<P>
+
+The Xtensa assember supports a region-based directive syntax:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    .begin <VAR>directive</VAR> [<VAR>options</VAR>]
+    <small>...</small>
+    .end <VAR>directive</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+All the Xtensa-specific directives that apply to a region of code use
+this syntax.
+</P><P>
+
+The directive applies to code between the <CODE>.begin</CODE> and the
+<CODE>.end</CODE>.  The state of the option after the <CODE>.end</CODE> reverts to
+what it was before the <CODE>.begin</CODE>.
+A nested <CODE>.begin</CODE>/<CODE>.end</CODE> region can further
+change the state of the directive without having to be aware of its
+outer state.  For example, consider:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    .begin no-density
+L:  add a0, a1, a2
+    .begin density
+M:  add a0, a1, a2
+    .end density
+N:  add a0, a1, a2
+    .end no-density
+</FONT></pre></td></tr></table></P><P>
+
+The generic <CODE>ADD</CODE> opcodes at <CODE>L</CODE> and <CODE>N</CODE> in the outer
+<CODE>no-density</CODE> region both result in <CODE>ADD</CODE> machine instructions,
+but the assembler selects an <CODE>ADD.N</CODE> instruction for the generic
+<CODE>ADD</CODE> at <CODE>M</CODE> in the inner <CODE>density</CODE> region.
+</P><P>
+
+The advantage of this style is that it works well inside macros which can
+preserve the context of their callers.
+</P><P>
+
+<A NAME="IDX1555"></A>
+<A NAME="IDX1556"></A>
+When command-line options and assembler directives are used at the same
+time and conflict, the one that overrides a default behavior takes
+precedence over one that is the same as the default.  For example, if
+the code density option is available, the default is to select density
+instructions whenever possible.  So, if the above is assembled with the
+<SAMP>`--no-density'</SAMP> flag, which overrides the default, all the generic
+<CODE>ADD</CODE> instructions result in <CODE>ADD</CODE> machine instructions.  If
+assembled with the <SAMP>`--density'</SAMP> flag, which is already the default,
+the <CODE>no-density</CODE> directive takes precedence and only one of
+the generic <CODE>ADD</CODE> instructions is optimized to be a <CODE>ADD.N</CODE>
+machine instruction.  An underscore prefix identifying a specific opcode
+always takes precedence over directives and command-line flags.
+</P><P>
+
+The following directives are available:
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="as_423.html#SEC432">8.33.5.1 density</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Disable Use of Density Instructions.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="as_424.html#SEC433">8.33.5.2 relax</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Disable Assembler Relaxation.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="as_425.html#SEC434">8.33.5.3 longcalls</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Use Indirect Calls for Greater Range.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="as_426.html#SEC435">8.33.5.4 generics</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Disable All Assembler Transformations.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="as_427.html#SEC436">8.33.5.5 literal</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Intermix Literals with Instructions.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="as_428.html#SEC437">8.33.5.6 literal_position</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Specify Inline Literal Pool Locations.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="as_429.html#SEC438">8.33.5.7 literal_prefix</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Specify Literal Section Name Prefix.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="as_430.html#SEC439">8.33.5.8 freeregs</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">List Registers Available for Assembler Use.</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="as_431.html#SEC440">8.33.5.9 frame</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Describe a stack frame.</TD></TR>
+</TABLE></BLOCKQUOTE>
+<P>
+
+<A NAME="Density Directive"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_421.html#SEC430"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_423.html#SEC432"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_187.html#SEC196"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_410.html#SEC419"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_432.html#SEC441"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

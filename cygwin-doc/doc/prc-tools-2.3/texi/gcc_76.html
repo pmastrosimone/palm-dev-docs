@@ -1,0 +1,114 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Macro Varargs</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Macro Varargs">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Macro Varargs">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC76"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_75.html#SEC75"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_77.html#SEC77"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_63.html#SEC63"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.15 Macros with Variable Numbers of Arguments </H2>
+<!--docid::SEC76::-->
+<P>
+
+In GNU C, a macro can accept a variable number of arguments, much as a
+function can.  The syntax for defining the macro looks much like that
+used for a function.  Here is an example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define eprintf(format, args...)  \
+ fprintf (stderr, format , ## args)
+</pre></td></tr></table></P><P>
+
+Here <CODE>args</CODE> is a <EM>rest argument</EM>: it takes in zero or more
+arguments, as many as the call contains.  All of them plus the commas
+between them form the value of <CODE>args</CODE>, which is substituted into
+the macro body where <CODE>args</CODE> is used.  Thus, we have this expansion:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>eprintf ("%s:%d: ", input_file_name, line_number)
+==>
+fprintf (stderr, "%s:%d: " , input_file_name, line_number)
+</pre></td></tr></table></P><P>
+
+Note that the comma after the string constant comes from the definition
+of <CODE>eprintf</CODE>, whereas the last comma comes from the value of
+<CODE>args</CODE>.
+</P><P>
+
+The reason for using <SAMP>`##'</SAMP> is to handle the case when <CODE>args</CODE>
+matches no arguments at all.  In this case, <CODE>args</CODE> has an empty
+value.  In this case, the second comma in the definition becomes an
+embarrassment: if it got through to the expansion of the macro, we would
+get something like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>fprintf (stderr, "success!\n" , )
+</pre></td></tr></table></P><P>
+
+which is invalid C syntax.  <SAMP>`##'</SAMP> gets rid of the comma, so we get
+the following instead:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>fprintf (stderr, "success!\n")
+</pre></td></tr></table></P><P>
+
+This is a special feature of the GNU C preprocessor: <SAMP>`##'</SAMP> before a
+rest argument that is empty discards the preceding sequence of
+non-whitespace characters from the macro definition.  (If another macro
+argument precedes, none of it is discarded.)
+</P><P>
+
+It might be better to discard the last preprocessor token instead of the
+last preceding sequence of non-whitespace characters; in fact, we may
+someday change this feature to do so.  We advise you to write the macro
+definition so that the preceding sequence of non-whitespace characters
+is just a single token, so that the meaning will not change if we change
+the definition of this feature.
+</P><P>
+
+<A NAME="Subscripting"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_75.html#SEC75"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_77.html#SEC77"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_63.html#SEC63"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

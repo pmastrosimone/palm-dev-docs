@@ -1,0 +1,165 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: Stand-alone code</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: Stand-alone code">
+<META NAME="keywords" CONTENT="Using PRC-Tools: Stand-alone code">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC22"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_17.html#SEC21"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_19.html#SEC24"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_19.html#SEC24"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.4 Stand-alone code resources </H2>
+<!--docid::SEC22::-->
+<P>
+
+<A NAME="IDX5"></A>
+<A NAME="IDX6"></A>
+<A NAME="IDX7"></A>
+<A NAME="IDX8"></A>
+<A NAME="IDX9"></A>
+</P><P>
+
+Normally build-prc processes a bfd executable as a full-blown executable,
+converting its <CODE>.data</CODE>, <CODE>.bss</CODE>, and <CODE>.text</CODE> and any other
+code sections into the corresponding Palm OS resources, as appropriate.
+</P><P>
+
+However if the bfd executable contains certain sections that are special
+to build-prc, its <CODE>.text</CODE> section will be converted into a stand-alone
+code resource instead, and the other sections listed above will be
+discarded (producing warnings) if present.
+</P><P>
+
+These "special sections" are <CODE>.disposn</CODE> (which is an abbreviation of
+<EM>disposition</EM>) and <CODE>.trap</CODE>.  They are interpreted as follows:
+</P><P>
+
+<UL>
+<LI>
+The first two bytes of a <CODE>.disposn</CODE> section, if present, specify the
+generated resource's ID, while (if the section is at least six bytes in
+length) the next four bytes specify its type.  If the <CODE>.disposn</CODE> section
+is only two bytes in length, the generated resource's type will be a suitable
+default dependent on the architecture of the bfd executable: <CODE>code</CODE> for
+68000 or <CODE>armc</CODE> for ARM.
+<P>
+
+<LI>
+The first two bytes of a <CODE>.trap</CODE> section, if present, are converted
+into a <CODE>TRAP</CODE> resource.  If a <CODE>.disposn</CODE> section is also present,
+the <CODE>TRAP</CODE> resource will have the ID specified by that section;
+otherwise (when the project definition file specifies the Hack project kind),
+<CODE>TRAP</CODE> and <CODE>code</CODE> resources converted from successive bfd executables
+are numbered consecutively from 1000.
+</UL>
+<P>
+
+Note that these two-byte integer fields are interpreted according to the
+native endianness of the bfd executable in which they occur.
+</P><P>
+
+<A NAME="SEC23"></A>
+<H3> Producing a stand-alone code resource </H3>
+<!--docid::SEC23::-->
+<P>
+
+There is nothing special about compiling code that is to become stand-alone,
+other than that you must not use global data or any extra code resources,
+because stand-alone code, by definition, cannot have such things.
+</P><P>
+
+There are considerations at link time, related to the lack of startup code:
+</P><P>
+
+<UL>
+<LI>
+Stand-alone code needs to be called directly; in particular, the startup code
+for a Palm OS application or GLib shared library is certainly not appropriate.
+Hence you should link using GCC's <CODE>-nostartfiles</CODE> option (see section `Options for Linking' in <CITE>Using and Porting GCC</CITE>).
+<P>
+
+<LI>
+If the bfd executable's <EM>entry point</EM> is not at offset 0 within its
+<CODE>.text</CODE> section, build-prc will insert an appropriate jump instruction
+at the start of the generated code resource.  Thus a stand-alone code resource
+can always be jumped to by jumping to its beginning.
+<P>
+
+You specify the entry point at link time:  in short, it is a function named
+<CODE>start()</CODE> by default, or you can set it with the <CODE>-e</CODE> option
+(see section `Setting the entry point' in <CITE>Using ld</CITE>).
+</UL>
+<P>
+
+You can easily set up the special sections marking your code as stand-alone
+by using the following macros, provided in <TT>`Standalone.h'</TT>:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>STANDALONE_CODE_RESOURCE_ID (<VAR>id</VAR>)</CODE>
+<DD>Mark the executable as a stand-alone code resource with the specified <VAR>id</VAR>
+and a suitable resource type depending on the resulting compiled executable's
+architecture: <SAMP>`code'</SAMP> for 68000 or <SAMP>`armc'</SAMP> for ARM.
+<P>
+
+<DT><CODE>STANDALONE_CODE_RESOURCE_TYPE_ID (<VAR>type</VAR>, <VAR>id</VAR>)</CODE>
+<DD><DT><CODE>STANDALONE_CODE_RESOURCE_TYPESTR_ID (<VAR>type</VAR>, <VAR>id</VAR>)</CODE>
+<DD>Mark the executable as a stand-alone code resource with the specified
+resource <VAR>type</VAR> and <VAR>id</VAR>.
+If you specify <VAR>type</VAR> with a multicharacter char constant (<SAMP>`'TYPE''</SAMP>),
+use the <CODE><small>...</small>TYPE<small>...</small></CODE> macro; if you use a string (<SAMP>`"TYPE"'</SAMP>),
+use the <CODE><small>...</small>TYPESTR<small>...</small></CODE> version.
+<P>
+
+<DT><CODE>HACKMASTER_TRAP (<VAR>vector</VAR>)</CODE>
+<DD>Mark the executable as a stand-alone code resource, and add a <CODE>TRAP</CODE>
+resource containing <VAR>vector</VAR>, which may be any C constant expression,
+for example, a numeric constant or even a <CODE>sysTrap<VAR>foo</VAR></CODE> constant
+as defined in a Palm OS SDK's <TT>`CoreTraps.h'</TT>.
+</DL>
+<P>
+
+<A NAME="Definition files"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_17.html#SEC21"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_19.html#SEC24"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_12.html#SEC15"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_19.html#SEC24"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,464 @@
+<html>
+<head>
+<title>(Protein) Using IOS STDIO | Low-Level Communications</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:14:22">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="608590"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="LowLevelCommsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_Stdio_Pt.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_StdioRef.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelCommsIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">18 &nbsp;&nbsp;
+Using IOS STDIO</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Low-Level Communications</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="LowLevelComms_Stdio_Pt.html">Part VI: IOS STDIO</a> </h1>
+<h1 class="SideTOC1"><a href="LowLevelComms_StdioUsing.html">18  Using IOS STDIO</a></h1>
+
+   <h2 class="SideTOC2"><a href="#994108">
+   Introducing IOS STDIO</a></h2>
+
+   <h2 class="SideTOC2"><a href="#993025">
+   Synchronization Issues</a></h2>
+
+   <h2 class="SideTOC2"><a href="#993291">
+   Polling STREAMS File Descriptors</a></h2>
+
+      <h3 class="SideTOC3"><a href="#993296">
+      Using a PollBox to Monitor Multiple File Descriptors</a></h3>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<h2 class="haH2">
+  <a name="994108"> </a>Introducing IOS STDIO <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="994111"> </a>The IOS STDIO shared library provides a set of functions that are mostly compatible with the Posix STDIO interface. These functions forward I/O requests to the I/O Subsystem (IOS) for processing. The STDIO function calls include calls to open and close devices, read and write data, and perform control operations on devices.</p>
+
+<p><a name="994115"> </a>In general, the functions in the Palm OS IOS STDIO library are used similarly to those in the standard Posix standard I/O library; the key difference is that the Palm OS versions have the prefix "IOS" added to the function names.</p>
+
+<p><a name="994213"> </a>You can learn much more about these functions by reading any good Unix programming book.</p>
+
+<h2 class="haH2">
+  <a name="993025"> </a>Synchronization Issues <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="993292"> </a>The I/O Process, in order to optimize performance, directly accesses the calling process' memory space to read from and write into buffers. Although the calling thread is blocked, other threads in the calling process might access that memory at the same time as the   I/O Process, which would cause synchronization problems.</p>
+
+<p><a name="993295"> </a>Therefore, if this may be an issue for your application, be sure to use a semaphore or other mutual exclusion device.</p>
+
+<h2 class="haH2">
+  <a name="993291"> </a>Polling STREAMS File Descriptors <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="993179"> </a>Your application's main event loop can reduce its overall impact on the performance of the device by blocking until a user interface event occurs. This can be done using the <a href="LowLevelComms_StdioRef.html#997909"><code>IOSPoll()</code></a> function, similar to the example in <a href="LowLevelComms_StdioUsing.html#993182">Listing 18.1</a>.</p>
+<p class="CCodeCaption">
+  <a name="993182"> </a><b>Listing 18.1&nbsp;&nbsp;An example main event loop that blocks until an event occurs</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+status_t error;<a name="993187"> </a>
+EventType event;<a name="993238"> </a>
+int32_t eventFd;<a name="993247"> </a>
+int32_t fdCount;<a name="993248"> </a>
+struct pollfd fdSet[1];<a name="993249"> </a>
+<a name="993250"> </a>
+eventFd = EvtGetEventDescriptor();<a name="993251"> </a>
+fdSet[0].fd = (int) eventFd;<a name="994466"> </a>
+fdSet[0].events = (short)(POLLIN | POLLHUP);<a name="994467"> </a>
+fdCount = 1;<a name="994468"> </a>
+<a name="993252"> </a>
+do {<a name="993253"> </a>
+	if ((error = IOSPoll(fdSet, fdCount, 10000, &amp;fdCount)) !=
+				errNone) {<a name="993262"> </a>
+		printf("IOSPoll() failed with error: 0x%08lx\n", error);<a name="993265"> </a>
+	}<a name="993268"> </a>
+<a name="993269"> </a>
+	EvtGetEvent(&amp;event, 0);<a name="993270"> </a>
+<a name="993271"> </a>
+	if (!SysHandleEvent(&amp;event)) {<a name="993272"> </a>
+		if (!MenuHandleEvent(0, &amp;event, &amp;error)) {<a name="993273"> </a>
+			if (!ApplicationHandleEvent(&amp;event)) {<a name="993274"> </a>
+				FrmDispatchEvent(&amp;event);<a name="993275"> </a>
+			}<a name="993276"> </a>
+		}<a name="993277"> </a>
+	}<a name="993279"> </a>
+} while (event.eType != appStopEvent);<a name="993280"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="994477"> </a>This code calls <a href="../Programming_Basics/Event.html#996109"><code>EvtGetEventDescriptor()</code></a> to determine the file descriptor for the event queue.</p>
+
+<p><a name="993284"> </a>Once that's done, it calls <a href="LowLevelComms_StdioRef.html#997909"><code>IOSPoll()</code></a> to block for 10,000 milliseconds or until message occurs on the event queue's file descriptor. Once an event occurs, it is fetched using <a href="../Programming_Basics/Event.html#996063"><code>EvtGetEvent()</code></a> and the event is processed normally.</p>
+
+<p><a name="993288"> </a>By blocking on <code>IOSPoll()</code>, this event loop avoids busy-waiting&#8212;the practice of looping constantly, non-stop, executing code that repeatedly checks for pending events. This saves processor time for other tasks.</p>
+<h3 class="hbH3">
+  <a name="993296"> </a>Using a PollBox to Monitor Multiple File Descriptors <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993297"> </a>Applications that use multiple file descriptors can simplify their event loops by using a PollBox. A PollBox is a mechanism that automatically handles polling, calling a specified routine each time an event occurs that affects a file descriptor you're monitoring.</p>
+
+<p><a name="993988"> </a>Once an application creates a PollBox, it can add and remove file descriptors from the set of file descriptors to monitor right from within its event loop. Each file descriptor has a callback routine associated with it, which is called whenever an event affects the file descriptor.</p>
+
+<h4 class="hcH4">
+  <a name="993303"> </a>Creating a PollBox
+</h4>
+
+<p><a name="993308"> </a>Creating a PollBox is a simple matter of calling the <a href="LowLevelComms_StdioRef.html#1020615"><code>PbxCreate()</code></a> function, as shown in <a href="LowLevelComms_StdioUsing.html#993309">Listing 18.2</a>.</p>
+<p class="CCodeCaption">
+  <a name="993309"> </a><b>Listing 18.2&nbsp;&nbsp;Creating a PollBox</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+#include &lt;PollBox.h&gt;<a name="993311"> </a>
+<a name="993313"> </a>
+...<a name="993314"> </a>
+<a name="993315"> </a>
+PollBox *pbx = PbxCreate();<a name="993316"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h4 class="hcH4">
+  <a name="993320"> </a>Destroying a PollBox
+</h4>
+
+<p><a name="993325"> </a>When your application is done using the PollBox, it must return resources to the system by calling <a href="LowLevelComms_StdioRef.html#1020715"><code>PbxDestroy()</code></a>. This will close all the file descriptors currently in the PollBox and free all memory used by the box. This is demonstrated in <a href="LowLevelComms_StdioUsing.html#993330">Listing 18.3</a>.</p>
+<p class="CCodeCaption">
+  <a name="993330"> </a><b>Listing 18.3&nbsp;&nbsp;Destroying a PollBox</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+PbxDestroy(pbx);<a name="993335"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h4 class="hcH4">
+  <a name="993340"> </a>Adding File Descriptors to Monitor
+</h4>
+
+<p><a name="993347"> </a>To add a file descriptor to the set of file descriptors being monitored by a PollBox, your application should call the <a href="LowLevelComms_StdioRef.html#1021292"><code>PbxAddFd()</code></a> function, as shown in <a href="LowLevelComms_StdioUsing.html#993348">Listing 18.4</a>.</p>
+<p class="CCodeCaption">
+  <a name="993348"> </a><b>Listing 18.4&nbsp;&nbsp;Adding a file descriptor to a PollBox</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+status_t err = PbxAddFd(pbx, fd, eventMask, MyCallbackProc, myContextPtr);<a name="993354"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="993360"> </a>The <code class="par">eventMask</code> passed into the <code>PbxAddFd()</code> function is a bitwise OR of one or more of the following values:</p>
+
+<dl>
+<dt><a name="993374"> </a>POLLIN</dt>
+<dd><a name="993375"> </a>Set this if your application should be informed when a non-priority message is available for the file descriptor.</dd>
+
+<dt><a name="993376"> </a>POLLPRI</dt>
+<dd><a name="993377"> </a>Set this if your application should be informed when a high-priority message is available for the file descriptor.</dd>
+
+<dt><a name="993378"> </a>POLLOUT</dt>
+<dd><a name="994068"> </a>Set this bit if your application should be informed when a message is sent on the file descriptor.</dd>
+
+</dl>
+
+<p><a name="994315"> </a>The <code class="par">MyCallbackProc</code> parameter is a pointer to a callback routine, which will be called whenever any of the desired events occur. It will be called with the <code class="par">myContextPtr</code> pointer as one of its parameters.</p>
+
+<div><hr>
+  <a name="993387"> </a> <b>NOTE: </b> If you want to poll without receiving callbacks, you can specify <code>NULL</code> for the callback procedure pointer.
+<hr>
+</div>
+
+<p><a name="993388"> </a>You can poll for the existence of user interface events by using the file descriptor returned by <a href="../Programming_Basics/Event.html#996109"><code>EvtGetEventDescriptor()</code></a>, although you can't use IOS to read the events. So to handle user interface events, your application can set up a special callback just for handling those, which calls the appropriate Event Manager and other functions to fetch and handle the events:</p>
+<p class="CCodeCaption">
+  <a name="994407"> </a><b>Listing 18.5&nbsp;&nbsp;Adding the UI file descriptor to a PollBox</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+status_t err = PbxAddFd(pbx, EvtGetEventDescriptor(), POLLIN, <a name="994408"> </a>
+    MyUICallbackProc, NULL);<a name="994438"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h4 class="hcH4">
+  <a name="993396"> </a>Removing a File Descriptor from the PollBox
+</h4>
+
+<p><a name="993398"> </a>The <a href="LowLevelComms_StdioRef.html#1022079"><code>PbxRemoveFd()</code></a> function removes a file descriptor from a PollBox, as shown in <a href="LowLevelComms_StdioUsing.html#993402">Listing 18.6</a>.</p>
+<p class="CCodeCaption">
+  <a name="993402"> </a><b>Listing 18.6&nbsp;&nbsp;Removing a file descriptor from a PollBox</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+PbxRemoveFd(pbx, fd);<a name="993404"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h4 class="hcH4">
+  <a name="993406"> </a>Polling for Events using a PollBox
+</h4>
+
+<p><a name="993407"> </a>Once you've added all the file descriptors you wish to monitor to the PollBox, you can simply call the <a href="LowLevelComms_StdioRef.html#1022367"><code>PbxPoll()</code></a> function in a loop to watch for events, as shown in <a href="LowLevelComms_StdioUsing.html#993412">Listing 18.7</a>. The <code>PbxPoll()</code> function automatically dispatches events to the appropriate callback handlers, so all you have to do is watch for error conditions, and possibly perform some idle activities.</p>
+<p class="CCodeCaption">
+  <a name="993412"> </a><b>Listing 18.7&nbsp;&nbsp;Polling for events</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+for (;;) {<a name="993417"> </a>
+        err = PbxPoll( pbx, timeout, &amp;nReady );<a name="993418"> </a>
+        if ( err ) {<a name="993419"> </a>
+            // Some unexpected error occurred.<a name="993420"> </a>
+        } else if ( nReady == 0 ) {<a name="993421"> </a>
+            if ( pbx-&gt;count == 0 ) {<a name="993422"> </a>
+                // There are no more file descriptors in the pollbox.<a name="993423"> </a>
+            } else {<a name="993424"> </a>
+                // The timer expired before any events occurred.<a name="993425"> </a>
+            }<a name="993426"> </a>
+        } else {<a name="993427"> </a>
+            // Normal case. There are pbx-&gt;count &gt; 0 file descriptors in<a name="993428"> </a>
+            // the pollbox, and nReady of them have events. The callbacks<a name="993429"> </a>
+            // associated with the ready file descriptors have been called.<a name="993430"> </a>
+            // If you are working without callbacks, then do something here<a name="993431"> </a>
+            // using the contents of the pollbox.<a name="993432"> </a>
+        }<a name="993433"> </a>
+    }<a name="993434"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="993469"> </a>The call to <code>PbxPoll()</code> blocks until at least one event is available on at least one file descriptor, or the specified timeout period elapses. The timeout is specified in milliseconds.</p>
+
+<div><hr>
+  <a name="993494"> </a> <b>NOTE: </b> If you wish the <code>PbxPoll()</code> function to return immediately if no events are pending, specify 0 as the timeout. If you don't want it to time out at all, specify -1 instead.
+<hr>
+</div>
+
+<p><a name="993495"> </a>When <code>PbxPoll()</code> returns, any callbacks that apply have already been called; <code>nReady</code> contains the number of file descriptors that have events waiting and <code>pbx-&gt;count</code> indicates the total number of file descriptors in the PollBox. If your application isn't using callbacks, you can look at the contents of the <code>pbx</code> PollBox and perform whatever actions your application needs to.</p>
+
+<h4 class="hcH4">
+  <a name="993772"> </a>Polling the Easy Way
+</h4>
+
+<p><a name="993498"> </a>As you can probably see, in the typical case, all you need to do is call <code>PbxPoll()</code> in a loop until your application is ready to quit. For this case, you can use the convenient <a href="LowLevelComms_StdioRef.html#1023126"><code>PbxRun()</code></a> function, as demonstrated in <a href="LowLevelComms_StdioUsing.html#993499">Listing 18.8</a>.</p>
+<p class="CCodeCaption">
+  <a name="993499"> </a><b>Listing 18.8&nbsp;&nbsp;The easy way to write an event loop</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+status_t err = PbxRun(pbx);<a name="993501"> </a>
+if (err) {<a name="993508"> </a>
+	// Some unexpected error occurred<a name="993517"> </a>
+} else {<a name="993526"> </a>
+	// There are no fds left in the PollBox; this is a normal exit<a name="993527"> </a>
+	PbxDestroy(pbx);<a name="993553"> </a>
+}<a name="993531"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="993549"> </a>This can literally be your entire event loop. If your application uses a UI event callback on file descriptor 0, that callback can cause the application to exit by simply removing all the file descriptors from the PollBox, which will cause <a href="LowLevelComms_StdioRef.html#1023126"><code>PbxRun()</code></a> to exit.</p>
+
+<h4 class="hcH4">
+  <a name="993554"> </a>Implementing a PollBox Callback
+</h4>
+
+<p><a name="993555"> </a>Your callback procedures must be of type <code>PbxCallback</code>:</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+void PbxCallback(PollBox *pbx, struct pollfd *pollFd, void *context);<a name="993556"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="993558"> </a>The first parameter is a pointer to the PollBox itself. The second parameter is a pointer to the <code>pollfd</code> structure associated with the file descriptor on which the event has occurred. The fields your callback can access within this structure are shown in <a href="LowLevelComms_StdioUsing.html#993581">Table 18.1</a>.</p>
+
+<p><a name="993578"> </a><p class="caption"><a name="993581"> </a><b>Table 18.1&nbsp;&nbsp;pollFd fields</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="993585"> </a><b>Field Name</b></p>
+    </th>
+    <th><p class="tt"><a name="993587"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993589"> </a><code>fd</code></p>
+    </td>
+    <td><p class="tt"><a name="993591"> </a>The file descriptor (read-only).</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993593"> </a><code>events</code></p>
+    </td>
+    <td><p class="tt"><a name="993595"> </a>The current event mask for <code>IOSPoll()</code> (read/write).</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993597"> </a><code>revents</code></p>
+    </td>
+    <td><p class="tt"><a name="993599"> </a>The events returned from <code>IOSPoll()</code> (read-only).</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+</p>
+
+<p><a name="993625"> </a>The final parameter is a pointer to the context variable specified when your application called <a href="LowLevelComms_StdioRef.html#1021292"><code>PbxAddFd()</code></a> to add the file descriptor to the PollBox.</p>
+
+<p><a name="993705"> </a>In <a href="LowLevelComms_StdioUsing.html#993631">Listing 18.9</a>, we see an example of a callback procedure.</p>
+<p class="CCodeCaption">
+  <a name="993631"> </a><b>Listing 18.9&nbsp;&nbsp;Sample callback procedure</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+void MyCallback( PollBox* pbx, struct pollfd *pollFd, void* context );<a name="993645"> </a>
+    {<a name="993646"> </a>
+        MyContext*  ctx = (MyContext*)context;<a name="993647"> </a>
+        status_t         err = 0;<a name="993648"> </a>
+<a name="993649"> </a>
+        if ( pollFd-&gt;revents &amp; POLLIN ) {<a name="993650"> </a>
+            IOSGetMsg( pollFd-&gt;fd, ctx-&gt;ctlBuf, ctx-&gt;dataBuf, 0, &amp;err );<a name="993651"> </a>
+        }<a name="993652"> </a>
+<a name="993704"> </a>
+        if ( err || (pollFd-&gt;revents &amp; (POLLERR|POLLHUP)) ) {<a name="993653"> </a>
+            PbxRemoveFd( pbx, pollFd-&gt;fd );<a name="993654"> </a>
+            IOSClose( pollFd-&gt;fd );<a name="993655"> </a>
+            return;<a name="993656"> </a>
+        }<a name="993657"> </a>
+<a name="993703"> </a>
+        // Handle the event that has been read into the ctl and data buffers.<a name="993658"> </a>
+        ...<a name="993659"> </a>
+    }<a name="993660"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="993695"> </a>If the message received is a <code>POLLIN</code> event, the callback calls the <a href="LowLevelComms_StdioRef.html#995453"><code>IOSGetmsg()</code></a> function to fetch the message. In this case, the context variable is a structure into which the data gets copied.</p>
+
+<p><a name="993718"> </a>If an an error occurred on the file descriptor, or it's been hung up, we remove the file descriptor from the PollBox and close it, then return to the caller.</p>
+
+<p><a name="993722"> </a>Other processing can be handled here as needed. For example, if your application is using IOS STDIO calls to communicate with a Bluetooth device, you may receive events from the Bluetooth Management Entity which need to be handled.</p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 2004, PalmSource, Inc. and its affiliates.  All rights reserved. <br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="LowLevelComms_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="LowLevelCommsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_Stdio_Pt.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_StdioRef.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelCommsIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

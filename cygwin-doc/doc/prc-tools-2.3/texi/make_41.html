@@ -1,0 +1,105 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Multiple Targets</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Multiple Targets">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Multiple Targets">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC45"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_40.html#SEC44"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_42.html#SEC46"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.10 Multiple Targets in a Rule </H2>
+<!--docid::SEC45::-->
+<P>
+
+A rule with multiple targets is equivalent to writing many rules, each with
+one target, and all identical aside from that.  The same commands apply to
+all the targets, but their effects may vary because you can substitute the
+actual target name into the command using <SAMP>`$@'</SAMP>.  The rule contributes
+the same prerequisites to all the targets also.
+</P><P>
+
+This is useful in two cases.
+</P><P>
+
+<UL>
+<LI>
+You want just prerequisites, no commands.  For example:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>kbd.o command.o files.o: command.h
+</pre></td></tr></table></P><P>
+
+gives an additional prerequisite to each of the three object files
+mentioned.
+</P><P>
+
+<LI>
+Similar commands work for all the targets.  The commands do not need
+to be absolutely identical, since the automatic variable <SAMP>`$@'</SAMP>
+can be used to substitute the particular target to be remade into the
+commands (see section <A HREF="make_107.html#SEC111">Automatic Variables</A>).  For example:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>bigoutput littleoutput : text.g
+        generate text.g -$(subst output,,$@) &#62; $@
+</pre></td></tr></table><A NAME="IDX135"></A>
+</P><P>
+
+is equivalent to
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>bigoutput : text.g
+        generate text.g -big &#62; bigoutput
+littleoutput : text.g
+        generate text.g -little &#62; littleoutput
+</pre></td></tr></table></P><P>
+
+Here we assume the hypothetical program <CODE>generate</CODE> makes two
+types of output, one if given <SAMP>`-big'</SAMP> and one if given
+<SAMP>`-little'</SAMP>.
+See section <A HREF="make_81.html#SEC85">Functions for String Substitution and Analysis</A>,
+for an explanation of the <CODE>subst</CODE> function.
+</UL>
+<P>
+
+Suppose you would like to vary the prerequisites according to the target,
+much as the variable <SAMP>`$@'</SAMP> allows you to vary the commands.
+You cannot do this with multiple targets in an ordinary rule, but you can
+do it with a <EM>static pattern rule</EM>.
+See section <A HREF="make_43.html#SEC47">Static Pattern Rules</A>.
+</P><P>
+
+<A NAME="Multiple Rules"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

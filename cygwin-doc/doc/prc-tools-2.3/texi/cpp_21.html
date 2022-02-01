@@ -1,0 +1,77 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Misnesting</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Misnesting">
+<META NAME="keywords" CONTENT="The C Preprocessor: Misnesting">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC21"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_20.html#SEC20"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_22.html#SEC22"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_20.html#SEC20"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 1.4.8.1 Improperly Nested Constructs </H4>
+<!--docid::SEC21::-->
+<P>
+
+Recall that when a macro is called with arguments, the arguments are
+substituted into the macro body and the result is checked, together with
+the rest of the input file, for more macro calls.
+</P><P>
+
+It is possible to piece together a macro call coming partially from the
+macro body and partially from the actual arguments.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define double(x) (2*(x))
+#define call_with_1(x) x(1)
+</pre></td></tr></table></P><P>
+
+would expand <SAMP>`call_with_1 (double)'</SAMP> into <SAMP>`(2*(1))'</SAMP>.
+</P><P>
+
+Macro definitions do not have to have balanced parentheses.  By writing an
+unbalanced open parenthesis in a macro body, it is possible to create a
+macro call that begins inside the macro body but ends outside of it.  For
+example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define strange(file) fprintf (file, "%s %d",
+<small>...</small>
+strange(stderr) p, 35)
+</pre></td></tr></table></P><P>
+
+This bizarre example expands to <SAMP>`fprintf (stderr, "%s %d", p, 35)'</SAMP>!
+</P><P>
+
+<A NAME="Macro Parentheses"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

@@ -1,0 +1,88 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Reference</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Reference">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Reference">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC66"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_63.html#SEC67"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_61.html#SEC65"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_75.html#SEC79"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 6.1 Basics of Variable References </H2>
+<!--docid::SEC66::-->
+<P>
+
+To substitute a variable's value, write a dollar sign followed by the name
+of the variable in parentheses or braces: either <SAMP>`$(foo)'</SAMP> or
+<SAMP>`${foo}'</SAMP> is a valid reference to the variable <CODE>foo</CODE>.  This
+special significance of <SAMP>`$'</SAMP> is why you must write <SAMP>`$$'</SAMP> to have
+the effect of a single dollar sign in a file name or command.
+</P><P>
+
+Variable references can be used in any context: targets, prerequisites,
+commands, most directives, and new variable values.  Here is an
+example of a common case, where a variable holds the names of all the
+object files in a program:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>objects = program.o foo.o utils.o
+program : $(objects)
+        cc -o program $(objects)
+
+$(objects) : defs.h
+</pre></td></tr></table></P><P>
+
+Variable references work by strict textual substitution.  Thus, the rule
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo = c
+prog.o : prog.$(foo)
+        $(foo)$(foo) -$(foo) prog.$(foo)
+</pre></td></tr></table></P><P>
+
+could be used to compile a C program <TT>`prog.c'</TT>.  Since spaces before
+the variable value are ignored in variable assignments, the value of
+<CODE>foo</CODE> is precisely <SAMP>`c'</SAMP>.  (Don't actually write your makefiles
+this way!)
+</P><P>
+
+A dollar sign followed by a character other than a dollar sign,
+open-parenthesis or open-brace treats that single character as the
+variable name.  Thus, you could reference the variable <CODE>x</CODE> with
+<SAMP>`$x'</SAMP>.  However, this practice is strongly discouraged, except in
+the case of the automatic variables (see section <A HREF="make_107.html#SEC111">Automatic Variables</A>).
+</P><P>
+
+<A NAME="Flavors"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

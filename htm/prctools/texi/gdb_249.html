@@ -1,0 +1,123 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Conditional Init Constructs</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Conditional Init Constructs">
+<META NAME="keywords" CONTENT="Debugging with GDB: Conditional Init Constructs">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC603"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_248.html#SEC602"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_250.html#SEC604"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_250.html#SEC604"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_247.html#SEC601"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_251.html#SEC605"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 26.3.2 Conditional Init Constructs </H3>
+<!--docid::SEC603::-->
+<P>
+
+Readline implements a facility similar in spirit to the conditional
+compilation features of the C preprocessor which allows key
+bindings and variable settings to be performed as the result
+of tests.  There are four parser directives used.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>$if</CODE>
+<DD>The <CODE>$if</CODE> construct allows bindings to be made based on the
+editing mode, the terminal being used, or the application using
+Readline.  The text of the test extends to the end of the line;
+no characters are required to isolate it.
+<P>
+
+<DL COMPACT>
+<DT><CODE>mode</CODE>
+<DD>The <CODE>mode=</CODE> form of the <CODE>$if</CODE> directive is used to test
+whether Readline is in <CODE>emacs</CODE> or <CODE>vi</CODE> mode.
+This may be used in conjunction
+with the <SAMP>`set keymap'</SAMP> command, for instance, to set bindings in
+the <CODE>emacs-standard</CODE> and <CODE>emacs-ctlx</CODE> keymaps only if
+Readline is starting out in <CODE>emacs</CODE> mode.
+<P>
+
+<DT><CODE>term</CODE>
+<DD>The <CODE>term=</CODE> form may be used to include terminal-specific
+key bindings, perhaps to bind the key sequences output by the
+terminal's function keys.  The word on the right side of the
+<SAMP>`='</SAMP> is tested against both the full name of the terminal and
+the portion of the terminal name before the first <SAMP>`-'</SAMP>.  This
+allows <CODE>sun</CODE> to match both <CODE>sun</CODE> and <CODE>sun-cmd</CODE>,
+for instance.
+<P>
+
+<DT><CODE>application</CODE>
+<DD>The <VAR>application</VAR> construct is used to include
+application-specific settings.  Each program using the Readline
+library sets the <VAR>application name</VAR>, and you can test for it. 
+This could be used to bind key sequences to functions useful for
+a specific program.  For instance, the following command adds a
+key sequence that quotes the current or previous word in Bash:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$if Bash
+# Quote the current or previous word
+"\C-xq": "\eb\"\ef\""
+$endif
+</pre></td></tr></table></DL>
+<P>
+
+<DT><CODE>$endif</CODE>
+<DD>This command, as seen in the previous example, terminates an
+<CODE>$if</CODE> command.
+<P>
+
+<DT><CODE>$else</CODE>
+<DD>Commands in this branch of the <CODE>$if</CODE> directive are executed if
+the test fails.
+<P>
+
+<DT><CODE>$include</CODE>
+<DD>This directive takes a single filename as an argument and reads commands
+and bindings from that file.
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$include /etc/inputrc
+</pre></td></tr></table></DL>
+<P>
+
+<A NAME="Sample Init File"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_248.html#SEC602"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_250.html#SEC604"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_250.html#SEC604"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_247.html#SEC601"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_251.html#SEC605"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

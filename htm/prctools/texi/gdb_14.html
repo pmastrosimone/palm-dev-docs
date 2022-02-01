@@ -1,0 +1,171 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Completion</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Completion">
+<META NAME="keywords" CONTENT="Debugging with GDB: Completion">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC14"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_13.html#SEC13"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_15.html#SEC15"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_15.html#SEC15"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_12.html#SEC12"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.2 Command completion </H2>
+<!--docid::SEC14::-->
+<P>
+
+<A NAME="IDX62"></A>
+<A NAME="IDX63"></A>
+GDB can fill in the rest of a word in a command for you, if there is
+only one possibility; it can also show you what the valid possibilities
+are for the next word in a command, at any time.  This works for GDB
+commands, GDB subcommands, and the names of symbols in your program.
+</P><P>
+
+Press the <KBD>TAB</KBD> key whenever you want GDB to fill out the rest
+of a word.  If there is only one possibility, GDB fills in the
+word, and waits for you to finish the command (or press <KBD>RET</KBD> to
+enter it).  For example, if you type
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) info bre <KBD>TAB</KBD>
+</FONT></pre></td></tr></table></P><P>
+
+GDB fills in the rest of the word <SAMP>`breakpoints'</SAMP>, since that is
+the only <CODE>info</CODE> subcommand beginning with <SAMP>`bre'</SAMP>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) info breakpoints
+</FONT></pre></td></tr></table></P><P>
+
+You can either press <KBD>RET</KBD> at this point, to run the <CODE>info
+breakpoints</CODE> command, or backspace and enter something else, if
+<SAMP>`breakpoints'</SAMP> does not look like the command you expected.  (If you
+were sure you wanted <CODE>info breakpoints</CODE> in the first place, you
+might as well just type <KBD>RET</KBD> immediately after <SAMP>`info bre'</SAMP>,
+to exploit command abbreviations rather than command completion).
+</P><P>
+
+If there is more than one possibility for the next word when you press
+<KBD>TAB</KBD>, GDB sounds a bell.  You can either supply more
+characters and try again, or just press <KBD>TAB</KBD> a second time;
+GDB displays all the possible completions for that word.  For
+example, you might want to set a breakpoint on a subroutine whose name
+begins with <SAMP>`make_'</SAMP>, but when you type <KBD>b make_<KBD>TAB</KBD></KBD> GDB
+just sounds the bell.  Typing <KBD>TAB</KBD> again displays all the
+function names in your program that begin with those characters, for
+example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) b make_ <KBD>TAB</KBD>
+GDB sounds bell; press <KBD>TAB</KBD> again, to see:
+make_a_section_from_file     make_environ
+make_abs_section             make_function_type
+make_blockvector             make_pointer_type
+make_cleanup                 make_reference_type
+make_command                 make_symbol_completion_list
+(gdb) b make_
+</FONT></pre></td></tr></table></P><P>
+
+After displaying the available possibilities, GDB copies your
+partial input (<SAMP>`b make_'</SAMP> in the example) so you can finish the
+command.
+</P><P>
+
+If you just want to see the list of alternatives in the first place, you
+can press <KBD>M-?</KBD> rather than pressing <KBD>TAB</KBD> twice.  <KBD>M-?</KBD>
+means <KBD><KBD>META</KBD> ?</KBD>.  You can type this either by holding down a
+key designated as the <KBD>META</KBD> shift on your keyboard (if there is
+one) while typing <KBD>?</KBD>, or as <KBD>ESC</KBD> followed by <KBD>?</KBD>.
+</P><P>
+
+<A NAME="IDX64"></A>
+<A NAME="IDX65"></A>
+Sometimes the string you need, while logically a "word", may contain
+parentheses or other characters that GDB normally excludes from
+its notion of a word.  To permit word completion to work in this
+situation, you may enclose words in <CODE>'</CODE> (single quote marks) in
+GDB commands.
+</P><P>
+
+The most likely situation where you might need this is in typing the
+name of a C<TT>++</TT> function.  This is because C<TT>++</TT> allows function
+overloading (multiple definitions of the same function, distinguished
+by argument type).  For example, when you want to set a breakpoint you
+may need to distinguish whether you mean the version of <CODE>name</CODE>
+that takes an <CODE>int</CODE> parameter, <CODE>name(int)</CODE>, or the version
+that takes a <CODE>float</CODE> parameter, <CODE>name(float)</CODE>.  To use the
+word-completion facilities in this situation, type a single quote
+<CODE>'</CODE> at the beginning of the function name.  This alerts
+GDB that it may need to consider more information than usual
+when you press <KBD>TAB</KBD> or <KBD>M-?</KBD> to request word completion:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) b 'bubble( <KBD>M-?</KBD>
+bubble(double,double)    bubble(int,int)
+(gdb) b 'bubble(
+</FONT></pre></td></tr></table></P><P>
+
+In some cases, GDB can tell that completing a name requires using
+quotes.  When this happens, GDB inserts the quote for you (while
+completing as much as it can) if you do not type the quote in the first
+place:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) b bub <KBD>TAB</KBD>
+GDB alters your input line to the following, and rings a bell:
+(gdb) b 'bubble(
+</FONT></pre></td></tr></table></P><P>
+
+In general, GDB can tell that a quote is needed (and inserts it) if
+you have not yet started typing the argument list when you ask for
+completion on an overloaded symbol.
+</P><P>
+
+For more information about overloaded functions, see <A HREF="gdb_102.html#SEC102">C<TT>++</TT> expressions</A>.  You can use the command <CODE>set
+overload-resolution off</CODE> to disable overload resolution;
+see <A HREF="gdb_106.html#SEC106">GDB features for C<TT>++</TT></A>.
+</P><P>
+
+<A NAME="Help"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_13.html#SEC13"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_15.html#SEC15"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_15.html#SEC15"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_12.html#SEC12"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

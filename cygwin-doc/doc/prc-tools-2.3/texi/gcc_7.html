@@ -1,0 +1,502 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: C++ Dialect Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: C++ Dialect Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: C++ Dialect Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC7"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_6.html#SEC6"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_8.html#SEC8"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_8.html#SEC8"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.5 Options Controlling C++ Dialect </H2>
+<!--docid::SEC7::-->
+<P>
+
+<A NAME="IDX50"></A>
+<A NAME="IDX51"></A>
+<A NAME="IDX52"></A>
+This section describes the command-line options that are only meaningful
+for C++ programs; but you can also use most of the GNU compiler options
+regardless of what language your program is in.  For example, you
+might compile a file <CODE>firstClass.C</CODE> like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>g++ -g -frepo -O -c firstClass.C
+</pre></td></tr></table></P><P>
+
+In this example, only <SAMP>`-frepo'</SAMP> is an option meant
+only for C++ programs; you can use the other options with any
+language supported by GCC.
+</P><P>
+
+Here is a list of options that are <EM>only</EM> for compiling C++ programs:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-fno-access-control</CODE>
+<DD>Turn off all access checking.  This switch is mainly useful for working
+around bugs in the access control code.
+<P>
+
+<DT><CODE>-fcheck-new</CODE>
+<DD>Check that the pointer returned by <CODE>operator new</CODE> is non-null
+before attempting to modify the storage allocated.  The current Working
+Paper requires that <CODE>operator new</CODE> never return a null pointer, so
+this check is normally unnecessary.
+<P>
+
+An alternative to using this option is to specify that your
+<CODE>operator new</CODE> does not throw any exceptions; if you declare it
+<SAMP>`throw()'</SAMP>, g++ will check the return value.  See also <SAMP>`new
+(nothrow)'</SAMP>.
+</P><P>
+
+<DT><CODE>-fconserve-space</CODE>
+<DD>Put uninitialized or runtime-initialized global variables into the
+common segment, as C does.  This saves space in the executable at the
+cost of not diagnosing duplicate definitions.  If you compile with this
+flag and your program mysteriously crashes after <CODE>main()</CODE> has
+completed, you may have an object that is being destroyed twice because
+two definitions were merged.
+<P>
+
+This option is no longer useful on most targets, now that support has
+been added for putting variables into BSS without making them common.
+</P><P>
+
+<DT><CODE>-fdollars-in-identifiers</CODE>
+<DD>Accept <SAMP>`$'</SAMP> in identifiers.  You can also explicitly prohibit use of
+<SAMP>`$'</SAMP> with the option <SAMP>`-fno-dollars-in-identifiers'</SAMP>.  (GNU C allows
+<SAMP>`$'</SAMP> by default on most target systems, but there are a few exceptions.)
+Traditional C allowed the character <SAMP>`$'</SAMP> to form part of
+identifiers.  However, ANSI C and C++ forbid <SAMP>`$'</SAMP> in identifiers.
+<P>
+
+<DT><CODE>-fno-elide-constructors</CODE>
+<DD>The C++ standard allows an implementation to omit creating a temporary
+which is only used to initialize another object of the same type.
+Specifying this option disables that optimization, and forces g++ to
+call the copy constructor in all cases.
+<P>
+
+<DT><CODE>-fexternal-templates</CODE>
+<DD>Cause template instantiations to obey <SAMP>`#pragma interface'</SAMP> and
+<SAMP>`implementation'</SAMP>; template instances are emitted or not according
+to the location of the template definition.  See section <A HREF="gcc_115.html#SEC115">5.5 Where's the Template?</A>, for more information.
+<P>
+
+This option is deprecated.
+</P><P>
+
+<DT><CODE>-falt-external-templates</CODE>
+<DD>Similar to -fexternal-templates, but template instances are emitted or
+not according to the place where they are first instantiated.
+See section <A HREF="gcc_115.html#SEC115">5.5 Where's the Template?</A>, for more information.
+<P>
+
+This option is deprecated.
+</P><P>
+
+<DT><CODE>-ffor-scope</CODE>
+<DD><DT><CODE>-fno-for-scope</CODE>
+<DD>If -ffor-scope is specified, the scope of variables declared in
+a <I>for-init-statement</I> is limited to the <SAMP>`for'</SAMP> loop itself,
+as specified by the draft C++ standard.
+If -fno-for-scope is specified, the scope of variables declared in
+a <I>for-init-statement</I> extends to the end of the enclosing scope,
+as was the case in old versions of gcc, and other (traditional)
+implementations of C++.
+<P>
+
+The default if neither flag is given to follow the standard,
+but to allow and give a warning for old-style code that would
+otherwise be invalid, or have different behavior.
+</P><P>
+
+<DT><CODE>-fno-gnu-keywords</CODE>
+<DD>Do not recognize <CODE>classof</CODE>, <CODE>headof</CODE>, <CODE>signature</CODE>,
+<CODE>sigof</CODE> or <CODE>typeof</CODE> as a keyword, so that code can use these
+words as identifiers.  You can use the keywords <CODE>__classof__</CODE>,
+<CODE>__headof__</CODE>, <CODE>__signature__</CODE>, <CODE>__sigof__</CODE>, and
+<CODE>__typeof__</CODE> instead.  <SAMP>`-ansi'</SAMP> implies
+<SAMP>`-fno-gnu-keywords'</SAMP>.
+<P>
+
+<DT><CODE>-fguiding-decls</CODE>
+<DD>Treat a function declaration with the same type as a potential function
+template instantiation as though it declares that instantiation, not a
+normal function.  If a definition is given for the function later in the
+translation unit (or another translation unit if the target supports
+weak symbols), that definition will be used; otherwise the template will
+be instantiated.  This behavior reflects the C++ language prior to
+September 1996, when guiding declarations were removed.
+<P>
+
+This option implies <SAMP>`-fname-mangling-version-0'</SAMP>, and will not work
+with other name mangling versions.  Like all options that change the
+ABI, all C++ code, <EM>including libgcc.a</EM> must be built with the same
+setting of this option.
+</P><P>
+
+<DT><CODE>-fhandle-signatures</CODE>
+<DD>Recognize the <CODE>signature</CODE> and <CODE>sigof</CODE> keywords for specifying
+abstract types.  The default (<SAMP>`-fno-handle-signatures'</SAMP>) is not to
+recognize them.  See section <A HREF="gcc_117.html#SEC117">Type Abstraction using Signatures</A>.
+<P>
+
+<DT><CODE>-fhonor-std</CODE>
+<DD>Treat the <CODE>namespace std</CODE> as a namespace, instead of ignoring
+it. For compatibility with earlier versions of g++, the compiler will,
+by default, ignore <CODE>namespace-declarations</CODE>,
+<CODE>using-declarations</CODE>, <CODE>using-directives</CODE>, and
+<CODE>namespace-names</CODE>, if they involve <CODE>std</CODE>.
+<P>
+
+<DT><CODE>-fhuge-objects</CODE>
+<DD>Support virtual function calls for objects that exceed the size
+representable by a <SAMP>`short int'</SAMP>.  Users should not use this flag by
+default; if you need to use it, the compiler will tell you so.
+<P>
+
+This flag is not useful when compiling with -fvtable-thunks.
+</P><P>
+
+Like all options that change the ABI, all C++ code, <EM>including
+libgcc</EM> must be built with the same setting of this option.
+</P><P>
+
+<DT><CODE>-fno-implicit-templates</CODE>
+<DD>Never emit code for non-inline templates which are instantiated
+implicitly (i.e. by use); only emit code for explicit instantiations.
+See section <A HREF="gcc_115.html#SEC115">5.5 Where's the Template?</A>, for more information.
+<P>
+
+<DT><CODE>-fno-implicit-inline-templates</CODE>
+<DD>Don't emit code for implicit instantiations of inline templates, either.
+The default is to handle inlines differently so that compiles with and
+without optimization will need the same set of explicit instantiations.
+<P>
+
+<DT><CODE>-finit-priority</CODE>
+<DD>Support <SAMP>`__attribute__ ((init_priority (n)))'</SAMP> for controlling the
+order of initialization of file-scope objects.  On ELF targets, this
+requires GNU ld 2.10 or later.
+<P>
+
+<DT><CODE>-fno-implement-inlines</CODE>
+<DD>To save space, do not emit out-of-line copies of inline functions
+controlled by <SAMP>`#pragma implementation'</SAMP>.  This will cause linker
+errors if these functions are not inlined everywhere they are called.
+<P>
+
+<DT><CODE>-fname-mangling-version-<VAR>n</VAR></CODE>
+<DD>Control the way in which names are mangled.  Version 0 is compatible
+with versions of g++ before 2.8.  Version 1 is the default.  Version 1
+will allow correct mangling of function templates.  For example, 
+version 0 mangling does not mangle foo&#60;int, double&#62; and foo&#60;int, char&#62;
+given this declaration:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>template &#60;class T, class U&#62; void foo(T t);
+</pre></td></tr></table></P><P>
+
+Like all options that change the ABI, all C++ code, <EM>including
+libgcc</EM> must be built with the same setting of this option.
+</P><P>
+
+<DT><CODE>-foperator-names</CODE>
+<DD>Recognize the operator name keywords <CODE>and</CODE>, <CODE>bitand</CODE>,
+<CODE>bitor</CODE>, <CODE>compl</CODE>, <CODE>not</CODE>, <CODE>or</CODE> and <CODE>xor</CODE> as
+synonyms for the symbols they refer to.  <SAMP>`-ansi'</SAMP> implies
+<SAMP>`-foperator-names'</SAMP>.
+<P>
+
+<DT><CODE>-fno-optional-diags</CODE>
+<DD>Disable diagnostics that the standard says a compiler does not need to
+issue.  Currently, the only such diagnostic issued by g++ is the one for
+a name having multiple meanings within a class.
+<P>
+
+<DT><CODE>-fpermissive</CODE>
+<DD>Downgrade messages about nonconformant code from errors to warnings.  By
+default, g++ effectively sets <SAMP>`-pedantic-errors'</SAMP> without
+<SAMP>`-pedantic'</SAMP>; this option reverses that.  This behavior and this
+option are superceded by <SAMP>`-pedantic'</SAMP>, which works as it does for GNU C.
+<P>
+
+<DT><CODE>-frepo</CODE>
+<DD>Enable automatic template instantiation.  This option also implies
+<SAMP>`-fno-implicit-templates'</SAMP>.  See section <A HREF="gcc_115.html#SEC115">5.5 Where's the Template?</A>, for more
+information.
+<P>
+
+<DT><CODE>-fno-rtti</CODE>
+<DD>Disable generation of the information used by C++ runtime type
+identification features (<SAMP>`dynamic_cast'</SAMP> and <SAMP>`typeid'</SAMP>).  If you
+don't use those parts of the language (or exception handling, which uses
+<SAMP>`dynamic_cast'</SAMP> internally), you can save some space by using this
+flag.
+<P>
+
+<DT><CODE>-fstrict-prototype</CODE>
+<DD>Within an <SAMP>`extern "C"'</SAMP> linkage specification, treat a function
+declaration with no arguments, such as <SAMP>`int foo ();'</SAMP>, as declaring
+the function to take no arguments.  Normally, such a declaration means
+that the function <CODE>foo</CODE> can take any combination of arguments, as
+in C.  <SAMP>`-pedantic'</SAMP> implies <SAMP>`-fstrict-prototype'</SAMP> unless
+overridden with <SAMP>`-fno-strict-prototype'</SAMP>.
+<P>
+
+Specifying this option will also suppress implicit declarations of
+functions.
+</P><P>
+
+This flag no longer affects declarations with C++ linkage.
+</P><P>
+
+<DT><CODE>-fsquangle</CODE>
+<DD><DT><CODE>-fno-squangle</CODE>
+<DD><SAMP>`-fsquangle'</SAMP> will enable a compressed form of name mangling for
+identifiers. In particular, it helps to shorten very long names by recognizing
+types and class names which occur more than once, replacing them with special
+short ID codes.  This option also requires any C++ libraries being used to
+be compiled with this option as well.  The compiler has this disabled (the
+equivalent of <SAMP>`-fno-squangle'</SAMP>) by default.
+<P>
+
+Like all options that change the ABI, all C++ code, <EM>including
+libgcc.a</EM> must be built with the same setting of this option.
+</P><P>
+
+<DT><CODE>-ftemplate-depth-<VAR>n</VAR></CODE>
+<DD>Set the maximum instantiation depth for template classes to <VAR>n</VAR>.
+A limit on the template instantiation depth is needed to detect
+endless recursions during template class instantiation. ANSI/ISO C++
+conforming programs must not rely on a maximum depth greater than 17.
+<P>
+
+<DT><CODE>-fthis-is-variable</CODE>
+<DD>Permit assignment to <CODE>this</CODE>.  The incorporation of user-defined
+free store management into C++ has made assignment to <SAMP>`this'</SAMP> an
+anachronism.  Therefore, by default it is invalid to assign to
+<CODE>this</CODE> within a class member function; that is, GNU C++ treats
+<SAMP>`this'</SAMP> in a member function of class <CODE>X</CODE> as a non-lvalue of
+type <SAMP>`X *'</SAMP>.  However, for backwards compatibility, you can make it
+valid with <SAMP>`-fthis-is-variable'</SAMP>.
+<P>
+
+<DT><CODE>-fvtable-thunks=<VAR>thunks-version</VAR></CODE>
+<DD>Use <SAMP>`thunks'</SAMP> to implement the virtual function dispatch table
+(<SAMP>`vtable'</SAMP>).  The traditional (cfront-style) approach to
+implementing vtables was to store a pointer to the function and two
+offsets for adjusting the <SAMP>`this'</SAMP> pointer at the call site.  Newer
+implementations store a single pointer to a <SAMP>`thunk'</SAMP> function which
+does any necessary adjustment and then calls the target function.
+<P>
+
+The original implementation of thunks (version 1) had a bug regarding
+virtual base classes; this bug is fixed with version 2 of the thunks
+implementation. With setting the version to 2, compatibility to the
+version 1 thunks is provided, at the cost of extra machine code. Version
+3 does not include this compatibility.
+</P><P>
+
+This option also enables a heuristic for controlling emission of
+vtables; if a class has any non-inline virtual functions, the vtable
+will be emitted in the translation unit containing the first one of
+those.
+</P><P>
+
+Like all options that change the ABI, all C++ code, <EM>including
+libgcc.a</EM> must be built with the same setting of this option. Since
+version 1 and version 2 are also incompatible (for classes with virtual
+bases defining virtual functions), all code must also be compiled with
+the same version.
+</P><P>
+
+In this version of gcc, there are no targets for which version 2 thunks
+are the default.  On all targets, not giving the option will use the
+traditional implementation, and -fvtable-thunks will produce version 2
+thunks.
+</P><P>
+
+<DT><CODE>-nostdinc++</CODE>
+<DD>Do not search for header files in the standard directories specific to
+C++, but do still search the other standard directories.  (This option
+is used when building the C++ library.)
+</DL>
+<P>
+
+In addition, these optimization, warning, and code generation options
+have meanings only for C++ programs:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-fno-default-inline</CODE>
+<DD>Do not assume <SAMP>`inline'</SAMP> for functions defined inside a class scope.
+See section <A HREF="gcc_10.html#SEC10">Options That Control Optimization</A>.  Note that these
+functions will have linkage like inline functions; they just won't be
+inlined by default.
+<P>
+
+<DT><CODE>-Wctor-dtor-privacy (C++ only)</CODE>
+<DD>Warn when a class seems unusable, because all the constructors or
+destructors in a class are private and the class has no friends or
+public static member functions.
+<P>
+
+<DT><CODE>-Wnon-virtual-dtor (C++ only)</CODE>
+<DD>Warn when a class declares a non-virtual destructor that should probably
+be virtual, because it looks like the class will be used polymorphically.
+<P>
+
+<DT><CODE>-Wreorder (C++ only)</CODE>
+<DD><A NAME="IDX53"></A>
+<A NAME="IDX54"></A>
+Warn when the order of member initializers given in the code does not
+match the order in which they must be executed.  For instance:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>struct A {
+  int i;
+  int j;
+  A(): j (0), i (1) { }
+};
+</FONT></pre></td></tr></table></P><P>
+
+Here the compiler will warn that the member initializers for <SAMP>`i'</SAMP>
+and <SAMP>`j'</SAMP> will be rearranged to match the declaration order of the
+members.
+</DL>
+<P>
+
+The following <SAMP>`-W<small>...</small>'</SAMP> options are not affected by <SAMP>`-Wall'</SAMP>.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-Weffc++ (C++ only)</CODE>
+<DD>Warn about violations of various style guidelines from Scott Meyers'
+<CITE>Effective C++</CITE> books.  If you use this option, you should be aware
+that the standard library headers do not obey all of these guidelines;
+you can use <SAMP>`grep -v'</SAMP> to filter out those warnings.
+<P>
+
+<DT><CODE>-Wno-deprecated (C++ only)</CODE>
+<DD>Do not warn about usage of deprecated features. See section <A HREF="gcc_109.html#SEC109">4.41 Deprecated Features</A>.
+<P>
+
+<DT><CODE>-Wno-non-template-friend (C++ only)</CODE>
+<DD>Disable warnings when non-templatized friend functions are declared
+within a template. With the advent of explicit template specification
+support in g++, if the name of the friend is an unqualified-id (ie,
+<SAMP>`friend foo(int)'</SAMP>), the C++ language specification demands that the
+friend declare or define an ordinary, nontemplate function. (Section
+14.5.3). Before g++ implemented explicit specification, unqualified-ids
+could be interpreted as a particular specialization of a templatized
+function. Because this non-conforming behavior is no longer the default
+behavior for g++, <SAMP>`-Wnon-template-friend'</SAMP> allows the compiler to
+check existing code for potential trouble spots, and is on by default.
+This new compiler behavior can also be turned off with the flag
+<SAMP>`-fguiding-decls'</SAMP>, which activates the older, non-specification
+compiler code, or with <SAMP>`-Wno-non-template-friend'</SAMP> which keeps the
+conformant compiler code but disables the helpful warning.
+<P>
+
+<DT><CODE>-Wold-style-cast (C++ only)</CODE>
+<DD>Warn if an old-style (C-style) cast is used within a C++ program.  The
+new-style casts (<SAMP>`static_cast'</SAMP>, <SAMP>`reinterpret_cast'</SAMP>, and
+<SAMP>`const_cast'</SAMP>) are less vulnerable to unintended effects.
+<P>
+
+<DT><CODE>-Woverloaded-virtual (C++ only)</CODE>
+<DD><A NAME="IDX55"></A>
+<A NAME="IDX56"></A>
+Warn when a derived class function declaration may be an error in
+defining a virtual function.  In a derived class, the
+definitions of virtual functions must match the type signature of a
+virtual function declared in the base class.  With this option, the
+compiler warns when you define a function with the same name as a
+virtual function, but with a type signature that does not match any
+declarations from the base class.
+<P>
+
+<DT><CODE>-Wno-pmf-conversions (C++ only)</CODE>
+<DD>Disable the diagnostic for converting a bound pointer to member function
+to a plain pointer.
+<P>
+
+<DT><CODE>-Wsign-promo (C++ only)</CODE>
+<DD>Warn when overload resolution chooses a promotion from unsigned or
+enumeral type to a signed type over a conversion to an unsigned type of
+the same size.  Previous versions of g++ would try to preserve
+unsignedness, but the standard mandates the current behavior.
+<P>
+
+<DT><CODE>-Wsynth (C++ only)</CODE>
+<DD><A NAME="IDX57"></A>
+<A NAME="IDX58"></A>
+Warn when g++'s synthesis behavior does not match that of cfront.  For
+instance:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>struct A {
+  operator int ();
+  A&#38; operator = (int);
+};
+
+main ()
+{
+  A a,b;
+  a = b;
+}
+</FONT></pre></td></tr></table></P><P>
+
+In this example, g++ will synthesize a default <SAMP>`A&#38; operator =
+(const A&#38;);'</SAMP>, while cfront will use the user-defined <SAMP>`operator ='</SAMP>.
+</DL>
+<P>
+
+<A NAME="Warning Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_6.html#SEC6"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_8.html#SEC8"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_8.html#SEC8"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

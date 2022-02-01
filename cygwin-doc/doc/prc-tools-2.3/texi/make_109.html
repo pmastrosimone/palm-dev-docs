@@ -1,0 +1,142 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Match-Anything Rules</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Match-Anything Rules">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Match-Anything Rules">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC113"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_108.html#SEC112"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_110.html#SEC114"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_103.html#SEC107"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_104.html#SEC108"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_111.html#SEC115"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 10.5.5 Match-Anything Pattern Rules </H3>
+<!--docid::SEC113::-->
+<P>
+
+<A NAME="IDX627"></A>
+<A NAME="IDX628"></A>
+When a pattern rule's target is just <SAMP>`%'</SAMP>, it matches any file name
+whatever.  We call these rules <EM>match-anything</EM> rules.  They are very
+useful, but it can take a lot of time for <CODE>make</CODE> to think about them,
+because it must consider every such rule for each file name listed either
+as a target or as a prerequisite.
+</P><P>
+
+Suppose the makefile mentions <TT>`foo.c'</TT>.  For this target, <CODE>make</CODE>
+would have to consider making it by linking an object file <TT>`foo.c.o'</TT>,
+or by C compilation-and-linking in one step from <TT>`foo.c.c'</TT>, or by
+Pascal compilation-and-linking from <TT>`foo.c.p'</TT>, and many other
+possibilities.
+</P><P>
+
+We know these possibilities are ridiculous since <TT>`foo.c'</TT> is a C source
+file, not an executable.  If <CODE>make</CODE> did consider these possibilities,
+it would ultimately reject them, because files such as <TT>`foo.c.o'</TT> and
+<TT>`foo.c.p'</TT> would not exist.  But these possibilities are so
+numerous that <CODE>make</CODE> would run very slowly if it had to consider
+them.</P><P>
+
+To gain speed, we have put various constraints on the way <CODE>make</CODE>
+considers match-anything rules.  There are two different constraints that
+can be applied, and each time you define a match-anything rule you must
+choose one or the other for that rule.
+</P><P>
+
+One choice is to mark the match-anything rule as <EM>terminal</EM> by defining
+it with a double colon.  When a rule is terminal, it does not apply unless
+its prerequisites actually exist.  Prerequisites that could be made with
+other implicit rules are not good enough.  In other words, no further
+chaining is allowed beyond a terminal rule.
+</P><P>
+
+For example, the built-in implicit rules for extracting sources from RCS
+and SCCS files are terminal; as a result, if the file <TT>`foo.c,v'</TT> does
+not exist, <CODE>make</CODE> will not even consider trying to make it as an
+intermediate file from <TT>`foo.c,v.o'</TT> or from <TT>`RCS/SCCS/s.foo.c,v'</TT>.
+RCS and SCCS files are generally ultimate source files, which should not be
+remade from any other files; therefore, <CODE>make</CODE> can save time by not
+looking for ways to remake them.</P><P>
+
+If you do not mark the match-anything rule as terminal, then it is
+nonterminal.  A nonterminal match-anything rule cannot apply to a file name
+that indicates a specific type of data.  A file name indicates a specific
+type of data if some non-match-anything implicit rule target matches it.
+</P><P>
+
+For example, the file name <TT>`foo.c'</TT> matches the target for the pattern
+rule <SAMP>`%.c : %.y'</SAMP> (the rule to run Yacc).  Regardless of whether this
+rule is actually applicable (which happens only if there is a file
+<TT>`foo.y'</TT>), the fact that its target matches is enough to prevent
+consideration of any nonterminal match-anything rules for the file
+<TT>`foo.c'</TT>.  Thus, <CODE>make</CODE> will not even consider trying to make
+<TT>`foo.c'</TT> as an executable file from <TT>`foo.c.o'</TT>, <TT>`foo.c.c'</TT>,
+<TT>`foo.c.p'</TT>, etc.</P><P>
+
+The motivation for this constraint is that nonterminal match-anything
+rules are used for making files containing specific types of data (such as
+executable files) and a file name with a recognized suffix indicates some
+other specific type of data (such as a C source file).
+</P><P>
+
+Special built-in dummy pattern rules are provided solely to recognize
+certain file names so that nonterminal match-anything rules will not be
+considered.  These dummy rules have no prerequisites and no commands, and
+they are ignored for all other purposes.  For example, the built-in
+implicit rule
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>%.p :
+</pre></td></tr></table></P><P>
+
+exists to make sure that Pascal source files such as <TT>`foo.p'</TT> match a
+specific target pattern and thereby prevent time from being wasted looking
+for <TT>`foo.p.o'</TT> or <TT>`foo.p.c'</TT>.
+</P><P>
+
+Dummy pattern rules such as the one for <SAMP>`%.p'</SAMP> are made for every
+suffix listed as valid for use in suffix rules (see section <A HREF="make_112.html#SEC116">Old-Fashioned Suffix Rules</A>).
+</P><P>
+
+<A NAME="Canceling Rules"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_108.html#SEC112"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_110.html#SEC114"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_103.html#SEC107"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_104.html#SEC108"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_111.html#SEC115"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

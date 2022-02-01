@@ -1,0 +1,230 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: VERSION</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: VERSION">
+<META NAME="keywords" CONTENT="Untitled Document: VERSION">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC40"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_39.html#SEC39"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_41.html#SEC41"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_6.html#SEC6"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_6.html#SEC6"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_50.html#SEC50"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.9 VERSION Command </H2>
+<!--docid::SEC40::-->
+The linker supports symbol versions when using ELF.  Symbol versions are
+only useful when using shared libraries.  The dynamic linker can use
+symbol versions to select a specific version of a function when it runs
+a program that may have been linked against an earlier version of the
+shared library.
+<P>
+
+You can include a version script directly in the main linker script, or
+you can supply the version script as an implicit linker script.  You can
+also use the <SAMP>`--version-script'</SAMP> linker option.
+</P><P>
+
+The syntax of the <CODE>VERSION</CODE> command is simply
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>VERSION { version-script-commands }
+</FONT></pre></td></tr></table></P><P>
+
+The format of the version script commands is identical to that used by
+Sun's linker in Solaris 2.5.  The version script defines a tree of
+version nodes.  You specify the node names and interdependencies in the
+version script.  You can specify which symbols are bound to which
+version nodes, and you can reduce a specified set of symbols to local
+scope so that they are not globally visible outside of the shared
+library.
+</P><P>
+
+The easiest way to demonstrate the version script language is with a few
+examples.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>VERS_1.1 {
+	 global:
+		 foo1;
+	 local:
+		 old*;
+		 original*;
+		 new*;
+};
+
+VERS_1.2 {
+		 foo2;
+} VERS_1.1;
+
+VERS_2.0 {
+		 bar1; bar2;
+} VERS_1.2;
+</FONT></pre></td></tr></table></P><P>
+
+This example version script defines three version nodes.  The first
+version node defined is <SAMP>`VERS_1.1'</SAMP>; it has no other dependencies.
+The script binds the symbol <SAMP>`foo1'</SAMP> to <SAMP>`VERS_1.1'</SAMP>.  It reduces
+a number of symbols to local scope so that they are not visible outside
+of the shared library; this is done using wildcard patterns, so that any
+symbol whose name begins with <SAMP>`old'</SAMP>, <SAMP>`original'</SAMP>, or <SAMP>`new'</SAMP>
+is matched.  The wildcard patterns available are the same as those used
+in the shell when matching filenames (also known as "globbing").
+</P><P>
+
+Next, the version script defines node <SAMP>`VERS_1.2'</SAMP>.  This node
+depends upon <SAMP>`VERS_1.1'</SAMP>.  The script binds the symbol <SAMP>`foo2'</SAMP>
+to the version node <SAMP>`VERS_1.2'</SAMP>.
+</P><P>
+
+Finally, the version script defines node <SAMP>`VERS_2.0'</SAMP>.  This node
+depends upon <SAMP>`VERS_1.2'</SAMP>.  The scripts binds the symbols <SAMP>`bar1'</SAMP>
+and <SAMP>`bar2'</SAMP> are bound to the version node <SAMP>`VERS_2.0'</SAMP>.
+</P><P>
+
+When the linker finds a symbol defined in a library which is not
+specifically bound to a version node, it will effectively bind it to an
+unspecified base version of the library.  You can bind all otherwise
+unspecified symbols to a given version node by using <SAMP>`global: *;'</SAMP>
+somewhere in the version script.
+</P><P>
+
+The names of the version nodes have no specific meaning other than what
+they might suggest to the person reading them.  The <SAMP>`2.0'</SAMP> version
+could just as well have appeared in between <SAMP>`1.1'</SAMP> and <SAMP>`1.2'</SAMP>.
+However, this would be a confusing way to write a version script.
+</P><P>
+
+Node name can be omited, provided it is the only version node
+in the version script.  Such version script doesn't assign any versions to
+symbols, only selects which symbols will be globally visible out and which
+won't.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>{ global: foo; bar; local: *; };
+</FONT></pre></td></tr></table></P><P>
+
+When you link an application against a shared library that has versioned
+symbols, the application itself knows which version of each symbol it
+requires, and it also knows which version nodes it needs from each
+shared library it is linked against.  Thus at runtime, the dynamic
+loader can make a quick check to make sure that the libraries you have
+linked against do in fact supply all of the version nodes that the
+application will need to resolve all of the dynamic symbols.  In this
+way it is possible for the dynamic linker to know with certainty that
+all external symbols that it needs will be resolvable without having to
+search for each symbol reference.
+</P><P>
+
+The symbol versioning is in effect a much more sophisticated way of
+doing minor version checking that SunOS does.  The fundamental problem
+that is being addressed here is that typically references to external
+functions are bound on an as-needed basis, and are not all bound when
+the application starts up.  If a shared library is out of date, a
+required interface may be missing; when the application tries to use
+that interface, it may suddenly and unexpectedly fail.  With symbol
+versioning, the user will get a warning when they start their program if
+the libraries being used with the application are too old.
+</P><P>
+
+There are several GNU extensions to Sun's versioning approach.  The
+first of these is the ability to bind a symbol to a version node in the
+source file where the symbol is defined instead of in the versioning
+script.  This was done mainly to reduce the burden on the library
+maintainer.  You can do this by putting something like:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>__asm__(".symver original_foo,foo@VERS_1.1");
+</FONT></pre></td></tr></table>in the C source file.  This renames the function <SAMP>`original_foo'</SAMP> to
+be an alias for <SAMP>`foo'</SAMP> bound to the version node <SAMP>`VERS_1.1'</SAMP>.
+The <SAMP>`local:'</SAMP> directive can be used to prevent the symbol
+<SAMP>`original_foo'</SAMP> from being exported. A <SAMP>`.symver'</SAMP> directive
+takes precedence over a version script.
+</P><P>
+
+The second GNU extension is to allow multiple versions of the same
+function to appear in a given shared library.  In this way you can make
+an incompatible change to an interface without increasing the major
+version number of the shared library, while still allowing applications
+linked against the old interface to continue to function.
+</P><P>
+
+To do this, you must use multiple <SAMP>`.symver'</SAMP> directives in the
+source file.  Here is an example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>__asm__(".symver original_foo,foo@");
+__asm__(".symver old_foo,foo@VERS_1.1");
+__asm__(".symver old_foo1,foo@VERS_1.2");
+__asm__(".symver new_foo,foo@@VERS_2.0");
+</FONT></pre></td></tr></table></P><P>
+
+In this example, <SAMP>`foo@'</SAMP> represents the symbol <SAMP>`foo'</SAMP> bound to the
+unspecified base version of the symbol.  The source file that contains this
+example would define 4 C functions: <SAMP>`original_foo'</SAMP>, <SAMP>`old_foo'</SAMP>,
+<SAMP>`old_foo1'</SAMP>, and <SAMP>`new_foo'</SAMP>.
+</P><P>
+
+When you have multiple definitions of a given symbol, there needs to be
+some way to specify a default version to which external references to
+this symbol will be bound.  You can do this with the
+<SAMP>`foo@@VERS_2.0'</SAMP> type of <SAMP>`.symver'</SAMP> directive.  You can only
+declare one version of a symbol as the default in this manner; otherwise
+you would effectively have multiple definitions of the same symbol.
+</P><P>
+
+If you wish to bind a reference to a specific version of the symbol
+within the shared library, you can use the aliases of convenience
+(i.e., <SAMP>`old_foo'</SAMP>), or you can use the <SAMP>`.symver'</SAMP> directive to
+specifically bind to an external version of the function in question.
+</P><P>
+
+You can also specify the language in the version script:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>VERSION extern "lang" { version-script-commands }
+</FONT></pre></td></tr></table></P><P>
+
+The supported <SAMP>`lang'</SAMP>s are <SAMP>`C'</SAMP>, <SAMP>`C++'</SAMP>, and <SAMP>`Java'</SAMP>. 
+The linker will iterate over the list of symbols at the link time and
+demangle them according to <SAMP>`lang'</SAMP> before matching them to the
+patterns specified in <SAMP>`version-script-commands'</SAMP>.
+</P><P>
+
+<A NAME="Expressions"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_39.html#SEC39"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_41.html#SEC41"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_6.html#SEC6"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_6.html#SEC6"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_50.html#SEC50"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

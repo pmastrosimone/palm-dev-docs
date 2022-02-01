@@ -1,0 +1,169 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Naming Results</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Naming Results">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Naming Results">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC111"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_112.html#SEC112"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.1 Named Return Values in C++ </H2>
+<!--docid::SEC111::-->
+<P>
+
+<A NAME="IDX366"></A>
+<A NAME="IDX367"></A>
+<A NAME="IDX368"></A>
+<A NAME="IDX369"></A>
+GNU C++ extends the function-definition syntax to allow you to specify a
+name for the result of a function outside the body of the definition, in
+C++ programs:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>type</VAR>
+<VAR>functionname</VAR> (<VAR>args</VAR>) return <VAR>resultname</VAR>;
+{
+  <small>...</small>
+  <VAR>body</VAR>
+  <small>...</small>
+}
+</pre></td></tr></table></P><P>
+
+You can use this feature to avoid an extra constructor call when
+a function result has a class type.  For example, consider a function
+<CODE>m</CODE>, declared as <SAMP>`X v = m ();'</SAMP>, whose result is of class
+<CODE>X</CODE>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>X
+m ()
+{
+  X b;
+  b.a = 23;
+  return b;
+}
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX370"></A>
+Although <CODE>m</CODE> appears to have no arguments, in fact it has one implicit
+argument: the address of the return value.  At invocation, the address
+of enough space to hold <CODE>v</CODE> is sent in as the implicit argument.
+Then <CODE>b</CODE> is constructed and its <CODE>a</CODE> field is set to the value
+23.  Finally, a copy constructor (a constructor of the form <SAMP>`X(X&#38;)'</SAMP>)
+is applied to <CODE>b</CODE>, with the (implicit) return value location as the
+target, so that <CODE>v</CODE> is now bound to the return value.
+</P><P>
+
+But this is wasteful.  The local <CODE>b</CODE> is declared just to hold
+something that will be copied right out.  While a compiler that
+combined an "elision" algorithm with interprocedural data flow
+analysis could conceivably eliminate all of this, it is much more
+practical to allow you to assist the compiler in generating
+efficient code by manipulating the return value explicitly,
+thus avoiding the local variable and copy constructor altogether.
+</P><P>
+
+Using the extended GNU C++ function-definition syntax, you can avoid the
+temporary allocation and copying by naming <CODE>r</CODE> as your return value
+at the outset, and assigning to its <CODE>a</CODE> field directly:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>X
+m () return r;
+{
+  r.a = 23;
+}
+</pre></td></tr></table></P><P>
+
+The declaration of <CODE>r</CODE> is a standard, proper declaration, whose effects
+are executed <STRONG>before</STRONG> any of the body of <CODE>m</CODE>.
+</P><P>
+
+Functions of this type impose no additional restrictions; in particular,
+you can execute <CODE>return</CODE> statements, or return implicitly by
+reaching the end of the function body ("falling off the edge").
+Cases like
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>X
+m () return r (23);
+{
+  return;
+}
+</pre></td></tr></table></P><P>
+
+(or even <SAMP>`X m () return r (23); { }'</SAMP>) are unambiguous, since
+the return value <CODE>r</CODE> has been initialized in either case.  The
+following code may be hard to read, but also works predictably:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>X
+m () return r;
+{
+  X b;
+  return b;
+}
+</pre></td></tr></table></P><P>
+
+The return value slot denoted by <CODE>r</CODE> is initialized at the outset,
+but the statement <SAMP>`return b;'</SAMP> overrides this value.  The compiler
+deals with this by destroying <CODE>r</CODE> (calling the destructor if there
+is one, or doing nothing if there is not), and then reinitializing
+<CODE>r</CODE> with <CODE>b</CODE>.
+</P><P>
+
+This extension is provided primarily to help people who use overloaded
+operators, where there is a great need to control not just the
+arguments, but the return values of functions.  For classes where the
+copy constructor incurs a heavy performance penalty (especially in the
+common case where there is a quick default constructor), this is a major
+savings.  The disadvantage of this extension is that you do not control
+when the default constructor for the return value is called: it is
+always called at the beginning.
+</P><P>
+
+<A NAME="Min and Max"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_112.html#SEC112"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

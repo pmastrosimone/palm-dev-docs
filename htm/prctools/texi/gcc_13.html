@@ -1,0 +1,212 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Link Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Link Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Link Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC13"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_12.html#SEC12"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_14.html#SEC14"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.11 Options for Linking </H2>
+<!--docid::SEC13::-->
+<P>
+
+These options come into play when the compiler links object files into
+an executable output file.  They are meaningless if the compiler is
+not doing a link step.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX74"></A>
+<DT><CODE><VAR>object-file-name</VAR></CODE>
+<DD>A file name that does not end in a special recognized suffix is
+considered to name an object file or library.  (Object files are
+distinguished from libraries by the linker according to the file
+contents.)  If linking is done, these object files are used as input
+to the linker.
+<P>
+
+<DT><CODE>-c</CODE>
+<DD><DT><CODE>-S</CODE>
+<DD><DT><CODE>-E</CODE>
+<DD>If any of these options is used, then the linker is not run, and
+object file names should not be used as arguments.  See section <A HREF="gcc_4.html#SEC4">2.2 Options Controlling the Kind of Output</A>.
+<P>
+
+<A NAME="IDX75"></A>
+<DT><CODE>-l<VAR>library</VAR></CODE>
+<DD>Search the library named <VAR>library</VAR> when linking.
+<P>
+
+It makes a difference where in the command you write this option; the
+linker searches processes libraries and object files in the order they
+are specified.  Thus, <SAMP>`foo.o -lz bar.o'</SAMP> searches library <SAMP>`z'</SAMP>
+after file <TT>`foo.o'</TT> but before <TT>`bar.o'</TT>.  If <TT>`bar.o'</TT> refers
+to functions in <SAMP>`z'</SAMP>, those functions may not be loaded.
+</P><P>
+
+The linker searches a standard list of directories for the library,
+which is actually a file named <TT>`lib<VAR>library</VAR>.a'</TT>.  The linker
+then uses this file as if it had been specified precisely by name.
+</P><P>
+
+The directories searched include several standard system directories
+plus any that you specify with <SAMP>`-L'</SAMP>.
+</P><P>
+
+Normally the files found this way are library files--archive files
+whose members are object files.  The linker handles an archive file by
+scanning through it for members which define symbols that have so far
+been referenced but not defined.  But if the file that is found is an
+ordinary object file, it is linked in the usual fashion.  The only
+difference between using an <SAMP>`-l'</SAMP> option and specifying a file name
+is that <SAMP>`-l'</SAMP> surrounds <VAR>library</VAR> with <SAMP>`lib'</SAMP> and <SAMP>`.a'</SAMP>
+and searches several directories.
+</P><P>
+
+<DT><CODE>-lobjc</CODE>
+<DD>You need this special case of the <SAMP>`-l'</SAMP> option in order to
+link an Objective C program.
+<P>
+
+<DT><CODE>-nostartfiles</CODE>
+<DD>Do not use the standard system startup files when linking.
+The standard system libraries are used normally, unless <CODE>-nostdlib</CODE>
+or <CODE>-nodefaultlibs</CODE> is used.
+<P>
+
+<DT><CODE>-nodefaultlibs</CODE>
+<DD>Do not use the standard system libraries when linking.
+Only the libraries you specify will be passed to the linker.
+The standard startup files are used normally, unless <CODE>-nostartfiles</CODE>
+is used.  The compiler may generate calls to memcmp, memset, and memcpy
+for System V (and ANSI C) environments or to bcopy and bzero for
+BSD environments.  These entries are usually resolved by entries in
+libc.  These entry points should be supplied through some other
+mechanism when this option is specified.
+<P>
+
+<DT><CODE>-nostdlib</CODE>
+<DD>Do not use the standard system startup files or libraries when linking.
+No startup files and only the libraries you specify will be passed to
+the linker. The compiler may generate calls to memcmp, memset, and memcpy
+for System V (and ANSI C) environments or to bcopy and bzero for
+BSD environments.  These entries are usually resolved by entries in
+libc.  These entry points should be supplied through some other
+mechanism when this option is specified.
+<P>
+
+<A NAME="IDX76"></A>
+<A NAME="IDX77"></A>
+<A NAME="IDX78"></A>
+<A NAME="IDX79"></A>
+<A NAME="IDX80"></A>
+<A NAME="IDX81"></A>
+One of the standard libraries bypassed by <SAMP>`-nostdlib'</SAMP> and
+<SAMP>`-nodefaultlibs'</SAMP> is <TT>`libgcc.a'</TT>, a library of internal subroutines
+that GCC uses to overcome shortcomings of particular machines, or special
+needs for some languages.
+(See section `Interfacing to GCC Output' in <CITE>Porting GCC</CITE>,
+for more discussion of <TT>`libgcc.a'</TT>.)
+In most cases, you need <TT>`libgcc.a'</TT> even when you want to avoid
+other standard libraries.  In other words, when you specify <SAMP>`-nostdlib'</SAMP>
+or <SAMP>`-nodefaultlibs'</SAMP> you should usually specify <SAMP>`-lgcc'</SAMP> as well.
+This ensures that you have no unresolved references to internal GCC
+library subroutines.  (For example, <SAMP>`__main'</SAMP>, used to ensure C++
+constructors will be called; see section <A HREF="gcc_59.html#SEC59"><CODE>collect2</CODE></A>.)
+</P><P>
+
+<DT><CODE>-s</CODE>
+<DD>Remove all symbol table and relocation information from the executable.
+<P>
+
+<DT><CODE>-static</CODE>
+<DD>On systems that support dynamic linking, this prevents linking with the shared
+libraries.  On other systems, this option has no effect.
+<P>
+
+<DT><CODE>-shared</CODE>
+<DD>Produce a shared object which can then be linked with other objects to
+form an executable.  Not all systems support this option.  You must
+also specify <SAMP>`-fpic'</SAMP> or <SAMP>`-fPIC'</SAMP> on some systems when
+you specify this option.
+<P>
+
+<DT><CODE>-symbolic</CODE>
+<DD>Bind references to global symbols when building a shared object.  Warn
+about any unresolved references (unless overridden by the link editor
+option <SAMP>`-Xlinker -z -Xlinker defs'</SAMP>).  Only a few systems support
+this option.
+<P>
+
+<DT><CODE>-Xlinker <VAR>option</VAR></CODE>
+<DD>Pass <VAR>option</VAR> as an option to the linker.  You can use this to
+supply system-specific linker options which GCC does not know how to
+recognize.
+<P>
+
+If you want to pass an option that takes an argument, you must use
+<SAMP>`-Xlinker'</SAMP> twice, once for the option and once for the argument.
+For example, to pass <SAMP>`-assert definitions'</SAMP>, you must write
+<SAMP>`-Xlinker -assert -Xlinker definitions'</SAMP>.  It does not work to write
+<SAMP>`-Xlinker "-assert definitions"'</SAMP>, because this passes the entire
+string as a single argument, which is not what the linker expects.
+</P><P>
+
+<DT><CODE>-Wl,<VAR>option</VAR></CODE>
+<DD>Pass <VAR>option</VAR> as an option to the linker.  If <VAR>option</VAR> contains
+commas, it is split into multiple options at the commas.
+<P>
+
+<DT><CODE>-u <VAR>symbol</VAR></CODE>
+<DD>Pretend the symbol <VAR>symbol</VAR> is undefined, to force linking of
+library modules to define it.  You can use <SAMP>`-u'</SAMP> multiple times with
+different symbols to force loading of additional library modules.
+</DL>
+<P>
+
+<A NAME="Directory Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_12.html#SEC12"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_14.html#SEC14"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

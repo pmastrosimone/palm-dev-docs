@@ -1,0 +1,894 @@
+This is info-stnd.info, produced by makeinfo version 4.2 from
+info-stnd.texi.
+
+This manual is for GNU Info (version 4.2, 23 March 2002), a program for
+viewing documents in Info format (usually created from Texinfo source
+files).
+
+   Copyright (C) 1992, 93, 96, 97, 98, 99, 2001, 02 Free Software
+Foundation, Inc.
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.1 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with the Front-Cover texts
+     being "A GNU Manual," and with the Back-Cover Texts as in (a)
+     below.  A copy of the license is included in the section entitled
+     "GNU Free Documentation License."
+
+     (a) The FSF's Back-Cover Text is: "You have freedom to copy and
+     modify this GNU Manual, like GNU software.  Copies published by
+     the Free Software Foundation raise funds for GNU development."
+   
+INFO-DIR-SECTION Texinfo documentation system
+START-INFO-DIR-ENTRY
+* info standalone: (info-stnd).            Read Info documents without Emacs.
+* infokey: (info-stnd)Invoking infokey.    Compile Info customizations.
+END-INFO-DIR-ENTRY
+
+
+File: info-stnd.info,  Node: Printing Nodes,  Next: Miscellaneous Commands,  Prev: Window Commands,  Up: Top
+
+Printing Nodes
+**************
+
+   In general, we recommend that you use TeX to format the document and
+print sections of it, by running `tex' on the Texinfo source file.
+However, you may wish to print out the contents of a node as a quick
+reference document for later use, or if you don't have TeX installed.
+Info provides you with a command for doing this.
+
+`M-x print-node'
+     Pipe the contents of the current node through the command in the
+     environment variable `INFO_PRINT_COMMAND'.  If the variable does
+     not exist, the node is simply piped to `lpr' (on DOS/Windows, the
+     default is to print the node to the local printer device, `PRN').
+
+     The value of `INFO_PRINT_COMMAND' may begin with the `>'
+     character, as in `>/dev/printer', in which case Info treats the
+     rest as the name of a file or a device.  Instead of piping to a
+     command, Info opens the file, writes the node contents, and closes
+     the file, under the assumption that text written to that file will
+     be printed by the underlying OS.
+
+
+File: info-stnd.info,  Node: Miscellaneous Commands,  Next: Variables,  Prev: Printing Nodes,  Up: Top
+
+Miscellaneous Commands
+**********************
+
+   GNU Info contains several commands which self-document GNU Info:
+
+`M-x describe-command'
+     Read the name of an Info command in the echo area and then display
+     a brief description of what that command does.
+
+`M-x describe-key'
+     Read a key sequence in the echo area, and then display the name and
+     documentation of the Info command that the key sequence invokes.
+
+`M-x describe-variable'
+     Read the name of a variable in the echo area and then display a
+     brief description of what the variable affects.
+
+`M-x where-is'
+     Read the name of an Info command in the echo area, and then display
+     a key sequence which can be typed in order to invoke that command.
+
+<C-h> (`get-help-window')
+<?>
+<F1> (on DOS/Windows only)
+h, vi-like operation
+     Create (or Move into) the window displaying `*Help*', and place a
+     node containing a quick reference card into it.  This window
+     displays the most concise information about GNU Info available.
+
+<h> (`get-info-help-node')
+<M-h>, vi-like operation
+     Try hard to visit the node `(info)Help'.  The Info file
+     `info.texi' distributed with GNU Info contains this node.  Of
+     course, the file must first be processed with `makeinfo', and then
+     placed into the location of your Info directory.
+
+   Here are the commands for creating a numeric argument:
+
+<C-u> (`universal-argument')
+     Start (or multiply by 4) the current numeric argument.  `C-u' is a
+     good way to give a small numeric argument to cursor movement or
+     scrolling commands; `C-u C-v' scrolls the screen 4 lines, while
+     `C-u C-u C-n' moves the cursor down 16 lines.  `C-u' followed by
+     digit keys sets the numeric argument to the number thus typed:
+     `C-u 1 2 0' sets the argument to 120.
+
+<M-1> (`add-digit-to-numeric-arg')
+<1>, vi-like operation
+<M-2> ... <M-9>
+<2> ... <9>, vi-like operation
+<M-0>
+<0>, vi-like operation
+     Add the digit value of the invoking key to the current numeric
+     argument.  Once Info is reading a numeric argument, you may just
+     type the digits of the argument, without the Meta prefix.  For
+     example, you might give `C-l' a numeric argument of 32 by typing:
+
+          C-u 3 2 C-l
+
+     or
+
+          M-3 2 C-l
+
+<M-> (`add-digit-to-numeric-arg'
+<->
+     To make a negative argument, type `-'.  Typing `-' alone makes a
+     negative argument with a value of -1.  If you continue to type
+     digit or Meta-digit keys after `-', the result is a negative
+     number produced by those digits.
+
+     `-' doesn't work when you type in the echo area, because you need
+     to be able to insert the `-' character itself; use `M--' instead,
+     if you need to specify negative arguments in the echo area.
+
+   `C-g' is used to abort the reading of a multi-character key
+sequence, to cancel lengthy operations (such as multi-file searches) and
+to cancel reading input in the echo area.
+
+<C-g> (`abort-key')
+<C-u>, vi-like operation
+     Cancel current operation.
+
+   The `q' command of Info simply quits running Info.  Under
+`--vi-keys' (*note --vi-keys::), you can also exit with `:q' or `ZZ'.
+
+<q> (`quit')
+`C-x C-c'
+`:q', vi-like operation
+`ZZ', vi-like operation
+     Exit GNU Info.
+
+   If the operating system tells GNU Info that the screen is 60 lines
+tall, and it is actually only 40 lines tall, here is a way to tell Info
+that the operating system is correct.
+
+`M-x set-screen-height'
+     Read a height value in the echo area and set the height of the
+     displayed screen to that value.
+
+   On MS-DOS/MS-Windows, this command actually tries to change the
+dimensions of the visible screen to the value you type in the echo area.
+
+   Finally, Info provides a convenient way to display footnotes which
+might be associated with the current node that you are viewing:
+
+<ESC C-f> (`show-footnotes')
+     Show the footnotes (if any) associated with the current node in
+     another window.  You can have Info automatically display the
+     footnotes associated with a node when the node is selected by
+     setting the variable `automatic-footnotes'.  *Note
+     `automatic-footnotes': Variables.
+
+
+File: info-stnd.info,  Node: Variables,  Next: Custom Key Bindings,  Prev: Miscellaneous Commands,  Up: Top
+
+Manipulating Variables
+**********************
+
+   GNU Info contains several "variables" whose values are looked at by
+various Info commands.  You can change the values of these variables,
+and thus change the behavior of Info to more closely match your
+environment and Info file reading manner.
+
+   There are two ways to set the value of a variable: interactively,
+using the `set-variable' command described below, or in the `#var'
+section of the `.infokey' file.  *Note Custom Key Bindings::.
+
+`M-x set-variable'
+     Read the name of a variable, and the value for it, in the echo
+     area and then set the variable to that value.  Completion is
+     available when reading the variable name (*note completion: The
+     Echo Area.); often, completion is available when reading the value
+     to give to the variable, but that depends on the variable itself.
+     If a variable does _not_ supply multiple choices to complete over,
+     it expects a numeric value.
+
+`M-x describe-variable'
+     Read the name of a variable in the echo area and then display a
+     brief description of what the variable affects.
+
+   Here is a list of the variables that you can set in Info.
+
+`automatic-footnotes'
+     When set to `On', footnotes appear and disappear automatically.
+     This variable is `On' by default.  When a node is selected, a
+     window containing the footnotes which appear in that node is
+     created, and the footnotes are displayed within the new window.
+     The window that Info creates to contain the footnotes is called
+     `*Footnotes*'.  If a node is selected which contains no footnotes,
+     and a `*Footnotes*' window is on the screen, the `*Footnotes*'
+     window is deleted.  Footnote windows created in this fashion are
+     not automatically tiled so that they can use as little of the
+     display as is possible.
+
+`automatic-tiling'
+     When set to `On', creating or deleting a window resizes other
+     windows.  This variable is `Off' by default.  Normally, typing
+     `C-x 2' divides the current window into two equal parts.  When
+     `automatic-tiling' is set to `On', all of the windows are resized
+     automatically, keeping an equal number of lines visible in each
+     window.  There are exceptions to the automatic tiling;
+     specifically, the windows `*Completions*' and `*Footnotes*' are
+     _not_ resized through automatic tiling; they remain their original
+     size.
+
+`errors-ring-bell'
+     When set to `On', errors cause the bell to ring.  The default
+     setting of this variable is `On'.
+
+`gc-compressed-files'
+     When set to `On', Info garbage collects files which had to be
+     uncompressed.  The default value of this variable is `Off'.
+     Whenever a node is visited in Info, the Info file containing that
+     node is read into core, and Info reads information about the tags
+     and nodes contained in that file.  Once the tags information is
+     read by Info, it is never forgotten.  However, the actual text of
+     the nodes does not need to remain in core unless a particular Info
+     window needs it.  For non-compressed files, the text of the nodes
+     does not remain in core when it is no longer in use.  But
+     de-compressing a file can be a time consuming operation, and so
+     Info tries hard not to do it twice.  `gc-compressed-files' tells
+     Info it is okay to garbage collect the text of the nodes of a file
+     which was compressed on disk.
+
+`ISO-Latin'
+     When set to `On', Info accepts and displays ISO Latin characters.
+     By default, Info assumes an ASCII character set.  `ISO-Latin' tells
+     Info that it is running in an environment where the European
+     standard character set is in use, and allows you to input such
+     characters to Info, as well as display them.
+
+`scroll-behavior'
+     Control what happens when forward scrolling is requested at the
+     end of a node, or when backward scrolling is requested at the
+     beginning of a node.  The default value for this variable is
+     `Continuous'.  There are three possible values for this variable:
+
+    `Continuous'
+          Try to get the first item in this node's menu, or failing
+          that, the `Next' node, or failing that, the `Next' of the
+          `Up'.  This behavior is identical to using the `]'
+          (`global-next-node') and `[' (`global-prev-node') commands.
+
+    `Next Only'
+          Only try to get the `Next' node.
+
+    `Page Only'
+          Simply give up, changing nothing.  If `scroll-behavior' is
+          `Page Only', no scrolling command can change the node that is
+          being viewed.
+
+`scroll-step'
+     The number of lines to scroll when the cursor moves out of the
+     window.  Scrolling happens automatically if the cursor has moved
+     out of the visible portion of the node text when it is time to
+     display.  Usually the scrolling is done so as to put the cursor on
+     the center line of the current window.  However, if the variable
+     `scroll-step' has a nonzero value, Info attempts to scroll the
+     node text by that many lines; if that is enough to bring the
+     cursor back into the window, that is what is done.  The default
+     value of this variable is 0, thus placing the cursor (and the text
+     it is attached to) in the center of the window.  Setting this
+     variable to 1 causes a kind of "smooth scrolling" which some
+     people prefer.
+
+`show-index-match'
+     When set to `On', the portion of the matched search string is
+     highlighted in the message which explains where the matched search
+     string was found.  The default value of this variable is `On'.
+     When Info displays the location where an index match was found,
+     (*note `next-index-match': Searching Commands.), the portion of the
+     string that you had typed is highlighted by displaying it in the
+     inverse case from its surrounding characters.
+
+`visible-bell'
+     When set to `On', GNU Info attempts to flash the screen instead of
+     ringing the bell.  This variable is `Off' by default.  Of course,
+     Info can only flash the screen if the terminal allows it; in the
+     case that the terminal does not allow it, the setting of this
+     variable has no effect.  However, you can make Info perform
+     quietly by setting the `errors-ring-bell' variable to `Off'.
+
+
+File: info-stnd.info,  Node: Custom Key Bindings,  Next: Copying This Manual,  Prev: Variables,  Up: Top
+
+Customizing Key Bindings and Variables
+**************************************
+
+   For those whose editor/pager of choice is not Emacs and who are not
+entirely satisfied with the -vi-keys option (*note --vi-keys::), GNU
+Info provides a way to define different key-to-command bindings and
+variable settings from the defaults described in this document.
+
+   On startup, GNU Info looks for a configuration file in the invoker's
+HOME directory called `.info'(1).  If it is present, and appears to
+contain Info configuration data, and was created with the current
+version of the `infokey' command, then Info adopts the key bindings and
+variable settings contained therein.
+
+   The `.info' file contains compact, non-textual data for reasons of
+efficiency and because its design was lifted wholesale from the GNU Less
+program, which also does it that way.  It must be created by compiling a
+textual source file using the `infokey' command.
+
+* Menu:
+
+* Invoking infokey::
+* infokey source format::
+
+   ---------- Footnotes ----------
+
+   (1) Due to the limitations of DOS filesystems, the MS-DOS version of
+Info looks for a file `_info' instead.  If the `HOME' variable is not
+defined, Info additionally looks in the current directory.
+
+
+File: info-stnd.info,  Node: Invoking infokey,  Next: infokey source format,  Up: Custom Key Bindings
+
+Invoking `infokey'
+==================
+
+   `infokey' compiles a source file (`$HOME/.infokey'(1) by default)
+containing Info customizations into a binary format (`$HOME/.info' by
+default).  GNU Info reads the binary file at startup to override the
+default key bindings and variable definitions.  Synopsis:
+
+     infokey [OPTION...] [INPUT-FILE]
+
+   Besides the standard `--help' and `--version', the only option is
+`--output FILE'.  This tells `infokey' to write the binary data to FILE
+instead of `$HOME/.info'.
+
+   ---------- Footnotes ----------
+
+   (1) This file is named `_infokey' in the MS-DOS version, and is
+looked for in the current directory if `HOME' is undefined.
+
+
+File: info-stnd.info,  Node: infokey source format,  Prev: Invoking infokey,  Up: Custom Key Bindings
+
+`infokey' source format
+=======================
+
+   The format of the source file read by `infokey' is most easily
+illustrated by example.  For instance, here is a sample `.infokey'
+source file suitable for aficionados of `vi' or `less':
+
+     #info
+     j       next-line
+     k       prev-line
+     l       forward-char
+     h       backward-char
+     \kd     next-line
+     \ku     prev-line
+     \kr     forward-char
+     \kl     backward-char
+     \       scroll-forward
+     \kD     scroll-forward-page-only
+     b       scroll-backward
+     \kU     scroll-backward-page-only
+     g       beginning-of-node
+     \kh     beginning-of-node
+     G       end-of-node
+     \ke     end-of-node
+     \t      select-reference-this-line
+     -       history-node
+     n       next-node
+     p       prev-node
+     u       up-node
+     t       top-node
+     d       dir-node
+     #var
+     scroll-step=1
+
+   The source file consists of one or more "sections".  Each section
+starts with a line that identifies the type of section.  Possible
+sections are:
+
+`#info'
+     Key bindings for Info windows.  The start of this section is
+     indicated by a line containing just `#info' by itself.  If this is
+     the first section in the source file, the `#info' line can be
+     omitted.  The rest of this section consists of lines of the form:
+
+          STRING whitespace ACTION [ whitespace [ # comment ] ] newline
+
+     Whitespace is any sequence of one or more spaces and/or tabs.
+     Comment is any sequence of any characters, excluding newline.
+     STRING is the key sequence which invokes the action.  ACTION is
+     the name of an Info command.  The characters in STRING are
+     interpreted literally or prefixed by a caret (`^') to indicate a
+     control character.  A backslash followed by certain characters
+     specifies input keystrokes as follows:
+
+    `\b'
+          Backspace
+
+    `\e'
+          Escape (ESC)
+
+    `\n'
+          Newline
+
+    `\r'
+          Return
+
+    `\t'
+          Tab
+
+    `\ku'
+          Up arrow
+
+    `\kd'
+          Down arrow
+
+    `\kl'
+          Left arrow
+
+    `\kr'
+          Right arrow
+
+    `\kU'
+          Page Up
+
+    `\kD'
+          Page Down
+
+    `\kh'
+          HOME
+
+    `\ke'
+          END
+
+    `\kx'
+          Delete (DEL)
+
+    `\mX'
+          Meta-X where X is any character as described above.
+
+     Backslash followed by any other character indicates that character
+     is to be taken literally.  Characters which must be preceded by a
+     backslash include caret, space, tab, and backslash itself.
+
+`#echo-area'
+     Key bindings for the echo area.  The start of this section is
+     indicated by a line containing just `#echo-area' by itself.  The
+     rest of this section has a syntax identical to that for the key
+     definitions for the Info area, described above.
+
+`#var'
+     Variable initializations.  The start of this section is indicated
+     by a line containing just `#var' by itself.  Following this line
+     is a list of variable assignments, one per line.  Each line
+     consists of a variable name (*Note Variables::,) followed by `='
+     followed by a value.  There may be no white space between the
+     variable name and the `=', and all characters following the `=',
+     including white space, are included in the value.
+
+   Blank lines and lines starting with `#' are ignored, except for the
+special section header lines.
+
+   Key bindings defined in the `.info' file take precedence over GNU
+Info's default key bindings, whether or not `--vi-keys' is used.  A
+default key binding may be disabled by overriding it in the `.info'
+file with the action `invalid'.  In addition, _all_ default key
+bindings can be disabled by adding this line _anywhere_ in the relevant
+section:
+
+     #stop
+
+   This will cause GNU Info to ignore all the default key commands for
+that section.
+
+   Beware: `#stop' can be dangerous.  Since it disables all default key
+bindings, you must supply enough new key bindings to enable all
+necessary actions.  Failure to bind any key to the `quit' command, for
+example, can lead to frustration.
+
+   The order in which key bindings are defined in the `.info' file is
+not important, except that the command summary produced by the
+`get-help-window' command only displays the _first_ key that is bound
+to each command.
+
+
+File: info-stnd.info,  Node: Copying This Manual,  Next: Index,  Prev: Custom Key Bindings,  Up: Top
+
+Copying This Manual
+*******************
+
+* Menu:
+
+* GNU Free Documentation License::  License for copying this manual.
+
+
+File: info-stnd.info,  Node: GNU Free Documentation License,  Up: Copying This Manual
+
+GNU Free Documentation License
+==============================
+
+                        Version 1.1, March 2000
+     Copyright (C) 2000 Free Software Foundation, Inc.
+     59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
+     
+     Everyone is permitted to copy and distribute verbatim copies
+     of this license document, but changing it is not allowed.
+
+  0. PREAMBLE
+
+     The purpose of this License is to make a manual, textbook, or other
+     written document "free" in the sense of freedom: to assure everyone
+     the effective freedom to copy and redistribute it, with or without
+     modifying it, either commercially or noncommercially.  Secondarily,
+     this License preserves for the author and publisher a way to get
+     credit for their work, while not being considered responsible for
+     modifications made by others.
+
+     This License is a kind of "copyleft", which means that derivative
+     works of the document must themselves be free in the same sense.
+     It complements the GNU General Public License, which is a copyleft
+     license designed for free software.
+
+     We have designed this License in order to use it for manuals for
+     free software, because free software needs free documentation: a
+     free program should come with manuals providing the same freedoms
+     that the software does.  But this License is not limited to
+     software manuals; it can be used for any textual work, regardless
+     of subject matter or whether it is published as a printed book.
+     We recommend this License principally for works whose purpose is
+     instruction or reference.
+
+  1. APPLICABILITY AND DEFINITIONS
+
+     This License applies to any manual or other work that contains a
+     notice placed by the copyright holder saying it can be distributed
+     under the terms of this License.  The "Document", below, refers to
+     any such manual or work.  Any member of the public is a licensee,
+     and is addressed as "you".
+
+     A "Modified Version" of the Document means any work containing the
+     Document or a portion of it, either copied verbatim, or with
+     modifications and/or translated into another language.
+
+     A "Secondary Section" is a named appendix or a front-matter
+     section of the Document that deals exclusively with the
+     relationship of the publishers or authors of the Document to the
+     Document's overall subject (or to related matters) and contains
+     nothing that could fall directly within that overall subject.
+     (For example, if the Document is in part a textbook of
+     mathematics, a Secondary Section may not explain any mathematics.)
+     The relationship could be a matter of historical connection with
+     the subject or with related matters, or of legal, commercial,
+     philosophical, ethical or political position regarding them.
+
+     The "Invariant Sections" are certain Secondary Sections whose
+     titles are designated, as being those of Invariant Sections, in
+     the notice that says that the Document is released under this
+     License.
+
+     The "Cover Texts" are certain short passages of text that are
+     listed, as Front-Cover Texts or Back-Cover Texts, in the notice
+     that says that the Document is released under this License.
+
+     A "Transparent" copy of the Document means a machine-readable copy,
+     represented in a format whose specification is available to the
+     general public, whose contents can be viewed and edited directly
+     and straightforwardly with generic text editors or (for images
+     composed of pixels) generic paint programs or (for drawings) some
+     widely available drawing editor, and that is suitable for input to
+     text formatters or for automatic translation to a variety of
+     formats suitable for input to text formatters.  A copy made in an
+     otherwise Transparent file format whose markup has been designed
+     to thwart or discourage subsequent modification by readers is not
+     Transparent.  A copy that is not "Transparent" is called "Opaque".
+
+     Examples of suitable formats for Transparent copies include plain
+     ASCII without markup, Texinfo input format, LaTeX input format,
+     SGML or XML using a publicly available DTD, and
+     standard-conforming simple HTML designed for human modification.
+     Opaque formats include PostScript, PDF, proprietary formats that
+     can be read and edited only by proprietary word processors, SGML
+     or XML for which the DTD and/or processing tools are not generally
+     available, and the machine-generated HTML produced by some word
+     processors for output purposes only.
+
+     The "Title Page" means, for a printed book, the title page itself,
+     plus such following pages as are needed to hold, legibly, the
+     material this License requires to appear in the title page.  For
+     works in formats which do not have any title page as such, "Title
+     Page" means the text near the most prominent appearance of the
+     work's title, preceding the beginning of the body of the text.
+
+  2. VERBATIM COPYING
+
+     You may copy and distribute the Document in any medium, either
+     commercially or noncommercially, provided that this License, the
+     copyright notices, and the license notice saying this License
+     applies to the Document are reproduced in all copies, and that you
+     add no other conditions whatsoever to those of this License.  You
+     may not use technical measures to obstruct or control the reading
+     or further copying of the copies you make or distribute.  However,
+     you may accept compensation in exchange for copies.  If you
+     distribute a large enough number of copies you must also follow
+     the conditions in section 3.
+
+     You may also lend copies, under the same conditions stated above,
+     and you may publicly display copies.
+
+  3. COPYING IN QUANTITY
+
+     If you publish printed copies of the Document numbering more than
+     100, and the Document's license notice requires Cover Texts, you
+     must enclose the copies in covers that carry, clearly and legibly,
+     all these Cover Texts: Front-Cover Texts on the front cover, and
+     Back-Cover Texts on the back cover.  Both covers must also clearly
+     and legibly identify you as the publisher of these copies.  The
+     front cover must present the full title with all words of the
+     title equally prominent and visible.  You may add other material
+     on the covers in addition.  Copying with changes limited to the
+     covers, as long as they preserve the title of the Document and
+     satisfy these conditions, can be treated as verbatim copying in
+     other respects.
+
+     If the required texts for either cover are too voluminous to fit
+     legibly, you should put the first ones listed (as many as fit
+     reasonably) on the actual cover, and continue the rest onto
+     adjacent pages.
+
+     If you publish or distribute Opaque copies of the Document
+     numbering more than 100, you must either include a
+     machine-readable Transparent copy along with each Opaque copy, or
+     state in or with each Opaque copy a publicly-accessible
+     computer-network location containing a complete Transparent copy
+     of the Document, free of added material, which the general
+     network-using public has access to download anonymously at no
+     charge using public-standard network protocols.  If you use the
+     latter option, you must take reasonably prudent steps, when you
+     begin distribution of Opaque copies in quantity, to ensure that
+     this Transparent copy will remain thus accessible at the stated
+     location until at least one year after the last time you
+     distribute an Opaque copy (directly or through your agents or
+     retailers) of that edition to the public.
+
+     It is requested, but not required, that you contact the authors of
+     the Document well before redistributing any large number of
+     copies, to give them a chance to provide you with an updated
+     version of the Document.
+
+  4. MODIFICATIONS
+
+     You may copy and distribute a Modified Version of the Document
+     under the conditions of sections 2 and 3 above, provided that you
+     release the Modified Version under precisely this License, with
+     the Modified Version filling the role of the Document, thus
+     licensing distribution and modification of the Modified Version to
+     whoever possesses a copy of it.  In addition, you must do these
+     things in the Modified Version:
+
+       A. Use in the Title Page (and on the covers, if any) a title
+          distinct from that of the Document, and from those of
+          previous versions (which should, if there were any, be listed
+          in the History section of the Document).  You may use the
+          same title as a previous version if the original publisher of
+          that version gives permission.
+
+       B. List on the Title Page, as authors, one or more persons or
+          entities responsible for authorship of the modifications in
+          the Modified Version, together with at least five of the
+          principal authors of the Document (all of its principal
+          authors, if it has less than five).
+
+       C. State on the Title page the name of the publisher of the
+          Modified Version, as the publisher.
+
+       D. Preserve all the copyright notices of the Document.
+
+       E. Add an appropriate copyright notice for your modifications
+          adjacent to the other copyright notices.
+
+       F. Include, immediately after the copyright notices, a license
+          notice giving the public permission to use the Modified
+          Version under the terms of this License, in the form shown in
+          the Addendum below.
+
+       G. Preserve in that license notice the full lists of Invariant
+          Sections and required Cover Texts given in the Document's
+          license notice.
+
+       H. Include an unaltered copy of this License.
+
+       I. Preserve the section entitled "History", and its title, and
+          add to it an item stating at least the title, year, new
+          authors, and publisher of the Modified Version as given on
+          the Title Page.  If there is no section entitled "History" in
+          the Document, create one stating the title, year, authors,
+          and publisher of the Document as given on its Title Page,
+          then add an item describing the Modified Version as stated in
+          the previous sentence.
+
+       J. Preserve the network location, if any, given in the Document
+          for public access to a Transparent copy of the Document, and
+          likewise the network locations given in the Document for
+          previous versions it was based on.  These may be placed in
+          the "History" section.  You may omit a network location for a
+          work that was published at least four years before the
+          Document itself, or if the original publisher of the version
+          it refers to gives permission.
+
+       K. In any section entitled "Acknowledgments" or "Dedications",
+          preserve the section's title, and preserve in the section all
+          the substance and tone of each of the contributor
+          acknowledgments and/or dedications given therein.
+
+       L. Preserve all the Invariant Sections of the Document,
+          unaltered in their text and in their titles.  Section numbers
+          or the equivalent are not considered part of the section
+          titles.
+
+       M. Delete any section entitled "Endorsements".  Such a section
+          may not be included in the Modified Version.
+
+       N. Do not retitle any existing section as "Endorsements" or to
+          conflict in title with any Invariant Section.
+
+     If the Modified Version includes new front-matter sections or
+     appendices that qualify as Secondary Sections and contain no
+     material copied from the Document, you may at your option
+     designate some or all of these sections as invariant.  To do this,
+     add their titles to the list of Invariant Sections in the Modified
+     Version's license notice.  These titles must be distinct from any
+     other section titles.
+
+     You may add a section entitled "Endorsements", provided it contains
+     nothing but endorsements of your Modified Version by various
+     parties--for example, statements of peer review or that the text
+     has been approved by an organization as the authoritative
+     definition of a standard.
+
+     You may add a passage of up to five words as a Front-Cover Text,
+     and a passage of up to 25 words as a Back-Cover Text, to the end
+     of the list of Cover Texts in the Modified Version.  Only one
+     passage of Front-Cover Text and one of Back-Cover Text may be
+     added by (or through arrangements made by) any one entity.  If the
+     Document already includes a cover text for the same cover,
+     previously added by you or by arrangement made by the same entity
+     you are acting on behalf of, you may not add another; but you may
+     replace the old one, on explicit permission from the previous
+     publisher that added the old one.
+
+     The author(s) and publisher(s) of the Document do not by this
+     License give permission to use their names for publicity for or to
+     assert or imply endorsement of any Modified Version.
+
+  5. COMBINING DOCUMENTS
+
+     You may combine the Document with other documents released under
+     this License, under the terms defined in section 4 above for
+     modified versions, provided that you include in the combination
+     all of the Invariant Sections of all of the original documents,
+     unmodified, and list them all as Invariant Sections of your
+     combined work in its license notice.
+
+     The combined work need only contain one copy of this License, and
+     multiple identical Invariant Sections may be replaced with a single
+     copy.  If there are multiple Invariant Sections with the same name
+     but different contents, make the title of each such section unique
+     by adding at the end of it, in parentheses, the name of the
+     original author or publisher of that section if known, or else a
+     unique number.  Make the same adjustment to the section titles in
+     the list of Invariant Sections in the license notice of the
+     combined work.
+
+     In the combination, you must combine any sections entitled
+     "History" in the various original documents, forming one section
+     entitled "History"; likewise combine any sections entitled
+     "Acknowledgments", and any sections entitled "Dedications".  You
+     must delete all sections entitled "Endorsements."
+
+  6. COLLECTIONS OF DOCUMENTS
+
+     You may make a collection consisting of the Document and other
+     documents released under this License, and replace the individual
+     copies of this License in the various documents with a single copy
+     that is included in the collection, provided that you follow the
+     rules of this License for verbatim copying of each of the
+     documents in all other respects.
+
+     You may extract a single document from such a collection, and
+     distribute it individually under this License, provided you insert
+     a copy of this License into the extracted document, and follow
+     this License in all other respects regarding verbatim copying of
+     that document.
+
+  7. AGGREGATION WITH INDEPENDENT WORKS
+
+     A compilation of the Document or its derivatives with other
+     separate and independent documents or works, in or on a volume of
+     a storage or distribution medium, does not as a whole count as a
+     Modified Version of the Document, provided no compilation
+     copyright is claimed for the compilation.  Such a compilation is
+     called an "aggregate", and this License does not apply to the
+     other self-contained works thus compiled with the Document, on
+     account of their being thus compiled, if they are not themselves
+     derivative works of the Document.
+
+     If the Cover Text requirement of section 3 is applicable to these
+     copies of the Document, then if the Document is less than one
+     quarter of the entire aggregate, the Document's Cover Texts may be
+     placed on covers that surround only the Document within the
+     aggregate.  Otherwise they must appear on covers around the whole
+     aggregate.
+
+  8. TRANSLATION
+
+     Translation is considered a kind of modification, so you may
+     distribute translations of the Document under the terms of section
+     4.  Replacing Invariant Sections with translations requires special
+     permission from their copyright holders, but you may include
+     translations of some or all Invariant Sections in addition to the
+     original versions of these Invariant Sections.  You may include a
+     translation of this License provided that you also include the
+     original English version of this License.  In case of a
+     disagreement between the translation and the original English
+     version of this License, the original English version will prevail.
+
+  9. TERMINATION
+
+     You may not copy, modify, sublicense, or distribute the Document
+     except as expressly provided for under this License.  Any other
+     attempt to copy, modify, sublicense or distribute the Document is
+     void, and will automatically terminate your rights under this
+     License.  However, parties who have received copies, or rights,
+     from you under this License will not have their licenses
+     terminated so long as such parties remain in full compliance.
+
+ 10. FUTURE REVISIONS OF THIS LICENSE
+
+     The Free Software Foundation may publish new, revised versions of
+     the GNU Free Documentation License from time to time.  Such new
+     versions will be similar in spirit to the present version, but may
+     differ in detail to address new problems or concerns.  See
+     `http://www.gnu.org/copyleft/'.
+
+     Each version of the License is given a distinguishing version
+     number.  If the Document specifies that a particular numbered
+     version of this License "or any later version" applies to it, you
+     have the option of following the terms and conditions either of
+     that specified version or of any later version that has been
+     published (not as a draft) by the Free Software Foundation.  If
+     the Document does not specify a version number of this License,
+     you may choose any version ever published (not as a draft) by the
+     Free Software Foundation.
+
+ADDENDUM: How to use this License for your documents
+----------------------------------------------------
+
+   To use this License in a document you have written, include a copy of
+the License in the document and put the following copyright and license
+notices just after the title page:
+
+       Copyright (C)  YEAR  YOUR NAME.
+       Permission is granted to copy, distribute and/or modify this document
+       under the terms of the GNU Free Documentation License, Version 1.1
+       or any later version published by the Free Software Foundation;
+       with the Invariant Sections being LIST THEIR TITLES, with the
+       Front-Cover Texts being LIST, and with the Back-Cover Texts being LIST.
+       A copy of the license is included in the section entitled ``GNU
+       Free Documentation License''.
+
+   If you have no Invariant Sections, write "with no Invariant Sections"
+instead of saying which ones are invariant.  If you have no Front-Cover
+Texts, write "no Front-Cover Texts" instead of "Front-Cover Texts being
+LIST"; likewise for Back-Cover Texts.
+
+   If your document contains nontrivial examples of program code, we
+recommend releasing these examples in parallel under your choice of
+free software license, such as the GNU General Public License, to
+permit their use in free software.
+

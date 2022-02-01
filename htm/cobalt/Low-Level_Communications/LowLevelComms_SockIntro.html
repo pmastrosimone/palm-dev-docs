@@ -1,0 +1,229 @@
+<html>
+<head>
+<title>(Protein) Introduction to Sockets on Palm OS | Low-Level Communications</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:14:14">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="608590"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="LowLevelCommsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_Sockets_Pt.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_SockRef.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelCommsIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">14 &nbsp;&nbsp;
+Introduction to Sockets on Palm OS</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Low-Level Communications</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="LowLevelComms_Sockets_Pt.html">Part IV: Networking and Sockets</a> </h1>
+<h1 class="SideTOC1"><a href="LowLevelComms_SockIntro.html">14  Introduction to Sockets on Palm OS</a></h1>
+
+   <h2 class="SideTOC2"><a href="#993351">
+   Overview</a></h2>
+
+   <h2 class="SideTOC2"><a href="#993708">
+   Unsupported Sockets Features</a></h2>
+
+      <h3 class="SideTOC3"><a href="#993605">
+      AF_UNIX and PF_UNIX Unsupported</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993607">
+      No socketpair() Function</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993609">
+      No UNIX-Style Asynchronous Features</a></h3>
+
+   <h2 class="SideTOC2"><a href="#993203">
+   Architecture of the Sockets Support System</a></h2>
+
+   <h2 class="SideTOC2"><a href="#993298">
+   Protocol Mapping</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<h2 class="haH2">
+  <a name="993351"> </a>Overview <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="993600"> </a>Whereas previous versions of Palm OS<sup>&#174;</sup> used a proprietary API for handling network connectivity, Palm OS Cobalt introduces the standard 4.3BSD Sockets API. Applications that use the old Netlib API will continue to work, but it is not possible to use the Palm OS Cobalt SDK to compile software to use the Netlib API. Applications designed to run on Palm OS Cobalt must be modified to use the Sockets API.</p>
+
+<p><a name="993665"> </a>This API is provided as two elements:</p>
+<ul type="disc">
+  <li><a name="993666"> </a>A socket shared library that exports BSD socket functions for system services and applications.
+  <li><a name="993668"> </a>A STREAMS module that performs TPI messaging adaptation and contains socket states.
+</ul>
+
+<div><hr>
+  <a name="993707"> </a> <b>NOTE: </b> If you need to develop a 68K application using the Netlib API, your application should be built against the Palm OS Garnet SDK.
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="993708"> </a>Unsupported Sockets Features <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="993709"> </a>While the Palm OS Sockets API is almost totally compatible with the 4.3BSD Sockets API, there are three key differences:</p>
+<h3 class="hbH3">
+  <a name="993605"> </a>AF_UNIX and PF_UNIX Unsupported <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993606"> </a>Palm OS does not support the <code>AF_UNIX</code> address family and the <code>PF_UNIX</code> protocol family, since it's not UNIX.</p>
+<h3 class="hbH3">
+  <a name="993607"> </a>No socketpair() Function <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993608"> </a>The <code>socketpair()</code> function is not provided by Palm OS.</p>
+<h3 class="hbH3">
+  <a name="993609"> </a>No UNIX-Style Asynchronous Features <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993610"> </a>Palm OS does not support UNIX-style asynchronous signals, options, or flags.</p>
+
+<h2 class="haH2">
+  <a name="993203"> </a>Architecture of the Sockets Support System <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="993204"> </a>The Sockets API for Palm OS is implemented as an I/O Subsystem (IOS) module. It's implemented in a shared library that translates 4.3 BSD Sockets API calls into <a href="LowLevelComms_Stdio_Pt.html#1000443">IOS STDIO</a> function calls. This architecture is shown in easily-digestible diagram form in <a href="LowLevelComms_SockIntro.html#993205">Figure 14.1</a>.</p>
+
+<p class="FFigureCaption">
+  <a name="993205"> </a><b>Figure 14.1&nbsp;&nbsp;Architecture of sockets on Palm OS</b>
+</p>
+<div align="left"><img src="images/SocketArchitecture.jpg" height="472" width="382" border="0" hspace="0" vspace="0">
+</div>
+
+<h2 class="haH2">
+  <a name="993298"> </a>Protocol Mapping <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="993303"> </a>The Sockets API determines the name of the device to open when request to open a particular socket is processed. The device that gets opened must build a TPI-compliant stream. Its name is derived from the family/domain, type, and protocol given in the <code>socket()</code> call. The device name is constructed using the following C code:</p>
+<pre class="sl">sprintf(device_name, "SX%02x%02x%02x", domain, 
+type, protocol);</pre>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 2004, PalmSource, Inc. and its affiliates.  All rights reserved. <br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="LowLevelComms_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="LowLevelCommsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_Sockets_Pt.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_SockRef.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelCommsIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

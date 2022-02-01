@@ -1,0 +1,140 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Starting</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Starting">
+<META NAME="keywords" CONTENT="Debugging with GDB: Starting">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC18"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_17.html#SEC17"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_19.html#SEC19"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.2 Starting your program </H2>
+<!--docid::SEC18::-->
+<P>
+
+<DL COMPACT>
+<A NAME="IDX80"></A>
+<A NAME="IDX81"></A>
+<DT><CODE>run</CODE>
+<DD><DT><CODE>r</CODE>
+<DD>Use the <CODE>run</CODE> command to start your program under GDB.
+You must first specify the program name (except on VxWorks) with an
+argument to GDB (see section <A HREF="gdb_6.html#SEC6">Getting In and Out of GDB</A>), or by using the <CODE>file</CODE> or <CODE>exec-file</CODE> command
+(see section <A HREF="gdb_125.html#SEC125">Commands to specify files</A>).
+<P>
+
+</DL>
+<P>
+
+If you are running your program in an execution environment that
+supports processes, <CODE>run</CODE> creates an inferior process and makes
+that process run your program.  (In environments without processes,
+<CODE>run</CODE> jumps to the start of your program.)
+</P><P>
+
+The execution of a program is affected by certain information it
+receives from its superior.  GDB provides ways to specify this
+information, which you must do <EM>before</EM> starting your program.  (You
+can change it after starting your program, but such changes only affect
+your program the next time you start it.)  This information may be
+divided into four categories:
+</P><P>
+
+<DL COMPACT>
+<DT>The <EM>arguments.</EM>
+<DD>Specify the arguments to give your program as the arguments of the
+<CODE>run</CODE> command.  If a shell is available on your target, the shell
+is used to pass the arguments, so that you may use normal conventions
+(such as wildcard expansion or variable substitution) in describing
+the arguments.
+In Unix systems, you can control which shell is used with the
+<CODE>SHELL</CODE> environment variable.
+See section <A HREF="gdb_19.html#SEC19">Your program's arguments</A>.
+<P>
+
+<DT>The <EM>environment.</EM>
+<DD>Your program normally inherits its environment from GDB, but you can
+use the GDB commands <CODE>set environment</CODE> and <CODE>unset
+environment</CODE> to change parts of the environment that affect
+your program.  See section <A HREF="gdb_20.html#SEC20">Your program's environment</A>.
+<P>
+
+<DT>The <EM>working directory.</EM>
+<DD>Your program inherits its working directory from GDB.  You can set
+the GDB working directory with the <CODE>cd</CODE> command in GDB.
+See section <A HREF="gdb_21.html#SEC21">Your program's working directory</A>.
+<P>
+
+<DT>The <EM>standard input and output.</EM>
+<DD>Your program normally uses the same device for standard input and
+standard output as GDB is using.  You can redirect input and output
+in the <CODE>run</CODE> command line, or you can use the <CODE>tty</CODE> command to
+set a different device for your program.
+See section <A HREF="gdb_22.html#SEC22">Your program's input and output</A>.
+<P>
+
+<A NAME="IDX82"></A>
+<EM>Warning:</EM> While input and output redirection work, you cannot use
+pipes to pass the output of the program you are debugging to another
+program; if you attempt this, GDB is likely to wind up debugging the
+wrong program.
+</DL>
+<P>
+
+When you issue the <CODE>run</CODE> command, your program begins to execute
+immediately.  See section <A HREF="gdb_27.html#SEC27">Stopping and continuing</A>, for discussion
+of how to arrange for your program to stop.  Once your program has
+stopped, you may call functions in your program, using the <CODE>print</CODE>
+or <CODE>call</CODE> commands.  See section <A HREF="gdb_51.html#SEC51">Examining Data</A>.
+</P><P>
+
+If the modification time of your symbol file has changed since the last
+time GDB read its symbols, GDB discards its symbol
+table, and reads it again.  When it does this, GDB tries to retain
+your current breakpoints.
+</P><P>
+
+<A NAME="Arguments"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_17.html#SEC17"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_19.html#SEC19"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

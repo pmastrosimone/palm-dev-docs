@@ -1,0 +1,237 @@
+<html>
+<head>
+<title>(68K) Security | Palm OS&#174; Programmer's Companion</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 10:43:17">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="992896"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="CompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Localization.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PalmOS5ARM_Chapter.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">13 &nbsp;&nbsp;
+Security</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Palm OS&#174; Programmer's Companion</p>
+<p class="SubTitle">Volume I </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="Security.html">13  Security</a></h1>
+
+   <h2 class="SideTOC2"><a href="#993098">
+   Certificate Manager</a></h2>
+
+      <h3 class="SideTOC3"><a href="#992910">
+      Certificate Store Operations</a></h3>
+
+      <h3 class="SideTOC3"><a href="#992984">
+      Certificate Verification and Parsing</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993008">
+      Certificate Backup and Restore</a></h3>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="993032"> </a>Devices running Palm OS Cobalt include a <b>Certificate Manager</b>, developed by RSA Security. The Certificate Manager handles X.509 standard certificates. The Certificate Manager exposes a standard API for applications and system modules that need certificate services.</p>
+
+<div><hr>
+  <a name="993094"> </a> <b>NOTE: </b> The Certificate Manager is only present on Palm Powered devices running Palm OS Cobalt. Be sure to check for the <a href="../PalmOSReference/CompatibilityApdx.html#1029305">Palm OS Cobalt Feature Set</a> before attempting to call any of the Certificate Manager functions.
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="993098"> </a>Certificate Manager <a href="#992896"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="992903"> </a>The Certificate Manager provides a secure server for the storing and parsing of DER-encoded X.509 digital certificates. It exposes functions that allow you to import, export, parse, and verify those certificates.</p>
+
+<p><a name="992904"> </a>You can use the Certificate Manager in either of two different ways: as a certificate verifier and parser, and as a certificate store. In the verifier/parser mode, the Certificate Manager takes data as input and parses it as a digital certificate. The user can then verify the certificate and access its internal fields. In certificate store mode, the Certificate Manager can securely store a tree of digital certificates (with multiple roots) and make the fields of those certificates available to users.</p>
+
+<p><a name="992905"> </a>The Certificate Manager is a system server with a client-side library. To securely store certificates, the Certificate Manager makes use of the Data Manager's vault facilities. This allows the Certificate Manager to guarantee the integrity of any certificate added to its certificate store.</p>
+
+<p><a name="992906"> </a>Note that very few applications use the Certificate Manager directly. The Certificate Manager only exposes a fairly low-level set of APIs. </p>
+<h3 class="hbH3">
+  <a name="992910"> </a>Certificate Store Operations <a href="#992896"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="992911"> </a>The Certificate Manager can securely store a tree of digital certificates (with multiple roots). <a href="Security.html#992916">Figure 13.1</a> shows the basic certificate hierarchy.</p>
+
+<p class="FFigureCaption">
+  <a name="992916"> </a><b>Figure 13.1&nbsp;&nbsp;Certificate Hierarchy</b>
+</p>
+<div align="left"><img src="images/Securityf.jpg" height="292" width="480" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="992947"> </a>At boot time the certificate store is seeded with the list of root certificates that were stored in ROM by the device manufacturer. These ROM certificates are used to authenticate RAM certificates. </p>
+
+<p><a name="992951"> </a>To get a certificate from the store, call <a href="../PalmOSReference/CertificateMgr.html#995863"><code>CertMgrFindCert()</code></a>. This function can be used in one of two modes: to find a particular certificate by ID or by subject RDN, or to iterate through all of the certificates in the certificate store. You control this function's operation through the use of the <code class="par">searchFlag</code> parameter. </p>
+
+<p><a name="992952"> </a>To add and remove certificates from the store, you use <a href="../PalmOSReference/CertificateMgr.html#995446"><code>CertMgrAddCert()</code></a> and <a href="../PalmOSReference/CertificateMgr.html#996493"><code>CertMgrRemoveCert()</code></a>, respectively. Note that you can only add a certificate if its authentication chain already resides in the certificate store, or if the certificate is self-signed. Also note that removing a certificate that is part of an authentication chain may prevent new certificates from being authenticated.</p>
+
+<p><a name="992962"> </a>The code excerpt shown in <a href="Security.html#992964">Listing 13.1</a> shows how you can use <code>CertMgrAddCert()</code> to add a self-signed certificate to the certificate store.</p>
+<p class="CCodeCaption">
+  <a name="992964"> </a><b>Listing 13.1&nbsp;&nbsp;Adding a self-signed certificate</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+while (true) {<a name="992965"> </a>
+   err = CertMgrAddCert(&amp;certInfo, false, &amp;verifyResult);<a name="992966"> </a>
+   if (err) {<a name="992967"> </a>
+      CertMgrReleaseCertInfo(&amp;certInfo);<a name="992968"> </a>
+      goto exit;<a name="992969"> </a>
+   }<a name="992970"> </a>
+<a name="992971"> </a>
+   if (verifyResult.failureCode == 0) {<a name="992972"> </a>
+      break;<a name="992973"> </a>
+   } else {<a name="992974"> </a>
+      if (verifyResult.failureCode ==
+         CertMgrVerifyFailSelfSigned) {<a name="992975"> </a>
+         verifyResult.failureCode = 0;<a name="992976"> </a>
+         continue;<a name="992977"> </a>
+      }<a name="992978"> </a>
+<a name="992979"> </a>
+      /* Another type of failure */<a name="992980"> </a>
+      break;<a name="992981"> </a>
+   }<a name="992982"> </a>
+}<a name="992983"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h3 class="hbH3">
+  <a name="992984"> </a>Certificate Verification and Parsing <a href="#992896"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="992988"> </a>Use <a href="../PalmOSReference/CertificateMgr.html#996273"><code>CertMgrImportCert()</code></a> to import a DER-encoded x509 certificate and get back a <a href="../PalmOSReference/CertificateMgr.html#993469"><code>CertMgrCertInfoType</code></a> structure. This structure represents a certificate object. You then verify this certificate's contents by calling <a href="../PalmOSReference/CertificateMgr.html#996619"><code>CertMgrVerifyCert()</code></a>. Once you have a verified certificate, use <a href="../PalmOSReference/CertificateMgr.html#995921"><code>CertMgrGetField()</code></a> to get fields out of the certificate. Most commonly, applications will want to get the key from the certificate. </p>
+
+<p><a name="992998"> </a>Once you are done with a certificate, be sure to call <a href="../PalmOSReference/CertificateMgr.html#996451"><code>CertMgrReleaseCertInfo()</code></a> to release these resources that were allocated by the Certificate Manager during the call to <a href="../PalmOSReference/CertificateMgr.html#995863"><code>CertMgrFindCert()</code></a> or <a href="../PalmOSReference/CertificateMgr.html#996273"><code>CertMgrImportCert()</code></a>.</p>
+<h3 class="hbH3">
+  <a name="993008"> </a>Certificate Backup and Restore <a href="#992896"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993009"> </a>All certificates in the certificate store are backed up and restored.</p>
+
+<p><a name="992900"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996-2004, PalmSource, Inc. and its affiliates.  All rights reserved. <br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="Companion_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="CompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Localization.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PalmOS5ARM_Chapter.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

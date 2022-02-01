@@ -1,0 +1,136 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Reading Makefiles</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Reading Makefiles">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Reading Makefiles">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC22"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_20.html#SEC21"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.9 How <CODE>make</CODE> Reads a Makefile </H2>
+<!--docid::SEC22::-->
+<P>
+
+GNU <CODE>make</CODE> does its work in two distinct phases.  During the first
+phase it reads all the makefiles, included makefiles, etc. and
+internalizes all the variables and their values, implicit and explicit
+rules, and constructs a dependency graph of all the targets and their
+prerequisites.  During the second phase, <CODE>make</CODE> uses these internal
+structures to determine what targets will need to be rebuilt and to
+invoke the rules necessary to do so.
+</P><P>
+
+It's important to understand this two-phase approach because it has a
+direct impact on how variable and function expansion happens; this is
+often a source of some confusion when writing makefiles.  Here we will
+present a summary of the phases in which expansion happens for different
+constructs within the makefile.  We say that expansion is
+<EM>immediate</EM> if it happens during the first phase: in this case
+<CODE>make</CODE> will expand any variables or functions in that section of a
+construct as the makefile is parsed.  We say that expansion is
+<EM>deferred</EM> if expansion is not performed immediately.  Expansion of
+deferred construct is not performed until either the construct appears
+later in an immediate context, or until the second phase.
+</P><P>
+
+You may not be familiar with some of these constructs yet.  You can
+reference this section as you become familiar with them, in later
+chapters.
+</P><P>
+
+<A NAME="SEC23"></A>
+<H3> Variable Assignment </H3>
+<!--docid::SEC23::-->
+<P>
+
+Variable definitions are parsed as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>immediate</VAR> = <VAR>deferred</VAR>
+<VAR>immediate</VAR> ?= <VAR>deferred</VAR>
+<VAR>immediate</VAR> := <VAR>immediate</VAR>
+<VAR>immediate</VAR> += <VAR>deferred</VAR> or <VAR>immediate</VAR>
+
+define <VAR>immediate</VAR>
+  <VAR>deferred</VAR>
+endef
+</pre></td></tr></table></P><P>
+
+For the append operator, <SAMP>`+='</SAMP>, the right-hand side is considered
+immediate if the variable was previously set as a simple variable
+(<SAMP>`:='</SAMP>), and deferred otherwise.
+</P><P>
+
+<A NAME="SEC24"></A>
+<H3> Conditional Statements </H3>
+<!--docid::SEC24::-->
+<P>
+
+All instances of conditional syntax are parsed immediately, in their
+entirety; this includes the <CODE>ifdef</CODE>, <CODE>ifeq</CODE>, <CODE>ifndef</CODE>,
+and <CODE>ifneq</CODE> forms.
+</P><P>
+
+<A NAME="SEC25"></A>
+<H3> Rule Definition </H3>
+<!--docid::SEC25::-->
+<P>
+
+A rule is always expanded the same way, regardless of the form:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>immediate</VAR> : <VAR>immediate</VAR> ; <VAR>deferred</VAR>
+	<VAR>deferred</VAR>
+</pre></td></tr></table></P><P>
+
+That is, the target and prerequisite sections are expanded immediately,
+and the commands used to construct the target are always deferred.  This
+general rule is true for explicit rules, pattern rules, suffix rules,
+static pattern rules, and simple prerequisite definitions.
+</P><P>
+
+<A NAME="Rules"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_20.html#SEC21"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

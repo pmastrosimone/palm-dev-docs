@@ -1,0 +1,134 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Concatenation</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Concatenation">
+<META NAME="keywords" CONTENT="The C Preprocessor: Concatenation">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC17"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_16.html#SEC16"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_18.html#SEC18"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 1.4.5 Concatenation </H3>
+<!--docid::SEC17::-->
+<EM>Concatenation</EM> means joining two strings into one.  In the context
+of macro expansion, concatenation refers to joining two lexical units
+into one longer one.  Specifically, an actual argument to the macro can be
+concatenated with another actual argument or with fixed text to produce
+a longer name.  The longer name might be the name of a function,
+variable or type, or a C keyword; it might even be the name of another
+macro, in which case it will be expanded.
+<P>
+
+When you define a macro, you request concatenation with the special
+operator <SAMP>`##'</SAMP> in the macro body.  When the macro is called,
+after actual arguments are substituted, all <SAMP>`##'</SAMP> operators are
+deleted, and so is any whitespace next to them (including whitespace
+that was part of an actual argument).  The result is to concatenate
+the syntactic tokens on either side of the <SAMP>`##'</SAMP>.
+</P><P>
+
+Consider a C program that interprets named commands.  There probably needs
+to be a table of commands, perhaps an array of structures declared as
+follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>struct command
+{
+  char *name;
+  void (*function) ();
+};
+
+struct command commands[] =
+{
+  { "quit", quit_command},
+  { "help", help_command},
+  <small>...</small>
+};
+</pre></td></tr></table></P><P>
+
+It would be cleaner not to have to give each command name twice, once in
+the string constant and once in the function name.  A macro which takes the
+name of a command as an argument can make this unnecessary.  The string
+constant can be created with stringification, and the function name by
+concatenating the argument with <SAMP>`_command'</SAMP>.  Here is how it is done:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define COMMAND(NAME)  { #NAME, NAME ## _command }
+
+struct command commands[] =
+{
+  COMMAND (quit),
+  COMMAND (help),
+  <small>...</small>
+};
+</pre></td></tr></table></P><P>
+
+The usual case of concatenation is concatenating two names (or a name and a
+number) into a longer name.  But this isn't the only valid case.  It is
+also possible to concatenate two numbers (or a number and a name, such as
+<SAMP>`1.5'</SAMP> and <SAMP>`e3'</SAMP>) into a number.  Also, multi-character operators
+such as <SAMP>`+='</SAMP> can be formed by concatenation.  In some cases it is even
+possible to piece together a string constant.  However, two pieces of text
+that don't together form a valid lexical unit cannot be concatenated.  For
+example, concatenation with <SAMP>`x'</SAMP> on one side and <SAMP>`+'</SAMP> on the other
+is not meaningful because those two characters can't fit together in any
+lexical unit of C.  The ANSI standard says that such attempts at
+concatenation are undefined, but in the GNU C preprocessor it is well
+defined: it puts the <SAMP>`x'</SAMP> and <SAMP>`+'</SAMP> side by side with no particular
+special results.
+</P><P>
+
+Keep in mind that the C preprocessor converts comments to whitespace before
+macros are even considered.  Therefore, you cannot create a comment by
+concatenating <SAMP>`/'</SAMP> and <SAMP>`*'</SAMP>: the <SAMP>`/*'</SAMP> sequence that starts a
+comment is not a lexical unit, but rather the beginning of a "long" space
+character.  Also, you can freely use comments next to a <SAMP>`##'</SAMP> in a
+macro definition, or in actual arguments that will be concatenated, because
+the comments will be converted to spaces at first sight, and concatenation
+will later discard the spaces.
+</P><P>
+
+<A NAME="Undefining"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_16.html#SEC16"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_18.html#SEC18"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_10.html#SEC10"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

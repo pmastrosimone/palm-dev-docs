@@ -1,0 +1,109 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Simple Assignments</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Simple Assignments">
+<META NAME="keywords" CONTENT="Untitled Document: Simple Assignments">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC16"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_15.html#SEC15"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_17.html#SEC17"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_18.html#SEC18"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_15.html#SEC15"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_18.html#SEC18"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.5.1 Simple Assignments </H3>
+<!--docid::SEC16::-->
+<P>
+
+You may assign to a symbol using any of the C assignment operators:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE><VAR>symbol</VAR> = <VAR>expression</VAR> ;</CODE>
+<DD><DT><CODE><VAR>symbol</VAR> += <VAR>expression</VAR> ;</CODE>
+<DD><DT><CODE><VAR>symbol</VAR> -= <VAR>expression</VAR> ;</CODE>
+<DD><DT><CODE><VAR>symbol</VAR> *= <VAR>expression</VAR> ;</CODE>
+<DD><DT><CODE><VAR>symbol</VAR> /= <VAR>expression</VAR> ;</CODE>
+<DD><DT><CODE><VAR>symbol</VAR> &#60;&#60;= <VAR>expression</VAR> ;</CODE>
+<DD><DT><CODE><VAR>symbol</VAR> &#62;&#62;= <VAR>expression</VAR> ;</CODE>
+<DD><DT><CODE><VAR>symbol</VAR> &#38;= <VAR>expression</VAR> ;</CODE>
+<DD><DT><CODE><VAR>symbol</VAR> |= <VAR>expression</VAR> ;</CODE>
+<DD></DL>
+<P>
+
+The first case will define <VAR>symbol</VAR> to the value of
+<VAR>expression</VAR>.  In the other cases, <VAR>symbol</VAR> must already be
+defined, and the value will be adjusted accordingly.
+</P><P>
+
+The special symbol name <SAMP>`.'</SAMP> indicates the location counter.  You
+may only use this within a <CODE>SECTIONS</CODE> command.
+</P><P>
+
+The semicolon after <VAR>expression</VAR> is required.
+</P><P>
+
+Expressions are defined below; see <A HREF="ld_41.html#SEC41">3.10 Expressions in Linker Scripts</A>.
+</P><P>
+
+You may write symbol assignments as commands in their own right, or as
+statements within a <CODE>SECTIONS</CODE> command, or as part of an output
+section description in a <CODE>SECTIONS</CODE> command.
+</P><P>
+
+The section of the symbol will be set from the section of the
+expression; for more information, see <A HREF="ld_47.html#SEC47">3.10.6 The Section of an Expression</A>.
+</P><P>
+
+Here is an example showing the three different places that symbol
+assignments may be used:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>floating_point = 0;
+SECTIONS
+{
+  .text :
+    {
+      *(.text)
+      _etext = .;
+    }
+  _bdata = (. + 3) &#38; ~ 3;
+  .data : { *(.data) }
+}
+</FONT></pre></td></tr></table>In this example, the symbol <SAMP>`floating_point'</SAMP> will be defined as
+zero.  The symbol <SAMP>`_etext'</SAMP> will be defined as the address following
+the last <SAMP>`.text'</SAMP> input section.  The symbol <SAMP>`_bdata'</SAMP> will be
+defined as the address following the <SAMP>`.text'</SAMP> output section aligned
+upward to a 4 byte boundary.
+</P><P>
+
+<A NAME="PROVIDE"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

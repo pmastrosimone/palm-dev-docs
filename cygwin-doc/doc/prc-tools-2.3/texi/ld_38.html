@@ -1,0 +1,169 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: MEMORY</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: MEMORY">
+<META NAME="keywords" CONTENT="Untitled Document: MEMORY">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC38"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_37.html#SEC37"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_39.html#SEC39"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_39.html#SEC39"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_6.html#SEC6"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_50.html#SEC50"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.7 MEMORY Command </H2>
+<!--docid::SEC38::-->
+The linker's default configuration permits allocation of all available
+memory.  You can override this by using the <CODE>MEMORY</CODE> command.
+<P>
+
+The <CODE>MEMORY</CODE> command describes the location and size of blocks of
+memory in the target.  You can use it to describe which memory regions
+may be used by the linker, and which memory regions it must avoid.  You
+can then assign sections to particular memory regions.  The linker will
+set section addresses based on the memory regions, and will warn about
+regions that become too full.  The linker will not shuffle sections
+around to fit into the available regions.
+</P><P>
+
+A linker script may contain at most one use of the <CODE>MEMORY</CODE>
+command.  However, you can define as many blocks of memory within it as
+you wish.  The syntax is:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>MEMORY
+  {
+    <VAR>name</VAR> [(<VAR>attr</VAR>)] : ORIGIN = <VAR>origin</VAR>, LENGTH = <VAR>len</VAR>
+    <small>...</small>
+  }
+</FONT></pre></td></tr></table></P><P>
+
+The <VAR>name</VAR> is a name used in the linker script to refer to the
+region.  The region name has no meaning outside of the linker script.
+Region names are stored in a separate name space, and will not conflict
+with symbol names, file names, or section names.  Each memory region
+must have a distinct name.
+</P><P>
+
+<A NAME="IDX324"></A>
+The <VAR>attr</VAR> string is an optional list of attributes that specify
+whether to use a particular memory region for an input section which is
+not explicitly mapped in the linker script.  As described in
+<A HREF="ld_18.html#SEC18">3.6 SECTIONS Command</A>, if you do not specify an output section for some input
+section, the linker will create an output section with the same name as
+the input section.  If you define region attributes, the linker will use
+them to select the memory region for the output section that it creates.
+</P><P>
+
+The <VAR>attr</VAR> string must consist only of the following characters:
+<DL COMPACT>
+<DT><SAMP>`R'</SAMP>
+<DD>Read-only section
+<DT><SAMP>`W'</SAMP>
+<DD>Read/write section
+<DT><SAMP>`X'</SAMP>
+<DD>Executable section
+<DT><SAMP>`A'</SAMP>
+<DD>Allocatable section
+<DT><SAMP>`I'</SAMP>
+<DD>Initialized section
+<DT><SAMP>`L'</SAMP>
+<DD>Same as <SAMP>`I'</SAMP>
+<DT><SAMP>`!'</SAMP>
+<DD>Invert the sense of any of the preceding attributes
+</DL>
+<P>
+
+If a unmapped section matches any of the listed attributes other than
+<SAMP>`!'</SAMP>, it will be placed in the memory region.  The <SAMP>`!'</SAMP>
+attribute reverses this test, so that an unmapped section will be placed
+in the memory region only if it does not match any of the listed
+attributes.
+</P><P>
+
+<A NAME="IDX325"></A>
+<A NAME="IDX326"></A>
+<A NAME="IDX327"></A>
+The <VAR>origin</VAR> is an expression for the start address of the memory
+region.  The expression must evaluate to a constant before memory
+allocation is performed, which means that you may not use any section
+relative symbols.  The keyword <CODE>ORIGIN</CODE> may be abbreviated to
+<CODE>org</CODE> or <CODE>o</CODE> (but not, for example, <CODE>ORG</CODE>).
+</P><P>
+
+<A NAME="IDX328"></A>
+<A NAME="IDX329"></A>
+<A NAME="IDX330"></A>
+The <VAR>len</VAR> is an expression for the size in bytes of the memory
+region.  As with the <VAR>origin</VAR> expression, the expression must
+evaluate to a constant before memory allocation is performed.  The
+keyword <CODE>LENGTH</CODE> may be abbreviated to <CODE>len</CODE> or <CODE>l</CODE>.
+</P><P>
+
+In the following example, we specify that there are two memory regions
+available for allocation: one starting at <SAMP>`0'</SAMP> for 256 kilobytes,
+and the other starting at <SAMP>`0x40000000'</SAMP> for four megabytes.  The
+linker will place into the <SAMP>`rom'</SAMP> memory region every section which
+is not explicitly mapped into a memory region, and is either read-only
+or executable.  The linker will place other sections which are not
+explicitly mapped into a memory region into the <SAMP>`ram'</SAMP> memory
+region.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>MEMORY
+  {
+    rom (rx)  : ORIGIN = 0, LENGTH = 256K
+    ram (!rx) : org = 0x40000000, l = 4M
+  }
+</FONT></pre></td></tr></table></P><P>
+
+Once you define a memory region, you can direct the linker to place
+specific output sections into that memory region by using the
+<SAMP>`&#62;<VAR>region</VAR>'</SAMP> output section attribute.  For example, if you have
+a memory region named <SAMP>`mem'</SAMP>, you would use <SAMP>`&#62;mem'</SAMP> in the
+output section definition.  See section <A HREF="ld_34.html#SEC34">3.6.8.3 Output Section Region</A>.  If no address
+was specified for the output section, the linker will set the address to
+the next available address within the memory region.  If the combined
+output sections directed to a memory region are too large for the
+region, the linker will issue an error message.
+</P><P>
+
+<A NAME="PHDRS"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_37.html#SEC37"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_39.html#SEC39"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_39.html#SEC39"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_6.html#SEC6"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_50.html#SEC50"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

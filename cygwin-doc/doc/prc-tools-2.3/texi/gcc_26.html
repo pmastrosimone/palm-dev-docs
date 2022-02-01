@@ -1,0 +1,127 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: M32R/D Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: M32R/D Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: M32R/D Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC26"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_25.html#SEC25"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_27.html#SEC27"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_18.html#SEC18"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 2.14.10 M32R/D Options </H3>
+<!--docid::SEC26::-->
+<P>
+
+These <SAMP>`-m'</SAMP> options are defined for Mitsubishi M32R/D architectures:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-mcode-model=small</CODE>
+<DD>Assume all objects live in the lower 16MB of memory (so that their addresses
+can be loaded with the <CODE>ld24</CODE> instruction), and assume all subroutines
+are reachable with the <CODE>bl</CODE> instruction.
+This is the default.
+<P>
+
+The addressability of a particular object can be set with the
+<CODE>model</CODE> attribute.
+</P><P>
+
+<DT><CODE>-mcode-model=medium</CODE>
+<DD>Assume objects may be anywhere in the 32 bit address space (the compiler
+will generate <CODE>seth/add3</CODE> instructions to load their addresses), and
+assume all subroutines are reachable with the <CODE>bl</CODE> instruction.
+<P>
+
+<DT><CODE>-mcode-model=large</CODE>
+<DD>Assume objects may be anywhere in the 32 bit address space (the compiler
+will generate <CODE>seth/add3</CODE> instructions to load their addresses), and
+assume subroutines may not be reachable with the <CODE>bl</CODE> instruction
+(the compiler will generate the much slower <CODE>seth/add3/jl</CODE>
+instruction sequence).
+<P>
+
+<DT><CODE>-msdata=none</CODE>
+<DD>Disable use of the small data area.  Variables will be put into
+one of <SAMP>`.data'</SAMP>, <SAMP>`bss'</SAMP>, or <SAMP>`.rodata'</SAMP> (unless the
+<CODE>section</CODE> attribute has been specified).
+This is the default.
+<P>
+
+The small data area consists of sections <SAMP>`.sdata'</SAMP> and <SAMP>`.sbss'</SAMP>.
+Objects may be explicitly put in the small data area with the
+<CODE>section</CODE> attribute using one of these sections.
+</P><P>
+
+<DT><CODE>-msdata=sdata</CODE>
+<DD>Put small global and static data in the small data area, but do not
+generate special code to reference them.
+<P>
+
+<DT><CODE>-msdata=use</CODE>
+<DD>Put small global and static data in the small data area, and generate
+special instructions to reference them.
+<P>
+
+<DT><CODE>-G <VAR>num</VAR></CODE>
+<DD><A NAME="IDX143"></A>
+Put global and static objects less than or equal to <VAR>num</VAR> bytes
+into the small data or bss sections instead of the normal data or bss
+sections.  The default value of <VAR>num</VAR> is 8.
+The <SAMP>`-msdata'</SAMP> option must be set to one of <SAMP>`sdata'</SAMP> or <SAMP>`use'</SAMP>
+for this option to have any effect.
+<P>
+
+All modules should be compiled with the same <SAMP>`-G <VAR>num</VAR>'</SAMP> value.
+Compiling with different values of <VAR>num</VAR> may or may not work; if it
+doesn't the linker will give an error message - incorrect code will not be
+generated.
+</P><P>
+
+</DL>
+<P>
+
+<A NAME="M88K Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_25.html#SEC25"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_27.html#SEC27"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_18.html#SEC18"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

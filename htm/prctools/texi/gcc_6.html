@@ -1,0 +1,438 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: C Dialect Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: C Dialect Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: C Dialect Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC6"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_5.html#SEC5"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_7.html#SEC7"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_7.html#SEC7"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.4 Options Controlling C Dialect </H2>
+<!--docid::SEC6::-->
+<P>
+
+The following options control the dialect of C (or languages derived
+from C, such as C++ and Objective C) that the compiler accepts:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX22"></A>
+<DT><CODE>-ansi</CODE>
+<DD>In C mode, support all ANSI standard C programs.  In C++ mode,
+remove GNU extensions that conflict with ANSI C++.
+<P>
+
+This turns off certain features of GCC that are incompatible with ANSI
+C (when compiling C code), or of ANSI standard C++ (when compiling C++ code),
+such as the <CODE>asm</CODE> and <CODE>typeof</CODE> keywords, and
+predefined macros such as <CODE>unix</CODE> and <CODE>vax</CODE> that identify the
+type of system you are using.  It also enables the undesirable and
+rarely used ANSI trigraph feature.  For the C compiler, 
+it disables recognition of C++ style <SAMP>`//'</SAMP> comments as well as
+the <CODE>inline</CODE> keyword.  For the C++ compiler,
+<SAMP>`-foperator-names'</SAMP> is enabled as well.
+</P><P>
+
+The alternate keywords <CODE>__asm__</CODE>, <CODE>__extension__</CODE>,
+<CODE>__inline__</CODE> and <CODE>__typeof__</CODE> continue to work despite
+<SAMP>`-ansi'</SAMP>.  You would not want to use them in an ANSI C program, of
+course, but it is useful to put them in header files that might be included
+in compilations done with <SAMP>`-ansi'</SAMP>.  Alternate predefined macros
+such as <CODE>__unix__</CODE> and <CODE>__vax__</CODE> are also available, with or
+without <SAMP>`-ansi'</SAMP>.
+</P><P>
+
+The <SAMP>`-ansi'</SAMP> option does not cause non-ANSI programs to be
+rejected gratuitously.  For that, <SAMP>`-pedantic'</SAMP> is required in
+addition to <SAMP>`-ansi'</SAMP>.  See section <A HREF="gcc_8.html#SEC8">2.6 Options to Request or Suppress Warnings</A>.
+</P><P>
+
+The macro <CODE>__STRICT_ANSI__</CODE> is predefined when the <SAMP>`-ansi'</SAMP>
+option is used.  Some header files may notice this macro and refrain
+from declaring certain functions or defining certain macros that the
+ANSI standard doesn't call for; this is to avoid interfering with any
+programs that might use these names for other things.
+</P><P>
+
+The functions <CODE>alloca</CODE>, <CODE>abort</CODE>, <CODE>exit</CODE>, and
+<CODE>_exit</CODE> are not builtin functions when <SAMP>`-ansi'</SAMP> is used.
+</P><P>
+
+<DT><CODE>-fstd=</CODE>
+<DD>Determine the language standard.  A value for this option must be provided;
+possible values are 
+<P>
+
+<UL>
+<LI>iso9899:1990
+Same as -ansi
+<P>
+
+<LI>iso9899:199409
+ISO C as modified in amend. 1
+<P>
+
+<LI>iso9899:199x
+ISO C 9x
+<P>
+
+<LI>c89
+same as -std=iso9899:1990
+<P>
+
+<LI>c9x
+same as -std=iso9899:199x
+<P>
+
+<LI>gnu89
+default, iso9899:1990 + gnu extensions
+<P>
+
+<LI>gnu9x
+iso9899:199x + gnu extensions
+</UL>
+<P>
+
+Even when this option is not specified, you can still use some of the
+features of newer standards in so far as they do not conflict with
+previous C standards.  For example, you may use <CODE>__restrict__</CODE> even
+when -fstd=c9x is not specified.
+</P><P>
+
+<DT><CODE>-fno-asm</CODE>
+<DD>Do not recognize <CODE>asm</CODE>, <CODE>inline</CODE> or <CODE>typeof</CODE> as a
+keyword, so that code can use these words as identifiers.  You can use
+the keywords <CODE>__asm__</CODE>, <CODE>__inline__</CODE> and <CODE>__typeof__</CODE>
+instead.  <SAMP>`-ansi'</SAMP> implies <SAMP>`-fno-asm'</SAMP>.
+<P>
+
+In C++, this switch only affects the <CODE>typeof</CODE> keyword, since
+<CODE>asm</CODE> and <CODE>inline</CODE> are standard keywords.  You may want to
+use the <SAMP>`-fno-gnu-keywords'</SAMP> flag instead, as it also disables the
+other, C++-specific, extension keywords such as <CODE>headof</CODE>.
+</P><P>
+
+<DT><CODE>-fno-builtin</CODE>
+<DD><A NAME="IDX23"></A>
+<A NAME="IDX24"></A>
+<A NAME="IDX25"></A>
+<A NAME="IDX26"></A>
+<A NAME="IDX27"></A>
+<A NAME="IDX28"></A>
+<A NAME="IDX29"></A>
+<A NAME="IDX30"></A>
+<A NAME="IDX31"></A>
+<A NAME="IDX32"></A>
+<A NAME="IDX33"></A>
+<A NAME="IDX34"></A>
+<A NAME="IDX35"></A>
+<A NAME="IDX36"></A>
+<A NAME="IDX37"></A>
+<A NAME="IDX38"></A>
+Don't recognize builtin functions that do not begin with <SAMP>`__builtin_'</SAMP>
+as prefix.  Currently, the functions affected include <CODE>abort</CODE>,
+<CODE>abs</CODE>, <CODE>alloca</CODE>, <CODE>cos</CODE>, <CODE>exit</CODE>, <CODE>fabs</CODE>,
+<CODE>ffs</CODE>, <CODE>labs</CODE>, <CODE>memcmp</CODE>, <CODE>memcpy</CODE>, <CODE>sin</CODE>,
+<CODE>sqrt</CODE>, <CODE>strcmp</CODE>, <CODE>strcpy</CODE>, and <CODE>strlen</CODE>.
+<P>
+
+GCC normally generates special code to handle certain builtin functions
+more efficiently; for instance, calls to <CODE>alloca</CODE> may become single
+instructions that adjust the stack directly, and calls to <CODE>memcpy</CODE>
+may become inline copy loops.  The resulting code is often both smaller
+and faster, but since the function calls no longer appear as such, you
+cannot set a breakpoint on those calls, nor can you change the behavior
+of the functions by linking with a different library.
+</P><P>
+
+The <SAMP>`-ansi'</SAMP> option prevents <CODE>alloca</CODE> and <CODE>ffs</CODE> from being
+builtin functions, since these functions do not have an ANSI standard
+meaning.
+</P><P>
+
+<DT><CODE>-fhosted</CODE>
+<DD><A NAME="IDX39"></A>
+<P>
+
+Assert that compilation takes place in a hosted environment.  This implies
+<SAMP>`-fbuiltin'</SAMP>.  A hosted environment is one in which the
+entire standard library is available, and in which <CODE>main</CODE> has a return
+type of <CODE>int</CODE>.  Examples are nearly everything except a kernel.
+This is equivalent to <SAMP>`-fno-freestanding'</SAMP>.
+</P><P>
+
+<DT><CODE>-ffreestanding</CODE>
+<DD><A NAME="IDX40"></A>
+<P>
+
+Assert that compilation takes place in a freestanding environment.  This
+implies <SAMP>`-fno-builtin'</SAMP>.  A freestanding environment
+is one in which the standard library may not exist, and program startup may
+not necessarily be at <CODE>main</CODE>.  The most obvious example is an OS kernel.
+This is equivalent to <SAMP>`-fno-hosted'</SAMP>.
+</P><P>
+
+<DT><CODE>-trigraphs</CODE>
+<DD>Support ANSI C trigraphs.  You don't want to know about this
+brain-damage.  The <SAMP>`-ansi'</SAMP> option implies <SAMP>`-trigraphs'</SAMP>.
+<P>
+
+<A NAME="IDX41"></A>
+<A NAME="IDX42"></A>
+<DT><CODE>-traditional</CODE>
+<DD>Attempt to support some aspects of traditional C compilers.
+Specifically:
+<P>
+
+<UL>
+<LI>
+All <CODE>extern</CODE> declarations take effect globally even if they
+are written inside of a function definition.  This includes implicit
+declarations of functions.
+<P>
+
+<LI>
+The newer keywords <CODE>typeof</CODE>, <CODE>inline</CODE>, <CODE>signed</CODE>, <CODE>const</CODE>
+and <CODE>volatile</CODE> are not recognized.  (You can still use the
+alternative keywords such as <CODE>__typeof__</CODE>, <CODE>__inline__</CODE>, and
+so on.)
+<P>
+
+<LI>
+Comparisons between pointers and integers are always allowed.
+<P>
+
+<LI>
+Integer types <CODE>unsigned short</CODE> and <CODE>unsigned char</CODE> promote
+to <CODE>unsigned int</CODE>.
+<P>
+
+<LI>
+Out-of-range floating point literals are not an error.
+<P>
+
+<LI>
+Certain constructs which ANSI regards as a single invalid preprocessing
+number, such as <SAMP>`0xe-0xd'</SAMP>, are treated as expressions instead.
+<P>
+
+<LI>
+String "constants" are not necessarily constant; they are stored in
+writable space, and identical looking constants are allocated
+separately.  (This is the same as the effect of
+<SAMP>`-fwritable-strings'</SAMP>.)
+<P>
+
+<A NAME="IDX43"></A>
+<LI>
+All automatic variables not declared <CODE>register</CODE> are preserved by
+<CODE>longjmp</CODE>.  Ordinarily, GNU C follows ANSI C: automatic variables
+not declared <CODE>volatile</CODE> may be clobbered.
+<P>
+
+<LI>
+<A NAME="IDX44"></A>
+<A NAME="IDX45"></A>
+<A NAME="IDX46"></A>
+The character escape sequences <SAMP>`\x'</SAMP> and <SAMP>`\a'</SAMP> evaluate as the
+literal characters <SAMP>`x'</SAMP> and <SAMP>`a'</SAMP> respectively.  Without
+<SAMP>`-traditional'</SAMP>, <SAMP>`\x'</SAMP> is a prefix for the hexadecimal
+representation of a character, and <SAMP>`\a'</SAMP> produces a bell.
+</UL>
+<P>
+
+You may wish to use <SAMP>`-fno-builtin'</SAMP> as well as <SAMP>`-traditional'</SAMP>
+if your program uses names that are normally GNU C builtin functions for
+other purposes of its own.
+</P><P>
+
+You cannot use <SAMP>`-traditional'</SAMP> if you include any header files that
+rely on ANSI C features.  Some vendors are starting to ship systems with
+ANSI C header files and you cannot use <SAMP>`-traditional'</SAMP> on such
+systems to compile files that include any system headers.
+</P><P>
+
+The <SAMP>`-traditional'</SAMP> option also enables <SAMP>`-traditional-cpp'</SAMP>,
+which is described next.
+</P><P>
+
+<DT><CODE>-traditional-cpp</CODE>
+<DD>Attempt to support some aspects of traditional C preprocessors.
+Specifically:
+<P>
+
+<UL>
+<LI>
+Comments convert to nothing at all, rather than to a space.  This allows
+traditional token concatenation.
+<P>
+
+<LI>
+In a preprocessing directive, the <SAMP>`#'</SAMP> symbol must appear as the first
+character of a line.
+<P>
+
+<LI>
+Macro arguments are recognized within string constants in a macro
+definition (and their values are stringified, though without additional
+quote marks, when they appear in such a context).  The preprocessor
+always considers a string constant to end at a newline.
+<P>
+
+<LI>
+<A NAME="IDX47"></A>
+The predefined macro <CODE>__STDC__</CODE> is not defined when you use
+<SAMP>`-traditional'</SAMP>, but <CODE>__GNUC__</CODE> is (since the GNU extensions
+which <CODE>__GNUC__</CODE> indicates are not affected by
+<SAMP>`-traditional'</SAMP>).  If you need to write header files that work
+differently depending on whether <SAMP>`-traditional'</SAMP> is in use, by
+testing both of these predefined macros you can distinguish four
+situations: GNU C, traditional GNU C, other ANSI C compilers, and other
+old C compilers.  The predefined macro <CODE>__STDC_VERSION__</CODE> is also
+not defined when you use <SAMP>`-traditional'</SAMP>.  See section `Standard Predefined Macros' in <CITE>The C Preprocessor</CITE>,
+for more discussion of these and other predefined macros.
+<P>
+
+<LI>
+<A NAME="IDX48"></A>
+<A NAME="IDX49"></A>
+The preprocessor considers a string constant to end at a newline (unless
+the newline is escaped with <SAMP>`\'</SAMP>).  (Without <SAMP>`-traditional'</SAMP>,
+string constants can contain the newline character as typed.)
+</UL>
+<P>
+
+<DT><CODE>-fcond-mismatch</CODE>
+<DD>Allow conditional expressions with mismatched types in the second and
+third arguments.  The value of such an expression is void.
+<P>
+
+<DT><CODE>-funsigned-char</CODE>
+<DD>Let the type <CODE>char</CODE> be unsigned, like <CODE>unsigned char</CODE>.
+<P>
+
+Each kind of machine has a default for what <CODE>char</CODE> should
+be.  It is either like <CODE>unsigned char</CODE> by default or like
+<CODE>signed char</CODE> by default.
+</P><P>
+
+Ideally, a portable program should always use <CODE>signed char</CODE> or
+<CODE>unsigned char</CODE> when it depends on the signedness of an object.
+But many programs have been written to use plain <CODE>char</CODE> and
+expect it to be signed, or expect it to be unsigned, depending on the
+machines they were written for.  This option, and its inverse, let you
+make such a program work with the opposite default.
+</P><P>
+
+The type <CODE>char</CODE> is always a distinct type from each of
+<CODE>signed char</CODE> or <CODE>unsigned char</CODE>, even though its behavior
+is always just like one of those two.
+</P><P>
+
+<DT><CODE>-fsigned-char</CODE>
+<DD>Let the type <CODE>char</CODE> be signed, like <CODE>signed char</CODE>.
+<P>
+
+Note that this is equivalent to <SAMP>`-fno-unsigned-char'</SAMP>, which is
+the negative form of <SAMP>`-funsigned-char'</SAMP>.  Likewise, the option
+<SAMP>`-fno-signed-char'</SAMP> is equivalent to <SAMP>`-funsigned-char'</SAMP>.
+</P><P>
+
+You may wish to use <SAMP>`-fno-builtin'</SAMP> as well as <SAMP>`-traditional'</SAMP>
+if your program uses names that are normally GNU C builtin functions for
+other purposes of its own.
+</P><P>
+
+You cannot use <SAMP>`-traditional'</SAMP> if you include any header files that
+rely on ANSI C features.  Some vendors are starting to ship systems with
+ANSI C header files and you cannot use <SAMP>`-traditional'</SAMP> on such
+systems to compile files that include any system headers.
+</P><P>
+
+<DT><CODE>-fsigned-bitfields</CODE>
+<DD><DT><CODE>-funsigned-bitfields</CODE>
+<DD><DT><CODE>-fno-signed-bitfields</CODE>
+<DD><DT><CODE>-fno-unsigned-bitfields</CODE>
+<DD>These options control whether a bitfield is signed or unsigned, when the
+declaration does not use either <CODE>signed</CODE> or <CODE>unsigned</CODE>.  By
+default, such a bitfield is signed, because this is consistent: the
+basic integer types such as <CODE>int</CODE> are signed types.
+<P>
+
+However, when <SAMP>`-traditional'</SAMP> is used, bitfields are all unsigned
+no matter what.
+</P><P>
+
+<DT><CODE>-fwritable-strings</CODE>
+<DD>Store string constants in the writable data segment and don't uniquize
+them.  This is for compatibility with old programs which assume they can
+write into string constants.  The option <SAMP>`-traditional'</SAMP> also has
+this effect.
+<P>
+
+Writing into string constants is a very bad idea; "constants" should
+be constant.
+</P><P>
+
+<DT><CODE>-fallow-single-precision</CODE>
+<DD>Do not promote single precision math operations to double precision,
+even when compiling with <SAMP>`-traditional'</SAMP>.
+<P>
+
+Traditional K&#38;R C promotes all floating point operations to double
+precision, regardless of the sizes of the operands.   On the
+architecture for which you are compiling, single precision may be faster
+than double precision.   If you must use <SAMP>`-traditional'</SAMP>, but want
+to use single precision operations when the operands are single
+precision, use this option.   This option has no effect when compiling
+with ANSI or GNU C conventions (the default).
+</P><P>
+
+</DL>
+<P>
+
+<A NAME="C++ Dialect Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_5.html#SEC5"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_7.html#SEC7"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_7.html#SEC7"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

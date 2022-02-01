@@ -1,0 +1,92 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Function Names</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Function Names">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Function Names">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC106"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_105.html#SEC105"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_107.html#SEC107"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.38 Function Names as Strings </H2>
+<!--docid::SEC106::-->
+<P>
+
+GNU CC predefines two string variables to be the name of the current function.
+The variable <CODE>__FUNCTION__</CODE> is the name of the function as it appears
+in the source.  The variable <CODE>__PRETTY_FUNCTION__</CODE> is the name of
+the function pretty printed in a language specific fashion.
+</P><P>
+
+These names are always the same in a C function, but in a C++ function
+they may be different.  For example, this program:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>extern "C" {
+extern int printf (char *, ...);
+}
+
+class a {
+ public:
+  sub (int i)
+    {
+      printf ("__FUNCTION__ = %s\n", __FUNCTION__);
+      printf ("__PRETTY_FUNCTION__ = %s\n", __PRETTY_FUNCTION__);
+    }
+};
+
+int
+main (void)
+{
+  a ax;
+  ax.sub (0);
+  return 0;
+}
+</FONT></pre></td></tr></table></P><P>
+
+gives this output:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>__FUNCTION__ = sub
+__PRETTY_FUNCTION__ = int  a::sub (int)
+</FONT></pre></td></tr></table></P><P>
+
+These names are not macros: they are predefined string variables.
+For example, <SAMP>`#ifdef __FUNCTION__'</SAMP> does not have any special
+meaning inside a function, since the preprocessor does not do anything
+special with the identifier <CODE>__FUNCTION__</CODE>.
+</P><P>
+
+<A NAME="Return Address"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

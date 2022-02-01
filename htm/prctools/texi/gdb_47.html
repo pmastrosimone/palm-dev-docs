@@ -1,0 +1,197 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: List</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: List">
+<META NAME="keywords" CONTENT="Debugging with GDB: List">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC47"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_48.html#SEC48"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.1 Printing source lines </H2>
+<!--docid::SEC47::-->
+<P>
+
+<A NAME="IDX257"></A>
+<A NAME="IDX258"></A>
+To print lines from a source file, use the <CODE>list</CODE> command
+(abbreviated <CODE>l</CODE>).  By default, ten lines are printed.
+There are several ways to specify what part of the file you want to print.
+</P><P>
+
+Here are the forms of the <CODE>list</CODE> command most commonly used:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>list <VAR>linenum</VAR></CODE>
+<DD>Print lines centered around line number <VAR>linenum</VAR> in the
+current source file.
+<P>
+
+<DT><CODE>list <VAR>function</VAR></CODE>
+<DD>Print lines centered around the beginning of function
+<VAR>function</VAR>.
+<P>
+
+<DT><CODE>list</CODE>
+<DD>Print more lines.  If the last lines printed were printed with a
+<CODE>list</CODE> command, this prints lines following the last lines
+printed; however, if the last line printed was a solitary line printed
+as part of displaying a stack frame (see section <A HREF="gdb_41.html#SEC41">Examining the Stack</A>), this prints lines centered around that line.
+<P>
+
+<DT><CODE>list -</CODE>
+<DD>Print lines just before the lines last printed.
+</DL>
+<P>
+
+By default, GDB prints ten source lines with any of these forms of
+the <CODE>list</CODE> command.  You can change this using <CODE>set listsize</CODE>:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX259"></A>
+<DT><CODE>set listsize <VAR>count</VAR></CODE>
+<DD>Make the <CODE>list</CODE> command display <VAR>count</VAR> source lines (unless
+the <CODE>list</CODE> argument explicitly specifies some other number).
+<P>
+
+<A NAME="IDX260"></A>
+<DT><CODE>show listsize</CODE>
+<DD>Display the number of lines that <CODE>list</CODE> prints.
+</DL>
+<P>
+
+Repeating a <CODE>list</CODE> command with <KBD>RET</KBD> discards the argument,
+so it is equivalent to typing just <CODE>list</CODE>.  This is more useful
+than listing the same lines again.  An exception is made for an
+argument of <SAMP>`-'</SAMP>; that argument is preserved in repetition so that
+each repetition moves up in the source file.
+</P><P>
+
+<A NAME="IDX261"></A>
+In general, the <CODE>list</CODE> command expects you to supply zero, one or two
+<EM>linespecs</EM>.  Linespecs specify source lines; there are several ways
+of writing them, but the effect is always to specify some source line.
+Here is a complete description of the possible arguments for <CODE>list</CODE>:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>list <VAR>linespec</VAR></CODE>
+<DD>Print lines centered around the line specified by <VAR>linespec</VAR>.
+<P>
+
+<DT><CODE>list <VAR>first</VAR>,<VAR>last</VAR></CODE>
+<DD>Print lines from <VAR>first</VAR> to <VAR>last</VAR>.  Both arguments are
+linespecs.
+<P>
+
+<DT><CODE>list ,<VAR>last</VAR></CODE>
+<DD>Print lines ending with <VAR>last</VAR>.
+<P>
+
+<DT><CODE>list <VAR>first</VAR>,</CODE>
+<DD>Print lines starting with <VAR>first</VAR>.
+<P>
+
+<DT><CODE>list +</CODE>
+<DD>Print lines just after the lines last printed.
+<P>
+
+<DT><CODE>list -</CODE>
+<DD>Print lines just before the lines last printed.
+<P>
+
+<DT><CODE>list</CODE>
+<DD>As described in the preceding table.
+</DL>
+<P>
+
+Here are the ways of specifying a single source line--all the
+kinds of linespec.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE><VAR>number</VAR></CODE>
+<DD>Specifies line <VAR>number</VAR> of the current source file.
+When a <CODE>list</CODE> command has two linespecs, this refers to
+the same source file as the first linespec.
+<P>
+
+<DT><CODE>+<VAR>offset</VAR></CODE>
+<DD>Specifies the line <VAR>offset</VAR> lines after the last line printed.
+When used as the second linespec in a <CODE>list</CODE> command that has
+two, this specifies the line <VAR>offset</VAR> lines down from the
+first linespec.
+<P>
+
+<DT><CODE>-<VAR>offset</VAR></CODE>
+<DD>Specifies the line <VAR>offset</VAR> lines before the last line printed.
+<P>
+
+<DT><CODE><VAR>filename</VAR>:<VAR>number</VAR></CODE>
+<DD>Specifies line <VAR>number</VAR> in the source file <VAR>filename</VAR>.
+<P>
+
+<DT><CODE><VAR>function</VAR></CODE>
+<DD>Specifies the line that begins the body of the function <VAR>function</VAR>.
+For example: in C, this is the line with the open brace.
+<P>
+
+<DT><CODE><VAR>filename</VAR>:<VAR>function</VAR></CODE>
+<DD>Specifies the line of the open-brace that begins the body of the
+function <VAR>function</VAR> in the file <VAR>filename</VAR>.  You only need the
+file name with a function name to avoid ambiguity when there are
+identically named functions in different source files.
+<P>
+
+<DT><CODE>*<VAR>address</VAR></CODE>
+<DD>Specifies the line containing the program address <VAR>address</VAR>.
+<VAR>address</VAR> may be any expression.
+</DL>
+<P>
+
+<A NAME="Search"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_48.html#SEC48"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_46.html#SEC46"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

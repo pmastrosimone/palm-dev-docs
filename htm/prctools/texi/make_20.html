@@ -1,0 +1,107 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Overriding Makefiles</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Overriding Makefiles">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Overriding Makefiles">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC21"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_19.html#SEC20"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_21.html#SEC22"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.8 Overriding Part of Another Makefile </H2>
+<!--docid::SEC21::-->
+<P>
+
+<A NAME="IDX71"></A>
+<A NAME="IDX72"></A>
+Sometimes it is useful to have a makefile that is mostly just like
+another makefile.  You can often use the <SAMP>`include'</SAMP> directive to
+include one in the other, and add more targets or variable definitions.
+However, if the two makefiles give different commands for the same
+target, <CODE>make</CODE> will not let you just do this.  But there is another way.
+</P><P>
+
+<A NAME="IDX73"></A>
+In the containing makefile (the one that wants to include the other),
+you can use a match-anything pattern rule to say that to remake any
+target that cannot be made from the information in the containing
+makefile, <CODE>make</CODE> should look in another makefile.
+See section <A HREF="make_104.html#SEC108">10.5 Defining and Redefining Pattern Rules</A>, for more information on pattern rules.
+</P><P>
+
+For example, if you have a makefile called <TT>`Makefile'</TT> that says how
+to make the target <SAMP>`foo'</SAMP> (and other targets), you can write a
+makefile called <TT>`GNUmakefile'</TT> that contains:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo:
+        frobnicate &#62; foo
+
+%: force
+        @$(MAKE) -f Makefile $@
+force: ;
+</pre></td></tr></table></P><P>
+
+If you say <SAMP>`make foo'</SAMP>, <CODE>make</CODE> will find <TT>`GNUmakefile'</TT>,
+read it, and see that to make <TT>`foo'</TT>, it needs to run the command
+<SAMP>`frobnicate &#62; foo'</SAMP>.  If you say <SAMP>`make bar'</SAMP>, <CODE>make</CODE> will
+find no way to make <TT>`bar'</TT> in <TT>`GNUmakefile'</TT>, so it will use the
+commands from the pattern rule: <SAMP>`make -f Makefile bar'</SAMP>.  If
+<TT>`Makefile'</TT> provides a rule for updating <TT>`bar'</TT>, <CODE>make</CODE>
+will apply the rule.  And likewise for any other target that
+<TT>`GNUmakefile'</TT> does not say how to make.
+</P><P>
+
+The way this works is that the pattern rule has a pattern of just
+<SAMP>`%'</SAMP>, so it matches any target whatever.  The rule specifies a
+prerequisite <TT>`force'</TT>, to guarantee that the commands will be run even
+if the target file already exists.  We give <TT>`force'</TT> target empty
+commands to prevent <CODE>make</CODE> from searching for an implicit rule to
+build it--otherwise it would apply the same match-anything rule to
+<TT>`force'</TT> itself and create a prerequisite loop!
+</P><P>
+
+<A NAME="Reading Makefiles"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_19.html#SEC20"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_21.html#SEC22"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

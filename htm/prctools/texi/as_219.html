@@ -1,0 +1,133 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: D30V-Chars</TITLE>
+
+<META NAME="description" CONTENT="Using as: D30V-Chars">
+<META NAME="keywords" CONTENT="Using as: D30V-Chars">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC228"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_218.html#SEC227"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_220.html#SEC229"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_220.html#SEC229"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_216.html#SEC225"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_223.html#SEC232"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 8.7.2.3 Special Characters </H4>
+<!--docid::SEC228::-->
+<SAMP>`;'</SAMP> and <SAMP>`#'</SAMP> are the line comment characters.
+<A NAME="IDX613"></A>
+<A NAME="IDX614"></A>
+Sub-instructions may be executed in order, in reverse-order, or in parallel.
+Instructions listed in the standard one-per-line format will be executed
+sequentially unless you use the <SAMP>`-O'</SAMP> option.
+<P>
+
+To specify the executing order, use the following symbols: 
+<DL COMPACT>
+<DT><SAMP>`-&#62;'</SAMP>
+<DD>Sequential with instruction on the left first.
+<P>
+
+<DT><SAMP>`&#60;-'</SAMP>
+<DD>Sequential with instruction on the right first.
+<P>
+
+<DT><SAMP>`||'</SAMP>
+<DD>Parallel
+</DL>
+<P>
+
+The D30V syntax allows either one instruction per line, one instruction per line with
+the execution symbol, or two instructions per line.  For example
+<DL COMPACT>
+<DT><CODE>abs r2,r3 -&#62; abs r4,r5</CODE>
+<DD>Execute these sequentially.  The instruction on the right is in the right
+container and is executed second.
+<P>
+
+<DT><CODE>abs r2,r3 &#60;- abs r4,r5</CODE>
+<DD>Execute these reverse-sequentially.  The instruction on the right is in the right
+container, and is executed first.
+<P>
+
+<DT><CODE>abs r2,r3 || abs r4,r5</CODE>
+<DD>Execute these in parallel.
+<P>
+
+<DT><CODE>ldw r2,@(r3,r4) ||</CODE>
+<DD><DT><CODE>mulx r6,r8,r9</CODE>
+<DD>Two-line format. Execute these in parallel.
+<P>
+
+<DT><CODE>mulx a0,r8,r9</CODE>
+<DD><DT><CODE>stw r2,@(r3,r4)</CODE>
+<DD>Two-line format. Execute these sequentially unless <SAMP>`-O'</SAMP> option is
+used.  If the <SAMP>`-O'</SAMP> option is used, the assembler will determine if
+the instructions could be done in parallel (the above two instructions
+can be done in parallel), and if so, emit them as parallel instructions.
+The assembler will put them in the proper containers.  In the above
+example, the assembler will put the <SAMP>`stw'</SAMP> instruction in left
+container and the <SAMP>`mulx'</SAMP> instruction in the right container.
+<P>
+
+<DT><CODE>stw r2,@(r3,r4) -&#62;</CODE>
+<DD><DT><CODE>mulx a0,r8,r9</CODE>
+<DD>Two-line format.  Execute the <SAMP>`stw'</SAMP> instruction followed by the
+<SAMP>`mulx'</SAMP> instruction sequentially.  The first instruction goes in the
+left container and the second instruction goes into right container.
+The assembler will give an error if the machine ordering constraints are
+violated.
+<P>
+
+<DT><CODE>stw r2,@(r3,r4) &#60;-</CODE>
+<DD><DT><CODE>mulx a0,r8,r9</CODE>
+<DD>Same as previous example, except that the <SAMP>`mulx'</SAMP> instruction is
+executed before the <SAMP>`stw'</SAMP> instruction.
+</DL>
+<P>
+
+<A NAME="IDX615"></A>
+<A NAME="IDX616"></A>
+Since <SAMP>`$'</SAMP> has no special meaning, you may use it in symbol names.
+</P><P>
+
+<A NAME="D30V-Guarded"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_218.html#SEC227"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_220.html#SEC229"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_220.html#SEC229"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_216.html#SEC225"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_223.html#SEC232"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

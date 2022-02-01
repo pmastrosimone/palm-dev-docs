@@ -1,0 +1,789 @@
+<html>
+<head>
+<title>(Protein) DataMgr.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:19:25">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CTP.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="DateTime.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">26 &nbsp;&nbsp;
+DataMgr.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="DataMgr.html">26  DataMgr.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#428629">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#428688">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#432272">
+   Renamed APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#428754">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p class="tt"><a name="433466"> </a>The card number parameter has been removed from a number of functions.</p>
+
+<p><a name="433464"> </a>A number of functions have been renamed to better reflect their operation.</p>
+
+<p><a name="433489"> </a>Databases are no longer uniquely identified solely by name, so <code>DmFindDatabase()</code> now takes a creator ID in addition to the database name. This function also has a new parameter that allows you to specify which of Schema, Extended, or Classic databases should be searched for, and it now optionally returns information about the found database.</p>
+<p class="tt"><a name="433497"> </a><code>DmGetNextDatabaseByTypeCreator()</code> must now be used in conjunction with the new <code>DmOpenIteratorByTypeCreator()</code> function; you indicate what you are searching for when calling that function. <code>DmGetNextDatabaseByTypeCreator()</code> now optionally returns information about the found database in addition to its database ID.</p>
+<p class="tt"><a name="433516"> </a>Palm OS Cobalt doesn't support resource chains (except for backwards compatibility purposes). Consequently, you now have to identify the resource database to be searched when using <code>DmGetResource()</code>.</p>
+
+<div><hr>
+  <a name="432626"> </a> <b>NOTE: </b> Early in the porting process you may want to <code>#include DataMgrCompatibility.h</code> (after the <code>#include</code> for <code>PalmOS.h</code>). This header file defines a number of APIs and macros that allow applications calling certain deleted functions and functions with modified prototypes to compile and run. This compatibility header should not be counted on long-term, however, so later in the porting process you should remove the <code>#include</code> and fix any problems that result.
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="428629"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="428925"> </a><b>Table 26.1&nbsp;&nbsp;Deleted functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="428929"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="428931"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428933"> </a><code>DmDatabaseProtect()</code></p>
+    </td>
+    <td><p class="tt"><a name="429438"> </a><code>DmSetDatabaseProtection()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428941"> </a><code>DmFindSortPositionV10()</code></p>
+    </td>
+    <td><p class="tt"><a name="429442"> </a><code>DmGetRecordSortPosition()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428945"> </a><code>DmGet1Resource()</code></p>
+    </td>
+    <td><p class="tt"><a name="429444"> </a><code>DmGetResource()</code> or <code>DmGetResourceByIndex()</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428949"> </a><code>DmGetAppInfoID()</code></p>
+    </td>
+    <td><p class="tt"><a name="429446"> </a><code>DmGetAppInfo()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428957"> </a><code>DmInit()</code></p>
+    </td>
+    <td><p class="tt"><a name="429450"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431817"> </a><code>DmOpenDatabaseInfo()</code></p>
+    </td>
+    <td><p class="tt"><a name="431819"> </a><code>DmGetOpenInfo()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428969"> </a><code>DmRecordInfo()</code></p>
+    </td>
+    <td><p class="tt"><a name="429456"> </a><code>DmGetRecordAttr()</code>, <code>DmGetRecordCategory()</code>, <code>DmGetRecordID()</code>, or <code>DmQueryNextInCategory()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428985"> </a><code>DmSetRecordInfo()</code></p>
+    </td>
+    <td><p class="tt"><a name="429464"> </a><code>DmSetRecordAttr()</code> and/or <code>DmSetRecordID()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428989"> </a><code>DmWriteCheck()</code></p>
+    </td>
+    <td><p class="tt"><a name="429466"> </a><code>DmWrite()</code></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="428688"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="429060"> </a><b>Table 26.2&nbsp;&nbsp;Modified functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="429064"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="429066"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429072"> </a><code>status_t DmCreateDatabase (const char *, uint32_t, uint32_t, Boolean)</code></p>
+    </td>
+    <td><p class="tt"><a name="429490"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429076"> </a><code>status_t DmCreateDatabaseFromImage (MemPtr, DatabaseID *)</code></p>
+    </td>
+    <td><p class="tt"><a name="429492"> </a>Now has an additional parameter through which the caller can obtain the name of the newly-created database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429080"> </a><code>status_t DmDatabaseInfo (DatabaseID, DmDatabaseInfoPtr)</code></p>
+    </td>
+    <td><p class="tt"><a name="431063"> </a>The card number parameter has been removed, and all returned information is returned using a single <code>DmDatabaseInfoType</code> structure rather than through a large number of individual parameters.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429084"> </a><code>status_t DmDatabaseSize (DatabaseID, uint32_t *, uint32_t *, uint32_t *)</code></p>
+    </td>
+    <td><p class="tt"><a name="431067"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429088"> </a><code>status_t DmDeleteDatabase (DatabaseID)</code></p>
+    </td>
+    <td><p class="tt"><a name="431069"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429092"> </a><code>DatabaseID DmFindDatabase (const char *, uint32_t, DmFindType, DmDatabaseInfoPtr)</code></p>
+    </td>
+    <td><p class="tt"><a name="429500"> </a>Now takes a creator ID in addition to the database name to reflect the fact that databases are no longer uniquely identified solely by name. The card number parameter has been removed. A parameter has been added that allows you to specify which of Schema, Extended, or Classic databases should be searched for. This function now optionally returns information about the found database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429104"> </a><code>DatabaseID DmGetDatabase (uint16_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="431075"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429108"> </a><code>status_t DmGetDatabaseLockState (DmOpenRef, uint8_t *, uint32_t *, uint32_t *)</code></p>
+    </td>
+    <td><p class="tt"><a name="429508"> </a>Now returns an error code if the lock state couldn't be obtained.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429112"> </a><code>status_t DmGetNextDatabaseByTypeCreator (DmSearchStatePtr, DatabaseID *, DmDatabaseInfoPtr)</code></p>
+    </td>
+    <td><p class="tt"><a name="429510"> </a>This function must now be used in conjunction with the new <code>DmOpenIteratorByTypeCreator()</code> function; you indicate what you are searching for when calling that function. This function now optionally returns information about the found database in addition to its database ID.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429116"> </a><code>MemHandle DmGetResource (DmOpenRef, DmResourceType, DmResourceID)</code></p>
+    </td>
+    <td><p class="tt"><a name="429512"> </a>Palm OS Cobalt doesn't support resource chains (except for backwards compatibility purposes). Consequently, you now have to identify the resource database to be searched.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429128"> </a><code>uint16_t DmNumDatabases (void)</code></p>
+    </td>
+    <td><p class="tt"><a name="431091"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429132"> </a><code>DmOpenRef DmOpenDatabase (DatabaseID, uint16_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="431093"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429136"> </a><code>DmOpenRef DmOpenDBNoOverlay (DatabaseID, uint16_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="431095"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429148"> </a><code>status_t DmSetDatabaseInfo (DatabaseID, DmDatabaseInfoPtr)</code></p>
+    </td>
+    <td><p class="tt"><a name="431103"> </a>The card number parameter has been removed, and all database information is specified using a single <code>DmDatabaseInfoType</code> structure rather than through a large number of individual parameters.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="432215"> </a><b>Table 26.3&nbsp;&nbsp;Modified #defines </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="432219"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="432221"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432223"> </a><code>#define dmAllHdrAttrs ( dmHdrAttrResDB | dmHdrAttrReadOnly | dmHdrAttrAppInfoDirty | dmHdrAttrBackup | dmHdrAttrOKToInstallNewer | dmHdrAttrResetAfterInstall | dmHdrAttrCopyPrevention | dmHdrAttrStream | dmHdrAttrHidden | dmHdrAttrLaunchableData | dmHdrAttrRecyclable | dmHdrAttrBundle | dmHdrAttrSchema | dmHdrAttrSecure | dmHdrAttrOpen )</code></p>
+    </td>
+    <td><p class="tt"><a name="432225"> </a>Added the <code>dmHdrAttrSchema</code> and <code>dmHdrAttrSecure</code> bits.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432227"> </a><code>#define dmMaxRecordIndex ( (uint16_t) 0xFFFE )</code></p>
+    </td>
+    <td><p class="tt"><a name="432229"> </a>Formerly was <code>0xffff</code>.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432231"> </a><code>#define dmSysOnlyHdrAttrs ( dmHdrAttrResDB | dmHdrAttrSchema | dmHdrAttrSecure | dmHdrAttrOpen )</code></p>
+    </td>
+    <td><p class="tt"><a name="432233"> </a>Added the <code>dmHdrAttrSchema</code> and <code>dmHdrAttrSecure</code> bits.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="432272"> </a>Renamed APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="432238"> </a><b>Table 26.4&nbsp;&nbsp;Renamed functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="432242"> </a><b>Old name</b></p>
+    </th>
+    <th><p class="tt"><a name="432244"> </a><b>New name</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432246"> </a><code>DmFindSortPosition()</code></p>
+    </td>
+    <td><p class="tt"><a name="432248"> </a><code>DmGetRecordSortPosition()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432250"> </a><code>DmGetResourceIndex()</code></p>
+    </td>
+    <td><p class="tt"><a name="432252"> </a><code>DmGetResourceByIndex()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432254"> </a><code>DmPositionInCategory()</code></p>
+    </td>
+    <td><p class="tt"><a name="432256"> </a><code>DmGetPositionInCategory()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432258"> </a><code>DmSearchRecord()</code></p>
+    </td>
+    <td><p class="tt"><a name="432260"> </a><code>DmSearchRecordOpenDatabases()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432262"> </a><code>DmSearchResource()</code></p>
+    </td>
+    <td><p class="tt"><a name="432264"> </a><code>DmSearchResourceOpenDatabases()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="432266"> </a><code>DmSeekRecordInCategory()</code></p>
+    </td>
+    <td><p class="tt"><a name="432268"> </a><code>DmFindRecordByOffsetInCategory()</code></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="431556"> </a><b>Table 26.5&nbsp;&nbsp;Renamed structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="431560"> </a><b>Old name</b></p>
+    </th>
+    <th><p class="tt"><a name="431562"> </a><b>New name</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431564"> </a><code>SortRecordInfoType</code></p>
+    </td>
+    <td><p class="tt"><a name="431566"> </a><code>DmSortRecordInfoType</code></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="431400"> </a><b>Table 26.6&nbsp;&nbsp;Renamed types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="431404"> </a><b>Old name</b></p>
+    </th>
+    <th><p class="tt"><a name="431406"> </a><b>New name</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431412"> </a><code>DmResID</code></p>
+    </td>
+    <td><p class="tt"><a name="431414"> </a><code>DmResourceID</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431416"> </a><code>DmResType</code></p>
+    </td>
+    <td><p class="tt"><a name="431418"> </a><code>DmResourceType</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431420"> </a><code>SortRecordInfoPtr</code></p>
+    </td>
+    <td><p class="tt"><a name="431457"> </a><code>DmSortRecordInfoPtr</code></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="431504"> </a><b>Table 26.7&nbsp;&nbsp;Renamed application-defined functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="431508"> </a><b>Old name</b></p>
+    </th>
+    <th><p class="tt"><a name="431510"> </a><b>New name</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431512"> </a><code>DmComparF()</code></p>
+    </td>
+    <td><p class="tt"><a name="431514"> </a><span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">DmCompareFunctionType()</span></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="428754"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="431274"> </a><b>Table 26.8&nbsp;&nbsp;Unchanged functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="431278"> </a>DmArchiveRecord()</p>
+    </td>
+    <td><p class="tt"><a name="431280"> </a>DmAttachRecord()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431282"> </a><code>DmAttachResource()</code></p>
+    </td>
+    <td><p class="tt"><a name="431284"> </a>DmCloseDatabase()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431286"> </a>DmDeleteCategory()</p>
+    </td>
+    <td><p class="tt"><a name="431288"> </a>DmDeleteRecord()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431290"> </a>DmDetachRecord()</p>
+    </td>
+    <td><p class="tt"><a name="431292"> </a>DmDetachResource()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431294"> </a>DmFindRecordByID()</p>
+    </td>
+    <td><p class="tt"><a name="431296"> </a><code>DmFindResource()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431298"> </a><code>DmFindResourceType()</code></p>
+    </td>
+    <td><p class="tt"><a name="431300"> </a>DmGetLastErr()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431302"> </a>DmGetRecord()</p>
+    </td>
+    <td><p class="tt"><a name="431304"> </a><code>DmInsertionSort()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431306"> </a>DmMoveCategory()</p>
+    </td>
+    <td><p class="tt"><a name="431308"> </a>DmMoveRecord()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431310"> </a>DmNewHandle()</p>
+    </td>
+    <td><p class="tt"><a name="431312"> </a>DmNewRecord()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431314"> </a><code>DmNewResource()</code></p>
+    </td>
+    <td><p class="tt"><a name="431316"> </a>DmNextOpenDatabase()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431318"> </a>DmNextOpenResDatabase()</p>
+    </td>
+    <td><p class="tt"><a name="431320"> </a>DmNumRecords()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431322"> </a>DmNumRecordsInCategory()</p>
+    </td>
+    <td><p class="tt"><a name="431324"> </a>DmNumResources()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431326"> </a>DmOpenDatabaseByTypeCreator()</p>
+    </td>
+    <td><p class="tt"><a name="431328"> </a>DmQueryNextInCategory()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431330"> </a>DmQueryRecord()</p>
+    </td>
+    <td><p class="tt"><a name="431332"> </a><code>DmQuickSort()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431334"> </a>DmReleaseRecord()</p>
+    </td>
+    <td><p class="tt"><a name="431336"> </a>DmReleaseResource()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431338"> </a>DmRemoveRecord()</p>
+    </td>
+    <td><p class="tt"><a name="431340"> </a>DmRemoveResource()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431342"> </a>DmRemoveSecretRecords()</p>
+    </td>
+    <td><p class="tt"><a name="431344"> </a>DmResetRecordStates()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431346"> </a>DmResizeRecord()</p>
+    </td>
+    <td><p class="tt"><a name="431348"> </a>DmResizeResource()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431350"> </a><code>DmResourceInfo()</code></p>
+    </td>
+    <td><p class="tt"><a name="431352"> </a>DmSet()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431354"> </a><code>DmSetResourceInfo()</code></p>
+    </td>
+    <td><p class="tt"><a name="431356"> </a><code>DmStrCopy()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431358"> </a>DmWrite()</p>
+    </td>
+    <td><p class="tt"><a name="431360"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="429283"> </a><b>Table 26.9&nbsp;&nbsp;Unchanged structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="429287"> </a>DmSearchStateType</p>
+    </td>
+    <td><p class="tt"><a name="429289"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="429294"> </a><b>Table 26.10&nbsp;&nbsp;Unchanged types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="429298"> </a>DmOpenRef</p>
+    </td>
+    <td><p class="tt"><a name="429300"> </a>DmSearchStatePtr</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="431922"> </a><b>Table 26.11&nbsp;&nbsp;Unchanged #defines </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="431926"> </a><code>dmAllCategories</code></p>
+    </td>
+    <td><p class="tt"><a name="431928"> </a>dmAllRecAttrs</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431930"> </a>dmCategoryLength</p>
+    </td>
+    <td><p class="tt"><a name="431932"> </a>dmDBNameLength</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431934"> </a>dmDefaultRecordsID</p>
+    </td>
+    <td><p class="tt"><a name="431936"> </a>dmErr...</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431938"> </a>dmHdrAttrAppInfoDirty</p>
+    </td>
+    <td><p class="tt"><a name="431940"> </a>dmHdrAttrBackup</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431942"> </a>dmHdrAttrBundle</p>
+    </td>
+    <td><p class="tt"><a name="431944"> </a>dmHdrAttrCopyPrevention</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431946"> </a>dmHdrAttrHidden</p>
+    </td>
+    <td><p class="tt"><a name="431948"> </a>dmHdrAttrLaunchableData</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431950"> </a>dmHdrAttrOKToInstallNewer</p>
+    </td>
+    <td><p class="tt"><a name="431952"> </a>dmHdrAttrOpen</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431954"> </a>dmHdrAttrReadOnly</p>
+    </td>
+    <td><p class="tt"><a name="431956"> </a>dmHdrAttrRecyclable</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431958"> </a>dmHdrAttrResDB</p>
+    </td>
+    <td><p class="tt"><a name="431960"> </a>dmHdrAttrResetAfterInstall</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431962"> </a>dmHdrAttrStream</p>
+    </td>
+    <td><p class="tt"><a name="431964"> </a>dmModeExclusive</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431966"> </a>dmModeLeaveOpen</p>
+    </td>
+    <td><p class="tt"><a name="431968"> </a>dmModeReadOnly</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431970"> </a>dmModeReadWrite</p>
+    </td>
+    <td><p class="tt"><a name="431972"> </a>dmModeShowSecret</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431974"> </a>dmModeWrite</p>
+    </td>
+    <td><p class="tt"><a name="431976"> </a>dmRecAttrBusy</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431978"> </a><code>dmRecAttrCategoryMask</code></p>
+    </td>
+    <td><p class="tt"><a name="431980"> </a>dmRecAttrDelete</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431982"> </a>dmRecAttrDirty</p>
+    </td>
+    <td><p class="tt"><a name="431984"> </a>dmRecAttrSecret</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431986"> </a>dmRecNumCategories</p>
+    </td>
+    <td><p class="tt"><a name="431988"> </a>dmRecordIDReservedRange</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431990"> </a>dmSeekBackward</p>
+    </td>
+    <td><p class="tt"><a name="431992"> </a>dmSeekForward</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431994"> </a>dmSysOnlyRecAttrs</p>
+    </td>
+    <td><p class="tt"><a name="431996"> </a>dmUnfiledCategory</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="431998"> </a>dmUnusedRecordID</p>
+    </td>
+    <td><p class="tt"><a name="432000"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CTP.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="DateTime.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

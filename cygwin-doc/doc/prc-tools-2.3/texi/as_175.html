@@ -1,0 +1,239 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Alpha-Relocs</TITLE>
+
+<META NAME="description" CONTENT="Using as: Alpha-Relocs">
+<META NAME="keywords" CONTENT="Using as: Alpha-Relocs">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC184"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_174.html#SEC183"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_176.html#SEC185"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_176.html#SEC185"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_172.html#SEC181"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_176.html#SEC185"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 8.2.3.3 Relocations </H4>
+<!--docid::SEC184::-->
+<P>
+
+Some of these relocations are available for ECOFF, but mostly
+only for ELF.  They are modeled after the relocation format 
+introduced in Digial Unix 4.0, but there are additions.
+</P><P>
+
+The format is <SAMP>`!<VAR>tag</VAR>'</SAMP> or <SAMP>`!<VAR>tag</VAR>!<VAR>number</VAR>'</SAMP>
+where <VAR>tag</VAR> is the name of the relocation.  In some cases
+<VAR>number</VAR> is used to relate specific instructions.
+</P><P>
+
+The relocation is placed at the end of the instruction like so:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ldah  $0,a($29)    !gprelhigh
+lda   $0,a($0)     !gprellow
+ldq   $1,b($29)    !literal!100
+ldl   $2,0($1)     !lituse_base!100
+</pre></td></tr></table></P><P>
+
+<DL COMPACT>
+<DT><CODE>!literal</CODE>
+<DD><DT><CODE>!literal!<VAR>N</VAR></CODE>
+<DD>Used with an <CODE>ldq</CODE> instruction to load the address of a symbol
+from the GOT.
+<P>
+
+A sequence number <VAR>N</VAR> is optional, and if present is used to pair
+<CODE>lituse</CODE> relocations with this <CODE>literal</CODE> relocation.  The
+<CODE>lituse</CODE> relocations are used by the linker to optimize the code
+based on the final location of the symbol.
+</P><P>
+
+Note that these optimizations are dependent on the data flow of the
+program.  Therefore, if <EM>any</EM> <CODE>lituse</CODE> is paired with a
+<CODE>literal</CODE> relocation, then <EM>all</EM> uses of the register set by
+the <CODE>literal</CODE> instruction must also be marked with <CODE>lituse</CODE>
+relocations.  This is because the original <CODE>literal</CODE> instruction
+may be deleted or transformed into another instruction.
+</P><P>
+
+Also note that there may be a one-to-many relationship between
+<CODE>literal</CODE> and <CODE>lituse</CODE>, but not a many-to-one.  That is, if
+there are two code paths that load up the same address and feed the
+value to a single use, then the use may not use a <CODE>lituse</CODE>
+relocation.
+</P><P>
+
+<DT><CODE>!lituse_base!<VAR>N</VAR></CODE>
+<DD>Used with any memory format instruction (e.g. <CODE>ldl</CODE>) to indicate
+that the literal is used for an address load.  The offset field of the
+instruction must be zero.  During relaxation, the code may be altered
+to use a gp-relative load.
+<P>
+
+<DT><CODE>!lituse_jsr!<VAR>N</VAR></CODE>
+<DD>Used with a register branch format instruction (e.g. <CODE>jsr</CODE>) to
+indicate that the literal is used for a call.  During relaxation, the
+code may be altered to use a direct branch (e.g. <CODE>bsr</CODE>).
+<P>
+
+<DT><CODE>!lituse_bytoff!<VAR>N</VAR></CODE>
+<DD>Used with a byte mask instruction (e.g. <CODE>extbl</CODE>) to indicate
+that only the low 3 bits of the address are relevant.  During relaxation,
+the code may be altered to use an immediate instead of a register shift.
+<P>
+
+<DT><CODE>!lituse_addr!<VAR>N</VAR></CODE>
+<DD>Used with any other instruction to indicate that the original address
+is in fact used, and the original <CODE>ldq</CODE> instruction may not be
+altered or deleted.  This is useful in conjunction with <CODE>lituse_jsr</CODE>
+to test whether a weak symbol is defined.
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ldq  $27,foo($29)   !literal!1
+beq  $27,is_undef   !lituse_addr!1
+jsr  $26,($27),foo  !lituse_jsr!1
+</pre></td></tr></table></P><P>
+
+<DT><CODE>!lituse_tlsgd!<VAR>N</VAR></CODE>
+<DD>Used with a register branch format instruction to indicate that the
+literal is the call to <CODE>__tls_get_addr</CODE> used to compute the 
+address of the thread-local storage variable whose descriptor was
+loaded with <CODE>!tlsgd!<VAR>N</VAR></CODE>.
+<P>
+
+<DT><CODE>!lituse_tlsldm!<VAR>N</VAR></CODE>
+<DD>Used with a register branch format instruction to indicate that the
+literal is the call to <CODE>__tls_get_addr</CODE> used to compute the 
+address of the base of the thread-local storage block for the current
+module.  The descriptor for the module must have been loaded with
+<CODE>!tlsldm!<VAR>N</VAR></CODE>.
+<P>
+
+<DT><CODE>!gpdisp!<VAR>N</VAR></CODE>
+<DD>Used with <CODE>ldah</CODE> and <CODE>lda</CODE> to load the GP from the current
+address, a-la the <CODE>ldgp</CODE> macro.  The source register for the
+<CODE>ldah</CODE> instruction must contain the address of the <CODE>ldah</CODE>
+instruction.  There must be exactly one <CODE>lda</CODE> instruction paired
+with the <CODE>ldah</CODE> instruction, though it may appear anywhere in 
+the instruction stream.  The immediate operands must be zero.
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>bsr  $26,foo
+ldah $29,0($26)     !gpdisp!1
+lda  $29,0($29)     !gpdisp!1
+</pre></td></tr></table></P><P>
+
+<DT><CODE>!gprelhigh</CODE>
+<DD>Used with an <CODE>ldah</CODE> instruction to add the high 16 bits of a
+32-bit displacement from the GP.
+<P>
+
+<DT><CODE>!gprellow</CODE>
+<DD>Used with any memory format instruction to add the low 16 bits of a
+32-bit displacement from the GP.
+<P>
+
+<DT><CODE>!gprel</CODE>
+<DD>Used with any memory format instruction to add a 16-bit displacement
+from the GP.
+<P>
+
+<DT><CODE>!samegp</CODE>
+<DD>Used with any branch format instruction to skip the GP load at the
+target address.  The referenced symbol must have the same GP as the
+source object file, and it must be declared to either not use <CODE>$27</CODE>
+or perform a standard GP load in the first two instructions via the
+<CODE>.prologue</CODE> directive.
+<P>
+
+<DT><CODE>!tlsgd</CODE>
+<DD><DT><CODE>!tlsgd!<VAR>N</VAR></CODE>
+<DD>Used with an <CODE>lda</CODE> instruction to load the address of a TLS
+descriptor for a symbol in the GOT.
+<P>
+
+The sequence number <VAR>N</VAR> is optional, and if present it used to
+pair the descriptor load with both the <CODE>literal</CODE> loading the
+address of the <CODE>__tls_get_addr</CODE> function and the <CODE>lituse_tlsgd</CODE>
+marking the call to that function.
+</P><P>
+
+For proper relaxation, both the <CODE>tlsgd</CODE>, <CODE>literal</CODE> and
+<CODE>lituse</CODE> relocations must be in the same extended basic block.
+That is, the relocation with the lowest address must be executed
+first at runtime.
+</P><P>
+
+<DT><CODE>!tlsldm</CODE>
+<DD><DT><CODE>!tlsldm!<VAR>N</VAR></CODE>
+<DD>Used with an <CODE>lda</CODE> instruction to load the address of a TLS
+descriptor for the current module in the GOT.
+<P>
+
+Similar in other respects to <CODE>tlsgd</CODE>.
+</P><P>
+
+<DT><CODE>!gotdtprel</CODE>
+<DD>Used with an <CODE>ldq</CODE> instruction to load the offset of the TLS
+symbol within its module's thread-local storage block.  Also known
+as the dynamic thread pointer offset or dtp-relative offset.
+<P>
+
+<DT><CODE>!dtprelhi</CODE>
+<DD><DT><CODE>!dtprello</CODE>
+<DD><DT><CODE>!dtprel</CODE>
+<DD>Like <CODE>gprel</CODE> relocations except they compute dtp-relative offsets.
+<P>
+
+<DT><CODE>!gottprel</CODE>
+<DD>Used with an <CODE>ldq</CODE> instruction to load the offset of the TLS
+symbol from the thread pointer.  Also known as the tp-relative offset.
+<P>
+
+<DT><CODE>!tprelhi</CODE>
+<DD><DT><CODE>!tprello</CODE>
+<DD><DT><CODE>!tprel</CODE>
+<DD>Like <CODE>gprel</CODE> relocations except they compute tp-relative offsets.
+</DL>
+<P>
+
+<A NAME="Alpha Floating Point"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_174.html#SEC183"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_176.html#SEC185"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_176.html#SEC185"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_172.html#SEC181"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_176.html#SEC185"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,113 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Archive Update</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Archive Update">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Archive Update">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC120"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_115.html#SEC119"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_117.html#SEC121"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_118.html#SEC122"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 11.2 Implicit Rule for Archive Member Targets </H2>
+<!--docid::SEC120::-->
+<P>
+
+Recall that a target that looks like <TT>`<VAR>a</VAR>(<VAR>m</VAR>)'</TT> stands for the
+member named <VAR>m</VAR> in the archive file <VAR>a</VAR>.
+</P><P>
+
+When <CODE>make</CODE> looks for an implicit rule for such a target, as a special
+feature it considers implicit rules that match <TT>`(<VAR>m</VAR>)'</TT>, as well as
+those that match the actual target <TT>`<VAR>a</VAR>(<VAR>m</VAR>)'</TT>.
+</P><P>
+
+This causes one special rule whose target is <TT>`(%)'</TT> to match.  This
+rule updates the target <TT>`<VAR>a</VAR>(<VAR>m</VAR>)'</TT> by copying the file <VAR>m</VAR>
+into the archive.  For example, it will update the archive member target
+<TT>`foo.a(bar.o)'</TT> by copying the <EM>file</EM> <TT>`bar.o'</TT> into the
+archive <TT>`foo.a'</TT> as a <EM>member</EM> named <TT>`bar.o'</TT>.
+</P><P>
+
+When this rule is chained with others, the result is very powerful.
+Thus, <SAMP>`make "foo.a(bar.o)"'</SAMP> (the quotes are needed to protect the
+<SAMP>`('</SAMP> and <SAMP>`)'</SAMP> from being interpreted specially by the shell) in
+the presence of a file <TT>`bar.c'</TT> is enough to cause the following
+commands to be run, even without a makefile:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>cc -c bar.c -o bar.o
+ar r foo.a bar.o
+rm -f bar.o
+</pre></td></tr></table></P><P>
+
+Here <CODE>make</CODE> has envisioned the file <TT>`bar.o'</TT> as an intermediate
+file.  See section <A HREF="make_103.html#SEC107">Chains of Implicit Rules</A>.
+</P><P>
+
+Implicit rules such as this one are written using the automatic variable
+<SAMP>`$%'</SAMP>.  See section <A HREF="make_107.html#SEC111">Automatic Variables</A>.
+</P><P>
+
+An archive member name in an archive cannot contain a directory name, but
+it may be useful in a makefile to pretend that it does.  If you write an
+archive member target <TT>`foo.a(dir/file.o)'</TT>, <CODE>make</CODE> will perform
+automatic updating with this command:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>ar r foo.a dir/file.o
+</pre></td></tr></table></P><P>
+
+which has the effect of copying the file <TT>`dir/file.o'</TT> into a member
+named <TT>`file.o'</TT>.  In connection with such usage, the automatic variables
+<CODE>%D</CODE> and <CODE>%F</CODE> may be useful.
+</P><P>
+
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="make_117.html#SEC121">11.2.1 Updating Archive Symbol Directories</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to update archive symbol directories.</TD></TR>
+</TABLE></BLOCKQUOTE>
+<P>
+
+<A NAME="Archive Symbols"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_115.html#SEC119"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_117.html#SEC121"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_118.html#SEC122"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,83 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: Enabling debugging</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: Enabling debugging">
+<META NAME="keywords" CONTENT="Using PRC-Tools: Enabling debugging">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC30"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_24.html#SEC29"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_26.html#SEC31"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_24.html#SEC29"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_24.html#SEC29"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_27.html#SEC32"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.1 Building an application with debugging enabled </H2>
+<!--docid::SEC30::-->
+<P>
+
+As on any other platform, you instruct GCC to produce debugging information
+by compiling with the <SAMP>`-g'</SAMP> option.
+</P><P>
+
+Some debuggers targeting Palm OS, notably GDB, also need your application
+to have a special stub (called <CODE>StartDebug</CODE>) in its startup code so
+that they can attach to the running application successfully.
+</P><P>
+
+To include this stub, you also need to <EM>link</EM> with <SAMP>`-g'</SAMP>.
+</P><P>
+
+By default, the stub is disabled and your application runs normally.
+When the stub sees that a <CODE>gdbS</CODE> #0 feature exists and has the value
+0x12BEEF34, it is enabled and will converse with the debugger, telling it
+where in memory to find the application.
+</P><P>
+
+There are two convenient ways to set this feature and enable the stub:
+</P><P>
+
+<UL>
+<LI>
+The Palm OS Emulator (version 2.1d22 or greater) sets the feature
+automatically whenever there is a debugger connected to its debugger port.
+Thus there is no need to do anything yourself to enable debugging on Poser.
+<P>
+
+<LI>
+GDB Panel, in the
+<A HREF="http://sourceforge.net/project/showfiles.php?group_id=4429">prc-tools samples</A>,
+is a small Palm OS application which sets this feature.  You need to use it or
+something similar when debugging on a real device or on the Palm OS Simulator.
+</UL>
+<P>
+
+<A NAME="Palm OS-specific GDB features"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

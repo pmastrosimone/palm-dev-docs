@@ -1,0 +1,144 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Foreach Function</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Foreach Function">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Foreach Function">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC87"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_82.html#SEC86"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_84.html#SEC88"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.4 The <CODE>foreach</CODE> Function </H2>
+<!--docid::SEC87::-->
+<P>
+
+The <CODE>foreach</CODE> function is very different from other functions.  It
+causes one piece of text to be used repeatedly, each time with a different
+substitution performed on it.  It resembles the <CODE>for</CODE> command in the
+shell <CODE>sh</CODE> and the <CODE>foreach</CODE> command in the C-shell <CODE>csh</CODE>.
+</P><P>
+
+The syntax of the <CODE>foreach</CODE> function is:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$(foreach <VAR>var</VAR>,<VAR>list</VAR>,<VAR>text</VAR>)
+</pre></td></tr></table></P><P>
+
+The first two arguments, <VAR>var</VAR> and <VAR>list</VAR>, are expanded before
+anything else is done; note that the last argument, <VAR>text</VAR>, is
+<STRONG>not</STRONG> expanded at the same time.  Then for each word of the expanded
+value of <VAR>list</VAR>, the variable named by the expanded value of <VAR>var</VAR>
+is set to that word, and <VAR>text</VAR> is expanded.  Presumably <VAR>text</VAR>
+contains references to that variable, so its expansion will be different
+each time.
+</P><P>
+
+The result is that <VAR>text</VAR> is expanded as many times as there are
+whitespace-separated words in <VAR>list</VAR>.  The multiple expansions of
+<VAR>text</VAR> are concatenated, with spaces between them, to make the result
+of <CODE>foreach</CODE>.
+</P><P>
+
+This simple example sets the variable <SAMP>`files'</SAMP> to the list of all files
+in the directories in the list <SAMP>`dirs'</SAMP>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>dirs := a b c d
+files := $(foreach dir,$(dirs),$(wildcard $(dir)/*))
+</pre></td></tr></table></P><P>
+
+Here <VAR>text</VAR> is <SAMP>`$(wildcard $(dir)/*)'</SAMP>.  The first repetition
+finds the value <SAMP>`a'</SAMP> for <CODE>dir</CODE>, so it produces the same result
+as <SAMP>`$(wildcard a/*)'</SAMP>; the second repetition produces the result
+of <SAMP>`$(wildcard b/*)'</SAMP>; and the third, that of <SAMP>`$(wildcard c/*)'</SAMP>.
+</P><P>
+
+This example has the same result (except for setting <SAMP>`dirs'</SAMP>) as
+the following example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>files := $(wildcard a/* b/* c/* d/*)
+</pre></td></tr></table></P><P>
+
+When <VAR>text</VAR> is complicated, you can improve readability by giving it
+a name, with an additional variable:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>find_files = $(wildcard $(dir)/*)
+dirs := a b c d
+files := $(foreach dir,$(dirs),$(find_files))
+</pre></td></tr></table></P><P>
+
+Here we use the variable <CODE>find_files</CODE> this way.  We use plain <SAMP>`='</SAMP>
+to define a recursively-expanding variable, so that its value contains an
+actual function call to be reexpanded under the control of <CODE>foreach</CODE>;
+a simply-expanded variable would not do, since <CODE>wildcard</CODE> would be
+called only once at the time of defining <CODE>find_files</CODE>.
+</P><P>
+
+The <CODE>foreach</CODE> function has no permanent effect on the variable
+<VAR>var</VAR>; its value and flavor after the <CODE>foreach</CODE> function call are
+the same as they were beforehand.  The other values which are taken from
+<VAR>list</VAR> are in effect only temporarily, during the execution of
+<CODE>foreach</CODE>.  The variable <VAR>var</VAR> is a simply-expanded variable
+during the execution of <CODE>foreach</CODE>.  If <VAR>var</VAR> was undefined
+before the <CODE>foreach</CODE> function call, it is undefined after the call.
+See section <A HREF="make_63.html#SEC67">The Two Flavors of Variables</A>.</P><P>
+
+You must take care when using complex variable expressions that result in
+variable names because many strange things are valid variable names, but
+are probably not what you intended.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>files := $(foreach Esta escrito en espanol!,b c ch,$(find_files))
+</FONT></pre></td></tr></table></P><P>
+
+might be useful if the value of <CODE>find_files</CODE> references the variable
+whose name is <SAMP>`Esta escrito en espanol!'</SAMP> (es un nombre bastante largo,
+no?), but it is more likely to be a mistake.
+</P><P>
+
+<A NAME="If Function"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_82.html#SEC86"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_84.html#SEC88"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_79.html#SEC83"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

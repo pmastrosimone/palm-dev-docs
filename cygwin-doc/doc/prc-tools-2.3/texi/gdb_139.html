@@ -1,0 +1,196 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Debug Session</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Debug Session">
+<META NAME="keywords" CONTENT="Debugging with GDB: Debug Session">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC139"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_138.html#SEC138"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_140.html#SEC140"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_136.html#SEC136"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 17.3.3 Putting it all together </H3>
+<!--docid::SEC139::-->
+<P>
+
+<A NAME="IDX638"></A>
+In summary, when your program is ready to debug, you must follow these
+steps.
+</P><P>
+
+<OL>
+<LI>
+Make sure you have defined the supporting low-level routines
+(see section <A HREF="gdb_138.html#SEC138">What you must do for the stub</A>):
+<TABLE><tr><td>&nbsp;</td><td class=display><pre style="font-family: serif"><CODE>getDebugChar</CODE>, <CODE>putDebugChar</CODE>,
+<CODE>flush_i_cache</CODE>, <CODE>memset</CODE>, <CODE>exceptionHandler</CODE>.
+</pre></td></tr></table><P>
+
+<LI>
+Insert these lines near the top of your program:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>set_debug_traps();
+breakpoint();
+</FONT></pre></td></tr></table></P><P>
+
+<LI>
+For the 680x0 stub only, you need to provide a variable called
+<CODE>exceptionHook</CODE>.  Normally you just use:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>void (*exceptionHook)() = 0;
+</FONT></pre></td></tr></table></P><P>
+
+but if before calling <CODE>set_debug_traps</CODE>, you set it to point to a
+function in your program, that function is called when
+<CODE>GDB</CODE> continues after stopping on a trap (for example, bus
+error).  The function indicated by <CODE>exceptionHook</CODE> is called with
+one parameter: an <CODE>int</CODE> which is the exception number.
+</P><P>
+
+<LI>
+Compile and link together: your program, the GDB debugging stub for
+your target architecture, and the supporting subroutines.
+<P>
+
+<LI>
+Make sure you have a serial connection between your target machine and
+the GDB host, and identify the serial port on the host.
+<P>
+
+<LI>
+Download your program to your target machine (or get it there by
+whatever means the manufacturer provides), and start it.
+<P>
+
+<LI>
+To start remote debugging, run GDB on the host machine, and specify
+as an executable file the program that is running in the remote machine.
+This tells GDB how to find your program's symbols and the contents
+of its pure text.
+<P>
+
+<LI>
+<A NAME="IDX639"></A>
+Establish communication using the <CODE>target remote</CODE> command.
+Its argument specifies how to communicate with the target
+machine--either via a devicename attached to a direct serial line, or a
+TCP or UDP port (usually to a terminal server which in turn has a serial line
+to the target).  For example, to use a serial line connected to the
+device named <TT>`/dev/ttyb'</TT>:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>target remote /dev/ttyb
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX640"></A>
+To use a TCP connection, use an argument of the form
+<CODE><VAR>host</VAR>:<VAR>port</VAR></CODE> or <CODE>tcp:<VAR>host</VAR>:<VAR>port</VAR></CODE>.
+For example, to connect to port 2828 on a
+terminal server named <CODE>manyfarms</CODE>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>target remote manyfarms:2828
+</FONT></pre></td></tr></table></P><P>
+
+If your remote target is actually running on the same machine as
+your debugger session (e.g. a simulator of your target running on
+the same host), you can omit the hostname.  For example, to connect
+to port 1234 on your local machine:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>target remote :1234
+</FONT></pre></td></tr></table></P><P>
+
+Note that the colon is still required here.
+</P><P>
+
+<A NAME="IDX641"></A>
+To use a UDP connection, use an argument of the form
+<CODE>udp:<VAR>host</VAR>:<VAR>port</VAR></CODE>.  For example, to connect to UDP port 2828
+on a terminal server named <CODE>manyfarms</CODE>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>target remote udp:manyfarms:2828
+</FONT></pre></td></tr></table></P><P>
+
+When using a UDP connection for remote debugging, you should keep in mind
+that the `U' stands for "Unreliable".  UDP can silently drop packets on
+busy or unreliable networks, which will cause havoc with your debugging
+session.
+</P><P>
+
+</OL>
+<P>
+
+Now you can use all the usual commands to examine and change data and to
+step and continue the remote program.
+</P><P>
+
+To resume the remote program and stop debugging it, use the <CODE>detach</CODE>
+command.
+</P><P>
+
+<A NAME="IDX642"></A>
+<A NAME="IDX643"></A>
+Whenever GDB is waiting for the remote program, if you type the
+interrupt character (often <KBD>C-C</KBD>), GDB attempts to stop the
+program.  This may or may not succeed, depending in part on the hardware
+and the serial drivers the remote system uses.  If you type the
+interrupt character once again, GDB displays this prompt:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>Interrupted while waiting for the program.
+Give up (and stop debugging it)?  (y or n)
+</FONT></pre></td></tr></table></P><P>
+
+If you type <KBD>y</KBD>, GDB abandons the remote debugging session.
+(If you decide you want to try again later, you can use <SAMP>`target
+remote'</SAMP> again to connect once more.)  If you type <KBD>n</KBD>, GDB
+goes back to waiting.
+</P><P>
+
+<A NAME="Configurations"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_138.html#SEC138"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_140.html#SEC140"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_136.html#SEC136"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

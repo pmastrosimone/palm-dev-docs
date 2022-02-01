@@ -1,0 +1,230 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: M</TITLE>
+
+<META NAME="description" CONTENT="Using as: M">
+<META NAME="keywords" CONTENT="Using as: M">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC18"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_16.html#SEC17"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_18.html#SEC19"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_18.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_9.html#SEC10"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_26.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.8 Assemble in MRI Compatibility Mode: <SAMP>`-M'</SAMP> </H2>
+<!--docid::SEC18::-->
+<P>
+
+<A NAME="IDX76"></A>
+<A NAME="IDX77"></A>
+The <SAMP>`-M'</SAMP> or <SAMP>`--mri'</SAMP> option selects MRI compatibility mode.  This
+changes the syntax and pseudo-op handling of <CODE>as</CODE> to make it
+compatible with the <CODE>ASM68K</CODE> or the <CODE>ASM960</CODE> (depending upon the
+configured target) assembler from Microtec Research.  The exact nature of the
+MRI syntax will not be documented here; see the MRI manuals for more
+information.  Note in particular that the handling of macros and macro
+arguments is somewhat different.  The purpose of this option is to permit
+assembling existing MRI assembler code using <CODE>as</CODE>.
+</P><P>
+
+The MRI compatibility is not complete.  Certain operations of the MRI assembler
+depend upon its object file format, and can not be supported using other object
+file formats.  Supporting these would require enhancing each object file format
+individually.  These are:
+</P><P>
+
+<UL>
+<LI>global symbols in common section
+<P>
+
+The m68k MRI assembler supports common sections which are merged by the linker.
+Other object file formats do not support this.  <CODE>as</CODE> handles
+common sections by treating them as a single common symbol.  It permits local
+symbols to be defined within a common section, but it can not support global
+symbols, since it has no way to describe them.
+</P><P>
+
+<LI>complex relocations
+<P>
+
+The MRI assemblers support relocations against a negated section address, and
+relocations which combine the start addresses of two or more sections.  These
+are not support by other object file formats.
+</P><P>
+
+<LI><CODE>END</CODE> pseudo-op specifying start address
+<P>
+
+The MRI <CODE>END</CODE> pseudo-op permits the specification of a start address.
+This is not supported by other object file formats.  The start address may
+instead be specified using the <SAMP>`-e'</SAMP> option to the linker, or in a linker
+script.
+</P><P>
+
+<LI><CODE>IDNT</CODE>, <CODE>.ident</CODE> and <CODE>NAME</CODE> pseudo-ops
+<P>
+
+The MRI <CODE>IDNT</CODE>, <CODE>.ident</CODE> and <CODE>NAME</CODE> pseudo-ops assign a module
+name to the output file.  This is not supported by other object file formats.
+</P><P>
+
+<LI><CODE>ORG</CODE> pseudo-op
+<P>
+
+The m68k MRI <CODE>ORG</CODE> pseudo-op begins an absolute section at a given
+address.  This differs from the usual <CODE>as</CODE> <CODE>.org</CODE> pseudo-op,
+which changes the location within the current section.  Absolute sections are
+not supported by other object file formats.  The address of a section may be
+assigned within a linker script.
+</UL>
+<P>
+
+There are some other features of the MRI assembler which are not supported by
+<CODE>as</CODE>, typically either because they are difficult or because they
+seem of little consequence.  Some of these may be supported in future releases.
+</P><P>
+
+<UL>
+
+<LI>EBCDIC strings
+<P>
+
+EBCDIC strings are not supported.
+</P><P>
+
+<LI>packed binary coded decimal
+<P>
+
+Packed binary coded decimal is not supported.  This means that the <CODE>DC.P</CODE>
+and <CODE>DCB.P</CODE> pseudo-ops are not supported.
+</P><P>
+
+<LI><CODE>FEQU</CODE> pseudo-op
+<P>
+
+The m68k <CODE>FEQU</CODE> pseudo-op is not supported.
+</P><P>
+
+<LI><CODE>NOOBJ</CODE> pseudo-op
+<P>
+
+The m68k <CODE>NOOBJ</CODE> pseudo-op is not supported.
+</P><P>
+
+<LI><CODE>OPT</CODE> branch control options
+<P>
+
+The m68k <CODE>OPT</CODE> branch control options---<CODE>B</CODE>, <CODE>BRS</CODE>, <CODE>BRB</CODE>,
+<CODE>BRL</CODE>, and <CODE>BRW</CODE>---are ignored.  <CODE>as</CODE> automatically
+relaxes all branches, whether forward or backward, to an appropriate size, so
+these options serve no purpose.
+</P><P>
+
+<LI><CODE>OPT</CODE> list control options
+<P>
+
+The following m68k <CODE>OPT</CODE> list control options are ignored: <CODE>C</CODE>,
+<CODE>CEX</CODE>, <CODE>CL</CODE>, <CODE>CRE</CODE>, <CODE>E</CODE>, <CODE>G</CODE>, <CODE>I</CODE>, <CODE>M</CODE>,
+<CODE>MEX</CODE>, <CODE>MC</CODE>, <CODE>MD</CODE>, <CODE>X</CODE>.
+</P><P>
+
+<LI>other <CODE>OPT</CODE> options
+<P>
+
+The following m68k <CODE>OPT</CODE> options are ignored: <CODE>NEST</CODE>, <CODE>O</CODE>,
+<CODE>OLD</CODE>, <CODE>OP</CODE>, <CODE>P</CODE>, <CODE>PCO</CODE>, <CODE>PCR</CODE>, <CODE>PCS</CODE>, <CODE>R</CODE>.
+</P><P>
+
+<LI><CODE>OPT</CODE> <CODE>D</CODE> option is default
+<P>
+
+The m68k <CODE>OPT</CODE> <CODE>D</CODE> option is the default, unlike the MRI assembler.
+<CODE>OPT NOD</CODE> may be used to turn it off.
+</P><P>
+
+<LI><CODE>XREF</CODE> pseudo-op.
+<P>
+
+The m68k <CODE>XREF</CODE> pseudo-op is ignored.
+</P><P>
+
+<LI><CODE>.debug</CODE> pseudo-op
+<P>
+
+The i960 <CODE>.debug</CODE> pseudo-op is not supported.
+</P><P>
+
+<LI><CODE>.extended</CODE> pseudo-op
+<P>
+
+The i960 <CODE>.extended</CODE> pseudo-op is not supported.
+</P><P>
+
+<LI><CODE>.list</CODE> pseudo-op.
+<P>
+
+The various options of the i960 <CODE>.list</CODE> pseudo-op are not supported.
+</P><P>
+
+<LI><CODE>.optimize</CODE> pseudo-op
+<P>
+
+The i960 <CODE>.optimize</CODE> pseudo-op is not supported.
+</P><P>
+
+<LI><CODE>.output</CODE> pseudo-op
+<P>
+
+The i960 <CODE>.output</CODE> pseudo-op is not supported.
+</P><P>
+
+<LI><CODE>.setreal</CODE> pseudo-op
+<P>
+
+The i960 <CODE>.setreal</CODE> pseudo-op is not supported.
+</P><P>
+
+</UL>
+<P>
+
+<A NAME="MD"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_16.html#SEC17"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_18.html#SEC19"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_18.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_9.html#SEC10"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_26.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

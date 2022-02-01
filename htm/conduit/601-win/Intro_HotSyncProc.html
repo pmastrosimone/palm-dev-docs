@@ -1,0 +1,718 @@
+<html>
+<head>
+<title>Understanding the HotSync Process | Introduction to Conduit Development</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="KEYWORDS" CONTENT="HotSync Manager, hotsync, process, operation, sequence, synchronization, type, fast sync, slow sync, entry point, notifier, log, conduit, conduits, CDK">
+<META NAME="DESCRIPTION" CONTENT="Describes the entire HotSync process, step by step.">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource HTML 20040609">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="LASTUPDATED" CONTENT="06/28/04 08:30:38">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="995934"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="IntroToConduitsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_Registering.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_Databases.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="IntroToConduitsIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">7 &nbsp;&nbsp;
+Understanding the HotSync Process</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Introduction to Conduit Development</p>
+<p class="SubTitle">Palm OS&#174; Conduit Development Kit for Windows, Version 6.0.1 </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="Intro_HotSyncProc.html">7  Understanding the HotSync Process</a></h1>
+
+   <h2 class="SideTOC2"><a href="#1013092">
+   Overview</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996071">
+   Intitializing the HotSync Process</a></h2>
+
+      <h3 class="SideTOC3"><a href="#996103">
+      Getting the Current Desktop User ID (PC ID)</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996111">
+      Getting the Current HotSync User</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996147">
+      Getting the Desktop Trust Status</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996153">
+      Calling Notifiers</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996156">
+      Determining the Sync Mode</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996186">
+      Creating a List of Conduits to Run</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996257">
+      Creating a List of Databases to Back Up</a></h3>
+
+   <h2 class="SideTOC2"><a href="#996281">
+   Running Install Conduits</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996331">
+   Running Synchronization Conduits</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1006132">
+   Running Install Conduits Again</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996357">
+   Running the Backup Conduit</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996380">
+   Finishing the HotSync Process</a></h2>
+
+</div>
+</td>
+<!--END SIDETOC-->
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="995943"> </a>This chapter presents the HotSync<sup>&#174;</sup> process, step-by-step from the moment the user presses the HotSync button to backing up databases and logging. The sections in this chapter are:</p>
+   <blockquote class = "bq"><a name="995947"> </a><a href="Intro_HotSyncProc.html#1013092">Overview</a></blockquote>
+   <blockquote class = "bq"><a name="995951"> </a><a href="Intro_HotSyncProc.html#996071">Intitializing the HotSync Process</a></blockquote>
+   <blockquote class = "bq"><a name="995955"> </a><a href="Intro_HotSyncProc.html#996281">Running Install Conduits</a></blockquote>
+   <blockquote class = "bq"><a name="995959"> </a><a href="Intro_HotSyncProc.html#996331">Running Synchronization Conduits</a></blockquote>
+   <blockquote class = "bq"><a name="995963"> </a><a href="Intro_HotSyncProc.html#1006132">Running Install Conduits Again</a></blockquote>
+   <blockquote class = "bq"><a name="995967"> </a><a href="Intro_HotSyncProc.html#996357">Running the Backup Conduit</a></blockquote>
+   <blockquote class = "bq"><a name="1013089"> </a><a href="Intro_HotSyncProc.html#996380">Finishing the HotSync Process</a></blockquote>
+
+<h2 class="haH2">
+  <a name="1013092"> </a>Overview <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1013094"> </a>The <b>HotSync Manager</b> application on the desktop oversees the <b>HotSync process</b>. The HotSync process is PalmSource's patented,<a href="#1013097"><sup>1</sup></a> one-button method of automatically synchronizing all data between a handheld and a desktop computer. HotSync Manager invokes conduits on the desktop to handle data for each handheld application that requires data synchronization. An instance of the HotSync process, a <b>HotSync operation</b> or session, begins when the user presses the HotSync button (on the cradle or on the display) and ends after the backup conduit runs and final cleanup is complete. In addition to data synchronization, the HotSync process:</p>
+<ul type="disc">
+  <li><a name="1005829"> </a>assigns HotSync user names and IDs to handhelds
+  <li><a name="995977"> </a>manages individual or multiple handhelds with a single desktop computer
+  <li><a name="995978"> </a>backs up handheld data onto a desktop computer
+  <li><a name="995979"> </a>installs new applications and databases on a handheld
+  <li><a name="995980"> </a>restores all data to a handheld after it is hard-reset
+</ul>
+
+<p><a name="995981"> </a>HotSync Manager runs in the background on the desktop computer and monitors one or more communications ports, waiting for a command from a handheld. Once that command is received, HotSync Manager determines which synchronization operations need to be run and begins the process. </p>
+<div class="NINoteImportant"><hr>
+  <a name="999916"> </a> <b>NOTE: </b> The HotSync process can be started <i>only</i> from the handheld. PalmSource does not support any method of starting a HotSync operation from the desktop.
+<hr>
+</div>
+
+<p><a name="995986"> </a><a href="Intro_HotSyncProc.html#995993">Table 7.1</a> summarizes the entire HotSync process, including the actions of the user, HotSync Manager, and the handheld. The following sections describe each of the actions in more detail.</p>
+
+<p class="fineprint">
+<p class="caption"><a name="995993"> </a><b>Table 7.1&nbsp;&nbsp;Summary of the HotSync process </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="995999"> </a><b>User action or display</b></p>
+    </th>
+    <th><p class="tt"><a name="996001"> </a><b>HotSync Manager actions</b></p>
+    </th>
+    <th><p class="tt"><a name="996003"> </a><b>Handheld actions</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tts"><a name="996005"> </a>1. User presses HotSync button</p>
+    </td>
+    <td><p class="tts"><a name="996007"> </a>Reads the HotSync user ID from the handheld and validates the user against the desktop user data store.</p>
+<p class="tts"><a name="996008"> </a>Locates the user's data on the desktop computer.</p>
+<p class="tts"><a name="996009"> </a>Reads system and state information from the handheld.</p>
+<p class="tts"><a name="996010"> </a>Calls notifier to tell desktop application that synchronization is about to begin.</p>
+<p class="tts"><a name="996013"> </a>See <a href="Intro_HotSyncProc.html#996071">"Intitializing the HotSync Process."</a></p>
+    </td>
+    <td><p class="tts"><a name="996016"> </a>HotSync Manager process starts on the handheld and sends a signal to the desktop computer.</p>
+<p class="tts"><a name="1005856"> </a>The HotSync client sends a notification to handheld applications that a HotSync session has started.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tts"><a name="996018"> </a>2. "Connecting with desktop"</p>
+    </td>
+    <td><p class="tts"><a name="1011350"> </a>Retrieves a list of creator IDs of all applications (database of type <code>'appl'</code>) on the handheld and a list of all conduits registered on the desktop.</p>
+<p class="tts"><a name="996022"> </a>Creates a list of conduits to run: those that have applications with matching creator IDs on the handheld and those that specify they should be run even if there is no matching application on the handheld.<a href="#996025"><sup>1</sup></a></p>
+<p class="tts"><a name="996026"> </a>If no conduit is installed for the creator ID, but the backup bit is set for the database, adds the database to the list for the Backup conduit. Also adds a database to the backup list, even if there is a conduit installed for the creator ID, as long as the database is not of type <code>'DATA'</code>.</p>
+<p class="tts"><a name="996029"> </a>See <a href="Intro_HotSyncProc.html#996071">"Intitializing the HotSync Process."</a></p>
+    </td>
+    <td><p class="tts"><a name="996032"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tts"><a name="996034"> </a>3. "Synchronizing..."</p>
+    </td>
+    <td><p class="tts"><a name="996036"> </a>Calls install conduits to install any applications or databases that have been queued on the desktop computer for that purpose. </p>
+<p class="tts"><a name="996037"> </a>Runs each synchronization conduit in its list in priority order by calling specific entry points. Conduits in turn call Sync Manager on the desktop to read and write data on the handheld.</p>
+<p class="tts"><a name="996038"> </a>Calls install conduits again to handle any installations that were generated by other conduits.<a href="#996041"><sup>2</sup></a></p>
+<p class="tts"><a name="996042"> </a>Calls the Backup conduit to copy any databases that are in the backup list.</p>
+<p class="tts"><a name="996048"> </a>See <a href="Intro_HotSyncProc.html#996281">"Running Install Conduits,"</a> <a href="Intro_HotSyncProc.html#996331">"Running Synchronization Conduits,"</a> and <a href="Intro_HotSyncProc.html#996357">"Running the Backup Conduit."</a></p>
+    </td>
+    <td><p class="tts"><a name="996056"> </a>The HotSync client responds to calls from Sync Manager on the desktop, which in turn calls Data Manager and other Palm OS managers.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tts"><a name="996058"> </a>4. Completion message(s)</p>
+    </td>
+    <td><p class="tts"><a name="996060"> </a>Calls notifiers to tell desktop applications that synchronization has completed. </p>
+<p class="tts"><a name="996061"> </a>Updates synchronization information, including the sync time and user ID, on the handheld. </p>
+<p class="tts"><a name="996062"> </a>If any of the conduits added messages to the log, the HotSync Manager displays a message to the user who can then examine those log entries.</p>
+<p class="tts"><a name="996065"> </a>See <a href="Intro_HotSyncProc.html#996380">"Finishing the HotSync Process."</a></p>
+    </td>
+    <td><p class="tts"><a name="996068"> </a>Sublaunches handheld applications whose databases were modified.</p>
+<p class="tts"><a name="1005892"> </a>Sublaunches any applications just installed that the HotSync operation is finished.</p>
+<p class="tts"><a name="1005896"> </a>Notifies any application that registered with the Notification Manager for the "sync complete" notification.</p>
+    </td>
+  </tr>
+</table>
+<div class="tablediv"><table cellspacing="0" class="tTableNR">
+   <tr>
+     <td><div class="FNTFootnoteTable">
+<a name="996025"> </a><a href="#996022">1</a>. 
+Only HotSync Manager for Windows, versions 6.0 and later, can query a C API-based conduit to specify that it should be run even if there is no matching application on the handheld.</div>
+<div class="FNTFootnoteTable">
+<a name="996041"> </a><a href="#996038">2</a>. 
+Only HotSync Manager for Windows, versions 3.01 or later, calls each install conduit a second time, if it has files queued to instal, after it runs all synchronization conduits. Versions earlier than 3.01 do not perform this step.</div>
+</td>
+   </tr>
+</table></div>
+
+</div>
+ 
+</p>
+
+<h2 class="haH2">
+  <a name="996071"> </a>Intitializing the HotSync Process <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996072"> </a>When the user starts a HotSync operation, but before any conduits run, HotSync Manager performs these tasks in sequence, described in the following subsections:</p>
+   <blockquote class = "bq"><a name="996076"> </a><a href="Intro_HotSyncProc.html#996103">Getting the Current Desktop User ID (PC ID)</a></blockquote>
+   <blockquote class = "bq"><a name="996080"> </a><a href="Intro_HotSyncProc.html#996111">Getting the Current HotSync User</a></blockquote>
+   <blockquote class = "bq"><a name="996084"> </a><a href="Intro_HotSyncProc.html#996147">Getting the Desktop Trust Status</a></blockquote>
+   <blockquote class = "bq"><a name="996088"> </a><a href="Intro_HotSyncProc.html#996153">Calling Notifiers</a></blockquote>
+   <blockquote class = "bq"><a name="996092"> </a><a href="Intro_HotSyncProc.html#996156">Determining the Sync Mode</a></blockquote>
+   <blockquote class = "bq"><a name="996096"> </a><a href="Intro_HotSyncProc.html#996186">Creating a List of Conduits to Run</a></blockquote>
+   <blockquote class = "bq"><a name="996100"> </a><a href="Intro_HotSyncProc.html#996257">Creating a List of Databases to Back Up</a></blockquote>
+<h3 class="hbH3">
+  <a name="996103"> </a>Getting the Current Desktop User ID (PC ID) <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996105"> </a>The current desktop OS user ID (<b>PC ID</b>) is a pseudo-random number that HotSync Manager generates when it is first run by each separate desktop user. Note that HotSync Manager ensures that the PC ID for each desktop operating system user is unique from the others on the same computer. HotSync Manager retrieves the PC ID for the current desktop user and stores it on the handheld.</p>
+
+<p><a name="996106"> </a>HotSync Manager versions 6.0 and later also retrieve the desktop's host name and IP address to help identify the desktop to the handheld when HotSync Manager determines whether the handheld "trusts" the desktop. See <a href="Intro_HotSyncProc.html#996147">"Getting the Desktop Trust Status."</a></p>
+<h3 class="hbH3">
+  <a name="996111"> </a>Getting the Current HotSync User <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996113"> </a>Each Palm Powered<sup>&#8482;</sup> handheld has a unique <b>HotSync user ID</b> and a user-specified HotSync user name associated with it after it has been synchronized. The user ID is a pseudo-random number that HotSync Manager generates during a handheld's first HotSync operation after a complete reset, or during its first-ever HotSync operation. </p>
+
+<p><a name="996114"> </a>HotSync Manager stores the HotSync user ID and name on the handheld. It also maintains a <b>user data store</b> on the desktop for each desktop OS user. This store consists of user names, IDs, and other information about all HotSync users created by the current desktop OS user. This store also tracks the most recent synchronization date for the desktop computer.</p>
+<div class="NINoteImportant"><hr>
+  <a name="996115"> </a> <b>NOTE: </b> HotSync Manager does not necessarily generate the same HotSync user ID for the same user name on two different handhelds. However, HotSync Manager does ensure that each user ID is unique among the IDs in its user data store for the current desktop OS user.
+<hr>
+</div>
+
+<p><a name="996116"> </a>At the start of the HotSync process, HotSync Manager requests from the handheld its HotSync user name and HotSync user ID, which it then compares with those saved in its user data store for the current desktop user. The possible results are detailed in <a href="Intro_HotSyncProc.html#996123">Table 7.2</a>.</p>
+
+<p class="fineprint">
+<p class="caption"><a name="996123"> </a><b>Table 7.2&nbsp;&nbsp;Determining the current HotSync user</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="996127"> </a><b>If the handheld...</b></p>
+    </th>
+    <th><p class="tt"><a name="996129"> </a><b>then HotSync Manager...</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996131"> </a>Has no user ID, either because this is the first HotSync operation for this handheld or it has been hard-reset</p>
+    </td>
+    <td><p class="tt"><a name="996133"> </a>Prompts the desktop user to do one of the following: </p>
+
+  <a name="996134"> </a><div class="BTBulletTable">&#8226; Create a new user name. HotSync Manager then generates a new HotSync user ID. </div>
+  <a name="996135"> </a><div class="BTBulletTable">&#8226; Choose an existing HotSync user from a list.</div><p class="tt"><a name="996136"> </a>Writes the HotSync user name and user ID to the handheld, identifying the current HotSync user.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996138"> </a>Has a user ID that matches one in the user data store</p>
+    </td>
+    <td><p class="tt"><a name="996140"> </a>Has identified the HotSync user. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996142"> </a>Has a user ID that does <i>not</i> match one in the user data store</p>
+    </td>
+    <td><p class="tt"><a name="996144"> </a>Prompts the user whether to create a new HotSync user. If yes, creates a new HotSync user on the desktop using the name and ID it retrieved from the handheld. If no, aborts the HotSync operation.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+<h3 class="hbH3">
+  <a name="996147"> </a>Getting the Desktop Trust Status <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996148"> </a>Palm OS&#174; Cobalt enables users to specify in the HotSync client which desktop computers they trust to have their secure databases backed up to or synchronized with. </p>
+
+<p><a name="996149"> </a>The handheld establishes trust status by handing out a "shared secret" to the desktop during the next sync. Thereafter, the handheld challenges the desktop to check whether it has the shared secret key, and if so, permits a trusted sync.</p>
+
+<p><a name="996150"> </a>At this point, HotSync Manager identifies whether the handheld trusts the current desktop. If trust is verified, then HotSync Manager permits synchronization conduits and the backup conduit to access secure databases; otherwise, it does not grant access to secure databases.</p>
+
+<p><a name="1004005"> </a>For more on trusted desktops, see <a href="Intro_Trust.html#995934">Chapter 9, "Understanding Trusted Desktops."</a></p>
+<h3 class="hbH3">
+  <a name="996153"> </a>Calling Notifiers <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996154"> </a>HotSync Manager for Windows calls all registered notifiers. A notifier is a DLL that implements entry points, which HotSync Manager calls at the beginning and end of the HotSync process. Your implementation can then notify your desktop application that a HotSync operation is starting. This warning gives your desktop application a chance to save any pending changes to its desktop data that is about to be synchronized by your conduit or to cancel the HotSync operation. </p>
+
+<p><a name="1004031"> </a>For more on notifiers, see <a href="CComp_Notifiers.html#996097">Chapter 8, "Writing a Desktop Notifier,"</a> in the <i>C/C++ Sync Suite Companion</i>.</p>
+<h3 class="hbH3">
+  <a name="996156"> </a>Determining the Sync Mode <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996157"> </a>The HotSync process is designed for maximum efficiency, which means enabling conduits to minimize, whenever possible, the data that they need to transfer between the desktop and handheld. Because the methods for making this determination differ for schema and non-schema databases, the details are discussed separately in the following subsections:</p>
+   <blockquote class = "bq"><a name="1007505"> </a><a href="Intro_HotSyncProc.html#1006331">Sync Mode for Schema Databases</a></blockquote>
+   <blockquote class = "bq"><a name="1007548"> </a><a href="Intro_HotSyncProc.html#1008693">Sync Mode for Non-schema Databases</a></blockquote>
+   <blockquote class = "bq"><a name="1013243"> </a><a href="Intro_HotSyncProc.html#1007295">Effect of User Synchronization Preferences</a></blockquote>
+
+<h4 class="hcH4">
+  <a name="1006331"> </a>Sync Mode for Schema Databases
+</h4>
+
+<p><a name="1006242"> </a>The Data Manager on the handheld tracks more detailed change information for schema databases than for non-schema databases. A conduit can use this to significantly minimize how much data it must transfer "over the wire" to and from the handheld. The details of how this is done are discussed in <a href="Intro_HotSyncProc.html#1001757">"How the Schema Sync Manager Determines the Sync Mode."</a> The remainder of this section describes how your conduit gets the sync mode and how it should perform in each mode.</p>
+
+<p><a name="1006413"> </a>To get the sync mode, a conduit must call <a href="CRef_SyncSchema.html#1005736"><code>SyncDbGetSyncMode()</code></a> (C/C++ Sync Suite) or <a href="COMRef_Meth.html#1580898"><code>GetSyncTypeInfo()</code></a> (COM Sync Suite) for <i>each</i> schema database that it is going to synchronize. These functions read the change tracking information for the database you specify, compare it with the <a href="Intro_Glossary.html#914783"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">change context</span></a> cached on the desktop, and return the type of synchronization that your conduit should perform for each <a href="Intro_Glossary.html#914988"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">sync atoms</span></a>. The synchronization mode applies only to the specified schema database and only for the currently running conduit, not for the entire HotSync operation.</p>
+<div class="NINoteImportant"><hr>
+  <a name="1006370"> </a> <b>NOTE: </b> HotSync Manager also passes back a sync type via your conduit's <a href="CRef_CnAPI.html#996737"><code>OpenConduit()</code></a> entry point (C/C++ Sync Suite) or via the <a href="COMRef_Obj.html#1167858"><code>PDHotsyncInfo</code></a><code>.</code><a href="COMRef_Prop.html#999191"><code>SyncType</code></a> property (COM Sync Suite). The returned <code>eFast</code> and <code>eSlow</code> sync types are based solely on whether this handheld's last HotSync operation was with the current desktop. For non-schema databases, this is sufficient for a conduit to determine whether to perform a fast or slow sync. However, for schema databases, this value is not sufficient. Conduits synchronizing schema databases must call the "get sync mode" function (described above) to determine the most efficient synchronization to perform.
+<hr>
+</div>
+
+<p><a name="1006248"> </a>The following sync types for each sync atom in a schema database are determined by calling <a href="CRef_SyncSchema.html#1005736"><code>SyncDbGetSyncMode()</code></a> or <a href="COMRef_Meth.html#1580898"><code>GetSyncTypeInfo()</code></a>:</p>
+
+<dl>
+<dt><a name="996158"> </a>Fast sync</dt>
+<dd><a name="996159"> </a>Instances of the sync atom have changed and all change flags are valid. This mode enables a conduit to transfer only the data that has changed since the last HotSync operation with the current desktop.</dd>
+
+<dt><a name="1006769"> </a>Fast sync after a purge</dt>
+<dd><a name="1006770"> </a>This sync type is passed back via <code>SyncDbGetSyncMode()</code> or <code>GetSyncTypeInfo()</code> as a fast sync, but with an additional "Deletes Purged" flag set. Therefore it is the same as a fast sync, except that the schema Sync Manager can determine that instances of a sync atom that were deleted on the handheld have been purged since the last HotSync operation with the current desktop. All change flags are valid, so a conduit needs only to read the ID lists of the sync atoms that were purged and compare them with those on the desktop to identify the purged instances of each atom. Then the conduit can proceed as in a fast sync. This ability to track purged data enables a conduit to perform a fast sync across multiple desktops, an efficiency available only with schema databases.</dd>
+
+<dt><a name="996160"> </a>Slow sync</dt>
+<dd><a name="996161"> </a>The change flags for a sync atom are not reliable. Therefore a conduit that performs a mirror-image synchronization must compare each instance of each sync atom in the handheld database with the corresponding data on the desktop to determine how to synchronize them.</dd>
+
+<dt><a name="1006997"> </a>No change</dt>
+<dd><a name="1007092"> </a>No instances of the sync atom have changed in the specified schema database</dd>
+
+</dl>
+
+<p><a name="1006998"> </a>The sync types listed above depend on the specified schema database and sync atom, are determined by the schema Sync Manager, and retrieved by calling <code>SyncDbGetSyncMode()</code> or <code>GetSyncTypeInfo()</code>. A conduit must also consider the user's <a href="Intro_Glossary.html#917387"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">synchronization preference</span></a>, if the conduit implements this feature, when determining what type of synchronization to perform. If the user wants the "desktop to overwrite handheld," then despite whether a fast sync is possible, your conduit should do what the user wants. See <a href="Intro_HotSyncProc.html#1007295">"Effect of User Synchronization Preferences"</a> for how the standard user synchronization preferences affect what action your conduit should take.</p>
+
+<p><a name="1001820"> </a>The following subsection details how the schema Sync Manager determines whether fast or slow sync mode is appropriate.</p>
+
+<h5 class="hdH5">
+  <a name="1001757"> </a>How the Schema Sync Manager Determines the Sync Mode
+</h5>
+
+<p><a name="1002803"> </a>At the end of each HotSync operation, the schema Sync Manager caches the <a href="Intro_Glossary.html#922370"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">database reset identifier</span></a> (DRID) of each schema database on the desktop. To determine whether a fast or slow sync is possible for a given database, the schema Sync Manager compares the DRID cached during the last HotSync operation with that of the schema database on the handheld. If they are equal, then a fast sync is possible because the <a href="Intro_Glossary.html#922082"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">sync clock</span></a>, <a href="Intro_Glossary.html#922161"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">change counter</span></a>, and <a href="Intro_Glossary.html#922264"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">purge counter</span></a> are dependable. If they are not equal, then only a slow sync is possible; a conduit must read all data from the database on the handheld and compare it with that on the desktop to identify changes.</p>
+
+<p><a name="1008857"> </a><a href="Intro_HotSyncProc.html#1008862">Figure 7.1</a> shows how the schema Sync Manager determines whether a conduit can perform a fast sync with a schema database.</p>
+
+<p class="FFigureCaption">
+  <a name="1008862"> </a><b>Figure 7.1&nbsp;&nbsp;Determining whether to perform a fast or slow sync for a schema database</b>
+</p>
+<div align="left"><img src="images/Intro_FastSlowSyncSchema.gif" height="602" width="609" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="1008691"> </a>Also at the end of each HotSync operation, the schema Sync Manager caches on the desktop the sync clock value of each schema database. If a fast sync is possible for a schema database, then the schema Sync Manager compares the database's sync clock value cached on the desktop during the last HotSync operation with the purge counter <i>for each sync atom</i> in the database on the handheld. If the sync clock value is <i>greater than or equal to</i> a sync atom's purge counter, then that sync atom has not been purged; therefore a conduit needs only to read the list of IDs of the modified instances of that sync atom provided by a call to the schema Sync Manager. Otherwise, that sync atom has been purged; therefore a conduit must read the list of IDs of all instances of that sync atom and compare it with the ID list on the desktop to identify which instances of that sync atom were purged. Then it can proceed as in a fast sync, reading an ID list (or the data itself) of only the modified instances of a sync atom. For more about change tracking in schema databases, see <a href="Intro_Databases.html#1007124">"Change Tracking Services for Schema Databases."</a></p>
+
+<h4 class="hcH4">
+  <a name="1008693"> </a>Sync Mode for Non-schema Databases
+</h4>
+
+<p><a name="1008937"> </a>The Data Manager on the handheld tracks less change information for non-schema databases than for schema databases. A conduit can still use this to minimize how much data it must transfer "over the wire" to and from the handheld. The details of how this is done are discussed in <a href="Intro_HotSyncProc.html#1007631">"How the Classic Sync Manager Determines the Sync Type."</a> The remainder of this section describes how your conduit gets the sync mode and how it should perform in each mode.</p>
+
+<p><a name="1007752"> </a>To get the sync type, a conduit must read the sync type passed to it by HotSync Manager via the conduit's <a href="CRef_CnAPI.html#996737"><code>OpenConduit()</code></a> entry point (C/C++ Sync Suite) or via the <a href="COMRef_Obj.html#1167858"><code>PDHotsyncInfo</code></a>.<a href="COMRef_Prop.html#999191"><code>SyncType</code></a> property (COM Sync Suite). This sync type applies to all non-schema databases for the entire HotSync operation. </p>
+
+<p><a name="1007894"> </a>The following sync types are possible for non-schema databases:</p>
+
+<dl>
+<dt><a name="1007952"> </a>Fast sync</dt>
+<dd><a name="1007953"> </a>All database and record "dirty" flags are valid. This mode enables a conduit to send data between the handheld and desktop <i>only</i> if a change has occurred since the most recent HotSync operation. A conduit performing a fast sync should not transfer data that has not been modified.</dd>
+
+<dt><a name="1007989"> </a>Slow sync</dt>
+<dd><a name="1007990"> </a>The "dirty" flags are not reliable, because the handheld has synchronized with a different desktop more recently than the current desktop. Therefore a conduit that performs a mirror-image synchronization must compare each record in the handheld database with the corresponding record on the desktop to determine how to synchronize the records.</dd>
+
+</dl>
+
+<p><a name="1008080"> </a>These sync types depend on whether the handheld has synchronized with a different desktop since the last HotSync operation with the current desktop. A conduit must also consider the user's <a href="Intro_Glossary.html#917387"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">synchronization preference</span></a>, if the conduit implements this feature, when determining what type of synchronization to perform. If the user wants the "desktop to overwrite handheld," then despite whether a fast sync is possible, your conduit should do what the user wants. See <a href="Intro_HotSyncProc.html#1007295">"Effect of User Synchronization Preferences"</a> for how the standard user synchronization preferences affect what action your conduit should take.</p>
+
+<h5 class="hdH5">
+  <a name="1007631"> </a>How the Classic Sync Manager Determines the Sync Type
+</h5>
+
+<p><a name="1008172"> </a>HotSync Manager retrieves the HotSync user ID and the PC ID of the most recent synchronization from the handheld. It compares these values with the values stored on the desktop computer during the previous HotSync operation. If the PC ID values match, then conduits can perform a fast sync. <a href="Intro_HotSyncProc.html#1008502">Figure 7.2</a> shows how HotSync Manager determines whether conduits can perform a fast sync.</p>
+
+<p class="FFigureCaption">
+  <a name="1008502"> </a><b>Figure 7.2&nbsp;&nbsp;Determining whether to perform a fast or slow sync for non-schema databases</b>
+</p>
+<div align="left"><img src="images/Intro_FastSlowSync.gif" height="486" width="480" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="1008186"> </a>Non-schema databases on the handheld include flags that HotSync Manager uses to improve the efficiency of synchronization operations:</p>
+<ul type="disc">
+  <li><a name="1007579"> </a>a database "dirty" flag, which indicates whether the non-schema database has changed since the most recent synchronization
+  <li><a name="1007580"> </a>record "dirty" flags, which indicate whether each record has been changed since the most recent synchronization
+</ul>
+
+<p><a name="1007581"> </a>If HotSync Manager determines that it can perform a fast sync, conduits can rely on the validity of the "dirty" flags and therefore work only with database records that have changed.</p>
+
+<p><a name="1008300"> </a>Note that there are some situations in which a conduit must synchronize all of the records in an non-schema database, even if they have not been changed since the last HotSync operation:</p>
+<ul type="disc">
+  <li><a name="1008301"> </a>If a database has been deleted on either the handheld or desktop computer, all of the records in the surviving database must be transferred to the other during synchronization.
+  <li><a name="1008302"> </a>When a new application is installed on a handheld or desktop computer, all of the corresponding data records must be transferred to the other.
+</ul>
+
+<h4 class="hcH4">
+  <a name="1007295"> </a>Effect of User Synchronization Preferences
+</h4>
+
+<p><a name="1009094"> </a>As described in <a href="Intro_HSMBasics.html#998123">"User's Conduit Synchronization Preferences,"</a> a standard but optional feature of a conduit is to allow the user to specify what the conduit does during the next HotSync operation. This sync type preference is stored in the user data store on the desktop and passed to a conduit via the conduit's <a href="CRef_CnAPI.html#996737"><code>OpenConduit()</code></a> entry point (C/C++ Sync Suite) or via the <a href="COMRef_Obj.html#1167858"><code>PDHotsyncInfo</code></a>.<a href="COMRef_Prop.html#999191"><code>SyncType</code></a> property (COM Sync Suite). Whether HotSync Manager passes back the <code>eFast</code> or <code>eSlow</code> sync type is based on whether the handheld last performed a HotSync operation with the current desktop. The <code>eHHtoPC</code>, <code>ePCtoHH</code>, and <code>eDoNothing</code> sync types are passed back based on the user's synchronization preference. </p>
+
+<p><a name="1009074"> </a>The standard user synchronization preferences are described below, along with the sync type that is passed back to a conduit for each:</p>
+
+<dl>
+<dt><a name="1009055"> </a>Synchronize (<code>eFast</code> or <code>eSlow</code>)</dt>
+<dd><a name="1008979"> </a>Perform a mirror-image synchronization. The Sync Manager determines whether a fast or slow sync is possible and passes back either <code>eFast</code> or <code>eSlow</code> to the conduit. Note that if the conduit is synchronizing a schema database, the sync type passed back as described above is not sufficient to determine whether a fast sync is actually possible. See <a href="Intro_HotSyncProc.html#1006331">"Sync Mode for Schema Databases"</a> for details. For non-schema databases, the result is sufficient, as described in <a href="Intro_HotSyncProc.html#1008693">"Sync Mode for Non-schema Databases."</a></dd>
+
+<dt><a name="1008969"> </a>Handheld overwrites desktop (<code>eHHtoPC</code>)</dt>
+<dd><a name="1008970"> </a>Discard the desktop data and overwrite it with the handheld data. This is a user preference, for which the HotSync Manager passes the conduit the value <code>eHHtoPC</code>. In response, the conduit deletes the data on the desktop and reads all of the data from the handheld database.</dd>
+
+<dt><a name="1007298"> </a>Desktop overwrites handheld (<code>ePCtoHH</code>)</dt>
+<dd><a name="1007299"> </a>Discard the handheld data and overwrite it the desktop data. This is a user preference, for which the HotSync Manager passes the conduit the value <code>ePCtoHH</code>. In response, the conduit either removes the handheld database entirely or it removes all data (records, row data, table definitions, category information, category membership). Then it adds all data from the desktop.<a href="#1009425"><sup>2</sup></a></dd>
+
+<dt><a name="1007306"> </a>Do nothing (<code>eDoNothing</code>)</dt>
+<dd><a name="1007307"> </a>Make no changes to data on either the desktop or handheld. This is a user preference, for which the HotSync Manager passes the conduit the value <code>eDoNothing</code>. The conduit does not need to exchange information with the handheld. Even though the conduit does not need to do anything, HotSync Manager still calls it in case the conduit needs to do something&#8212for example, record for its own purposes that it was run.</dd>
+
+</dl>
+<h3 class="hbH3">
+  <a name="996186"> </a>Creating a List of Conduits to Run <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996187"> </a>Before it runs the first conduit, HotSync Manager must determine which synchronization conduits it should run during the current HotSync operation. </p>
+
+<p><a name="996198"> </a>The following steps describe how HotSync Manager for Windows creates a list of which registered conduits to run during a HotSync operation:</p>
+<ol type="1">
+  <li value="1"><a name="996199"> </a>HotSync Manager retrieves a list of the creator IDs of all applications on the handheld&#8212that is, all databases of type <code>'appl'</code>.
+  <li value="2"><a name="996200"> </a>Conduit Manager compiles a list of the creator IDs of all conduits that are registered on the desktop.
+  <li value="3"><a name="996201"> </a>HotSync Manager compares the two lists. It adds a conduit's creator ID to its list of conduits to run if <i>either</i> of the following is true:
+  <ul type="disc">
+    <li><a name="996202"> </a>a creator ID on the applications list matches one on the conduits list
+   <p><a name="996203"> </a><i>or</i> </p>
+    <li><a name="996204"> </a>a conduit responds to HotSync Manager's query that it must always run<a href="#996207"><sup>3</sup></a>
+   <p><a name="996211"> </a><a href="Intro_HotSyncProc.html#996218">Figure 7.3</a> shows an example of how HotSync Manager compares these lists. Notice that in this example, the conduit with creator ID <code>'CU04'</code> runs even without having a matching application on the handheld. This can happen only because this conduit responded to HotSync Manager's query that it should be run regardless of whether an application with the same creator ID is on the device.</p>
+  </ul>
+  <li value="4"><a name="996212"> </a>HotSync Manager sorts its list of conduits to run in priority order. Priority values range from 0 to 4; HotSync Manager runs conduits with a value of 0 first and those with 4 last.<a href="#996216"><sup>4</sup></a>
+</ol>
+
+<p class="FFigureCaption">
+  <a name="996218"> </a><b>Figure 7.3&nbsp;&nbsp;Example: how HotSync Manager for Windows determines which conduits to run</b>
+</p>
+<div align="left"><img src="images/Intro_HotSyncProc2.gif" height="209" width="391" border="0" hspace="0" vspace="0">
+</div>
+<h3 class="hbH3">
+  <a name="996257"> </a>Creating a List of Databases to Back Up <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996259"> </a>HotSync Manager runs the Backup conduit after all other conduits have run. But before any conduits run, HotSync Manager determines which databases on the handheld should be backed up. </p>
+
+<p><a name="996260"> </a>HotSync Manager puts a database on its list of databases to back up only if <i>both</i> of the following are true:</p>
+<ul type="disc">
+  <li><a name="996261"> </a>The backup bit is set in the database on the handheld.
+  <li><a name="996262"> </a>The database on the handheld has been modified since the last HotSync operation with this desktop.
+   <p><a name="996263"> </a>HotSync Manager detects that the database is modified if both of the following are true:</p>
+  <ul type="disc">
+    <li><a name="996264"> </a>The database's Modify bit is set.
+    <li><a name="996265"> </a>The database's modification date on the handheld is later than that of the corresponding database in the HotSync user's <code>Backup</code> folder on the desktop.
+  </ul>
+</ul>
+<div class="NINoteImportant"><hr>
+  <a name="996266"> </a> <b>NOTE: </b> <i>Exception&#8212</i>HotSync Manager for Windows does <i>not</i> put a database on its backup list if its type is <code>'DATA'</code> (case sensitive) <i>and</i> a conduit registered with the same creator ID is on its list of conduits to run.
+<hr>
+</div>
+
+<p><a name="996267"> </a>The reason for this exception is that if a registered conduit has already synchronized its databases, then they do not need to be backed up. </p>
+
+<p><a name="996271"> </a><a href="Intro_HotSyncProc.html#996273">Figure 7.4</a> shows how HotSync Manager determines whether to put a handheld database on its list of databases for the Backup conduit to back up. </p>
+
+<p class="FFigureCaption">
+  <a name="996273"> </a><b>Figure 7.4&nbsp;&nbsp;Determining whether a database is handled by the Backup conduit</b>
+</p>
+<div align="left"><img src="images/Intro_BackupConduit.gif" border="0" hspace="0" vspace="0">
+</div>
+
+<h2 class="haH2">
+  <a name="996281"> </a>Running Install Conduits <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996282"> </a>The first conduits that HotSync Manager runs are the install conduits. Install conduits typically transfer Palm OS applications and databases to a handheld's primary memory, or any type of file to a handheld's expansion card. All versions of HotSync Manager ship with at least one default install conduit.</p>
+
+<p><a name="996294"> </a>HotSync Manager for Windows, versions 3.01 and later, runs install conduits <i>twice:</i> </p>
+<ol type="1">
+  <li value="1"><a name="996295"> </a>Before running all other conduits but after performing the actions described in <a href="Intro_HotSyncProc.html#996071">"Intitializing the HotSync Process."</a> This ensures that files queued for installation before the HotSync process begins are installed before any synchronization conduits that might need them.
+  <li value="2"><a name="996299"> </a>After running all synchronization conduits but before running the backup conduit. See <a href="Intro_HotSyncProc.html#1006132">"Running Install Conduits Again"</a> for details.
+</ol>
+<div class="NINoteImportant"><hr>
+  <a name="1006188"> </a> <b>NOTE: </b> If you want your synchronization conduit to install your databases during a HotSync operation, it can call <a href="CRef_SyncCommon.html#1001518"><code>SyncInstallDatabase()</code></a> (C/C++ Sync Suite) or <a href="COMRef_Meth.html#1588976"><code>InstallDatabase()</code></a> (COM Sync Suite). This capability is available only with HotSync Manager versions 6.0 and later and works only with handhelds running Palm OS Cobalt.
+<hr>
+</div>
+
+<p><a name="1013253"> </a><b>Install Tool</b>, an end-user application that ships with HotSync Manager, enables users to queue files for install conduits to transfer to the handheld during the next HotSync operation. To queue files for installation, Install Tool calls the Install Aide API. The <b>Install Aide</b> is a desktop library that Install Tool and any third-party application or conduit can call to queue files for install conduits to transfer to the handheld. The Install Aide API is documented in the <i>C/C++ Sync Suite Reference</i> and <i>COM Sync Suite Reference</i>.</p>
+
+<p><a name="1013263"> </a>HotSync Manager runs an install conduit only if the Install Aide has been called to queue a file with a filename extension that an install conduit is registered to handle. When an application or conduit calls Install Aide to install a file, Install Aide performs the following actions:</p>
+<ul type="disc">
+  <li><a name="996311"> </a>Sets a flag bit for the selected HotSync user to indicate which install conduit is registered to handle files with the extension of the specified file.
+  <li><a name="996312"> </a>Copies the file to a specific location in the HotSync user's directory; for example, PRC and PDB files are copied to the HotSync user's <code>Install</code> directory.
+</ul>
+
+<p><a name="996313"> </a>HotSync Manager ships with the following install conduits:</p>
+
+<dl>
+<dt><a name="996314"> </a>Install</dt>
+<dd><a name="996315"> </a>Installs image files of Palm OS databases into primary storage on a handheld. Can handle PRC, PDB, SDB, SSD, and PQA file types. Included with all versions of HotSync Manager.</dd>
+
+<dt><a name="996316"> </a>Install Service Templates</dt>
+<dd><a name="996317"> </a>Installs image files of Palm OS network configurations and network scripts into primary storage. Can handle PNC and SCP file types. Included with all versions of HotSync Manager. Works only with handhelds running a version of Palm OS earlier than Palm OS Cobalt.</dd>
+
+<dt><a name="996318"> </a>Install to Card</dt>
+<dd><a name="996319"> </a>Installs files of all types destined for an expansion card. Included with versions 4.0 and later of HotSync Manager.</dd>
+
+<dt><a name="996320"> </a>HotSync Exchange</dt>
+<dd><a name="996321"> </a>Installs files into primary storage if they are of types that have been registered with the Palm OS Cobalt HotSync Exchange library. Implements the desktop side of HotSync Exchange functionality and available with HotSync Manager versions 6.0 and later. Enables users to transfer files of all types between the desktop and handheld. For more information, see <a href="Intro_HotSyncExch.html#608590">Chapter 3, "Using HotSync Exchange."</a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1009910"> </a>Restore Operation
+</h4>
+
+<p><a name="1009914"> </a>A restore operation is a special use of the Install conduit. In this case, HotSync Manager passes the Install conduit a synchronization type of <code>eInstall</code>, indicates that this is the handheld's first HotSync operation with an existing HotSync user on the current desktop, and passes it the <code>Backup</code> folder name. (HotSync Manager supplies this information via a <a href="CRef_SyncCommon.html#996583"><code>CSyncProperties</code></a> structure passed into <a href="CRef_CnAPI.html#996737"><code>OpenConduit()</code></a> (C/C++ Sync Suite) or via a <a href="COMRef_Obj.html#1167858"><code>PDHotsyncInfo</code></a> object (COM Sync Suite). In response, the Install conduit does the following:</p>
+<ol type="1">
+  <li value="1"><a name="1009962"> </a>Restores security data that is required to read secure databases upon restore, if the handheld is running Palm OS Cobalt and the desktop is trusted. If it fails to restore security data, the HotSync operation is aborted, because secure databases cannot be restored if the security data is not restored first.
+  <li value="2"><a name="1009964"> </a>Transfers each database image file in the <code>Backup</code> folder to the handheld as a Palm OS database, if a newer database is not already present on the handheld.
+</ol>
+
+<h2 class="haH2">
+  <a name="996331"> </a>Running Synchronization Conduits <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996333"> </a>After it initializes the HotSync process, HotSync Manager runs the synchronization conduits on the list that it compiled as described in <a href="Intro_HotSyncProc.html#996186">"Creating a List of Conduits to Run."</a> It runs these conduits one at a time in priority order, those with priority value 0 first and those with 4 last. </p>
+
+<p><a name="996337"> </a>To run each conduit, HotSync Manager calls the conduit's main entry point&#8212<code>OpenConduit()</code> for C API-based conduits, <code>IPDClientNotify-&gt;BeginProcess()</code> for COM-based conduits. At this time, HotSync Manager passes information to a conduit about the current HotSync operation, including: </p>
+<ul type="disc">
+  <li><a name="996338"> </a>type of synchronization&#8212based on the user's preference and whether the handheld last synchronized with the current desktop (see <a href="Intro_HotSyncProc.html#996156">"Determining the Sync Mode"</a> for details)
+  <li><a name="996339"> </a>HotSync user name
+  <li><a name="996340"> </a>whether the current HotSync operation is the first for the handheld
+  <li><a name="996341"> </a>whether the handheld is connected via modem or not
+</ul>
+
+<p><a name="996342"> </a>While a conduit is running, it can do anything that similar binaries are allowed to do on the platform they are on. Some actions that only a conduit can perform during the HotSync process include:</p>
+<ul type="disc">
+  <li><a name="996343"> </a>read and write data on the handheld by calling the Sync Manager API
+  <li><a name="996344"> </a>access expansion cards and file systems on them by calling the Expansion Manager API and the Virtual File System Manager API
+  <li><a name="996345"> </a>queue messages to be written to the current HotSync user's log file by calling the HotSync Log API
+</ul>
+
+<p><a name="996346"> </a>HotSync Manager proceeds to the next synchronization conduit only when the previous conduit returns a success value or a nonfatal error code from its main entry point.</p>
+
+<h2 class="haH2">
+  <a name="1006132"> </a>Running Install Conduits Again <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1006168"> </a>HotSync Manager for Windows, versions 3.01 and later, runs each install conduit a second time, if it has files queued to install, after all synchronization conduits have run but before the backup conduit runs. This second install phase ensures that files queued for installation by synchronization conduits that just ran are installed during the same HotSync operation. </p>
+
+<p><a name="996354"> </a>See <a href="Intro_HotSyncProc.html#996281">"Running Install Conduits"</a> for details. </p>
+
+<h2 class="haH2">
+  <a name="996357"> </a>Running the Backup Conduit <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996358"> </a>HotSync Manager runs the backup conduit after all other conduits have completed their operations. Only one conduit can be registered as the backup conduit. This section describes the behavior of the backup conduit named <b>Backup</b>, which PalmSource provides with HotSync Manager.</p>
+
+<p><a name="996359"> </a>As with any conduit, HotSync Manager passes the backup conduit a synchronization type, which indicates whether the user wants databases backed up, wants databases transferred to the handheld from the <code>Backup</code> folder, or neither.</p>
+
+<p><a name="996360"> </a>If the synchronization type is backup, the Backup conduit does the following:</p>
+<ol type="1">
+  <li value="1"><a name="996361"> </a>Creates a database image file for each database on the list that HotSync Manager created as described in <a href="Intro_HotSyncProc.html#996257">"Creating a List of Databases to Back Up."</a> These backup files are located in the current HotSync user's <code>Backup</code> folder and have unique filenames that include the database creator ID, type, and name.<a href="#996367"><sup>5</sup></a>
+  <li value="2"><a name="996368"> </a>Backs up security data that is required to read secure databases upon restore, if the handheld is running Palm OS Cobalt and the desktop is trusted.
+  <li value="3"><a name="996369"> </a>Moves files from the <code>Backup</code> folder to the <code>Archive</code> folder, if they are no longer on the handheld. For example, if the user deleted a database since the last HotSync operation, then the user does not want the database to be restored after a hard reset.
+</ol>
+
+<p><a name="996375"> </a>Because the Backup conduit backs up any databases (applications, databases, preferences, etc.) that have their backup bit set, HotSync Manager can restore a handheld that has been hard-reset to its original state. </p>
+<div class="NINoteImportant"><hr>
+  <a name="996376"> </a> <b>IMPORTANT: </b> PalmSource, Inc. strongly recommends that you set the backup bit for all applications and databases you create, with the exception of data that you do not want restored. Note that if you set the backup bit of an application, the Backup conduit backs it up only when necessary, so the user does not pay a performance penalty. 
+<hr>
+</div>
+
+<p><a name="996377"> </a>The Backup conduit typically copies a database from the handheld to storage on the desktop computer. If you are developing a Palm OS<sup>&#174;</sup> application for which there is no desktop computer component, the Backup conduit may well handle your conduit needs, meaning that you do not need to develop your own conduit. </p>
+
+<p><a name="996378"> </a>There are several classes of applications that use data that is not manipulated on the desktop computer; these applications can rely solely on the Backup conduit. For example, a handheld game program that maintains a high score database can rely on the Backup conduit to copy that data. Similarly, a utility program that adjusts settings on the handheld, or an electronic book that the user can view on the handheld. All of these application types can use the Backup conduit rather than a custom developed conduit.</p>
+
+<h2 class="haH2">
+  <a name="996380"> </a>Finishing the HotSync Process <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996381"> </a>After running the conduits, HotSync Manager cleans up and stores state information. The following describe HotSync Manager's final steps:</p>
+<ol type="1">
+  <li value="1"><a name="996382"> </a>HotSync Manager writes the HotSync user name and ID to the handheld, if this is the handheld's first HotSync operation.
+  <li value="2"><a name="996383"> </a>If the handheld is running a version of Palm OS earlier than Palm OS Cobalt, HotSync Manager updates the password on the desktop for the current HotSync user, if the password on the handheld does not match that saved on the desktop. HotSync Manager cannot access the user's password on a handheld running Palm OS Cobalt.
+  <li value="3"><a name="996384"> </a>HotSync Manager writes the PC ID of the current desktop user to the handheld.
+  <li value="4"><a name="996385"> </a>HotSync Manager writes to the handheld the date and time that the HotSync operation finished.
+  <li value="5"><a name="996386"> </a>HotSync Manager sends a message to all registered notifiers that the HotSync operation has completed successfully or unsuccessfully.
+  <li value="6"><a name="996387"> </a>HotSync Manager notes the current time and stores it as the time of the last HotSync operation for the current HotSync user on the desktop.
+  <li value="7"><a name="996388"> </a>HotSync Manager saves the HotSync log on the handheld and on the desktop for the current HotSync user.
+  <li value="8"><a name="996389"> </a>Palm OS sublaunches each handheld application whose databases have been modified during the current HotSync operation. It also sublaunches any applications that were just installed that the HotSync operation is finished. An application can perform any action it requires&#8212for example, to sort records&#8212or do nothing.
+  <li value="9"><a name="1010192"> </a>The HotSync client sends notifications to all handheld applications that registered with the Notification Manager for the "sync complete" notification. 
+  <li value="10"><a name="996390"> </a>Finally, if any of the conduits added messages to the log, HotSync Manager displays a notification message to the user, who can then examine those log entries on the desktop.
+</ol>
+ 
+
+<hr> 
+<p class="FNFootnote">
+<a name="1013097"> </a><a href="#1013094">1</a>. 
+United States patent number 6,000,000 (cool, eh?).</p>
+<p class="FNFootnote">
+<a name="1009425"> </a><a href="#1007299">2</a>. 
+A conduit can delete a secure database, but it cannot create one. So to overwrite a secure database, a conduit must remove all of its data and write the desktop data into it instead.</p>
+<p class="FNFootnote">
+<a name="996207"> </a><a href="#996204">3</a>. 
+Only HotSync Manager versions 6.0 and later can query conduit to discover whether it should be run even if there is no matching application on the handheld.</p>
+<p class="FNFootnote">
+<a name="996216"> </a><a href="#996212">4</a>. 
+You cannot predetermine the exact order in which HotSync Manager runs registered conduits; you can set only the relative order via the priority value.</p>
+<p class="FNFootnote">
+<a name="996367"> </a><a href="#996361">5</a>. 
+The Backup conduit that ships with HotSync Manager for Windows, versions 6.0 and later, generates backup filenames using the creator ID, type, and name but only for handhelds running Palm OS Cobalt. Otherwise, it generates filenames based only on the database name.</p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 2001-2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="Intro_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="IntroToConduitsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_Registering.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Intro_Databases.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="IntroToConduitsIX.html">Index</a>
+</p>
+</td>
+</tr>
+<!-- END FOOTER -->
+
+</body>
+</html>

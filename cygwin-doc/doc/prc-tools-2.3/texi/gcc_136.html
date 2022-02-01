@@ -1,0 +1,102 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Copy Assignment</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Copy Assignment">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Copy Assignment">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC136"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_135.html#SEC135"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_137.html#SEC137"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_125.html#SEC125"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_133.html#SEC133"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_137.html#SEC137"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 7.10.3 Implicit Copy-Assignment for Virtual Bases </H3>
+<!--docid::SEC136::-->
+<P>
+
+When a base class is virtual, only one subobject of the base class
+belongs to each full object. Also, the constructors and destructors are
+invoked only once, and called from the most-derived class. However, such
+objects behave unspecified when being assigned. For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>struct Base{
+  char *name;
+  Base(char *n) : name(strdup(n)){}
+  Base&#38; operator= (const Base&#38; other){
+   free (name);
+   name = strdup (other.name);
+  }
+};
+
+struct A:virtual Base{
+  int val;
+  A():Base("A"){}
+};
+
+struct B:virtual Base{
+  int bval;
+  B():Base("B"){}
+};
+
+struct Derived:public A, public B{
+  Derived():Base("Derived"){}
+};
+
+void func(Derived &#38;d1, Derived &#38;d2)
+{
+  d1 = d2;
+}
+</pre></td></tr></table></P><P>
+
+The C++ standard specifies that <SAMP>`Base::Base'</SAMP> is only called once
+when constructing or copy-constructing a Derived object. It is
+unspecified whether <SAMP>`Base::operator='</SAMP> is called more than once when
+the implicit copy-assignment for Derived objects is invoked (as it is
+inside <SAMP>`func'</SAMP> in the example).
+</P><P>
+
+g++ implements the "intuitive" algorithm for copy-assignment: assign all
+direct bases, then assign all members. In that algorithm, the virtual
+base subobject can be encountered many times. In the example, copying
+proceeds in the following order: <SAMP>`val'</SAMP>, <SAMP>`name'</SAMP> (via
+<CODE>strdup</CODE>), <SAMP>`bval'</SAMP>, and <SAMP>`name'</SAMP> again.
+</P><P>
+
+If application code relies on copy-assignment, a user-defined
+copy-assignment operator removes any uncertainties. With such an
+operator, the application can define whether and how the virtual base
+subobject is assigned.
+</P><P>
+
+<A NAME="Protoize Caveats"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

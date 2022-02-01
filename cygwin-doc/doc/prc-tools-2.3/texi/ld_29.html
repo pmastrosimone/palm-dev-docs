@@ -1,0 +1,141 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Output Section Keywords</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Output Section Keywords">
+<META NAME="keywords" CONTENT="Untitled Document: Output Section Keywords">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC29"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_28.html#SEC28"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_30.html#SEC30"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_30.html#SEC30"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_18.html#SEC18"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.6.6 Output Section Keywords </H3>
+<!--docid::SEC29::-->
+There are a couple of keywords which can appear as output section
+commands.
+<P>
+
+<DL COMPACT>
+<A NAME="IDX312"></A>
+<A NAME="IDX313"></A>
+<A NAME="IDX314"></A>
+<DT><CODE>CREATE_OBJECT_SYMBOLS</CODE>
+<DD>The command tells the linker to create a symbol for each input file.
+The name of each symbol will be the name of the corresponding input
+file.  The section of each symbol will be the output section in which
+the <CODE>CREATE_OBJECT_SYMBOLS</CODE> command appears.
+<P>
+
+This is conventional for the a.out object file format.  It is not
+normally used for any other object file format.
+</P><P>
+
+<A NAME="IDX315"></A>
+<A NAME="IDX316"></A>
+<A NAME="IDX317"></A>
+<DT><CODE>CONSTRUCTORS</CODE>
+<DD>When linking using the a.out object file format, the linker uses an
+unusual set construct to support C++ global constructors and
+destructors.  When linking object file formats which do not support
+arbitrary sections, such as ECOFF and XCOFF, the linker will
+automatically recognize C++ global constructors and destructors by name.
+For these object file formats, the <CODE>CONSTRUCTORS</CODE> command tells the
+linker to place constructor information in the output section where the
+<CODE>CONSTRUCTORS</CODE> command appears.  The <CODE>CONSTRUCTORS</CODE> command is
+ignored for other object file formats.
+<P>
+
+The symbol <CODE>__CTOR_LIST__</CODE> marks the start of the global
+constructors, and the symbol <CODE>__DTOR_LIST</CODE> marks the end.  The
+first word in the list is the number of entries, followed by the address
+of each constructor or destructor, followed by a zero word.  The
+compiler must arrange to actually run the code.  For these object file
+formats GNU C++ normally calls constructors from a subroutine
+<CODE>__main</CODE>; a call to <CODE>__main</CODE> is automatically inserted into
+the startup code for <CODE>main</CODE>.  GNU C++ normally runs
+destructors either by using <CODE>atexit</CODE>, or directly from the function
+<CODE>exit</CODE>.
+</P><P>
+
+For object file formats such as <CODE>COFF</CODE> or <CODE>ELF</CODE> which support
+arbitrary section names, GNU C++ will normally arrange to put the
+addresses of global constructors and destructors into the <CODE>.ctors</CODE>
+and <CODE>.dtors</CODE> sections.  Placing the following sequence into your
+linker script will build the sort of table which the GNU C++
+runtime code expects to see.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>      __CTOR_LIST__ = .;
+      LONG((__CTOR_END__ - __CTOR_LIST__) / 4 - 2)
+      *(.ctors)
+      LONG(0)
+      __CTOR_END__ = .;
+      __DTOR_LIST__ = .;
+      LONG((__DTOR_END__ - __DTOR_LIST__) / 4 - 2)
+      *(.dtors)
+      LONG(0)
+      __DTOR_END__ = .;
+</FONT></pre></td></tr></table></P><P>
+
+If you are using the GNU C++ support for initialization priority,
+which provides some control over the order in which global constructors
+are run, you must sort the constructors at link time to ensure that they
+are executed in the correct order.  When using the <CODE>CONSTRUCTORS</CODE>
+command, use <SAMP>`SORT(CONSTRUCTORS)'</SAMP> instead.  When using the
+<CODE>.ctors</CODE> and <CODE>.dtors</CODE> sections, use <SAMP>`*(SORT(.ctors))'</SAMP> and
+<SAMP>`*(SORT(.dtors))'</SAMP> instead of just <SAMP>`*(.ctors)'</SAMP> and
+<SAMP>`*(.dtors)'</SAMP>.
+</P><P>
+
+Normally the compiler and linker will handle these issues automatically,
+and you will not need to concern yourself with them.  However, you may
+need to consider this if you are using C++ and writing your own linker
+scripts.
+</P><P>
+
+</DL>
+<P>
+
+<A NAME="Output Section Discarding"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_28.html#SEC28"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_30.html#SEC30"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_30.html#SEC30"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_18.html#SEC18"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

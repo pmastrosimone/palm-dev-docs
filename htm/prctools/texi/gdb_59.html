@@ -1,0 +1,139 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Value History</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Value History">
+<META NAME="keywords" CONTENT="Debugging with GDB: Value History">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC59"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_58.html#SEC58"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_60.html#SEC60"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_60.html#SEC60"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.8 Value history </H2>
+<!--docid::SEC59::-->
+<P>
+
+<A NAME="IDX359"></A>
+Values printed by the <CODE>print</CODE> command are saved in the GDB
+<EM>value history</EM>.  This allows you to refer to them in other expressions.
+Values are kept until the symbol table is re-read or discarded
+(for example with the <CODE>file</CODE> or <CODE>symbol-file</CODE> commands).
+When the symbol table changes, the value history is discarded,
+since the values may contain pointers back to the types defined in the
+symbol table.
+</P><P>
+
+<A NAME="IDX360"></A>
+<A NAME="IDX361"></A>
+<A NAME="IDX362"></A>
+The values printed are given <EM>history numbers</EM> by which you can
+refer to them.  These are successive integers starting with one.
+<CODE>print</CODE> shows you the history number assigned to a value by
+printing <SAMP>`$<VAR>num</VAR> = '</SAMP> before the value; here <VAR>num</VAR> is the
+history number.
+</P><P>
+
+To refer to any previous value, use <SAMP>`$'</SAMP> followed by the value's
+history number.  The way <CODE>print</CODE> labels its output is designed to
+remind you of this.  Just <CODE>$</CODE> refers to the most recent value in
+the history, and <CODE>$$</CODE> refers to the value before that.
+<CODE>$$<VAR>n</VAR></CODE> refers to the <VAR>n</VAR>th value from the end; <CODE>$$2</CODE>
+is the value just prior to <CODE>$$</CODE>, <CODE>$$1</CODE> is equivalent to
+<CODE>$$</CODE>, and <CODE>$$0</CODE> is equivalent to <CODE>$</CODE>.
+</P><P>
+
+For example, suppose you have just printed a pointer to a structure and
+want to see the contents of the structure.  It suffices to type
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>p *$
+</FONT></pre></td></tr></table></P><P>
+
+If you have a chain of structures where the component <CODE>next</CODE> points
+to the next one, you can print the contents of the next one with this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>p *$.next
+</FONT></pre></td></tr></table></P><P>
+
+You can print successive links in the chain by repeating this
+command--which you can do by just typing <KBD>RET</KBD>.
+</P><P>
+
+Note that the history records values, not expressions.  If the value of
+<CODE>x</CODE> is 4 and you type these commands:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>print x
+set x=5
+</FONT></pre></td></tr></table></P><P>
+
+then the value recorded in the value history by the <CODE>print</CODE> command
+remains 4 even though the value of <CODE>x</CODE> has changed.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX363"></A>
+<DT><CODE>show values</CODE>
+<DD>Print the last ten values in the value history, with their item numbers.
+This is like <SAMP>`p $$9'</SAMP> repeated ten times, except that <CODE>show
+values</CODE> does not change the history.
+<P>
+
+<DT><CODE>show values <VAR>n</VAR></CODE>
+<DD>Print ten history values centered on history item number <VAR>n</VAR>.
+<P>
+
+<DT><CODE>show values +</CODE>
+<DD>Print ten history values just after the values last printed.  If no more
+values are available, <CODE>show values +</CODE> produces no display.
+</DL>
+<P>
+
+Pressing <KBD>RET</KBD> to repeat <CODE>show values <VAR>n</VAR></CODE> has exactly the
+same effect as <SAMP>`show values +'</SAMP>.
+</P><P>
+
+<A NAME="Convenience Vars"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_58.html#SEC58"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_60.html#SEC60"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_60.html#SEC60"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

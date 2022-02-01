@@ -1,0 +1,153 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: ESA/390 Directives</TITLE>
+
+<META NAME="description" CONTENT="Using as: ESA/390 Directives">
+<META NAME="keywords" CONTENT="Using as: ESA/390 Directives">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC264"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_254.html#SEC263"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_256.html#SEC265"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_256.html#SEC265"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_250.html#SEC259"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.11.5 ESA/390 Assembler Directives </H3>
+<!--docid::SEC264::-->
+<P>
+
+<CODE>as</CODE> for the ESA/390 supports all of the standard ELF/SVR4 
+assembler directives that are documented in the main part of this
+documentation.  Several additional directives are supported in order
+to implement the ESA/390 addressing model.  The most important of these
+are <CODE>.using</CODE> and <CODE>.ltorg</CODE>
+</P><P>
+
+<A NAME="IDX675"></A>
+These are the additional directives in <CODE>as</CODE> for the ESA/390:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>.dc</CODE>
+<DD>A small subset of the usual DC directive is supported.
+<P>
+
+<DT><CODE>.drop <VAR>regno</VAR></CODE>
+<DD>Stop using <VAR>regno</VAR> as the base register.  The <VAR>regno</VAR> must
+have been previously declared with a <CODE>.using</CODE> directive in the
+same section as the current section.
+<P>
+
+<DT><CODE>.ebcdic <VAR>string</VAR></CODE>
+<DD>Emit the EBCDIC equivalent of the indicated string.  The emitted string
+will be null terminated.  Note that the directives <CODE>.string</CODE> etc. emit
+ascii strings by default.
+<P>
+
+<DT><CODE>EQU</CODE>
+<DD>The standard HLASM-style EQU directive is not supported; however, the 
+standard <CODE>as</CODE> directive .equ can be used to the same effect.
+<P>
+
+<DT><CODE>.ltorg</CODE>
+<DD>Dump the literal pool accumulated so far; begin a new literal pool.
+The literal pool will be written in the current section; in order to
+generate correct assembly, a <CODE>.using</CODE> must have been previously
+specified in the same section.
+<P>
+
+<DT><CODE>.using <VAR>expr</VAR>,<VAR>regno</VAR></CODE>
+<DD>Use <VAR>regno</VAR> as the base register for all subsequent RX, RS, and SS form
+instructions. The <VAR>expr</VAR> will be evaluated to obtain the base address;
+usually, <VAR>expr</VAR> will merely be <SAMP>`*'</SAMP>.
+<P>
+
+This assembler allows two <CODE>.using</CODE> directives to be simultaneously
+outstanding, one in the <CODE>.text</CODE> section, and one in another section 
+(typically, the <CODE>.data</CODE> section).  This feature allows 
+dynamically loaded objects to be implemented in a relatively 
+straightforward way.  A <CODE>.using</CODE> directive must always be specified 
+in the <CODE>.text</CODE> section; this will specify the base register that
+will be used for branches in the <CODE>.text</CODE> section.  A second
+<CODE>.using</CODE> may be specified in another section; this will specify
+the base register that is used for non-label address literals.
+When a second <CODE>.using</CODE> is specified, then the subsequent
+<CODE>.ltorg</CODE> must be put in the same section; otherwise an error will 
+result.
+</P><P>
+
+Thus, for example, the following code uses <CODE>r3</CODE> to address branch 
+targets and <CODE>r4</CODE> to address the literal pool, which has been written 
+to the <CODE>.data</CODE> section.  The is, the constants <CODE>=A(some_routine)</CODE>,
+<CODE>=H'42'</CODE> and <CODE>=E'3.1416'</CODE> will all appear in the <CODE>.data</CODE>
+section.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.data
+	.using  LITPOOL,r4
+.text
+	BASR	r3,0
+	.using	*,r3
+        B       START
+	.long	LITPOOL
+START:
+	L	r4,4(,r3)
+	L	r15,=A(some_routine)
+	LTR	r15,r15
+	BNE	LABEL
+	AH	r0,=H'42'
+LABEL:
+	ME	r6,=E'3.1416'
+.data
+LITPOOL:
+	.ltorg
+</pre></td></tr></table></P><P>
+
+Note that this dual-<CODE>.using</CODE> directive semantics extends 
+and is not compatible with HLASM semantics.  Note that this assembler 
+directive does not support the full range of HLASM semantics.
+</P><P>
+
+</DL>
+<P>
+
+<A NAME="ESA/390 Opcodes"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_254.html#SEC263"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_256.html#SEC265"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_256.html#SEC265"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_250.html#SEC259"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,318 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Non-bugs</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Non-bugs">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Non-bugs">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC138"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_137.html#SEC137"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_139.html#SEC139"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_125.html#SEC125"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.12 Certain Changes We Don't Want to Make </H2>
+<!--docid::SEC138::-->
+<P>
+
+This section lists changes that people frequently request, but which
+we do not make because we think GCC is better without them.
+</P><P>
+
+<UL>
+<LI>
+Checking the number and type of arguments to a function which has an
+old-fashioned definition and no prototype.
+<P>
+
+Such a feature would work only occasionally--only for calls that appear
+in the same file as the called function, following the definition.  The
+only way to check all calls reliably is to add a prototype for the
+function.  But adding a prototype eliminates the motivation for this
+feature.  So the feature is not worthwhile.
+</P><P>
+
+<LI>
+Warning about using an expression whose type is signed as a shift count.
+<P>
+
+Shift count operands are probably signed more often than unsigned.
+Warning about this would cause far more annoyance than good.
+</P><P>
+
+<LI>
+Warning about assigning a signed value to an unsigned variable.
+<P>
+
+Such assignments must be very common; warning about them would cause
+more annoyance than good.
+</P><P>
+
+<LI>
+Warning about unreachable code.
+<P>
+
+It's very common to have unreachable code in machine-generated
+programs.  For example, this happens normally in some files of GNU C
+itself.
+</P><P>
+
+<LI>
+Warning when a non-void function value is ignored.
+<P>
+
+Coming as I do from a Lisp background, I balk at the idea that there is
+something dangerous about discarding a value.  There are functions that
+return values which some callers may find useful; it makes no sense to
+clutter the program with a cast to <CODE>void</CODE> whenever the value isn't
+useful.
+</P><P>
+
+<LI>
+Assuming (for optimization) that the address of an external symbol is
+never zero.
+<P>
+
+This assumption is false on certain systems when <SAMP>`#pragma weak'</SAMP> is
+used.
+</P><P>
+
+<LI>
+Making <SAMP>`-fshort-enums'</SAMP> the default.
+<P>
+
+This would cause storage layout to be incompatible with most other C
+compilers.  And it doesn't seem very important, given that you can get
+the same result in other ways.  The case where it matters most is when
+the enumeration-valued object is inside a structure, and in that case
+you can specify a field width explicitly.
+</P><P>
+
+<LI>
+Making bitfields unsigned by default on particular machines where "the
+ABI standard" says to do so.
+<P>
+
+The ANSI C standard leaves it up to the implementation whether a bitfield
+declared plain <CODE>int</CODE> is signed or not.  This in effect creates two
+alternative dialects of C.
+</P><P>
+
+The GNU C compiler supports both dialects; you can specify the signed
+dialect with <SAMP>`-fsigned-bitfields'</SAMP> and the unsigned dialect with
+<SAMP>`-funsigned-bitfields'</SAMP>.  However, this leaves open the question of
+which dialect to use by default.
+</P><P>
+
+Currently, the preferred dialect makes plain bitfields signed, because
+this is simplest.  Since <CODE>int</CODE> is the same as <CODE>signed int</CODE> in
+every other context, it is cleanest for them to be the same in bitfields
+as well.
+</P><P>
+
+Some computer manufacturers have published Application Binary Interface
+standards which specify that plain bitfields should be unsigned.  It is
+a mistake, however, to say anything about this issue in an ABI.  This is
+because the handling of plain bitfields distinguishes two dialects of C.
+Both dialects are meaningful on every type of machine.  Whether a
+particular object file was compiled using signed bitfields or unsigned
+is of no concern to other object files, even if they access the same
+bitfields in the same data structures.
+</P><P>
+
+A given program is written in one or the other of these two dialects.
+The program stands a chance to work on most any machine if it is
+compiled with the proper dialect.  It is unlikely to work at all if
+compiled with the wrong dialect.
+</P><P>
+
+Many users appreciate the GNU C compiler because it provides an
+environment that is uniform across machines.  These users would be
+inconvenienced if the compiler treated plain bitfields differently on
+certain machines.
+</P><P>
+
+Occasionally users write programs intended only for a particular machine
+type.  On these occasions, the users would benefit if the GNU C compiler
+were to support by default the same dialect as the other compilers on
+that machine.  But such applications are rare.  And users writing a
+program to run on more than one type of machine cannot possibly benefit
+from this kind of compatibility.
+</P><P>
+
+This is why GCC does and will treat plain bitfields in the same
+fashion on all types of machines (by default).
+</P><P>
+
+There are some arguments for making bitfields unsigned by default on all
+machines.  If, for example, this becomes a universal de facto standard,
+it would make sense for GCC to go along with it.  This is something
+to be considered in the future.
+</P><P>
+
+(Of course, users strongly concerned about portability should indicate
+explicitly in each bitfield whether it is signed or not.  In this way,
+they write programs which have the same meaning in both C dialects.)
+</P><P>
+
+<LI>
+Undefining <CODE>__STDC__</CODE> when <SAMP>`-ansi'</SAMP> is not used.
+<P>
+
+Currently, GCC defines <CODE>__STDC__</CODE> as long as you don't use
+<SAMP>`-traditional'</SAMP>.  This provides good results in practice.
+</P><P>
+
+Programmers normally use conditionals on <CODE>__STDC__</CODE> to ask whether
+it is safe to use certain features of ANSI C, such as function
+prototypes or ANSI token concatenation.  Since plain <SAMP>`gcc'</SAMP> supports
+all the features of ANSI C, the correct answer to these questions is
+"yes".
+</P><P>
+
+Some users try to use <CODE>__STDC__</CODE> to check for the availability of
+certain library facilities.  This is actually incorrect usage in an ANSI
+C program, because the ANSI C standard says that a conforming
+freestanding implementation should define <CODE>__STDC__</CODE> even though it
+does not have the library facilities.  <SAMP>`gcc -ansi -pedantic'</SAMP> is a
+conforming freestanding implementation, and it is therefore required to
+define <CODE>__STDC__</CODE>, even though it does not come with an ANSI C
+library.
+</P><P>
+
+Sometimes people say that defining <CODE>__STDC__</CODE> in a compiler that
+does not completely conform to the ANSI C standard somehow violates the
+standard.  This is illogical.  The standard is a standard for compilers
+that claim to support ANSI C, such as <SAMP>`gcc -ansi'</SAMP>---not for other
+compilers such as plain <SAMP>`gcc'</SAMP>.  Whatever the ANSI C standard says
+is relevant to the design of plain <SAMP>`gcc'</SAMP> without <SAMP>`-ansi'</SAMP> only
+for pragmatic reasons, not as a requirement.
+</P><P>
+
+GCC normally defines <CODE>__STDC__</CODE> to be 1, and in addition
+defines <CODE>__STRICT_ANSI__</CODE> if you specify the <SAMP>`-ansi'</SAMP> option.
+On some hosts, system include files use a different convention, where
+<CODE>__STDC__</CODE> is normally 0, but is 1 if the user specifies strict
+conformance to the C Standard.  GCC follows the host convention when
+processing system include files, but when processing user files it follows
+the usual GNU C convention.
+</P><P>
+
+<LI>
+Undefining <CODE>__STDC__</CODE> in C++.
+<P>
+
+Programs written to compile with C++-to-C translators get the
+value of <CODE>__STDC__</CODE> that goes with the C compiler that is
+subsequently used.  These programs must test <CODE>__STDC__</CODE>
+to determine what kind of C preprocessor that compiler uses:
+whether they should concatenate tokens in the ANSI C fashion
+or in the traditional fashion.
+</P><P>
+
+These programs work properly with GNU C++ if <CODE>__STDC__</CODE> is defined.
+They would not work otherwise.
+</P><P>
+
+In addition, many header files are written to provide prototypes in ANSI
+C but not in traditional C.  Many of these header files can work without
+change in C++ provided <CODE>__STDC__</CODE> is defined.  If <CODE>__STDC__</CODE>
+is not defined, they will all fail, and will all need to be changed to
+test explicitly for C++ as well.
+</P><P>
+
+<LI>
+Deleting "empty" loops.
+<P>
+
+Historically, GCC has not deleted "empty" loops under the
+assumption that the most likely reason you would put one in a program is
+to have a delay, so deleting them will not make real programs run any
+faster.
+</P><P>
+
+However, the rationale here is that optimization of a nonempty loop
+cannot produce an empty one, which holds for C but is not always the
+case for C++.
+</P><P>
+
+Moreover, with <SAMP>`-funroll-loops'</SAMP> small "empty" loops are already
+removed, so the current behavior is both sub-optimal and inconsistent
+and will change in the future.
+</P><P>
+
+<LI>
+Making side effects happen in the same order as in some other compiler.
+<P>
+
+<A NAME="IDX443"></A>
+<A NAME="IDX444"></A>
+It is never safe to depend on the order of evaluation of side effects.
+For example, a function call like this may very well behave differently
+from one compiler to another:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>void func (int, int);
+
+int i = 2;
+func (i++, i++);
+</pre></td></tr></table></P><P>
+
+There is no guarantee (in either the C or the C++ standard language
+definitions) that the increments will be evaluated in any particular
+order.  Either increment might happen first.  <CODE>func</CODE> might get the
+arguments <SAMP>`2, 3'</SAMP>, or it might get <SAMP>`3, 2'</SAMP>, or even <SAMP>`2, 2'</SAMP>.
+</P><P>
+
+<LI>
+Not allowing structures with volatile fields in registers.
+<P>
+
+Strictly speaking, there is no prohibition in the ANSI C standard
+against allowing structures with volatile fields in registers, but
+it does not seem to make any sense and is probably not what you wanted
+to do.  So the compiler will give an error message in this case.
+</UL>
+<P>
+
+<A NAME="Warnings and Errors"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_137.html#SEC137"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_139.html#SEC139"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_125.html#SEC125"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

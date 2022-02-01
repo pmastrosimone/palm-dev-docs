@@ -1,0 +1,124 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: M68HC11-Modifiers</TITLE>
+
+<META NAME="description" CONTENT="Using as: M68HC11-Modifiers">
+<META NAME="keywords" CONTENT="Using as: M68HC11-Modifiers">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC312"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_302.html#SEC311"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_304.html#SEC313"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_304.html#SEC313"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_300.html#SEC309"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_308.html#SEC317"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.18.3 Symbolic Operand Modifiers </H3>
+<!--docid::SEC312::-->
+<P>
+
+<A NAME="IDX936"></A>
+<A NAME="IDX937"></A>
+</P><P>
+
+The assembler supports several modifiers when using symbol addresses
+in 68HC11 and 68HC12 instruction operands.  The general syntax is
+the following:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>%modifier(symbol)
+</FONT></pre></td></tr></table></P><P>
+
+<DL COMPACT>
+<A NAME="IDX938"></A>
+<DT><CODE>%addr</CODE>
+<DD>This modifier indicates to the assembler and linker to use
+the 16-bit physical address corresponding to the symbol.  This is intended
+to be used on memory window systems to map a symbol in the memory bank window.
+If the symbol is in a memory expansion part, the physical address
+corresponds to the symbol address within the memory bank window.
+If the symbol is not in a memory expansion part, this is the symbol address
+(using or not using the %addr modifier has no effect in that case).
+<P>
+
+<DT><CODE>%page</CODE>
+<DD>This modifier indicates to use the memory page number corresponding
+to the symbol.  If the symbol is in a memory expansion part, its page
+number is computed by the linker as a number used to map the page containing
+the symbol in the memory bank window.  If the symbol is not in a memory
+expansion part, the page number is 0.
+<P>
+
+<DT><CODE>%hi</CODE>
+<DD>This modifier indicates to use the 8-bit high part of the physical
+address of the symbol.
+<P>
+
+<DT><CODE>%lo</CODE>
+<DD>This modifier indicates to use the 8-bit low part of the physical
+address of the symbol.
+<P>
+
+</DL>
+<P>
+
+For example a 68HC12 call to a function <SAMP>`foo_example'</SAMP> stored in memory
+expansion part could be written as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>call %addr(foo_example),%page(foo_example)
+</FONT></pre></td></tr></table></P><P>
+
+and this is equivalent to
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>call foo_example
+</FONT></pre></td></tr></table></P><P>
+
+And for 68HC11 it could be written as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>ldab #%page(foo_example)
+stab _page_switch
+jsr  %addr(foo_example)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="M68HC11-Directives"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_302.html#SEC311"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_304.html#SEC313"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_304.html#SEC313"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_300.html#SEC309"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_308.html#SEC317"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

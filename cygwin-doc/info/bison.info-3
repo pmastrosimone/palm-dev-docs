@@ -1,0 +1,1336 @@
+This is bison.info, produced by makeinfo version 4.2 from
+/netrel/src/bison-20030307-1/doc/bison.texinfo.
+
+
+
+   This manual is for GNU Bison (version 1.875b, 2 March 2003), the GNU
+parser generator.
+
+   Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1995, 1998, 2003,
+1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.1 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with the Front-Cover texts
+     being "A GNU Manual," and with the Back-Cover Texts as in (a)
+     below.  A copy of the license is included in the section entitled
+     "GNU Free Documentation License."
+
+     (a) The FSF's Back-Cover Text is: "You have freedom to copy and
+     modify this GNU Manual, like GNU software.  Copies published by
+     the Free Software Foundation raise funds for GNU development."
+   
+INFO-DIR-SECTION GNU programming tools
+START-INFO-DIR-ENTRY
+* bison: (bison).       GNU parser generator (Yacc replacement).
+END-INFO-DIR-ENTRY
+
+
+File: bison.info,  Node: Mfcalc Symtab,  Prev: Mfcalc Rules,  Up: Multi-function Calc
+
+The `mfcalc' Symbol Table
+-------------------------
+
+   The multi-function calculator requires a symbol table to keep track
+of the names and meanings of variables and functions.  This doesn't
+affect the grammar rules (except for the actions) or the Bison
+declarations, but it requires some additional C functions for support.
+
+   The symbol table itself consists of a linked list of records.  Its
+definition, which is kept in the header `calc.h', is as follows.  It
+provides for either functions or variables to be placed in the table.
+
+     /* Function type.  */
+     typedef double (*func_t) (double);
+     
+     /* Data type for links in the chain of symbols.  */
+     struct symrec
+     {
+       char *name;  /* name of symbol */
+       int type;    /* type of symbol: either VAR or FNCT */
+       union
+       {
+         double var;      /* value of a VAR */
+         func_t fnctptr;  /* value of a FNCT */
+       } value;
+       struct symrec *next;  /* link field */
+     };
+     
+     typedef struct symrec symrec;
+     
+     /* The symbol table: a chain of `struct symrec'.  */
+     extern symrec *sym_table;
+     
+     symrec *putsym (char const *, func_t);
+     symrec *getsym (char const *);
+
+   The new version of `main' includes a call to `init_table', a
+function that initializes the symbol table.  Here it is, and
+`init_table' as well:
+
+     #include <stdio.h>
+     
+     /* Called by yyparse on error.  */
+     void
+     yyerror (char const *s)
+     {
+       printf ("%s\n", s);
+     }
+     
+     struct init
+     {
+       char const *fname;
+       double (*fnct) (double);
+     };
+     
+     struct init const arith_fncts[] =
+     {
+       "sin",  sin,
+       "cos",  cos,
+       "atan", atan,
+       "ln",   log,
+       "exp",  exp,
+       "sqrt", sqrt,
+       0, 0
+     };
+     
+     /* The symbol table: a chain of `struct symrec'.  */
+     symrec *sym_table;
+     
+     /* Put arithmetic functions in table.  */
+     void
+     init_table (void)
+     {
+       int i;
+       symrec *ptr;
+       for (i = 0; arith_fncts[i].fname != 0; i++)
+         {
+           ptr = putsym (arith_fncts[i].fname, FNCT);
+           ptr->value.fnctptr = arith_fncts[i].fnct;
+         }
+     }
+     
+     int
+     main (void)
+     {
+       init_table ();
+       return yyparse ();
+     }
+
+   By simply editing the initialization list and adding the necessary
+include files, you can add additional functions to the calculator.
+
+   Two important functions allow look-up and installation of symbols in
+the symbol table.  The function `putsym' is passed a name and the type
+(`VAR' or `FNCT') of the object to be installed.  The object is linked
+to the front of the list, and a pointer to the object is returned.  The
+function `getsym' is passed the name of the symbol to look up.  If
+found, a pointer to that symbol is returned; otherwise zero is returned.
+
+     symrec *
+     putsym (char const *sym_name, int sym_type)
+     {
+       symrec *ptr;
+       ptr = (symrec *) malloc (sizeof (symrec));
+       ptr->name = (char *) malloc (strlen (sym_name) + 1);
+       strcpy (ptr->name,sym_name);
+       ptr->type = sym_type;
+       ptr->value.var = 0; /* Set value to 0 even if fctn.  */
+       ptr->next = (struct symrec *)sym_table;
+       sym_table = ptr;
+       return ptr;
+     }
+     
+     symrec *
+     getsym (char const *sym_name)
+     {
+       symrec *ptr;
+       for (ptr = sym_table; ptr != (symrec *) 0;
+            ptr = (symrec *)ptr->next)
+         if (strcmp (ptr->name,sym_name) == 0)
+           return ptr;
+       return 0;
+     }
+
+   The function `yylex' must now recognize variables, numeric values,
+and the single-character arithmetic operators.  Strings of alphanumeric
+characters with a leading non-digit are recognized as either variables
+or functions depending on what the symbol table says about them.
+
+   The string is passed to `getsym' for look up in the symbol table.  If
+the name appears in the table, a pointer to its location and its type
+(`VAR' or `FNCT') is returned to `yyparse'.  If it is not already in
+the table, then it is installed as a `VAR' using `putsym'.  Again, a
+pointer and its type (which must be `VAR') is returned to `yyparse'.
+
+   No change is needed in the handling of numeric values and arithmetic
+operators in `yylex'.
+
+     #include <ctype.h>
+     
+     int
+     yylex (void)
+     {
+       int c;
+     
+       /* Ignore white space, get first nonwhite character.  */
+       while ((c = getchar ()) == ' ' || c == '\t');
+     
+       if (c == EOF)
+         return 0;
+     
+       /* Char starts a number => parse the number.         */
+       if (c == '.' || isdigit (c))
+         {
+           ungetc (c, stdin);
+           scanf ("%lf", &yylval.val);
+           return NUM;
+         }
+     
+       /* Char starts an identifier => read the name.       */
+       if (isalpha (c))
+         {
+           symrec *s;
+           static char *symbuf = 0;
+           static int length = 0;
+           int i;
+     
+           /* Initially make the buffer long enough
+              for a 40-character symbol name.  */
+           if (length == 0)
+             length = 40, symbuf = (char *)malloc (length + 1);
+     
+           i = 0;
+           do
+             {
+               /* If buffer is full, make it bigger.        */
+               if (i == length)
+                 {
+                   length *= 2;
+                   symbuf = (char *) realloc (symbuf, length + 1);
+                 }
+               /* Add this character to the buffer.         */
+               symbuf[i++] = c;
+               /* Get another character.                    */
+               c = getchar ();
+             }
+           while (isalnum (c));
+     
+           ungetc (c, stdin);
+           symbuf[i] = '\0';
+     
+           s = getsym (symbuf);
+           if (s == 0)
+             s = putsym (symbuf, VAR);
+           yylval.tptr = s;
+           return s->type;
+         }
+     
+       /* Any other character is a token by itself.        */
+       return c;
+     }
+
+   This program is both powerful and flexible.  You may easily add new
+functions, and it is a simple job to modify this code to install
+predefined variables such as `pi' or `e' as well.
+
+
+File: bison.info,  Node: Exercises,  Prev: Multi-function Calc,  Up: Examples
+
+Exercises
+=========
+
+  1. Add some new functions from `math.h' to the initialization list.
+
+  2. Add another array that contains constants and their values.  Then
+     modify `init_table' to add these constants to the symbol table.
+     It will be easiest to give the constants type `VAR'.
+
+  3. Make the program report an error if the user refers to an
+     uninitialized variable in any way except to store a value in it.
+
+
+File: bison.info,  Node: Grammar File,  Next: Interface,  Prev: Examples,  Up: Top
+
+Bison Grammar Files
+*******************
+
+   Bison takes as input a context-free grammar specification and
+produces a C-language function that recognizes correct instances of the
+grammar.
+
+   The Bison grammar input file conventionally has a name ending in
+`.y'.  *Note Invoking Bison: Invocation.
+
+* Menu:
+
+* Grammar Outline::   Overall layout of the grammar file.
+* Symbols::           Terminal and nonterminal symbols.
+* Rules::             How to write grammar rules.
+* Recursion::         Writing recursive rules.
+* Semantics::         Semantic values and actions.
+* Locations::         Locations and actions.
+* Declarations::      All kinds of Bison declarations are described here.
+* Multiple Parsers::  Putting more than one Bison parser in one program.
+
+
+File: bison.info,  Node: Grammar Outline,  Next: Symbols,  Up: Grammar File
+
+Outline of a Bison Grammar
+==========================
+
+   A Bison grammar file has four main sections, shown here with the
+appropriate delimiters:
+
+     %{
+       PROLOGUE
+     %}
+     
+     BISON DECLARATIONS
+     
+     %%
+     GRAMMAR RULES
+     %%
+     
+     EPILOGUE
+
+   Comments enclosed in `/* ... */' may appear in any of the sections.
+As a GNU extension, `//' introduces a comment that continues until end
+of line.
+
+* Menu:
+
+* Prologue::          Syntax and usage of the prologue.
+* Bison Declarations::  Syntax and usage of the Bison declarations section.
+* Grammar Rules::     Syntax and usage of the grammar rules section.
+* Epilogue::          Syntax and usage of the epilogue.
+
+
+File: bison.info,  Node: Prologue,  Next: Bison Declarations,  Up: Grammar Outline
+
+The prologue
+------------
+
+   The PROLOGUE section contains macro definitions and declarations of
+functions and variables that are used in the actions in the grammar
+rules.  These are copied to the beginning of the parser file so that
+they precede the definition of `yyparse'.  You can use `#include' to
+get the declarations from a header file.  If you don't need any C
+declarations, you may omit the `%{' and `%}' delimiters that bracket
+this section.
+
+   You may have more than one PROLOGUE section, intermixed with the
+BISON DECLARATIONS.  This allows you to have C and Bison declarations
+that refer to each other.  For example, the `%union' declaration may
+use types defined in a header file, and you may wish to prototype
+functions that take arguments of type `YYSTYPE'.  This can be done with
+two PROLOGUE blocks, one before and one after the `%union' declaration.
+
+     %{
+       #include <stdio.h>
+       #include "ptypes.h"
+     %}
+     
+     %union {
+       long n;
+       tree t;  /* `tree' is defined in `ptypes.h'. */
+     }
+     
+     %{
+       static void print_token_value (FILE *, int, YYSTYPE);
+       #define YYPRINT(F, N, L) print_token_value (F, N, L)
+     %}
+     
+     ...
+
+
+File: bison.info,  Node: Bison Declarations,  Next: Grammar Rules,  Prev: Prologue,  Up: Grammar Outline
+
+The Bison Declarations Section
+------------------------------
+
+   The BISON DECLARATIONS section contains declarations that define
+terminal and nonterminal symbols, specify precedence, and so on.  In
+some simple grammars you may not need any declarations.  *Note Bison
+Declarations: Declarations.
+
+
+File: bison.info,  Node: Grammar Rules,  Next: Epilogue,  Prev: Bison Declarations,  Up: Grammar Outline
+
+The Grammar Rules Section
+-------------------------
+
+   The "grammar rules" section contains one or more Bison grammar
+rules, and nothing else.  *Note Syntax of Grammar Rules: Rules.
+
+   There must always be at least one grammar rule, and the first `%%'
+(which precedes the grammar rules) may never be omitted even if it is
+the first thing in the file.
+
+
+File: bison.info,  Node: Epilogue,  Prev: Grammar Rules,  Up: Grammar Outline
+
+The epilogue
+------------
+
+   The EPILOGUE is copied verbatim to the end of the parser file, just
+as the PROLOGUE is copied to the beginning.  This is the most convenient
+place to put anything that you want to have in the parser file but
+which need not come before the definition of `yyparse'.  For example,
+the definitions of `yylex' and `yyerror' often go here.  Because C
+requires functions to be declared before being used, you often need to
+declare functions like `yylex' and `yyerror' in the Prologue, even if
+you define them int he Epilogue.  *Note Parser C-Language Interface:
+Interface.
+
+   If the last section is empty, you may omit the `%%' that separates it
+from the grammar rules.
+
+   The Bison parser itself contains many macros and identifiers whose
+names start with `yy' or `YY', so it is a good idea to avoid using any
+such names (except those documented in this manual) in the epilogue of
+the grammar file.
+
+
+File: bison.info,  Node: Symbols,  Next: Rules,  Prev: Grammar Outline,  Up: Grammar File
+
+Symbols, Terminal and Nonterminal
+=================================
+
+   "Symbols" in Bison grammars represent the grammatical classifications
+of the language.
+
+   A "terminal symbol" (also known as a "token type") represents a
+class of syntactically equivalent tokens.  You use the symbol in grammar
+rules to mean that a token in that class is allowed.  The symbol is
+represented in the Bison parser by a numeric code, and the `yylex'
+function returns a token type code to indicate what kind of token has
+been read.  You don't need to know what the code value is; you can use
+the symbol to stand for it.
+
+   A "nonterminal symbol" stands for a class of syntactically equivalent
+groupings.  The symbol name is used in writing grammar rules.  By
+convention, it should be all lower case.
+
+   Symbol names can contain letters, digits (not at the beginning),
+underscores and periods.  Periods make sense only in nonterminals.
+
+   There are three ways of writing terminal symbols in the grammar:
+
+   * A "named token type" is written with an identifier, like an
+     identifier in C.  By convention, it should be all upper case.  Each
+     such name must be defined with a Bison declaration such as
+     `%token'.  *Note Token Type Names: Token Decl.
+
+   * A "character token type" (or "literal character token") is written
+     in the grammar using the same syntax used in C for character
+     constants; for example, `'+'' is a character token type.  A
+     character token type doesn't need to be declared unless you need to
+     specify its semantic value data type (*note Data Types of Semantic
+     Values: Value Type.), associativity, or precedence (*note Operator
+     Precedence: Precedence.).
+
+     By convention, a character token type is used only to represent a
+     token that consists of that particular character.  Thus, the token
+     type `'+'' is used to represent the character `+' as a token.
+     Nothing enforces this convention, but if you depart from it, your
+     program will confuse other readers.
+
+     All the usual escape sequences used in character literals in C can
+     be used in Bison as well, but you must not use the null character
+     as a character literal because its numeric code, zero, signifies
+     end-of-input (*note Calling Convention for `yylex': Calling
+     Convention.).  Also, unlike standard C, trigraphs have no special
+     meaning in Bison character literals, nor is backslash-newline
+     allowed.
+
+   * A "literal string token" is written like a C string constant; for
+     example, `"<="' is a literal string token.  A literal string token
+     doesn't need to be declared unless you need to specify its semantic
+     value data type (*note Value Type::), associativity, or precedence
+     (*note Precedence::).
+
+     You can associate the literal string token with a symbolic name as
+     an alias, using the `%token' declaration (*note Token
+     Declarations: Token Decl.).  If you don't do that, the lexical
+     analyzer has to retrieve the token number for the literal string
+     token from the `yytname' table (*note Calling Convention::).
+
+     *Warning*: literal string tokens do not work in Yacc.
+
+     By convention, a literal string token is used only to represent a
+     token that consists of that particular string.  Thus, you should
+     use the token type `"<="' to represent the string `<=' as a token.
+     Bison does not enforce this convention, but if you depart from
+     it, people who read your program will be confused.
+
+     All the escape sequences used in string literals in C can be used
+     in Bison as well.  However, unlike Standard C, trigraphs have no
+     special meaning in Bison string literals, nor is backslash-newline
+     allowed.  A literal string token must contain two or more
+     characters; for a token containing just one character, use a
+     character token (see above).
+
+   How you choose to write a terminal symbol has no effect on its
+grammatical meaning.  That depends only on where it appears in rules and
+on when the parser function returns that symbol.
+
+   The value returned by `yylex' is always one of the terminal symbols,
+except that a zero or negative value signifies end-of-input.  Whichever
+way you write the token type in the grammar rules, you write it the
+same way in the definition of `yylex'.  The numeric code for a
+character token type is simply the positive numeric code of the
+character, so `yylex' can use the identical value to generate the
+requisite code, though you may need to convert it to `unsigned char' to
+avoid sign-extension on hosts where `char' is signed.  Each named token
+type becomes a C macro in the parser file, so `yylex' can use the name
+to stand for the code.  (This is why periods don't make sense in
+terminal symbols.)  *Note Calling Convention for `yylex': Calling
+Convention.
+
+   If `yylex' is defined in a separate file, you need to arrange for the
+token-type macro definitions to be available there.  Use the `-d'
+option when you run Bison, so that it will write these macro definitions
+into a separate header file `NAME.tab.h' which you can include in the
+other source files that need it.  *Note Invoking Bison: Invocation.
+
+   If you want to write a grammar that is portable to any Standard C
+host, you must use only non-null character tokens taken from the basic
+execution character set of Standard C.  This set consists of the ten
+digits, the 52 lower- and upper-case English letters, and the
+characters in the following C-language string:
+
+     "\a\b\t\n\v\f\r !\"#%&'()*+,-./:;<=>?[\\]^_{|}~"
+
+   The `yylex' function and Bison must use a consistent character set
+and encoding for character tokens.  For example, if you run Bison in an
+ASCII environment, but then compile and run the resulting program in an
+environment that uses an incompatible character set like EBCDIC, the
+resulting program may not work because the tables generated by Bison
+will assume ASCII numeric values for character tokens.  It is standard
+practice for software distributions to contain C source files that were
+generated by Bison in an ASCII environment, so installers on platforms
+that are incompatible with ASCII must rebuild those files before
+compiling them.
+
+   The symbol `error' is a terminal symbol reserved for error recovery
+(*note Error Recovery::); you shouldn't use it for any other purpose.
+In particular, `yylex' should never return this value.  The default
+value of the error token is 256, unless you explicitly assigned 256 to
+one of your tokens with a `%token' declaration.
+
+
+File: bison.info,  Node: Rules,  Next: Recursion,  Prev: Symbols,  Up: Grammar File
+
+Syntax of Grammar Rules
+=======================
+
+   A Bison grammar rule has the following general form:
+
+     RESULT: COMPONENTS...
+             ;
+
+where RESULT is the nonterminal symbol that this rule describes, and
+COMPONENTS are various terminal and nonterminal symbols that are put
+together by this rule (*note Symbols::).
+
+   For example,
+
+     exp:      exp '+' exp
+             ;
+
+says that two groupings of type `exp', with a `+' token in between, can
+be combined into a larger grouping of type `exp'.
+
+   White space in rules is significant only to separate symbols.  You
+can add extra white space as you wish.
+
+   Scattered among the components can be ACTIONS that determine the
+semantics of the rule.  An action looks like this:
+
+     {C STATEMENTS}
+
+Usually there is only one action and it follows the components.  *Note
+Actions::.
+
+   Multiple rules for the same RESULT can be written separately or can
+be joined with the vertical-bar character `|' as follows:
+
+     RESULT:   RULE1-COMPONENTS...
+             | RULE2-COMPONENTS...
+             ...
+             ;
+
+They are still considered distinct rules even when joined in this way.
+
+   If COMPONENTS in a rule is empty, it means that RESULT can match the
+empty string.  For example, here is how to define a comma-separated
+sequence of zero or more `exp' groupings:
+
+     expseq:   /* empty */
+             | expseq1
+             ;
+     
+     expseq1:  exp
+             | expseq1 ',' exp
+             ;
+
+It is customary to write a comment `/* empty */' in each rule with no
+components.
+
+
+File: bison.info,  Node: Recursion,  Next: Semantics,  Prev: Rules,  Up: Grammar File
+
+Recursive Rules
+===============
+
+   A rule is called "recursive" when its RESULT nonterminal appears
+also on its right hand side.  Nearly all Bison grammars need to use
+recursion, because that is the only way to define a sequence of any
+number of a particular thing.  Consider this recursive definition of a
+comma-separated sequence of one or more expressions:
+
+     expseq1:  exp
+             | expseq1 ',' exp
+             ;
+
+Since the recursive use of `expseq1' is the leftmost symbol in the
+right hand side, we call this "left recursion".  By contrast, here the
+same construct is defined using "right recursion":
+
+     expseq1:  exp
+             | exp ',' expseq1
+             ;
+
+Any kind of sequence can be defined using either left recursion or right
+recursion, but you should always use left recursion, because it can
+parse a sequence of any number of elements with bounded stack space.
+Right recursion uses up space on the Bison stack in proportion to the
+number of elements in the sequence, because all the elements must be
+shifted onto the stack before the rule can be applied even once.  *Note
+The Bison Parser Algorithm: Algorithm, for further explanation of this.
+
+   "Indirect" or "mutual" recursion occurs when the result of the rule
+does not appear directly on its right hand side, but does appear in
+rules for other nonterminals which do appear on its right hand side.
+
+   For example:
+
+     expr:     primary
+             | primary '+' primary
+             ;
+     
+     primary:  constant
+             | '(' expr ')'
+             ;
+
+defines two mutually-recursive nonterminals, since each refers to the
+other.
+
+
+File: bison.info,  Node: Semantics,  Next: Locations,  Prev: Recursion,  Up: Grammar File
+
+Defining Language Semantics
+===========================
+
+   The grammar rules for a language determine only the syntax.  The
+semantics are determined by the semantic values associated with various
+tokens and groupings, and by the actions taken when various groupings
+are recognized.
+
+   For example, the calculator calculates properly because the value
+associated with each expression is the proper number; it adds properly
+because the action for the grouping `X + Y' is to add the numbers
+associated with X and Y.
+
+* Menu:
+
+* Value Type::        Specifying one data type for all semantic values.
+* Multiple Types::    Specifying several alternative data types.
+* Actions::           An action is the semantic definition of a grammar rule.
+* Action Types::      Specifying data types for actions to operate on.
+* Mid-Rule Actions::  Most actions go at the end of a rule.
+                      This says when, why and how to use the exceptional
+                        action in the middle of a rule.
+
+
+File: bison.info,  Node: Value Type,  Next: Multiple Types,  Up: Semantics
+
+Data Types of Semantic Values
+-----------------------------
+
+   In a simple program it may be sufficient to use the same data type
+for the semantic values of all language constructs.  This was true in
+the RPN and infix calculator examples (*note Reverse Polish Notation
+Calculator: RPN Calc.).
+
+   Bison's default is to use type `int' for all semantic values.  To
+specify some other type, define `YYSTYPE' as a macro, like this:
+
+     #define YYSTYPE double
+
+This macro definition must go in the prologue of the grammar file
+(*note Outline of a Bison Grammar: Grammar Outline.).
+
+
+File: bison.info,  Node: Multiple Types,  Next: Actions,  Prev: Value Type,  Up: Semantics
+
+More Than One Value Type
+------------------------
+
+   In most programs, you will need different data types for different
+kinds of tokens and groupings.  For example, a numeric constant may
+need type `int' or `long', while a string constant needs type `char *',
+and an identifier might need a pointer to an entry in the symbol table.
+
+   To use more than one data type for semantic values in one parser,
+Bison requires you to do two things:
+
+   * Specify the entire collection of possible data types, with the
+     `%union' Bison declaration (*note The Collection of Value Types:
+     Union Decl.).
+
+   * Choose one of those types for each symbol (terminal or
+     nonterminal) for which semantic values are used.  This is done for
+     tokens with the `%token' Bison declaration (*note Token Type
+     Names: Token Decl.)  and for groupings with the `%type' Bison
+     declaration (*note Nonterminal Symbols: Type Decl.).
+
+
+File: bison.info,  Node: Actions,  Next: Action Types,  Prev: Multiple Types,  Up: Semantics
+
+Actions
+-------
+
+   An action accompanies a syntactic rule and contains C code to be
+executed each time an instance of that rule is recognized.  The task of
+most actions is to compute a semantic value for the grouping built by
+the rule from the semantic values associated with tokens or smaller
+groupings.
+
+   An action consists of C statements surrounded by braces, much like a
+compound statement in C.  An action can contain any sequence of C
+statements.  Bison does not look for trigraphs, though, so if your C
+code uses trigraphs you should ensure that they do not affect the
+nesting of braces or the boundaries of comments, strings, or character
+literals.
+
+   An action can be placed at any position in the rule; it is executed
+at that position.  Most rules have just one action at the end of the
+rule, following all the components.  Actions in the middle of a rule
+are tricky and used only for special purposes (*note Actions in
+Mid-Rule: Mid-Rule Actions.).
+
+   The C code in an action can refer to the semantic values of the
+components matched by the rule with the construct `$N', which stands for
+the value of the Nth component.  The semantic value for the grouping
+being constructed is `$$'.  (Bison translates both of these constructs
+into array element references when it copies the actions into the parser
+file.)
+
+   Here is a typical example:
+
+     exp:    ...
+             | exp '+' exp
+                 { $$ = $1 + $3; }
+
+This rule constructs an `exp' from two smaller `exp' groupings
+connected by a plus-sign token.  In the action, `$1' and `$3' refer to
+the semantic values of the two component `exp' groupings, which are the
+first and third symbols on the right hand side of the rule.  The sum is
+stored into `$$' so that it becomes the semantic value of the
+addition-expression just recognized by the rule.  If there were a
+useful semantic value associated with the `+' token, it could be
+referred to as `$2'.
+
+   Note that the vertical-bar character `|' is really a rule separator,
+and actions are attached to a single rule.  This is a difference with
+tools like Flex, for which `|' stands for either "or", or "the same
+action as that of the next rule".  In the following example, the action
+is triggered only when `b' is found:
+
+     a-or-b: 'a'|'b'   { a_or_b_found = 1; };
+
+   If you don't specify an action for a rule, Bison supplies a default:
+`$$ = $1'.  Thus, the value of the first symbol in the rule becomes the
+value of the whole rule.  Of course, the default action is valid only
+if the two data types match.  There is no meaningful default action for
+an empty rule; every empty rule must have an explicit action unless the
+rule's value does not matter.
+
+   `$N' with N zero or negative is allowed for reference to tokens and
+groupings on the stack _before_ those that match the current rule.
+This is a very risky practice, and to use it reliably you must be
+certain of the context in which the rule is applied.  Here is a case in
+which you can use this reliably:
+
+     foo:      expr bar '+' expr  { ... }
+             | expr bar '-' expr  { ... }
+             ;
+     
+     bar:      /* empty */
+             { previous_expr = $0; }
+             ;
+
+   As long as `bar' is used only in the fashion shown here, `$0' always
+refers to the `expr' which precedes `bar' in the definition of `foo'.
+
+
+File: bison.info,  Node: Action Types,  Next: Mid-Rule Actions,  Prev: Actions,  Up: Semantics
+
+Data Types of Values in Actions
+-------------------------------
+
+   If you have chosen a single data type for semantic values, the `$$'
+and `$N' constructs always have that data type.
+
+   If you have used `%union' to specify a variety of data types, then
+you must declare a choice among these types for each terminal or
+nonterminal symbol that can have a semantic value.  Then each time you
+use `$$' or `$N', its data type is determined by which symbol it refers
+to in the rule.  In this example,
+
+     exp:    ...
+             | exp '+' exp
+                 { $$ = $1 + $3; }
+
+`$1' and `$3' refer to instances of `exp', so they all have the data
+type declared for the nonterminal symbol `exp'.  If `$2' were used, it
+would have the data type declared for the terminal symbol `'+'',
+whatever that might be.
+
+   Alternatively, you can specify the data type when you refer to the
+value, by inserting `<TYPE>' after the `$' at the beginning of the
+reference.  For example, if you have defined types as shown here:
+
+     %union {
+       int itype;
+       double dtype;
+     }
+
+then you can write `$<itype>1' to refer to the first subunit of the
+rule as an integer, or `$<dtype>1' to refer to it as a double.
+
+
+File: bison.info,  Node: Mid-Rule Actions,  Prev: Action Types,  Up: Semantics
+
+Actions in Mid-Rule
+-------------------
+
+   Occasionally it is useful to put an action in the middle of a rule.
+These actions are written just like usual end-of-rule actions, but they
+are executed before the parser even recognizes the following components.
+
+   A mid-rule action may refer to the components preceding it using
+`$N', but it may not refer to subsequent components because it is run
+before they are parsed.
+
+   The mid-rule action itself counts as one of the components of the
+rule.  This makes a difference when there is another action later in
+the same rule (and usually there is another at the end): you have to
+count the actions along with the symbols when working out which number
+N to use in `$N'.
+
+   The mid-rule action can also have a semantic value.  The action can
+set its value with an assignment to `$$', and actions later in the rule
+can refer to the value using `$N'.  Since there is no symbol to name
+the action, there is no way to declare a data type for the value in
+advance, so you must use the `$<...>N' construct to specify a data type
+each time you refer to this value.
+
+   There is no way to set the value of the entire rule with a mid-rule
+action, because assignments to `$$' do not have that effect.  The only
+way to set the value for the entire rule is with an ordinary action at
+the end of the rule.
+
+   Here is an example from a hypothetical compiler, handling a `let'
+statement that looks like `let (VARIABLE) STATEMENT' and serves to
+create a variable named VARIABLE temporarily for the duration of
+STATEMENT.  To parse this construct, we must put VARIABLE into the
+symbol table while STATEMENT is parsed, then remove it afterward.  Here
+is how it is done:
+
+     stmt:   LET '(' var ')'
+                     { $<context>$ = push_context ();
+                       declare_variable ($3); }
+             stmt    { $$ = $6;
+                       pop_context ($<context>5); }
+
+As soon as `let (VARIABLE)' has been recognized, the first action is
+run.  It saves a copy of the current semantic context (the list of
+accessible variables) as its semantic value, using alternative
+`context' in the data-type union.  Then it calls `declare_variable' to
+add the new variable to that list.  Once the first action is finished,
+the embedded statement `stmt' can be parsed.  Note that the mid-rule
+action is component number 5, so the `stmt' is component number 6.
+
+   After the embedded statement is parsed, its semantic value becomes
+the value of the entire `let'-statement.  Then the semantic value from
+the earlier action is used to restore the prior list of variables.  This
+removes the temporary `let'-variable from the list so that it won't
+appear to exist while the rest of the program is parsed.
+
+   Taking action before a rule is completely recognized often leads to
+conflicts since the parser must commit to a parse in order to execute
+the action.  For example, the following two rules, without mid-rule
+actions, can coexist in a working parser because the parser can shift
+the open-brace token and look at what follows before deciding whether
+there is a declaration or not:
+
+     compound: '{' declarations statements '}'
+             | '{' statements '}'
+             ;
+
+But when we add a mid-rule action as follows, the rules become
+nonfunctional:
+
+     compound: { prepare_for_local_variables (); }
+               '{' declarations statements '}'
+             | '{' statements '}'
+             ;
+
+Now the parser is forced to decide whether to run the mid-rule action
+when it has read no farther than the open-brace.  In other words, it
+must commit to using one rule or the other, without sufficient
+information to do it correctly.  (The open-brace token is what is called
+the "look-ahead" token at this time, since the parser is still deciding
+what to do about it.  *Note Look-Ahead Tokens: Look-Ahead.)
+
+   You might think that you could correct the problem by putting
+identical actions into the two rules, like this:
+
+     compound: { prepare_for_local_variables (); }
+               '{' declarations statements '}'
+             | { prepare_for_local_variables (); }
+               '{' statements '}'
+             ;
+
+But this does not help, because Bison does not realize that the two
+actions are identical.  (Bison never tries to understand the C code in
+an action.)
+
+   If the grammar is such that a declaration can be distinguished from a
+statement by the first token (which is true in C), then one solution
+which does work is to put the action after the open-brace, like this:
+
+     compound: '{' { prepare_for_local_variables (); }
+               declarations statements '}'
+             | '{' statements '}'
+             ;
+
+Now the first token of the following declaration or statement, which
+would in any case tell Bison which rule to use, can still do so.
+
+   Another solution is to bury the action inside a nonterminal symbol
+which serves as a subroutine:
+
+     subroutine: /* empty */
+               { prepare_for_local_variables (); }
+             ;
+     
+     compound: subroutine
+               '{' declarations statements '}'
+             | subroutine
+               '{' statements '}'
+             ;
+
+Now Bison can execute the action in the rule for `subroutine' without
+deciding which rule for `compound' it will eventually use.  Note that
+the action is now at the end of its rule.  Any mid-rule action can be
+converted to an end-of-rule action in this way, and this is what Bison
+actually does to implement mid-rule actions.
+
+
+File: bison.info,  Node: Locations,  Next: Declarations,  Prev: Semantics,  Up: Grammar File
+
+Tracking Locations
+==================
+
+   Though grammar rules and semantic actions are enough to write a fully
+functional parser, it can be useful to process some additional
+information, especially symbol locations.
+
+   The way locations are handled is defined by providing a data type,
+and actions to take when rules are matched.
+
+* Menu:
+
+* Location Type::               Specifying a data type for locations.
+* Actions and Locations::       Using locations in actions.
+* Location Default Action::     Defining a general way to compute locations.
+
+
+File: bison.info,  Node: Location Type,  Next: Actions and Locations,  Up: Locations
+
+Data Type of Locations
+----------------------
+
+   Defining a data type for locations is much simpler than for semantic
+values, since all tokens and groupings always use the same type.
+
+   The type of locations is specified by defining a macro called
+`YYLTYPE'.  When `YYLTYPE' is not defined, Bison uses a default
+structure type with four members:
+
+     typedef struct YYLTYPE
+     {
+       int first_line;
+       int first_column;
+       int last_line;
+       int last_column;
+     } YYLTYPE;
+
+
+File: bison.info,  Node: Actions and Locations,  Next: Location Default Action,  Prev: Location Type,  Up: Locations
+
+Actions and Locations
+---------------------
+
+   Actions are not only useful for defining language semantics, but
+also for describing the behavior of the output parser with locations.
+
+   The most obvious way for building locations of syntactic groupings
+is very similar to the way semantic values are computed.  In a given
+rule, several constructs can be used to access the locations of the
+elements being matched.  The location of the Nth component of the right
+hand side is `@N', while the location of the left hand side grouping is
+`@$'.
+
+   Here is a basic example using the default data type for locations:
+
+     exp:    ...
+             | exp '/' exp
+                 {
+                   @$.first_column = @1.first_column;
+                   @$.first_line = @1.first_line;
+                   @$.last_column = @3.last_column;
+                   @$.last_line = @3.last_line;
+                   if ($3)
+                     $$ = $1 / $3;
+                   else
+                     {
+                       $$ = 1;
+                       printf("Division by zero, l%d,c%d-l%d,c%d",
+                              @3.first_line, @3.first_column,
+                              @3.last_line, @3.last_column);
+                     }
+                 }
+
+   As for semantic values, there is a default action for locations that
+is run each time a rule is matched.  It sets the beginning of `@$' to
+the beginning of the first symbol, and the end of `@$' to the end of the
+last symbol.
+
+   With this default action, the location tracking can be fully
+automatic.  The example above simply rewrites this way:
+
+     exp:    ...
+             | exp '/' exp
+                 {
+                   if ($3)
+                     $$ = $1 / $3;
+                   else
+                     {
+                       $$ = 1;
+                       printf("Division by zero, l%d,c%d-l%d,c%d",
+                              @3.first_line, @3.first_column,
+                              @3.last_line, @3.last_column);
+                     }
+                 }
+
+
+File: bison.info,  Node: Location Default Action,  Prev: Actions and Locations,  Up: Locations
+
+Default Action for Locations
+----------------------------
+
+   Actually, actions are not the best place to compute locations.  Since
+locations are much more general than semantic values, there is room in
+the output parser to redefine the default action to take for each rule.
+The `YYLLOC_DEFAULT' macro is invoked each time a rule is matched,
+before the associated action is run.  It is also invoked while
+processing a syntax error, to compute the error's location.
+
+   Most of the time, this macro is general enough to suppress location
+dedicated code from semantic actions.
+
+   The `YYLLOC_DEFAULT' macro takes three parameters.  The first one is
+the location of the grouping (the result of the computation).  When a
+rule is matched, the second parameter is an array holding locations of
+all right hand side elements of the rule being matched, and the third
+parameter is the size of the rule's right hand side.  When processing a
+syntax error, the second parameter is an array holding locations of the
+symbols that were discarded during error processing, and the third
+parameter is the number of discarded symbols.
+
+   By default, `YYLLOC_DEFAULT' is defined this way for simple LALR(1)
+parsers:
+
+     #define YYLLOC_DEFAULT(Current, Rhs, N)          \
+       Current.first_line   = Rhs[1].first_line;      \
+       Current.first_column = Rhs[1].first_column;    \
+       Current.last_line    = Rhs[N].last_line;       \
+       Current.last_column  = Rhs[N].last_column;
+
+and like this for GLR parsers:
+
+     #define YYLLOC_DEFAULT(Current, Rhs, N)          \
+       Current.first_line   = YYRHSLOC(Rhs,1).first_line;      \
+       Current.first_column = YYRHSLOC(Rhs,1).first_column;    \
+       Current.last_line    = YYRHSLOC(Rhs,N).last_line;       \
+       Current.last_column  = YYRHSLOC(Rhs,N).last_column;
+
+   When defining `YYLLOC_DEFAULT', you should consider that:
+
+   * All arguments are free of side-effects.  However, only the first
+     one (the result) should be modified by `YYLLOC_DEFAULT'.
+
+   * For consistency with semantic actions, valid indexes for the
+     location array range from 1 to N.
+
+
+File: bison.info,  Node: Declarations,  Next: Multiple Parsers,  Prev: Locations,  Up: Grammar File
+
+Bison Declarations
+==================
+
+   The "Bison declarations" section of a Bison grammar defines the
+symbols used in formulating the grammar and the data types of semantic
+values.  *Note Symbols::.
+
+   All token type names (but not single-character literal tokens such as
+`'+'' and `'*'') must be declared.  Nonterminal symbols must be
+declared if you need to specify which data type to use for the semantic
+value (*note More Than One Value Type: Multiple Types.).
+
+   The first rule in the file also specifies the start symbol, by
+default.  If you want some other symbol to be the start symbol, you
+must declare it explicitly (*note Languages and Context-Free Grammars:
+Language and Grammar.).
+
+* Menu:
+
+* Token Decl::        Declaring terminal symbols.
+* Precedence Decl::   Declaring terminals with precedence and associativity.
+* Union Decl::        Declaring the set of all semantic value types.
+* Type Decl::         Declaring the choice of type for a nonterminal symbol.
+* Destructor Decl::   Declaring how symbols are freed.
+* Expect Decl::       Suppressing warnings about shift/reduce conflicts.
+* Start Decl::        Specifying the start symbol.
+* Pure Decl::         Requesting a reentrant parser.
+* Decl Summary::      Table of all Bison declarations.
+
+
+File: bison.info,  Node: Token Decl,  Next: Precedence Decl,  Up: Declarations
+
+Token Type Names
+----------------
+
+   The basic way to declare a token type name (terminal symbol) is as
+follows:
+
+     %token NAME
+
+   Bison will convert this into a `#define' directive in the parser, so
+that the function `yylex' (if it is in this file) can use the name NAME
+to stand for this token type's code.
+
+   Alternatively, you can use `%left', `%right', or `%nonassoc' instead
+of `%token', if you wish to specify associativity and precedence.
+*Note Operator Precedence: Precedence Decl.
+
+   You can explicitly specify the numeric code for a token type by
+appending an integer value in the field immediately following the token
+name:
+
+     %token NUM 300
+
+It is generally best, however, to let Bison choose the numeric codes for
+all token types.  Bison will automatically select codes that don't
+conflict with each other or with normal characters.
+
+   In the event that the stack type is a union, you must augment the
+`%token' or other token declaration to include the data type
+alternative delimited by angle-brackets (*note More Than One Value
+Type: Multiple Types.).
+
+   For example:
+
+     %union {              /* define stack type */
+       double val;
+       symrec *tptr;
+     }
+     %token <val> NUM      /* define token NUM and its type */
+
+   You can associate a literal string token with a token type name by
+writing the literal string at the end of a `%token' declaration which
+declares the name.  For example:
+
+     %token arrow "=>"
+
+For example, a grammar for the C language might specify these names with
+equivalent literal string tokens:
+
+     %token  <operator>  OR      "||"
+     %token  <operator>  LE 134  "<="
+     %left  OR  "<="
+
+Once you equate the literal string and the token name, you can use them
+interchangeably in further declarations or the grammar rules.  The
+`yylex' function can use the token name or the literal string to obtain
+the token type code number (*note Calling Convention::).
+
+
+File: bison.info,  Node: Precedence Decl,  Next: Union Decl,  Prev: Token Decl,  Up: Declarations
+
+Operator Precedence
+-------------------
+
+   Use the `%left', `%right' or `%nonassoc' declaration to declare a
+token and specify its precedence and associativity, all at once.  These
+are called "precedence declarations".  *Note Operator Precedence:
+Precedence, for general information on operator precedence.
+
+   The syntax of a precedence declaration is the same as that of
+`%token': either
+
+     %left SYMBOLS...
+
+or
+
+     %left <TYPE> SYMBOLS...
+
+   And indeed any of these declarations serves the purposes of `%token'.
+But in addition, they specify the associativity and relative precedence
+for all the SYMBOLS:
+
+   * The associativity of an operator OP determines how repeated uses
+     of the operator nest: whether `X OP Y OP Z' is parsed by grouping
+     X with Y first or by grouping Y with Z first.  `%left' specifies
+     left-associativity (grouping X with Y first) and `%right'
+     specifies right-associativity (grouping Y with Z first).
+     `%nonassoc' specifies no associativity, which means that `X OP Y
+     OP Z' is considered a syntax error.
+
+   * The precedence of an operator determines how it nests with other
+     operators.  All the tokens declared in a single precedence
+     declaration have equal precedence and nest together according to
+     their associativity.  When two tokens declared in different
+     precedence declarations associate, the one declared later has the
+     higher precedence and is grouped first.
+
+
+File: bison.info,  Node: Union Decl,  Next: Type Decl,  Prev: Precedence Decl,  Up: Declarations
+
+The Collection of Value Types
+-----------------------------
+
+   The `%union' declaration specifies the entire collection of possible
+data types for semantic values.  The keyword `%union' is followed by a
+pair of braces containing the same thing that goes inside a `union' in
+C.
+
+   For example:
+
+     %union {
+       double val;
+       symrec *tptr;
+     }
+
+This says that the two alternative types are `double' and `symrec *'.
+They are given names `val' and `tptr'; these names are used in the
+`%token' and `%type' declarations to pick one of the types for a
+terminal or nonterminal symbol (*note Nonterminal Symbols: Type Decl.).
+
+   As an extension to POSIX, a tag is allowed after the `union'.  For
+example:
+
+     %union value {
+       double val;
+       symrec *tptr;
+     }
+
+   specifies the union tag `value', so the corresponding C type is
+`union value'.  If you do not specify a tag, it defaults to `YYSTYPE'.
+
+   Note that, unlike making a `union' declaration in C, you need not
+write a semicolon after the closing brace.
+
+
+File: bison.info,  Node: Type Decl,  Next: Destructor Decl,  Prev: Union Decl,  Up: Declarations
+
+Nonterminal Symbols
+-------------------
+
+When you use `%union' to specify multiple value types, you must declare
+the value type of each nonterminal symbol for which values are used.
+This is done with a `%type' declaration, like this:
+
+     %type <TYPE> NONTERMINAL...
+
+Here NONTERMINAL is the name of a nonterminal symbol, and TYPE is the
+name given in the `%union' to the alternative that you want (*note The
+Collection of Value Types: Union Decl.).  You can give any number of
+nonterminal symbols in the same `%type' declaration, if they have the
+same value type.  Use spaces to separate the symbol names.
+
+   You can also declare the value type of a terminal symbol.  To do
+this, use the same `<TYPE>' construction in a declaration for the
+terminal symbol.  All kinds of token declarations allow `<TYPE>'.
+
+
+File: bison.info,  Node: Destructor Decl,  Next: Expect Decl,  Prev: Type Decl,  Up: Declarations
+
+Freeing Discarded Symbols
+-------------------------
+
+   Some symbols can be discarded by the parser, typically during error
+recovery (*note Error Recovery::).  Basically, during error recovery,
+embarrassing symbols already pushed on the stack, and embarrassing
+tokens coming from the rest of the file are thrown away until the parser
+falls on its feet.  If these symbols convey heap based information, this
+memory is lost.  While this behavior is tolerable for batch parsers,
+such as in compilers, it is unacceptable for parsers that can
+possibility "never end" such as shells, or implementations of
+communication protocols.
+
+   The `%destructor' directive allows for the definition of code that
+is called when a symbol is thrown away.
+
+ - Directive: %destructor { CODE } SYMBOLS
+     Declare that the CODE must be invoked for each of the SYMBOLS that
+     will be discarded by the parser.  The CODE should use `$$' to
+     designate the semantic value associated to the SYMBOLS.  The
+     additional parser parameters are also avaible (*note The Parser
+     Function `yyparse': Parser Function.).
+
+     *Warning:* as of Bison 1.875, this feature is still considered as
+     experimental, as there was not enough user feedback.  In
+     particular, the syntax might still change.
+
+   For instance:
+
+     %union
+     {
+       char *string;
+     }
+     %token <string> STRING
+     %type  <string> string
+     %destructor { free ($$); } STRING string
+
+guarantees that when a `STRING' or a `string' will be discarded, its
+associated memory will be freed.
+
+   Note that in the future, Bison might also consider that right hand
+side members that are not mentioned in the action can be destroyed.  For
+instance, in:
+
+     comment: "/*" STRING "*/";
+
+the parser is entitled to destroy the semantic value of the `string'.
+Of course, this will not apply to the default action; compare:
+
+     typeless: string;  // $$ = $1 does not apply; $1 is destroyed.
+     typefull: string;  // $$ = $1 applies, $1 is not destroyed.
+

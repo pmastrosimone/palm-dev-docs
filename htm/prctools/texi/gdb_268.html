@@ -1,0 +1,121 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Separate Objdir</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Separate Objdir">
+<META NAME="keywords" CONTENT="Debugging with GDB: Separate Objdir">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC622"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_267.html#SEC621"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_269.html#SEC623"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_267.html#SEC621"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_267.html#SEC621"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_271.html#SEC625"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> B.1 Compiling GDB in another directory </H2>
+<!--docid::SEC622::-->
+<P>
+
+If you want to run GDB versions for several host or target machines,
+you need a different <CODE>gdb</CODE> compiled for each combination of
+host and target.  <CODE>configure</CODE> is designed to make this easy by
+allowing you to generate each configuration in a separate subdirectory,
+rather than in the source directory.  If your <CODE>make</CODE> program
+handles the <SAMP>`VPATH'</SAMP> feature (GNU <CODE>make</CODE> does), running
+<CODE>make</CODE> in each of these directories builds the <CODE>gdb</CODE>
+program specified there.
+</P><P>
+
+To build <CODE>gdb</CODE> in a separate directory, run <CODE>configure</CODE>
+with the <SAMP>`--srcdir'</SAMP> option to specify where to find the source.
+(You also need to specify a path to find <CODE>configure</CODE>
+itself from your working directory.  If the path to <CODE>configure</CODE>
+would be the same as the argument to <SAMP>`--srcdir'</SAMP>, you can leave out
+the <SAMP>`--srcdir'</SAMP> option; it is assumed.)
+</P><P>
+
+For example, with version 5.3, you can build GDB in a
+separate directory for a Sun 4 like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>cd gdb-5.3
+mkdir ../gdb-sun4
+cd ../gdb-sun4
+../gdb-5.3/configure sun4
+make
+</FONT></pre></td></tr></table></P><P>
+
+When <CODE>configure</CODE> builds a configuration using a remote source
+directory, it creates a tree for the binaries with the same structure
+(and using the same names) as the tree under the source directory.  In
+the example, you'd find the Sun 4 library <TT>`libiberty.a'</TT> in the
+directory <TT>`gdb-sun4/libiberty'</TT>, and GDB itself in
+<TT>`gdb-sun4/gdb'</TT>.
+</P><P>
+
+One popular reason to build several GDB configurations in separate
+directories is to configure GDB for cross-compiling (where
+GDB runs on one machine--the <EM>host</EM>---while debugging
+programs that run on another machine--the <EM>target</EM>).
+You specify a cross-debugging target by
+giving the <SAMP>`--target=<VAR>target</VAR>'</SAMP> option to <CODE>configure</CODE>.
+</P><P>
+
+When you run <CODE>make</CODE> to build a program or library, you must run
+it in a configured directory--whatever directory you were in when you
+called <CODE>configure</CODE> (or one of its subdirectories).
+</P><P>
+
+The <CODE>Makefile</CODE> that <CODE>configure</CODE> generates in each source
+directory also runs recursively.  If you type <CODE>make</CODE> in a source
+directory such as <TT>`gdb-5.3'</TT> (or in a separate configured
+directory configured with <SAMP>`--srcdir=<VAR>dirname</VAR>/gdb-5.3'</SAMP>), you
+will build all the required libraries, and then build GDB.
+</P><P>
+
+When you have multiple hosts or targets configured in separate
+directories, you can run <CODE>make</CODE> on them in parallel (for example,
+if they are NFS-mounted on each of the hosts); they will not interfere
+with each other.
+</P><P>
+
+<A NAME="Config Names"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_267.html#SEC621"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_269.html#SEC623"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_267.html#SEC621"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_267.html#SEC621"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_271.html#SEC625"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

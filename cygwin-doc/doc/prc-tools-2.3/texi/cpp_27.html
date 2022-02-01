@@ -1,0 +1,84 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Cascaded Macros</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Cascaded Macros">
+<META NAME="keywords" CONTENT="The C Preprocessor: Cascaded Macros">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC27"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_26.html#SEC26"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_28.html#SEC28"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_20.html#SEC20"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 1.4.8.7 Cascaded Use of Macros </H4>
+<!--docid::SEC27::-->
+<P>
+
+<A NAME="IDX51"></A>
+<A NAME="IDX52"></A>
+A <EM>cascade</EM> of macros is when one macro's body contains a reference
+to another macro.  This is very common practice.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define BUFSIZE 1020
+#define TABLESIZE BUFSIZE
+</pre></td></tr></table></P><P>
+
+This is not at all the same as defining <SAMP>`TABLESIZE'</SAMP> to be <SAMP>`1020'</SAMP>.
+The <SAMP>`#define'</SAMP> for <SAMP>`TABLESIZE'</SAMP> uses exactly the body you
+specify--in this case, <SAMP>`BUFSIZE'</SAMP>---and does not check to see whether
+it too is the name of a macro.
+</P><P>
+
+It's only when you <EM>use</EM> <SAMP>`TABLESIZE'</SAMP> that the result of its expansion
+is checked for more macro names.
+</P><P>
+
+This makes a difference if you change the definition of <SAMP>`BUFSIZE'</SAMP>
+at some point in the source file.  <SAMP>`TABLESIZE'</SAMP>, defined as shown,
+will always expand using the definition of <SAMP>`BUFSIZE'</SAMP> that is
+currently in effect:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define BUFSIZE 1020
+#define TABLESIZE BUFSIZE
+#undef BUFSIZE
+#define BUFSIZE 37
+</pre></td></tr></table></P><P>
+
+Now <SAMP>`TABLESIZE'</SAMP> expands (in two stages) to <SAMP>`37'</SAMP>.  (The
+<SAMP>`#undef'</SAMP> is to prevent any warning about the nontrivial
+redefinition of <CODE>BUFSIZE</CODE>.)
+</P><P>
+
+<A NAME="Newlines in Args"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

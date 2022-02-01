@@ -1,0 +1,1360 @@
+<HTML>
+<HEAD>
+<TITLE>Palm OS:  &#160;7.&#160; Menus </TITLE>
+<META NAME="GENERATOR" CONTENT="Transit Central Station 3.2 by InfoAccess Inc. www.infoaccess.com">
+</HEAD>
+<BODY BACKGROUND="images/grnitbkg.gif"><A NAME="TopOfPage"> </A>
+<A HREF="http://www.oreilly.com/catalog/palmprog/"><IMG SRC="images/palm_comp_ani_ad.gif" ALT="Order the book from O'Reilly" BORDER=0 width="468" height="60"></A>
+<P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch06.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch08.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P><P><I>In this chapter:</I></P>
+
+
+  <UL COMPACT><LI><A HREF="#P26_403" NAME="LOC_P26_403">Menu User Interface</A></LI>
+
+  <LI><A HREF="#P147_3262" NAME="LOC_P147_3262">Menu Resources</A></LI>
+
+  <LI><A HREF="#P322_10458" NAME="LOC_P322_10458">Application Code for Menus</A></LI>
+
+  <LI><A HREF="#P656_23592" NAME="LOC_P656_23592">Adding Menus to the Sample Application</A></LI></UL>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=156>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+<H1 ALIGN=LEFT><I><FONT SIZE=+3>&#160;7.&#160; Menus</FONT></I></H1>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P23_148"></A>In this chapter, we explain how to create menus. Along with a discussion of the menu source code, we highlight potential problems and show workarounds for them. First, however, we need to clarify some terminology and describe the user interface for menus.</FONT></P>
+
+<P><A NAME="P26_403"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Menu User Interface</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P28_422"></A>Every Palm application that contains menus uses the same framework for them. If you look at <A HREF="#P29_701">Figure 7-1</A>, you see a sample menubar containing two menus: Customer and Options. The open Customer menu contains three menu items: New Customer, Delete Customer, Edit Customer.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 1</FONT></B><A NAME="P29_701"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Application menubar, menus, and menu items</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0701-1.gif" WIDTH=503 HEIGHT=177 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P39_743"></A>Note that menu items commonly have shortcuts associated with them. These are Graffiti letters that are unique to each menu item. By doing the stroke-and-letter shortcut, the user can perform the operation without first selecting the menu item. For example, the &quot;/ N&quot; brings up a New Customer form. As a rule, you should add these shortcuts to menu items wherever necessary and always with standard menu items. Make sure that the most frequent operations have shortcuts, and don't put a shortcut on an infrequent action (such as the About Box).</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Common Menu Shortcuts</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A HREF="#P45_1534">Table 7-1</A> contains common menus and the standard shortcut letters used with them. Keep the same letters so that users can expect the same behavior from different applications. Items with an asterisk are less <A NAME="P44_1515"></A>common. </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Table 7- 1</FONT></B><A NAME="P45_1534"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Standard Shortcut Letters</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=135><P><B><FONT FACE="Times" SIZE="-1">Record</FONT></B></P>
+</TD>
+<TD WIDTH=32>&#160;
+</TD>
+<TD WIDTH=105><P><B><FONT FACE="Times" SIZE="-1">Edit</FONT></B></P>
+</TD>
+<TD WIDTH=32>&#160;
+</TD>
+<TD WIDTH=140><P><B><FONT FACE="Times" SIZE="-1">Options</FONT></B></P>
+</TD>
+<TD WIDTH=32>&#160;
+</TD></TR>
+<TR>
+<TD WIDTH=135><P><FONT FACE="Times" SIZE="-1">New<I>&lt;Item&gt;</I> </FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">N</FONT></P>
+</TD>
+<TD WIDTH=105><P><FONT FACE="Times" SIZE="-1">Undo</FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">U</FONT></P>
+</TD>
+<TD WIDTH=140><P><FONT FACE="Times" SIZE="-1">*Font</FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">F</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=135><P><FONT FACE="Times" SIZE="-1">Delete <I>&lt;Item&gt;</I> </FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">D</FONT></P>
+</TD>
+<TD WIDTH=105><P><FONT FACE="Times" SIZE="-1">Cut</FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">X</FONT></P>
+</TD>
+<TD WIDTH=140><P><FONT FACE="Times" SIZE="-1">Preferences</FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">R</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=135><P><FONT FACE="Times" SIZE="-1">*Attach <I>&lt;Item&gt;</I> </FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">A</FONT></P>
+</TD>
+<TD WIDTH=105><P><FONT FACE="Times" SIZE="-1">Copy</FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">C</FONT></P>
+</TD>
+<TD WIDTH=140><P><FONT FACE="Times" SIZE="-1">*Display Options</FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">Y</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=135><P><FONT FACE="Times" SIZE="-1">Beam <I>&lt;Item&gt;</I> </FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">B</FONT></P>
+</TD>
+<TD WIDTH=105><P><FONT FACE="Times" SIZE="-1">Paste</FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">P</FONT></P>
+</TD>
+<TD WIDTH=140><P><FONT FACE="Times" SIZE="-1">*HotSync Options</FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">H</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=135><P><FONT FACE="Times" SIZE="-1">*Purge</FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">E</FONT></P>
+</TD>
+<TD WIDTH=105><P><FONT FACE="Times" SIZE="-1">Select All</FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">S</FONT></P>
+</TD>
+<TD WIDTH=140>&#160;
+</TD>
+<TD WIDTH=32>&#160;
+</TD></TR>
+<TR>
+<TD WIDTH=135>&#160;
+</TD>
+<TD WIDTH=32>&#160;
+</TD>
+<TD WIDTH=105><P><FONT FACE="Times" SIZE="-1">Keyboard</FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">K</FONT></P>
+</TD>
+<TD WIDTH=140>&#160;
+</TD>
+<TD WIDTH=32>&#160;
+</TD></TR>
+<TR>
+<TD WIDTH=135>&#160;
+</TD>
+<TD WIDTH=32>&#160;
+</TD>
+<TD WIDTH=105><P><FONT FACE="Times" SIZE="-1">Graffiti Help</FONT></P>
+</TD>
+<TD WIDTH=32><P><FONT FACE="Times" SIZE="-1">G</FONT></P>
+</TD>
+<TD WIDTH=140>&#160;
+</TD>
+<TD WIDTH=32>&#160;
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Arranging Menus</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P105_1759"></A>Menus can also be arranged with <A NAME="P105_1791"></A>separator bars in them to group similar items together (see <A HREF="#P125_2949">Figure 7-2</A>). Note that menus and menu items are never dimmed (grayed out). We discuss how to handle menu items that aren't applicable in certain situations in <A HREF="#P556_19132">&quot;Handling Unusable Menu Items&quot; on page&#160;190</A>.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Standard Menu Items</FONT></I></P>
+
+<P><I><FONT FACE="Times">Edit menu</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P112_2081"></A>Most forms with a text field should have an Edit menu containing, at a minimum, <A NAME="P112_2161"></A>Undo, Cut, Copy, Paste. Most Edit menus also include <A NAME="P112_2214"></A>Select All, Keyboard, and Graffiti Help. See <A HREF="#P125_2949">Figure 7-2</A> for a standard Edit menu.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Password dialogs shouldn't support Cut, Copy, or Paste.</FONT><BR>
+<BR>
+</P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">About application</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P119_2367"></A>You should have an About </FONT><FONT FACE="Courier New">myApplication</FONT><FONT FACE="Times"> menu item; it is usually found in an Options menu. This menu should bring up an alert/dialog containing information about your application (who wrote it, version number, name, email address, web site, and technical support information). This dialog is often called an About Box.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Applications Can Have Multiple Sets of Menus</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P124_2728"></A>A set of menus is always associated with a particular form or window in the application. Thus, if you look at the Order form of our Sales application in <A HREF="#P125_2949">Figure 7-2</A>, you see that it has its own new set of menus.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 2</FONT></B><A NAME="P125_2949"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">The Order form of the Sales application</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0702-2.gif" WIDTH=503 HEIGHT=171 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">You should also note that different forms in an application may share a similar set of menus and menu items. For example, the Order form and the Customer Details form both have an Edit menu with the same items<A NAME="P135_3197"></A> (see <A HREF="#P136_3226">Figure 7-3</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 3</FONT></B><A NAME="P136_3226"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">The Edit menu in two different forms</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0703-3.gif" WIDTH=503 HEIGHT=185 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><A NAME="P147_3262"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Menu Resources</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P149_3276"></A>Menus are created and stored as resources in your application. Depending on the development environment you use, you make the menus in different ways. First, we show you how to create menus with PilRC (the GNU PalmPilot SDK resource creator) and then using CodeWarrior's Constructor. In either case, the menus end up in a <I>.PRC</I> resource file.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">The .PRC file</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The <I><A NAME="P154_3634"></A>.PRC</I> file contains an MBAR resource for each menubar in your application. These MBAR resources are in turn composed of a number of menus, each of which contains menu items. Each menu item has associated with it a menu ID and, optionally, a shortcut key. When you design your menubars, you need to make sure that no two menu items in menus displayed at the same time have the same key shortcut-each shortcut must be unique.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Using PilRC</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P159_4067"></A>To create your <I>.PRC</I> file using GCC, use the PilRC Resource Compiler. PilRC allows you to directly create menubar resources; later you will learn that this is a tremendous advantage. PilRC is a textual, rather than a graphical, resource editor. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's a simple MBAR (ID 1000) Resource with two menus, each with two items (the item IDs are 1001, 1002, 1011, and 1012):</FONT></P><PRE><FONT SIZE="-1">MENU 1000</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">    PULLDOWN &quot;Menu1&quot;</FONT>
+<FONT SIZE="-1">    BEGIN</FONT>
+<FONT SIZE="-1">        MENUITEM &quot;Item1&quot;   1001     &quot;I&quot;</FONT>
+<FONT SIZE="-1">        MENUITEM &quot;Item2&quot;   1002  </FONT>
+<FONT SIZE="-1">    END</FONT>
+<FONT SIZE="-1">    PULLDOWN &quot;Menu2&quot;</FONT>
+<FONT SIZE="-1">    BEGIN</FONT>
+<FONT SIZE="-1">        MENUITEM &quot;Item3&quot;   1011 </FONT>
+<FONT SIZE="-1">        MENUITEM &quot;Item4&quot;   1012 </FONT>
+<FONT SIZE="-1">    END</FONT>
+<FONT SIZE="-1">END</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">To define the shortcut keys of menu items in PilRC, simply supply the character surrounded by double quotes. In our simple example, the first menu item has a shortcut key of &quot;I&quot;.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Of course, you'll commonly use named constants instead of raw numbers in your </FONT><FONT FACE="Times" SIZE="-1"><I>.RCP</I> file. Here is a good technique for numbering your resources: make your MBAR resource IDs multiples of 1000 and your menu resource IDs multiples of 10 starting 1 unit higher (this assumes that no menu will have more than 10 items in it). For example:</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">MBAR  MENU</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">1000  1001</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">1011</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">2000  2001</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">2011</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">2021</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Using Constructor</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P189_5221"></A>While simple to use, Constructor does give you some problems with menu construction. First, look at how Constructor creates menus, and then we will describe the problems.</FONT></P>
+
+<P><I><FONT FACE="Times">How Constructor creates menus</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You create menus in a Constructor project by graphically laying out menu elements. <A HREF="#P194_5803">Figure 7-4</A> shows you how simple this is to do. The left side of <A HREF="#P194_5803">Figure 7-4</A> contains a simple Constructor project with a couple of menubars and menus. The record menu on the right side contains some menu items (two of which have shortcuts) that were selected from the Constructor Edit menu.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 4</FONT></B><A NAME="P194_5803"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">A small project showing the graphical interface for menu creation in Constructor</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0704-4.gif" WIDTH=503 HEIGHT=239 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">How Constructor creates MENU resources</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Constructor doesn't directly create MBAR resources in the format needed by a <I>.PRC</I> file. Instead, it creates <A NAME="P206_6029"></A>MENU resources (one for each menu). First, you graphically lay out the menus, then Constructor takes over and generates unique resource IDs for all these menus (see <A HREF="#P207_6321">Figure 7-5</A>). It does so by keeping track of the MENU resources in an MBAR resource via a list of MENU resource IDs.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 7- 5</FONT></B><A NAME="P207_6321"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Editing a MENU resource in Constructor</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0705-5.gif" WIDTH=503 HEIGHT=255 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">When you edit a MENU resource, you can edit the resource ID, the text of each menu item, and the shortcut key. You can do all of this in Constructor. What you can't do is edit a menu ID. Here is why: CodeWarrior uses <A NAME="P217_6576"></A>PalmRez, a post-linking tool, to create the MBAR resource in the <I>.PRC</I> file. It uses the MBAR and MENU resources in your <I>.RSC</I> file. PalmRez assigns the menu IDs of each item sequentially, starting with a base ID stored in the MENU resource itself. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This base ID is not the MENU resource ID, and you can't see it in Constructor. The base ID is used by Constructor to automatically generate the menu IDs. When you create a new menu, duplicate one, or modify the resource ID of a menu, Constructor automatically changes the base ID as well.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A HREF="#P224_7265">Figure 7-6</A> shows the relationship between the MBAR and the MENU resources you edit in Constructor and the final MBAR resource in the <I>.PRC</I> file.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 6</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P224_7265"></A>Conceptual relationship between MENU and MBAR resources in Constructor and the MBAR resource in a .PRC file</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0706-6.gif" WIDTH=503 HEIGHT=285 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">Two problems with menus</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P234_7395"></A>Generating menus with Constructor can lead to two problems. The first one has to do with duplicate menus. Because of the way PalmRez processes the MENU resources (deleting each MENU resource as it processes it), you can't share one MENU in more than one MBAR. This is a bigger problem than you might at first imagine. For example, in our Sales application we have identical Edit menus in our Customer Details and Order forms (<A HREF="#P136_3226">Figure 7-3</A>). Even though they are the same, we still have to create two separate menus in Constructor. That means more code to maintain and the possibility of more mistakes.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The second problem has to do with the way base IDs are created. Constructor sets the base ID of a menu to the menu's resource ID. This makes it impossible in Constructor for different menus to share the same menu IDs.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you have simple menus and menubars, with no need to have the same menu or menu items multiple times, Constructor works fine. Otherwise, switch to creating your menus textually.</FONT></P>
+
+<P><I><FONT FACE="Times">Creating your menus textually with PalmRez</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">PalmRez is a resource compiler like PilRC, but uses a different format for resources. PalmRez is based on the Macintosh Programmer's Workshop (MPW) Rez tool, which is designed to create Macintosh resources.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">PalmRez compiles files with the <I>.r</I> extension. Instead of creating your menus and menubars in Constructor, you create a <I>.r</I> file that contains your menu and menubar definitions.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">PalmRez has to be told the format of MENU and MBAR resources. Here's a file, <I>MenuDefs.r</I>, that contains the definitions of those types:</FONT></P><PRE><FONT SIZE="-1">type 'MENU'</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   integer SYS_EDIT_MENU = 10000;   // base menu ID</FONT>
+<FONT SIZE="-1">   fill byte[12];</FONT>
+<FONT SIZE="-1">   pstring;                // menu title</FONT>
+<FONT SIZE="-1">   array</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      pstring SEPARATOR = &quot;-&quot;;   // item text</FONT>
+<FONT SIZE="-1">      fill byte;</FONT>
+<FONT SIZE="-1">      char NONE = &quot;\$00&quot;;        // Graffiti shortcut</FONT>
+<FONT SIZE="-1">      fill byte[2];</FONT>
+<FONT SIZE="-1">   };</FONT>
+<FONT SIZE="-1">   byte = 0;                  // terminator</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">type 'MBAR'</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   integer = $$CountOf(menus);</FONT>
+<FONT SIZE="-1">   array menus</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      integer;             // menu ID</FONT>
+<FONT SIZE="-1">   };</FONT>
+<FONT SIZE="-1">};</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Include <I>MenuDefs.r</I> in your resource file. Here's an example </FONT><FONT FACE="Courier New">MyMenus.r</FONT><FONT FACE="Times"> file defining a menubar with two menus in it:</FONT></P><PRE><FONT SIZE="-1">#include &quot;MenuDefs.r&quot;</FONT>
+
+<FONT SIZE="-1">resource 'MENU' (1001) {</FONT>
+<FONT SIZE="-1">   1001,       // base ID</FONT>
+<FONT SIZE="-1">   &quot;Menu1&quot;,</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      &quot;Item1&quot;, &quot;I&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Item2&quot;, NONE;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MENU' (1011) {</FONT>
+<FONT SIZE="-1">   1011,       // base ID</FONT>
+<FONT SIZE="-1">   &quot;Menu2&quot;,</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      &quot;Item3&quot;, NONE;</FONT>
+<FONT SIZE="-1">      &quot;Item4&quot;, NONE;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MBAR' (1000) {</FONT>
+<FONT SIZE="-1">   {1001, 1011}</FONT><A NAME="P294_9760"></A>
+<FONT SIZE="-1">};</FONT><A NAME="P295_9762"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Associating Menubars with Forms</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P298_9793"></A>When you create a form, you specify the ID of a menubar to go along with it. A form with the value of 0 has no associated menubar. The Palm OS automatically uses the menubar of a form while the form is active. More than one form can use the same menubar.</FONT></P>
+
+<P><I><FONT FACE="Times">Specifying the menubar of a form in Constructor</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P302_10094"></A>If you look at <A HREF="#P303_10234">Figure 7-7</A>, you will see that you simply supply the resource value of a menubar ID that you want that form to use.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 7</FONT></B><A NAME="P303_10234"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Forms have a menubar ID; this one has a menubar ID of 1000</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0707-7.gif" WIDTH=503 HEIGHT=182 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">Specifying the menubar of a form in PilRC</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P315_10333"></A>Specifying a menubar ID for a particular form is just as simple in PilRC:</FONT></P><PRE><FONT SIZE="-1">FORM ID 1000 at (0, 0, 160, 160)</FONT>
+<B><FONT FACE="Times">MENUID 1000</FONT></B>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1"> </FONT>
+<FONT SIZE="-1">END</FONT><A NAME="P321_10458"></A></PRE>
+
+<P><A NAME="P322_10458"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Application Code for Menus</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There's not a lot of code that needs to be added to support menus. Further, what you do add is straightforward and in some cases standard from application to application. The three routines that have some responsibility for handling menus are:</FONT></P>
+
+  <UL><LI><I><FONT FACE="Times"> </FONT></I><FONT FACE="Courier New"> MenuHandleEvent</FONT></LI>
+
+  <LI><I><FONT FACE="Times"> </FONT></I><FONT FACE="Courier New"> MyFormHandleEvent</FONT></LI>
+
+  <LI><I><FONT FACE="Times"> </FONT></I><FONT FACE="Courier New"> MyFormHandleMenuEvent</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">There is some cookbook code to add that handles the Edit menu, and we need to handle the About menu, as well.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">MenuHandleEvent</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P334_10911"></A>This routine is responsible for handling menu-specific events. Chapter&#160;4, <I>Structure of an Application</I>, contains a description of </FONT><FONT FACE="Courier New">MenuHandleEvent</FONT><FONT FACE="Times"> and its role within your main event loop. Here is an example found in a main event loop:</FONT></P><PRE><FONT SIZE="-1">do {</FONT>
+<FONT SIZE="-1">   EvtGetEvent(&amp;event, evtWaitForever);</FONT>
+<FONT SIZE="-1">   if (! SysHandleEvent(&amp;event))</FONT>
+<B><FONT SIZE="-1">      if (! MenuHandleEvent(0, &amp;event, &amp;error))</FONT></B>
+<FONT SIZE="-1">         if (! ApplicationHandleEvent(&amp;event))</FONT>
+<FONT SIZE="-1">            FrmDispatchEvent(&amp;event);</FONT>
+<FONT SIZE="-1">} while (event.eType != appStopEvent);</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">MyFormHandleEvent</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times" SIZE="-1">&#160;</FONT><FONT FACE="Times"><A NAME="P345_11405"></A>Your form's event handler receives an event of type </FONT><FONT FACE="Courier New">menuEvent</FONT><FONT FACE="Times"> if a menu item is chosen. If you have more than one or two menu items handled by a form, it is customary to put the menu item dispatching in a separate routine, </FONT><FONT FACE="Courier New">MyFormHandleMenuEvent</FONT><FONT FACE="Times">. Here is our event handler:</FONT></P><PRE><FONT SIZE="-1">static Boolean MyFormHandleEvent(EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Boolean     handled = false;</FONT>
+
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_PROLOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   switch (event-&gt;eType)</FONT>
+<FONT SIZE="-1">      {</FONT>
+<FONT SIZE="-1">         /* code removed */</FONT>
+<FONT SIZE="-1">      case menuEvent:</FONT>
+<FONT SIZE="-1">         handled = MyFormHandleMenuEvent(event-&gt;data.menu.itemID);</FONT>
+<FONT SIZE="-1">         break;</FONT>
+<FONT SIZE="-1">      /* code removed */</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_EPILOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   return handled;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">MyFormHandleMenuEvent</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times" SIZE="-1">&#160;</FONT><FONT FACE="Times"><A NAME="P369_12071"></A>This is the routine that actually handles the menu items:</FONT></P><PRE><FONT SIZE="-1">static Boolean MyFormHandleMenuEvent(Word menuID)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Boolean handled = false;</FONT>
+<FONT SIZE="-1">   /* declarations removed */</FONT>
+<FONT SIZE="-1">   switch (menuID) {</FONT>
+<FONT SIZE="-1">   case MenuItem1:</FONT>
+<FONT SIZE="-1">      // code removed that handles MenuItem1</FONT>
+<FONT SIZE="-1">      handled = true;</FONT>
+<FONT SIZE="-1">      break;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   case MenuItem2:</FONT>
+<FONT SIZE="-1">      // code removed that handles MenuItem2</FONT>
+<FONT SIZE="-1">      handled = true;</FONT>
+<FONT SIZE="-1">      break;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   return handled;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Handling Items in the Edit Menu</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P390_12504"></A>The good news about the Edit menu is that there is a cookbook approach to handling each of the menu items. The bad news is that it takes a slight amount of work to avoid duplicating this cookbook code throughout your application. We show you how to avoid duplicated code in <A HREF="#P590_21778">&quot;A Procedure for Handling Common Menu Items</A>&quot; later in this chapter.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">First, let's look at the cookbook code for handling each of the edit menu items:</FONT></P><PRE><FONT SIZE="-1">// returns field that has the focus, if any, including in embedded tables</FONT>
+<FONT SIZE="-1">static FieldPtr GetFocusObjectPtr (void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr frm;</FONT>
+<FONT SIZE="-1">   Word focus;</FONT>
+<FONT SIZE="-1">   FormObjectKind objType;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   frm = FrmGetActiveForm ();</FONT>
+<FONT SIZE="-1">   focus = FrmGetFocus (frm);</FONT>
+<FONT SIZE="-1">   if (focus == noFocus)</FONT>
+<FONT SIZE="-1">      return (NULL);</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   objType = FrmGetObjectType (frm, focus);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (objType == frmFieldObj)</FONT>
+<FONT SIZE="-1">      return (FrmGetObjectPtr (frm, focus));</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   else if (objType == frmTableObj)</FONT>
+<FONT SIZE="-1">      return (TblGetCurrentField (FrmGetObjectPtr (frm, focus)));</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   return NULL;</FONT>
+<FONT SIZE="-1">}</FONT>
+
+<FONT SIZE="-1">Boolean void MyFormHandleMenuEvent(Word menuID)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FieldPtr    fld;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   switch (menuID) {</FONT>
+<FONT SIZE="-1">   /* code for other menu items removed */</FONT>
+
+<FONT SIZE="-1">   case EditUndo:</FONT>
+<FONT SIZE="-1">   case EditCut:</FONT>
+<FONT SIZE="-1">   case EditCopy:</FONT>
+<FONT SIZE="-1">   case EditPaste:</FONT>
+<FONT SIZE="-1">   case EditSelectAll:</FONT>
+<FONT SIZE="-1">      fld = GetFocusObjectPtr();</FONT>
+<FONT SIZE="-1">      if (!fld) </FONT>
+<FONT SIZE="-1">         return false;</FONT>
+<FONT SIZE="-1">      if (menuID == EditUndo)</FONT>
+<B><FONT SIZE="-1">         FldUndo(fld);</FONT></B>
+<FONT SIZE="-1">      else if (menuID == EditCut)</FONT>
+<B><FONT SIZE="-1">         FldCut(fld);</FONT></B>
+<FONT SIZE="-1">      else if (menuID == EditCopy)</FONT>
+<B><FONT SIZE="-1">         FldCopy(fld);</FONT></B>
+<FONT SIZE="-1">      else if (menuID == EditPaste)</FONT>
+<B><FONT SIZE="-1">         FldPaste(fld);</FONT></B>
+<FONT SIZE="-1">      else if (menuID == EditSelectAll)</FONT>
+<B><FONT SIZE="-1">         FldSetSelection (fld, 0, FldGetTextLength (fld));</FONT></B>
+<FONT SIZE="-1">      return true;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   case EditKeyboard:</FONT>
+<B><FONT SIZE="-1">      SysKeyboardDialog(kbdDefault);</FONT></B>
+<FONT SIZE="-1">      return true;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   case EditGrafitti:</FONT>
+<B><FONT SIZE="-1">      SysGraffitiReferenceDialog(referenceDefault);</FONT></B>
+<FONT SIZE="-1">      return true;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   return false;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The emphasized calls are standard Palm OS calls that you use to handle the Edit menu. The cookbook can be used with each of your menubars that contain an Edit menu.</FONT><A NAME="P454_14435"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">The About Menu</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P459_14450"></A>The Palm OS provides a routine, </FONT><FONT FACE="Courier New">AbtShowAbout</FONT><FONT FACE="Times">, that allows the display of an application name and icon (see <A HREF="#P462_14661">Figure 7-8</A>). As you can see, it isn't appropriate for anything but the built-in applications.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 8</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P462_14661"></A>AbtShowAbout shows a 3Com-specific About Box</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0708-8.gif" WIDTH=503 HEIGHT=182 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A HREF="#P469_14705">*</A></FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">It is more useful to handle the About menu item by creating a simple alert and displaying it with </FONT><FONT FACE="Courier New">FrmAlert</FONT><FONT FACE="Times"> (see <A HREF="#P476_15244">Figure 7-9</A>): </FONT></P><PRE><FONT SIZE="-1">case OptionsAbout:</FONT>
+<FONT SIZE="-1">   FrmAlert(AboutBoxAlert);</FONT>
+<FONT SIZE="-1">   break;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This is fine if all you want is some text. If you have pictures, however, create a modal form and display it with </FONT><FONT FACE="Courier New">FrmDoDialog</FONT><FONT FACE="Times">. &quot;Modal Dialogs&quot; on page&#160;101 describes how to do that.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 9</FONT></B><A NAME="P476_15244"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">An About Box displayed using FrmAlert</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0709-9.gif" WIDTH=503 HEIGHT=132 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Menu Erase Status</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P489_15298"></A>There is a problem with menus and refreshing the display of the Palm screen that you should take into account in your applications. Before describing the fix to the problem, let us explain what the user does and when the problem occurs.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">When the user chooses a menu item using a shortcut key, the Menu Manager displays the status of this task in the lower left of the display. First, the Menu Manager displays the word &quot;Command&quot; (see <A HREF="#P494_15970">Figure 7-10</A>) to indicate that a stroke has been noticed. If the user then writes a valid shortcut key, the Menu Manager displays the menu item name (see <A HREF="#P503_16030">Figure 7-11</A>) and dispatches the menu event for the application to handle. </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 10</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P494_15970"></A>Menu status after entering a shortcut character</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0710-10.gif" WIDTH=503 HEIGHT=178 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"> </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 11</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P503_16030"></A>Menu status after entering a shortcut character and then a menu shortcut key</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0711-11.gif" WIDTH=503 HEIGHT=185 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">This shortcut key status is shown on the screen for a couple of seconds: just enough time for the user to read it and get feedback that the Palm device has noticed the stroke. After this, the status update automatically goes away.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There is one case in which you need to clear the status yourself because a problem occurs. The Palm OS notes when the user chooses a menu item using a shortcut key and saves the screen bits underneath the area where the word &quot;Command&quot; is displayed. Once the timer goes off, the bits are restored. If you have changed the screen contents in the meantime, the bits that are restored are stale. <A HREF="#P516_16771">Figure 7-12</A> shows the problem. </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 12</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P516_16771"></A>Menu code changing contents of lower left of screen without calling MenuEraseStatus</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0712-12.gif" WIDTH=503 HEIGHT=86 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">A common case where your menu code would change the screen contents is in an alert or another form. Nicely enough, the Palm OS catches this case automatically and erases the status for you. You will have trouble, however, when you change the contents of the current form. Here's some sample code that shows the problem in <A HREF="#P516_16771">Figure 7-12</A> (the code shows a previously hidden form object):</FONT></P><PRE><FONT SIZE="-1">case ShowLabelMenuItem:</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      Word     index;</FONT>
+<FONT SIZE="-1">      FormPtr   frm;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">      frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">      index = FrmGetObjectIndex(frm, CustomersTestLabel);</FONT>
+<FONT SIZE="-1">      FrmShowObject(frm, index);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   break;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Deal with this problem by doing your own erasing. The call to clear the status is </FONT><FONT FACE="Courier New">&#160;<A NAME="P536_17524"></A>MenuEraseStatus</FONT><FONT FACE="Times">. The fix to the code that exhibits the problem is simply a call to </FONT><FONT FACE="Courier New">MenuEraseStatus</FONT><FONT FACE="Times"> before modifying the screen:</FONT></P><PRE><FONT SIZE="-1">case ShowLabelMenuItem:</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      Word        index;</FONT>
+<FONT SIZE="-1">      FormPtr    frm;</FONT>
+<FONT SIZE="-1">   </FONT>
+<B><FONT SIZE="-1">      MenuEraseStatus();</FONT></B>
+<FONT SIZE="-1">      frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">      index = FrmGetObjectIndex(frm, CustomersTestLabel);</FONT>
+<FONT SIZE="-1">      FrmShowObject(frm, index);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   break;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">You have to be careful with this fix, however, as it is a double-edged sword. You don't want to call </FONT><FONT FACE="Courier New">MenuEraseStatus</FONT><FONT FACE="Times"> unnecessarily, as there is a price to pay. When you call it, the user gets only a very brief glimpse of the confirmed menu item. You wiped out the confirmed menu item when you restored the screen bits. This cure is still better than the problem, however, as a mess on the screen is worse than wiping out the status quickly. </FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">A good way to ensure that you have implemented </FONT><FONT FACE="Courier New" SIZE="-1">MenuEraseStatus </FONT><FONT FACE="Times" SIZE="-1"> when necessary is to use shortcut characters in your testing. This lets you determine when you need to make a call to </FONT><FONT FACE="Courier New" SIZE="-1">MenuEraseStatus</FONT><FONT FACE="Times" SIZE="-1"> to clean up screen trash.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">The folks at Palm Computing are getting wiser. Unfortunately, not until OS 2.0 did they fix this problem some of the time. The earlier 1.0 OS does not even erase the status before putting up another form. If you're supporting the 1.0 OS, you need to call </FONT><FONT FACE="Courier New" SIZE="-1">MenuEraseStatus</FONT><FONT FACE="Times" SIZE="-1"> in any menu-handling code that puts up a form or alert.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Forms that have buttons at the bottom that don't ever change are obviously not affected by this problem. For these forms, the menu status automatic timed erasing works just fine. It's only the few forms with changing data at the bottom left that are affected.</FONT><A NAME="P554_19132"></A></P>
+
+<A NAME="P556_19132"></A>
+<P><I><FONT FACE="Times" SIZE="+1">Handling Unusable Menu Items</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P559_19160"></A>The Menu Manager APIs don't provide a mechanism for adding or deleting menu items dynamically. In addition, there's no way to visually disable them (by graying them). This, of course, immediately raises the question of what you should do if there are menus or menu items that can't be used in certain situations. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P561_19473"></A>One possibility is to present an alert to the user explaining why it's not possible to do what was requested. That's the strategy used by the built-in Expense application when the user tries to delete an item and nothing is selected (see <A HREF="#P564_19736">Figure 7-13</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 13</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P564_19736"></A>Deleting an item in Expense when nothing is selected</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0713-13.gif" WIDTH=503 HEIGHT=136 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">This is certainly better than having the menu item appear and disappear as an item is selected and deselected-a tactic guaranteed to make users foam at the mouth. Disappearing and reappearing things make many people doubt their sanity, as they often have absolutely no idea how to make a menu item reappear.</FONT></P>
+
+<P><I><FONT FACE="Times">A good time to remove a menu item</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are cases, however, where you do want to remove menu items. For example, you may have a menu item that will never be present on a user's device. An obvious case of this is beaming, which is available only if OS 3.0 is present. A well-designed application ought to figure out what OS it is running under and behave accordingly. It should have the Beam item show on 3.0 devices and disappear on pre-3.0 devices.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">In order to implement this nice design, you actually use a rather simplistic solution-two menu bars, each with its own copy of the menus. One of the menus has a Beam item, the other doesn't.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Since applications built with CodeWarrior (Release 4, as of this writing) have their menu IDs automatically assigned, you should create these menus carefully. To make sure that menu items that are in both menubars remain in the same position, put the Beam menu item at the bottom of the 3.0 version.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Specify one menubar as the form's menubar as part of the resource (let's make it the one with the Beam item). You may need to change the menubar at runtime using </FONT><FONT FACE="Courier New">&#160;<A NAME="P582_21195"></A>FrmSetMenu</FONT><FONT FACE="Times">, which changes the menubar ID of a form. Make the change when you open the form with code like this:</FONT></P><PRE><FONT SIZE="-1">if (sysGetROMVerMajor(gRomVersion) &lt; 3)</FONT>
+<FONT SIZE="-1">   FrmSetMenu(FrmGetActiveForm(), CustomersnobeamMenuBar);</FONT></PRE>
+
+<P><I><FONT FACE="Times">Tools for implementing duplicate menus</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P588_21441"></A>If you want to have multiple menus that share the same menu IDs, you need to create your menus textually. If you use PilRC, you're doing that already (just make sure duplicate menu items share the same menu ID). If you use CodeWarrior, you need to create an <I>.r</I> file with the textual menus (duplicate menus should share the same base ID).</FONT><A NAME="P588_21778"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1"><A NAME="P590_21778"></A>A Procedure for Handling Common Menu Items</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P593_21820"></A>We have already noted that you often have more than one form with an Edit menu-especially in forms with text fields. It might also make sense to have your About menu item present often. In such cases, you should use some common method to handle these and other standard menu items.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You typically put the About menu in the Options menu. Because the Options menu can and does occur in more than one form, it makes a lot of sense to leave the About menu in every instance. It is less confusing to the user if it is always there.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Your first step is to use the same menu IDs for the shared menu items. Next, you need a function to handle the common menu items such as </FONT><FONT FACE="Courier New">&#160;<A NAME="P597_22482"></A>HandleCommonMenuItems</FONT><FONT FACE="Times">. It should work for the standard Edit menu items, as well as the About menu item. <A HREF="#P601_22635">Example&#160;7-1</A> shows the code to use.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">&#160;-Example&#160; 7- 1</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P601_22635"></A>A Routine to Handle Menu Items Common to More than One Form</FONT></B></P><PRE><FONT SIZE="-1">static Boolean HandleCommonMenuItems(Word menuID)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">	FieldPtr   fld;</FONT>
+
+<FONT SIZE="-1">	switch (menuID) {</FONT>
+<FONT SIZE="-1">	case EditUndo:</FONT>
+<FONT SIZE="-1">	case EditCut:</FONT>
+<FONT SIZE="-1">	case EditCopy:</FONT>
+<FONT SIZE="-1">	case EditPaste:</FONT>
+<FONT SIZE="-1">	case EditSelectAll:</FONT>
+<FONT SIZE="-1">		fld = GetFocusObjectPtr();</FONT>
+<FONT SIZE="-1">		if (!fld) </FONT>
+<FONT SIZE="-1">			return false;</FONT>
+<FONT SIZE="-1">		if (menuID == EditUndo)</FONT>
+<FONT SIZE="-1">			FldUndo(fld);</FONT>
+<FONT SIZE="-1">		else if (menuID == EditCut)</FONT>
+<FONT SIZE="-1">			FldCut(fld);</FONT>
+<FONT SIZE="-1">		else if (menuID == EditCopy)</FONT>
+<FONT SIZE="-1">			FldCopy(fld);</FONT>
+<FONT SIZE="-1">		else if (menuID == EditPaste)</FONT>
+<FONT SIZE="-1">			FldCopy(fld);</FONT>
+<FONT SIZE="-1">		else if (menuID == EditSelectAll)</FONT>
+<FONT SIZE="-1">			FldSetSelection (fld, 0, FldGetTextLength (fld));</FONT>
+<FONT SIZE="-1">		return true;</FONT>
+
+<FONT SIZE="-1">	case EditKeyboard:</FONT>
+<FONT SIZE="-1">		SysKeyboardDialog(kbdDefault);</FONT>
+<FONT SIZE="-1">		return true;</FONT>
+
+<FONT SIZE="-1">	case EditGrafitti: </FONT>
+<FONT SIZE="-1">		SysGraffitiReferenceDialog(referenceDefault);</FONT>
+<FONT SIZE="-1">		return true;</FONT>
+
+<FONT SIZE="-1">	case OptionsAbout:</FONT>
+<FONT SIZE="-1">		FrmAlert(AboutBoxAlert);</FONT>
+<FONT SIZE="-1">		return true;</FONT>
+
+<FONT SIZE="-1">	default:</FONT>
+<FONT SIZE="-1">		return false;</FONT>
+<FONT SIZE="-1">	}</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Call </FONT><FONT FACE="Courier New">HandleCommonMenuItems</FONT><FONT FACE="Times"> from each of your menu-handling routines:</FONT></P><PRE><FONT SIZE="-1">Boolean void MyFormHandleMenuEvent(Word menuID)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   if (HandleCommonMenuItems(menuID)</FONT>
+<FONT SIZE="-1">      return true;</FONT>
+<FONT SIZE="-1">   else switch (menuID) {</FONT>
+<FONT SIZE="-1">      // other items here  </FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><A NAME="P656_23592"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Adding Menus to the Sample Application</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P658_23630"></A>Now it is time to add the menus to our Sales application. The menubars are added first. Next, we set up our definitions for our menu items and menubars. Once that is in place, we can create our code to handle common menu items and the functions we need to handle our forms. Our last step is to make sure the main event loop in our application correctly calls our menu-handling function.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">The Menubars</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P663_24028"></A>The application has five menubars, the first of which is shown in <A HREF="#P666_24206">Figure 7-14</A>. This menubar is for the Order form, <A NAME="P663_24143"></A>which contains the menus Record, Edit, and Options.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 14</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P666_24206"></A>The Order menubar on a pre-3.0 device</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0714-14.gif" WIDTH=503 HEIGHT=120 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The second menubar is like the first, but has a Beam Customer item at the end of the Record menu (see <A HREF="#P677_24371">Figure 7-15</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 7- 15</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P677_24371"></A>The Order menubar on a 3.0 or later device</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0715-15.gif" WIDTH=503 HEIGHT=81 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The third menubar, </FONT><FONT FACE="Courier New">DialogWithInputField, </FONT><FONT FACE="Times">is used for dialogs that have textual input fields (see <A HREF="#P686_24535">Figure 7-16</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 16</FONT></B><A NAME="P686_24535"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">The menus for dialogs with input fields</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0716-16.gif" WIDTH=503 HEIGHT=116 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The fourth and fifth bars are used separately, depending on whether the application is running on a 3.0 or earlier device. As you can see in <A HREF="#P697_24943">Figure 7-17</A>, the difference is whether beaming shows up as a menu item. We have different menus for different devices so that a pre-3.0 user doesn't get confused about either the application's or device's capability.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 7- 17</FONT></B><A NAME="P697_24943"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">The Customer menus for 3.0 and pre-3.0 devices</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch07-plmp.0717-17.gif" WIDTH=503 HEIGHT=64 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Menu Definitions</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The first thing to do is get our menu definitions set up all neat and tidy. <A HREF="#P714_25354">Example&#160;7-2</A> shows the menu item definitions we've created in a separate text file. <A HREF="#P763_27052">Example&#160;7-3</A> shows the definition of the menubars for the order items in PilRC format (used with GCC). <A HREF="#P870_29522">Example&#160;7-4</A> shows the definition in PalmRez format (used with CodeWarrior).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Example&#160; 7- 2</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P714_25354"></A>SalesMenus.h, Defining Constants for Menus and Menubars</FONT></B></P><PRE><FONT SIZE="-1">#define CustomersMenuBar                  1000</FONT>
+<FONT SIZE="-1">#define CustomersNoBeamMenuBar            1100</FONT>
+<FONT SIZE="-1">#define OrderMenuBar                      1200</FONT>
+<FONT SIZE="-1">#define OrderNoBeamMenuBar                1300</FONT>
+<FONT SIZE="-1">#define DialogWithInputFieldMenuBar       1400</FONT>
+
+<FONT SIZE="-1">#define CustomersCustomerMenu             1001</FONT>
+<FONT SIZE="-1">#define CustomersOptionsMenu              1011</FONT>
+
+<FONT SIZE="-1">#define CustomersNoBeamCustomerMenu       1101</FONT>
+<FONT SIZE="-1">#define CustomersNoBeamOptionsMenu        1111</FONT>
+
+<FONT SIZE="-1">#define OrderRecordMenu                   1201</FONT>
+<FONT SIZE="-1">#define OrderEditMenu                     1211</FONT>
+<FONT SIZE="-1">#define OrderOptionsMenu                  1221</FONT>
+
+<FONT SIZE="-1">#define OrderNoBeamRecordMenu             1301</FONT>
+<FONT SIZE="-1">#define OrderNoBeamEditMenu               1311</FONT>
+<FONT SIZE="-1">#define OrderNoBeamOptionsMenu            1321</FONT>
+
+<FONT SIZE="-1">#define DialogWithInputFieldEditMenu      1401</FONT>
+<FONT SIZE="-1">#define DialogWithInputFieldOptionsMenu   1411</FONT>
+
+<FONT SIZE="-1">#define CustomerBase                      2001</FONT>
+<FONT SIZE="-1">#define CustomerNewCustomer               2001</FONT>
+<FONT SIZE="-1">#define CustomerBeamAllCustomers          2002</FONT>
+
+<FONT SIZE="-1">#define OptionsBase                       2101</FONT>
+<FONT SIZE="-1">#define OptionsAboutSales                 2101</FONT>
+
+<FONT SIZE="-1">#define RecordBase                        2201</FONT>
+<FONT SIZE="-1">#define RecordDeleteItem                  2201  </FONT>
+<FONT SIZE="-1">#define RecordDeleteCustomer              2202  </FONT>
+<FONT SIZE="-1">#define RecordCustomerDetails             2203</FONT>
+<FONT SIZE="-1">#define RecordBeamCustomer                2204  </FONT>
+
+<FONT SIZE="-1">#define EditBase                          2301</FONT>
+<FONT SIZE="-1">#define EditUndo                          2301</FONT>
+<FONT SIZE="-1">#define EditCut                           2302</FONT>
+<FONT SIZE="-1">#define EditCopy                          2303</FONT>
+<FONT SIZE="-1">#define EditPaste                         2304</FONT>
+<FONT SIZE="-1">#define EditSelectAll                     2305</FONT>
+<FONT SIZE="-1">// separator</FONT>
+<FONT SIZE="-1">#define EditKeyboard                      2307</FONT>
+<FONT SIZE="-1">#define EditGrafitti                      2308  </FONT></PRE>
+
+<P><B><FONT FACE="Times" SIZE="-1">Example&#160; 7- 3</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P763_27052"></A>Part of Sales.rcp File, Used for Menus with GCC</FONT></B></P><PRE><FONT SIZE="-1">#include &quot;SalesMenus.h&quot;</FONT><A NAME="P765_27122"></A>
+
+<FONT SIZE="-1">MENU ID OrderMenuBar</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">   PULLDOWN &quot;Record&quot;</FONT>
+<FONT SIZE="-1">   BEGIN</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Delete Item...&quot; ID RecordDeleteItem &quot;D&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Delete Customer...&quot; ID RecordDeleteCustomer </FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Customer Information...&quot; ID RecordCustomerDetails &quot;E&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Beam Customer&quot; ID RecordBeamCustomer &quot;B&quot;</FONT>
+<FONT SIZE="-1">   END</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   PULLDOWN &quot;Edit&quot;</FONT>
+<FONT SIZE="-1">   BEGIN</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Undo&quot; ID EditUndo &quot;U&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Cut&quot; ID EditCut &quot;X&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Copy&quot; ID EditCopy &quot;C&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Paste&quot; ID EditPaste &quot;P&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Select All&quot; ID EditSelectAll &quot;S&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;-&quot; AUTOID</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Keyboard&quot; ID EditKeyboard &quot;K&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Grafitti &quot; ID EditGrafitti &quot;G&quot;</FONT>
+<FONT SIZE="-1">   END</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   PULLDOWN &quot;Options&quot;</FONT>
+<FONT SIZE="-1">   BEGIN</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;About Sales&quot; ID OptionsAboutSales</FONT>
+<FONT SIZE="-1">   END</FONT>
+<FONT SIZE="-1">END</FONT>
+
+<FONT SIZE="-1">MENU ID OrderNoBeamMenuBar</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">   PULLDOWN &quot;Record&quot;</FONT>
+<FONT SIZE="-1">   BEGIN</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Delete Item...&quot; ID RecordDeleteItem &quot;D&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Delete Customer...&quot; ID RecordDeleteCustomer </FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Customer Information...&quot; ID RecordCustomerDetails &quot;E&quot;</FONT>
+<FONT SIZE="-1">   END</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   PULLDOWN &quot;Edit&quot;</FONT>
+<FONT SIZE="-1">   BEGIN</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Undo&quot; ID EditUndo &quot;U&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Cut&quot; ID EditCut &quot;X&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Copy&quot; ID EditCopy &quot;C&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Paste&quot; ID EditPaste &quot;P&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Select All&quot; ID EditSelectAll &quot;S&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;-&quot; AUTOID</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Keyboard&quot; ID EditKeyboard &quot;K&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Grafitti &quot; ID EditGrafitti &quot;G&quot;</FONT>
+<FONT SIZE="-1">   END</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   PULLDOWN &quot;Options&quot;</FONT>
+<FONT SIZE="-1">   BEGIN</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;About Sales&quot; ID OptionsAboutSales</FONT>
+<FONT SIZE="-1">   END</FONT>
+<FONT SIZE="-1">END</FONT>
+
+<FONT SIZE="-1">MENU ID DialogWithInputFieldMenuBar</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">   PULLDOWN &quot;Edit&quot;</FONT>
+<FONT SIZE="-1">   BEGIN</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Undo&quot; ID EditUndo &quot;U&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Cut&quot; ID EditCut &quot;X&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Copy&quot; ID EditCopy &quot;C&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Paste&quot; ID EditPaste &quot;P&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Select All&quot; ID EditSelectAll &quot;S&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;-&quot; AUTOID</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Keyboard&quot; ID EditKeyboard &quot;K&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Grafitti &quot; ID EditGrafitti &quot;G&quot;</FONT>
+<FONT SIZE="-1">   END</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   PULLDOWN &quot;Options&quot;</FONT>
+<FONT SIZE="-1">   BEGIN</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;About Sales&quot; ID OptionsAboutSales</FONT>
+<FONT SIZE="-1">   END</FONT>
+<FONT SIZE="-1">END</FONT>
+
+<FONT SIZE="-1">MENU ID CustomersMenuBar</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">   PULLDOWN &quot;Customer&quot;</FONT>
+<FONT SIZE="-1">   BEGIN</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;New Customer&quot; ID CustomerNewCustomer &quot;N&quot;</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;Beam all Customers&quot; ID CustomerBeamAllCustomers &quot;B&quot;</FONT>
+<FONT SIZE="-1">   END</FONT>
+
+<FONT SIZE="-1">   PULLDOWN &quot;Options&quot;</FONT>
+<FONT SIZE="-1">   BEGIN</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;About Sales&quot; ID OptionsAboutSales</FONT>
+<FONT SIZE="-1">   END</FONT>
+<FONT SIZE="-1">END</FONT>
+
+<FONT SIZE="-1">MENU ID CustomersNoBeamMenuBar</FONT>
+<FONT SIZE="-1">BEGIN</FONT>
+<FONT SIZE="-1">   PULLDOWN &quot;Customer&quot;</FONT>
+<FONT SIZE="-1">   BEGIN</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;New Customer&quot; ID CustomerNewCustomer &quot;N&quot;</FONT>
+<FONT SIZE="-1">   END</FONT>
+
+<FONT SIZE="-1">   PULLDOWN &quot;Options&quot;</FONT>
+<FONT SIZE="-1">   BEGIN</FONT>
+<FONT SIZE="-1">      MENUITEM &quot;About Sales&quot; ID OptionsAboutSales</FONT>
+<FONT SIZE="-1">   END</FONT>
+<FONT SIZE="-1">END</FONT></PRE>
+
+<P><B><FONT FACE="Times" SIZE="-1">Example&#160; 7- 4</FONT></B>. 
+
+<I><FONT FACE="Times" SIZE="-1">. <A NAME="P870_29522"></A>Sales.r, Used for Menus with CodeWarrior</FONT></I></P><PRE><FONT SIZE="-1">#include &quot;MenuDefs.r&quot;</FONT><A NAME="P872_29583"></A>
+
+<FONT SIZE="-1">#include &quot;SalesMenus.h&quot;</FONT>
+
+<FONT SIZE="-1">resource 'MENU' (OrderRecordMenu) {</FONT>
+<FONT SIZE="-1">   RecordBase,</FONT>
+<FONT SIZE="-1">   &quot;Record&quot;,</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      &quot;Delete Item...&quot;,       &quot;D&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Delete Customer...&quot;,   NONE;</FONT>
+<FONT SIZE="-1">      &quot;Customer Information...&quot;, &quot;E&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Beam Customer&quot;,     &quot;B&quot;;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MENU' (OrderEditMenu) {</FONT>
+<FONT SIZE="-1">   EditBase,</FONT>
+<FONT SIZE="-1">   &quot;Edit&quot;,</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      &quot;Undo&quot;,  &quot;U&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Cut&quot;,   &quot;X&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Copy&quot;,  &quot;C&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Paste&quot;, &quot;P&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Select All&quot;,  &quot;S&quot;;</FONT>
+<FONT SIZE="-1">      SEPARATOR, NONE;</FONT>
+<FONT SIZE="-1">      &quot;Keyboard&quot;, &quot;K&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Graffiti&quot;, &quot;G&quot;;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MENU' (OrderOptionsMenu) {</FONT>
+<FONT SIZE="-1">   OptionsBase,</FONT>
+<FONT SIZE="-1">   &quot;Options&quot;,</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      &quot;About Sales&quot;, NONE;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MENU' (OrderNoBeamRecordMenu) {</FONT>
+<FONT SIZE="-1">   RecordBase,</FONT>
+<FONT SIZE="-1">   &quot;Record&quot;,</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      &quot;Delete Item...&quot;,       &quot;D&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Delete Customer...&quot;,   NONE;</FONT>
+<FONT SIZE="-1">      &quot;Customer Information...&quot;, &quot;E&quot;;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MENU' (OrderNoBeamEditMenu) {</FONT>
+<FONT SIZE="-1">   EditBase,</FONT>
+<FONT SIZE="-1">   &quot;Edit&quot;,</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      &quot;Undo&quot;,  &quot;U&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Cut&quot;,   &quot;X&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Copy&quot;,  &quot;C&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Paste&quot;, &quot;P&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Select All&quot;,  &quot;S&quot;;</FONT>
+<FONT SIZE="-1">      SEPARATOR, NONE;</FONT>
+<FONT SIZE="-1">      &quot;Keyboard&quot;, &quot;K&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Graffiti&quot;, &quot;G&quot;;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MENU' (OrderNoBeamOptionsMenu) {</FONT>
+<FONT SIZE="-1">   OptionsBase,</FONT>
+<FONT SIZE="-1">   &quot;Options&quot;,</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      &quot;About Sales&quot;, NONE;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MBAR' (OrderMenuBar) {</FONT>
+<FONT SIZE="-1">   {OrderRecordMenu, OrderEditMenu, OrderOptionsMenu}</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MBAR' (OrderNoBeamMenuBar) {</FONT>
+<FONT SIZE="-1">   {OrderNoBeamRecordMenu, OrderNoBeamEditMenu, OrderNoBeamOptionsMenu}</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MENU' (DialogWithInputFieldEditMenu) {</FONT>
+<FONT SIZE="-1">   EditBase,</FONT>
+<FONT SIZE="-1">   &quot;Edit&quot;,</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      &quot;Undo&quot;,  &quot;U&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Cut&quot;,   &quot;X&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Copy&quot;,  &quot;C&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Paste&quot;, &quot;P&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Select All&quot;,  &quot;S&quot;;</FONT>
+<FONT SIZE="-1">      SEPARATOR, NONE;</FONT>
+<FONT SIZE="-1">      &quot;Keyboard&quot;, &quot;K&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Graffiti&quot;, &quot;G&quot;;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MENU' (DialogWithInputFieldOptionsMenu) {</FONT>
+<FONT SIZE="-1">   OptionsBase,</FONT>
+<FONT SIZE="-1">   &quot;Options&quot;,</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      &quot;About Sales&quot;, NONE;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MBAR' (DialogWithInputFieldMenuBar) {</FONT>
+<FONT SIZE="-1">   {DialogWithInputFieldEditMenu, DialogWithInputFieldOptionsMenu}</FONT>
+<FONT SIZE="-1">};</FONT>
+
+
+<FONT SIZE="-1">resource 'MENU' (CustomersCustomerMenu) {</FONT>
+<FONT SIZE="-1">   CustomerBase,</FONT>
+<FONT SIZE="-1">   &quot;Customer&quot;,</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      &quot;New Customer...&quot;, &quot;N&quot;;</FONT>
+<FONT SIZE="-1">      &quot;Beam all Customers&quot;, &quot;B&quot;;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MENU' (CustomersOptionsMenu) {</FONT>
+<FONT SIZE="-1">   OptionsBase,</FONT>
+<FONT SIZE="-1">   &quot;Options&quot;,</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      &quot;About Sales&quot;, NONE;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MENU' (CustomersNoBeamCustomerMenu) {</FONT>
+<FONT SIZE="-1">   CustomerBase,</FONT>
+<FONT SIZE="-1">   &quot;Customer&quot;,</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      &quot;New Customer...&quot;, &quot;N&quot;;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MENU' (CustomersNoBeamOptionsMenu) {</FONT>
+<FONT SIZE="-1">   OptionsBase,</FONT>
+<FONT SIZE="-1">   &quot;Options&quot;,</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      &quot;About Sales&quot;, NONE;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MBAR' (CustomersMenuBar) {</FONT>
+<FONT SIZE="-1">   {CustomersCustomerMenu, CustomersOptionsMenu}</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">resource 'MBAR' (CustomersNoBeamMenuBar) {</FONT>
+<FONT SIZE="-1">   {CustomersNoBeamCustomerMenu, CustomersNoBeamOptionsMenu}</FONT>
+<FONT SIZE="-1">};</FONT><A NAME="P1018_32010"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Handling Common Menus</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The Sales application has a </FONT><FONT FACE="Courier New">&#160;<A NAME="P1023_32060"></A>HandleCommonMenuItems</FONT><FONT FACE="Times">, as shown earlier in <A HREF="#P601_22635">Example&#160;7-1</A>. The </FONT><FONT FACE="Courier New">ItemHandleEvent</FONT><FONT FACE="Times"> routine calls </FONT><FONT FACE="Courier New">HandleCommonMenuItems</FONT><FONT FACE="Times"> in case of a menu event:</FONT></P><PRE><FONT SIZE="-1">static Boolean ItemHandleEvent(EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Boolean     handled = false;</FONT>
+
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_PROLOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   switch (event-&gt;eType) {</FONT>
+<FONT SIZE="-1">      // code deleted that handles other kinds of events</FONT>
+<FONT SIZE="-1">               </FONT>
+<FONT SIZE="-1">      case menuEvent:</FONT>
+<FONT SIZE="-1">         handled = HandleCommonMenuItems(event-&gt;data.menu.itemID);</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_EPILOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   return handled;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P1043_32567"></A>OrderHandleMenuEvent</FONT><FONT FACE="Times"> is responsible for the menu items for the Order form:</FONT></P><PRE><FONT SIZE="-1">static Boolean OrderHandleMenuEvent(Word menuID)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Boolean handled = false;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (HandleCommonMenuItems(menuID))</FONT>
+<FONT SIZE="-1">      handled = true;</FONT>
+<FONT SIZE="-1">   else</FONT>
+<FONT SIZE="-1">      switch (menuID) {</FONT>
+<FONT SIZE="-1">      case RecordDeleteItem:</FONT>
+<FONT SIZE="-1">         if (!gCellSelected)</FONT>
+<FONT SIZE="-1">            FrmAlert(NoItemSelectedAlert);</FONT>
+<FONT SIZE="-1">         else </FONT>
+<FONT SIZE="-1">            // code deleted that deletes an item</FONT>
+<FONT SIZE="-1">         handled = true;</FONT>
+<FONT SIZE="-1">         break;</FONT>
+<FONT SIZE="-1">         </FONT>
+<FONT SIZE="-1">      case RecordCustomerDetails:</FONT>
+<FONT SIZE="-1">         // code deleted that opens customer details dialog</FONT>
+<FONT SIZE="-1">         handled = true;</FONT>
+<FONT SIZE="-1">         break;</FONT>
+<FONT SIZE="-1">         </FONT>
+<FONT SIZE="-1">      case RecordBeamCustomer:</FONT>
+<FONT SIZE="-1">         BeamCustomer(</FONT>
+<FONT SIZE="-1">            GetRecordNumberForCustomer(gCurrentOrder-&gt;customerID));</FONT>
+<FONT SIZE="-1">         handled = true;</FONT>
+<FONT SIZE="-1">         break;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      case RecordDeleteCustomer:</FONT>
+<FONT SIZE="-1">         // code deleted that deletes a customer</FONT>
+<FONT SIZE="-1">         break;</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">   return handled;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">It is called by </FONT><FONT FACE="Courier New">&#160;<A NAME="P1078_33458"></A>OrderHandleEvent</FONT><FONT FACE="Times"> if a menu event occurs:</FONT></P><PRE><FONT SIZE="-1">static Boolean OrderHandleEvent(EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Boolean     handled = false;</FONT>
+
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_PROLOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   switch (event-&gt;eType)</FONT>
+<FONT SIZE="-1">      {</FONT>
+<FONT SIZE="-1">      // code deleted that handles other kinds of events</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      case menuEvent:</FONT>
+<FONT SIZE="-1">         handled = OrderHandleMenuEvent(event-&gt;data.menu.itemID);</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_EPILOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   return handled;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The New Customer/Edit Customer dialog has an event handler that has to handle the common menu items:</FONT></P><PRE><FONT SIZE="-1">static Boolean &#160;<A NAME="P1101_33980"></A>CustomerHandleEvent(EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_PROLOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   // code removed that handles other types of events</FONT>
+<FONT SIZE="-1">   } else if (event-&gt;eType == menuEvent) {</FONT>
+<FONT SIZE="-1">      if (HandleCommonMenuItems(event-&gt;data.menu.itemID))</FONT>
+<FONT SIZE="-1">         return true;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_EPILOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   return false;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Checking the OS Version Number</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1118_34322"></A>The Customers form has two different menubars, one with a Beam item. Here's where one is changed if we're running on a pre-3.0 system:</FONT></P><PRE><FONT SIZE="-1">static void &#160;<A NAME="P1120_34469"></A>CustomersFormOpen(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   // code removed that initializes the customer list</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (sysGetROMVerMajor(gRomVersion) &lt; 3)</FONT>
+<FONT SIZE="-1">      FrmSetMenu(FrmGetActiveForm(), CustomersNoBeamMenuBar);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">The Customers Form</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the menu-handling code for the Customers form:</FONT></P><PRE><FONT SIZE="-1">static Boolean &#160;<A NAME="P1131_34740"></A>CustomersHandleMenuEvent(Word menuID)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Boolean handled = false;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (HandleCommonMenuItems(menuID))</FONT>
+<FONT SIZE="-1">      return true;</FONT>
+<FONT SIZE="-1">   else switch (menuID) {</FONT>
+<FONT SIZE="-1">   case CustomerNewCustomer:</FONT>
+<FONT SIZE="-1">      // code deleted that creates a new customer</FONT>
+<FONT SIZE="-1">      handled = true;</FONT>
+<FONT SIZE="-1">      break;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   case CustomerBeamAllCustomers:</FONT>
+<FONT SIZE="-1">      // code deleted that beams all customers</FONT>
+<FONT SIZE="-1">      handled = true;</FONT>
+<FONT SIZE="-1">      break;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   return handled;</FONT>
+<FONT SIZE="-1">}</FONT>
+
+<FONT SIZE="-1">static Boolean &#160;<A NAME="P1151_35152"></A>CustomersHandleEvent(EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Boolean     handled = false;</FONT>
+
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_PROLOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   switch (event-&gt;eType)</FONT>
+<FONT SIZE="-1">      {</FONT>
+<FONT SIZE="-1">      case menuEvent:</FONT>
+<FONT SIZE="-1">         handled = CustomersHandleMenuEvent(event-&gt;data.menu.itemID);</FONT>
+<FONT SIZE="-1">         break;</FONT>
+
+<FONT SIZE="-1">      // code deleted that handles other events</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_EPILOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   return handled;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This is all the code and definitions necessary to make our menus work. You saw that our strategy for menus included a design preference for making menu items completely disappear if the application is present on a device that doesn't use the feature (as in beaming). There were also a few problems you encountered when you create duplicate types of menus and when handling the display of the Graffiti shortcut status in the bottom left corner of the unit.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">At this point, the Sales application is almost complete-you have all the essential UI elements and code in place. What is left are just a few bits, though they are important bits. You will add support for these features the next chapter for tables, find, and <A NAME="P1173_36225"></A>beaming. </FONT><A NAME="P1173_36234"></A></P>
+<HR ALIGN=LEFT SIZE=2 WIDTH=100% NOSHADE>
+
+<P><A NAME="P469_14705"></A>
+* <FONT FACE="Times" SIZE="-1">This is almost certain to change in future releases of the SDK. Check your version to see if Palm Computing has changed </FONT><FONT FACE="Courier New" SIZE="-1">AbtShowAbout</FONT><FONT FACE="Times" SIZE="-1"> to support third-party About Boxes.</FONT></P>
+<!-- TRANSIT - TEXTBAR -->
+
+<ADDRESS><FONT SIZE=-1>Palm Programming: The Developer's Guide
+<BR>Copyright &#169; 1999, O'Rielly and Associates, Inc.
+<BR>Published on the web by permission of O'Rielly and Associates, Inc. Contents modified for web display.</FONT></ADDRESS><P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch06.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch08.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P>
+</BODY>
+</HTML>

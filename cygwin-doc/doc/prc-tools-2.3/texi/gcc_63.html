@@ -1,0 +1,101 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Local Labels</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Local Labels">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Local Labels">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC63"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_62.html#SEC62"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_64.html#SEC64"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_64.html#SEC64"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.2 Locally Declared Labels </H2>
+<!--docid::SEC63::-->
+<P>
+
+Each statement expression is a scope in which <EM>local labels</EM> can be
+declared.  A local label is simply an identifier; you can jump to it
+with an ordinary <CODE>goto</CODE> statement, but only from within the
+statement expression it belongs to.
+</P><P>
+
+A local label declaration looks like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>__label__ <VAR>label</VAR>;
+</pre></td></tr></table></P><P>
+
+or
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>__label__ <VAR>label1</VAR>, <VAR>label2</VAR>, <small>...</small>;
+</pre></td></tr></table></P><P>
+
+Local label declarations must come at the beginning of the statement
+expression, right after the <SAMP>`({'</SAMP>, before any ordinary
+declarations.
+</P><P>
+
+The label declaration defines the label <EM>name</EM>, but does not define
+the label itself.  You must do this in the usual way, with
+<CODE><VAR>label</VAR>:</CODE>, within the statements of the statement expression.
+</P><P>
+
+The local label feature is useful because statement expressions are
+often used in macros.  If the macro contains nested loops, a <CODE>goto</CODE>
+can be useful for breaking out of them.  However, an ordinary label
+whose scope is the whole function cannot be used: if the macro can be
+expanded several times in one function, the label will be multiply
+defined in that function.  A local label avoids this problem.  For
+example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define SEARCH(array, target)                     \
+({                                               \
+  __label__ found;                                \
+  typeof (target) _SEARCH_target = (target);      \
+  typeof (*(array)) *_SEARCH_array = (array);     \
+  int i, j;                                       \
+  int value;                                      \
+  for (i = 0; i &#60; max; i++)                       \
+    for (j = 0; j &#60; max; j++)                     \
+      if (_SEARCH_array[i][j] == _SEARCH_target)  \
+        { value = i; goto found; }              \
+  value = -1;                                     \
+ found:                                           \
+  value;                                          \
+})
+</pre></td></tr></table></P><P>
+
+<A NAME="Labels as Values"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

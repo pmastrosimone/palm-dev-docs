@@ -1,0 +1,891 @@
+<html>
+<head>
+<title>(Protein) PalmOSGlue | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:19:57">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PalmLocRawData.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PalmTypes.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">79 &nbsp;&nbsp;
+PalmOSGlue</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="PalmOSGlue.html">79  PalmOSGlue</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#428428">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="429354"> </a>This chapter summarizes changes to the APIs declared in the following Palm OS Garnet<i> </i>header files:</p>
+<ul type="disc">
+  <li><a name="429355"> </a><code>BmpGlue.h</code> 
+  <li><a name="429356"> </a><code>CtlGlue.h</code> 
+  <li><a name="429357"> </a><code>DateGlue.h</code> 
+  <li><a name="429358"> </a><code>FldGlue.h</code> 
+  <li><a name="429359"> </a><code>FntGlue.h</code> 
+  <li><a name="429360"> </a><code>FrmGlue.h</code> 
+  <li><a name="429361"> </a><code>IntlGlue.h</code> 
+  <li><a name="429362"> </a><code>LmGlue.h</code> 
+  <li><a name="429363"> </a><code>LstGlue.h</code> 
+  <li><a name="429364"> </a><code>MemGlue.h</code> 
+  <li><a name="429365"> </a><code>OmGlue.h</code> 
+  <li><a name="429366"> </a><code>ResGlue.h</code> 
+  <li><a name="429375"> </a><code>SysGlue.h</code> 
+  <li><a name="429376"> </a><code>TblGlue.h</code> 
+  <li><a name="429378"> </a><code>TsmGlue.h</code> 
+  <li><a name="429383"> </a><code>TxtGlue.h</code> 
+  <li><a name="429388"> </a><code>UIColorGlue.h</code> 
+  <li><a name="429393"> </a><code>WinGlue.h</code> 
+</ul>
+
+<p><a name="431442"> </a>The Palm OS Glue APIs were designed to allow developers to write code that was backwardly-compatible with earlier releases of Palm OS. They are not needed in Palm OS Cobalt since there isn't an earlier set of ARM-native APIs with which a Palm OS Cobalt application could be compatible. Applications that used the Palm OS Glue functions should be written to use the underlying operating system function which is usually&#8212;but not always&#8212;named the same as the glue function with the word "Glue" removed. So, for instance, instead of calling <code>CtlGlueGetFont()</code> your application should call <code>CtlGetFont()</code>.</p>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="428810"> </a><b>Table 79.1&nbsp;&nbsp;Deleted functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="428814"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="428816"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428818"> </a><code>BmpGlueGetBitDepth()</code></p>
+    </td>
+    <td><p class="tt"><a name="428820"> </a><code>BmpGetBitDepth()</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428822"> </a><code>BmpGlueGetBits()</code></p>
+    </td>
+    <td><p class="tt"><a name="428824"> </a><code>BmpGetBits()</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428826"> </a><code>BmpGlueGetCompressionType()</code></p>
+    </td>
+    <td><p class="tt"><a name="428828"> </a><code>BmpGetCompressionType()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428830"> </a><code>BmpGlueGetDimensions()</code></p>
+    </td>
+    <td><p class="tt"><a name="431516"> </a><code>BmpGetDimensions()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428834"> </a><code>BmpGlueGetNextBitmap()</code></p>
+    </td>
+    <td><p class="tt"><a name="431518"> </a><code>BmpGetNextBitmap()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428838"> </a><code>BmpGlueGetTransparentValue()</code></p>
+    </td>
+    <td><p class="tt"><a name="431520"> </a><code>BmpGetTransparentValue()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428842"> </a><code>BmpGlueSetTransparentValue()</code></p>
+    </td>
+    <td><p class="tt"><a name="431522"> </a><code>BmpSetTransparentValue()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428846"> </a><code>CtlGlueGetControlStyle()</code></p>
+    </td>
+    <td><p class="tt"><a name="431536"> </a><code>CtlGetControlStyle()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428850"> </a><code>CtlGlueGetFont()</code></p>
+    </td>
+    <td><p class="tt"><a name="431538"> </a><code>CtlGetFont()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428854"> </a><code>CtlGlueGetGraphics()</code></p>
+    </td>
+    <td><p class="tt"><a name="431540"> </a><code>CtlGetGraphics()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428858"> </a><code>CtlGlueIsGraphical()</code></p>
+    </td>
+    <td><p class="tt"><a name="431542"> </a><code>CtlIsGraphicControl()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428862"> </a><code>CtlGlueNewSliderControl()</code></p>
+    </td>
+    <td><p class="tt"><a name="431544"> </a><code>CtlNewSliderControl()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428866"> </a><code>CtlGlueSetFont()</code></p>
+    </td>
+    <td><p class="tt"><a name="431546"> </a><code>CtlSetFont()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428870"> </a><code>CtlGlueSetFrameStyle()</code></p>
+    </td>
+    <td><p class="tt"><a name="431548"> </a><code>CtlSetFrameStyle()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428874"> </a><code>CtlGlueSetLeftAnchor()</code></p>
+    </td>
+    <td><p class="tt"><a name="431550"> </a><code>CtlSetLeftAnchor()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428878"> </a><code>DateGlueTemplateToAscii()</code></p>
+    </td>
+    <td><p class="tt"><a name="431585"> </a><code>DateTemplateToAscii()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428882"> </a><code>DateGlueToDOWDMFormat()</code></p>
+    </td>
+    <td><p class="tt"><a name="431587"> </a><code>DateToDOWDMFormat()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428886"> </a><code>FldGlueGetLineInfo()</code></p>
+    </td>
+    <td><p class="tt"><a name="431593"> </a><code>FldGetLineInfo()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428890"> </a><code>FntGlueGetDefaultFontID()</code></p>
+    </td>
+    <td><p class="tt"><a name="431603"> </a><code>FntGetDefaultFontID()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428894"> </a><code>FntGlueTruncateString()</code></p>
+    </td>
+    <td><p class="tt"><a name="431605"> </a><code>FntTruncateString()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428898"> </a><code>FntGlueWCharWidth()</code></p>
+    </td>
+    <td><p class="tt"><a name="431607"> </a><code>FntCharWidth()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428902"> </a><code>FntGlueWidthToOffset()</code></p>
+    </td>
+    <td><p class="tt"><a name="431609"> </a><code>FntWidthToOffset()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428906"> </a><code>FrmGlueGetActiveField()</code></p>
+    </td>
+    <td><p class="tt"><a name="431627"> </a><code>FrmGetActiveField()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428910"> </a><code>FrmGlueGetDefaultButtonID()</code></p>
+    </td>
+    <td><p class="tt"><a name="431629"> </a><code>FrmGetDefaultButtonID()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428914"> </a><code>FrmGlueGetEventHandler()</code></p>
+    </td>
+    <td><p class="tt"><a name="431631"> </a><code>FrmGetEventHandler()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428918"> </a><code>FrmGlueGetHelpID()</code></p>
+    </td>
+    <td><p class="tt"><a name="431633"> </a><code>FrmGetHelpID()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428922"> </a><code>FrmGlueGetLabelFont()</code></p>
+    </td>
+    <td><p class="tt"><a name="431635"> </a><code>FrmGetLabelFont()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428926"> </a><code>FrmGlueGetMenuBarID()</code></p>
+    </td>
+    <td><p class="tt"><a name="431637"> </a><code>FrmGetMenuBarID()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428930"> </a><code>FrmGlueGetObjectUsable()</code></p>
+    </td>
+    <td><p class="tt"><a name="431639"> </a><code>FrmGetObjectUsable()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428934"> </a><code>FrmGlueGetObjIDFromObjPtr()</code></p>
+    </td>
+    <td><p class="tt"><a name="431641"> </a><code>FrmGetObjectIdFromObjectPtr()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428938"> </a><code>FrmGlueSetDefaultButtonID()</code></p>
+    </td>
+    <td><p class="tt"><a name="431643"> </a><code>FrmSetDefaultButtonID()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428942"> </a><code>FrmGlueSetHelpID()</code></p>
+    </td>
+    <td><p class="tt"><a name="431645"> </a><code>FrmSetHelpID()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428946"> </a><code>FrmGlueSetLabelFont()</code></p>
+    </td>
+    <td><p class="tt"><a name="431647"> </a><code>FrmSetLabelFont()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428950"> </a><code>IntlGlueGetRoutineAddress()</code></p>
+    </td>
+    <td><p class="tt"><a name="428952"> </a>There is no single function that corresponds to this, but see <a href="../System_Management/SharedLibraries.html#993294">"Patching Shared Libraries"</a> of <i>Exploring Palm OS: System Management</i> for information on function entry points.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428954"> </a><code>TxtLatinByteAttr()</code></p>
+    </td>
+    <td><p class="tt"><a name="428956"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428958"> </a><code>LmGlueGetLocaleSetting()</code></p>
+    </td>
+    <td><p class="tt"><a name="431693"> </a><code>LmGetLocaleSetting()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428962"> </a><code>LmGlueGetNumLocales()</code></p>
+    </td>
+    <td><p class="tt"><a name="431695"> </a><code>LmGetNumLocales()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428966"> </a><code>LmGlueGetSystemLocale()</code></p>
+    </td>
+    <td><p class="tt"><a name="431697"> </a><code>LmGetSystemLocale()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428970"> </a><code>LmGlueLocaleToIndex()</code></p>
+    </td>
+    <td><p class="tt"><a name="431699"> </a><code>LmLocaleToIndex()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428974"> </a><code>LstGlueGetDrawFunction()</code></p>
+    </td>
+    <td><p class="tt"><a name="431729"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428978"> </a><code>LstGlueGetFont()</code></p>
+    </td>
+    <td><p class="tt"><a name="431719"> </a><code>LstGetFont()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428982"> </a><code>LstGlueGetItemsText()</code></p>
+    </td>
+    <td><p class="tt"><a name="431721"> </a><code>LstGetItemsText()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428986"> </a><code>LstGlueGetTopItem()</code></p>
+    </td>
+    <td><p class="tt"><a name="431723"> </a><code>LstGetTopItem()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428990"> </a><code>LstGlueSetFont()</code></p>
+    </td>
+    <td><p class="tt"><a name="431725"> </a><code>LstSetFont()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428994"> </a><code>LstGlueSetIncrementalSearch()</code></p>
+    </td>
+    <td><p class="tt"><a name="431727"> </a><code>LstSetIncrementalSearch()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428998"> </a><code>MemGluePtrNew()</code></p>
+    </td>
+    <td><p class="tt"><a name="429000"> </a><code>MemPtrNew()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429002"> </a><code>OmGlueGetCurrentLocale()</code></p>
+    </td>
+    <td><p class="tt"><a name="429004"> </a><code>LmGetLocaleSetting()</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429006"> </a><code>OmGlueGetSystemLocale()</code></p>
+    </td>
+    <td><p class="tt"><a name="429008"> </a><code>LmGetSystemLocale()</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429010"> </a><code>ResGlueLoadConstant()</code></p>
+    </td>
+    <td><p class="tt"><a name="431771"> </a><code>ResLoadConstant()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429014"> </a><code>SysGlueGetTrapAddress()</code></p>
+    </td>
+    <td><p class="tt"><a name="432137"> </a>There is no single function that corresponds to this, but see <a href="../System_Management/SharedLibraries.html#993294">"Patching Shared Libraries"</a> of <i>Exploring Palm OS: System Management</i> for information on function entry points.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429018"> </a><code>TblGlueGetColumnMasked()</code></p>
+    </td>
+    <td><p class="tt"><a name="431775"> </a><code>TblGetColumnMasked()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429022"> </a><code>TblGlueGetItemPtr()</code></p>
+    </td>
+    <td><p class="tt"><a name="431777"> </a><code>TblGetItemPtr()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429026"> </a><code>TblGlueGetNumberOfColumns()</code></p>
+    </td>
+    <td><p class="tt"><a name="431779"> </a><code>TblGetNumberOfColumns()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429030"> </a><code>TblGlueGetTopRow()</code></p>
+    </td>
+    <td><p class="tt"><a name="431781"> </a><code>TblGetTopRow()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429034"> </a><code>TblGlueSetSelection()</code></p>
+    </td>
+    <td><p class="tt"><a name="431783"> </a><code>TblSetSelection()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429038"> </a><code>TsmGlueGetFepMode()</code></p>
+    </td>
+    <td><p class="tt"><a name="431805"> </a><code>TsmGetFepMode()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429042"> </a><code>TsmGlueSetFepMode()</code></p>
+    </td>
+    <td><p class="tt"><a name="431807"> </a><code>TsmSetFepMode()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429046"> </a><code>TxtGlueByteAttr()</code></p>
+    </td>
+    <td><p class="tt"><a name="431809"> </a><code>TxtByteAttr()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429050"> </a><code>TxtGlueCaselessCompare()</code></p>
+    </td>
+    <td><p class="tt"><a name="431811"> </a><code>TxtCaselessCompare()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429054"> </a><code>TxtGlueCharAttr()</code></p>
+    </td>
+    <td><p class="tt"><a name="431813"> </a><code>TxtCharAttr()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429058"> </a><code>TxtGlueCharBounds()</code></p>
+    </td>
+    <td><p class="tt"><a name="431815"> </a><code>TxtCharBounds()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429062"> </a><code>TxtGlueCharEncoding()</code></p>
+    </td>
+    <td><p class="tt"><a name="431817"> </a><code>TxtCharEncoding()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429066"> </a><code>TxtGlueCharIsValid()</code></p>
+    </td>
+    <td><p class="tt"><a name="431819"> </a><code>TxtCharIsValid()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429070"> </a><code>TxtGlueCharIsVirtual()</code></p>
+    </td>
+    <td><p class="tt"><a name="431821"> </a><code>TxtCharIsVirtual()</code> macro</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429074"> </a><code>TxtGlueCharSize()</code></p>
+    </td>
+    <td><p class="tt"><a name="431823"> </a><code>TxtCharSize()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429078"> </a><code>TxtGlueCharWidth()</code></p>
+    </td>
+    <td><p class="tt"><a name="431917"> </a><code>FntCharWidth()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429082"> </a><code>TxtGlueCharXAttr()</code></p>
+    </td>
+    <td><p class="tt"><a name="431827"> </a><code>TxtCharXAttr()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429086"> </a><code>TxtGlueCompare()</code></p>
+    </td>
+    <td><p class="tt"><a name="431829"> </a><code>TxtCompare()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429090"> </a><code>TxtGlueConvertEncoding()</code></p>
+    </td>
+    <td><p class="tt"><a name="431831"> </a><code>TxtConvertEncoding()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429094"> </a><code>TxtGlueEncodingName()</code></p>
+    </td>
+    <td><p class="tt"><a name="431833"> </a><code>TxtEncodingName()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429098"> </a><code>TxtGlueFindString()</code></p>
+    </td>
+    <td><p class="tt"><a name="431835"> </a><code>TxtFindString()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429102"> </a><code>TxtGlueGetChar()</code></p>
+    </td>
+    <td><p class="tt"><a name="431837"> </a><code>TxtGetChar()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429106"> </a><code>TxtGlueGetHorizEllipsisChar()</code></p>
+    </td>
+    <td><p class="tt"><a name="431839"> </a><code>ChrHorizEllipsis()</code> macro</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429110"> </a><code>TxtGlueGetNextChar()</code></p>
+    </td>
+    <td><p class="tt"><a name="431841"> </a><code>TxtGetNextChar()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429114"> </a><code>TxtGlueGetNumericSpaceChar()</code></p>
+    </td>
+    <td><p class="tt"><a name="431843"> </a><code>ChrNumericSpace()</code><span style="color: #000000;  font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline"> macro</span></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429118"> </a><code>TxtGlueGetPreviousChar()</code></p>
+    </td>
+    <td><p class="tt"><a name="431845"> </a><code>TxtGetPreviousChar()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429122"> </a><code>TxtGlueGetTruncationOffset()</code></p>
+    </td>
+    <td><p class="tt"><a name="431847"> </a><code>TxtGetTruncationOffset()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429126"> </a><code>TxtGlueLowerChar()</code></p>
+    </td>
+    <td><p class="tt"><a name="432003"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429130"> </a><code>TxtGlueLowerStr()</code></p>
+    </td>
+    <td><p class="tt"><a name="432009"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429134"> </a><code>TxtGlueMaxEncoding()</code></p>
+    </td>
+    <td><p class="tt"><a name="431853"> </a><code>TxtMaxEncoding()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429138"> </a><code>TxtGlueParamString()</code></p>
+    </td>
+    <td><p class="tt"><a name="431855"> </a><code>TxtParamString()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429142"> </a><code>TxtGluePrepFindString()</code></p>
+    </td>
+    <td><p class="tt"><a name="431857"> </a><code>TxtPrepFindString()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429146"> </a><code>TxtGlueReplaceStr()</code></p>
+    </td>
+    <td><p class="tt"><a name="431859"> </a><code>TxtReplaceStr()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429150"> </a><code>TxtGlueSetNextChar()</code></p>
+    </td>
+    <td><p class="tt"><a name="431861"> </a><code>TxtSetNextChar()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429154"> </a><code>TxtGlueStrEncoding()</code></p>
+    </td>
+    <td><p class="tt"><a name="431863"> </a><code>TxtStrEncoding()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429158"> </a><code>TxtGlueStripSpaces()</code></p>
+    </td>
+    <td><p class="tt"><a name="432011"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429162"> </a><code>TxtGlueTransliterate()</code></p>
+    </td>
+    <td><p class="tt"><a name="431867"> </a><code>TxtTransliterate()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429166"> </a><code>TxtGlueTruncateString()</code></p>
+    </td>
+    <td><p class="tt"><a name="431869"> </a><code>TxtTruncateString()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429170"> </a><code>TxtGlueUpperChar()</code></p>
+    </td>
+    <td><p class="tt"><a name="432013"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429174"> </a><code>TxtGlueUpperStr()</code></p>
+    </td>
+    <td><p class="tt"><a name="432015"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429178"> </a><code>TxtGlueWordBounds()</code></p>
+    </td>
+    <td><p class="tt"><a name="431875"> </a><code>TxtWordBounds()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429182"> </a><code>UIColorGlueGetNumTableEntries()</code></p>
+    </td>
+    <td><p class="tt"><a name="429184"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429186"> </a><code>WinGlueDrawChar()</code></p>
+    </td>
+    <td><p class="tt"><a name="432017"> </a><code>WinDrawChar()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429190"> </a><code>WinGlueDrawTruncChars()</code></p>
+    </td>
+    <td><p class="tt"><a name="432019"> </a><code>WinDrawTruncChars()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429194"> </a><code>WinGlueGetFrameType()</code></p>
+    </td>
+    <td><p class="tt"><a name="432021"> </a><code>WinGetFrameType()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429198"> </a><code>WinGlueSetFrameType()</code></p>
+    </td>
+    <td><p class="tt"><a name="432023"> </a><code>WinSetFrameType()</code></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="429240"> </a><b>Table 79.2&nbsp;&nbsp;Deleted macros </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="429244"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="429246"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429248"> </a><code>SysGlueTrapExists()</code></p>
+    </td>
+    <td><p class="tt"><a name="432149"> </a>There is no single function that corresponds to this, but see <a href="../System_Management/SharedLibraries.html#993294">"Patching Shared Libraries"</a> of <i>Exploring Palm OS: System Management</i> for information on function entry points.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429252"> </a><code>TxtGlueCharIsAlNum()</code></p>
+    </td>
+    <td><p class="tt"><a name="432041"> </a><code>TxtCharIsAlNum()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429256"> </a><code>TxtGlueCharIsAlpha()</code></p>
+    </td>
+    <td><p class="tt"><a name="432043"> </a><code>TxtCharIsAlpha()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429260"> </a><code>TxtGlueCharIsCntrl()</code></p>
+    </td>
+    <td><p class="tt"><a name="432045"> </a><code>TxtCharIsCntrl()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429264"> </a><code>TxtGlueCharIsDelim()</code></p>
+    </td>
+    <td><p class="tt"><a name="432047"> </a><code>TxtCharIsDelim()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429268"> </a><code>TxtGlueCharIsDigit()</code></p>
+    </td>
+    <td><p class="tt"><a name="432049"> </a><code>TxtCharIsDigit()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429272"> </a><code>TxtGlueCharIsGraph()</code></p>
+    </td>
+    <td><p class="tt"><a name="432051"> </a><code>TxtCharIsGraph()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429276"> </a><code>TxtGlueCharIsHex()</code></p>
+    </td>
+    <td><p class="tt"><a name="432053"> </a><code>TxtCharIsHex()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429280"> </a><code>TxtGlueCharIsLower()</code></p>
+    </td>
+    <td><p class="tt"><a name="432055"> </a><code>TxtCharIsLower()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429284"> </a><code>TxtGlueCharIsPrint()</code></p>
+    </td>
+    <td><p class="tt"><a name="432057"> </a><code>TxtCharIsPrint()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429288"> </a><code>TxtGlueCharIsPunct()</code></p>
+    </td>
+    <td><p class="tt"><a name="432059"> </a><code>TxtCharIsPunct()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429292"> </a><code>TxtGlueCharIsSpace()</code></p>
+    </td>
+    <td><p class="tt"><a name="432061"> </a><code>TxtCharIsSpace()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429296"> </a><code>TxtGlueCharIsUpper()</code></p>
+    </td>
+    <td><p class="tt"><a name="432063"> </a><code>TxtCharIsUpper()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429300"> </a><code>TxtGlueNextCharSize()</code></p>
+    </td>
+    <td><p class="tt"><a name="432065"> </a><code>TxtNextCharSize()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429304"> </a><code>TxtGluePreviousCharSize()</code></p>
+    </td>
+    <td><p class="tt"><a name="432067"> </a><code>TxtPreviousCharSize()</code></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="428428"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="429321"> </a><b>Table 79.3&nbsp;&nbsp;Unchanged enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="429325"> </a>fontDefaults</p>
+    </td>
+    <td><p class="tt"><a name="429327"> </a>FontDefaultType</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="425347"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PalmLocRawData.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="PalmTypes.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

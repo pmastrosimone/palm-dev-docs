@@ -1,0 +1,221 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Overall Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Overall Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Overall Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC4"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_3.html#SEC3"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_5.html#SEC5"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_5.html#SEC5"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.2 Options Controlling the Kind of Output </H2>
+<!--docid::SEC4::-->
+<P>
+
+Compilation can involve up to four stages: preprocessing, compilation
+proper, assembly and linking, always in that order.  The first three
+stages apply to an individual source file, and end by producing an
+object file; linking combines all the object files (those newly
+compiled, and those specified as input) into an executable file.
+</P><P>
+
+<A NAME="IDX15"></A>
+For any given input file, the file name suffix determines what kind of
+compilation is done:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE><VAR>file</VAR>.c</CODE>
+<DD>C source code which must be preprocessed.
+<P>
+
+<DT><CODE><VAR>file</VAR>.i</CODE>
+<DD>C source code which should not be preprocessed.
+<P>
+
+<DT><CODE><VAR>file</VAR>.ii</CODE>
+<DD>C++ source code which should not be preprocessed.
+<P>
+
+<DT><CODE><VAR>file</VAR>.m</CODE>
+<DD>Objective-C source code.  Note that you must link with the library
+<TT>`libobjc.a'</TT> to make an Objective-C program work.
+<P>
+
+<DT><CODE><VAR>file</VAR>.h</CODE>
+<DD>C header file (not to be compiled or linked).
+<P>
+
+<DT><CODE><VAR>file</VAR>.cc</CODE>
+<DD><DT><CODE><VAR>file</VAR>.cxx</CODE>
+<DD><DT><CODE><VAR>file</VAR>.cpp</CODE>
+<DD><DT><CODE><VAR>file</VAR>.C</CODE>
+<DD>C++ source code which must be preprocessed.  Note that in <SAMP>`.cxx'</SAMP>,
+the last two letters must both be literally <SAMP>`x'</SAMP>.  Likewise,
+<SAMP>`.C'</SAMP> refers to a literal capital C.
+<P>
+
+<DT><CODE><VAR>file</VAR>.s</CODE>
+<DD>Assembler code.
+<P>
+
+<DT><CODE><VAR>file</VAR>.S</CODE>
+<DD>Assembler code which must be preprocessed.
+<P>
+
+<DT><CODE><VAR>other</VAR></CODE>
+<DD>An object file to be fed straight into linking.
+Any file name with no recognized suffix is treated this way.
+</DL>
+<P>
+
+You can specify the input language explicitly with the <SAMP>`-x'</SAMP> option:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-x <VAR>language</VAR></CODE>
+<DD>Specify explicitly the <VAR>language</VAR> for the following input files
+(rather than letting the compiler choose a default based on the file
+name suffix).  This option applies to all following input files until
+the next <SAMP>`-x'</SAMP> option.  Possible values for <VAR>language</VAR> are:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>c  objective-c  c++
+c-header  cpp-output  c++-cpp-output
+assembler  assembler-with-cpp
+</pre></td></tr></table><P>
+
+<DT><CODE>-x none</CODE>
+<DD>Turn off any specification of a language, so that subsequent files are
+handled according to their file name suffixes (as they are if <SAMP>`-x'</SAMP>
+has not been used at all).
+</DL>
+<P>
+
+If you only want some of the stages of compilation, you can use
+<SAMP>`-x'</SAMP> (or filename suffixes) to tell <CODE>gcc</CODE> where to start, and
+one of the options <SAMP>`-c'</SAMP>, <SAMP>`-S'</SAMP>, or <SAMP>`-E'</SAMP> to say where
+<CODE>gcc</CODE> is to stop.  Note that some combinations (for example,
+<SAMP>`-x cpp-output -E'</SAMP> instruct <CODE>gcc</CODE> to do nothing at all.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-c</CODE>
+<DD>Compile or assemble the source files, but do not link.  The linking
+stage simply is not done.  The ultimate output is in the form of an
+object file for each source file.
+<P>
+
+By default, the object file name for a source file is made by replacing
+the suffix <SAMP>`.c'</SAMP>, <SAMP>`.i'</SAMP>, <SAMP>`.s'</SAMP>, etc., with <SAMP>`.o'</SAMP>.
+</P><P>
+
+Unrecognized input files, not requiring compilation or assembly, are
+ignored.
+</P><P>
+
+<DT><CODE>-S</CODE>
+<DD>Stop after the stage of compilation proper; do not assemble.  The output
+is in the form of an assembler code file for each non-assembler input
+file specified.
+<P>
+
+By default, the assembler file name for a source file is made by
+replacing the suffix <SAMP>`.c'</SAMP>, <SAMP>`.i'</SAMP>, etc., with <SAMP>`.s'</SAMP>.
+</P><P>
+
+Input files that don't require compilation are ignored.
+</P><P>
+
+<DT><CODE>-E</CODE>
+<DD>Stop after the preprocessing stage; do not run the compiler proper.  The
+output is in the form of preprocessed source code, which is sent to the
+standard output.
+<P>
+
+Input files which don't require preprocessing are ignored.
+</P><P>
+
+<A NAME="IDX16"></A>
+<DT><CODE>-o <VAR>file</VAR></CODE>
+<DD>Place output in file <VAR>file</VAR>.  This applies regardless to whatever
+sort of output is being produced, whether it be an executable file,
+an object file, an assembler file or preprocessed C code.
+<P>
+
+Since only one output file can be specified, it does not make sense to
+use <SAMP>`-o'</SAMP> when compiling more than one input file, unless you are
+producing an executable file as output.
+</P><P>
+
+If <SAMP>`-o'</SAMP> is not specified, the default is to put an executable file
+in <TT>`a.out'</TT>, the object file for <TT>`<VAR>source</VAR>.<VAR>suffix</VAR>'</TT> in
+<TT>`<VAR>source</VAR>.o'</TT>, its assembler file in <TT>`<VAR>source</VAR>.s'</TT>, and
+all preprocessed C source on standard output.</P><P>
+
+<DT><CODE>-v</CODE>
+<DD>Print (on standard error output) the commands executed to run the stages
+of compilation.  Also print the version number of the compiler driver
+program and of the preprocessor and the compiler proper.
+<P>
+
+<DT><CODE>-pipe</CODE>
+<DD>Use pipes rather than temporary files for communication between the
+various stages of compilation.  This fails to work on some systems where
+the assembler is unable to read from a pipe; but the GNU assembler has
+no trouble.
+<P>
+
+<DT><CODE>--help</CODE>
+<DD>Print (on the standard output) a description of the command line options
+understood by <CODE>gcc</CODE>.  If the <CODE>-v</CODE> option is also specified
+then <CODE>--help</CODE> will also be passed on to the various processes
+invoked by <CODE>gcc</CODE>, so that they can display the command line options
+they accept.  If the <CODE>-W</CODE> option is also specified then command
+line options which have no documentation associated with them will also
+be displayed.
+</DL>
+<P>
+
+<A NAME="Invoking G++"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_3.html#SEC3"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_5.html#SEC5"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_5.html#SEC5"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_2.html#SEC2"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_46.html#SEC46"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

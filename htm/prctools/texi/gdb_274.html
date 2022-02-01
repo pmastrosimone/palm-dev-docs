@@ -1,0 +1,642 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Packets</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Packets">
+<META NAME="keywords" CONTENT="Debugging with GDB: Packets">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC628"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_273.html#SEC627"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_275.html#SEC629"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_275.html#SEC629"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_272.html#SEC626"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_279.html#SEC633"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> D.2 Packets </H2>
+<!--docid::SEC628::-->
+<P>
+
+The following table provides a complete list of all currently defined
+<VAR>command</VAR>s and their corresponding response <VAR>data</VAR>.
+</P><P>
+
+<DL COMPACT>
+
+<DT><CODE>!</CODE> -- extended mode
+<DD><A NAME="IDX1186"></A>
+<P>
+
+Enable extended mode.  In extended mode, the remote server is made
+persistent.  The <SAMP>`R'</SAMP> packet is used to restart the program being
+debugged.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`OK'</SAMP>
+<DD>The remote target both supports and has enabled extended mode.
+</DL>
+<P>
+
+<DT><CODE>?</CODE> -- last signal
+<DD><A NAME="IDX1187"></A>
+<P>
+
+Indicate the reason the target halted.  The reply is the same as for
+step and continue.
+</P><P>
+
+Reply:
+See section <A HREF="gdb_275.html#SEC629">D.3 Stop Reply Packets</A>, for the reply specifications.
+</P><P>
+
+<DT><CODE>a</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>A</CODE><VAR>arglen</VAR><CODE>,</CODE><VAR>argnum</VAR><CODE>,</CODE><VAR>arg</VAR><CODE>,<small>...</small></CODE> --  set program arguments <STRONG>(reserved)</STRONG>
+<DD><A NAME="IDX1188"></A>
+<P>
+
+Initialized <SAMP>`argv[]'</SAMP> array passed into program. <VAR>arglen</VAR>
+specifies the number of bytes in the hex encoded byte stream <VAR>arg</VAR>.
+See <CODE>gdbserver</CODE> for more details.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`OK'</SAMP>
+<DD><DT><SAMP>`E<VAR>NN</VAR>'</SAMP>
+<DD></DL>
+<P>
+
+<DT><CODE>b</CODE><VAR>baud</VAR> -- set baud <STRONG>(deprecated)</STRONG>
+<DD><A NAME="IDX1189"></A>
+<P>
+
+Change the serial line speed to <VAR>baud</VAR>.
+</P><P>
+
+JTC: <EM>When does the transport layer state change?  When it's
+received, or after the ACK is transmitted.  In either case, there are
+problems if the command or the acknowledgment packet is dropped.</EM>
+</P><P>
+
+Stan: <EM>If people really wanted to add something like this, and get
+it working for the first time, they ought to modify ser-unix.c to send
+some kind of out-of-band message to a specially-setup stub and have the
+switch happen "in between" packets, so that from remote protocol's point
+of view, nothing actually happened.</EM>
+</P><P>
+
+<DT><CODE>B</CODE><VAR>addr</VAR>,<VAR>mode</VAR> -- set breakpoint <STRONG>(deprecated)</STRONG>
+<DD><A NAME="IDX1190"></A>
+<P>
+
+Set (<VAR>mode</VAR> is <SAMP>`S'</SAMP>) or clear (<VAR>mode</VAR> is <SAMP>`C'</SAMP>) a
+breakpoint at <VAR>addr</VAR>.  <EM>This has been replaced by the <SAMP>`Z'</SAMP>
+and <SAMP>`z'</SAMP> packets.</EM>
+</P><P>
+
+<DT><CODE>c</CODE><VAR>addr</VAR> -- continue
+<DD><A NAME="IDX1191"></A>
+<P>
+
+<VAR>addr</VAR> is address to resume.  If <VAR>addr</VAR> is omitted, resume at
+current address.
+</P><P>
+
+Reply:
+See section <A HREF="gdb_275.html#SEC629">D.3 Stop Reply Packets</A>, for the reply specifications.
+</P><P>
+
+<DT><CODE>C</CODE><VAR>sig</VAR><CODE>;</CODE><VAR>addr</VAR> -- continue with signal
+<DD><A NAME="IDX1192"></A>
+<P>
+
+Continue with signal <VAR>sig</VAR> (hex signal number).  If
+<CODE>;</CODE><VAR>addr</VAR> is omitted, resume at same address.
+</P><P>
+
+Reply:
+See section <A HREF="gdb_275.html#SEC629">D.3 Stop Reply Packets</A>, for the reply specifications.
+</P><P>
+
+<DT><CODE>d</CODE> -- toggle debug <STRONG>(deprecated)</STRONG>
+<DD><A NAME="IDX1193"></A>
+<P>
+
+Toggle debug flag.
+</P><P>
+
+<DT><CODE>D</CODE> -- detach
+<DD><A NAME="IDX1194"></A>
+<P>
+
+Detach GDB from the remote system.  Sent to the remote target
+before GDB disconnects.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`<EM>no response</EM>'</SAMP>
+<DD>GDB does not check for any response after sending this packet.
+</DL>
+<P>
+
+<DT><CODE>e</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>E</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>f</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>F</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>g</CODE> -- read registers
+<DD><A NAME="read registers packet"></A>
+<A NAME="IDX1195"></A>
+<P>
+
+Read general registers.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`<VAR>XX<small>...</small></VAR>'</SAMP>
+<DD>Each byte of register data is described by two hex digits.  The bytes
+with the register are transmitted in target byte order.  The size of
+each register and their position within the <SAMP>`g'</SAMP> <VAR>packet</VAR> are
+determined by the GDB internal macros <VAR>REGISTER_RAW_SIZE</VAR>
+and <VAR>REGISTER_NAME</VAR> macros.  The specification of several standard
+<CODE>g</CODE> packets is specified below.
+<DT><SAMP>`E<VAR>NN</VAR>'</SAMP>
+<DD>for an error.
+</DL>
+<P>
+
+<DT><CODE>G</CODE><VAR>XX<small>...</small></VAR> -- write regs
+<DD><A NAME="IDX1196"></A>
+<P>
+
+See  <A HREF="gdb_274.html#read registers packet">read registers packet</A>, for a description of the <VAR>XX<small>...</small></VAR>
+data.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`OK'</SAMP>
+<DD>for success
+<DT><SAMP>`E<VAR>NN</VAR>'</SAMP>
+<DD>for an error
+</DL>
+<P>
+
+<DT><CODE>h</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>H</CODE><VAR>c</VAR><VAR>t<small>...</small></VAR> -- set thread
+<DD><A NAME="IDX1197"></A>
+<P>
+
+Set thread for subsequent operations (<SAMP>`m'</SAMP>, <SAMP>`M'</SAMP>, <SAMP>`g'</SAMP>,
+<SAMP>`G'</SAMP>, et.al.).  <VAR>c</VAR> depends on the operation to be performed: it
+should be <SAMP>`c'</SAMP> for step and continue operations, <SAMP>`g'</SAMP> for other
+operations.  The thread designator <VAR>t<small>...</small></VAR> may be -1, meaning all
+the threads, a thread number, or zero which means pick any thread.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`OK'</SAMP>
+<DD>for success
+<DT><SAMP>`E<VAR>NN</VAR>'</SAMP>
+<DD>for an error
+</DL>
+<P>
+
+<DT><CODE>i</CODE><VAR>addr</VAR><CODE>,</CODE><VAR>nnn</VAR> -- cycle step <STRONG>(draft)</STRONG>
+<DD><A NAME="cycle step packet"></A>
+<A NAME="IDX1198"></A>
+<P>
+
+Step the remote target by a single clock cycle.  If <CODE>,</CODE><VAR>nnn</VAR> is
+present, cycle step <VAR>nnn</VAR> cycles.  If <VAR>addr</VAR> is present, cycle
+step starting at that address.
+</P><P>
+
+<DT><CODE>I</CODE> -- signal then cycle step <STRONG>(reserved)</STRONG>
+<DD><A NAME="IDX1199"></A>
+<P>
+
+See  <A HREF="gdb_274.html#step with signal packet">step with signal packet</A>.  See  <A HREF="gdb_274.html#cycle step packet">cycle step packet</A>.
+</P><P>
+
+<DT><CODE>j</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>J</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>k</CODE> -- kill request
+<DD><A NAME="IDX1200"></A>
+<P>
+
+FIXME: <EM>There is no description of how to operate when a specific
+thread context has been selected (i.e. does 'k' kill only that
+thread?)</EM>.
+</P><P>
+
+<DT><CODE>K</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>l</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>L</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>m</CODE><VAR>addr</VAR><CODE>,</CODE><VAR>length</VAR> -- read memory
+<DD><A NAME="IDX1201"></A>
+<P>
+
+Read <VAR>length</VAR> bytes of memory starting at address <VAR>addr</VAR>.
+Neither GDB nor the stub assume that sized memory transfers are
+assumed using word alligned accesses. FIXME: <EM>A word aligned memory
+transfer mechanism is needed.</EM>
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`<VAR>XX<small>...</small></VAR>'</SAMP>
+<DD><VAR>XX<small>...</small></VAR> is mem contents. Can be fewer bytes than requested if able
+to read only part of the data.  Neither GDB nor the stub assume
+that sized memory transfers are assumed using word alligned
+accesses. FIXME: <EM>A word aligned memory transfer mechanism is
+needed.</EM>
+<DT><SAMP>`E<VAR>NN</VAR>'</SAMP>
+<DD><VAR>NN</VAR> is errno
+</DL>
+<P>
+
+<DT><CODE>M</CODE><VAR>addr</VAR>,<VAR>length</VAR><CODE>:</CODE><VAR>XX<small>...</small></VAR> -- write mem
+<DD><A NAME="IDX1202"></A>
+<P>
+
+Write <VAR>length</VAR> bytes of memory starting at address <VAR>addr</VAR>.
+<VAR>XX<small>...</small></VAR> is the data.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`OK'</SAMP>
+<DD>for success
+<DT><SAMP>`E<VAR>NN</VAR>'</SAMP>
+<DD>for an error (this includes the case where only part of the data was
+written).
+</DL>
+<P>
+
+<DT><CODE>n</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>N</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>o</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>O</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>p</CODE><VAR>n<small>...</small></VAR> -- read reg <STRONG>(reserved)</STRONG>
+<DD><A NAME="IDX1203"></A>
+<P>
+
+See  <A HREF="gdb_274.html#write register packet">write register packet</A>.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`<VAR>r<small>...</small>.</VAR>'</SAMP>
+<DD>The hex encoded value of the register in target byte order.
+</DL>
+<P>
+
+<DT><CODE>P</CODE><VAR>n<small>...</small></VAR><CODE>=</CODE><VAR>r<small>...</small></VAR> -- write register
+<DD><A NAME="write register packet"></A>
+<A NAME="IDX1204"></A>
+<P>
+
+Write register <VAR>n<small>...</small></VAR> with value <VAR>r<small>...</small></VAR>, which contains two hex
+digits for each byte in the register (target byte order).
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`OK'</SAMP>
+<DD>for success
+<DT><SAMP>`E<VAR>NN</VAR>'</SAMP>
+<DD>for an error
+</DL>
+<P>
+
+<DT><CODE>q</CODE><VAR>query</VAR> -- general query
+<DD><A NAME="general query packet"></A>
+<A NAME="IDX1205"></A>
+<P>
+
+Request info about <VAR>query</VAR>.  In general GDB queries have a
+leading upper case letter.  Custom vendor queries should use a company
+prefix (in lower case) ex: <SAMP>`qfsf.var'</SAMP>.  <VAR>query</VAR> may optionally
+be followed by a <SAMP>`,'</SAMP> or <SAMP>`;'</SAMP> separated list.  Stubs must ensure
+that they match the full <VAR>query</VAR> name.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`<VAR>XX<small>...</small></VAR>'</SAMP>
+<DD>Hex encoded data from query.  The reply can not be empty.
+<DT><SAMP>`E<VAR>NN</VAR>'</SAMP>
+<DD>error reply
+<DT><SAMP>`'</SAMP>
+<DD>Indicating an unrecognized <VAR>query</VAR>.
+</DL>
+<P>
+
+<DT><CODE>Q</CODE><VAR>var</VAR><CODE>=</CODE><VAR>val</VAR> -- general set
+<DD><A NAME="IDX1206"></A>
+<P>
+
+Set value of <VAR>var</VAR> to <VAR>val</VAR>.
+</P><P>
+
+See  <A HREF="gdb_274.html#general query packet">general query packet</A>, for a discussion of naming conventions.
+</P><P>
+
+<DT><CODE>r</CODE> -- reset <STRONG>(deprecated)</STRONG>
+<DD><A NAME="IDX1207"></A>
+<P>
+
+Reset the entire system.
+</P><P>
+
+<DT><CODE>R</CODE><VAR>XX</VAR> -- remote restart
+<DD><A NAME="IDX1208"></A>
+<P>
+
+Restart the program being debugged.  <VAR>XX</VAR>, while needed, is ignored.
+This packet is only available in extended mode.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`<EM>no reply</EM>'</SAMP>
+<DD>The <SAMP>`R'</SAMP> packet has no reply.
+</DL>
+<P>
+
+<DT><CODE>s</CODE><VAR>addr</VAR> -- step
+<DD><A NAME="IDX1209"></A>
+<P>
+
+<VAR>addr</VAR> is address to resume.  If <VAR>addr</VAR> is omitted, resume at
+same address.
+</P><P>
+
+Reply:
+See section <A HREF="gdb_275.html#SEC629">D.3 Stop Reply Packets</A>, for the reply specifications.
+</P><P>
+
+<DT><CODE>S</CODE><VAR>sig</VAR><CODE>;</CODE><VAR>addr</VAR> -- step with signal
+<DD><A NAME="step with signal packet"></A>
+<A NAME="IDX1210"></A>
+<P>
+
+Like <SAMP>`C'</SAMP> but step not continue.
+</P><P>
+
+Reply:
+See section <A HREF="gdb_275.html#SEC629">D.3 Stop Reply Packets</A>, for the reply specifications.
+</P><P>
+
+<DT><CODE>t</CODE><VAR>addr</VAR><CODE>:</CODE><VAR>PP</VAR><CODE>,</CODE><VAR>MM</VAR> -- search
+<DD><A NAME="IDX1211"></A>
+<P>
+
+Search backwards starting at address <VAR>addr</VAR> for a match with pattern
+<VAR>PP</VAR> and mask <VAR>MM</VAR>.  <VAR>PP</VAR> and <VAR>MM</VAR> are 4 bytes.
+<VAR>addr</VAR> must be at least 3 digits.
+</P><P>
+
+<DT><CODE>T</CODE><VAR>XX</VAR> -- thread alive
+<DD><A NAME="IDX1212"></A>
+<P>
+
+Find out if the thread XX is alive.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`OK'</SAMP>
+<DD>thread is still alive
+<DT><SAMP>`E<VAR>NN</VAR>'</SAMP>
+<DD>thread is dead
+</DL>
+<P>
+
+<DT><CODE>u</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>U</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>v</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>V</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>w</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>W</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>x</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>X</CODE><VAR>addr</VAR><CODE>,</CODE><VAR>length</VAR><VAR>:</VAR><VAR>XX<small>...</small></VAR> -- write mem (binary)
+<DD><A NAME="IDX1213"></A>
+<P>
+
+<VAR>addr</VAR> is address, <VAR>length</VAR> is number of bytes, <VAR>XX<small>...</small></VAR>
+is binary data.  The characters <CODE>$</CODE>, <CODE>#</CODE>, and <CODE>0x7d</CODE> are
+escaped using <CODE>0x7d</CODE>.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`OK'</SAMP>
+<DD>for success
+<DT><SAMP>`E<VAR>NN</VAR>'</SAMP>
+<DD>for an error
+</DL>
+<P>
+
+<DT><CODE>y</CODE> -- reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>Y</CODE> reserved
+<DD><P>
+
+Reserved for future use.
+</P><P>
+
+<DT><CODE>z</CODE><VAR>t</VAR><CODE>,</CODE><VAR>addr</VAR><CODE>,</CODE><VAR>length</VAR> -- remove break or watchpoint <STRONG>(draft)</STRONG>
+<DD><A NAME="IDX1214"></A>
+<P>
+
+See  <A HREF="gdb_274.html#insert breakpoint or watchpoint packet">insert breakpoint or watchpoint packet</A>.
+</P><P>
+
+<DT><CODE>Z</CODE><VAR>t</VAR><CODE>,</CODE><VAR>addr</VAR><CODE>,</CODE><VAR>length</VAR> -- insert break or watchpoint <STRONG>(draft)</STRONG>
+<DD><A NAME="insert breakpoint or watchpoint packet"></A>
+<A NAME="IDX1215"></A>
+<P>
+
+<VAR>t</VAR> is type: <SAMP>`0'</SAMP> - software breakpoint, <SAMP>`1'</SAMP> - hardware
+breakpoint, <SAMP>`2'</SAMP> -- write watchpoint, <SAMP>`3'</SAMP> - read watchpoint,
+<SAMP>`4'</SAMP> - access watchpoint; <VAR>addr</VAR> is address; <VAR>length</VAR> is in
+bytes.  For a software breakpoint, <VAR>length</VAR> specifies the size of
+the instruction to be patched.  For hardware breakpoints and watchpoints
+<VAR>length</VAR> specifies the memory region to be monitored.  To avoid
+potential problems with duplicate packets, the operations should be
+implemented in an idempotent way.
+</P><P>
+
+Reply:
+<DL COMPACT>
+<DT><SAMP>`E<VAR>NN</VAR>'</SAMP>
+<DD>for an error
+<DT><SAMP>`OK'</SAMP>
+<DD>for success
+<DT><SAMP>`<SAMP>`'</SAMP>'</SAMP>
+<DD>If not supported.
+</DL>
+<P>
+
+</DL>
+<P>
+
+<A NAME="Stop Reply Packets"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_273.html#SEC627"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_275.html#SEC629"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_275.html#SEC629"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_272.html#SEC626"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_279.html#SEC633"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

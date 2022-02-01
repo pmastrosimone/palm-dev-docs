@@ -1,0 +1,907 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: GDB/MI Program Control</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: GDB/MI Program Control">
+<META NAME="keywords" CONTENT="Debugging with GDB: GDB/MI Program Control">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC340"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_227.html#SEC278"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_229.html#SEC423"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_229.html#SEC423"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_213.html#SEC213"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_236.html#SEC590"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 24.7 GDB/MI Program control </H2>
+<!--docid::SEC340::-->
+<P>
+
+<A NAME="SEC341"></A>
+<H4> Program termination </H4>
+<!--docid::SEC341::-->
+<P>
+
+As a result of execution, the inferior program can run to completion, if
+it doesn't encounter any breakpoints.  In this case the output will
+include an exit code, if the program has exited exceptionally.
+</P><P>
+
+<A NAME="SEC342"></A>
+<H4> Examples </H4>
+<!--docid::SEC342::-->
+<P>
+
+Program exited normally:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+-exec-run
+^running
+(gdb)
+x = 55
+*stopped,reason="exited-normally"
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+Program exited exceptionally:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+-exec-run
+^running
+(gdb)
+x = 55
+*stopped,reason="exited",exit-code="01"
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+Another way the program can terminate is if it receives a signal such as
+<CODE>SIGINT</CODE>.  In this case, GDB/MI displays this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+*stopped,reason="exited-signalled",signal-name="SIGINT",
+signal-meaning="Interrupt"
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC343"></A>
+<H3> The <CODE>-exec-abort</CODE> Command </H3>
+<!--docid::SEC343::-->
+<P>
+
+<A NAME="SEC344"></A>
+<H4> Synopsis                          </H4>
+<!--docid::SEC344::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -exec-abort
+</pre></td></tr></table></P><P>
+
+Kill the inferior running program.
+</P><P>
+
+<A NAME="SEC345"></A>
+<H4> GDB Command                       </H4>
+<!--docid::SEC345::-->
+<P>
+
+The corresponding GDB command is <SAMP>`kill'</SAMP>.
+</P><P>
+
+<A NAME="SEC346"></A>
+<H4> Example                          </H4>
+<!--docid::SEC346::-->
+N.A.
+<P>
+
+<A NAME="SEC347"></A>
+<H3> The <CODE>-exec-arguments</CODE> Command </H3>
+<!--docid::SEC347::-->
+<P>
+
+<A NAME="SEC348"></A>
+<H4> Synopsis                           </H4>
+<!--docid::SEC348::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -exec-arguments <VAR>args</VAR>
+</pre></td></tr></table></P><P>
+
+Set the inferior program arguments, to be used in the next
+<SAMP>`-exec-run'</SAMP>.
+</P><P>
+
+<A NAME="SEC349"></A>
+<H4> GDB Command                        </H4>
+<!--docid::SEC349::-->
+<P>
+
+The corresponding GDB command is <SAMP>`set args'</SAMP>.
+</P><P>
+
+<A NAME="SEC350"></A>
+<H4> Example                           </H4>
+<!--docid::SEC350::-->
+<P>
+
+Don't have one around.
+</P><P>
+
+<A NAME="SEC351"></A>
+<H3> The <CODE>-exec-continue</CODE> Command </H3>
+<!--docid::SEC351::-->
+<P>
+
+<A NAME="SEC352"></A>
+<H4> Synopsis                            </H4>
+<!--docid::SEC352::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -exec-continue
+</pre></td></tr></table></P><P>
+
+Asynchronous command.  Resumes the execution of the inferior program
+until a breakpoint is encountered, or until the inferior exits.
+</P><P>
+
+<A NAME="SEC353"></A>
+<H4> GDB Command                         </H4>
+<!--docid::SEC353::-->
+<P>
+
+The corresponding GDB corresponding is <SAMP>`continue'</SAMP>.
+</P><P>
+
+<A NAME="SEC354"></A>
+<H4> Example                            </H4>
+<!--docid::SEC354::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>-exec-continue
+^running
+(gdb)
+@Hello world
+*stopped,reason="breakpoint-hit",bkptno="2",frame={func="foo",args=[],
+file="hello.c",line="13"}
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC355"></A>
+<H3> The <CODE>-exec-finish</CODE> Command </H3>
+<!--docid::SEC355::-->
+<P>
+
+<A NAME="SEC356"></A>
+<H4> Synopsis                             </H4>
+<!--docid::SEC356::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -exec-finish
+</pre></td></tr></table></P><P>
+
+Asynchronous command.  Resumes the execution of the inferior program
+until the current function is exited.  Displays the results returned by
+the function.
+</P><P>
+
+<A NAME="SEC357"></A>
+<H4> GDB Command                          </H4>
+<!--docid::SEC357::-->
+<P>
+
+The corresponding GDB command is <SAMP>`finish'</SAMP>.
+</P><P>
+
+<A NAME="SEC358"></A>
+<H4> Example                             </H4>
+<!--docid::SEC358::-->
+<P>
+
+Function returning <CODE>void</CODE>.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>-exec-finish
+^running
+(gdb)
+@hello from foo
+*stopped,reason="function-finished",frame={func="main",args=[],
+file="hello.c",line="7"}
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+Function returning other than <CODE>void</CODE>.  The name of the internal
+GDB variable storing the result is printed, together with the
+value itself.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>-exec-finish
+^running
+(gdb)
+*stopped,reason="function-finished",frame={addr="0x000107b0",func="foo",
+args=[{name="a",value="1"],{name="b",value="9"}},
+file="recursive2.c",line="14"},
+gdb-result-var="$1",return-value="0"
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC359"></A>
+<H3> The <CODE>-exec-interrupt</CODE> Command </H3>
+<!--docid::SEC359::-->
+<P>
+
+<A NAME="SEC360"></A>
+<H4> Synopsis                              </H4>
+<!--docid::SEC360::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -exec-interrupt
+</pre></td></tr></table></P><P>
+
+Asynchronous command.  Interrupts the background execution of the target.
+Note how the token associated with the stop message is the one for the
+execution command that has been interrupted.  The token for the interrupt
+itself only appears in the <SAMP>`^done'</SAMP> output.  If the user is trying to
+interrupt a non-running program, an error message will be printed.
+</P><P>
+
+<A NAME="SEC361"></A>
+<H4> GDB Command                           </H4>
+<!--docid::SEC361::-->
+<P>
+
+The corresponding GDB command is <SAMP>`interrupt'</SAMP>.
+</P><P>
+
+<A NAME="SEC362"></A>
+<H4> Example                              </H4>
+<!--docid::SEC362::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+111-exec-continue
+111^running
+
+(gdb)
+222-exec-interrupt
+222^done
+(gdb)
+111*stopped,signal-name="SIGINT",signal-meaning="Interrupt",
+frame={addr="0x00010140",func="foo",args=[],file="try.c",line="13"}
+(gdb)
+
+(gdb)
+-exec-interrupt
+^error,msg="mi_cmd_exec_interrupt: Inferior not executing."
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC363"></A>
+<H3> The <CODE>-exec-next</CODE> Command </H3>
+<!--docid::SEC363::-->
+<P>
+
+<A NAME="SEC364"></A>
+<H4> Synopsis                               </H4>
+<!--docid::SEC364::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -exec-next
+</pre></td></tr></table></P><P>
+
+Asynchronous command.  Resumes execution of the inferior program, stopping
+when the beginning of the next source line is reached.
+</P><P>
+
+<A NAME="SEC365"></A>
+<H4> GDB Command                            </H4>
+<!--docid::SEC365::-->
+<P>
+
+The corresponding GDB command is <SAMP>`next'</SAMP>.
+</P><P>
+
+<A NAME="SEC366"></A>
+<H4> Example                               </H4>
+<!--docid::SEC366::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>-exec-next
+^running
+(gdb)
+*stopped,reason="end-stepping-range",line="8",file="hello.c"
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC367"></A>
+<H3> The <CODE>-exec-next-instruction</CODE> Command </H3>
+<!--docid::SEC367::-->
+<P>
+
+<A NAME="SEC368"></A>
+<H4> Synopsis                                </H4>
+<!--docid::SEC368::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -exec-next-instruction
+</pre></td></tr></table></P><P>
+
+Asynchronous command.  Executes one machine instruction.  If the
+instruction is a function call continues until the function returns.  If
+the program stops at an instruction in the middle of a source line, the
+address will be printed as well.
+</P><P>
+
+<A NAME="SEC369"></A>
+<H4> GDB Command                             </H4>
+<!--docid::SEC369::-->
+<P>
+
+The corresponding GDB command is <SAMP>`nexti'</SAMP>.
+</P><P>
+
+<A NAME="SEC370"></A>
+<H4> Example                                </H4>
+<!--docid::SEC370::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+-exec-next-instruction
+^running
+
+(gdb)
+*stopped,reason="end-stepping-range",
+addr="0x000100d4",line="5",file="hello.c"
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC371"></A>
+<H3> The <CODE>-exec-return</CODE> Command </H3>
+<!--docid::SEC371::-->
+<P>
+
+<A NAME="SEC372"></A>
+<H4> Synopsis                                 </H4>
+<!--docid::SEC372::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -exec-return
+</pre></td></tr></table></P><P>
+
+Makes current function return immediately.  Doesn't execute the inferior.
+Displays the new current frame.
+</P><P>
+
+<A NAME="SEC373"></A>
+<H4> GDB Command                              </H4>
+<!--docid::SEC373::-->
+<P>
+
+The corresponding GDB command is <SAMP>`return'</SAMP>.
+</P><P>
+
+<A NAME="SEC374"></A>
+<H4> Example                                 </H4>
+<!--docid::SEC374::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+200-break-insert callee4
+200^done,bkpt={number="1",addr="0x00010734",
+file="../../../devo/gdb/testsuite/gdb.mi/basics.c",line="8"}
+(gdb)
+000-exec-run
+000^running
+(gdb)
+000*stopped,reason="breakpoint-hit",bkptno="1",
+frame={func="callee4",args=[],
+file="../../../devo/gdb/testsuite/gdb.mi/basics.c",line="8"}
+(gdb)
+205-break-delete
+205^done
+(gdb)
+111-exec-return
+111^done,frame={level="0 ",func="callee3",
+args=[{name="strarg",
+value="0x11940 \"A string argument.\""}],
+file="../../../devo/gdb/testsuite/gdb.mi/basics.c",line="18"}
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC375"></A>
+<H3> The <CODE>-exec-run</CODE> Command </H3>
+<!--docid::SEC375::-->
+<P>
+
+<A NAME="SEC376"></A>
+<H4> Synopsis                                  </H4>
+<!--docid::SEC376::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -exec-run
+</pre></td></tr></table></P><P>
+
+Asynchronous command.  Starts execution of the inferior from the
+beginning.  The inferior executes until either a breakpoint is
+encountered or the program exits.
+</P><P>
+
+<A NAME="SEC377"></A>
+<H4> GDB Command                               </H4>
+<!--docid::SEC377::-->
+<P>
+
+The corresponding GDB command is <SAMP>`run'</SAMP>.
+</P><P>
+
+<A NAME="SEC378"></A>
+<H4> Example                                  </H4>
+<!--docid::SEC378::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+-break-insert main
+^done,bkpt={number="1",addr="0x0001072c",file="recursive2.c",line="4"}
+(gdb)
+-exec-run
+^running
+(gdb)
+*stopped,reason="breakpoint-hit",bkptno="1",
+frame={func="main",args=[],file="recursive2.c",line="4"}
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC379"></A>
+<H3> The <CODE>-exec-show-arguments</CODE> Command </H3>
+<!--docid::SEC379::-->
+<P>
+
+<A NAME="SEC380"></A>
+<H4> Synopsis                                   </H4>
+<!--docid::SEC380::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -exec-show-arguments
+</pre></td></tr></table></P><P>
+
+Print the arguments of the program.
+</P><P>
+
+<A NAME="SEC381"></A>
+<H4> GDB Command                                </H4>
+<!--docid::SEC381::-->
+<P>
+
+The corresponding GDB command is <SAMP>`show args'</SAMP>.
+</P><P>
+
+<A NAME="SEC382"></A>
+<H4> Example                                   </H4>
+<!--docid::SEC382::-->
+N.A.
+<P>
+
+<A NAME="SEC383"></A>
+<H3> The <CODE>-exec-step</CODE> Command </H3>
+<!--docid::SEC383::-->
+<P>
+
+<A NAME="SEC384"></A>
+<H4> Synopsis                                    </H4>
+<!--docid::SEC384::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -exec-step
+</pre></td></tr></table></P><P>
+
+Asynchronous command.  Resumes execution of the inferior program, stopping
+when the beginning of the next source line is reached, if the next
+source line is not a function call.  If it is, stop at the first
+instruction of the called function.
+</P><P>
+
+<A NAME="SEC385"></A>
+<H4> GDB Command                                 </H4>
+<!--docid::SEC385::-->
+<P>
+
+The corresponding GDB command is <SAMP>`step'</SAMP>.
+</P><P>
+
+<A NAME="SEC386"></A>
+<H4> Example                                    </H4>
+<!--docid::SEC386::-->
+<P>
+
+Stepping into a function:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>-exec-step
+^running
+(gdb)
+*stopped,reason="end-stepping-range",
+frame={func="foo",args=[{name="a",value="10"},
+{name="b",value="0"}],file="recursive2.c",line="11"}
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+Regular stepping:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>-exec-step
+^running
+(gdb)
+*stopped,reason="end-stepping-range",line="14",file="recursive2.c"
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC387"></A>
+<H3> The <CODE>-exec-step-instruction</CODE> Command </H3>
+<!--docid::SEC387::-->
+<P>
+
+<A NAME="SEC388"></A>
+<H4> Synopsis                                     </H4>
+<!--docid::SEC388::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -exec-step-instruction
+</pre></td></tr></table></P><P>
+
+Asynchronous command.  Resumes the inferior which executes one machine
+instruction.  The output, once GDB has stopped, will vary depending on
+whether we have stopped in the middle of a source line or not.  In the
+former case, the address at which the program stopped will be printed as
+well.
+</P><P>
+
+<A NAME="SEC389"></A>
+<H4> GDB Command                                  </H4>
+<!--docid::SEC389::-->
+<P>
+
+The corresponding GDB command is <SAMP>`stepi'</SAMP>.
+</P><P>
+
+<A NAME="SEC390"></A>
+<H4> Example                                     </H4>
+<!--docid::SEC390::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+-exec-step-instruction
+^running
+
+(gdb)
+*stopped,reason="end-stepping-range",
+frame={func="foo",args=[],file="try.c",line="10"}
+(gdb)
+-exec-step-instruction
+^running
+
+(gdb)
+*stopped,reason="end-stepping-range",
+frame={addr="0x000100f4",func="foo",args=[],file="try.c",line="10"}
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC391"></A>
+<H3> The <CODE>-exec-until</CODE> Command </H3>
+<!--docid::SEC391::-->
+<P>
+
+<A NAME="SEC392"></A>
+<H4> Synopsis                                      </H4>
+<!--docid::SEC392::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -exec-until [ <VAR>location</VAR> ]
+</pre></td></tr></table></P><P>
+
+Asynchronous command.  Executes the inferior until the <VAR>location</VAR>
+specified in the argument is reached.  If there is no argument, the inferior
+executes until a source line greater than the current one is reached.
+The reason for stopping in this case will be <SAMP>`location-reached'</SAMP>.
+</P><P>
+
+<A NAME="SEC393"></A>
+<H4> GDB Command                                   </H4>
+<!--docid::SEC393::-->
+<P>
+
+The corresponding GDB command is <SAMP>`until'</SAMP>.
+</P><P>
+
+<A NAME="SEC394"></A>
+<H4> Example                                      </H4>
+<!--docid::SEC394::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+-exec-until recursive2.c:6
+^running
+(gdb)
+x = 55
+*stopped,reason="location-reached",frame={func="main",args=[],
+file="recursive2.c",line="6"}
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC395"></A>
+<H3> The <CODE>-file-exec-and-symbols</CODE> Command </H3>
+<!--docid::SEC395::-->
+<P>
+
+<A NAME="SEC396"></A>
+<H4> Synopsis                                       </H4>
+<!--docid::SEC396::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -file-exec-and-symbols <VAR>file</VAR>
+</pre></td></tr></table></P><P>
+
+Specify the executable file to be debugged.  This file is the one from
+which the symbol table is also read.  If no file is specified, the
+command clears the executable and symbol information.  If breakpoints
+are set when using this command with no arguments, GDB will produce
+error messages.  Otherwise, no output is produced, except a completion
+notification.
+</P><P>
+
+<A NAME="SEC397"></A>
+<H4> GDB Command                                    </H4>
+<!--docid::SEC397::-->
+<P>
+
+The corresponding GDB command is <SAMP>`file'</SAMP>.
+</P><P>
+
+<A NAME="SEC398"></A>
+<H4> Example                                       </H4>
+<!--docid::SEC398::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+-file-exec-and-symbols /kwikemart/marge/ezannoni/TRUNK/mbx/hello.mbx
+^done
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC399"></A>
+<H3> The <CODE>-file-exec-file</CODE> Command </H3>
+<!--docid::SEC399::-->
+<P>
+
+<A NAME="SEC400"></A>
+<H4> Synopsis                                        </H4>
+<!--docid::SEC400::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -file-exec-file <VAR>file</VAR>
+</pre></td></tr></table></P><P>
+
+Specify the executable file to be debugged.  Unlike
+<SAMP>`-file-exec-and-symbols'</SAMP>, the symbol table is <EM>not</EM> read
+from this file.  If used without argument, GDB clears the information
+about the executable file.  No output is produced, except a completion
+notification.
+</P><P>
+
+<A NAME="SEC401"></A>
+<H4> GDB Command                                     </H4>
+<!--docid::SEC401::-->
+<P>
+
+The corresponding GDB command is <SAMP>`exec-file'</SAMP>.
+</P><P>
+
+<A NAME="SEC402"></A>
+<H4> Example                                        </H4>
+<!--docid::SEC402::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+-file-exec-file /kwikemart/marge/ezannoni/TRUNK/mbx/hello.mbx
+^done
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="SEC403"></A>
+<H3> The <CODE>-file-list-exec-sections</CODE> Command </H3>
+<!--docid::SEC403::-->
+<P>
+
+<A NAME="SEC404"></A>
+<H4> Synopsis                                         </H4>
+<!--docid::SEC404::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -file-list-exec-sections
+</pre></td></tr></table></P><P>
+
+List the sections of the current executable file.
+</P><P>
+
+<A NAME="SEC405"></A>
+<H4> GDB Command                                      </H4>
+<!--docid::SEC405::-->
+<P>
+
+The GDB command <SAMP>`info file'</SAMP> shows, among the rest, the same
+information as this command.  <CODE>gdbtk</CODE> has a corresponding command
+<SAMP>`gdb_load_info'</SAMP>.
+</P><P>
+
+<A NAME="SEC406"></A>
+<H4> Example                                         </H4>
+<!--docid::SEC406::-->
+N.A.
+<P>
+
+<A NAME="SEC407"></A>
+<H3> The <CODE>-file-list-exec-source-files</CODE> Command </H3>
+<!--docid::SEC407::-->
+<P>
+
+<A NAME="SEC408"></A>
+<H4> Synopsis                                          </H4>
+<!--docid::SEC408::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -file-list-exec-source-files
+</pre></td></tr></table></P><P>
+
+List the source files for the current executable.
+</P><P>
+
+<A NAME="SEC409"></A>
+<H4> GDB Command                                       </H4>
+<!--docid::SEC409::-->
+<P>
+
+There's no GDB command which directly corresponds to this one.
+<CODE>gdbtk</CODE> has an analogous command <SAMP>`gdb_listfiles'</SAMP>.
+</P><P>
+
+<A NAME="SEC410"></A>
+<H4> Example                                          </H4>
+<!--docid::SEC410::-->
+N.A.
+<P>
+
+<A NAME="SEC411"></A>
+<H3> The <CODE>-file-list-shared-libraries</CODE> Command </H3>
+<!--docid::SEC411::-->
+<P>
+
+<A NAME="SEC412"></A>
+<H4> Synopsis                                           </H4>
+<!--docid::SEC412::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -file-list-shared-libraries
+</pre></td></tr></table></P><P>
+
+List the shared libraries in the program.
+</P><P>
+
+<A NAME="SEC413"></A>
+<H4> GDB Command                                        </H4>
+<!--docid::SEC413::-->
+<P>
+
+The corresponding GDB command is <SAMP>`info shared'</SAMP>.
+</P><P>
+
+<A NAME="SEC414"></A>
+<H4> Example                                           </H4>
+<!--docid::SEC414::-->
+N.A.
+<P>
+
+<A NAME="SEC415"></A>
+<H3> The <CODE>-file-list-symbol-files</CODE> Command </H3>
+<!--docid::SEC415::-->
+<P>
+
+<A NAME="SEC416"></A>
+<H4> Synopsis                                            </H4>
+<!--docid::SEC416::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -file-list-symbol-files
+</pre></td></tr></table></P><P>
+
+List symbol files.
+</P><P>
+
+<A NAME="SEC417"></A>
+<H4> GDB Command                                         </H4>
+<!--docid::SEC417::-->
+<P>
+
+The corresponding GDB command is <SAMP>`info file'</SAMP> (part of it).
+</P><P>
+
+<A NAME="SEC418"></A>
+<H4> Example                                            </H4>
+<!--docid::SEC418::-->
+N.A.
+<P>
+
+<A NAME="SEC419"></A>
+<H3> The <CODE>-file-symbol-file</CODE> Command </H3>
+<!--docid::SEC419::-->
+<P>
+
+<A NAME="SEC420"></A>
+<H4> Synopsis                                             </H4>
+<!--docid::SEC420::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -file-symbol-file <VAR>file</VAR>
+</pre></td></tr></table></P><P>
+
+Read symbol table info from the specified <VAR>file</VAR> argument.  When
+used without arguments, clears GDB's symbol table info.  No output is
+produced, except for a completion notification.
+</P><P>
+
+<A NAME="SEC421"></A>
+<H4> GDB Command                                          </H4>
+<!--docid::SEC421::-->
+<P>
+
+The corresponding GDB command is <SAMP>`symbol-file'</SAMP>.
+</P><P>
+
+<A NAME="SEC422"></A>
+<H4> Example                                             </H4>
+<!--docid::SEC422::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb)
+-file-symbol-file /kwikemart/marge/ezannoni/TRUNK/mbx/hello.mbx
+^done
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="GDB/MI Miscellaneous Commands"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_227.html#SEC278"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_229.html#SEC423"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_229.html#SEC423"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_213.html#SEC213"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_236.html#SEC590"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

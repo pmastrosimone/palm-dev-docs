@@ -1,0 +1,128 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Ld Sections</TITLE>
+
+<META NAME="description" CONTENT="Using as: Ld Sections">
+<META NAME="keywords" CONTENT="Using as: Ld Sections">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC43"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_41.html#SEC42"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_43.html#SEC44"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_43.html#SEC44"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_40.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_46.html#SEC47"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.2 Linker Sections </H2>
+<!--docid::SEC43::-->
+<CODE>ld</CODE> deals with just four kinds of sections, summarized below.
+<P>
+
+<DL COMPACT>
+
+<A NAME="IDX180"></A>
+<A NAME="IDX181"></A>
+<DT><STRONG>named sections</STRONG>
+<DD><A NAME="IDX182"></A>
+<A NAME="IDX183"></A>
+<DT><STRONG>text section</STRONG>
+<DD><DT><STRONG>data section</STRONG>
+<DD>These sections hold your program.  <CODE>as</CODE> and <CODE>ld</CODE> treat them as
+separate but equal sections.  Anything you can say of one section is
+true of another.
+When the program is running, however, it is
+customary for the text section to be unalterable.  The
+text section is often shared among processes: it contains
+instructions, constants and the like.  The data section of a running
+program is usually alterable: for example, C variables would be stored
+in the data section.
+<P>
+
+<A NAME="IDX184"></A>
+<DT><STRONG>bss section</STRONG>
+<DD>This section contains zeroed bytes when your program begins running.  It
+is used to hold uninitialized variables or common storage.  The length of
+each partial program's bss section is important, but because it starts
+out containing zeroed bytes there is no need to store explicit zero
+bytes in the object file.  The bss section was invented to eliminate
+those explicit zeros from object files.
+<P>
+
+<A NAME="IDX185"></A>
+<DT><STRONG>absolute section</STRONG>
+<DD>Address 0 of this section is always "relocated" to runtime address 0.
+This is useful if you want to refer to an address that <CODE>ld</CODE> must
+not change when relocating.  In this sense we speak of absolute
+addresses being "unrelocatable": they do not change during relocation.
+<P>
+
+<A NAME="IDX186"></A>
+<DT><STRONG>undefined section</STRONG>
+<DD>This "section" is a catch-all for address references to objects not in
+the preceding sections.
+</DL>
+<P>
+
+<A NAME="IDX187"></A>
+An idealized example of three relocatable sections follows.
+The example uses the traditional section names <SAMP>`.text'</SAMP> and <SAMP>`.data'</SAMP>.
+Memory addresses are on the horizontal axis.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>                      +-----+----+--+
+partial program # 1:  |ttttt|dddd|00|
+                      +-----+----+--+
+
+                      text   data bss
+                      seg.   seg. seg.
+
+                      +---+---+---+
+partial program # 2:  |TTT|DDD|000|
+                      +---+---+---+
+
+                      +--+---+-----+--+----+---+-----+~~
+linked program:       |  |TTT|ttttt|  |dddd|DDD|00000|
+                      +--+---+-----+--+----+---+-----+~~
+
+    addresses:        0 <small>...</small>
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="As Sections"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_41.html#SEC42"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_43.html#SEC44"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_43.html#SEC44"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_40.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_46.html#SEC47"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

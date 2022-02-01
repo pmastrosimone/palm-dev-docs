@@ -1,0 +1,177 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Hitachi Boards</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Hitachi Boards">
+<META NAME="keywords" CONTENT="Debugging with GDB: Hitachi Boards">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC154"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_153.html#SEC153"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_155.html#SEC155"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_157.html#SEC157"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_153.html#SEC153"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_157.html#SEC157"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 18.3.2.1 Connecting to Hitachi boards </H4>
+<!--docid::SEC154::-->
+<P>
+
+<A NAME="IDX690"></A>
+<A NAME="IDX691"></A>
+Use the special <CODE>GDB</CODE> command <SAMP>`device <VAR>port</VAR>'</SAMP> if you
+need to explicitly set the serial device.  The default <VAR>port</VAR> is the
+first available port on your host.  This is only necessary on Unix
+hosts, where it is typically something like <TT>`/dev/ttya'</TT>.
+</P><P>
+
+<A NAME="IDX692"></A>
+<A NAME="IDX693"></A>
+<CODE>GDB</CODE> has another special command to set the communications
+speed: <SAMP>`speed <VAR>bps</VAR>'</SAMP>.  This command also is only used from Unix
+hosts; on DOS hosts, set the line speed as usual from outside GDB with
+the DOS <CODE>mode</CODE> command (for instance,
+<KBD>mode com2:9600,n,8,1,p</KBD> for a 9600bps connection).
+</P><P>
+
+The <SAMP>`device'</SAMP> and <SAMP>`speed'</SAMP> commands are available only when you
+use a Unix host to debug your Hitachi microprocessor programs.  If you
+use a DOS host,
+GDB depends on an auxiliary terminate-and-stay-resident program
+called <CODE>asynctsr</CODE> to communicate with the development board
+through a PC serial port.  You must also use the DOS <CODE>mode</CODE> command
+to set up the serial port on the DOS side.
+</P><P>
+
+The following sample session illustrates the steps needed to start a
+program under GDB control on an H8/300.  The example uses a
+sample H8/300 program called <TT>`t.x'</TT>.  The procedure is the same for
+the Hitachi SH and the H8/500.
+</P><P>
+
+First hook up your development board.  In this example, we use a
+board attached to serial port <CODE>COM2</CODE>; if you use a different serial
+port, substitute its name in the argument of the <CODE>mode</CODE> command.
+When you call <CODE>asynctsr</CODE>, the auxiliary comms program used by the
+debugger, you give it just the numeric part of the serial port's name;
+for example, <SAMP>`asyncstr 2'</SAMP> below runs <CODE>asyncstr</CODE> on
+<CODE>COM2</CODE>.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>C:\H8300\TEST&#62; asynctsr 2
+C:\H8300\TEST&#62; mode com2:9600,n,8,1,p
+
+Resident portion of MODE loaded
+
+COM2: 9600, n, 8, 1, p
+
+</FONT></pre></td></tr></table></P><P>
+
+<BLOCKQUOTE>
+<EM>Warning:</EM> We have noticed a bug in PC-NFS that conflicts with
+<CODE>asynctsr</CODE>.  If you also run PC-NFS on your DOS host, you may need to
+disable it, or even boot without it, to use <CODE>asynctsr</CODE> to control
+your development board.
+</BLOCKQUOTE>
+<P>
+
+<A NAME="IDX694"></A>
+Now that serial communications are set up, and the development board is
+connected, you can start up GDB.  Call <CODE>gdb</CODE> with
+the name of your program as the argument.  <CODE>GDB</CODE> prompts
+you, as usual, with the prompt <SAMP>`(gdb)'</SAMP>.  Use two special
+commands to begin your debugging session: <SAMP>`target hms'</SAMP> to specify
+cross-debugging to the Hitachi board, and the <CODE>load</CODE> command to
+download your program to the board.  <CODE>load</CODE> displays the names of
+the program's sections, and a <SAMP>`*'</SAMP> for each 2K of data downloaded.
+(If you want to refresh GDB data on symbols or on the
+executable file without downloading, use the GDB commands
+<CODE>file</CODE> or <CODE>symbol-file</CODE>.  These commands, and <CODE>load</CODE>
+itself, are described in <A HREF="gdb_125.html#SEC125">Commands to specify files</A>.)
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(eg-C:\H8300\TEST) gdb t.x
+GDB is free software and you are welcome to distribute copies
+ of it under certain conditions; type "show copying" to see
+ the conditions.
+There is absolutely no warranty for GDB; type "show warranty"
+for details.
+GDB 5.3, Copyright 1992 Free Software Foundation, Inc...
+(gdb) target hms
+Connected to remote H8/300 HMS system.
+(gdb) load t.x
+.text   : 0x8000 .. 0xabde ***********
+.data   : 0xabde .. 0xad30 *
+.stack  : 0xf000 .. 0xf014 *
+</FONT></pre></td></tr></table></P><P>
+
+At this point, you're ready to run or debug your program.  From here on,
+you can use all the usual GDB commands.  The <CODE>break</CODE> command
+sets breakpoints; the <CODE>run</CODE> command starts your program;
+<CODE>print</CODE> or <CODE>x</CODE> display data; the <CODE>continue</CODE> command
+resumes execution after stopping at a breakpoint.  You can use the
+<CODE>help</CODE> command at any time to find out more about GDB commands.
+</P><P>
+
+Remember, however, that <EM>operating system</EM> facilities aren't
+available on your development board; for example, if your program hangs,
+you can't send an interrupt--but you can press the RESET switch!
+</P><P>
+
+Use the RESET button on the development board
+<UL>
+<LI>
+to interrupt your program (don't use <KBD>ctl-C</KBD> on the DOS host--it has
+no way to pass an interrupt signal to the development board); and
+<P>
+
+<LI>
+to return to the GDB command prompt after your program finishes
+normally.  The communications protocol provides no other way for GDB
+to detect program completion.
+</UL>
+<P>
+
+In either case, GDB sees the effect of a RESET on the
+development board as a "normal exit" of your program.
+</P><P>
+
+<A NAME="Hitachi ICE"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_153.html#SEC153"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_155.html#SEC155"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_157.html#SEC157"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_153.html#SEC153"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_157.html#SEC157"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

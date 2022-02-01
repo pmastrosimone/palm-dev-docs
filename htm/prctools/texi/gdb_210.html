@@ -1,0 +1,119 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Annotations for Running</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Annotations for Running">
+<META NAME="keywords" CONTENT="Debugging with GDB: Annotations for Running">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC210"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_209.html#SEC209"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_211.html#SEC211"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_202.html#SEC202"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_200.html#SEC200"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_213.html#SEC213"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 23.10 Running the Program </H2>
+<!--docid::SEC210::-->
+<P>
+
+<A NAME="IDX963"></A>
+<A NAME="IDX964"></A>
+When the program starts executing due to a GDB command such as
+<CODE>step</CODE> or <CODE>continue</CODE>, 
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>^Z^Zstarting
+</FONT></pre></td></tr></table></P><P>
+
+is output.  When the program stops, 
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>^Z^Zstopped
+</FONT></pre></td></tr></table></P><P>
+
+is output.  Before the <CODE>stopped</CODE> annotation, a variety of
+annotations describe how the program stopped.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX965"></A>
+<DT><CODE>^Z^Zexited <VAR>exit-status</VAR></CODE>
+<DD>The program exited, and <VAR>exit-status</VAR> is the exit status (zero for
+successful exit, otherwise nonzero).
+<P>
+
+<A NAME="IDX966"></A>
+<A NAME="IDX967"></A>
+<A NAME="IDX968"></A>
+<A NAME="IDX969"></A>
+<A NAME="IDX970"></A>
+<DT><CODE>^Z^Zsignalled</CODE>
+<DD>The program exited with a signal.  After the <CODE>^Z^Zsignalled</CODE>, the
+annotation continues:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre><VAR>intro-text</VAR>
+^Z^Zsignal-name
+<VAR>name</VAR>
+^Z^Zsignal-name-end
+<VAR>middle-text</VAR>
+^Z^Zsignal-string
+<VAR>string</VAR>
+^Z^Zsignal-string-end
+<VAR>end-text</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+where <VAR>name</VAR> is the name of the signal, such as <CODE>SIGILL</CODE> or
+<CODE>SIGSEGV</CODE>, and <VAR>string</VAR> is the explanation of the signal, such
+as <CODE>Illegal Instruction</CODE> or <CODE>Segmentation fault</CODE>.
+<VAR>intro-text</VAR>, <VAR>middle-text</VAR>, and <VAR>end-text</VAR> are for the
+user's benefit and have no particular format.
+</P><P>
+
+<A NAME="IDX971"></A>
+<DT><CODE>^Z^Zsignal</CODE>
+<DD>The syntax of this annotation is just like <CODE>signalled</CODE>, but GDB is
+just saying that the program received the signal, not that it was
+terminated with it.
+<P>
+
+<A NAME="IDX972"></A>
+<DT><CODE>^Z^Zbreakpoint <VAR>number</VAR></CODE>
+<DD>The program hit breakpoint number <VAR>number</VAR>.
+<P>
+
+<A NAME="IDX973"></A>
+<DT><CODE>^Z^Zwatchpoint <VAR>number</VAR></CODE>
+<DD>The program hit watchpoint number <VAR>number</VAR>.
+</DL>
+<P>
+
+<A NAME="Source Annotations"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

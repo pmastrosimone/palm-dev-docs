@@ -1,0 +1,93 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Min and Max</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Min and Max">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Min and Max">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC112"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_111.html#SEC111"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_113.html#SEC113"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_113.html#SEC113"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.2 Minimum and Maximum Operators in C++ </H2>
+<!--docid::SEC112::-->
+<P>
+
+It is very convenient to have operators which return the "minimum" or the
+"maximum" of two arguments.  In GNU C++ (but not in GNU C),
+</P><P>
+
+<DL COMPACT>
+<DT><CODE><VAR>a</VAR> &#60;? <VAR>b</VAR></CODE>
+<DD><A NAME="IDX371"></A>
+<A NAME="IDX372"></A>
+is the <EM>minimum</EM>, returning the smaller of the numeric values
+<VAR>a</VAR> and <VAR>b</VAR>;
+<P>
+
+<DT><CODE><VAR>a</VAR> &#62;? <VAR>b</VAR></CODE>
+<DD><A NAME="IDX373"></A>
+<A NAME="IDX374"></A>
+is the <EM>maximum</EM>, returning the larger of the numeric values <VAR>a</VAR>
+and <VAR>b</VAR>.
+</DL>
+<P>
+
+These operations are not primitive in ordinary C++, since you can
+use a macro to return the minimum of two things in C++, as in the
+following example.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define MIN(X,Y) ((X) &#60; (Y) ? : (X) : (Y))
+</pre></td></tr></table></P><P>
+
+You might then use <SAMP>`int min = MIN (i, j);'</SAMP> to set <VAR>min</VAR> to
+the minimum value of variables <VAR>i</VAR> and <VAR>j</VAR>.
+</P><P>
+
+However, side effects in <CODE>X</CODE> or <CODE>Y</CODE> may cause unintended
+behavior.  For example, <CODE>MIN (i++, j++)</CODE> will fail, incrementing
+the smaller counter twice.  A GNU C extension allows you to write safe
+macros that avoid this kind of problem (see section <A HREF="gcc_67.html#SEC67">Naming an Expression's Type</A>).  However, writing <CODE>MIN</CODE> and <CODE>MAX</CODE> as
+macros also forces you to use function-call notation for a
+fundamental arithmetic operation.  Using GNU C++ extensions, you can
+write <SAMP>`int min = i &#60;? j;'</SAMP> instead.
+</P><P>
+
+Since <CODE>&#60;?</CODE> and <CODE>&#62;?</CODE> are built into the compiler, they properly
+handle expressions with side-effects;  <SAMP>`int min = i++ &#60;? j++;'</SAMP>
+works correctly.
+</P><P>
+
+<A NAME="Destructors and Goto"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

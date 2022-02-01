@@ -1,0 +1,463 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: TIC54X-Directives</TITLE>
+
+<META NAME="description" CONTENT="Using as: TIC54X-Directives">
+<META NAME="keywords" CONTENT="Using as: TIC54X-Directives">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC392"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_382.html#SEC391"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_384.html#SEC393"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_179.html#SEC188"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_374.html#SEC383"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_386.html#SEC395"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.29.9 Directives </H3>
+<!--docid::SEC392::-->
+<P>
+
+<A NAME="IDX1302"></A>
+<A NAME="IDX1303"></A>
+</P><P>
+
+<DL COMPACT>
+
+<A NAME="IDX1304"></A>
+<A NAME="IDX1305"></A>
+<DT><CODE>.align [<VAR>size</VAR>]</CODE>
+<DD><DT><CODE>.even</CODE>
+<DD>Align the section program counter on the next boundary, based on
+<VAR>size</VAR>.  <VAR>size</VAR> may be any power of 2.  <CODE>.even</CODE> is
+equivalent to <CODE>.align</CODE> with a <VAR>size</VAR> of 2.
+<DL COMPACT>
+<DT><CODE>1</CODE>
+<DD>Align SPC to word boundary
+<DT><CODE>2</CODE>
+<DD>Align SPC to longword boundary (same as .even)
+<DT><CODE>128</CODE>
+<DD>Align SPC to page boundary
+</DL>
+<P>
+
+<A NAME="IDX1306"></A>
+<DT><CODE>.asg <VAR>string</VAR>, <VAR>name</VAR></CODE>
+<DD>Assign <VAR>name</VAR> the string <VAR>string</VAR>.  String replacement is
+performed on <VAR>string</VAR> before assignment.
+<P>
+
+<A NAME="IDX1307"></A>
+<DT><CODE>.eval <VAR>string</VAR>, <VAR>name</VAR></CODE>
+<DD>Evaluate the contents of string <VAR>string</VAR> and assign the result as a
+string to the subsym <VAR>name</VAR>.  String replacement is performed on
+<VAR>string</VAR> before assignment. 
+<P>
+
+<A NAME="IDX1308"></A>
+<DT><CODE>.bss <VAR>symbol</VAR>, <VAR>size</VAR> [, [<VAR>blocking_flag</VAR>] [,<VAR>alignment_flag</VAR>]]</CODE>
+<DD>Reserve space for <VAR>symbol</VAR> in the .bss section.  <VAR>size</VAR> is in
+words.  If present, <VAR>blocking_flag</VAR> indicates the allocated space
+should be aligned on a page boundary if it would otherwise cross a page
+boundary.  If present, <VAR>alignment_flag</VAR> causes the assembler to
+allocate <VAR>size</VAR> on a long word boundary.
+<P>
+
+<A NAME="IDX1309"></A>
+<A NAME="IDX1310"></A>
+<A NAME="IDX1311"></A>
+<A NAME="IDX1312"></A>
+<DT><CODE>.byte <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.ubyte <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.char <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.uchar <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD>Place one or more bytes into consecutive words of the current section.
+The upper 8 bits of each word is zero-filled.  If a label is used, it
+points to the word allocated for the first byte encountered.
+<P>
+
+<A NAME="IDX1313"></A>
+<DT><CODE>.clink ["<VAR>section_name</VAR>"]</CODE>
+<DD>Set STYP_CLINK flag for this section, which indicates to the linker that
+if no symbols from this section are referenced, the section should not
+be included in the link.  If <VAR>section_name</VAR> is omitted, the current
+section is used.
+<P>
+
+<A NAME="IDX1314"></A>
+<DT><CODE>.c_mode</CODE>
+<DD>TBD.
+<P>
+
+<A NAME="IDX1315"></A>
+<DT><CODE>.copy "<VAR>filename</VAR>" | <VAR>filename</VAR></CODE>
+<DD><DT><CODE>.include "<VAR>filename</VAR>" | <VAR>filename</VAR></CODE>
+<DD>Read source statements from <VAR>filename</VAR>.  The normal include search
+path is used.  Normally .copy will cause statements from the included
+file to be printed in the assembly listing and .include will not, but
+this distinction is not currently implemented.
+<P>
+
+<A NAME="IDX1316"></A>
+<DT><CODE>.data</CODE>
+<DD>Begin assembling code into the .data section.
+<P>
+
+<A NAME="IDX1317"></A>
+<A NAME="IDX1318"></A>
+<A NAME="IDX1319"></A>
+<A NAME="IDX1320"></A>
+<DT><CODE>.double <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.ldouble <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.float <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.xfloat <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD>Place an IEEE single-precision floating-point representation of one or
+more floating-point values into the current section.  All but
+<CODE>.xfloat</CODE> align the result on a longword boundary.  Values are
+stored most-significant word first. 
+<P>
+
+<A NAME="IDX1321"></A>
+<A NAME="IDX1322"></A>
+<DT><CODE>.drlist</CODE>
+<DD><DT><CODE>.drnolist</CODE>
+<DD>Control printing of directives to the listing file.  Ignored.
+<P>
+
+<A NAME="IDX1323"></A>
+<A NAME="IDX1324"></A>
+<A NAME="IDX1325"></A>
+<DT><CODE>.emsg <VAR>string</VAR></CODE>
+<DD><DT><CODE>.mmsg <VAR>string</VAR></CODE>
+<DD><DT><CODE>.wmsg <VAR>string</VAR></CODE>
+<DD>Emit a user-defined error, message, or warning, respectively.
+<P>
+
+<A NAME="IDX1326"></A>
+<DT><CODE>.far_mode</CODE>
+<DD>Use extended addressing when assembling statements.  This should appear
+only once per file, and is equivalent to the -mfar-mode option see section <A HREF="as_375.html#SEC384"><CODE>-mfar-mode</CODE></A>.
+<P>
+
+<A NAME="IDX1327"></A>
+<A NAME="IDX1328"></A>
+<DT><CODE>.fclist</CODE>
+<DD><DT><CODE>.fcnolist</CODE>
+<DD>Control printing of false conditional blocks to the listing file.
+<P>
+
+<A NAME="IDX1329"></A>
+<DT><CODE>.field <VAR>value</VAR> [,<VAR>size</VAR>]</CODE>
+<DD>Initialize a bitfield of <VAR>size</VAR> bits in the current section.  If
+<VAR>value</VAR> is relocatable, then <VAR>size</VAR> must be 16.  <VAR>size</VAR>
+defaults to 16 bits.  If <VAR>value</VAR> does not fit into <VAR>size</VAR> bits,
+the value will be truncated.  Successive <CODE>.field</CODE> directives will
+pack starting at the current word, filling the most significant bits
+first, and aligning to the start of the next word if the field size does
+not fit into the space remaining in the current word.  A <CODE>.align</CODE>
+directive with an operand of 1 will force the next <CODE>.field</CODE>
+directive to begin packing into a new word.  If a label is used, it
+points to the word that contains the specified field.
+<P>
+
+<A NAME="IDX1330"></A>
+<A NAME="IDX1331"></A>
+<A NAME="IDX1332"></A>
+<DT><CODE>.global <VAR>symbol</VAR> [,...,<VAR>symbol_n</VAR>]</CODE>
+<DD><DT><CODE>.def <VAR>symbol</VAR> [,...,<VAR>symbol_n</VAR>]</CODE>
+<DD><DT><CODE>.ref <VAR>symbol</VAR> [,...,<VAR>symbol_n</VAR>]</CODE>
+<DD><CODE>.def</CODE> nominally identifies a symbol defined in the current file
+and availalbe to other files.  <CODE>.ref</CODE> identifies a symbol used in
+the current file but defined elsewhere.  Both map to the standard
+<CODE>.global</CODE> directive.
+<P>
+
+<A NAME="IDX1333"></A>
+<A NAME="IDX1334"></A>
+<A NAME="IDX1335"></A>
+<A NAME="IDX1336"></A>
+<A NAME="IDX1337"></A>
+<A NAME="IDX1338"></A>
+<A NAME="IDX1339"></A>
+<A NAME="IDX1340"></A>
+<DT><CODE>.half <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.uhalf <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.short <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.ushort <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.int <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.uint <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.word <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.uword <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD>Place one or more values into consecutive words of the current section.
+If a label is used, it points to the word allocated for the first value
+encountered. 
+<P>
+
+<A NAME="IDX1341"></A>
+<DT><CODE>.label <VAR>symbol</VAR></CODE>
+<DD>Define a special <VAR>symbol</VAR> to refer to the load time address of the
+current section program counter.
+<P>
+
+<A NAME="IDX1342"></A>
+<A NAME="IDX1343"></A>
+<DT><CODE>.length</CODE>
+<DD><DT><CODE>.width</CODE>
+<DD>Set the page length and width of the output listing file.  Ignored.
+<P>
+
+<A NAME="IDX1344"></A>
+<A NAME="IDX1345"></A>
+<DT><CODE>.list</CODE>
+<DD><DT><CODE>.nolist</CODE>
+<DD>Control whether the source listing is printed.  Ignored.
+<P>
+
+<A NAME="IDX1346"></A>
+<A NAME="IDX1347"></A>
+<A NAME="IDX1348"></A>
+<DT><CODE>.long <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.ulong <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD><DT><CODE>.xlong <VAR>value</VAR> [,...,<VAR>value_n</VAR>]</CODE>
+<DD>Place one or more 32-bit values into consecutive words in the current
+section.  The most significant word is stored first.  <CODE>.long</CODE> and
+<CODE>.ulong</CODE> align the result on a longword boundary; <CODE>xlong</CODE> does
+not. 
+<P>
+
+<A NAME="IDX1349"></A>
+<A NAME="IDX1350"></A>
+<A NAME="IDX1351"></A>
+<DT><CODE>.loop [<VAR>count</VAR>]</CODE>
+<DD><DT><CODE>.break [<VAR>condition</VAR>]</CODE>
+<DD><DT><CODE>.endloop</CODE>
+<DD>Repeatedly assemble a block of code.  <CODE>.loop</CODE> begins the block, and
+<CODE>.endloop</CODE> marks its termination.  <VAR>count</VAR> defaults to 1024,
+and indicates the number of times the block should be repeated.
+<CODE>.break</CODE> terminates the loop so that assembly begins after the
+<CODE>.endloop</CODE> directive.  The optional <VAR>condition</VAR> will cause the
+loop to terminate only if it evaluates to zero.
+<P>
+
+<A NAME="IDX1352"></A>
+<A NAME="IDX1353"></A>
+<DT><CODE><VAR>macro_name</VAR> .macro [<VAR>param1</VAR>][,...<VAR>param_n</VAR>]</CODE>
+<DD><DT><CODE>[.mexit]</CODE>
+<DD><DT><CODE>.endm</CODE>
+<DD>See the section on macros for more explanation (See section <A HREF="as_384.html#SEC393">8.29.10 Macros</A>.
+<P>
+
+<A NAME="IDX1354"></A>
+<DT><CODE>.mlib "<VAR>filename</VAR>" | <VAR>filename</VAR></CODE>
+<DD>Load the macro library <VAR>filename</VAR>.  <VAR>filename</VAR> must be an
+archived library (BFD ar-compatible) of text files, expected to contain
+only macro definitions.   The standard include search path is used.
+<P>
+
+<A NAME="IDX1355"></A>
+<A NAME="IDX1356"></A>
+<DT><CODE>.mlist</CODE>
+<DD><DT><CODE>.mnolist</CODE>
+<DD>Control whether to include macro and loop block expansions in the
+listing output.  Ignored.
+<P>
+
+<A NAME="IDX1357"></A>
+<DT><CODE>.mmregs</CODE>
+<DD>Define global symbolic names for the 'c54x registers.  Supposedly
+equivalent to executing <CODE>.set</CODE> directives for each register with
+its memory-mapped value, but in reality is provided only for
+compatibility and does nothing.
+<P>
+
+<A NAME="IDX1358"></A>
+<DT><CODE>.newblock</CODE>
+<DD>This directive resets any TIC54X local labels currently defined.  Normal
+<CODE>as</CODE> local labels are unaffected.
+<P>
+
+<A NAME="IDX1359"></A>
+<DT><CODE>.option <VAR>option_list</VAR></CODE>
+<DD>Set listing options.  Ignored.
+<P>
+
+<A NAME="IDX1360"></A>
+<DT><CODE>.sblock "<VAR>section_name</VAR>" | <VAR>section_name</VAR> [,"<VAR>name_n</VAR>" | <VAR>name_n</VAR>]</CODE>
+<DD>Designate <VAR>section_name</VAR> for blocking.  Blocking guarantees that a
+section will start on a page boundary (128 words) if it would otherwise
+cross a page boundary.  Only initialized sections may be designated with
+this directive.  See also See section <A HREF="as_376.html#SEC385">8.29.2 Blocking</A>.
+<P>
+
+<A NAME="IDX1361"></A>
+<DT><CODE>.sect "<VAR>section_name</VAR>"</CODE>
+<DD>Define a named initialized section and make it the current section.
+<P>
+
+<A NAME="IDX1362"></A>
+<A NAME="IDX1363"></A>
+<DT><CODE><VAR>symbol</VAR> .set "<VAR>value</VAR>"</CODE>
+<DD><DT><CODE><VAR>symbol</VAR> .equ "<VAR>value</VAR>"</CODE>
+<DD>Equate a constant <VAR>value</VAR> to a <VAR>symbol</VAR>, which is placed in the
+symbol table.  <VAR>symbol</VAR> may not be previously defined.  
+<P>
+
+<A NAME="IDX1364"></A>
+<A NAME="IDX1365"></A>
+<DT><CODE>.space <VAR>size_in_bits</VAR></CODE>
+<DD><DT><CODE>.bes <VAR>size_in_bits</VAR></CODE>
+<DD>Reserve the given number of bits in the current section and zero-fill
+them.  If a label is used with <CODE>.space</CODE>, it points to the
+<STRONG>first</STRONG> word reserved.  With <CODE>.bes</CODE>, the label points to the
+<STRONG>last</STRONG> word reserved.
+<P>
+
+<A NAME="IDX1366"></A>
+<A NAME="IDX1367"></A>
+<DT><CODE>.sslist</CODE>
+<DD><DT><CODE>.ssnolist</CODE>
+<DD>Controls the inclusion of subsym replacement in the listing output.  Ignored.
+<P>
+
+<A NAME="IDX1368"></A>
+<A NAME="IDX1369"></A>
+<DT><CODE>.string "<VAR>string</VAR>" [,...,"<VAR>string_n</VAR>"]</CODE>
+<DD><DT><CODE>.pstring "<VAR>string</VAR>" [,...,"<VAR>string_n</VAR>"]</CODE>
+<DD>Place 8-bit characters from <VAR>string</VAR> into the current section.
+<CODE>.string</CODE> zero-fills the upper 8 bits of each word, while
+<CODE>.pstring</CODE> puts two characters into each word, filling the
+most-significant bits first.  Unused space is zero-filled.  If a label
+is used, it points to the first word initialized.
+<P>
+
+<A NAME="IDX1370"></A>
+<A NAME="IDX1371"></A>
+<A NAME="IDX1372"></A>
+<DT><CODE>[<VAR>stag</VAR>] .struct [<VAR>offset</VAR>]</CODE>
+<DD><DT><CODE>[<VAR>name_1</VAR>] element [<VAR>count_1</VAR>]</CODE>
+<DD><DT><CODE>[<VAR>name_2</VAR>] element [<VAR>count_2</VAR>]</CODE>
+<DD><DT><CODE>[<VAR>tname</VAR>] .tag <VAR>stagx</VAR> [<VAR>tcount</VAR>]</CODE>
+<DD><DT><CODE>...</CODE>
+<DD><DT><CODE>[<VAR>name_n</VAR>] element [<VAR>count_n</VAR>]</CODE>
+<DD><DT><CODE>[<VAR>ssize</VAR>] .endstruct</CODE>
+<DD><DT><CODE><VAR>label</VAR> .tag [<VAR>stag</VAR>]</CODE>
+<DD>Assign symbolic offsets to the elements of a structure.  <VAR>stag</VAR>
+defines a symbol to use to reference the structure.  <VAR>offset</VAR>
+indicates a starting value to use for the first element encountered;
+otherwise it defaults to zero.  Each element can have a named offset,
+<VAR>name</VAR>, which is a symbol assigned the value of the element's offset
+into the structure.  If <VAR>stag</VAR> is missing, these become global
+symbols.  <VAR>count</VAR> adjusts the offset that many times, as if
+<CODE>element</CODE> were an array.  <CODE>element</CODE> may be one of
+<CODE>.byte</CODE>, <CODE>.word</CODE>, <CODE>.long</CODE>, <CODE>.float</CODE>, or any
+equivalent of those, and the structure offset is adjusted accordingly.
+<CODE>.field</CODE> and <CODE>.string</CODE> are also allowed; the size of
+<CODE>.field</CODE> is one bit, and <CODE>.string</CODE> is considered to be one
+word in size.  Only element descriptors, structure/union tags,
+<CODE>.align</CODE> and conditional assembly directives are allowed within
+<CODE>.struct</CODE>/<CODE>.endstruct</CODE>.  <CODE>.align</CODE> aligns member offsets
+to word boundaries only.  <VAR>ssize</VAR>, if provided, will always be
+assigned the size of the structure.
+<P>
+
+The <CODE>.tag</CODE> directive, in addition to being used to define a
+structure/union element within a structure, may be used to apply a
+structure to a symbol.  Once applied to <VAR>label</VAR>, the individual
+structure elements may be applied to <VAR>label</VAR> to produce the desired
+offsets using <VAR>label</VAR> as the structure base. 
+</P><P>
+
+<A NAME="IDX1373"></A>
+<DT><CODE>.tab</CODE>
+<DD>Set the tab size in the output listing.  Ignored.
+<P>
+
+<A NAME="IDX1374"></A>
+<A NAME="IDX1375"></A>
+<A NAME="IDX1376"></A>
+<DT><CODE>[<VAR>utag</VAR>] .union</CODE>
+<DD><DT><CODE>[<VAR>name_1</VAR>] element [<VAR>count_1</VAR>]</CODE>
+<DD><DT><CODE>[<VAR>name_2</VAR>] element [<VAR>count_2</VAR>]</CODE>
+<DD><DT><CODE>[<VAR>tname</VAR>] .tag <VAR>utagx</VAR>[,<VAR>tcount</VAR>]</CODE>
+<DD><DT><CODE>...</CODE>
+<DD><DT><CODE>[<VAR>name_n</VAR>] element [<VAR>count_n</VAR>]</CODE>
+<DD><DT><CODE>[<VAR>usize</VAR>] .endstruct</CODE>
+<DD><DT><CODE><VAR>label</VAR> .tag [<VAR>utag</VAR>]</CODE>
+<DD>Similar to <CODE>.struct</CODE>, but the offset after each element is reset to
+zero, and the <VAR>usize</VAR> is set to the maximum of all defined elements.
+Starting offset for the union is always zero.
+<P>
+
+<A NAME="IDX1377"></A>
+<DT><CODE>[<VAR>symbol</VAR>] .usect "<VAR>section_name</VAR>", <VAR>size</VAR>, [,[<VAR>blocking_flag</VAR>] [,<VAR>alignment_flag</VAR>]]</CODE>
+<DD>Reserve space for variables in a named, uninitialized section (similar to
+.bss).  <CODE>.usect</CODE> allows definitions sections independent of .bss.
+<VAR>symbol</VAR> points to the first location reserved by this allocation.
+The symbol may be used as a variable name.  <VAR>size</VAR> is the allocated
+size in words.  <VAR>blocking_flag</VAR> indicates whether to block this
+section on a page boundary (128 words) (see section <A HREF="as_376.html#SEC385">8.29.2 Blocking</A>).
+<VAR>alignment flag</VAR> indicates whether the section should be
+longword-aligned.  
+<P>
+
+<A NAME="IDX1378"></A>
+<DT><CODE>.var <VAR>sym</VAR>[,..., <VAR>sym_n</VAR>]</CODE>
+<DD>Define a subsym to be a local variable within a macro.  See
+See section <A HREF="as_384.html#SEC393">8.29.10 Macros</A>. 
+<P>
+
+<A NAME="IDX1379"></A>
+<DT><CODE>.version <VAR>version</VAR></CODE>
+<DD>Set which processor to build instructions for.  Though the following
+values are accepted, the op is ignored.
+<DL COMPACT>
+<DT><CODE>541</CODE>
+<DD><DT><CODE>542</CODE>
+<DD><DT><CODE>543</CODE>
+<DD><DT><CODE>545</CODE>
+<DD><DT><CODE>545LP</CODE>
+<DD><DT><CODE>546LP</CODE>
+<DD><DT><CODE>548</CODE>
+<DD><DT><CODE>549</CODE>
+<DD></DL>
+</DL>
+<P>
+
+<A NAME="TIC54X-Macros"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_382.html#SEC391"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_384.html#SEC393"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_179.html#SEC188"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_374.html#SEC383"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_386.html#SEC395"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

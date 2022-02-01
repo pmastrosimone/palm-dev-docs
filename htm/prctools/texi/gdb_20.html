@@ -1,0 +1,143 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Environment</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Environment">
+<META NAME="keywords" CONTENT="Debugging with GDB: Environment">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC20"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_19.html#SEC19"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_21.html#SEC21"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_21.html#SEC21"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.4 Your program's environment </H2>
+<!--docid::SEC20::-->
+<P>
+
+<A NAME="IDX86"></A>
+The <EM>environment</EM> consists of a set of environment variables and
+their values.  Environment variables conventionally record such things as
+your user name, your home directory, your terminal type, and your search
+path for programs to run.  Usually you set up environment variables with
+the shell and they are inherited by all the other programs you run.  When
+debugging, it can be useful to try running your program with a modified
+environment without having to start GDB over again.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX87"></A>
+<DT><CODE>path <VAR>directory</VAR></CODE>
+<DD>Add <VAR>directory</VAR> to the front of the <CODE>PATH</CODE> environment variable
+(the search path for executables) that will be passed to your program.
+The value of <CODE>PATH</CODE> used by GDB does not change.
+You may specify several directory names, separated by whitespace or by a
+system-dependent separator character (<SAMP>`:'</SAMP> on Unix, <SAMP>`;'</SAMP> on
+MS-DOS and MS-Windows).  If <VAR>directory</VAR> is already in the path, it
+is moved to the front, so it is searched sooner.
+<P>
+
+You can use the string <SAMP>`$cwd'</SAMP> to refer to whatever is the current
+working directory at the time GDB searches the path.  If you
+use <SAMP>`.'</SAMP> instead, it refers to the directory where you executed the
+<CODE>path</CODE> command.  GDB replaces <SAMP>`.'</SAMP> in the
+<VAR>directory</VAR> argument (with the current path) before adding
+<VAR>directory</VAR> to the search path.
+</P><P>
+
+<A NAME="IDX88"></A>
+<DT><CODE>show paths</CODE>
+<DD>Display the list of search paths for executables (the <CODE>PATH</CODE>
+environment variable).
+<P>
+
+<A NAME="IDX89"></A>
+<DT><CODE>show environment [<VAR>varname</VAR>]</CODE>
+<DD>Print the value of environment variable <VAR>varname</VAR> to be given to
+your program when it starts.  If you do not supply <VAR>varname</VAR>,
+print the names and values of all environment variables to be given to
+your program.  You can abbreviate <CODE>environment</CODE> as <CODE>env</CODE>.
+<P>
+
+<A NAME="IDX90"></A>
+<DT><CODE>set environment <VAR>varname</VAR> [=<VAR>value</VAR>]</CODE>
+<DD>Set environment variable <VAR>varname</VAR> to <VAR>value</VAR>.  The value
+changes for your program only, not for GDB itself.  <VAR>value</VAR> may
+be any string; the values of environment variables are just strings, and
+any interpretation is supplied by your program itself.  The <VAR>value</VAR>
+parameter is optional; if it is eliminated, the variable is set to a
+null value.
+<P>
+
+For example, this command:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>set env USER = foo
+</FONT></pre></td></tr></table></P><P>
+
+tells the debugged program, when subsequently run, that its user is named
+<SAMP>`foo'</SAMP>.  (The spaces around <SAMP>`='</SAMP> are used for clarity here; they
+are not actually required.)
+</P><P>
+
+<A NAME="IDX91"></A>
+<DT><CODE>unset environment <VAR>varname</VAR></CODE>
+<DD>Remove variable <VAR>varname</VAR> from the environment to be passed to your
+program.  This is different from <SAMP>`set env <VAR>varname</VAR> ='</SAMP>;
+<CODE>unset environment</CODE> removes the variable from the environment,
+rather than assigning it an empty value.
+</DL>
+<P>
+
+<EM>Warning:</EM> On Unix systems, GDB runs your program using
+the shell indicated
+by your <CODE>SHELL</CODE> environment variable if it exists (or
+<CODE>/bin/sh</CODE> if not).  If your <CODE>SHELL</CODE> variable names a shell
+that runs an initialization file--such as <TT>`.cshrc'</TT> for C-shell, or
+<TT>`.bashrc'</TT> for BASH--any variables you set in that file affect
+your program.  You may wish to move setting of environment variables to
+files that are only run when you sign on, such as <TT>`.login'</TT> or
+<TT>`.profile'</TT>.
+</P><P>
+
+<A NAME="Working Directory"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_19.html#SEC19"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_21.html#SEC21"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_21.html#SEC21"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

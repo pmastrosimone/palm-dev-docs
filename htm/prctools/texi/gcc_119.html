@@ -1,0 +1,125 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Gcov Intro</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Gcov Intro">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Gcov Intro">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC119"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_120.html#SEC120"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 6.1 Introduction to <CODE>gcov</CODE> </H2>
+<!--docid::SEC119::-->
+<P>
+
+<CODE>gcov</CODE> is a test coverage program.  Use it in concert with GNU
+CC to analyze your programs to help create more efficient, faster
+running code.  You can use <CODE>gcov</CODE> as a profiling tool to help
+discover where your optimization efforts will best affect your code.  You
+can also use <CODE>gcov</CODE> along with the other profiling tool,
+<CODE>gprof</CODE>, to assess which parts of your code use the greatest amount
+of computing time.
+</P><P>
+
+Profiling tools help you analyze your code's performance.  Using a
+profiler such as <CODE>gcov</CODE> or <CODE>gprof</CODE>, you can find out some
+basic performance statistics, such as:
+</P><P>
+
+<UL>
+<LI>
+how often each line of code executes
+<P>
+
+<LI>
+what lines of code are actually executed
+<P>
+
+<LI>
+how much computing time each section of code uses
+</UL>
+<P>
+
+Once you know these things about how your code works when compiled, you
+can look at each module to see which modules should be optimized.
+<CODE>gcov</CODE> helps you determine where to work on optimization.
+</P><P>
+
+Software developers also use coverage testing in concert with
+testsuites, to make sure software is actually good enough for a release.
+Testsuites can verify that a program works as expected; a coverage
+program tests to see how much of the program is exercised by the
+testsuite.  Developers can then determine what kinds of test cases need
+to be added to the testsuites to create both better testing and a better
+final product.
+</P><P>
+
+You should compile your code without optimization if you plan to use
+<CODE>gcov</CODE> because the optimization, by combining some lines of code
+into one function, may not give you as much information as you need to
+look for `hot spots' where the code is using a great deal of computer
+time.  Likewise, because <CODE>gcov</CODE> accumulates statistics by line (at
+the lowest resolution), it works best with a programming style that
+places only one statement on each line.  If you use complicated macros
+that expand to loops or to other control structures, the statistics are
+less helpful--they only report on the line where the macro call
+appears.  If your complex macros behave like functions, you can replace
+them with inline functions to solve this problem.
+</P><P>
+
+<CODE>gcov</CODE> creates a logfile called <TT>`<VAR>sourcefile</VAR>.gcov'</TT> which
+indicates how many times each line of a source file <TT>`<VAR>sourcefile</VAR>.c'</TT>
+has executed.  You can use these logfiles along with <CODE>gprof</CODE> to aid
+in fine-tuning the performance of your programs.  <CODE>gprof</CODE> gives
+timing information you can use along with the information you get from
+<CODE>gcov</CODE>.
+</P><P>
+
+<CODE>gcov</CODE> works only on code compiled with GNU CC.  It is not
+compatible with any other profiling or test coverage mechanism.
+</P><P>
+
+<A NAME="Invoking Gcov"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_120.html#SEC120"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

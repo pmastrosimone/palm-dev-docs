@@ -1,0 +1,81 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Static Definitions</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Static Definitions">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Static Definitions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC134"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_133.html#SEC133"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_135.html#SEC135"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_125.html#SEC125"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_133.html#SEC133"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_137.html#SEC137"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 7.10.1 Declare <EM>and</EM> Define Static Members </H3>
+<!--docid::SEC134::-->
+<P>
+
+<A NAME="IDX437"></A>
+<A NAME="IDX438"></A>
+<A NAME="IDX439"></A>
+<A NAME="IDX440"></A>
+When a class has static data members, it is not enough to <EM>declare</EM>
+the static member; you must also <EM>define</EM> it.  For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>class Foo
+{
+  <small>...</small>
+  void method();
+  static int bar;
+};
+</pre></td></tr></table></P><P>
+
+This declaration only establishes that the class <CODE>Foo</CODE> has an
+<CODE>int</CODE> named <CODE>Foo::bar</CODE>, and a member function named
+<CODE>Foo::method</CODE>.  But you still need to define <EM>both</EM>
+<CODE>method</CODE> and <CODE>bar</CODE> elsewhere.  According to the draft ANSI
+standard, you must supply an initializer in one (and only one) source
+file, such as:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>int Foo::bar = 0;
+</pre></td></tr></table></P><P>
+
+Other C++ compilers may not correctly implement the standard behavior.
+As a result, when you switch to <CODE>g++</CODE> from one of these compilers,
+you may discover that a program that appeared to work correctly in fact
+does not conform to the standard: <CODE>g++</CODE> reports as undefined
+symbols any static data members that lack definitions.
+</P><P>
+
+<A NAME="Temporaries"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

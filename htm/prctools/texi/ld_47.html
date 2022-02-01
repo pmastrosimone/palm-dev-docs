@@ -1,0 +1,79 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Expression Section</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Expression Section">
+<META NAME="keywords" CONTENT="Untitled Document: Expression Section">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC47"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_46.html#SEC46"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_48.html#SEC48"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_48.html#SEC48"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_41.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_49.html#SEC49"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.10.6 The Section of an Expression </H3>
+<!--docid::SEC47::-->
+When the linker evaluates an expression, the result is either absolute
+or relative to some section.  A relative expression is expressed as a
+fixed offset from the base of a section.
+<P>
+
+The position of the expression within the linker script determines
+whether it is absolute or relative.  An expression which appears within
+an output section definition is relative to the base of the output
+section.  An expression which appears elsewhere will be absolute.
+</P><P>
+
+A symbol set to a relative expression will be relocatable if you request
+relocatable output using the <SAMP>`-r'</SAMP> option.  That means that a
+further link operation may change the value of the symbol.  The symbol's
+section will be the section of the relative expression.
+</P><P>
+
+A symbol set to an absolute expression will retain the same value
+through any further link operation.  The symbol will be absolute, and
+will not have any particular associated section.
+</P><P>
+
+You can use the builtin function <CODE>ABSOLUTE</CODE> to force an expression
+to be absolute when it would otherwise be relative.  For example, to
+create an absolute symbol set to the address of the end of the output
+section <SAMP>`.data'</SAMP>:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS
+  {
+    .data : { *(.data) _edata = ABSOLUTE(.); }
+  }
+</FONT></pre></td></tr></table>If <SAMP>`ABSOLUTE'</SAMP> were not used, <SAMP>`_edata'</SAMP> would be relative to the
+<SAMP>`.data'</SAMP> section.
+</P><P>
+
+<A NAME="Builtin Functions"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

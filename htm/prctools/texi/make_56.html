@@ -1,0 +1,215 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Variables/Recursion</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Variables/Recursion">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Variables/Recursion">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC60"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_55.html#SEC59"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_57.html#SEC61"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_53.html#SEC57"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_54.html#SEC58"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_59.html#SEC63"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 5.6.2 Communicating Variables to a Sub-<CODE>make</CODE> </H3>
+<!--docid::SEC60::-->
+<P>
+
+Variable values of the top-level <CODE>make</CODE> can be passed to the
+sub-<CODE>make</CODE> through the environment by explicit request.  These
+variables are defined in the sub-<CODE>make</CODE> as defaults, but do not
+override what is specified in the makefile used by the sub-<CODE>make</CODE>
+makefile unless you use the <SAMP>`-e'</SAMP> switch (see section <A HREF="make_98.html#SEC102">Summary of Options</A>).</P><P>
+
+To pass down, or <EM>export</EM>, a variable, <CODE>make</CODE> adds the variable
+and its value to the environment for running each command.  The
+sub-<CODE>make</CODE>, in turn, uses the environment to initialize its table
+of variable values.  See section <A HREF="make_72.html#SEC76">Variables from the Environment</A>.
+</P><P>
+
+Except by explicit request, <CODE>make</CODE> exports a variable only if it
+is either defined in the environment initially or set on the command
+line, and if its name consists only of letters, numbers, and underscores.
+Some shells cannot cope with environment variable names consisting of
+characters other than letters, numbers, and underscores.
+</P><P>
+
+The special variables <CODE>SHELL</CODE> and <CODE>MAKEFLAGS</CODE> are always
+exported (unless you unexport them).
+<CODE>MAKEFILES</CODE> is exported if you set it to anything.
+</P><P>
+
+<CODE>make</CODE> automatically passes down variable values that were defined
+on the command line, by putting them in the <CODE>MAKEFLAGS</CODE> variable.
+See section <A HREF="make_57.html#SEC61">5.6.3 Communicating Options to a Sub-<CODE>make</CODE></A>.
+</P><P>
+
+Variables are <EM>not</EM> normally passed down if they were created by
+default by <CODE>make</CODE> (see section <A HREF="make_102.html#SEC106">Variables Used by Implicit Rules</A>).  The sub-<CODE>make</CODE> will define these for
+itself.</P><P>
+
+<A NAME="IDX202"></A>
+If you want to export specific variables to a sub-<CODE>make</CODE>, use the
+<CODE>export</CODE> directive, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>export <VAR>variable</VAR> <small>...</small>
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX203"></A>
+If you want to <EM>prevent</EM> a variable from being exported, use the
+<CODE>unexport</CODE> directive, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>unexport <VAR>variable</VAR> <small>...</small>
+</pre></td></tr></table></P><P>
+
+In both of these forms, the arguments to <CODE>export</CODE> and
+<CODE>unexport</CODE> are expanded, and so could be variables or functions
+which expand to a (list of) variable names to be (un)exported.
+</P><P>
+
+As a convenience, you can define a variable and export it at the same
+time by doing:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>export <VAR>variable</VAR> = value
+</pre></td></tr></table></P><P>
+
+has the same result as:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>variable</VAR> = value
+export <VAR>variable</VAR>
+</pre></td></tr></table></P><P>
+
+and
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>export <VAR>variable</VAR> := value
+</pre></td></tr></table></P><P>
+
+has the same result as:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>variable</VAR> := value
+export <VAR>variable</VAR>
+</pre></td></tr></table></P><P>
+
+Likewise,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>export <VAR>variable</VAR> += value
+</pre></td></tr></table></P><P>
+
+is just like:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>variable</VAR> += value
+export <VAR>variable</VAR>
+</pre></td></tr></table></P><P>
+
+See section <A HREF="make_69.html#SEC73">Appending More Text to Variables</A>.
+</P><P>
+
+You may notice that the <CODE>export</CODE> and <CODE>unexport</CODE> directives
+work in <CODE>make</CODE> in the same way they work in the shell, <CODE>sh</CODE>.
+</P><P>
+
+If you want all variables to be exported by default, you can use
+<CODE>export</CODE> by itself:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>export
+</pre></td></tr></table></P><P>
+
+This tells <CODE>make</CODE> that variables which are not explicitly mentioned
+in an <CODE>export</CODE> or <CODE>unexport</CODE> directive should be exported.
+Any variable given in an <CODE>unexport</CODE> directive will still <EM>not</EM>
+be exported.  If you use <CODE>export</CODE> by itself to export variables by
+default, variables whose names contain characters other than
+alphanumerics and underscores will not be exported unless specifically
+mentioned in an <CODE>export</CODE> directive.</P><P>
+
+<A NAME="IDX204"></A>
+The behavior elicited by an <CODE>export</CODE> directive by itself was the
+default in older versions of GNU <CODE>make</CODE>.  If your makefiles depend
+on this behavior and you want to be compatible with old versions of
+<CODE>make</CODE>, you can write a rule for the special target
+<CODE>.EXPORT_ALL_VARIABLES</CODE> instead of using the <CODE>export</CODE> directive.
+This will be ignored by old <CODE>make</CODE>s, while the <CODE>export</CODE>
+directive will cause a syntax error.<A NAME="IDX205"></A>
+</P><P>
+
+Likewise, you can use <CODE>unexport</CODE> by itself to tell <CODE>make</CODE>
+<EM>not</EM> to export variables by default.  Since this is the default
+behavior, you would only need to do this if <CODE>export</CODE> had been used
+by itself earlier (in an included makefile, perhaps).  You
+<STRONG>cannot</STRONG> use <CODE>export</CODE> and <CODE>unexport</CODE> by themselves to
+have variables exported for some commands and not for others.  The last
+<CODE>export</CODE> or <CODE>unexport</CODE> directive that appears by itself
+determines the behavior for the entire run of <CODE>make</CODE>.</P><P>
+
+<A NAME="IDX206"></A>
+<A NAME="IDX207"></A>
+As a special feature, the variable <CODE>MAKELEVEL</CODE> is changed when it
+is passed down from level to level.  This variable's value is a string
+which is the depth of the level as a decimal number.  The value is
+<SAMP>`0'</SAMP> for the top-level <CODE>make</CODE>; <SAMP>`1'</SAMP> for a sub-<CODE>make</CODE>,
+<SAMP>`2'</SAMP> for a sub-sub-<CODE>make</CODE>, and so on.  The incrementation
+happens when <CODE>make</CODE> sets up the environment for a command.</P><P>
+
+The main use of <CODE>MAKELEVEL</CODE> is to test it in a conditional
+directive (see section <A HREF="make_75.html#SEC79">Conditional Parts of Makefiles</A>); this
+way you can write a makefile that behaves one way if run recursively and
+another way if run directly by you.</P><P>
+
+<A NAME="IDX208"></A>
+You can use the variable <CODE>MAKEFILES</CODE> to cause all sub-<CODE>make</CODE>
+commands to use additional makefiles.  The value of <CODE>MAKEFILES</CODE> is
+a whitespace-separated list of file names.  This variable, if defined in
+the outer-level makefile, is passed down through the environment; then
+it serves as a list of extra makefiles for the sub-<CODE>make</CODE> to read
+before the usual or specified ones.  See section <A HREF="make_16.html#SEC17">The Variable <CODE>MAKEFILES</CODE></A>.</P><P>
+
+<A NAME="Options/Recursion"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_55.html#SEC59"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_57.html#SEC61"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_53.html#SEC57"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_54.html#SEC58"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_59.html#SEC63"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,84 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Asm Labels</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Asm Labels">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Asm Labels">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC100"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_99.html#SEC99"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_101.html#SEC101"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.34 Controlling Names Used in Assembler Code </H2>
+<!--docid::SEC100::-->
+<P>
+
+You can specify the name to be used in the assembler code for a C
+function or variable by writing the <CODE>asm</CODE> (or <CODE>__asm__</CODE>)
+keyword after the declarator as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>int foo asm ("myfoo") = 2;
+</pre></td></tr></table></P><P>
+
+This specifies that the name to be used for the variable <CODE>foo</CODE> in
+the assembler code should be <SAMP>`myfoo'</SAMP> rather than the usual
+<SAMP>`_foo'</SAMP>.
+</P><P>
+
+On systems where an underscore is normally prepended to the name of a C
+function or variable, this feature allows you to define names for the
+linker that do not start with an underscore.
+</P><P>
+
+You cannot use <CODE>asm</CODE> in this way in a function <EM>definition</EM>; but
+you can get the same effect by writing a declaration for the function
+before its definition and putting <CODE>asm</CODE> there, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>extern func () asm ("FUNC");
+
+func (x, y)
+     int x, y;
+<small>...</small>
+</pre></td></tr></table></P><P>
+
+It is up to you to make sure that the assembler names you choose do not
+conflict with any other assembler symbols.  Also, you must not use a
+register name; that would produce completely invalid assembler code.  GNU
+CC does not as yet have the ability to store static variables in registers.
+Perhaps that will be added.
+</P><P>
+
+<A NAME="Explicit Reg Vars"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

@@ -1,0 +1,590 @@
+<html>
+<head>
+<title>(Protein) MemoryMgr.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:19:50">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Lz77Mgr.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Menu.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">69 &nbsp;&nbsp;
+MemoryMgr.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="MemoryMgr.html">69  MemoryMgr.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424959">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424977">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="426625"> </a>Applications no longer use Memory Manager functions when accessing the storage heap. The Data Manager now declares those functions that you use to access the storage heap.</p>
+
+<p><a name="426635"> </a>Note that many of the APIs provided by the Memory Manager exist to simplify the process of porting an application from an earlier version of Palm OS. Palm OS Cobalt applications can make use of the standard C memory management functions&#8212;functions such as <code>malloc()</code>, <code>realloc()</code>, and <code>free()</code>&#8212;instead.</p>
+
+<p><a name="426632"> </a>Some new functions have been added that allow you to interact with the dynamic heap.</p>
+
+<p><a name="424917"> </a>Palm OS Cobalt does not support the concept of internal memory cards (a feature of early Palm Powered devices, not to be confused with expansion cards such as SD cards and Memory Sticks), so the "card number" parameter has been removed from those functions that supported it and functions that existed solely to support such memory cards are no longer supported.</p>
+
+<div><hr>
+  <a name="426740"> </a> <b>NOTE: </b> Early in the porting process you may want to <code>#include MemoryMgrCompatibility.h</code> (after the <code>#include</code> for <code>PalmOS.h</code>). This header file defines a number of APIs and macros that allow applications calling certain deleted functions and functions with modified prototypes to compile and run. This compatibility header should not be counted on long-term, however, so later in the porting process you should remove the <code>#include</code> and fix any problems that result.
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="429155"> </a><b>Table 69.1&nbsp;&nbsp;Deleted functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="429159"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="429161"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429163"> </a><code>MemCardFormat()</code></p>
+    </td>
+    <td><p class="tt"><a name="429165"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429167"> </a><code>MemCardInfo()</code></p>
+    </td>
+    <td><p class="tt"><a name="429169"> </a>Nothing. Internal memory cards are no longer supported.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429171"> </a>MemChunkNew()</p>
+    </td>
+    <td><p class="tt"><a name="429513"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429175"> </a><code>MemHandleCardNo()</code></p>
+    </td>
+    <td><p class="tt"><a name="429177"> </a>Nothing. Internal memory cards are no longer supported.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429231"> </a>MemHandleFlags()</p>
+    </td>
+    <td><p class="tt"><a name="429519"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429246"> </a>MemHandleLockCount()</p>
+    </td>
+    <td><p class="tt"><a name="429521"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429261"> </a>MemHandleOwner()</p>
+    </td>
+    <td><p class="tt"><a name="429523"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429284"> </a>MemHandleResetLock()</p>
+    </td>
+    <td><p class="tt"><a name="429525"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429299"> </a>MemHeapFreeByOwnerID()</p>
+    </td>
+    <td><p class="tt"><a name="429527"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429179"> </a><code>MemHeapInit()</code></p>
+    </td>
+    <td><p class="tt"><a name="429181"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429183"> </a><code>MemInit()</code></p>
+    </td>
+    <td><p class="tt"><a name="429185"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429187"> </a><code>MemInitHeapTable()</code></p>
+    </td>
+    <td><p class="tt"><a name="429189"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429191"> </a><code>MemKernelInit()</code></p>
+    </td>
+    <td><p class="tt"><a name="429193"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429195"> </a><code>MemNumCards()</code></p>
+    </td>
+    <td><p class="tt"><a name="429197"> </a>Nothing. Internal memory cards are no longer supported.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429199"> </a><code>MemPtrCardNo()</code></p>
+    </td>
+    <td><p class="tt"><a name="429201"> </a>Nothing. Internal memory cards are no longer supported.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429314"> </a>MemPtrFlags()</p>
+    </td>
+    <td><p class="tt"><a name="429537"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429329"> </a>MemPtrOwner()</p>
+    </td>
+    <td><p class="tt"><a name="429539"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429344"> </a>MemPtrResetLock()</p>
+    </td>
+    <td><p class="tt"><a name="429541"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429203"> </a><code>MemSemaphoreRelease()</code></p>
+    </td>
+    <td><p class="tt"><a name="429205"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429207"> </a><code>MemSemaphoreReserve()</code></p>
+    </td>
+    <td><p class="tt"><a name="429209"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429211"> </a><code>MemStoreInfo()</code></p>
+    </td>
+    <td><p class="tt"><a name="429213"> </a>Nothing. Internal memory cards are no longer supported.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429215"> </a><code>MemStoreSetInfo()</code></p>
+    </td>
+    <td><p class="tt"><a name="429217"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425578"> </a><b>Table 69.2&nbsp;&nbsp;Deleted #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425582"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425584"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425586"> </a><code>memErrNoRAMOnCard</code></p>
+    </td>
+    <td><p class="tt"><a name="426454"> </a>Nothing. Internal memory cards are no longer supported.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425590"> </a><code>memErrRAMOnlyCard</code></p>
+    </td>
+    <td><p class="tt"><a name="426442"> </a>Nothing. Internal memory cards are no longer supported.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425594"> </a><code>memErrROMOnlyCard</code></p>
+    </td>
+    <td><p class="tt"><a name="426448"> </a>Nothing. Internal memory cards are no longer supported.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424959"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425599"> </a><b>Table 69.3&nbsp;&nbsp;Modified functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425603"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425605"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425607"> </a><code>uint16_t MemHeapID (uint16_t)</code></p>
+    </td>
+    <td><p class="tt"><a name="425609"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425611"> </a><code>void *MemLocalIDToGlobal (LocalID)</code></p>
+    </td>
+    <td><p class="tt"><a name="425613"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425615"> </a><code>void *MemLocalIDToLockedPtr (LocalID)</code></p>
+    </td>
+    <td><p class="tt"><a name="425617"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425619"> </a><code>void *MemLocalIDToPtr (LocalID)</code></p>
+    </td>
+    <td><p class="tt"><a name="425621"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425623"> </a><code>uint16_t MemNumHeaps (void)</code></p>
+    </td>
+    <td><p class="tt"><a name="425625"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425627"> </a><code>uint16_t MemNumRAMHeaps (void)</code></p>
+    </td>
+    <td><p class="tt"><a name="425629"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424977"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="429384"> </a><b>Table 69.4&nbsp;&nbsp;Unchanged functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="429388"> </a>MemChunkFree()</p>
+    </td>
+    <td><p class="tt"><a name="429390"> </a>MemCmp()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429392"> </a>MemDebugMode()</p>
+    </td>
+    <td><p class="tt"><a name="429394"> </a>MemHandleDataStorage()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429396"> </a>MemHandleFree()</p>
+    </td>
+    <td><p class="tt"><a name="429398"> </a>MemHandleHeapID()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429400"> </a>MemHandleLock()</p>
+    </td>
+    <td><p class="tt"><a name="429402"> </a>MemHandleNew()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429404"> </a>MemHandleResize()</p>
+    </td>
+    <td><p class="tt"><a name="429406"> </a>MemHandleSetOwner()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429408"> </a>MemHandleSize()</p>
+    </td>
+    <td><p class="tt"><a name="429410"> </a>MemHandleToLocalID()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429412"> </a>MemHandleUnlock()</p>
+    </td>
+    <td><p class="tt"><a name="429414"> </a>MemHeapCheck()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429416"> </a>MemHeapCompact()</p>
+    </td>
+    <td><p class="tt"><a name="429418"> </a>MemHeapDynamic()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429420"> </a>MemHeapFlags()</p>
+    </td>
+    <td><p class="tt"><a name="429422"> </a>MemHeapFreeBytes()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429424"> </a>MemHeapScramble()</p>
+    </td>
+    <td><p class="tt"><a name="429426"> </a>MemHeapSize()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429428"> </a>MemLocalIDKind()</p>
+    </td>
+    <td><p class="tt"><a name="429430"> </a>MemMove()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429432"> </a>MemPtrDataStorage()</p>
+    </td>
+    <td><p class="tt"><a name="429434"> </a>MemPtrHeapID()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429436"> </a>MemPtrNew()</p>
+    </td>
+    <td><p class="tt"><a name="429438"> </a>MemPtrRecoverHandle()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429440"> </a>MemPtrResize()</p>
+    </td>
+    <td><p class="tt"><a name="429442"> </a>MemPtrSetOwner()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429444"> </a>MemPtrSize()</p>
+    </td>
+    <td><p class="tt"><a name="429446"> </a>MemPtrToLocalID()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429448"> </a>MemPtrUnlock()</p>
+    </td>
+    <td><p class="tt"><a name="429450"> </a>MemSet()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429452"> </a>MemSetDebugMode()</p>
+    </td>
+    <td><p class="tt"><a name="429454"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426021"> </a><b>Table 69.5&nbsp;&nbsp;Unchanged macros</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426025"> </a>MemPtrFree()</p>
+    </td>
+    <td><p class="tt"><a name="426027"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426030"> </a><b>Table 69.6&nbsp;&nbsp;Unchanged #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426034"> </a>memDebugModeAllHeaps</p>
+    </td>
+    <td><p class="tt"><a name="426036"> </a>memDebugModeCheckOnAll</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426038"> </a>memDebugModeCheckOnChange</p>
+    </td>
+    <td><p class="tt"><a name="426040"> </a>memDebugModeFillFree</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426042"> </a>memDebugModeRecordMinDynHeapFree</p>
+    </td>
+    <td><p class="tt"><a name="426044"> </a>memDebugModeScrambleOnAll</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426046"> </a>memDebugModeScrambleOnChange</p>
+    </td>
+    <td><p class="tt"><a name="426048"> </a>memErr...</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426066"> </a>memNewChunkFlagAtEnd</p>
+    </td>
+    <td><p class="tt"><a name="426068"> </a>memNewChunkFlagAtStart</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426070"> </a>memNewChunkFlagNonMovable</p>
+    </td>
+    <td><p class="tt"><a name="426072"> </a>memNewChunkFlagPreLock</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426075"> </a><b>Table 69.7&nbsp;&nbsp;Unchanged enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426079"> </a>LocalIDKind</p>
+    </td>
+    <td><p class="tt"><a name="426081"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="425050"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Lz77Mgr.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Menu.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

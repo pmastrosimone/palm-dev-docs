@@ -1,0 +1,159 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: VAX-branch</TITLE>
+
+<META NAME="description" CONTENT="Using as: VAX-branch">
+<META NAME="keywords" CONTENT="Using as: VAX-branch">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC408"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_398.html#SEC407"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_400.html#SEC409"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_400.html#SEC409"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_394.html#SEC403"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_402.html#SEC411"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.31.5 VAX Branch Improvement </H3>
+<!--docid::SEC408::-->
+<P>
+
+<A NAME="IDX1460"></A>
+<A NAME="IDX1461"></A>
+<A NAME="IDX1462"></A>
+Certain pseudo opcodes are permitted.  They are for branch
+instructions.  They expand to the shortest branch instruction that
+reaches the target.  Generally these mnemonics are made by
+substituting <SAMP>`j'</SAMP> for <SAMP>`b'</SAMP> at the start of a DEC mnemonic.
+This feature is included both for compatibility and to help
+compilers.  If you do not need this feature, avoid these
+opcodes.  Here are the mnemonics, and the code they can expand into.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>jbsb</CODE>
+<DD><SAMP>`Jsb'</SAMP> is already an instruction mnemonic, so we chose <SAMP>`jbsb'</SAMP>.
+<DL COMPACT>
+<DT>(byte displacement)
+<DD><KBD>bsbb <small>...</small></KBD>
+<DT>(word displacement)
+<DD><KBD>bsbw <small>...</small></KBD>
+<DT>(long displacement)
+<DD><KBD>jsb <small>...</small></KBD>
+</DL>
+<DT><CODE>jbr</CODE>
+<DD><DT><CODE>jr</CODE>
+<DD>Unconditional branch.
+<DL COMPACT>
+<DT>(byte displacement)
+<DD><KBD>brb <small>...</small></KBD>
+<DT>(word displacement)
+<DD><KBD>brw <small>...</small></KBD>
+<DT>(long displacement)
+<DD><KBD>jmp <small>...</small></KBD>
+</DL>
+<DT><CODE>j<VAR>COND</VAR></CODE>
+<DD><VAR>COND</VAR> may be any one of the conditional branches
+<CODE>neq</CODE>, <CODE>nequ</CODE>, <CODE>eql</CODE>, <CODE>eqlu</CODE>, <CODE>gtr</CODE>,
+<CODE>geq</CODE>, <CODE>lss</CODE>, <CODE>gtru</CODE>, <CODE>lequ</CODE>, <CODE>vc</CODE>, <CODE>vs</CODE>,
+<CODE>gequ</CODE>, <CODE>cc</CODE>, <CODE>lssu</CODE>, <CODE>cs</CODE>.
+<VAR>COND</VAR> may also be one of the bit tests
+<CODE>bs</CODE>, <CODE>bc</CODE>, <CODE>bss</CODE>, <CODE>bcs</CODE>, <CODE>bsc</CODE>, <CODE>bcc</CODE>,
+<CODE>bssi</CODE>, <CODE>bcci</CODE>, <CODE>lbs</CODE>, <CODE>lbc</CODE>.
+<VAR>NOTCOND</VAR> is the opposite condition to <VAR>COND</VAR>.
+<DL COMPACT>
+<DT>(byte displacement)
+<DD><KBD>b<VAR>COND</VAR> <small>...</small></KBD>
+<DT>(word displacement)
+<DD><KBD>b<VAR>NOTCOND</VAR> foo ; brw <small>...</small> ; foo:</KBD>
+<DT>(long displacement)
+<DD><KBD>b<VAR>NOTCOND</VAR> foo ; jmp <small>...</small> ; foo:</KBD>
+</DL>
+<DT><CODE>jacb<VAR>X</VAR></CODE>
+<DD><VAR>X</VAR> may be one of <CODE>b d f g h l w</CODE>.
+<DL COMPACT>
+<DT>(word displacement)
+<DD><KBD><VAR>OPCODE</VAR> <small>...</small></KBD>
+<DT>(long displacement)
+<DD><TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>OPCODE</VAR> <small>...</small>, foo ;
+brb bar ;
+foo: jmp <small>...</small> ;
+bar:
+</pre></td></tr></table></DL>
+<DT><CODE>jaob<VAR>YYY</VAR></CODE>
+<DD><VAR>YYY</VAR> may be one of <CODE>lss leq</CODE>.
+<DT><CODE>jsob<VAR>ZZZ</VAR></CODE>
+<DD><VAR>ZZZ</VAR> may be one of <CODE>geq gtr</CODE>.
+<DL COMPACT>
+<DT>(byte displacement)
+<DD><KBD><VAR>OPCODE</VAR> <small>...</small></KBD>
+<DT>(word displacement)
+<DD><TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>OPCODE</VAR> <small>...</small>, foo ;
+brb bar ;
+foo: brw <VAR>destination</VAR> ;
+bar:
+</pre></td></tr></table><DT>(long displacement)
+<DD><TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>OPCODE</VAR> <small>...</small>, foo ;
+brb bar ;
+foo: jmp <VAR>destination</VAR> ;
+bar:
+</pre></td></tr></table></DL>
+<DT><CODE>aobleq</CODE>
+<DD><DT><CODE>aoblss</CODE>
+<DD><DT><CODE>sobgeq</CODE>
+<DD><DT><CODE>sobgtr</CODE>
+<DD><DL COMPACT>
+<DT>(byte displacement)
+<DD><KBD><VAR>OPCODE</VAR> <small>...</small></KBD>
+<DT>(word displacement)
+<DD><TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>OPCODE</VAR> <small>...</small>, foo ;
+brb bar ;
+foo: brw <VAR>destination</VAR> ;
+bar:
+</pre></td></tr></table><DT>(long displacement)
+<DD><TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>OPCODE</VAR> <small>...</small>, foo ;
+brb bar ;
+foo: jmp <VAR>destination</VAR> ;
+bar:
+</pre></td></tr></table></DL>
+</DL>
+<P>
+
+<A NAME="VAX-operands"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_398.html#SEC407"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_400.html#SEC409"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_400.html#SEC409"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_394.html#SEC403"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_402.html#SEC411"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

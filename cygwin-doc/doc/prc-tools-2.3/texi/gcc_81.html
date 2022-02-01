@@ -1,0 +1,164 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Labeled Elements</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Labeled Elements">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Labeled Elements">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC81"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_80.html#SEC80"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_82.html#SEC82"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_64.html#SEC64"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.20 Labeled Elements in Initializers </H2>
+<!--docid::SEC81::-->
+<P>
+
+Standard C requires the elements of an initializer to appear in a fixed
+order, the same as the order of the elements in the array or structure
+being initialized.
+</P><P>
+
+In GNU C you can give the elements in any order, specifying the array
+indices or structure field names they apply to.  This extension is not
+implemented in GNU C++.
+</P><P>
+
+To specify an array index, write <SAMP>`[<VAR>index</VAR>]'</SAMP> or
+<SAMP>`[<VAR>index</VAR>] ='</SAMP> before the element value.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>int a[6] = { [4] 29, [2] = 15 };
+</pre></td></tr></table></P><P>
+
+is equivalent to
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>int a[6] = { 0, 0, 15, 0, 29, 0 };
+</pre></td></tr></table></P><P>
+
+The index values must be constant expressions, even if the array being
+initialized is automatic.
+</P><P>
+
+To initialize a range of elements to the same value, write
+<SAMP>`[<VAR>first</VAR> ... <VAR>last</VAR>] = <VAR>value</VAR>'</SAMP>.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>int widths[] = { [0 ... 9] = 1, [10 ... 99] = 2, [100] = 3 };
+</pre></td></tr></table></P><P>
+
+Note that the length of the array is the highest value specified
+plus one.
+</P><P>
+
+In a structure initializer, specify the name of a field to initialize
+with <SAMP>`<VAR>fieldname</VAR>:'</SAMP> before the element value.  For example,
+given the following structure,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>struct point { int x, y; };
+</pre></td></tr></table></P><P>
+
+the following initialization
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>struct point p = { y: yvalue, x: xvalue };
+</pre></td></tr></table></P><P>
+
+is equivalent to
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>struct point p = { xvalue, yvalue };
+</pre></td></tr></table></P><P>
+
+Another syntax which has the same meaning is <SAMP>`.<VAR>fieldname</VAR> ='</SAMP>.,
+as shown here:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>struct point p = { .y = yvalue, .x = xvalue };
+</pre></td></tr></table></P><P>
+
+You can also use an element label (with either the colon syntax or the
+period-equal syntax) when initializing a union, to specify which element
+of the union should be used.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>union foo { int i; double d; };
+
+union foo f = { d: 4 };
+</pre></td></tr></table></P><P>
+
+will convert 4 to a <CODE>double</CODE> to store it in the union using
+the second element.  By contrast, casting 4 to type <CODE>union foo</CODE>
+would store it into the union as the integer <CODE>i</CODE>, since it is
+an integer.  (See section <A HREF="gcc_83.html#SEC83">4.22 Cast to a Union Type</A>.)
+</P><P>
+
+You can combine this technique of naming elements with ordinary C
+initialization of successive elements.  Each initializer element that
+does not have a label applies to the next consecutive element of the
+array or structure.  For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>int a[6] = { [1] = v1, v2, [4] = v4 };
+</pre></td></tr></table></P><P>
+
+is equivalent to
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>int a[6] = { 0, v1, v2, 0, v4, 0 };
+</pre></td></tr></table></P><P>
+
+Labeling the elements of an array initializer is especially useful
+when the indices are characters or belong to an <CODE>enum</CODE> type.
+For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>int whitespace[256]
+  = { [' '] = 1, ['\t'] = 1, ['\h'] = 1,
+      ['\f'] = 1, ['\n'] = 1, ['\r'] = 1 };
+</pre></td></tr></table></P><P>
+
+<A NAME="Case Ranges"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_80.html#SEC80"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_82.html#SEC82"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_64.html#SEC64"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

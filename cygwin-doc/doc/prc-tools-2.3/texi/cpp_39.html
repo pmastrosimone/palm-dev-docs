@@ -1,0 +1,124 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Combining Sources</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Combining Sources">
+<META NAME="keywords" CONTENT="The C Preprocessor: Combining Sources">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC39"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_38.html#SEC38"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_40.html#SEC40"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_40.html#SEC40"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 1.6 Combining Source Files </H2>
+<!--docid::SEC39::-->
+<P>
+
+<A NAME="IDX73"></A>
+One of the jobs of the C preprocessor is to inform the C compiler of where
+each line of C code came from: which source file and which line number.
+</P><P>
+
+C code can come from multiple source files if you use <SAMP>`#include'</SAMP>;
+both <SAMP>`#include'</SAMP> and the use of conditionals and macros can cause
+the line number of a line in the preprocessor output to be different
+from the line's number in the original source file.  You will appreciate
+the value of making both the C compiler (in error messages) and symbolic
+debuggers such as GDB use the line numbers in your source file.
+</P><P>
+
+The C preprocessor builds on this feature by offering a directive by which
+you can control the feature explicitly.  This is useful when a file for
+input to the C preprocessor is the output from another program such as the
+<CODE>bison</CODE> parser generator, which operates on another file that is the
+true source file.  Parts of the output from <CODE>bison</CODE> are generated from
+scratch, other parts come from a standard parser file.  The rest are copied
+nearly verbatim from the source file, but their line numbers in the
+<CODE>bison</CODE> output are not the same as their original line numbers.
+Naturally you would like compiler error messages and symbolic debuggers to
+know the original source file and line number of each line in the
+<CODE>bison</CODE> input.
+</P><P>
+
+<A NAME="IDX74"></A>
+<CODE>bison</CODE> arranges this by writing <SAMP>`#line'</SAMP> directives into the output
+file.  <SAMP>`#line'</SAMP> is a directive that specifies the original line number
+and source file name for subsequent input in the current preprocessor input
+file.  <SAMP>`#line'</SAMP> has three variants:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>#line <VAR>linenum</VAR></CODE>
+<DD>Here <VAR>linenum</VAR> is a decimal integer constant.  This specifies that
+the line number of the following line of input, in its original source file,
+was <VAR>linenum</VAR>.
+<P>
+
+<DT><CODE>#line <VAR>linenum</VAR> <VAR>filename</VAR></CODE>
+<DD>Here <VAR>linenum</VAR> is a decimal integer constant and <VAR>filename</VAR>
+is a string constant.  This specifies that the following line of input
+came originally from source file <VAR>filename</VAR> and its line number there
+was <VAR>linenum</VAR>.  Keep in mind that <VAR>filename</VAR> is not just a
+file name; it is surrounded by doublequote characters so that it looks
+like a string constant.
+<P>
+
+<DT><CODE>#line <VAR>anything else</VAR></CODE>
+<DD><VAR>anything else</VAR> is checked for macro calls, which are expanded.
+The result should be a decimal integer constant followed optionally
+by a string constant, as described above.
+</DL>
+<P>
+
+<SAMP>`#line'</SAMP> directives alter the results of the <SAMP>`__FILE__'</SAMP> and
+<SAMP>`__LINE__'</SAMP> predefined macros from that point on.  See section <A HREF="cpp_14.html#SEC14">1.4.3.1 Standard Predefined Macros</A>.
+</P><P>
+
+The output of the preprocessor (which is the input for the rest of the
+compiler) contains directives that look much like <SAMP>`#line'</SAMP> directives.
+They start with just <SAMP>`#'</SAMP> instead of <SAMP>`#line'</SAMP>, but this is
+followed by a line number and file name as in <SAMP>`#line'</SAMP>.  See section <A HREF="cpp_41.html#SEC41">1.8 C Preprocessor Output</A>.
+</P><P>
+
+<A NAME="Other Directives"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_38.html#SEC38"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_40.html#SEC40"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_40.html#SEC40"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

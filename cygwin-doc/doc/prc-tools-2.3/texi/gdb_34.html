@@ -1,0 +1,178 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Conditions</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Conditions">
+<META NAME="keywords" CONTENT="Debugging with GDB: Conditions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC34"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_33.html#SEC33"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_35.html#SEC35"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_35.html#SEC35"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 5.1.6 Break conditions </H3>
+<!--docid::SEC34::-->
+<P>
+
+The simplest sort of breakpoint breaks every time your program reaches a
+specified place.  You can also specify a <EM>condition</EM> for a
+breakpoint.  A condition is just a Boolean expression in your
+programming language (see section <A HREF="gdb_52.html#SEC52">Expressions</A>).  A breakpoint with
+a condition evaluates the expression each time your program reaches it,
+and your program stops only if the condition is <EM>true</EM>.
+</P><P>
+
+This is the converse of using assertions for program validation; in that
+situation, you want to stop when the assertion is violated--that is,
+when the condition is false.  In C, if you want to test an assertion expressed
+by the condition <VAR>assert</VAR>, you should set the condition
+<SAMP>`! <VAR>assert</VAR>'</SAMP> on the appropriate breakpoint.
+</P><P>
+
+Conditions are also accepted for watchpoints; you may not need them,
+since a watchpoint is inspecting the value of an expression anyhow--but
+it might be simpler, say, to just set a watchpoint on a variable name,
+and specify a condition that tests whether the new value is an interesting
+one.
+</P><P>
+
+Break conditions can have side effects, and may even call functions in
+your program.  This can be useful, for example, to activate functions
+that log program progress, or to use your own print functions to
+format special data structures. The effects are completely predictable
+unless there is another enabled breakpoint at the same address.  (In
+that case, GDB might see the other breakpoint first and stop your
+program without checking the condition of this one.)  Note that
+breakpoint commands are usually more convenient and flexible than break
+conditions for the
+purpose of performing side effects when a breakpoint is reached
+(see section <A HREF="gdb_35.html#SEC35">Breakpoint command lists</A>).
+</P><P>
+
+Break conditions can be specified when a breakpoint is set, by using
+<SAMP>`if'</SAMP> in the arguments to the <CODE>break</CODE> command.  See section <A HREF="gdb_29.html#SEC29">Setting breakpoints</A>.  They can also be changed at any time
+with the <CODE>condition</CODE> command.
+</P><P>
+
+You can also use the <CODE>if</CODE> keyword with the <CODE>watch</CODE> command.
+The <CODE>catch</CODE> command does not recognize the <CODE>if</CODE> keyword;
+<CODE>condition</CODE> is the only way to impose a further condition on a
+catchpoint.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX183"></A>
+<DT><CODE>condition <VAR>bnum</VAR> <VAR>expression</VAR></CODE>
+<DD>Specify <VAR>expression</VAR> as the break condition for breakpoint,
+watchpoint, or catchpoint number <VAR>bnum</VAR>.  After you set a condition,
+breakpoint <VAR>bnum</VAR> stops your program only if the value of
+<VAR>expression</VAR> is true (nonzero, in C).  When you use
+<CODE>condition</CODE>, GDB checks <VAR>expression</VAR> immediately for
+syntactic correctness, and to determine whether symbols in it have
+referents in the context of your breakpoint.  If <VAR>expression</VAR> uses
+symbols not referenced in the context of the breakpoint, GDB
+prints an error message:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>No symbol "foo" in current context.
+</FONT></pre></td></tr></table></P><P>
+
+GDB does
+not actually evaluate <VAR>expression</VAR> at the time the <CODE>condition</CODE>
+command (or a command that sets a breakpoint with a condition, like
+<CODE>break if <small>...</small></CODE>) is given, however.  See section <A HREF="gdb_52.html#SEC52">Expressions</A>.
+</P><P>
+
+<DT><CODE>condition <VAR>bnum</VAR></CODE>
+<DD>Remove the condition from breakpoint number <VAR>bnum</VAR>.  It becomes
+an ordinary unconditional breakpoint.
+</DL>
+<P>
+
+<A NAME="IDX184"></A>
+A special case of a breakpoint condition is to stop only when the
+breakpoint has been reached a certain number of times.  This is so
+useful that there is a special way to do it, using the <EM>ignore
+count</EM> of the breakpoint.  Every breakpoint has an ignore count, which
+is an integer.  Most of the time, the ignore count is zero, and
+therefore has no effect.  But if your program reaches a breakpoint whose
+ignore count is positive, then instead of stopping, it just decrements
+the ignore count by one and continues.  As a result, if the ignore count
+value is <VAR>n</VAR>, the breakpoint does not stop the next <VAR>n</VAR> times
+your program reaches it.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX185"></A>
+<DT><CODE>ignore <VAR>bnum</VAR> <VAR>count</VAR></CODE>
+<DD>Set the ignore count of breakpoint number <VAR>bnum</VAR> to <VAR>count</VAR>.
+The next <VAR>count</VAR> times the breakpoint is reached, your program's
+execution does not stop; other than to decrement the ignore count, GDB
+takes no action.
+<P>
+
+To make the breakpoint stop the next time it is reached, specify
+a count of zero.
+</P><P>
+
+When you use <CODE>continue</CODE> to resume execution of your program from a
+breakpoint, you can specify an ignore count directly as an argument to
+<CODE>continue</CODE>, rather than using <CODE>ignore</CODE>.  See section <A HREF="gdb_38.html#SEC38">Continuing and stepping</A>.
+</P><P>
+
+If a breakpoint has a positive ignore count and a condition, the
+condition is not checked.  Once the ignore count reaches zero,
+GDB resumes checking the condition.
+</P><P>
+
+You could achieve the effect of the ignore count with a condition such
+as <SAMP>`$foo-- &#60;= 0'</SAMP> using a debugger convenience variable that
+is decremented each time.  See section <A HREF="gdb_60.html#SEC60">Convenience variables</A>.
+</DL>
+<P>
+
+Ignore counts apply to breakpoints, watchpoints, and catchpoints.
+</P><P>
+
+<A NAME="Break Commands"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_33.html#SEC33"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_35.html#SEC35"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_35.html#SEC35"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

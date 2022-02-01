@@ -1,0 +1,125 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Arrays</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Arrays">
+<META NAME="keywords" CONTENT="Debugging with GDB: Arrays">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC54"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_53.html#SEC53"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_55.html#SEC55"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_55.html#SEC55"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.3 Artificial arrays </H2>
+<!--docid::SEC54::-->
+<P>
+
+<A NAME="IDX308"></A>
+<A NAME="IDX309"></A>
+It is often useful to print out several successive objects of the
+same type in memory; a section of an array, or an array of
+dynamically determined size for which only a pointer exists in the
+program.
+</P><P>
+
+You can do this by referring to a contiguous span of memory as an
+<EM>artificial array</EM>, using the binary operator <SAMP>`@'</SAMP>.  The left
+operand of <SAMP>`@'</SAMP> should be the first element of the desired array
+and be an individual object.  The right operand should be the desired length
+of the array.  The result is an array value whose elements are all of
+the type of the left argument.  The first element is actually the left
+argument; the second element comes from bytes of memory immediately
+following those that hold the first element, and so on.  Here is an
+example.  If a program says
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>int *array = (int *) malloc (len * sizeof (int));
+</FONT></pre></td></tr></table></P><P>
+
+you can print the contents of <CODE>array</CODE> with
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>p *array@len
+</FONT></pre></td></tr></table></P><P>
+
+The left operand of <SAMP>`@'</SAMP> must reside in memory.  Array values made
+with <SAMP>`@'</SAMP> in this way behave just like other arrays in terms of
+subscripting, and are coerced to pointers when used in expressions.
+Artificial arrays most often appear in expressions via the value history
+(see section <A HREF="gdb_59.html#SEC59">Value history</A>), after printing one out.
+</P><P>
+
+Another way to create an artificial array is to use a cast.
+This re-interprets a value as if it were an array.
+The value need not be in memory:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) p/x (short[2])0x12345678
+$1 = {0x1234, 0x5678}
+</FONT></pre></td></tr></table></P><P>
+
+As a convenience, if you leave the array length out (as in
+<SAMP>`(<VAR>type</VAR>[])<VAR>value</VAR>'</SAMP>) GDB calculates the size to fill
+the value (as <SAMP>`sizeof(<VAR>value</VAR>)/sizeof(<VAR>type</VAR>)'</SAMP>:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) p/x (short[])0x12345678
+$2 = {0x1234, 0x5678}
+</FONT></pre></td></tr></table></P><P>
+
+Sometimes the artificial array mechanism is not quite enough; in
+moderately complex data structures, the elements of interest may not
+actually be adjacent--for example, if you are interested in the values
+of pointers in an array.  One useful work-around in this situation is
+to use a convenience variable (see section <A HREF="gdb_60.html#SEC60">Convenience variables</A>) as a counter in an expression that prints the first
+interesting value, and then repeat that expression via <KBD>RET</KBD>.  For
+instance, suppose you have an array <CODE>dtab</CODE> of pointers to
+structures, and you are interested in the values of a field <CODE>fv</CODE>
+in each structure.  Here is an example of what you might type:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>set $i = 0
+p dtab[$i++]-&#62;fv
+<KBD>RET</KBD>
+<KBD>RET</KBD>
+<small>...</small>
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="Output Formats"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_53.html#SEC53"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_55.html#SEC55"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_55.html#SEC55"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

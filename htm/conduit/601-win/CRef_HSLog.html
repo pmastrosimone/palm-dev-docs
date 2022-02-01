@@ -1,0 +1,595 @@
+<html>
+<head>
+<title>HotSync Log API | C/C++ Sync Suite Reference</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="KEYWORDS" CONTENT="C, C++, C/C++ Sync Suite, HotSync Log, log, hotsync, message, reference, API, CDK, conduit, conduits, Windows">
+<META NAME="DESCRIPTION" CONTENT="Provides reference details on the HotSync Log API in the C/C++ Sync Suite.">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource HTML 20040609">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="LASTUPDATED" CONTENT="06/28/04 08:30:09">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="995935"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncReferenceTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CRef_CnAPI.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CRef_CmnLang.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncReferenceIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">7 &nbsp;&nbsp;
+HotSync Log API</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">C/C++ Sync Suite Reference</p>
+<p class="SubTitle">Palm OS&#174; Conduit Development Kit for Windows, Version 6.0.1 </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="CRef_Part_Conduit.html">Part II: Conduit APIs</a> </h1>
+<h1 class="SideTOC1"><a href="CRef_HSLog.html">7  HotSync Log API</a></h1>
+
+   <h2 class="SideTOC2"><a href="#995974">
+   HotSync Log Constants</a></h2>
+
+      <h3 class="SideTOC3"><a href="#1000851">
+      Activity</a></h3>
+
+   <h2 class="SideTOC2"><a href="#996066">
+   HotSync Log Functions</a></h2>
+
+      <h3 class="SideTOC3"><a href="#996068">
+      LogAddEntry</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996108">
+      LogAddFormattedEntry</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996151">
+      LogTestCounters</a></h3>
+
+   <h2 class="SideTOC2"><a href="#996174">
+   HotSync Log API Error Codes</a></h2>
+
+</div>
+</td>
+<!--END SIDETOC-->
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="995948"> </a>The HotSync<sup>&#174;</sup> Log API enables conduits to queue messages that are later written to the HotSync log. The messages are written to the HotSync log just before the synchronization process ends.</p>
+
+<p><a name="995950"> </a>The HotSync Log functions are available in <code>HSLog20.dll</code> and declared in <code>HSLog.h</code>.</p>
+
+<p><a name="995952"> </a>The sections in this chapter are: </p>
+   <blockquote class = "bq"><a name="995956"> </a><a href="CRef_HSLog.html#995974">HotSync Log Constants</a></blockquote>
+   <blockquote class = "bq"><a name="995960"> </a><a href="CRef_HSLog.html#996066">HotSync Log Functions</a></blockquote>
+   <blockquote class = "bq"><a name="995964"> </a><a href="CRef_HSLog.html#996174">HotSync Log API Error Codes</a></blockquote>
+
+<p><a name="995967"> </a>For more information on the HotSync log, see <a href="Intro_CondBasics.html#996242">"Adding Messages to the HotSync Log"</a> in the <i>Introduction to Conduit Development</i>.</p>
+
+<h2 class="haH2">
+  <a name="995974"> </a>HotSync Log Constants <a href="#995935"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="995975"> </a>This section describes the enumerated constant <a href="CRef_HSLog.html#1000851"><code>Activity</code></a> that you can use with HotSync log functions.</p>
+
+<h3 class="hbH3">
+  <a name="1000851"> </a>Activity Enum <a href="#995935"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="1000853"> </a>Purpose 
+</h4>
+
+<p><a name="995980"> </a>Specifies the activity that causes a conduit to call <code>LogAddEntry()</code> or <code>LogAddFormattedEntry()</code> to add an entry to the log.</p>
+<h4>
+  <a name="995981"> </a>Declared In 
+</h4>
+<code>HSLog.h<a name="995982"> </a></code><h4>
+  <a name="995983"> </a>Constants 
+</h4>
+
+<dl>
+<dt><a name="995984"> </a><code>slText = -1</code></dt>
+<dd><a name="995985"> </a>Allows a conduit to add text to the log without incrementing the warning counter.</dd>
+
+<dt><a name="995986"> </a><code>slDoubleModify</code></dt>
+<dd><a name="995987"> </a>A record has been modified on both the desktop computer and handheld.</dd>
+
+<dt><a name="995988"> </a><code>slDoubleModifyArchive</code></dt>
+<dd><a name="995989"> </a>A record that has been modified on both the desktop and handheld has been archived.</dd>
+
+<dt><a name="995990"> </a><code>slReverseDelete</code></dt>
+<dd><a name="995991"> </a>A record that was deleted on one side has been restored, because the same record was modified on the other side.</dd>
+
+<dt><a name="995992"> </a><code>slTooManyCategories</code></dt>
+<dd><a name="995993"> </a>No more categories can be added.</dd>
+
+<dt><a name="995994"> </a><code>slCategoryDeleted</code></dt>
+<dd><a name="995995"> </a>A category was deleted.</dd>
+
+<dt><a name="995996"> </a><code>slDateChanged</code></dt>
+<dd><a name="995997"> </a>The date was changed.</dd>
+
+<dt><a name="995998"> </a><code>slCustomLabel</code></dt>
+<dd><a name="995999"> </a>A custom label was changed.</dd>
+
+<dt><a name="996000"> </a><code>slChangeCatFailed</code></dt>
+<dd><a name="996001"> </a>Changing a category failed.</dd>
+
+<dt><a name="996002"> </a><code>slRemoteReadFailed</code></dt>
+<dd><a name="996003"> </a>Reading a record failed on the handheld.</dd>
+
+<dt><a name="996004"> </a><code>slRemoteAddFailed</code></dt>
+<dd><a name="996005"> </a>Adding a record on the handheld failed.</dd>
+
+<dt><a name="996006"> </a><code>slRemotePurgeFailed</code></dt>
+<dd><a name="996007"> </a>Purging a record on the handheld failed.</dd>
+
+<dt><a name="996008"> </a><code>slRemoteChangeFailed</code></dt>
+<dd><a name="996009"> </a>Changing a record on the handheld failed.</dd>
+
+<dt><a name="996010"> </a><code>slRemoteDeleteFailed</code></dt>
+<dd><a name="996011"> </a>Deleting a record on the handheld failed.</dd>
+
+<dt><a name="996012"> </a><code>slLocalAddFailed</code></dt>
+<dd><a name="996013"> </a>Adding a record on the desktop computer failed.</dd>
+
+<dt><a name="996014"> </a><code>slRecCountMismatch</code></dt>
+<dd><a name="996015"> </a>Record counts did not match.</dd>
+
+<dt><a name="996016"> </a><code>slXMapFailed</code></dt>
+<dd><a name="996017"> </a>The position cross-map operation failed.</dd>
+
+<dt><a name="996018"> </a><code>slArchiveFailed</code></dt>
+<dd><a name="996019"> </a>The archive operation failed.</dd>
+
+<dt><a name="996020"> </a><code>slLocalSaveFailed</code></dt>
+<dd><a name="996021"> </a>Saving data on the desktop computer failed.</dd>
+
+<dt><a name="996022"> </a><code>slResetFlagsFailed</code></dt>
+<dd><a name="996023"> </a>Resetting the synchronization flags failed.</dd>
+
+<dt><a name="996024"> </a><code>slSyncStarted</code></dt>
+<dd><a name="996025"> </a>A conduit started its synchronization operations.</dd>
+
+<dt><a name="996026"> </a><code>slSyncFinished</code></dt>
+<dd><a name="1002821"> </a>A conduit completed its synchronization operations successfully.</dd>
+
+<dt><a name="996028"> </a><code>slSyncAborted</code></dt>
+<dd><a name="996029"> </a>The synchronization operation was aborted.</dd>
+
+<dt><a name="996030"> </a><code>slWarning</code></dt>
+<dd><a name="996031"> </a>This constant lets a conduit record a warning that doesn't fit any of the other activity codes provided.</dd>
+
+<dt><a name="996032"> </a><code>slDoubleModifySubsc</code></dt>
+<dd><a name="996033"> </a>A file link record was modified on the desktop. This value is deprecated because the file link feature has been removed in HotSync Manager 6.0.1 and later.</dd>
+
+<dt><a name="996034"> </a><code>slFileLinkCompleted</code></dt>
+<dd><a name="996035"> </a>Processing of a file link completed. This value is deprecated because the file link feature has been removed in HotSync Manager 6.0.1 and later.</dd>
+
+<dt><a name="996036"> </a><code>slFileLinkDeleted</code></dt>
+<dd><a name="996037"> </a>A file link was deleted. This value is deprecated because the file link feature has been removed in HotSync Manager 6.0.1 and later.</dd>
+
+<dt><a name="996038"> </a><code>slSyncDidNothing</code></dt>
+<dd><a name="996039"> </a>The user specified that the conduit should not perform any operations during synchronization. You can use this value only with HotSync Manager version 6.0 or later.</dd>
+
+<dt><a name="1001980"> </a><code>slSyncSessionStart</code></dt>
+<dd><a name="1001981"> </a>The HotSync operation started. Only HotSync Manager version 6.0.1 or later uses this value; conduits must not.</dd>
+
+<dt><a name="1001982"> </a><code>slSyncSessionEnd</code></dt>
+<dd><a name="1002111"> </a>The HotSync operation completed. Only HotSync Manager version 6.0.1 or later uses this value; conduits must not.</dd>
+
+<dt><a name="1001984"> </a><code>slSyncSessionCancelled</code></dt>
+<dd><a name="1002125"> </a>The user clicked <b>Cancel</b> on the <b>HotSync Progress</b> dialog box. Only HotSync Manager version 6.0.1 or later uses this value; conduits must not.</dd>
+
+<dt><a name="1002165"> </a><code>slError</code></dt>
+<dd><a name="1002179"> </a>An error occurred. You can use this value only with HotSync Manager version 6.0.1 or later.</dd>
+
+<dt><a name="1002167"> </a><code>slRecommendation</code></dt>
+<dd><a name="1002240"> </a>Recommendation that the user do something&#8212for example, resolve conflicts that a conduit could not. You can use this value only with HotSync Manager version 6.0.1 or later.</dd>
+
+<dt><a name="1001990"> </a><code>slHTMLText</code></dt>
+<dd><a name="1001991"> </a>This type of log entry contains HTML tags or characters. Using this value passes the string to the log unchanged so that its HTML formatting will be rendered. All other <code>Activity</code> values cause the HotSync Log API to replace HTML control characters (&lt;, &gt;, &amp;) with their HTML equivalents (&amp;lt;, &amp;gt;, &amp;amp;). You can use this value only with HotSync Manager version 6.0.1 or later.</dd>
+
+</dl>
+<h4>
+  <a name="996040"> </a>Comments 
+</h4>
+
+<p><a name="996044"> </a>Your conduit passes one of these values to <a href="CRef_HSLog.html#996068"><code>LogAddEntry()</code></a> or <a href="CRef_HSLog.html#996108"><code>LogAddFormattedEntry()</code></a> to indicate what type of entry it is adding to the log. </p>
+
+<p><a name="996050"> </a>For more information, see <a href="Intro_CondBasics.html#996242">"Adding Messages to the HotSync Log"</a> in the <i>Introduction to Conduit Development</i>.</p>
+<h4>
+  <a name="996055"> </a>Compatibility 
+</h4>
+
+<p><a name="996056"> </a>HotSync Manager version: All, with exceptions described for each value above.<br>Palm OS version: All.</p>
+<h4>
+  <a name="996057"> </a>See Also 
+</h4>
+
+<p><a name="996064"> </a><a href="CRef_HSLog.html#996068"><code>LogAddEntry()</code></a>, <a href="CRef_HSLog.html#996108"><code>LogAddFormattedEntry()</code></a></p>
+
+<h2 class="haH2">
+  <a name="996066"> </a>HotSync Log Functions <a href="#995935"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="999375"> </a>This section describes the following functions, which allow you to write to the HotSync log.</p>
+
+<p class="fineprint">
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="999401"> </a><a href="CRef_HSLog.html#996068"><code>LogAddEntry()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="999403"> </a>Adds a message to the HotSync log on the desktop.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999405"> </a><a href="CRef_HSLog.html#996108"><code>LogAddFormattedEntry()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="999407"> </a>Adds a formatted message to the HotSync log on the desktop.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999491"> </a><a href="CRef_HSLog.html#996151"><code>LogTestCounters()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="999493"> </a>Determines the number of messages that have been added to the HotSync log on the desktop.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<h3 class="hbH3">
+  <a name="996068"> </a>LogAddEntry Function <a href="#995935"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996070"> </a>Purpose 
+</h4>
+
+<p><a name="996071"> </a>Adds a message to the HotSync log on the desktop.</p>
+<h4>
+  <a name="996072"> </a>Declared In 
+</h4>
+<code>HSLog.h<a name="996073"> </a></code><h4>
+  <a name="996074"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996075"></a>long LogAddEntry (
+   LPCTSTR <code class="par">pszEntry</code>,
+   Activity <code class="par">act</code>,
+   BOOL <code class="par">bTimeStamp</code>
+)
+</pre>
+<h4>
+  <a name="996076"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996077"> </a><code>&rarr;  <i>pszEntry</i></code></dt>
+<dd><a name="996078"> </a>The string to enter into the log.</dd>
+
+<dt><a name="996079"> </a><code>&rarr;  <i>act</i></code></dt>
+<dd><a name="996080"> </a>The activity that causes a conduit to add an entry to the log. This is one of the <a href="CRef_HSLog.html#1000851"><code>Activity</code></a> enum values.</dd>
+
+<dt><a name="996084"> </a><code>&rarr;  <i>bTimeStamp</i></code></dt>
+<dd><a name="996085"> </a>If true, HotSync Manager includes a time-stamp with the log entry.</dd>
+
+</dl>
+<h4>
+  <a name="996086"> </a>Returns 
+</h4>
+
+<p><a name="996087"> </a>If successful, returns <code>slNoError</code>.</p>
+
+<p><a name="996088"> </a>If unsuccessful, returns -1.</p>
+<h4>
+  <a name="997850"> </a>Comments 
+</h4>
+
+<p><a name="997853"> </a>For more information on the HotSync log, see <a href="Intro_CondBasics.html#996242">"Adding Messages to the HotSync Log"</a> in the <i>Introduction to Conduit Development</i>.</p>
+<h4>
+  <a name="997858"> </a>Compatibility 
+</h4>
+
+<p><a name="996098"> </a>HotSync Manager version: All. <br>Palm OS version: All. </p>
+<h4>
+  <a name="996099"> </a>See Also 
+</h4>
+
+<p><a name="996106"> </a><a href="CRef_HSLog.html#996108"><code>LogAddFormattedEntry()</code></a>, <a href="CRef_HSLog.html#1000851"><code>Activity</code></a></p>
+
+<h3 class="hbH3">
+  <a name="996108"> </a>LogAddFormattedEntry Function <a href="#995935"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996110"> </a>Purpose 
+</h4>
+
+<p><a name="996111"> </a>Adds a formatted message to the HotSync log on the desktop.</p>
+<h4>
+  <a name="996112"> </a>Declared In 
+</h4>
+<code>HSLog.h<a name="996113"> </a></code><h4>
+  <a name="996114"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996115"></a>long LogAddFormattedEntry (
+   Activity <code class="par">act</code>,
+   BOOL <code class="par">bTimeStamp</code>,
+   const char *dataString,
+   ...
+)
+</pre>
+<h4>
+  <a name="996116"> </a>Parameters 
+</h4>
+
+<dl>
+<dt><a name="996117"> </a><code>&rarr;  <i>act</i></code></dt>
+<dd><a name="996118"> </a>The activity that causes a conduit to add an entry to the log. This is one of the <a href="CRef_HSLog.html#1000851"><code>Activity</code></a> enum values.</dd>
+
+<dt><a name="996122"> </a><code>&rarr;  <i>bTimeStamp</i></code></dt>
+<dd><a name="996123"> </a>If true, HotSync Manager includes a time-stamp with the log entry.</dd>
+
+<dt><a name="996124"> </a><code>&rarr;  <i>dataString</i></code></dt>
+<dd><a name="996125"> </a>The string containing formatting placeholders. This string can contain the same formatting instructions as do strings that are passed to standard C Library functions such as <code>sprintf()</code>.</dd>
+
+<dt><a name="996126"> </a><code>&rarr;  <i>...</i></code></dt>
+<dd><a name="996127"> </a>Parameter values for the formatting placeholders in the <code class="par">dataString</code> parameter.</dd>
+
+</dl>
+<h4>
+  <a name="996128"> </a>Returns 
+</h4>
+
+<p><a name="996129"> </a>If successful, returns <code>slNoError</code>.</p>
+
+<p><a name="996130"> </a>If unsuccessful, returns -1.</p>
+<h4>
+  <a name="996131"> </a>Comments 
+</h4>
+
+<p><a name="996134"> </a>For more information on the HotSync log, see <a href="Intro_CondBasics.html#996242">"Adding Messages to the HotSync Log"</a> in the <i>Introduction to Conduit Development</i>.</p>
+<div class="NINoteImportant"><hr>
+  <a name="996139"> </a> <b>IMPORTANT: </b> The <code class="par">dataString</code> parameter must point to a string that is 256 characters or shorter. Longer strings can cause HotSync Manager to crash. If you must add formatted strings longer than 256 characters to the log, you can use <code>sprintf()</code> with your own buffer and then call <code>LogAddEntry()</code> to print your buffer to the log.
+<hr>
+</div>
+<h4>
+  <a name="996140"> </a>Compatibility 
+</h4>
+
+<p><a name="996141"> </a>HotSync Manager version: All. <br>Palm OS version: All. </p>
+<h4>
+  <a name="996142"> </a>See Also 
+</h4>
+
+<p><a name="996149"> </a><a href="CRef_HSLog.html#996068"><code>LogAddEntry()</code></a>, <a href="CRef_HSLog.html#1000851"><code>Activity</code></a></p>
+
+<h3 class="hbH3">
+  <a name="996151"> </a>LogTestCounters Function <a href="#995935"><span class="nav">^TOP^</span></a>
+</h3>
+
+<h4>
+  <a name="996153"> </a>Purpose 
+</h4>
+
+<p><a name="996154"> </a>Determines the number of messages that have been added to the HotSync log on the desktop.</p>
+<h4>
+  <a name="996155"> </a>Declared In 
+</h4>
+<code>HSLog.h<a name="996156"> </a></code><h4>
+  <a name="996157"> </a>Prototype 
+</h4>
+<pre class="proto"><a name="996158"></a>WORD LogTestCounters ()
+</pre>
+<h4>
+  <a name="996159"> </a>Parameters 
+</h4>
+
+<p><a name="996160"> </a>None.</p>
+<h4>
+  <a name="996161"> </a>Returns 
+</h4>
+
+<p><a name="996162"> </a>Returns the number of messages in the log. Returns 0 if the log does not contain any messages.</p>
+<h4>
+  <a name="996163"> </a>Comments 
+</h4>
+
+<p><a name="996164"> </a>The <code>LogTestCounters()</code> function does <i>not</i> count log entries for the following activity types:</p>
+<ul type="disc">
+  <li><a name="996165"> </a><code>slSyncAborted</code> 
+  <li><a name="996166"> </a><code>slSyncFinished</code> 
+  <li><a name="996167"> </a><code>slSyncStarted</code> 
+  <li><a name="996168"> </a><code>slText</code> 
+</ul>
+
+<p><a name="996169"> </a>The <code>LogTestCounters()</code> function does count log entries for any other activity types. Note that HotSync Manager displays a message upon completion noting that messages were logged; this message is displayed only when one or more of the log entries counted by <code>LogTestCounters()</code> is written to the log.</p>
+
+<p><a name="996170"> </a>Most conduits do not need to use this function. It is usually used only by HotSync Manager.</p>
+<h4>
+  <a name="996171"> </a>Compatibility 
+</h4>
+
+<p><a name="996172"> </a>HotSync Manager version: All. <br>Palm OS version: All.</p>
+
+<h2 class="haH2">
+  <a name="996174"> </a>HotSync Log API Error Codes <a href="#995935"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996178"> </a><a href="CRef_HSLog.html#996184">Table 7.1</a> lists the values of error codes that some HotSync Log API functions can return. The description of each function states which errors each function can return. Note that only the values -1 and <code>slNoError</code> are returned by any of the public functions of this API. The others are used only by private functions.</p>
+
+<p><a name="996179"> </a>All of the named error codes below are defined as values of the <code>LogError</code> enum, which is declared in the <code>HSLog.h</code> header file. </p>
+
+<p class="fineprint">
+<p class="caption"><a name="996184"> </a><b>Table 7.1&nbsp;&nbsp;HotSync Log API error codes</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="996190"> </a><b>Value</b></p>
+    </th>
+    <th><p class="tt"><a name="996192"> </a><b>Code</b></p>
+    </th>
+    <th><p class="tt"><a name="996194"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996196"> </a>-1</p>
+    </td>
+    <td><p class="tt"><a name="996198"> </a>&#8212</p>
+    </td>
+    <td><p class="tt"><a name="996200"> </a>The function was unsuccessful.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996202"> </a>0</p>
+    </td>
+    <td><p class="tt"><a name="996205"> </a><code>slNoError</code> </p>
+    </td>
+    <td><p class="tt"><a name="996207"> </a>No error.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996209"> </a>1</p>
+    </td>
+    <td><p class="tt"><a name="996212"> </a><code>slBadStream</code> </p>
+    </td>
+    <td><p class="tt"><a name="996214"> </a>The stream is invalid.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996216"> </a>2</p>
+    </td>
+    <td><p class="tt"><a name="996219"> </a><code>slDeleteFileFailed</code> </p>
+    </td>
+    <td><p class="tt"><a name="996221"> </a>The old log file cannot be deleted.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996223"> </a>3</p>
+    </td>
+    <td><p class="tt"><a name="996226"> </a><code>slMoveFileFailed</code> </p>
+    </td>
+    <td><p class="tt"><a name="996228"> </a>The working log file could not be moved to the specified.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1998-2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="CRef_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncReferenceTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CRef_CnAPI.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CRef_CmnLang.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncReferenceIX.html">Index</a>
+</p>
+</td>
+</tr>
+<!-- END FOOTER -->
+
+</body>
+</html>

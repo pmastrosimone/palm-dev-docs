@@ -1,0 +1,82 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Active Targets</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Active Targets">
+<META NAME="keywords" CONTENT="Debugging with GDB: Active Targets">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC128"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_127.html#SEC127"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_129.html#SEC129"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_127.html#SEC127"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_127.html#SEC127"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 16.1 Active targets </H2>
+<!--docid::SEC128::-->
+<P>
+
+<A NAME="IDX582"></A>
+<A NAME="IDX583"></A>
+<A NAME="IDX584"></A>
+</P><P>
+
+There are three classes of targets: processes, core files, and
+executable files.  GDB can work concurrently on up to three
+active targets, one in each class.  This allows you to (for example)
+start a process and inspect its activity without abandoning your work on
+a core file.
+</P><P>
+
+For example, if you execute <SAMP>`gdb a.out'</SAMP>, then the executable file
+<CODE>a.out</CODE> is the only active target.  If you designate a core file as
+well--presumably from a prior run that crashed and coredumped--then
+GDB has two active targets and uses them in tandem, looking
+first in the corefile target, then in the executable file, to satisfy
+requests for memory addresses.  (Typically, these two classes of target
+are complementary, since core files contain only a program's
+read-write memory--variables and so on--plus machine status, while
+executable files contain only the program text and initialized data.)
+</P><P>
+
+When you type <CODE>run</CODE>, your executable file becomes an active process
+target as well.  When a process target is active, all GDB
+commands requesting memory addresses refer to that target; addresses in
+an active core file or executable file target are obscured while the
+process target is active.
+</P><P>
+
+Use the <CODE>core-file</CODE> and <CODE>exec-file</CODE> commands to select a new
+core file or executable target (see section <A HREF="gdb_125.html#SEC125">Commands to specify files</A>).  To specify as a target a process that is already running, use
+the <CODE>attach</CODE> command (see section <A HREF="gdb_23.html#SEC23">Debugging an already-running process</A>).
+</P><P>
+
+<A NAME="Target Commands"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

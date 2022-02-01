@@ -1,0 +1,1204 @@
+<html>
+<head>
+<title>(Protein) SSL Concepts | Security and Cryptography</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:23:43">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="992934"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="SecurityAndCryptographyTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SecurityConcepts.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SecurityAndCrypto_Part2.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SecurityAndCryptographyIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">2 &nbsp;&nbsp;
+SSL Concepts</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Security and Cryptography</p>
+<p class="SubTitle">Exploring Palm OS </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="SecurityAndCrypto_Part1.html">Part I: Concepts</a> </h1>
+<h1 class="SideTOC1"><a href="SslConcepts.html">2  SSL Concepts</a></h1>
+
+   <h2 class="SideTOC2"><a href="#1068226">
+   SSL Library Architecture</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1073799">
+   Critical Extensions</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1068467">
+   Attributes</a></h2>
+
+      <h3 class="SideTOC3"><a href="#1068556">
+      Always-Used Attributes</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1068557">
+      Debugging and Informational Attributes</a></h3>
+
+      <h3 class="SideTOC3"><a href="#1068558">
+      Advanced Protocol Attributes</a></h3>
+
+   <h2 class="SideTOC2"><a href="#1068065">
+   Sample Code</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<h2 class="haH2">
+  <a name="1068226"> </a>SSL Library Architecture <a href="#992934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1068269"> </a>The SslLib library is an implementation of the SSL protocol for use under Palm OS.  The API implements an interface that can be used to perform SSL and non-SSL network I/O.  <a href="SslConcepts.html#1068352">Figure 2.1</a> is intended to help show the relationship between the different components of SslLib and how they interact with the user's application.</p>
+
+<p class="FFigureCaption">
+  <a name="1068352"> </a><b>Figure 2.1&nbsp;&nbsp;SSL library architecture</b>
+</p>
+<div align="left"><img src="images/SslConceptsf.jpg" height="664" width="592" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="1068271"> </a>In this diagram, the following items are labeled.</p>
+<ul type="disc">
+  <li><a name="1068406"> </a>Application &#8211; This is the user's application that will be using the SslLib library to secure its network connections.
+  <li><a name="1068407"> </a><code>sys/socket</code> API &#8211; This is the standard sockets API.  This box represents calls into that library.
+  <li><a name="1068274"> </a>SslLib API &#8211; This is the Palm OS SslLib API.  This box represents calls into that library via it's public interfaces.
+  <li><a name="1068275"> </a>SSL &#8211; The SSL protocol which is under the SslLib API.  This represents the code that performs the SSL encapsulation of the application's data.
+  <li><a name="1068276"> </a>Handshake &#8211; The SSL protocol, during the initial connection, performs a message exchange with the remote SSL server.  This box represents the part of the SSL protocol that implements this exchange.
+  <li><a name="1068277"> </a>Certificate Verification &#8211; As part of the SSL handshake, certificates need to be verified.  This box represents the logic that performs the certificate verification.
+  <li><a name="1068278"> </a>Read/Write Records &#8211; The SSL protocol sends and receives SSL records.  This box represents the data structures used to keep track of the last record read and the next record to be written.
+  <li><a name="1068279"> </a>Read/Write Buffers &#8211; SslLib buffers incoming and outgoing data. This box represents the data structures used to hold this data.
+  <li><a name="1068280"> </a>I/O Interface &#8211; This is the code that sends data from a write buffer to the network, or the code that reads data from the network and puts it in the read buffer.
+</ul>
+
+<p><a name="1068282"> </a>The application will call <code>sys/socket</code> directly to configure and establish a network connection (a descriptor referencing the socket).  Once the socket has been configured, it is passed into SslLib by associating the socket with an SslContext (<a href="SslLibMac.html#999810"><code>SslContextSet_Socket()</code></a>).  When a read or write call is made to SslLib, depending on the mode of operation the SslContext is configured to operate in (<a href="SslLibMac.html#999256"><code>SslContextSet_Mode()</code></a>), either the data bytes will be directly sent, or they will under go SSL processing to encrypt and MAC the data.  The diagram shows how the data bytes always go via the SslContext's read/write buffers.  These buffers are used to store bytes waiting to be sent to the socket and any extra bytes read from the socket that have not yet been processed.  The SSL protocol initially enters a handshake state, where the security parameters to use to encrypt and MAC the application's data bytes are determined.  As part of this process, some certificates need to be verified.</p>
+
+<p><a name="1068283"> </a>The callback arrows indicate where the application can register to receive notification of activity in those relevant subsystems.  The I/O Interface can return via the info callback (<a href="SslLibMac.html#998494"><code>SslContextSet_InfoCallback()</code></a>) information about the calls to the socket APIs.  The SSL box callback indicates the notification of SSL Protocol Alerts that are received (via the info callback).  The handshake callback arrow indicates the calls to the info callback when-ever the SSL handshake protocol changes state (<a href="SslLibMac.html#994669"><code>SslContextGet_HsState()</code></a>).  The information returned from these three access points is mostly of interest for debugging reasons.  The final callback, the Verify callback (<a href="SslLibMac.html#1000064"><code>SslContextSet_VerifyCallback()</code></a>) is often used to modify the policies regarding certificates.</p>
+
+<h2 class="haH2">
+  <a name="1073799"> </a>Critical Extensions <a href="#992934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1073800"> </a>Extensions are an optional set of fields in X.509 certificates. Certain certificates, including SSL certificates, may have extensions. Some of these extensions may be classified as "critical," which means that they should be processed by the entity trying use the certificate. These extensions are defined by a Certificate Authority ("CA") to clarify and restrict the role of the certificate and its purpose. The SSL library in Palm OS Cobalt version 6.1 and earlier ignores two of these critical extensions:</p>
+
+<dl>
+<dt><a name="1073827"> </a>Basic Constraints</dt>
+<dd><a name="1073801"> </a>The <code>BasicConstraints</code> extension is used to clarify the role and position of the certificate in the CA hierarchy. That is, root and sub CA certificates may contain a <code>BasicConstraints</code> extension that identifies them as CA certificates while end-entity certificates may be clearly identified as not being such. </dd>
+
+<dt><a name="1073833"> </a>Key Usage</dt>
+<dd><a name="1073826"> </a><code>KeyUsage</code> extensions define the purpose of the public key contained in a certificate. The public key may be used for digital signature, non repudiation, key encipherment, data encipherment, key agreement, certificate signing, and certificate revocation list ("CRL") signing. </dd>
+
+</dl>
+
+<p><a name="1073848"> </a>In Palm OS Cobalt version 6.1 and earlier, the SSL library does not process the <code>BasicConstraints</code> or <code>KeyUsage</code> extensions. If the SSL library finds a critical extension of any type, the error <code>CertMgrVerifyFailCriticalExtension</code> is returned to the application. In practice, this means that an application running on Palm OS Cobalt version 6.1 that tries to connect to a website that has a certificate with a critical <code>KeyUsage</code> or <code>BasicConstraints</code> extension will get this error even if the extension is correct and valid for the connection.</p>
+
+<p><a name="1073803"> </a>If a web server is using a certificate that has a <code>KeyUsage</code> extension indicating a usage not appropriate for SSL, this means that the certificate is being used for a different purpose than that stipulated by the Certificate Authority. This basically waives the liability of the CA for that particular certificate usage. If the root certificate of a particular end-entity certificate does not have a basic constraint specifying itself as a CA, or if the end-entity certificate specifies itself as a CA, that is a potential misuse of the certificate(s). However, regardless of whether a certificate has a <code>KeyUsage</code> or <code>BasicConstraints</code> extension that is appropriate or inappropriate for SSL, if the extension is marked critical, on Palm OS Cobalt version 6.1 the error <code>CertMgrVerifyFailCriticalExtension</code> is returned.</p>
+
+<p><a name="1073804"> </a>On Palm OS Cobalt 6.1 and earlier, it is up to the application to decide whether to continue or abort the SSL connection when it encounters a <code>CertMgrVerifyFailCriticalExtension</code> error. This issue is more related to the liability of a CA for the usage of a certificate not originally intended for SSL, rather than the actual SSL processing and the security of the connection.</p>
+
+<h2 class="haH2">
+  <a name="1068467"> </a>Attributes <a href="#992934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1068473"> </a>The SslLib library uses two main structures to hold information: the SslLib structure and the SslContext.  The SslContext is used to hold all information associated with a single SSL network connection.  It contains various flags that govern how the SSL protocol will operate, and also contains a read buffer and a write buffer where SSL protocol packets are assembled and disassembled. As part of the SSL handshake, various structures are created .  These include the security parameters associated with the particular connection and the certificate from the SSL server that is on the other end of the network connection.  Quite a large number of these attributes can be retrieved for debugging and informational reasons.  Others can be set by the application to modify the behavior of the SSL protocol.  The SslLib can be though of as a template for many of these options.  The SslLib can have many of its attributes set, and then when an SslContext is created using the SslLib, these attributes are inherited directly.  These values are copied into the SslContext, so subsequent changes to the SslLib's attributes will not modify any existing SslContext's.</p>
+
+<p><a name="1068474"> </a>Attribututes can be broken into two main classes; integer values, and pointer values.  The integer values are numbers that can be set or retrieved via the <a href="SslLib.html#995848"><code>SslLibGetLong()</code></a>, <a href="SslLib.html#996143"><code>SslLibSetLong()</code></a>, <a href="SslLib.html#995046"><code>SslContextGetLong()</code></a> and <a href="SslLib.html#995438"><code>SslContextSetLong()</code></a> calls.  These functions are not normally called directly; instead, applications typically employ those macros declared in <code>SslLibMac.h</code>. The pointer-based attributes are similarly set or retrieved using macros; those macros evaluate to calls to <a href="SslLib.html#995946"><code>SslLibGetPtr()</code></a>, <a href="SslLib.html#1004704"><code>SslLibSetPtr()</code></a>, <a href="SslLib.html#995388"><code>SslContextGetPtr()</code></a> and <a href="SslLib.html#995492"><code>SslContextSetPtr()</code></a>.  Whenever an attribute is passed in via a pointer, the type of the pointer is defined by the attribute being used.  The object that the pointer is pointing to is always copied into the SslLib or SslContext, so the data element that is passed in does not need to be preserved.  There are some exceptions to this rule.  Pointer-based attributes that are retrived from an SslLib or an SslContext will always be references to objects held inside the SslLib or SslContext.  If the application wishes these values to be preserved, it should copy them into local storage.</p>
+
+<p><a name="1068475"> </a>The attributes can be grouped into several categories: some will always be used, some will be regularly used and will profoundly modify the behavior of some of SslLib core functions.  Some are to help debugging, and some are used to configure more subtle protocol specific internal configuration parameters. The following sections detail each attribute, grouping them by these categories.</p>
+<h3 class="hbH3">
+  <a name="1068556"> </a>Always-Used Attributes <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<h4 class="hcH4">
+  <a name="1071740"> </a>AutoFlush
+</h4>
+
+<p><a name="1071747"> </a>This attribute affects the behavior of <a href="SslLib.html#997133"><code>SslSend()</code></a> and <a href="SslLib.html#997207"><code>SslWrite()</code></a>.  When enabled, these functions will attempt to immediately send the supplied data bytes to the network.  If the application performs 200 one-byte <code>SslWrite()</code> calls, this will generate 200 network packets, each about 80 bytes in size (assuming TCP over Ethernet), for a total of 16,000 bytes.  If this data was buffered, it would have been sent in a single packet of about 280 bytes.  When buffering, there is an additional advantage in that the write calls will not generate errors unless the buffer fills.  This can be used to simplify routines that package data for transmission.  It is very important to remember to use the <a href="SslLib.html#995570"><code>SslFlush()</code></a> call when <a href="SslConcepts.html#1071740">AutoFlush</a> is disabled.  <code>SslFlush()</code> will write any data that is in the SslContext's write buffer.  If an application does not flush this data to the network, the server application at the other end will not reply, so the application will probably deadlock, awaiting a response from the server that will never come because the client has not yet sent its data to the server.  </p>
+
+<p><a name="1071754"> </a>The internal logic in SslLib is as follows:</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+Int32 SslWrite(...) {<a name="1071755"> </a>
+write_data_to_output_buffer(...);<a name="1071756"> </a>
+if (ssl-&gt;autoflush)<a name="1071757"> </a>
+   flush_output_buffer(...);<a name="1071758"> </a>
+}<a name="1071759"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1071760"> </a>Auto-flush is enabled by default.</p>
+
+<p><a name="1072746"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1071761"> </a>SslLib Read</dt>
+<dd><a name="1071765"> </a><a href="SslLibMac.html#1000568"><code>SslLibGet_AutoFlush()</code></a></dd>
+
+<dt><a name="1071766"> </a>SslLib Write</dt>
+<dd><a name="1071770"> </a><a href="SslLibMac.html#1002057"><code>SslLibSet_AutoFlush()</code></a></dd>
+
+<dt><a name="1071771"> </a>SslContext Read</dt>
+<dd><a name="1071775"> </a><a href="SslLibMac.html#993378"><code>SslContextGet_AutoFlush()</code></a></dd>
+
+<dt><a name="1071776"> </a>SslContext Write</dt>
+<dd><a name="1071780"> </a><a href="SslLibMac.html#996926"><code>SslContextSet_AutoFlush()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1071794"> </a>CipherSuites
+</h4>
+
+<p><a name="1071795"> </a>This attribute is used to specify the SSL cipher suites that the SSL protocol will attempt to use.  The pointer refers to an array of UInt8 bytes that specify the SSLv3 cipher suite values, in the order desired, to be sent to the SSL Server.  The first two bytes, in network byte order, contain the number of bytes that follow. Following these two bytes are values selected from <a href="SslLib.html#1061544">"Cipher Suites."</a> Note that each <code>sslCs_RSA_</code><i>xxx</i> #define is two bytes long.</p>
+
+<p><a name="1071799"> </a>This value is inherited from the SslLib when an SslContext is created.  Setting <code>CipherSuites</code> with a value of <code>NULL</code> will restore the use of the default cipher suite list. The default cipher suites list (including the size bytes) is:</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+{0x00, 0x08, sslCs_RSA_RC4_128_MD5, sslCs_RSA_RC4_128_SHA1,
+sslCs_RSA_RC4_56_SHA1, sslCs_RSA_RC4_40_MD5}<a name="1071803"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1071804"> </a>To ensure that an application only uses strong encryption, it should make the following call:</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+static UInt8 cipherSuites[]={<a name="1071805"> </a>
+   0x00,0x04,      /* Number of following bytes <a name="1071806"> </a>
+                      (each value is two bytes) */<a name="1071807"> </a>
+   sslCs_RSA_RC4_128_MD5,<a name="1071808"> </a>
+   sslCs_RSA_RC4_128_SHA1<a name="1071809"> </a>
+};<a name="1071810"> </a>
+<a name="1071811"> </a>
+SslLibSet_CipherSuites(lib, cipherSuites);<a name="1071812"> </a>
+/* To change the cipher suite for an existing SslContext */<a name="1071813"> </a>
+SslContextSet_CipherSuites(lib, cipherSuites);<a name="1071814"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1071815"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1071816"> </a>SslLib Read</dt>
+<dd><a name="1071820"> </a><a href="SslLibMac.html#1000699"><code>SslLibGet_CipherSuites()</code></a></dd>
+
+<dt><a name="1071821"> </a>SslLib Write</dt>
+<dd><a name="1071825"> </a><a href="SslLibMac.html#1002345"><code>SslLibSet_CipherSuites()</code></a></dd>
+
+<dt><a name="1071826"> </a>SslContext Read</dt>
+<dd><a name="1071830"> </a><a href="SslLibMac.html#993958"><code>SslContextGet_CipherSuites()</code></a></dd>
+
+<dt><a name="1071831"> </a>SslContext Write</dt>
+<dd><a name="1071835"> </a><a href="SslLibMac.html#997214"><code>SslContextSet_CipherSuites()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1071875"> </a>Error
+</h4>
+
+<p><a name="1071876"> </a>When a fatal error occurs while using an SslContext, the internal error attribute is set to the error value.  The application can retrieve this error value and change it if it desires.  Normally an application will not change this value, but once the error attribute is set, the SslLib network APIs will continue to return this error (unless the error is a non-fatal error) until either an SSL Reset is performed on the SslContext or the error is cleared, at which point the Error attribute will be zero.  A SSL Reset can be performed with <a href="SslLibMac.html#999256"><code>SslContextSet_Mode()</code></a>:</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+	SslContextSet_Mode(ssl,SslContextGet_Mode(ssl));<a name="1072752"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1072753"> </a>Note that <code>SslErrIo</code> is a non-fatal error.</p>
+
+<p><a name="1072754"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1072755"> </a>SslContext Read</dt>
+<dd><a name="1071887"> </a><a href="SslLibMac.html#994423"><code>SslContextGet_Error()</code></a></dd>
+
+<dt><a name="1071888"> </a>SslContext Write</dt>
+<dd><a name="1071892"> </a><a href="SslLibMac.html#998152"><code>SslContextSet_Error()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1069599"> </a>Mode
+</h4>
+
+<p><a name="1069606"> </a>This attribute is used to turn the SSL protocol on or off.  It applies to the SslContext, and when set to <code>sslModeClear</code>,  causes the SSL protocol to be bypassed.  This can be useful for an application since it can be written to use the SslLib API, and still perform normal non-SSL data transfers via that API.  This will let an application take advantage of the buffering provided in an SslContext so that it can perform buffer reads and buffer writes to the network.  When an SslContext has its <a href="SslConcepts.html#1069599">Mode</a> attribute changed, an SSL Reset occurs.  This clears any SSL state information and sets the SslContext back to a state ready to establish a new SSL connection.  The SSL Session information is not cleared.  This means that an application can start in <code>sslModeClear</code>, and then switch to <code>sslModeSslClient</code>.  If the application switches back to <code>sslModeClear</code>, and again over to <code>sslModeSslClient</code>, a new handshake will be performed.</p>
+
+<p><a name="1069607"> </a>The <code>SslModeSsl</code> is a subset value of <code>sslModeSslClient</code>.  In a future release of SslLib, the server side of the SSL protocol may be supported in which case <code>sslModeSslServer</code> would be added. </p>
+
+<p><a name="1069962"> </a>An application can do the following in order to determine if the SSL protocol is being used:</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+If (SslContextGet_Mode(ssl) &amp; sslModeSsl)<a name="1069608"> </a>
+   /* SSL protocol enabled */<a name="1069609"> </a>
+else<a name="1069610"> </a>
+   /* Using cleartext */<a name="1069611"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1069612"> </a>A comparison with <code>sslModeSslClient</code> could be used to determine if the client or server side of the protocol is being used for that particular SslContext.</p>
+
+<p><a name="1069613"> </a>The <code>sslModeFlush</code> flag is special.  When supplied to <a href="SslLibMac.html#999256"><code>SslContextSet_Mode()</code></a>, it causes any data in the internal data buffers to be cleared.  This is normally required when reusing an SslContext for a new connection.  If an application is using an SslContext for cleartext, and then wants to enable SSL on the same connection, this flag should not be used.</p>
+
+<p><a name="1072740"> </a>By default, the <code>mode</code> attribute is set to <code>sslModeSslClient</code>.</p>
+
+<p><a name="1069846"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1069847"> </a>SslLib Read</dt>
+<dd><a name="1069851"> </a><a href="SslLibMac.html#1001406"><code>SslLibGet_Mode()</code></a></dd>
+
+<dt><a name="1069852"> </a>SslLib Write</dt>
+<dd><a name="1069856"> </a><a href="SslLibMac.html#1003519"><code>SslLibSet_Mode()</code></a></dd>
+
+<dt><a name="1069857"> </a>SslContext Read</dt>
+<dd><a name="1069861"> </a><a href="SslLibMac.html#995446"><code>SslContextGet_Mode()</code></a></dd>
+
+<dt><a name="1069862"> </a>SslContext Write</dt>
+<dd><a name="1069866"> </a><a href="SslLibMac.html#999256"><code>SslContextSet_Mode()</code></a></dd>
+
+</dl>
+
+<p><a name="1069982"> </a><a href="SslLib.html#1063983">"Mode Attribute Values"</a> lists the values that this attribute can have.</p>
+
+<h4 class="hcH4">
+  <a name="1069629"> </a>RbufSize
+</h4>
+
+<p><a name="1069636"> </a>The read and write buffers are used in the SslContext to buffer incoming and outgoing data.  When these values are set for an SslLib,  SslContexts that are created against the SslLib will inherit the SslLib's values.  </p>
+
+<p><a name="1070086"> </a>The write buffer size is the maximum number of bytes that can be buffered before a network write operation is performed.  The number of application data bytes that can be buffered is less than this number when in SSL mode&#8212;approximately 30 bytes less due to SSL record overheads.  If the application writes a 16 kb block of data and the write buffer is about 1 kb in size, about 16 network packets will be sent.</p>
+
+<p><a name="1069637"> </a>The read buffer is a little different from the write buffer in that it may be automatically increased is size depending on other configuration information.  The SSLv3 protocol supports SSL records up to 16 Kbytes in size.  Depending on the encryption cipher being used, the protocol may need to decrypt the record in a single operation.  In this case the read buffer will be increased in size to buffer the incoming record.  See the <a href="SslConcepts.html#1068571">ReadStreaming</a> option for advanced usage of the read buffer to decrease latency of data availability for the application.</p>
+
+<p><a name="1070198"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1070110"> </a>SslLib Read</dt>
+<dd><a name="1070114"> </a><a href="SslLibMac.html#1001694"><code>SslLibGet_RbufSize()</code></a></dd>
+
+<dt><a name="1070115"> </a>SslLib Write</dt>
+<dd><a name="1070119"> </a><a href="SslLibMac.html#1003981"><code>SslLibSet_RbufSize()</code></a></dd>
+
+<dt><a name="1070120"> </a>SslContext Read</dt>
+<dd><a name="1070124"> </a><a href="SslLibMac.html#995814"><code>SslContextGet_RbufSize()</code></a></dd>
+
+<dt><a name="1070125"> </a>SslContext Write</dt>
+<dd><a name="1070129"> </a><a href="SslLibMac.html#999556"><code>SslContextSet_RbufSize()</code></a></dd>
+
+</dl>
+
+<p><a name="1070091"> </a>The read buffer's default size is 2048 bytes. You can change the size of the read buffer to any value from 0 to 16384 bytes.</p>
+
+<h4 class="hcH4">
+  <a name="1069651"> </a>Socket
+</h4>
+
+<p><a name="1069654"> </a>This call is used to specify the socket that the SslContext should use to perform its network I/O operations.  An SslContext is unable to perform any network operation until the application creates and supplies a suitable socket descriptor.  The SslLib library does not perform any operations on the supplied descriptor other than <code>sendto()</code> and <code>recvfrom()</code>.  All socket creation and shutdown operations must be performed by the application.</p>
+
+<p><a name="1070255"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1070256"> </a>SslContext Read</dt>
+<dd><a name="1070260"> </a><a href="SslLibMac.html#996170"><code>SslContextGet_Socket()</code></a></dd>
+
+<dt><a name="1070261"> </a>SslContext Write</dt>
+<dd><a name="1070265"> </a><a href="SslLibMac.html#999810"><code>SslContextSet_Socket()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1069678"> </a>VerifyCallback
+</h4>
+
+<p><a name="1069682"> </a>The callback function is used to assist with certificate verification.  See <a href="SslLib.html#997269"><code>SslCallbackFunc()</code></a> (documented<a href="SslLib.html#997269"></a>) for more details on the <code>SslCallback</code> structure and its usages, specifically when used to assist in certificate verification.</p>
+
+<p><a name="1069683"> </a>When a new Verify callback is specified, the application passes in a pointer to an <a href="SslLib.html#1070952"><code>SslCallback</code></a> structure.  This structure is copied into an internal <code>SslCallback</code> structure.  The callback and data fields are preserved.  When the Verify callback structure is copied into an SslLib, or copied into an SslContext, the callback function is called with a command of <code>sslCmdNew</code>.  When the parent SslLib or SslContext is destroyed, a <code>sslCmdFree</code> command is issued..  If a SSL Reset is performed, a <code>sslCmdReset</code> command is issued.  Outside of these situations, the callback will be called during the certificate verification process as outlined in the documentation for the <code>SslCallbackFunc()</code> function.</p>
+
+<p><a name="1070359"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1070360"> </a>SslLib Read</dt>
+<dd><a name="1070364"> </a><a href="SslLibMac.html#1001830"><code>SslLibGet_VerifyCallback()</code></a></dd>
+
+<dt><a name="1070365"> </a>SslLib Write</dt>
+<dd><a name="1070369"> </a><a href="SslLibMac.html#1004235"><code>SslLibSet_VerifyCallback()</code></a></dd>
+
+<dt><a name="1070370"> </a>SslContext Read</dt>
+<dd><a name="1070374"> </a><a href="SslLibMac.html#996393"><code>SslContextGet_VerifyCallback()</code></a></dd>
+
+<dt><a name="1070375"> </a>SslContext Write</dt>
+<dd><a name="1070379"> </a><a href="SslLibMac.html#1000064"><code>SslContextSet_VerifyCallback()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1071945"> </a>WbufSize
+</h4>
+
+<p><a name="1071946"> </a>The read and write buffers are used in the SslContext to buffer incoming and outgoing data.  When these values are set for an SslLib,  SslContexts that are created against the SslLib will inherit the SslLib's values. </p>
+
+<p><a name="1071947"> </a>The write buffer size is the maximum number of bytes that can be buffered before a network write operation is performed.  The number of application data bytes that can be buffered is less than this number when in SSL mode&#8212;approximately 30 bytes less due to SSL record overheads.  If the application writes a 16 kb block of data and the write buffer is about 1 kb in size, about 16 network packets will be sent.</p>
+
+<p><a name="1071948"> </a>The read buffer is a little different from the write buffer in that it may be automatically increased is size depending on other configuration information.  The SSLv3 protocol supports SSL records up to 16 Kbytes in size.  Depending on the encryption cipher being used, the protocol may need to decrypt the record in a single operation.  In this case the read buffer will be increased in size to buffer the incoming record.  See the <a href="SslConcepts.html#1068571">ReadStreaming</a> option for advanced usage of the read buffer to decrease latency of data availability for the application.</p>
+
+<p><a name="1071952"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1071953"> </a>SslLib Read</dt>
+<dd><a name="1071957"> </a><a href="SslLibMac.html#1001876"><code>SslLibGet_WbufSize()</code></a></dd>
+
+<dt><a name="1071958"> </a>SslLib Write</dt>
+<dd><a name="1071962"> </a><a href="SslLibMac.html#1004281"><code>SslLibSet_WbufSize()</code></a></dd>
+
+<dt><a name="1071963"> </a>SslContext Read</dt>
+<dd><a name="1071967"> </a><a href="SslLibMac.html#996703"><code>SslContextGet_WbufSize()</code></a></dd>
+
+<dt><a name="1071968"> </a>SslContext Write</dt>
+<dd><a name="1071972"> </a><a href="SslLibMac.html#1000272"><code>SslContextSet_WbufSize()</code></a></dd>
+
+</dl>
+
+<p><a name="1071973"> </a>The write buffer's default size is 1024 bytes. You can change the size of the write buffer to any value from 0 to 16384 bytes.</p>
+<h3 class="hbH3">
+  <a name="1068557"> </a>Debugging and Informational Attributes <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<h4 class="hcH4">
+  <a name="1072008"> </a>AppInt32
+</h4>
+
+<p><a name="1072009"> </a>The <code>AppInt32</code> attribute is a 32-bit integer value that the application can read or write as it sees fit.  It is present so the application can attach an arbitrary value to an SslLib or a SslContext.  <a href="SslLib.html#995806"><code>SslLibDestroy()</code></a> and <a href="SslLib.html#995004"><code>SslContextDestroy()</code></a> do not modify this attribute, so if the data pointed to by this attribute needs to be disposed of, the application must do this itself.</p>
+
+<p><a name="1072016"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1072017"> </a>SslLib Read</dt>
+<dd><a name="1072021"> </a><a href="SslLibMac.html#1000318"><code>SslLibGet_AppInt32()</code></a></dd>
+
+<dt><a name="1072022"> </a>SslLib Write</dt>
+<dd><a name="1072026"> </a><a href="SslLibMac.html#1000318"><code>SslLibGet_AppInt32()</code></a></dd>
+
+<dt><a name="1072027"> </a>SslContext Read</dt>
+<dd><a name="1072031"> </a><a href="SslLibMac.html#993238"><code>SslContextGet_AppInt32()</code></a></dd>
+
+<dt><a name="1072032"> </a>SslContext Write</dt>
+<dd><a name="1072036"> </a><a href="SslLibMac.html#996826"><code>SslContextSet_AppInt32()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072038"> </a>AppPtr
+</h4>
+
+<p><a name="1072039"> </a>The <code>AppPtr</code> attribute is a pointer value that the application can read or write as it sees fit.  It is present so the application can attach an arbitrary pointer to an SslLib or a SslContext.  <a href="SslLib.html#995806"><code>SslLibDestroy()</code></a> and <a href="SslLib.html#995004"><code>SslContextDestroy()</code></a> do not modify this attribute, so if the data pointed to by this attribute needs to be disposed of, the application must do this itself. The value of the <code>AppPtr</code> attribute is <code>NULL</code> by default.</p>
+
+<p><a name="1072046"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1072047"> </a>SslLib Read</dt>
+<dd><a name="1072051"> </a><a href="SslLibMac.html#1000522"><code>SslLibGet_AppPtr()</code></a></dd>
+
+<dt><a name="1072052"> </a>SslLib Write</dt>
+<dd><a name="1072056"> </a><a href="SslLibMac.html#1000522"><code>SslLibGet_AppPtr()</code></a></dd>
+
+<dt><a name="1072057"> </a>SslContext Read</dt>
+<dd><a name="1072061"> </a><a href="SslLibMac.html#993280"><code>SslContextGet_AppPtr()</code></a></dd>
+
+<dt><a name="1072062"> </a>SslContext Write</dt>
+<dd><a name="1072066"> </a><a href="SslLibMac.html#996880"><code>SslContextSet_AppPtr()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072106"> </a>CipherSuite
+</h4>
+
+<p><a name="1072107"> </a>Pass a pointer to a uint8_t pointer in order to retrieve this attribute.  The returned value points to two bytes which identify the cipher suite being used by the current connection.  Possible values for the cipher suites are:</p>
+
+<dl>
+<dt><a name="1072108"> </a><code>0x00, 0x00</code></dt>
+<dd><a name="1072109"> </a>No cipher suite</dd>
+
+<dt><a name="1072110"> </a><code>0x00, 0x04</code></dt>
+<dd><a name="1072111"> </a>sslCs_RSA_RC4_128_MD5</dd>
+
+<dt><a name="1072112"> </a><code>0x00, 0x05</code></dt>
+<dd><a name="1072113"> </a>sslCs_RSA_RC4_128_SHA1</dd>
+
+<dt><a name="1072114"> </a><code>0x00, 0x64</code></dt>
+<dd><a name="1072115"> </a>sslCs_RSA_RC4_56_SHA1</dd>
+
+<dt><a name="1072116"> </a><code>0x00, 0x03</code></dt>
+<dd><a name="1072117"> </a>sslCs_RSA_RC4_40_MD5</dd>
+
+</dl>
+
+<p><a name="1072121"> </a>Also see the <a href="SslConcepts.html#1071794"><code>CipherSuites</code></a> attribute for instructions on specifying which cipher suites SslLib should advertise as available for use when it initially connects to the SSL server.</p>
+
+<p><a name="1072122"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1072123"> </a>SslContext Read</dt>
+<dd><a name="1072127"> </a><a href="SslLibMac.html#993704"><code>SslContextGet_CipherSuite()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072129"> </a>CipherSuiteInfo
+</h4>
+
+<p><a name="1072130"> </a>This function differs from most others in that the application passes in a structure to be populated from the SslContext.  Normally the SslContext returns a pointer to an internal data structure.  This call returns the information relevant to the current cipher suite.</p>
+
+<p><a name="1072131"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1072132"> </a>SslContext Read</dt>
+<dd><a name="1072136"> </a><a href="SslLibMac.html#993750"><code>SslContextGet_CipherSuiteInfo()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072165"> </a>ClientCertRequest
+</h4>
+
+<p><a name="1072166"> </a>The SSL protocol allows the SSL server to request a certificate from the client.  This attribute will be set if the server requested a client certificate.</p>
+
+<dl>
+<dt><a name="1072167"> </a>SslContext Read</dt>
+<dd><a name="1072171"> </a><a href="SslLibMac.html#994004"><code>SslContextGet_ClientCertRequest()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072197"> </a>Compat
+</h4>
+
+<p><a name="1072198"> </a>Turn on compatibility with incorrect SSL protocol implementations.  These bugs will not normally be encountered while using the SSL protocol, but if desired, it is worth enabling the compatibility in case old buggy servers are being accessed.</p>
+
+<p><a name="1072202"> </a>See <a href="SslLib.html#1063094">"Compatibility Flags"</a> for the defined constants that correspond to the compatibility flags. By default, none of these compatibility flags are set.</p>
+
+<p><a name="1072203"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1072204"> </a>SslLib Read</dt>
+<dd><a name="1072208"> </a><a href="SslLibMac.html#1000745"><code>SslLibGet_Compat()</code></a></dd>
+
+<dt><a name="1072209"> </a>SslLib Write</dt>
+<dd><a name="1072213"> </a><a href="SslLibMac.html#1002553"><code>SslLibSet_Compat()</code></a></dd>
+
+<dt><a name="1072214"> </a>SslContext Read</dt>
+<dd><a name="1072218"> </a><a href="SslLibMac.html#994208"><code>SslContextGet_Compat()</code></a></dd>
+
+<dt><a name="1072219"> </a>SslContext Write</dt>
+<dd><a name="1072223"> </a><a href="SslLibMac.html#997422"><code>SslContextSet_Compat()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072247"> </a>HsState
+</h4>
+
+<p><a name="1072248"> </a>This attribute is the state that the SSL protocol is currently in.  Possible values are defined under <a href="SslLib.html#1049864">"SSL Protocol States."</a> This information is generally only of use during debugging.  See the SSL protocol specification for clarification on what the values mean.</p>
+
+<p><a name="1072252"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1072253"> </a>SslContext Read</dt>
+<dd><a name="1072257"> </a><a href="SslLibMac.html#994669"><code>SslContextGet_HsState()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1069357"> </a>InfoCallback
+</h4>
+
+<p><a name="1069361"> </a>This callback is called when various situations occur during the usage of an SslContext.  It is primarily intended for debugging and feedback purposes.  If the callback returns a non-zero value, this error will be returned back out to the SslLib API.  The callback will be called with a command argument of <code>sslCmdInfo</code>. </p>
+
+<p><a name="1069363"> </a>A single Info callback is used for notification of  four different types of events. The <a href="SslConcepts.html#1069365"><code>InfoInterest</code></a> attribute controls which of these events will invoke the Info callback.</p>
+
+<p><a name="1070431"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1070432"> </a>SslLib Read</dt>
+<dd><a name="1070436"> </a><a href="SslLibMac.html#1001271"><code>SslLibGet_InfoCallback()</code></a></dd>
+
+<dt><a name="1070437"> </a>SslLib Write</dt>
+<dd><a name="1070441"> </a><a href="SslLibMac.html#1003265"><code>SslLibSet_InfoCallback()</code></a></dd>
+
+<dt><a name="1070442"> </a>SslContext Read</dt>
+<dd><a name="1070446"> </a><a href="SslLibMac.html#994739"><code>SslContextGet_InfoCallback()</code></a></dd>
+
+<dt><a name="1070447"> </a>SslContext Write</dt>
+<dd><a name="1070451"> </a><a href="SslLibMac.html#998494"><code>SslContextSet_InfoCallback()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1069365"> </a>InfoInterest
+</h4>
+
+<p><a name="1070533"> </a>This value is used to specify the events for which the <a href="SslConcepts.html#1069357"><code>InfoCallback</code></a> will be called.  The value is the logical ORing of the <code>sslFlgInfo</code><!-PS02-><span style="color: #000000;  font-style: italic; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">xxx</span> values listed under <a href="SslLib.html#1053886">"InfoInterest Values."</a> The <code>sslFlgInfoIo</code> value controls the notification of the four different <a href="SslLib.html#1045420">Info Callbacks</a>. By default, the <code>InfoInterest</code> attribute value is zero.</p>
+
+<p><a name="1070489"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1070490"> </a>SslLib Read</dt>
+<dd><a name="1070494"> </a><a href="SslLibMac.html#1001356"><code>SslLibGet_InfoInterest()</code></a></dd>
+
+<dt><a name="1070495"> </a>SslLib Write</dt>
+<dd><a name="1070499"> </a><a href="SslLibMac.html#1003473"><code>SslLibSet_InfoInterest()</code></a></dd>
+
+<dt><a name="1070500"> </a>SslContext Read</dt>
+<dd><a name="1070504"> </a><a href="SslLibMac.html#994809"><code>SslContextGet_InfoInterest()</code></a></dd>
+
+<dt><a name="1070505"> </a>SslContext Write</dt>
+<dd><a name="1070509"> </a><a href="SslLibMac.html#998540"><code>SslContextSet_InfoInterest()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072301"> </a>IoFlags
+</h4>
+
+<p><a name="1072302"> </a>Since we will normally be using TCP connections with SSL, this attribute is more included for completeness rather than utility.  Read about this flags value in the <code>sendto()</code> and <code>recvfrom()</code> man pages.</p>
+
+<div><hr>
+  <a name="1072303"> </a> <b>NOTE: </b> The <code>MSG_OOB</code> and <code>MSG_PEEK</code> values are not valid and will be silently removed.
+<hr>
+</div>
+
+<p><a name="1072304"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1072305"> </a>SslContext Read</dt>
+<dd><a name="1072309"> </a><a href="SslLibMac.html#994851"><code>SslContextGet_IoFlags()</code></a></dd>
+
+<dt><a name="1072310"> </a>SslContext Write</dt>
+<dd><a name="1072314"> </a><a href="SslLibMac.html#1151520"><code>SslContextSet_IoFlags()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072316"> </a>IoStruct
+</h4>
+
+<p><a name="1072317"> </a>The SslContext's internal SslSocket structure.</p>
+
+<p><a name="1072318"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1072319"> </a>SslContext Read</dt>
+<dd><a name="1072323"> </a><a href="SslLibMac.html#994932"><code>SslContextGet_IoStruct()</code></a></dd>
+
+<dt><a name="1072324"> </a>SslContext Write</dt>
+<dd><a name="1072328"> </a><a href="SslLibMac.html#998794"><code>SslContextSet_IoStruct()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072347"> </a>IoTimeout
+</h4>
+
+<p><a name="1072348"> </a>The SslContext contains internally a default timeout value to pass to <code>sys/socket</code> calls. When a call is made into the SslLib API which does not specify a timeout, this internal value is used.  If the API call has a timeout value, it overrides this internal value.</p>
+
+<p><a name="1072349"> </a>By default, the SslContext's internal timeout value is 10 seconds.</p>
+
+<p><a name="1072350"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1072351"> </a>SslContext Read</dt>
+<dd><a name="1072355"> </a><a href="SslLibMac.html#994986"><code>SslContextGet_IoTimeout()</code></a></dd>
+
+<dt><a name="1072356"> </a>SslContext Write</dt>
+<dd><a name="1072360"> </a><a href="SslLibMac.html#999002"><code>SslContextSet_IoTimeout()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1069381"> </a>LastAlert
+</h4>
+
+<p><a name="1069384"> </a>The alert values are received from the server and are either fatal or non-fatal. Non-fatal alerts have a value of the form <code>0x01</code><!-PS02-><span style="color: #000000;  font-style: italic; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">XX</span>, while fatal alerts have the form <code>0x02</code><!-PS02-><span style="color: #000000;  font-style: italic; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">XX</span>.  SslLib will fail on fatal alerts and continue on non-fatal alerts. See <a href="SslLib.html#1043321">"SSL Server Alerts"</a> for the complete list of alerts.</p>
+
+<p><a name="1070601"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1070602"> </a>SslContext Read</dt>
+<dd><a name="1070606"> </a><a href="SslLibMac.html#995028"><code>SslContextGet_LastAlert()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072457"> </a>LastApi
+</h4>
+
+<p><a name="1072458"> </a>This attribute is the last SslLib API call that was made.  <code>sslLastApiRead</code> is set if <a href="SslLib.html#997001"><code>SslRead()</code></a>, <a href="SslLib.html#996673"><code>SslPeek()</code></a> or <a href="SslLib.html#997059"><code>SslReceive()</code></a> was called.  <code>sslLastApiWrite</code> is set if <a href="SslLib.html#997207"><code>SslWrite()</code></a> or <a href="SslLib.html#997133"><code>SslSend()</code></a> was called.  This attribute can be useful in event driven programs.</p>
+
+<p><a name="1072477"> </a>See <a href="SslLib.html#1056085">"LastApi Attribute Values"</a> for the set of values that this attribute can have.</p>
+
+<p><a name="1072478"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1072479"> </a>SslContext Read</dt>
+<dd><a name="1072483"> </a><a href="SslLibMac.html#995334"><code>SslContextGet_LastApi()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072387"> </a>LastIo
+</h4>
+
+<p><a name="1072388"> </a>This function can be called to determine the last network operation.  If SslLib, while performing a network operation, encounters an error, the error value will be returned to the application.  Since most of the SslLib API I/O functions can cause an SSL handshake to be performed, it is often not possible to know if the reason that a <a href="SslLib.html#997133"><code>SslSend()</code></a> returned <code>netErrWouldBlock</code> is because the send operation failed or a receive operation failed (because a SSL Handshake was being performed).  This attribute allows the application to determine which I/O operation was being called if an network error is returned.  If the application is using <code>select()</code>, this attribute is very important.  This attribute returns the last network operation performed.  This means that <code>sslLastIoNone</code> will only be returned if the SslContext has not performed any I/O operations since its last reset.</p>
+
+<p><a name="1072395"> </a>See <a href="SslLib.html#1056149">"LastIO Attribute Values"</a> for the set of values that this attribute can have.</p>
+
+<p><a name="1072396"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1072397"> </a>SslContext Read</dt>
+<dd><a name="1072401"> </a><a href="SslLibMac.html#995376"><code>SslContextGet_LastIo()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072544"> </a>PeerCert
+</h4>
+
+<p><a name="1072545"> </a>If the certificate supplied by the other end of the SSL connection is available, the certificate is returned.  The returned pointer references a data structure which is internal to the SslContext and will be disposed of by the SslContext.  If a new connection is established with the SslContext, previously returned <code>PeerCert</code> pointers will become invalid.  If the application wishes to preserve the certificate for an extended period, it should make a local copy.  </p>
+
+<p><a name="1072548"> </a>The <code>SslExtendedItems</code> structure is described in <a href="SslLib.html#1035778">"The SslExtendedItems Structure."</a></p>
+
+<p><a name="1072550"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1072551"> </a>SslContext Read</dt>
+<dd><a name="1072555"> </a><a href="SslLibMac.html#995512"><code>SslContextGet_PeerCert()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072557"> </a>PeerCommonName
+</h4>
+
+<p><a name="1072558"> </a>This call will return a pointer to an <code>SslExtendedItems</code> structure which contains the common name for the server's certificate.  If using SSL in an https context, the client application should ensure that the common name contained in the servers certificate matches the URL requested.  This function facilitates this functionality.  The pointer returned refers to a data structure from inside the peer certificate; the offset field in the returned value is relative to the value returned by <a href="SslLibMac.html#995512"><code>SslContextGet_PeerCert()</code></a>.</p>
+
+<p><a name="1072562"> </a>The following code shows how to access the common name from within the <code>SslExtendedItems</code> structure (see <a href="SslLib.html#1035778">"The SslExtendedItems Structure"</a> for a description of this structure):</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+SslExtendedItems *cert;<a name="1072566"> </a>
+SslExtendedItem *commonName;<a name="1072567"> </a>
+uint16_t length;<a name="1072568"> </a>
+uint8_t *bytes;<a name="1072569"> </a>
+<a name="1072570"> </a>
+SslContextGet_PeerCert(ssl, &amp;cert);<a name="1072571"> </a>
+if (cert == NULL) goto err;<a name="1072572"> </a>
+SslContextGet_PeerCommonName(ssl,&amp;commonName);<a name="1072573"> </a>
+length=commonName-&gt;len;<a name="1072574"> </a>
+bytes=((Int8 *)cert)+commonName-&gt;offset;<a name="1072575"> </a>
+// bytes now points to the common name, and length contains<a name="1072576"> </a>
+// the length of the common name string.<a name="1072577"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1072578"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1072579"> </a>SslContext Read</dt>
+<dd><a name="1072583"> </a><a href="SslLibMac.html#995608"><code>SslContextGet_PeerCommonName()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1069387"> </a>ProtocolVersion
+</h4>
+
+<p><a name="1069391"> </a>The version of the SSL protocol to use.  There are 3 versions of the SSL protocol.  SSLv2 which is deprecated due to security flaws, SSLv3 which is the most widely deployed, and TLSv1, or SSLv3.1.  SslLib sends a TLSv1 ClientHello message by default. Note that in Palm OS Cobalt version 6.0 an attempt to change this protocol version to SSLv3 via <a href="SslLibMac.html#999510"><code>SslContextSet_ProtocolVersion()</code></a> has no effect&#8212;SslLib continues to send a TLSv1 ClientHello message.</p>
+
+<p><a name="1070651"> </a>See <a href="SslLib.html#1064597">"Protocol Versions"</a> for the defined constants that correspond to the SSL protocol versions.</p>
+
+<p><a name="1070627"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1070628"> </a>SslLib Read</dt>
+<dd><a name="1070632"> </a><a href="SslLibMac.html#1001652"><code>SslLibGet_ProtocolVersion()</code></a></dd>
+
+<dt><a name="1070633"> </a>SslLib Write</dt>
+<dd><a name="1070637"> </a><a href="SslLibMac.html#1003773"><code>SslLibSet_ProtocolVersion()</code></a></dd>
+
+<dt><a name="1070638"> </a>SslContext Read</dt>
+<dd><a name="1070642"> </a><a href="SslLibMac.html#995696"><code>SslContextGet_ProtocolVersion()</code></a></dd>
+
+<dt><a name="1070643"> </a>SslContext Write</dt>
+<dd><a name="1070647"> </a><a href="SslLibMac.html#999510"><code>SslContextSet_ProtocolVersion()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1069404"> </a>SessionReused
+</h4>
+
+<p><a name="1069408"> </a>The SSL protocol has the capability to re-establish a secure connection with a truncated handshake.  This can be performed if both end-points have communicated previously and share an SSL Session.  An SSL Session is a collection of security attributes that are normally determined as part of the SSL Handshake.  If the SSL handshake was able to perform a truncated handshake by re-using the SSL session values in the SslContext, this attribute will have a non-zero value.  See the <a href="SslConcepts.html#1069462"><code>SslSession</code></a> attribute.</p>
+
+<p><a name="1070726"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1070727"> </a>SslContext Read</dt>
+<dd><a name="1070731"> </a><a href="SslLibMac.html#996104"><code>SslContextGet_SessionReused()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1069462"> </a>SslSession
+</h4>
+
+<p><a name="1069465"> </a>This attribute is either the <a href="SslLib.html#993681"><code>SslSession</code></a> currently being used, or the <code>SslSession</code> for this SslContext to use to establish its next connection.  The <code>SslSession</code> holds all the security information associated with a particular SSL connection.  If an SslContext is configured to use the same <code>SslSession</code> as a previous connection to the same server, the SSL protocol can perform a truncated handshake that involves less network traffic and a smaller CPU load on the server.</p>
+
+<p><a name="1069467"> </a>If a new connection is performed on the SslContext, or another call is made to retrieve the <code>SslSession</code>, any previously returned <code>SslSession</code> pointers will become invalid.  If the program wants to keep the <code>SslSession</code> for an extended period, it should make a local copy.</p>
+
+<p><a name="1071051"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1071062"> </a>SslContext Read</dt>
+<dd><a name="1071066"> </a><a href="SslLibMac.html#996212"><code>SslContextGet_SslSession()</code></a></dd>
+
+<dt><a name="1071067"> </a>SslContext Write</dt>
+<dd><a name="1071071"> </a><a href="SslLibMac.html#1000018"><code>SslContextSet_SslSession()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1069492"> </a>SslVerify
+</h4>
+
+<p><a name="1069495"> </a>During certificate verification, an <code>SslVerify</code> structure (see <a href="SslLib.html#1035779">"The SslVerify Structure"</a> for a definition of this structure) is used in the SslContext to preserve state.  The application can retrieve this structure to help it resolve any problems that SslLib may have encounterd during certificate verifcation.</p>
+
+<p><a name="1069496"> </a>When a certificate is being verified and a verification error occurs, if the application has registered a <a href="SslConcepts.html#1069678"><code>VerifyCallback</code></a> the callback will be called with an <code class="par">argv</code> value pointing to the <code>SslVerify</code> structure.  If there is no callback, or if the callback still reports an error, SslLib will return the error back to the application.  The application can then decide to look at the certificate verification state (by calling <a href="SslLibMac.html#996297"><code>SslContextGet_SslVerify()</code></a>) and, if it determines that the error is not fatal, clear the error and re-call the SslLib API that just returned the error.</p>
+
+<p><a name="1071543"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1071278"> </a>SslContext Read</dt>
+<dd><a name="1071282"> </a><a href="SslLibMac.html#996297"><code>SslContextGet_SslVerify()</code></a></dd>
+
+</dl>
+<h3 class="hbH3">
+  <a name="1068558"> </a>Advanced Protocol Attributes <a href="#992934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1068561"> </a>The following attributes are not normally used.  They give access to various internal aspects of the SSL protocol and or SslLib.</p>
+
+<h4 class="hcH4">
+  <a name="1072617"> </a>BufferedReuse
+</h4>
+
+<p><a name="1072618"> </a>The SSL protocol is capable of performing a truncated handshake if both endpoints share an SslSession from a previous connection.  The truncated handshake finishes with SslLib sending a SSL handshake message to the SSL server.  If the application then sends a message, say a URL, under some network stacks a significant delay can be incurred as the TCP protocol waits for a response from the SSL server's TCP stack.  This option, if enabled, will buffer the last message in an SslSession-reused handshake instead of sending it over the network.  The application <i>must</i> send data before it tries to read any, or more to the point, it must make sure the data is flushed, ether by having <a href="SslConcepts.html#1071740"><code>AutoFlush</code></a> enabled, or by explicitly calling <a href="SslLib.html#995570"><code>SslFlush()</code></a>.  There are security implications in that a "man in the middle" attack would only be detected once the first data bytes are read from the server.  This would mean an attacker could have read all the bytes in the first message sent to the server.  For this reason this option should not be normally used. By default, this attribute is set to zero, disabling the buffered reuse option.</p>
+
+<p><a name="1072625"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1072626"> </a>SslLib Read</dt>
+<dd><a name="1072630"> </a><a href="SslLibMac.html#1000649"><code>SslLibGet_BufferedReuse()</code></a></dd>
+
+<dt><a name="1072631"> </a>SslLib Write</dt>
+<dd><a name="1072635"> </a><a href="SslLibMac.html#1002299"><code>SslLibSet_BufferedReuse()</code></a></dd>
+
+<dt><a name="1072636"> </a>SslContext Read</dt>
+<dd><a name="1072640"> </a><a href="SslLibMac.html#993420"><code>SslContextGet_BufferedReuse()</code></a></dd>
+
+<dt><a name="1072641"> </a>SslContext Write</dt>
+<dd><a name="1072645"> </a><a href="SslLibMac.html#997168"><code>SslContextSet_BufferedReuse()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1068563"> </a>DontSendShutdown
+</h4>
+
+<p><a name="1068949"> </a>During the SSL protocol shutdown sequence, the two SSL endpoints swap shutdown messages.  This can incur a time penalty since extra messages need to be exchanged over the network.  If <a href="SslConcepts.html#1068563">DontSendShutdown</a> is set, then a <a href="SslLib.html#994649"><code>SslClose()</code></a> will not send a shutdown message to the server.  If <a href="SslConcepts.html#1068668"><code>DontWaitForShutdown</code></a> is set, then SslLib will not wait for a shutdown message in <code>SslClose()</code>.  To perform a correct SSL shutdown, these options should not be on.</p>
+
+<p><a name="1068970"> </a>This attribute has a default value of zero. A non-zero value indicates that the SSL protocol should be modified.</p>
+
+<p><a name="1068910"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1068769"> </a>SslLib Read</dt>
+<dd><a name="1068782"> </a><a href="SslLibMac.html#1001093"><code>SslLibGet_DontSendShutdown()</code></a></dd>
+
+<dt><a name="1068791"> </a>SslLib Write</dt>
+<dd><a name="1068818"> </a><a href="SslLibMac.html#1002877"><code>SslLibSet_DontSendShutdown()</code></a></dd>
+
+<dt><a name="1068826"> </a>SslContext Read</dt>
+<dd><a name="1068859"> </a><a href="SslLibMac.html#994331"><code>SslContextGet_DontSendShutdown()</code></a></dd>
+
+<dt><a name="1068867"> </a>SslContext Write</dt>
+<dd><a name="1068902"> </a><a href="SslLibMac.html#997788"><code>SslContextSet_DontSendShutdown()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1068668"> </a>DontWaitForShutdown
+</h4>
+
+<p><a name="1068978"> </a>During the SSL protocol shutdown sequence, the two SSL endpoints swap shutdown messages.  This can incur a time penalty since extra messages need to be exchanged over the network.  If <a href="SslConcepts.html#1068563">DontSendShutdown</a> is set, then a <a href="SslLib.html#994649"><code>SslClose()</code></a> will not send a shutdown message to the server.  If <code>DontWaitForShutdown</code> is set, then SslLib will not wait for a shutdown message in <code>SslClose()</code>.  To perform a correct SSL shutdown, these options should not be on.</p>
+
+<p><a name="1068982"> </a>This attribute has a default value of zero. A non-zero value indicates that the SSL protocol should be modified.</p>
+
+<p><a name="1068983"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1068984"> </a>SslLib Read</dt>
+<dd><a name="1068988"> </a><a href="SslLibMac.html#1001163"><code>SslLibGet_DontWaitForShutdown()</code></a></dd>
+
+<dt><a name="1068989"> </a>SslLib Write</dt>
+<dd><a name="1068993"> </a><a href="SslLibMac.html#1002923"><code>SslLibSet_DontWaitForShutdown()</code></a></dd>
+
+<dt><a name="1068994"> </a>SslContext Read</dt>
+<dd><a name="1068998"> </a><a href="SslLibMac.html#994381"><code>SslContextGet_DontWaitForShutdown()</code></a></dd>
+
+<dt><a name="1068999"> </a>SslContext Write</dt>
+<dd><a name="1069003"> </a><a href="SslLibMac.html#997834"><code>SslContextSet_DontWaitForShutdown()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072666"> </a>ReadBufPending
+</h4>
+
+<p><a name="1072667"> </a>This attribute is the number of data bytes that are currently buffered for reading from the SslContext.  This number of bytes also include bytes used for encoding SSL records.  This attribute is mostly for debugging purposes.</p>
+
+<p><a name="1072668"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1072669"> </a>SslContext Read</dt>
+<dd><a name="1072673"> </a><a href="SslLibMac.html#995856"><code>SslContextGet_ReadBufPending()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072689"> </a>ReadOutstanding
+</h4>
+
+<p><a name="1072690"> </a>This attribute is the number of bytes in the current record that have not been read from the network.  If this value is 0, then all bytes that have been read from the network have had their MAC checked.  If it is not 0, then the last bytes that have been read have not had their MAC value checked yet.  See the <a href="SslConcepts.html#1068578">Streaming</a> and <a href="SslConcepts.html#1068571">ReadStreaming</a> attributes to see why this value can be useful.</p>
+
+<p><a name="1072697"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1072698"> </a>SslContext Read</dt>
+<dd><a name="1072702"> </a><a href="SslLibMac.html#995926"><code>SslContextGet_ReadOutstanding()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1072718"> </a>ReadRecPending
+</h4>
+
+<p><a name="1072722"> </a>Unlike <a href="SslConcepts.html#1072666">ReadBufPending</a>, this attribute is the number of application data bytes that are buffered, awaiting the application to read.  If this number of bytes is 0, then the next <a href="SslLib.html#997001"><code>SslRead()</code></a> or <a href="SslLib.html#997059"><code>SslReceive()</code></a> will cause a <code>recvfrom()</code> call.</p>
+
+<p><a name="1072729"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1072730"> </a>SslContext Read</dt>
+<dd><a name="1072734"> </a><a href="SslLibMac.html#995992"><code>SslContextGet_ReadRecPending()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1068571"> </a>ReadStreaming
+</h4>
+
+<p><a name="1069025"> </a>The SSL protocol exchanges records between its endpoints.  A SSL record can contain up to 16K bytes of data.  This record is encrypted and protected with a cryptographic checksum call a MAC.  If the network is very low speed (300 baud modem), it can be desirable to allow data to be returned to the application from the SSL connection before the full record has been downloaded.  If the <a href="SslConcepts.html#1068571">ReadStreaming</a> flag is on, this protocol modification is enabled.  There are security implications behind this modification.  The record MAC is used to ensure that the data bytes downloaded have not been modified.  If the application has been sent a 16K record, and it is read-streaming and only processing 300 bytes at a time, those bytes could be corrupted or forged without SslLib notifiying the application of this error until the last bytes of the 16K of data is sent.  This attribute can be useful if the application is displaying or saving the downloaded data and does not want to be stuck in a <a href="SslLib.html#997001"><code>SslRead()</code></a> for an extended period of time.  Remember that if read-streaming is turned on, the data may be invalid and you will only receive notification when the last bytes are read from the record.</p>
+
+<p><a name="1069032"> </a>This attribute has a default value of zero. A non-zero value indicates that the SSL protocol should be modified.</p>
+
+<p><a name="1069033"> </a>Use the following macros to read and write this attribute:</p>
+
+<dl>
+<dt><a name="1069034"> </a>SslLib Read</dt>
+<dd><a name="1069038"> </a><a href="SslLibMac.html#1001764"><code>SslLibGet_ReadStreaming()</code></a></dd>
+
+<dt><a name="1069039"> </a>SslLib Write</dt>
+<dd><a name="1069043"> </a><a href="SslLibMac.html#1004027"><code>SslLibSet_ReadStreaming()</code></a></dd>
+
+<dt><a name="1069044"> </a>SslContext Read</dt>
+<dd><a name="1069048"> </a><a href="SslLibMac.html#996034"><code>SslContextGet_ReadStreaming()</code></a></dd>
+
+<dt><a name="1069049"> </a>SslContext Write</dt>
+<dd><a name="1069053"> </a><a href="SslLibMac.html#999764"><code>SslContextSet_ReadStreaming()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1068578"> </a>Streaming
+</h4>
+
+<p><a name="1069109"> </a>This attribute returns 1 if the current SslContext is doing read-streaming.  Just because the <a href="SslConcepts.html#1068571">ReadStreaming</a> attribute is set, that does not mean the SslLib will use read-streaming.</p>
+
+<p><a name="1069132"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1069138"> </a>SslContext Read</dt>
+<dd><a name="1069142"> </a><a href="SslLibMac.html#996351"><code>SslContextGet_Streaming()</code></a></dd>
+
+</dl>
+
+<h4 class="hcH4">
+  <a name="1068593"> </a>WriteBufPending
+</h4>
+
+<p><a name="1068596"> </a>This attribute returns the number of bytes in the SslContext's write buffer waiting to be sent to the remote machine.  This value will normally be zero unless <a href="SslConcepts.html#1071740">AutoFlush</a> is disabled and/or non-blocking I/O is being used.  A <a href="SslLib.html#995570"><code>SslFlush()</code></a> will attempt to write these bytes to the network.</p>
+
+<p><a name="1069233"> </a>Use the following macro to read this attribute:</p>
+
+<dl>
+<dt><a name="1069234"> </a>SslContext Read</dt>
+<dd><a name="1069238"> </a><a href="SslLibMac.html#996745"><code>SslContextGet_WriteBufPending()</code></a></dd>
+
+</dl>
+
+<h2 class="haH2">
+  <a name="1068065"> </a>Sample Code <a href="#992934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1068066"> </a>The following is a simple example that demonstrates the usage of some of the SslLib libraries functions by way of listing subroutines that could be used by an application utilizing the SSL protocol.</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+#include &lt;SslLib.h&gt;<a name="1068072"> </a>
+<a name="1068073"> </a>
+/* We will perform the initial SslLib setup.  The SslLib would be<a name="1068074"> </a>
+ * created with reasonable default values, which can be modified.<a name="1068075"> </a>
+ * Quite a few of these values are<a name="1068076"> </a>
+ * 'inherited' during SslContext creation.<a name="1068077"> </a>
+ */<a name="1068078"> </a>
+Err InitaliseSSL(libRet)<a name="1068079"> </a>
+SslLib **libRet;<a name="1068080"> </a>
+   {<a name="1068081"> </a>
+   SslLib *lib;<a name="1068082"> </a>
+   Int16 err;<a name="1068083"> </a>
+   lnt32 lvar;<a name="1068084"> </a>
+<a name="1068085"> </a>
+   /* Create the structure */<a name="1068086"> </a>
+   if ((err=SslLibCreate(&amp;lib)) != 0)<a name="1068087"> </a>
+      return(err);<a name="1068088"> </a>
+<a name="1068089"> </a>
+   /* Make sure we use the SSL protocol by default and increase<a name="1068090"> </a>
+ * the write buffer size */<a name="1068091"> </a>
+   SslLibSet_Mode(lib,sslModeSslClient);<a name="1068092"> </a>
+   SslLibSet_WbufSize(lib,1024*8);<a name="1068093"> </a>
+<a name="1068094"> </a>
+   *libRet=lib;<a name="1068095"> </a>
+   return(0);<a name="1068096"> </a>
+   }<a name="1068097"> </a>
+<a name="1068098"> </a>
+/* This function would be called to create an sslContext from an open socket<a name="1068099"> </a>
+ */<a name="1068100"> </a>
+Err CreateSslConnection(SslLib *lib, int socket,SslContext **sslRet)<a name="1068101"> </a>
+   {<a name="1068102"> </a>
+   SslContext ssl=NULL;<a name="1068103"> </a>
+   Int16 err;<a name="1068104"> </a>
+<a name="1068105"> </a>
+   /* We first create a new SslContext.<a name="1068106"> </a>
+    * This context will inherit various internal configuration<a name="1068107"> </a>
+    * details from the SslLib.<a name="1068108"> </a>
+    */<a name="1068109"> </a>
+   if ((err=SslContextCreate(lib,&amp;ssl)) != 0)<a name="1068110"> </a>
+      return(err);<a name="1068111"> </a>
+<a name="1068112"> </a>
+   /* We now specify the socket to use for IO */<a name="1068113"> </a>
+   SslContextSet_Socket(ssl,socket);<a name="1068114"> </a>
+<a name="1068115"> </a>
+   /* At this point we could specify the SSL Mode of operation to use,<a name="1068116"> </a>
+    * but since we already specified this for the SslLib, we do not<a name="1068117"> </a>
+    * need to do it again.<a name="1068118"> </a>
+    */<a name="1068119"> </a>
+   //SslContextSet_Mode(ssl,sslModeSslClient);<a name="1068120"> </a>
+<a name="1068121"> </a>
+   /* For this example, we will perform the SSL handshake now. */<a name="1068122"> </a>
+   err=SslOpen(ssl,0,30*SysTicksPerSecond());<a name="1068123"> </a>
+<a name="1068124"> </a>
+   *sslRet=ssl;<a name="1068125"> </a>
+   return(Err);<a name="1068126"> </a>
+   }<a name="1068127"> </a>
+<a name="1068128"> </a>
+/* Shutdown the SSL protocol and return the socket */<a name="1068129"> </a>
+Err CloseSslConnection(SslContext ssl, int *retSock)<a name="1068130"> </a>
+   {<a name="1068131"> </a>
+   int socket;<a name="1068132"> </a>
+   SslSession *sslSession;<a name="1068133"> </a>
+   MemHandle ssHandle;<a name="1068134"> </a>
+<a name="1068135"> </a>
+   /* We will perform a full SSL protocol shutdown.  We could have<a name="1068136"> </a>
+    * set a flag against the SslContext earlier, or even against the<a name="1068137"> </a>
+    * SslLib to specify the shutdown behavior.<a name="1068138"> </a>
+    */<a name="1068139"> </a>
+   err=SslClose(ssl,0,10*SysTicksPerSecond());<a name="1068140"> </a>
+<a name="1068141"> </a>
+   /* We have now closed the SSL protocol, but the socket is still open<a name="1068142"> </a>
+    * and the SslContext still has SslSession information that<a name="1068143"> </a>
+    * other connections to the same site may want to use.<a name="1068144"> </a>
+    * In this case we ask for a reference to the SslSession.<a name="1068145"> </a>
+    * Since this structure is variable in size, once we have a<a name="1068146"> </a>
+    * reference to it, we can duplicate it if we want to keep it.<a name="1068147"> </a>
+    */<a name="1068148"> </a>
+   SslContextGet_SslSession(ssl,&amp;sslSession);<a name="1068149"> </a>
+<a name="1068150"> </a>
+   ssHandle=MemHandleNew(sslSession-&gt;length);<a name="1068151"> </a>
+   Memcpy(MemHandleLock(ssHandle),sslSession,sslSession-&gt;length)<a name="1068152"> </a>
+   MemHandleUnlock(ssHandle);<a name="1068153"> </a>
+   /* We now have a handle to a SslSession that we can store<a name="1068154"> </a>
+    * for later use with a new connection.  We would need to store<a name="1068155"> </a>
+    * this SslSession with the relevant hostname/url information<a name="1068156"> </a>
+    * to ensure we try to reuse it on only the relevant SSL server.<a name="1068157"> </a>
+    * This mapping is application/protocol-specific (urls for https).<a name="1068158"> </a>
+    */<a name="1068159"> </a>
+<a name="1068160"> </a>
+   /* We will return the Socket */<a name="1068161"> </a>
+   *retSock=SslContextGet_Socket(ssl);<a name="1068162"> </a>
+<a name="1068163"> </a>
+   /* Throw away the SslContext structure */<a name="1068164"> </a>
+   SslContextDestroy(ssl);<a name="1068165"> </a>
+   return(0);<a name="1068166"> </a>
+   }<a name="1068167"> </a>
+<a name="1068168"> </a>
+Err HTTPS_call(SslContext ssl,char *send,Uint16 len,char *reply,Uint32 *outlen)<a name="1068169"> </a>
+   {<a name="1068170"> </a>
+<a name="1068171"> </a>
+   Err err;<a name="1068172"> </a>
+   Int16 ret;<a name="1068173"> </a>
+<a name="1068174"> </a>
+   /* We will send the 'send' data, and then wait for the response */<a name="1068175"> </a>
+   ret=SslSend(ssl,send,len,0,NULL,0,60*SysTicksPerSecond(),&amp;err)<a name="1068176"> </a>
+   if (ret &lt;= 0) goto end;<a name="1068177"> </a>
+<a name="1068178"> </a>
+   ret=SslReceive(ssl,reply,*outlen,0,NULL,0,60*SysTicksPerSecond(),&amp;err);<a name="1068179"> </a>
+   if (ret &lt; 0) goto end;<a name="1068180"> </a>
+   *outlen=ret;<a name="1068181"> </a>
+end:<a name="1068182"> </a>
+   return(err);<a name="1068183"> </a>
+   }<a name="1068184"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1073744"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="SecurityAndCrypto_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="SecurityAndCryptographyTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SecurityConcepts.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SecurityAndCrypto_Part2.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="SecurityAndCryptographyIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

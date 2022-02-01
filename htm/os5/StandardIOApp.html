@@ -1,0 +1,366 @@
+<HTML>
+
+<HEAD>
+<SMALLSCREENIGNORE> 
+<LINK HREF="copy_of_palmos.css" REL="stylesheet" TYPE="text/css">
+<LINK HREF="document.css" REL="StyleSheet" TYPE="text/css" media="screen">
+<!-- SCRIPT_START -->
+<!-- SCRIPT_END -->
+</SMALLSCREENIGNORE>
+<TITLE>Standard IO Applications</TITLE>
+
+<META NAME="PALMTEMPLATE" CONTENT="1006-002 Palm HTML 20020513">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="TEMPLATEBASE" CONTENT="Palm HTML 20010625">
+<META NAME="LASTUPDATED" CONTENT="12/13/02 10:06:00">
+<META HTTP-EQUIV="content-type" CONTENT="text/html;charset=ISO-8859-1">
+
+</HEAD>
+
+<BODY LEFTMARGIN="0" MARGINWIDTH="0" TOPMARGIN="0" MARGINHEIGHT="0">
+<SMALLSCREENIGNORE> 
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+	<td><a name="1024394"></a>
+      <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr height="35"> 
+          <td height="35" colspan="2" bgcolor="#6699CC">&nbsp;</td>
+        </tr>
+        <tr valign="top"> 
+          <td width="160" align="left"><a href="http://www.palmos.com"><img src="images/bigorb.gif" width="160" height="110" border="0"></a></td>
+          <td align="left" width="100%"> 
+            </SMALLSCREENIGNORE>
+            <!-- CONTENTCELL_START -->
+            <img border="0" height="45" src="images/orb_bkgrnd_600.gif" width="600"><br>
+            <!--PAGENAV_START-->
+            <SPAN CLASS="subnav">&nbsp;&lt;&nbsp;<A HREF="http://www.palmos.com/index.html">Home</a> 
+              &nbsp;&nbsp;&lt;&nbsp;<A HREF="http://www.palmos.com/dev/">Developers</a> 
+              &nbsp;&nbsp;&lt;&nbsp;<A HREF="http://www.palmos.com/dev/support/">Development Support</a>
+              &nbsp;&nbsp;&lt;&nbsp;<A HREF="http://www.palmos.com/dev/support/docs/">Documentation</a></span><BR>
+             <img src="images/pixel_ltblue.gif" width="600" height="1" border="0" vspace="2"><br>
+             <h2 class="HeadDocPage">13  Standard IO Applications</h2>
+             <img src="images/pixel_ltblue.gif" width="600" height="1" border="0" vspace="2"><br>
+             &nbsp;<span class="subnav"><a href="CompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="DebuggingStrats.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Index</a></span>  
+            <!--PAGENAV_END-->
+          </td>
+        </tr>
+      </table>
+    </td>
+			</tr>
+  <tr>
+				<td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+							<td>&nbsp;&nbsp;&nbsp;</td>
+						</tr>
+        <tr>
+		<td valign="top" width="10">&nbsp;&nbsp;&nbsp;</td>
+		<td valign="top" width="175">
+			<p class="SideTitle">Title - <br><a href="Companion_Front.html">Palm OS® Programmer's Companion</a></p>
+			<p class="SideTOC1-PartTab">Volume I </p>
+			<p class="SideTOC1"><a href="StandardIOApp.html">13  Standard IO Applications</a></p>
+			
+<p class="SideTOC2">
+<a href="#1024404">Creating a Standard IO Application
+</a></p>
+
+<p class="SideTOC2">
+<a href="#1024417">Creating a Standard IO Provider Application
+</a></p>
+
+<p class="SideTOC2">
+<a href="#1024509">Summary of Standard IO
+</a></p>
+
+		</td>
+
+		<td width="5">&nbsp;&nbsp;</td>
+		<td width="1" bgcolor="#6699cc">&nbsp;</td>
+		<td width="5">&nbsp;&nbsp;</td>
+		<td> 
+
+				<!-- CONTENT_START -->
+
+<p class="Body">
+  <a name="1024396"> </a>The Palm OS<sup>®</sup> supports command line (UNIX style) applications for debugging and special purposes such as communications utilities. This capability is not intended for general users, but for developers. This feature is not implemented in the Palm OS, but rather by additional C modules that you must link with your application.
+</p>
+<div class="NINoteImportant"><hr>
+  <a name="1024397"> </a> <span style="color: #333;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">NOTE:  </span> Don't confuse this standard IO functionality with the file streaming API. They are unrelated.
+<hr>
+</div>
+<p class="Body">
+  <a name="1024398"> </a>There are two parts necessary for a standard IO application:
+</p>
+
+  <a name="1024399"> </a><p class="B1Bullet"> &#8226; The standard IO application itself.</p>
+<p class="Indented1"> <a name="1024400"> </a>A standard IO application is not like a normal Palm<sup>&#8482;</sup> application. It is executed by a command line and has minimal user interface. It can take character input from the stdin device (the keyboard) and write character output to the stdout window.</p>
+
+  <a name="1024401"> </a><p class="B1Bullet"> &#8226; The standard IO provider application.</p>
+<p class="Indented1"> <a name="1024402"> </a>A standard IO provider application is necessary to execute and see output from a standard IO application. The standard IO provider application is a normal Palm application that provides a field in which you can enter commands to execute standard IO applications. The field also serves as a stdout window where output from the executing application is written.</p>
+<p class="Body">
+  <a name="1024403"> </a>The details of creating these two different applications are described in the following sections.
+</p>
+
+<h2 class="HaHeadA">
+  <a name="1024404"> </a>Creating a Standard IO Application 
+<a href="#1024394"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="1024405"> </a>To create a standard IO application, you must include the header file <span style="font-family: monospace">StdIOPalm.h</span>. In addition to including this header, you must link the application with the module <span style="font-family: monospace">StdIOPalm.c</span>. This module provides a <span style="font-family: monospace">PilotMain</span> routine that extracts the command line arguments from the <span style="font-family: monospace">cmd</span> and <span style="font-family: monospace">cmdPBP</span> parameters and the glue code necessary for executing the appropriate callbacks supplied by the standard IO provider application.
+</p>
+<p class="Body">
+  <a name="1024406"> </a>You build the application normally, but give it a database type of <span style="font-family: monospace">sioDBType</span> ('sdio') instead of 'appl'. In addition, it must be named "Cmd-<i>cmdname</i>" where <i>cmdname</i> is the name of the command used to execute the application. For example, the ping command would be placed in a database named "Cmd-ping".
+</p>
+<p class="Body">
+  <a name="1024407"> </a>In the Palm VII<sup>&#8482;</sup> handheld, the Network panel, whose log window is a standard IO provider application, has two standard IO commands built-in: info and finger. The ROM has two additional ones: ping and nettrace.
+</p>
+<p class="Body">
+  <a name="1024408"> </a>When compiling for the Palm Powered<sup>&#8482;</sup> handheld, the entry point must be named <span style="font-family: monospace">SioMain</span> and must accept two parameters: <span style="font-family: monospace">argc</span> and <span style="font-family: monospace">argv</span>. Here's the simplest possible example of a standard IO application.
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+#include &lt;StdIOPalm.h&gt;<a name="1024409"> </a>
+Int16 SioMain(UInt16 argc, Char* argv[ ])<a name="1024410"> </a>
+{ <a name="1024411"> </a>
+    printf("Hello World\n");<a name="1024412"> </a>
+}<a name="1024413"> </a>
+</pre><div class="CodeRule"><hr></div>
+<p class="Body">
+  <a name="1024414"> </a>Standard IO applications can use several input and output functions that mimic their similarly named UNIX counterparts. These are listed in the <a href="StandardIOApp.html#1024509">summary table</a> at the end of this chapter.
+</p>
+<p class="Body">
+  <a name="1024416"> </a>Your standard IO application can accept input from stdin and write output to stdout. The stdin device corresponds to the text field in the standard IO provider application that is used for input and output. The stdout device corresponds to that same text field.
+</p>
+
+<h2 class="HaHeadA">
+  <a name="1024417"> </a>Creating a Standard IO Provider Application 
+<a href="#1024394"><img src="images/top.gif" border="0"></a></h2>
+
+<p class="Body">
+  <a name="1024418"> </a>In order for a standard IO application to be invoked and able to provide results, you need a standard IO provider application. This application provides the user interface support; that is, the stdin device support and the stdout window that the standard IO application reads from and writes to.
+</p>
+<p class="Body">
+  <a name="1024419"> </a>The standard IO provider launches the standard IO application when the user types in a command line and Return (using Graffiti<sup>®</sup> or Graffiti 2 writing). The provider application passes a structure pointer that contains the callbacks necessary for performing IO to the standard IO application through the <span style="font-family: monospace">cmdPBP</span> parameter of <span style="font-family: monospace">PilotMain</span>.
+</p>
+<p class="Body">
+  <a name="1024420"> </a>To create a standard IO provider application, you must link the application with the module <span style="font-family: monospace">StdIOProvider.c</span>.
+</p>
+<p class="Body">
+  <a name="1024421"> </a>To handle input and output, the standard IO provider application must provide a form with a text field and a scroll bar. The standard IO provider application must do the following: 
+</p>
+  <a name="1024425"> </a><p class="N1NumList">1.	  Call <a href="StandardIO.html#1150100"><span style="font-family: monospace">SioInit</span></a> during application initialization. <span style="font-family: monospace">SioInit</span> saves the object ID of the form that contains the input/output field, the field itself, and the scroll bar.</p>  <a name="1024429"> </a><p class="N1NumList">2.	  Call <a href="StandardIO.html#1150085"><span style="font-family: monospace">SioHandleEvent</span></a> from the form's event handler before doing application specific processing of the event. In other words, the form event handler that the application installs with <span style="font-family: monospace">FrmSetEventHandler</span> should call <span style="font-family: monospace">SioHandleEvent</span> before it does anything else with the event.</p>  <a name="1024433"> </a><p class="N1NumList">3.	  Call <a href="StandardIO.html#1150072"><span style="font-family: monospace">SioFree</span></a> during application shutdown.</p><p class="Body">
+  <a name="1024434"> </a>The application is free to call any of the standard IO macros and functions between the <span style="font-family: monospace">SioInit</span> and <span style="font-family: monospace">SioFree</span> calls. If the current form is not the standard IO form when these calls are made, they will record changes to the active text and display it the next time the form becomes active. 
+</p>
+<p class="Body">
+  <a name="1024435"> </a>A typical standard IO provider application will have a routine called <span style="font-family: monospace">ApplicationHandleEvent</span>, which gets called from its main event loop after <span style="font-family: monospace">SysHandleEvent</span> and <span style="font-family: monospace">MenuHandleEvent</span>. An example is shown in <a href="StandardIOApp.html#1024440">Listing 13.1</a>.
+</p>
+<p class="CCodeCaption">
+  <a name="1024440"> </a>Listing 13.1  Standard IO Provider ApplicationHandleEvent Routine
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+   static Boolean ApplicationHandleEvent (EventPtr event)<a name="1024441"> </a>
+   {<a name="1024442"> </a>
+      FormType* frm;<a name="1024443"> </a>
+      UInt16 formId;<a name="1024444"> </a>
+ <a name="1024445"> </a>
+      if (event-&gt;eType == frmLoadEvent) {<a name="1024446"> </a>
+        formId = event-&gt;data.frmLoad.formID;<a name="1024447"> </a>
+        frm = FrmInitForm (formId);<a name="1024448"> </a>
+        FrmSetActiveForm (frm);		<a name="1024449"> </a>
+        <a name="1024450"> </a>
+        switch (formId) {<a name="1024451"> </a>
+           .....<a name="1024452"> </a>
+           case myViewWithStdIO:<a name="1024453"> </a>
+              FrmSetEventHandler (frm, MyViewHandleEvent);<a name="1024454"> </a>
+              break;<a name="1024455"> </a>
+           }<a name="1024456"> </a>
+        return (true);<a name="1024457"> </a>
+        }<a name="1024458"> </a>
+ <a name="1024459"> </a>
+      return (false);<a name="1024460"> </a>
+      }<a name="1024461"> </a>
+</pre><div class="CodeRule"><hr></div>
+<p class="Body">
+  <a name="1024465"> </a>A typical application form event handler is shown in <a href="StandardIOApp.html#1024467">Listing 13.2</a>.
+</p>
+<p class="CCodeCaption">
+  <a name="1024467"> </a>Listing 13.2  Standard IO Provider Form Event Handler
+</p>
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+   static Boolean MyViewHandleEvent (EventPtr event)<a name="1024468"> </a>
+   {<a name="1024469"> </a>
+      FormType* frm;<a name="1024470"> </a>
+      Boolean handled = false;<a name="1024471"> </a>
+ <a name="1024472"> </a>
+      // Let StdIO handler do its thing first.<a name="1024473"> </a>
+      if (SioHandleEvent(event)) return true;<a name="1024474"> </a>
+ <a name="1024475"> </a>
+      // If StdIO did not completely handle the event...<a name="1024476"> </a>
+      if (event-&gt;eType == ctlSelectEvent) {<a name="1024477"> </a>
+         switch (event-&gt;data.ctlSelect.controlID) {<a name="1024478"> </a>
+            case myViewDoneButtonID:<a name="1024479"> </a>
+              FrmGotoForm (networkFormID);<a name="1024480"> </a>
+              handled = true;<a name="1024481"> </a>
+              break;<a name="1024482"> </a>
+           }<a name="1024483"> </a>
+         }<a name="1024484"> </a>
+ <a name="1024485"> </a>
+      else if (event-&gt;eType == menuEvent) <a name="1024486"> </a>
+        return MyMenuDoCommand( event-&gt;data.menu.itemID );<a name="1024487"> </a>
+        <a name="1024488"> </a>
+      else if (event-&gt;eType == frmUpdateEvent) {<a name="1024489"> </a>
+        MyViewDraw( FrmGetActiveForm() );<a name="1024490"> </a>
+        handled = true;<a name="1024491"> </a>
+        }<a name="1024492"> </a>
+ <a name="1024493"> </a>
+      else if (event-&gt;eType == frmOpenEvent) {<a name="1024494"> </a>
+        frm = FrmGetActiveForm();<a name="1024495"> </a>
+        MyViewInit( frm );<a name="1024496"> </a>
+        MyViewDraw( frm );<a name="1024497"> </a>
+        handled = true;<a name="1024498"> </a>
+        }<a name="1024499"> </a>
+ <a name="1024500"> </a>
+      else if (event-&gt;eType == frmCloseEvent) {<a name="1024501"> </a>
+        frm = FrmGetActiveForm();<a name="1024502"> </a>
+        MyViewClose(frm);<a name="1024503"> </a>
+        }<a name="1024504"> </a>
+ <a name="1024505"> </a>
+      return (handled);<a name="1024506"> </a>
+   }<a name="1024507"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h2 class="HaHeadA">
+  <a name="1024509"> </a>Summary of Standard IO 
+<a href="#1024394"><img src="images/top.gif" border="0"></a></h2>
+
+
+<h5 class="TgTable">
+  <a name="1024617"> </a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <caption></caption>
+  <tr bgcolor="#CCCCCC" valign="top">
+    <th colspan="2" rowspan="1"><a name="1024512"> </a><div class="CellHeading">Standard IO Macros and Functions</div></th>
+  </tr>
+  <tr valign="top">
+    <td colspan="1" rowspan="6"><a name="1024519"> </a><div class="CellBody"><a href="StandardIO.html#1149517">fgetc</a><br><a href="StandardIO.html#1149533">fgets</a><br><a href="StandardIO.html#1149553">fprintf</a><br><a href="StandardIO.html#1149576">fputc</a><br><a href="StandardIO.html#1149593">fputs</a><br><a href="StandardIO.html#1149610">getchar</a><br><a href="StandardIO.html#1149624">gets</a><br><a href="StandardIO.html#1149642">printf</a><br><a href="StandardIO.html#1149664">putc</a><br><a href="StandardIO.html#1149681">putchar</a><br><a href="StandardIO.html#1149697">puts</a><br><a href="StandardIO.html#1149713">SioAddCommand</a><br><a href="StandardIO.html#1149733">Siofgetc</a></div></td>
+    <td colspan="1" rowspan="6"><a name="1024560"> </a><div class="CellBody"><a href="StandardIO.html#1149750">Siofgets</a><br><a href="StandardIO.html#1149772">Siofprintf</a><br><a href="StandardIO.html#1149797">Siofputc</a><br><a href="StandardIO.html#1149816">Siofputs</a><br><a href="StandardIO.html#1149835">Siogets</a><br><a href="StandardIO.html#1149855">Sioprintf</a><br><a href="StandardIO.html#1149879">Sioputs</a><br><a href="StandardIO.html#1149897">Siosystem</a><br><a href="StandardIO.html#1149920">Siovfprintf</a><br><a href="StandardIO.html#1149945">sprintf</a><br><a href="StandardIO.html#1149967">system</a><br><a href="StandardIO.html#1149990">vfprintf</a><br><a href="StandardIO.html#1150013">vsprintf</a></div></td>
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+</table>
+
+
+
+
+</h5>
+<h5 class="TgTable">
+  <a name="1024650"> </a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <caption></caption>
+  <tr bgcolor="#CCCCCC" valign="top">
+    <th colspan="2" rowspan="1"><a name="1024620"> </a><div class="CellHeading">Application-Defined Functions</div></th>
+  </tr>
+  <tr valign="top">
+    <td colspan="1" rowspan="6"><a name="1024627"> </a><div class="CellBody"><a href="StandardIO.html#1150119">SioMain</a></div></td>
+    <td colspan="1" rowspan="6"><a name="1024629"> </a><div class="CellBody"><br></div></td>
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+</table>
+
+
+
+
+</h5>
+<h5 class="TgTable">
+  <a name="1024695"> </a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <caption></caption>
+  <tr bgcolor="#CCCCCC" valign="top">
+    <th colspan="2" rowspan="1"><a name="1024653"> </a><div class="CellHeading">Standard IO Provider Functions</div></th>
+  </tr>
+  <tr valign="top">
+    <td colspan="1" rowspan="6"><a name="1024660"> </a><div class="CellBody"><a href="StandardIO.html#1150039">SioClearScreen</a><br><a href="StandardIO.html#1150052">SioExecCommand</a><br><a href="StandardIO.html#1150072">SioFree</a></div></td>
+    <td colspan="1" rowspan="6"><a name="1024671"> </a><div class="CellBody"><a href="StandardIO.html#1150085">SioHandleEvent</a><br><a href="StandardIO.html#1150100">SioInit</a><br></div></td>
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+</table>
+
+
+
+
+</h5><p class="Body">
+  <a name="1024696"> </a>
+</p>
+<p class="Body">
+  <a name="1023613"> </a>
+</p>
+&nbsp;<br>
+				<!-- CONTENT_END -->
+
+		</td>
+		<td width="5">&nbsp;&nbsp;</td>
+	</tr>
+      </table>
+    </td>
+			</tr>
+  <tr>
+				<td>
+					<table border="0" cellpadding="0" cellspacing="0" width="760">
+        <!-- CONTENTCELL_END -->
+        <tr valign="top"> 
+          <td width="10">&nbsp;<!-- FOOTER_START --></td>
+          <td width="72">&nbsp;</td>
+          <td width="25" bgcolor="white" background="images/bkgrnd.gif">&nbsp;</td>
+          <td width="600"> 
+            <table border="0" cellpadding="0" cellspacing="0" width="600">
+              <tr> 
+                <td><img src="images/rule_10-1-5_ltblue.gif" width="600" height="16" border="0"></td>
+              </tr>
+              <tr> 
+                <td> 
+                  <p align="center" class="footer"> ©2002 PalmSource, Inc. and its affiliates.  All rights reserved. 
+<a href="http://www.palmos.com/dev/training/">Training</a>&nbsp;|&nbsp;<a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a>&nbsp;|&nbsp;<a href="http://www.palmos.com/">Palm&nbsp;OS&nbsp;Platform</a>&nbsp;|&nbsp;<a href="Companion_Front.html" target="_blank">Legal Notices</a>&nbsp;<br>
+												<!-- FOOTER_END --><br>
+											</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+				</td>
+			</tr>
+</table>
+</BODY>
+</HTML>

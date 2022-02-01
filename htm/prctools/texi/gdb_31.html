@@ -1,0 +1,176 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Set Catchpoints</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Set Catchpoints">
+<META NAME="keywords" CONTENT="Debugging with GDB: Set Catchpoints">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC31"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_30.html#SEC30"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_32.html#SEC32"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_32.html#SEC32"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 5.1.3 Setting catchpoints </H3>
+<!--docid::SEC31::-->
+<P>
+
+You can use <EM>catchpoints</EM> to cause the debugger to stop for certain
+kinds of program events, such as C<TT>++</TT> exceptions or the loading of a
+shared library.  Use the <CODE>catch</CODE> command to set a catchpoint.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX161"></A>
+<DT><CODE>catch <VAR>event</VAR></CODE>
+<DD>Stop when <VAR>event</VAR> occurs.  <VAR>event</VAR> can be any of the following:
+<DL COMPACT>
+<DT><CODE>throw</CODE>
+<DD><A NAME="IDX162"></A>
+The throwing of a C<TT>++</TT> exception.
+<P>
+
+<DT><CODE>catch</CODE>
+<DD><A NAME="IDX163"></A>
+The catching of a C<TT>++</TT> exception.
+<P>
+
+<DT><CODE>exec</CODE>
+<DD><A NAME="IDX164"></A>
+A call to <CODE>exec</CODE>.  This is currently only available for HP-UX.
+<P>
+
+<DT><CODE>fork</CODE>
+<DD><A NAME="IDX165"></A>
+A call to <CODE>fork</CODE>.  This is currently only available for HP-UX.
+<P>
+
+<DT><CODE>vfork</CODE>
+<DD><A NAME="IDX166"></A>
+A call to <CODE>vfork</CODE>.  This is currently only available for HP-UX.
+<P>
+
+<DT><CODE>load</CODE>
+<DD><DT><CODE>load <VAR>libname</VAR></CODE>
+<DD><A NAME="IDX167"></A>
+The dynamic loading of any shared library, or the loading of the library
+<VAR>libname</VAR>.  This is currently only available for HP-UX.
+<P>
+
+<DT><CODE>unload</CODE>
+<DD><DT><CODE>unload <VAR>libname</VAR></CODE>
+<DD><A NAME="IDX168"></A>
+The unloading of any dynamically loaded shared library, or the unloading
+of the library <VAR>libname</VAR>.  This is currently only available for HP-UX.
+</DL>
+<P>
+
+<DT><CODE>tcatch <VAR>event</VAR></CODE>
+<DD>Set a catchpoint that is enabled only for one stop.  The catchpoint is
+automatically deleted after the first time the event is caught.
+<P>
+
+</DL>
+<P>
+
+Use the <CODE>info break</CODE> command to list the current catchpoints.
+</P><P>
+
+There are currently some limitations to C<TT>++</TT> exception handling
+(<CODE>catch throw</CODE> and <CODE>catch catch</CODE>) in GDB:
+</P><P>
+
+<UL>
+<LI>
+If you call a function interactively, GDB normally returns
+control to you when the function has finished executing.  If the call
+raises an exception, however, the call may bypass the mechanism that
+returns control to you and cause your program either to abort or to
+simply continue running until it hits a breakpoint, catches a signal
+that GDB is listening for, or exits.  This is the case even if
+you set a catchpoint for the exception; catchpoints on exceptions are
+disabled within interactive calls.
+<P>
+
+<LI>
+You cannot raise an exception interactively.
+<P>
+
+<LI>
+You cannot install an exception handler interactively.
+</UL>
+<P>
+
+<A NAME="IDX169"></A>
+Sometimes <CODE>catch</CODE> is not the best way to debug exception handling:
+if you need to know exactly where an exception is raised, it is better to
+stop <EM>before</EM> the exception handler is called, since that way you
+can see the stack before any unwinding takes place.  If you set a
+breakpoint in an exception handler instead, it may not be easy to find
+out where the exception was raised.
+</P><P>
+
+To stop just before an exception handler is called, you need some
+knowledge of the implementation.  In the case of GNU C<TT>++</TT>, exceptions are
+raised by calling a library function named <CODE>__raise_exception</CODE>
+which has the following ANSI C interface:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    /* <VAR>addr</VAR> is where the exception identifier is stored.
+       <VAR>id</VAR> is the exception identifier.  */
+    void __raise_exception (void **addr, void *id);
+</FONT></pre></td></tr></table></P><P>
+
+To make the debugger catch all exceptions before any stack
+unwinding takes place, set a breakpoint on <CODE>__raise_exception</CODE>
+(see section <A HREF="gdb_28.html#SEC28">Breakpoints; watchpoints; and exceptions</A>).
+</P><P>
+
+With a conditional breakpoint (see section <A HREF="gdb_34.html#SEC34">Break conditions</A>)
+that depends on the value of <VAR>id</VAR>, you can stop your program when
+a specific exception is raised.  You can use multiple conditional
+breakpoints to stop your program when any of a number of exceptions are
+raised.
+</P><P>
+
+<A NAME="Delete Breaks"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_30.html#SEC30"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_32.html#SEC32"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_32.html#SEC32"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

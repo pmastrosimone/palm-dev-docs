@@ -1,0 +1,86 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Breakpoint Menus</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Breakpoint Menus">
+<META NAME="keywords" CONTENT="Debugging with GDB: Breakpoint Menus">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC36"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_35.html#SEC35"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_37.html#SEC37"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_37.html#SEC37"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_28.html#SEC28"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 5.1.8 Breakpoint menus </H3>
+<!--docid::SEC36::-->
+<P>
+
+Some programming languages (notably C<TT>++</TT>) permit a single function name
+to be defined several times, for application in different contexts.
+This is called <EM>overloading</EM>.  When a function name is overloaded,
+<SAMP>`break <VAR>function</VAR>'</SAMP> is not enough to tell GDB where you want
+a breakpoint.  If you realize this is a problem, you can use
+something like <SAMP>`break <VAR>function</VAR>(<VAR>types</VAR>)'</SAMP> to specify which
+particular version of the function you want.  Otherwise, GDB offers
+you a menu of numbered choices for different possible breakpoints, and
+waits for your selection with the prompt <SAMP>`&#62;'</SAMP>.  The first two
+options are always <SAMP>`[0] cancel'</SAMP> and <SAMP>`[1] all'</SAMP>.  Typing <KBD>1</KBD>
+sets a breakpoint at each definition of <VAR>function</VAR>, and typing
+<KBD>0</KBD> aborts the <CODE>break</CODE> command without setting any new
+breakpoints.
+</P><P>
+
+For example, the following session excerpt shows an attempt to set a
+breakpoint at the overloaded symbol <CODE>String::after</CODE>.
+We choose three particular definitions of that function name:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) b String::after
+[0] cancel
+[1] all
+[2] file:String.cc; line number:867
+[3] file:String.cc; line number:860
+[4] file:String.cc; line number:875
+[5] file:String.cc; line number:853
+[6] file:String.cc; line number:846
+[7] file:String.cc; line number:735
+&#62; 2 4 6
+Breakpoint 1 at 0xb26c: file String.cc, line 867.
+Breakpoint 2 at 0xb344: file String.cc, line 875.
+Breakpoint 3 at 0xafcc: file String.cc, line 846.
+Multiple breakpoints were set.
+Use the "delete" command to delete unwanted
+ breakpoints.
+(gdb)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="Error in Breakpoints"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

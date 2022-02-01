@@ -1,0 +1,137 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Output Formats</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Output Formats">
+<META NAME="keywords" CONTENT="Debugging with GDB: Output Formats">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC55"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_54.html#SEC54"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_56.html#SEC56"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_56.html#SEC56"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.4 Output formats </H2>
+<!--docid::SEC55::-->
+<P>
+
+<A NAME="IDX310"></A>
+<A NAME="IDX311"></A>
+By default, GDB prints a value according to its data type.  Sometimes
+this is not what you want.  For example, you might want to print a number
+in hex, or a pointer in decimal.  Or you might want to view data in memory
+at a certain address as a character string or as an instruction.  To do
+these things, specify an <EM>output format</EM> when you print a value.
+</P><P>
+
+The simplest use of output formats is to say how to print a value
+already computed.  This is done by starting the arguments of the
+<CODE>print</CODE> command with a slash and a format letter.  The format
+letters supported are:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>x</CODE>
+<DD>Regard the bits of the value as an integer, and print the integer in
+hexadecimal.
+<P>
+
+<DT><CODE>d</CODE>
+<DD>Print as integer in signed decimal.
+<P>
+
+<DT><CODE>u</CODE>
+<DD>Print as integer in unsigned decimal.
+<P>
+
+<DT><CODE>o</CODE>
+<DD>Print as integer in octal.
+<P>
+
+<DT><CODE>t</CODE>
+<DD>Print as integer in binary.  The letter <SAMP>`t'</SAMP> stands for "two".
+<A NAME="DOCF2" HREF="gdb_fot.html#FOOT2">(2)</A>
+<P>
+
+<DT><CODE>a</CODE>
+<DD><A NAME="IDX312"></A>
+<A NAME="IDX313"></A>
+Print as an address, both absolute in hexadecimal and as an offset from
+the nearest preceding symbol.  You can use this format used to discover
+where (in what function) an unknown address is located:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) p/a 0x54320
+$3 = 0x54320 &#60;_initialize_vx+396&#62;
+</FONT></pre></td></tr></table></P><P>
+
+The command <CODE>info symbol 0x54320</CODE> yields similar results.
+See section <A HREF="gdb_116.html#SEC116">info symbol</A>.
+</P><P>
+
+<DT><CODE>c</CODE>
+<DD>Regard as an integer and print it as a character constant.
+<P>
+
+<DT><CODE>f</CODE>
+<DD>Regard the bits of the value as a floating point number and print
+using typical floating point syntax.
+</DL>
+<P>
+
+For example, to print the program counter in hex (see section <A HREF="gdb_61.html#SEC61">8.10 Registers</A>), type
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>p/x $pc
+</FONT></pre></td></tr></table></P><P>
+
+Note that no space is required before the slash; this is because command
+names in GDB cannot contain a slash.
+</P><P>
+
+To reprint the last value in the value history with a different format,
+you can use the <CODE>print</CODE> command with just a format and no
+expression.  For example, <SAMP>`p/x'</SAMP> reprints the last value in hex.
+</P><P>
+
+<A NAME="Memory"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_54.html#SEC54"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_56.html#SEC56"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_56.html#SEC56"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

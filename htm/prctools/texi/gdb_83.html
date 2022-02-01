@@ -1,0 +1,93 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Tracepoint Variables</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Tracepoint Variables">
+<META NAME="keywords" CONTENT="Debugging with GDB: Tracepoint Variables">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC83"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_82.html#SEC82"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_84.html#SEC84"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_71.html#SEC71"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_71.html#SEC71"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_84.html#SEC84"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 10.3 Convenience Variables for Tracepoints </H2>
+<!--docid::SEC83::-->
+<P>
+
+<DL COMPACT>
+<A NAME="IDX430"></A>
+<DT><CODE>(int) $trace_frame</CODE>
+<DD>The current trace snapshot (a.k.a. <EM>frame</EM>) number, or -1 if no
+snapshot is selected.
+<P>
+
+<A NAME="IDX431"></A>
+<DT><CODE>(int) $tracepoint</CODE>
+<DD>The tracepoint for the current trace snapshot.
+<P>
+
+<A NAME="IDX432"></A>
+<DT><CODE>(int) $trace_line</CODE>
+<DD>The line number for the current trace snapshot.
+<P>
+
+<A NAME="IDX433"></A>
+<DT><CODE>(char []) $trace_file</CODE>
+<DD>The source file for the current trace snapshot.
+<P>
+
+<A NAME="IDX434"></A>
+<DT><CODE>(char []) $trace_func</CODE>
+<DD>The name of the function containing <CODE>$tracepoint</CODE>.
+</DL>
+<P>
+
+Note: <CODE>$trace_file</CODE> is not suitable for use in <CODE>printf</CODE>,
+use <CODE>output</CODE> instead.
+</P><P>
+
+Here's a simple example of using these convenience variables for
+stepping through all the trace snapshots and printing some of their
+data.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) <B>tfind start</B>
+
+(gdb) <B>while $trace_frame != -1</B>
+&#62; output $trace_file
+&#62; printf ", line %d (tracepoint #%d)\n", $trace_line, $tracepoint
+&#62; tfind
+&#62; end
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="Overlays"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

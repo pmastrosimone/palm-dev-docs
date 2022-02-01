@@ -1,0 +1,80 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Empty Targets</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Empty Targets">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Empty Targets">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC43"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_38.html#SEC42"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_40.html#SEC44"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.8 Empty Target Files to Record Events </H2>
+<!--docid::SEC43::-->
+<P>
+
+The <EM>empty target</EM> is a variant of the phony target; it is used to hold
+commands for an action that you request explicitly from time to time.
+Unlike a phony target, this target file can really exist; but the file's
+contents do not matter, and usually are empty.
+</P><P>
+
+The purpose of the empty target file is to record, with its
+last-modification time, when the rule's commands were last executed.  It
+does so because one of the commands is a <CODE>touch</CODE> command to update the
+target file.
+</P><P>
+
+The empty target file should have some prerequisites (otherwise it
+doesn't make sense).  When you ask to remake the empty target, the
+commands are executed if any prerequisite is more recent than the target;
+in other words, if a prerequisite has changed since the last time you
+remade the target.  Here is an example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>print: foo.c bar.c
+        lpr -p $?
+        touch print
+</pre></td></tr></table><A NAME="IDX113"></A>
+<A NAME="IDX114"></A>
+<A NAME="IDX115"></A>
+</P><P>
+
+With this rule, <SAMP>`make print'</SAMP> will execute the <CODE>lpr</CODE> command if
+either source file has changed since the last <SAMP>`make print'</SAMP>.  The
+automatic variable <SAMP>`$?'</SAMP> is used to print only those files that have
+changed (see section <A HREF="make_107.html#SEC111">Automatic Variables</A>).
+</P><P>
+
+<A NAME="Special Targets"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

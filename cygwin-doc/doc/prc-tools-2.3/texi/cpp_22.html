@@ -1,0 +1,127 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Macro Parentheses</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Macro Parentheses">
+<META NAME="keywords" CONTENT="The C Preprocessor: Macro Parentheses">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC22"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_21.html#SEC21"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_23.html#SEC23"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_20.html#SEC20"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 1.4.8.2 Unintended Grouping of Arithmetic </H4>
+<!--docid::SEC22::-->
+<P>
+
+You may have noticed that in most of the macro definition examples shown
+above, each occurrence of a macro argument name had parentheses around it.
+In addition, another pair of parentheses usually surround the entire macro
+definition.  Here is why it is best to write macros that way.
+</P><P>
+
+Suppose you define a macro as follows,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define ceil_div(x, y) (x + y - 1) / y
+</pre></td></tr></table></P><P>
+
+whose purpose is to divide, rounding up.  (One use for this operation is
+to compute how many <SAMP>`int'</SAMP> objects are needed to hold a certain
+number of <SAMP>`char'</SAMP> objects.)  Then suppose it is used as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>a = ceil_div (b &#38; c, sizeof (int));
+</pre></td></tr></table></P><P>
+
+This expands into
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>a = (b &#38; c + sizeof (int) - 1) / sizeof (int);
+</pre></td></tr></table></P><P>
+
+which does not do what is intended.  The operator-precedence rules of
+C make it equivalent to this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>a = (b &#38; (c + sizeof (int) - 1)) / sizeof (int);
+</pre></td></tr></table></P><P>
+
+But what we want is this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>a = ((b &#38; c) + sizeof (int) - 1)) / sizeof (int);
+</pre></td></tr></table></P><P>
+
+Defining the macro as
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define ceil_div(x, y) ((x) + (y) - 1) / (y)
+</pre></td></tr></table></P><P>
+
+provides the desired result.
+</P><P>
+
+Unintended grouping can result in another way.  Consider
+<SAMP>`sizeof ceil_div(1, 2)'</SAMP>.  That has the appearance of a C expression
+that would compute the size of the type of <SAMP>`ceil_div (1, 2)'</SAMP>, but in
+fact it means something very different.  Here is what it expands to:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>sizeof ((1) + (2) - 1) / (2)
+</pre></td></tr></table></P><P>
+
+This would take the size of an integer and divide it by two.  The precedence
+rules have put the division outside the <SAMP>`sizeof'</SAMP> when it was intended
+to be inside.
+</P><P>
+
+Parentheses around the entire macro definition can prevent such problems.
+Here, then, is the recommended way to define <SAMP>`ceil_div'</SAMP>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define ceil_div(x, y) (((x) + (y) - 1) / (y))
+</pre></td></tr></table></P><P>
+
+<A NAME="Swallow Semicolon"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_21.html#SEC21"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_23.html#SEC23"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_20.html#SEC20"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

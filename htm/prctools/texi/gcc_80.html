@@ -1,0 +1,101 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Constructors</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Constructors">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Constructors">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC80"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_79.html#SEC79"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_81.html#SEC81"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_63.html#SEC63"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.19 Constructor Expressions </H2>
+<!--docid::SEC80::-->
+<P>
+
+GNU C supports constructor expressions.  A constructor looks like
+a cast containing an initializer.  Its value is an object of the
+type specified in the cast, containing the elements specified in
+the initializer.
+</P><P>
+
+Usually, the specified type is a structure.  Assume that
+<CODE>struct foo</CODE> and <CODE>structure</CODE> are declared as shown:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>struct foo {int a; char b[2];} structure;
+</pre></td></tr></table></P><P>
+
+Here is an example of constructing a <CODE>struct foo</CODE> with a constructor:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>structure = ((struct foo) {x + y, 'a', 0});
+</pre></td></tr></table></P><P>
+
+This is equivalent to writing the following:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>{
+  struct foo temp = {x + y, 'a', 0};
+  structure = temp;
+}
+</pre></td></tr></table></P><P>
+
+You can also construct an array.  If all the elements of the constructor
+are (made up of) simple constant expressions, suitable for use in
+initializers, then the constructor is an lvalue and can be coerced to a
+pointer to its first element, as shown here:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>char **foo = (char *[]) { "x", "y", "z" };
+</pre></td></tr></table></P><P>
+
+Array constructors whose elements are not simple constants are
+not very useful, because the constructor is not an lvalue.  There
+are only two valid ways to use it: to subscript it, or initialize
+an array variable with it.  The former is probably slower than a
+<CODE>switch</CODE> statement, while the latter does the same thing an
+ordinary C initializer would do.  Here is an example of
+subscripting an array constructor:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>output = ((int[]) { 2, x, 28 }) [input];
+</pre></td></tr></table></P><P>
+
+Constructor expressions for scalar types and union types are is
+also allowed, but then the constructor expression is equivalent
+to a cast.
+</P><P>
+
+<A NAME="Labeled Elements"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

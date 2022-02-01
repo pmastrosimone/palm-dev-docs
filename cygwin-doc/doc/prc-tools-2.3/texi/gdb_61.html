@@ -1,0 +1,155 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Registers</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Registers">
+<META NAME="keywords" CONTENT="Debugging with GDB: Registers">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC61"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_60.html#SEC60"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_62.html#SEC62"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_53.html#SEC53"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.10 Registers </H2>
+<!--docid::SEC61::-->
+<P>
+
+<A NAME="IDX369"></A>
+You can refer to machine register contents, in expressions, as variables
+with names starting with <SAMP>`$'</SAMP>.  The names of registers are different
+for each machine; use <CODE>info registers</CODE> to see the names used on
+your machine.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX370"></A>
+<DT><CODE>info registers</CODE>
+<DD>Print the names and values of all registers except floating-point
+registers (in the selected stack frame).
+<P>
+
+<A NAME="IDX371"></A>
+<A NAME="IDX372"></A>
+<DT><CODE>info all-registers</CODE>
+<DD>Print the names and values of all registers, including floating-point
+registers.
+<P>
+
+<DT><CODE>info registers <VAR>regname</VAR> <small>...</small></CODE>
+<DD>Print the <EM>relativized</EM> value of each specified register <VAR>regname</VAR>.
+As discussed in detail below, register values are normally relative to
+the selected stack frame.  <VAR>regname</VAR> may be any register name valid on
+the machine you are using, with or without the initial <SAMP>`$'</SAMP>.
+</DL>
+<P>
+
+GDB has four "standard" register names that are available (in
+expressions) on most machines--whenever they do not conflict with an
+architecture's canonical mnemonics for registers.  The register names
+<CODE>$pc</CODE> and <CODE>$sp</CODE> are used for the program counter register and
+the stack pointer.  <CODE>$fp</CODE> is used for a register that contains a
+pointer to the current stack frame, and <CODE>$ps</CODE> is used for a
+register that contains the processor status.  For example,
+you could print the program counter in hex with
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>p/x $pc
+</FONT></pre></td></tr></table></P><P>
+
+or print the instruction to be executed next with
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>x/i $pc
+</FONT></pre></td></tr></table></P><P>
+
+or add four to the stack pointer<A NAME="DOCF3" HREF="gdb_fot.html#FOOT3">(3)</A> with
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>set $sp += 4
+</FONT></pre></td></tr></table></P><P>
+
+Whenever possible, these four standard register names are available on
+your machine even though the machine has different canonical mnemonics,
+so long as there is no conflict.  The <CODE>info registers</CODE> command
+shows the canonical names.  For example, on the SPARC, <CODE>info
+registers</CODE> displays the processor status register as <CODE>$psr</CODE> but you
+can also refer to it as <CODE>$ps</CODE>; and on x86-based machines <CODE>$ps</CODE>
+is an alias for the EFLAGS register.
+</P><P>
+
+GDB always considers the contents of an ordinary register as an
+integer when the register is examined in this way.  Some machines have
+special registers which can hold nothing but floating point; these
+registers are considered to have floating point values.  There is no way
+to refer to the contents of an ordinary register as floating point value
+(although you can <EM>print</EM> it as a floating point value with
+<SAMP>`print/f $<VAR>regname</VAR>'</SAMP>).
+</P><P>
+
+Some registers have distinct "raw" and "virtual" data formats.  This
+means that the data format in which the register contents are saved by
+the operating system is not the same one that your program normally
+sees.  For example, the registers of the 68881 floating point
+coprocessor are always saved in "extended" (raw) format, but all C
+programs expect to work with "double" (virtual) format.  In such
+cases, GDB normally works with the virtual format only (the format
+that makes sense for your program), but the <CODE>info registers</CODE> command
+prints the data in both formats.
+</P><P>
+
+Normally, register values are relative to the selected stack frame
+(see section <A HREF="gdb_44.html#SEC44">Selecting a frame</A>).  This means that you get the
+value that the register would contain if all stack frames farther in
+were exited and their saved registers restored.  In order to see the
+true contents of hardware registers, you must select the innermost
+frame (with <SAMP>`frame 0'</SAMP>).
+</P><P>
+
+However, GDB must deduce where registers are saved, from the machine
+code generated by your compiler.  If some registers are not saved, or if
+GDB is unable to locate the saved registers, the selected stack
+frame makes no difference.
+</P><P>
+
+<A NAME="Floating Point Hardware"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_60.html#SEC60"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_62.html#SEC62"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_53.html#SEC53"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

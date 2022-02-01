@@ -1,0 +1,113 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Compilation</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Compilation">
+<META NAME="keywords" CONTENT="Debugging with GDB: Compilation">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC17"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_18.html#SEC18"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.1 Compiling for debugging </H2>
+<!--docid::SEC17::-->
+<P>
+
+In order to debug a program effectively, you need to generate
+debugging information when you compile it.  This debugging information
+is stored in the object file; it describes the data type of each
+variable or function and the correspondence between source line numbers
+and addresses in the executable code.
+</P><P>
+
+To request debugging information, specify the <SAMP>`-g'</SAMP> option when you run
+the compiler.
+</P><P>
+
+Most compilers do not include information about preprocessor macros in
+the debugging information if you specify the <SAMP>`-g'</SAMP> flag alone,
+because this information is rather large.  Version 3.1 of GCC,
+the GNU C compiler, provides macro information if you specify the
+options <SAMP>`-gdwarf-2'</SAMP> and <SAMP>`-g3'</SAMP>; the former option requests
+debugging information in the Dwarf 2 format, and the latter requests
+"extra information".  In the future, we hope to find more compact ways
+to represent macro information, so that it can be included with
+<SAMP>`-g'</SAMP> alone.
+</P><P>
+
+Many C compilers are unable to handle the <SAMP>`-g'</SAMP> and <SAMP>`-O'</SAMP>
+options together.  Using those compilers, you cannot generate optimized
+executables containing debugging information.
+</P><P>
+
+GCC, the GNU C compiler, supports <SAMP>`-g'</SAMP> with or
+without <SAMP>`-O'</SAMP>, making it possible to debug optimized code.  We
+recommend that you <EM>always</EM> use <SAMP>`-g'</SAMP> whenever you compile a
+program.  You may think your program is correct, but there is no sense
+in pushing your luck.
+</P><P>
+
+<A NAME="IDX78"></A>
+<A NAME="IDX79"></A>
+When you debug a program compiled with <SAMP>`-g -O'</SAMP>, remember that the
+optimizer is rearranging your code; the debugger shows you what is
+really there.  Do not be too surprised when the execution path does not
+exactly match your source file!  An extreme example: if you define a
+variable, but never use it, GDB never sees that
+variable--because the compiler optimizes it out of existence.
+</P><P>
+
+Some things do not work as well with <SAMP>`-g -O'</SAMP> as with just
+<SAMP>`-g'</SAMP>, particularly on machines with instruction scheduling.  If in
+doubt, recompile with <SAMP>`-g'</SAMP> alone, and if this fixes the problem,
+please report it to us as a bug (including a test case!).
+</P><P>
+
+Older versions of the GNU C compiler permitted a variant option
+<SAMP>`-gg'</SAMP> for debugging information.  GDB no longer supports this
+format; if your GNU C compiler has this option, do not use it.
+</P><P>
+
+<A NAME="Starting"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_18.html#SEC18"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

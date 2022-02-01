@@ -1,0 +1,145 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Processes</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Processes">
+<META NAME="keywords" CONTENT="Debugging with GDB: Processes">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC26"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_25.html#SEC25"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_18.html#SEC18"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.10 Debugging programs with multiple processes </H2>
+<!--docid::SEC26::-->
+<P>
+
+<A NAME="IDX123"></A>
+<A NAME="IDX124"></A>
+<A NAME="IDX125"></A>
+On most systems, GDB has no special support for debugging
+programs which create additional processes using the <CODE>fork</CODE>
+function.  When a program forks, GDB will continue to debug the
+parent process and the child process will run unimpeded.  If you have
+set a breakpoint in any code which the child then executes, the child
+will get a <CODE>SIGTRAP</CODE> signal which (unless it catches the signal)
+will cause it to terminate.
+</P><P>
+
+However, if you want to debug the child process there is a workaround
+which isn't too painful.  Put a call to <CODE>sleep</CODE> in the code which
+the child process executes after the fork.  It may be useful to sleep
+only if a certain environment variable is set, or a certain file exists,
+so that the delay need not occur when you don't want to run GDB
+on the child.  While the child is sleeping, use the <CODE>ps</CODE> program to
+get its process ID.  Then tell GDB (a new invocation of
+GDB if you are also debugging the parent process) to attach to
+the child process (see section <A HREF="gdb_23.html#SEC23">4.7 Debugging an already-running process</A>).  From that point on you can debug
+the child process just like any other process which you attached to.
+</P><P>
+
+On HP-UX (11.x and later only?), GDB provides support for
+debugging programs that create additional processes using the
+<CODE>fork</CODE> or <CODE>vfork</CODE> function.
+</P><P>
+
+By default, when a program forks, GDB will continue to debug
+the parent process and the child process will run unimpeded.
+</P><P>
+
+If you want to follow the child process instead of the parent process,
+use the command <CODE>set follow-fork-mode</CODE>.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX126"></A>
+<DT><CODE>set follow-fork-mode <VAR>mode</VAR></CODE>
+<DD>Set the debugger response to a program call of <CODE>fork</CODE> or
+<CODE>vfork</CODE>.  A call to <CODE>fork</CODE> or <CODE>vfork</CODE> creates a new
+process.  The <VAR>mode</VAR> can be:
+<P>
+
+<DL COMPACT>
+<DT><CODE>parent</CODE>
+<DD>The original process is debugged after a fork.  The child process runs
+unimpeded.  This is the default.
+<P>
+
+<DT><CODE>child</CODE>
+<DD>The new process is debugged after a fork.  The parent process runs
+unimpeded.
+<P>
+
+<DT><CODE>ask</CODE>
+<DD>The debugger will ask for one of the above choices.
+</DL>
+<P>
+
+<DT><CODE>show follow-fork-mode</CODE>
+<DD>Display the current debugger response to a <CODE>fork</CODE> or <CODE>vfork</CODE> call.
+</DL>
+<P>
+
+If you ask to debug a child process and a <CODE>vfork</CODE> is followed by an
+<CODE>exec</CODE>, GDB executes the new target up to the first
+breakpoint in the new target.  If you have a breakpoint set on
+<CODE>main</CODE> in your original program, the breakpoint will also be set on
+the child process's <CODE>main</CODE>.
+</P><P>
+
+When a child process is spawned by <CODE>vfork</CODE>, you cannot debug the
+child or parent until an <CODE>exec</CODE> call completes.
+</P><P>
+
+If you issue a <CODE>run</CODE> command to GDB after an <CODE>exec</CODE>
+call executes, the new target restarts.  To restart the parent process,
+use the <CODE>file</CODE> command with the parent executable name as its
+argument.
+</P><P>
+
+You can use the <CODE>catch</CODE> command to make GDB stop whenever
+a <CODE>fork</CODE>, <CODE>vfork</CODE>, or <CODE>exec</CODE> call is made.  See section <A HREF="gdb_31.html#SEC31">Setting catchpoints</A>.
+</P><P>
+
+<A NAME="Stopping"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_25.html#SEC25"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_18.html#SEC18"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

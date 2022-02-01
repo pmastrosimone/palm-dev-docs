@@ -1,0 +1,779 @@
+<html>
+<head>
+<title>(Protein) IrLib.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:19:45">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="IntlMgr.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Keyboard.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">61 &nbsp;&nbsp;
+IrLib.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="IrLib.html">61  IrLib.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#425091">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#425125">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="434613"> </a>Versions of Palm OS prior to 6.0 offered a separate library, called IRLib, for performing infrared communications. This library has been deprecated and should not be used when creating new applications. All functions, and essentially all macros, formerly declared in <code>IrLib.h</code> are not declared in Palm OS Cobalt.</p>
+
+<p><a name="434664"> </a>Application developers using Palm OS Cobalt have three options for communicating over IR:</p>
+<ul type="disc">
+  <li><a name="434686"> </a>The Exchange Manager provides a high-level interface that handles all of the communication details transparently. See <a href="../High-Level_Communications/HLC_ExgMgrConcept.html#994958">Chapter 4, "Object Exchange,"</a> of <i>Exploring Palm OS: High-Level Communications</i> for more information.
+  <li><a name="434690"> </a>The Serial Manager provides a virtual driver that implements the IrComm protocol. To use IrComm, you specify <code>sysFileCVirtIrComm</code> as the port you want to open and use the Serial Manager APIs to send and receive data on that port. See <a href="../Low-Level_Communications/LowLevelComms_SerMgr.html#997178">Chapter 2, "The Serial Manager,"</a> of <i>Exploring Palm OS: Low-Level Communications</i> for information on how to use the Serial Manager APIs.
+  <li><a name="434696"> </a>The Sockets API lets you use the same functions you would use for other communications methods to perform IR communications. IR communication using the sockets API is documented in <i>Exploring Palm OS: Low-Level Communications</i>; see <a href="../Low-Level_Communications/LowLevelComms_IrIntro.html#608590">Chapter 6, "Introduction to Infrared Communication (Beaming),"</a>.
+</ul>
+
+<div><hr>
+  <a name="427255"> </a> <b>NOTE: </b> Early in the porting process you may want to <code>#include IrLibCompatibility.h</code> (after the <code>#include</code> for <code>PalmOS.h</code>). This header file defines a number of APIs and macros that allow applications calling certain deleted functions and functions with modified prototypes to compile and run. This compatibility header should not be counted on long-term, however, so later in the porting process you should remove the <code>#include</code> and fix any problems that result.
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="435291"> </a><b>Table 61.1&nbsp;&nbsp;Deleted functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="434937"> </a><code>IrBind()</code></p>
+    </td>
+    <td><p class="tt"><a name="434939"> </a><code>IrClose()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="434941"> </a><code>IrConnectIrLap()</code></p>
+    </td>
+    <td><p class="tt"><a name="434943"> </a><code>IrConnectReq()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="434945"> </a><code>IrConnectRsp()</code></p>
+    </td>
+    <td><p class="tt"><a name="434947"> </a><code>IrDataReq()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="434949"> </a><code>IrDisconnectIrLap()</code></p>
+    </td>
+    <td><p class="tt"><a name="434951"> </a><code>IrDiscoverReq()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="434953"> </a><code>IrHandleEvent()</code></p>
+    </td>
+    <td><p class="tt"><a name="434955"> </a><code>IrIAS_Add()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="434957"> </a><code>IrIAS_Next()</code></p>
+    </td>
+    <td><p class="tt"><a name="434959"> </a><code>IrIAS_Query()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="434961"> </a><code>IrIAS_SetDeviceName()</code></p>
+    </td>
+    <td><p class="tt"><a name="434963"> </a><code>IrIsIrLapConnected()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="434965"> </a><code>IrIsMediaBusy()</code></p>
+    </td>
+    <td><p class="tt"><a name="434967"> </a><code>IrIsNoProgress()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="434969"> </a><code>IrIsRemoteBusy()</code></p>
+    </td>
+    <td><p class="tt"><a name="434971"> </a><code>IrLocalBusy()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="434973"> </a><code>IrMaxRxSize()</code></p>
+    </td>
+    <td><p class="tt"><a name="434975"> </a><code>IrMaxTxSize()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="434977"> </a><code>IrOpen()</code></p>
+    </td>
+    <td><p class="tt"><a name="434979"> </a><code>IrSetDeviceInfo()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="434981"> </a><code>IrTestReq()</code></p>
+    </td>
+    <td><p class="tt"><a name="434983"> </a><code>IrUnbind()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="434985"> </a><code>IrWaitForEvent()</code></p>
+    </td>
+    <td><p class="tt"><a name="434987"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="435088"> </a><b>Table 61.2&nbsp;&nbsp;Deleted macros</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="435096"> </a><code>IrAdvanceCredit()</code></p>
+    </td>
+    <td><p class="tt"><a name="435098"> </a><code>IrIAS_GetInteger()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="435100"> </a><code>IrIAS_GetIntLsap()</code></p>
+    </td>
+    <td><p class="tt"><a name="435102"> </a><code>IrIAS_GetObjectID()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="435104"> </a><code>IrIAS_GetOctetString()</code></p>
+    </td>
+    <td><p class="tt"><a name="435106"> </a><code>IrIAS_GetOctetStringLen()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="435108"> </a><code>IrIAS_GetType()</code></p>
+    </td>
+    <td><p class="tt"><a name="435110"> </a><code>IrIAS_GetUserString()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="435112"> </a><code>IrIAS_GetUserStringCharSet()</code></p>
+    </td>
+    <td><p class="tt"><a name="435114"> </a><code>IrIAS_GetUserStringLen()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="435116"> </a><code>IrIAS_StartResult()</code></p>
+    </td>
+    <td><p class="tt"><a name="435118"> </a><code>IrSetConTypeLMP()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="435120"> </a><code>IrSetConTypeTTP()</code></p>
+    </td>
+    <td><p class="tt"><a name="435122"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="435259"> </a><b>Table 61.3&nbsp;&nbsp;Deleted structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="435263"> </a><code>IrStatsType</code></p>
+    </td>
+    <td><p class="tt"><a name="435265"> </a><code>ListEntry</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="435267"> </a><code>_hconnect</code></p>
+    </td>
+    <td><p class="tt"><a name="435269"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426188"> </a><b>Table 61.4&nbsp;&nbsp;Deleted types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426196"> </a><code>BOOL</code></p>
+    </td>
+    <td><p class="tt"><a name="426198"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="435204"> </a><b>Table 61.5&nbsp;&nbsp;Deleted #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="435208"> </a><code>irGetScanningMode</code></p>
+    </td>
+    <td><p class="tt"><a name="435210"> </a><code>irGetStatistics</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="435212"> </a><code>irLibTrap...</code></p>
+    </td>
+    <td><p class="tt"><a name="435214"> </a><code>irRestoreScanning</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="435216"> </a><code>irSetBaudMask</code></p>
+    </td>
+    <td><p class="tt"><a name="435218"> </a><code>irSetScanningMode</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="435220"> </a><code>irSetSerialMode</code></p>
+    </td>
+    <td><p class="tt"><a name="435222"> </a><code>irSetSupported</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="435224"> </a><code>irSuppressScanning</code></p>
+    </td>
+    <td><p class="tt"><a name="435226"> </a><code>LCON_FLAGS_TTP</code></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="425091"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="426371"> </a><b>Table 61.6&nbsp;&nbsp;Modified structures </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="426375"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="426377"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426379"> </a><code>IrCallBackParms</code></p>
+    </td>
+    <td><p class="tt"><a name="426381"> </a>The order of the fields in this structure has changed, and the reserved fields needed for alignment padding are no longer present.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426383"> </a><code>IrConnect</code></p>
+    </td>
+    <td><p class="tt"><a name="426385"> </a>The <code>flags</code>, <code>reserved</code>, <code>callBack</code>, <code>packet</code>, <code>packets</code>, and <code>sendCredit</code> fields are no longer present, and the structure now contains a <code>data</code> field that contains 32 unsigned bytes.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426387"> </a><code>IrDeviceList</code></p>
+    </td>
+    <td><p class="tt"><a name="426389"> </a>The <code>nItems</code> field is now 32 bits long, and the reserved field needed for alignment padding is no longer present.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426391"> </a><code>IrIasAttribute</code></p>
+    </td>
+    <td><p class="tt"><a name="426393"> </a>The <code>len</code> and <code>valLen</code> fields are now declared as <code>size_t</code>, and the reserved fields needed for alignment padding are no longer present.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426395"> </a><code>IrIasObject</code></p>
+    </td>
+    <td><p class="tt"><a name="426397"> </a>The <code>len</code> field is now declared as <code>size_t</code>, the <code>nAttribs</code> field is now 16 bits long, and an <code>objectID</code> field has been added.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426399"> </a><code>IrPacket</code></p>
+    </td>
+    <td><p class="tt"><a name="426401"> </a>This structure has changed radically; only the <code>buff</code> and <code>len</code> fields remain unchanged. All other fields are no longer present. New <code>status</code> and <code>next</code> fields (plus a <code>reserved1</code> field) have been added.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426403"> </a><code>_IrIasQuery</code></p>
+    </td>
+    <td><p class="tt"><a name="426405"> </a>The <code>queryLen</code>, <code>resultBufSize</code>, and <code>resultLen</code> fields are now declared as <code>size_t</code>. The reserved field needed for alignment padding is no longer present. The <code>listLen</code> and <code>offset</code> fields have traded places, and <code>offset</code> is now 32 bits long. Finally, <code>overFlow</code> is now a Boolean.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="425125"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="426643"> </a><b>Table 61.7&nbsp;&nbsp;Unchanged macros</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426647"> </a>IasGetU16()</p>
+    </td>
+    <td><p class="tt"><a name="426649"> </a>IasGetU32()</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426655"> </a><b>Table 61.8&nbsp;&nbsp;Unchanged structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426659"> </a>IrDeviceAddr</p>
+    </td>
+    <td><p class="tt"><a name="426661"> </a>IrDeviceInfo</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426663"> </a>IrIasQuery</p>
+    </td>
+    <td><p class="tt"><a name="426665"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426676"> </a><b>Table 61.9&nbsp;&nbsp;Unchanged types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426680"> </a>IrCharSet</p>
+    </td>
+    <td><p class="tt"><a name="426682"> </a>IrEvent</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426684"> </a>IrStatus</p>
+    </td>
+    <td><p class="tt"><a name="426686"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="436027"> </a><b>Table 61.10&nbsp;&nbsp;Unchanged #defines </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="436031"> </a>exgIrObexScheme</p>
+    </td>
+    <td><p class="tt"><a name="436033"> </a>IAS_ATTRIB_INTEGER</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436035"> </a>IAS_ATTRIB_MISSING</p>
+    </td>
+    <td><p class="tt"><a name="436037"> </a>IAS_ATTRIB_OCTET_STRING</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436039"> </a>IAS_ATTRIB_UNDEFINED</p>
+    </td>
+    <td><p class="tt"><a name="436041"> </a>IAS_ATTRIB_USER_STRING</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436043"> </a>IAS_GET_VALUE_BY_CLASS</p>
+    </td>
+    <td><p class="tt"><a name="436045"> </a>IAS_RET_NO_SUCH_ATTRIB</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436047"> </a>IAS_RET_NO_SUCH_CLASS</p>
+    </td>
+    <td><p class="tt"><a name="436049"> </a>IAS_RET_SUCCESS</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436051"> </a>IAS_RET_UNSUPPORTED</p>
+    </td>
+    <td><p class="tt"><a name="436053"> </a>irFtrCreator</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436055"> </a>irFtrNumVersion</p>
+    </td>
+    <td><p class="tt"><a name="436057"> </a>irLibName</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436059"> </a>irOpenOptBackground</p>
+    </td>
+    <td><p class="tt"><a name="436061"> </a>irOpenOptDisconnect12</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436063"> </a>irOpenOptDisconnect16</p>
+    </td>
+    <td><p class="tt"><a name="436065"> </a>irOpenOptDisconnect20</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436067"> </a>irOpenOptDisconnect25</p>
+    </td>
+    <td><p class="tt"><a name="436069"> </a>irOpenOptDisconnect3</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436071"> </a>irOpenOptDisconnect30</p>
+    </td>
+    <td><p class="tt"><a name="436073"> </a>irOpenOptDisconnect40</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436075"> </a>irOpenOptDisconnect8</p>
+    </td>
+    <td><p class="tt"><a name="436077"> </a><code>irOpenOptSpeed115200</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436079"> </a><code>irOpenOptSpeed19200</code></p>
+    </td>
+    <td><p class="tt"><a name="436081"> </a><code>irOpenOptSpeed38400</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436083"> </a><code>irOpenOptSpeed57600</code></p>
+    </td>
+    <td><p class="tt"><a name="436085"> </a><code>irOpenOptSpeed9600</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436087"> </a>IR_CHAR_ASCII</p>
+    </td>
+    <td><p class="tt"><a name="436089"> </a>IR_CHAR_ISO_8859_1</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436091"> </a>IR_CHAR_ISO_8859_2</p>
+    </td>
+    <td><p class="tt"><a name="436093"> </a>IR_CHAR_ISO_8859_3</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436095"> </a>IR_CHAR_ISO_8859_4</p>
+    </td>
+    <td><p class="tt"><a name="436097"> </a>IR_CHAR_ISO_8859_5</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436099"> </a>IR_CHAR_ISO_8859_6</p>
+    </td>
+    <td><p class="tt"><a name="436101"> </a>IR_CHAR_ISO_8859_7</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436103"> </a>IR_CHAR_ISO_8859_8</p>
+    </td>
+    <td><p class="tt"><a name="436105"> </a>IR_CHAR_ISO_8859_9</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436107"> </a>IR_CHAR_UNICODE</p>
+    </td>
+    <td><p class="tt"><a name="436109"> </a>IR_DEVICE_LIST_SIZE</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436111"> </a>IR_HINT_COMPUTER</p>
+    </td>
+    <td><p class="tt"><a name="436113"> </a>IR_HINT_EXT</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436115"> </a>IR_HINT_FAX</p>
+    </td>
+    <td><p class="tt"><a name="436117"> </a>IR_HINT_FILE</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436119"> </a>IR_HINT_HTTP</p>
+    </td>
+    <td><p class="tt"><a name="436121"> </a>IR_HINT_IRCOMM</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436123"> </a>IR_HINT_LAN</p>
+    </td>
+    <td><p class="tt"><a name="436125"> </a>IR_HINT_MESSAGE</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436127"> </a>IR_HINT_MODEM</p>
+    </td>
+    <td><p class="tt"><a name="436129"> </a>IR_HINT_OBEX</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436131"> </a>IR_HINT_PDA</p>
+    </td>
+    <td><p class="tt"><a name="436133"> </a>IR_HINT_PNP</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436135"> </a>IR_HINT_PRINTER</p>
+    </td>
+    <td><p class="tt"><a name="436137"> </a>IR_HINT_TELEPHONY</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436139"> </a>IR_MAX_ATTRIBUTES</p>
+    </td>
+    <td><p class="tt"><a name="436141"> </a>IR_MAX_CON_PACKET</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436143"> </a>IR_MAX_DEVICE_INFO</p>
+    </td>
+    <td><p class="tt"><a name="436145"> </a>IR_MAX_IAS_ATTR_SIZE</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436147"> </a>IR_MAX_IAS_NAME</p>
+    </td>
+    <td><p class="tt"><a name="436149"> </a>IR_MAX_LSAP</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436151"> </a>IR_MAX_QUERY_LEN</p>
+    </td>
+    <td><p class="tt"><a name="436153"> </a>IR_MAX_TEST_PACKET</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436155"> </a>IR_MAX_TTP_CON_PACKET</p>
+    </td>
+    <td><p class="tt"><a name="436157"> </a>IR_MAX_XID_LEN</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436159"> </a>IR_STATUS_DISCONNECT</p>
+    </td>
+    <td><p class="tt"><a name="436161"> </a>IR_STATUS_FAILED</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436163"> </a>IR_STATUS_LINK_OK</p>
+    </td>
+    <td><p class="tt"><a name="436165"> </a>IR_STATUS_MEDIA_BUSY</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436167"> </a>IR_STATUS_MEDIA_NOT_BUSY</p>
+    </td>
+    <td><p class="tt"><a name="436169"> </a>IR_STATUS_NO_IRLAP</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436171"> </a>IR_STATUS_NO_PROGRESS</p>
+    </td>
+    <td><p class="tt"><a name="436173"> </a>IR_STATUS_PENDING</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436175"> </a>IR_STATUS_SUCCESS</p>
+    </td>
+    <td><p class="tt"><a name="436177"> </a>LEVENT_DATA_IND</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436179"> </a>LEVENT_DISCOVERY_CNF</p>
+    </td>
+    <td><p class="tt"><a name="436181"> </a>LEVENT_LAP_CON_CNF</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436183"> </a>LEVENT_LAP_CON_IND</p>
+    </td>
+    <td><p class="tt"><a name="436185"> </a>LEVENT_LAP_DISCON_IND</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436187"> </a>LEVENT_LM_CON_CNF</p>
+    </td>
+    <td><p class="tt"><a name="436189"> </a>LEVENT_LM_CON_IND</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436191"> </a>LEVENT_LM_DISCON_IND</p>
+    </td>
+    <td><p class="tt"><a name="436193"> </a>LEVENT_LM_SEND_IND</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436195"> </a>LEVENT_PACKET_HANDLED</p>
+    </td>
+    <td><p class="tt"><a name="436197"> </a>LEVENT_STATUS_IND</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="436199"> </a>LEVENT_TEST_CNF</p>
+    </td>
+    <td><p class="tt"><a name="436201"> </a>LEVENT_TEST_IND</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426874"> </a><b>Table 61.11&nbsp;&nbsp;Unchanged application-defined functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426878"> </a>IrCallBack()</p>
+    </td>
+    <td><p class="tt"><a name="427234"> </a>IrIasQueryCallBack()</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="425227"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="IntlMgr.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Keyboard.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

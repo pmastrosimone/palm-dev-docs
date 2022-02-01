@@ -1,0 +1,127 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Sub-Sections</TITLE>
+
+<META NAME="description" CONTENT="Using as: Sub-Sections">
+<META NAME="keywords" CONTENT="Using as: Sub-Sections">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC45"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_43.html#SEC44"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_45.html#SEC46"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_45.html#SEC46"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_40.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_46.html#SEC47"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.4 Sub-Sections </H2>
+<!--docid::SEC45::-->
+<P>
+
+<A NAME="IDX192"></A>
+<A NAME="IDX193"></A>
+Assembled bytes
+conventionally
+fall into two sections: text and data.
+You may have separate groups of
+data in named sections
+text or data
+that you want to end up near to each other in the object file, even though they
+are not contiguous in the assembler source.  <CODE>as</CODE> allows you to
+use <EM>subsections</EM> for this purpose.  Within each section, there can be
+numbered subsections with values from 0 to 8192.  Objects assembled into the
+same subsection go into the object file together with other objects in the same
+subsection.  For example, a compiler might want to store constants in the text
+section, but might not want to have them interspersed with the program being
+assembled.  In this case, the compiler could issue a <SAMP>`.text 0'</SAMP> before each
+section of code being output, and a <SAMP>`.text 1'</SAMP> before each group of
+constants being output.
+</P><P>
+
+Subsections are optional.  If you do not use subsections, everything
+goes in subsection number zero.
+</P><P>
+
+Each subsection is zero-padded up to a multiple of four bytes.
+(Subsections may be padded a different amount on different flavors
+of <CODE>as</CODE>.)
+</P><P>
+
+Subsections appear in your object file in numeric order, lowest numbered
+to highest.  (All this to be compatible with other people's assemblers.)
+The object file contains no representation of subsections; <CODE>ld</CODE> and
+other programs that manipulate object files see no trace of them.
+They just see all your text subsections as a text section, and all your
+data subsections as a data section.
+</P><P>
+
+To specify which subsection you want subsequent statements assembled
+into, use a numeric argument to specify it, in a <SAMP>`.text
+<VAR>expression</VAR>'</SAMP> or a <SAMP>`.data <VAR>expression</VAR>'</SAMP> statement.
+When generating COFF or ELF output, you
+can also use an extra subsection
+argument with arbitrary named sections: <SAMP>`.section <VAR>name</VAR>,
+<VAR>expression</VAR>'</SAMP>.
+<VAR>Expression</VAR> should be an absolute expression.
+(See section <A HREF="as_61.html#SEC64">6. Expressions</A>.)  If you just say <SAMP>`.text'</SAMP> then <SAMP>`.text 0'</SAMP>
+is assumed.  Likewise <SAMP>`.data'</SAMP> means <SAMP>`.data 0'</SAMP>.  Assembly
+begins in <CODE>text 0</CODE>.  For instance:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>.text 0     # The default subsection is text 0 anyway.
+.ascii "This lives in the first text subsection. *"
+.text 1
+.ascii "But this lives in the second text subsection."
+.data 0
+.ascii "This lives in the data section,"
+.ascii "in the first data subsection."
+.text 0
+.ascii "This lives in the first text section,"
+.ascii "immediately following the asterisk (*)."
+</FONT></pre></td></tr></table></P><P>
+
+Each section has a <EM>location counter</EM> incremented by one for every byte
+assembled into that section.  Because subsections are merely a convenience
+restricted to <CODE>as</CODE> there is no concept of a subsection location
+counter.  There is no way to directly manipulate a location counter--but the
+<CODE>.align</CODE> directive changes it, and any label definition captures its
+current value.  The location counter of the section where statements are being
+assembled is said to be the <EM>active</EM> location counter.
+</P><P>
+
+<A NAME="bss"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_43.html#SEC44"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_45.html#SEC46"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_45.html#SEC46"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_40.html#SEC41"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_46.html#SEC47"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

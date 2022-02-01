@@ -1,0 +1,469 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: GDB/MI Variable Objects</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: GDB/MI Variable Objects">
+<META NAME="keywords" CONTENT="Debugging with GDB: GDB/MI Variable Objects">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC561"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_234.html#SEC560"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_236.html#SEC590"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_220.html#SEC225"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_213.html#SEC213"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_236.html#SEC590"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 24.14 GDB/MI Variable Objects </H2>
+<!--docid::SEC561::-->
+<P>
+
+<A NAME="SEC562"></A>
+<H3> Motivation for Variable Objects in GDB/MI </H3>
+<!--docid::SEC562::-->
+<P>
+
+For the implementation of a variable debugger window (locals, watched
+expressions, etc.), we are proposing the adaptation of the existing code
+used by <CODE>Insight</CODE>.
+</P><P>
+
+The two main reasons for that are:
+</P><P>
+
+<OL>
+<LI>
+It has been proven in practice (it is already on its second generation).
+<P>
+
+<LI>
+It will shorten development time (needless to say how important it is
+now).
+</OL>
+<P>
+
+The original interface was designed to be used by Tcl code, so it was
+slightly changed so it could be used through GDB/MI.  This section
+describes the GDB/MI operations that will be available and gives some
+hints about their use.
+</P><P>
+
+<EM>Note</EM>: In addition to the set of operations described here, we
+expect the GUI implementation of a variable window to require, at
+least, the following operations:
+</P><P>
+
+<UL>
+<LI><CODE>-gdb-show</CODE> <CODE>output-radix</CODE>
+<LI><CODE>-stack-list-arguments</CODE>
+<LI><CODE>-stack-list-locals</CODE>
+<LI><CODE>-stack-select-frame</CODE>
+</UL>
+<P>
+
+<A NAME="SEC563"></A>
+<H3> Introduction to Variable Objects in GDB/MI </H3>
+<!--docid::SEC563::-->
+<P>
+
+<A NAME="IDX1003"></A>
+The basic idea behind variable objects is the creation of a named object
+to represent a variable, an expression, a memory location or even a CPU
+register.  For each object created, a set of operations is available for
+examining or changing its properties.
+</P><P>
+
+Furthermore, complex data types, such as C structures, are represented
+in a tree format.  For instance, the <CODE>struct</CODE> type variable is the
+root and the children will represent the struct members.  If a child
+is itself of a complex type, it will also have children of its own.
+Appropriate language differences are handled for C, C<TT>++</TT> and Java.
+</P><P>
+
+When returning the actual values of the objects, this facility allows
+for the individual selection of the display format used in the result
+creation.  It can be chosen among: binary, decimal, hexadecimal, octal
+and natural.  Natural refers to a default format automatically
+chosen based on the variable type (like decimal for an <CODE>int</CODE>, hex
+for pointers, etc.).
+</P><P>
+
+The following is the complete set of GDB/MI operations defined to
+access this functionality:
+</P><P>
+
+<TABLE>
+<TR><TD><STRONG>Operation</STRONG></TD>
+</TD><TD> <STRONG>Description</STRONG>
+
+</TR>
+<TR><TD><CODE>-var-create</CODE></TD>
+</TD><TD> create a variable object
+</TR>
+<TR><TD><CODE>-var-delete</CODE></TD>
+</TD><TD> delete the variable object and its children
+</TR>
+<TR><TD><CODE>-var-set-format</CODE></TD>
+</TD><TD> set the display format of this variable
+</TR>
+<TR><TD><CODE>-var-show-format</CODE></TD>
+</TD><TD> show the display format of this variable
+</TR>
+<TR><TD><CODE>-var-info-num-children</CODE></TD>
+</TD><TD> tells how many children this object has
+</TR>
+<TR><TD><CODE>-var-list-children</CODE></TD>
+</TD><TD> return a list of the object's children
+</TR>
+<TR><TD><CODE>-var-info-type</CODE></TD>
+</TD><TD> show the type of this variable object
+</TR>
+<TR><TD><CODE>-var-info-expression</CODE></TD>
+</TD><TD> print what this variable object represents
+</TR>
+<TR><TD><CODE>-var-show-attributes</CODE></TD>
+</TD><TD> is this variable editable? does it exist here?
+</TR>
+<TR><TD><CODE>-var-evaluate-expression</CODE></TD>
+</TD><TD> get the value of this variable
+</TR>
+<TR><TD><CODE>-var-assign</CODE></TD>
+</TD><TD> set the value of this variable
+</TR>
+<TR><TD><CODE>-var-update</CODE></TD>
+</TD><TD> update the variable and its children
+</TR></TABLE>
+<P>
+
+In the next subsection we describe each operation in detail and suggest
+how it can be used.
+</P><P>
+
+<A NAME="SEC564"></A>
+<H3> Description And Use of Operations on Variable Objects </H3>
+<!--docid::SEC564::-->
+<P>
+
+<A NAME="SEC565"></A>
+<H3> The <CODE>-var-create</CODE> Command </H3>
+<!--docid::SEC565::-->
+<P>
+
+<A NAME="SEC566"></A>
+<H4> Synopsis                                                                               </H4>
+<!--docid::SEC566::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -var-create {<VAR>name</VAR> | "-"}
+    {<VAR>frame-addr</VAR> | "*"} <VAR>expression</VAR>
+</pre></td></tr></table></P><P>
+
+This operation creates a variable object, which allows the monitoring of
+a variable, the result of an expression, a memory cell or a CPU
+register.
+</P><P>
+
+The <VAR>name</VAR> parameter is the string by which the object can be
+referenced.  It must be unique.  If <SAMP>`-'</SAMP> is specified, the varobj
+system will generate a string "varNNNNNN" automatically.  It will be
+unique provided that one does not specify <VAR>name</VAR> on that format.
+The command fails if a duplicate name is found.
+</P><P>
+
+The frame under which the expression should be evaluated can be
+specified by <VAR>frame-addr</VAR>.  A <SAMP>`*'</SAMP> indicates that the current
+frame should be used.
+</P><P>
+
+<VAR>expression</VAR> is any expression valid on the current language set (must not
+begin with a <SAMP>`*'</SAMP>), or one of the following:
+</P><P>
+
+<UL>
+<LI>
+<SAMP>`*<VAR>addr</VAR>'</SAMP>, where <VAR>addr</VAR> is the address of a memory cell
+<P>
+
+<LI>
+<SAMP>`*<VAR>addr</VAR>-<VAR>addr</VAR>'</SAMP> -- a memory address range (TBD)
+<P>
+
+<LI>
+<SAMP>`$<VAR>regname</VAR>'</SAMP> -- a CPU register name
+</UL>
+<P>
+
+<A NAME="SEC567"></A>
+<H4> Result    </H4>
+<!--docid::SEC567::-->
+<P>
+
+This operation returns the name, number of children and the type of the
+object created.  Type is returned as a string as the ones generated by
+the GDB CLI:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> name="<VAR>name</VAR>",numchild="N",type="<VAR>type</VAR>"
+</pre></td></tr></table></P><P>
+
+<A NAME="SEC568"></A>
+<H3> The <CODE>-var-delete</CODE> Command </H3>
+<!--docid::SEC568::-->
+<P>
+
+<A NAME="SEC569"></A>
+<H4> Synopsis                                                                                </H4>
+<!--docid::SEC569::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -var-delete <VAR>name</VAR>
+</pre></td></tr></table></P><P>
+
+Deletes a previously created variable object and all of its children.
+</P><P>
+
+Returns an error if the object <VAR>name</VAR> is not found.
+</P><P>
+
+<A NAME="SEC570"></A>
+<H3> The <CODE>-var-set-format</CODE> Command </H3>
+<!--docid::SEC570::-->
+<P>
+
+<A NAME="SEC571"></A>
+<H4> Synopsis                                                                                 </H4>
+<!--docid::SEC571::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -var-set-format <VAR>name</VAR> <VAR>format-spec</VAR>
+</pre></td></tr></table></P><P>
+
+Sets the output format for the value of the object <VAR>name</VAR> to be
+<VAR>format-spec</VAR>.
+</P><P>
+
+The syntax for the <VAR>format-spec</VAR> is as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> <VAR>format-spec</VAR> ==>
+ {binary | decimal | hexadecimal | octal | natural}
+</pre></td></tr></table></P><P>
+
+<A NAME="SEC572"></A>
+<H3> The <CODE>-var-show-format</CODE> Command </H3>
+<!--docid::SEC572::-->
+<P>
+
+<A NAME="SEC573"></A>
+<H4> Synopsis                                                                                  </H4>
+<!--docid::SEC573::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -var-show-format <VAR>name</VAR>
+</pre></td></tr></table></P><P>
+
+Returns the format used to display the value of the object <VAR>name</VAR>.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> <VAR>format</VAR> ==>
+ <VAR>format-spec</VAR>
+</pre></td></tr></table></P><P>
+
+<A NAME="SEC574"></A>
+<H3> The <CODE>-var-info-num-children</CODE> Command </H3>
+<!--docid::SEC574::-->
+<P>
+
+<A NAME="SEC575"></A>
+<H4> Synopsis                                                                                   </H4>
+<!--docid::SEC575::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -var-info-num-children <VAR>name</VAR>
+</pre></td></tr></table></P><P>
+
+Returns the number of children of a variable object <VAR>name</VAR>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> numchild=<VAR>n</VAR>
+</pre></td></tr></table></P><P>
+
+<A NAME="SEC576"></A>
+<H3> The <CODE>-var-list-children</CODE> Command </H3>
+<!--docid::SEC576::-->
+<P>
+
+<A NAME="SEC577"></A>
+<H4> Synopsis                                                                                    </H4>
+<!--docid::SEC577::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -var-list-children <VAR>name</VAR>
+</pre></td></tr></table></P><P>
+
+Returns a list of the children of the specified variable object:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> numchild=<VAR>n</VAR>,children={{name=<VAR>name</VAR>,
+ numchild=<VAR>n</VAR>,type=<VAR>type</VAR>},(repeats N times)}
+</pre></td></tr></table></P><P>
+
+<A NAME="SEC578"></A>
+<H3> The <CODE>-var-info-type</CODE> Command </H3>
+<!--docid::SEC578::-->
+<P>
+
+<A NAME="SEC579"></A>
+<H4> Synopsis                                                                                     </H4>
+<!--docid::SEC579::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -var-info-type <VAR>name</VAR>
+</pre></td></tr></table></P><P>
+
+Returns the type of the specified variable <VAR>name</VAR>.  The type is
+returned as a string in the same format as it is output by the
+GDB CLI:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> type=<VAR>typename</VAR>
+</pre></td></tr></table></P><P>
+
+<A NAME="SEC580"></A>
+<H3> The <CODE>-var-info-expression</CODE> Command </H3>
+<!--docid::SEC580::-->
+<P>
+
+<A NAME="SEC581"></A>
+<H4> Synopsis                                                                                      </H4>
+<!--docid::SEC581::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -var-info-expression <VAR>name</VAR>
+</pre></td></tr></table></P><P>
+
+Returns what is represented by the variable object <VAR>name</VAR>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> lang=<VAR>lang-spec</VAR>,exp=<VAR>expression</VAR>
+</pre></td></tr></table></P><P>
+
+where <VAR>lang-spec</VAR> is <CODE>{"C" | "C++" | "Java"}</CODE>.
+</P><P>
+
+<A NAME="SEC582"></A>
+<H3> The <CODE>-var-show-attributes</CODE> Command </H3>
+<!--docid::SEC582::-->
+<P>
+
+<A NAME="SEC583"></A>
+<H4> Synopsis                                                                                       </H4>
+<!--docid::SEC583::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -var-show-attributes <VAR>name</VAR>
+</pre></td></tr></table></P><P>
+
+List attributes of the specified variable object <VAR>name</VAR>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> status=<VAR>attr</VAR> [ ( ,<VAR>attr</VAR> )* ]
+</pre></td></tr></table></P><P>
+
+where <VAR>attr</VAR> is <CODE>{ { editable | noneditable } | TBD }</CODE>.
+</P><P>
+
+<A NAME="SEC584"></A>
+<H3> The <CODE>-var-evaluate-expression</CODE> Command </H3>
+<!--docid::SEC584::-->
+<P>
+
+<A NAME="SEC585"></A>
+<H4> Synopsis                                                                                        </H4>
+<!--docid::SEC585::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -var-evaluate-expression <VAR>name</VAR>
+</pre></td></tr></table></P><P>
+
+Evaluates the expression that is represented by the specified variable
+object and returns its value as a string in the current format specified
+for the object:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> value=<VAR>value</VAR>
+</pre></td></tr></table></P><P>
+
+<A NAME="SEC586"></A>
+<H3> The <CODE>-var-assign</CODE> Command </H3>
+<!--docid::SEC586::-->
+<P>
+
+<A NAME="SEC587"></A>
+<H4> Synopsis                                                                                         </H4>
+<!--docid::SEC587::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -var-assign <VAR>name</VAR> <VAR>expression</VAR>
+</pre></td></tr></table></P><P>
+
+Assigns the value of <VAR>expression</VAR> to the variable object specified
+by <VAR>name</VAR>.  The object must be <SAMP>`editable'</SAMP>.
+</P><P>
+
+<A NAME="SEC588"></A>
+<H3> The <CODE>-var-update</CODE> Command </H3>
+<!--docid::SEC588::-->
+<P>
+
+<A NAME="SEC589"></A>
+<H4> Synopsis                                                                                          </H4>
+<!--docid::SEC589::-->
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre> -var-update {<VAR>name</VAR> | "*"}
+</pre></td></tr></table></P><P>
+
+Update the value of the variable object <VAR>name</VAR> by evaluating its
+expression after fetching all the new values from memory or registers.
+A <SAMP>`*'</SAMP> causes all existing variable objects to be updated.
+</P><P>
+
+<A NAME="GDB Bugs"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_234.html#SEC560"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_236.html#SEC590"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_220.html#SEC225"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_213.html#SEC213"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_236.html#SEC590"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

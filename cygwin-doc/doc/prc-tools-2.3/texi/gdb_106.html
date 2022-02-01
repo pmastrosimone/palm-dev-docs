@@ -1,0 +1,148 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Debugging C plus plus</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Debugging C plus plus">
+<META NAME="keywords" CONTENT="Debugging with GDB: Debugging C plus plus">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC106"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_105.html#SEC105"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_107.html#SEC107"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_89.html#SEC89"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_99.html#SEC99"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_107.html#SEC107"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 12.4.1.7 GDB features for C<TT>++</TT> </H4>
+<!--docid::SEC106::-->
+<P>
+
+<A NAME="IDX491"></A>
+</P><P>
+
+Some GDB commands are particularly useful with C<TT>++</TT>, and some are
+designed specifically for use with C<TT>++</TT>.  Here is a summary:
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX492"></A>
+<DT><CODE>breakpoint menus</CODE>
+<DD>When you want a breakpoint in a function whose name is overloaded,
+GDB breakpoint menus help you specify which function definition
+you want.  See section <A HREF="gdb_36.html#SEC36">Breakpoint menus</A>.
+<P>
+
+<A NAME="IDX493"></A>
+<DT><CODE>rbreak <VAR>regex</VAR></CODE>
+<DD>Setting breakpoints using regular expressions is helpful for setting
+breakpoints on overloaded functions that are not members of any special
+classes.
+See section <A HREF="gdb_29.html#SEC29">Setting breakpoints</A>.
+<P>
+
+<A NAME="IDX494"></A>
+<DT><CODE>catch throw</CODE>
+<DD><DT><CODE>catch catch</CODE>
+<DD>Debug C<TT>++</TT> exception handling using these commands.  See section <A HREF="gdb_31.html#SEC31">Setting catchpoints</A>.
+<P>
+
+<A NAME="IDX495"></A>
+<DT><CODE>ptype <VAR>typename</VAR></CODE>
+<DD>Print inheritance relationships as well as other information for type
+<VAR>typename</VAR>.
+See section <A HREF="gdb_116.html#SEC116">Examining the Symbol Table</A>.
+<P>
+
+<A NAME="IDX496"></A>
+<DT><CODE>set print demangle</CODE>
+<DD><DT><CODE>show print demangle</CODE>
+<DD><DT><CODE>set print asm-demangle</CODE>
+<DD><DT><CODE>show print asm-demangle</CODE>
+<DD>Control whether C<TT>++</TT> symbols display in their source form, both when
+displaying code as C<TT>++</TT> source and when displaying disassemblies.
+See section <A HREF="gdb_58.html#SEC58">Print settings</A>.
+<P>
+
+<DT><CODE>set print object</CODE>
+<DD><DT><CODE>show print object</CODE>
+<DD>Choose whether to print derived (actual) or declared types of objects.
+See section <A HREF="gdb_58.html#SEC58">Print settings</A>.
+<P>
+
+<DT><CODE>set print vtbl</CODE>
+<DD><DT><CODE>show print vtbl</CODE>
+<DD>Control the format for printing virtual function tables.
+See section <A HREF="gdb_58.html#SEC58">Print settings</A>.
+(The <CODE>vtbl</CODE> commands do not work on programs compiled with the HP
+ANSI C<TT>++</TT> compiler (<CODE>aCC</CODE>).)
+<P>
+
+<A NAME="IDX497"></A>
+<A NAME="IDX498"></A>
+<DT><CODE>set overload-resolution on</CODE>
+<DD>Enable overload resolution for C<TT>++</TT> expression evaluation.  The default
+is on.  For overloaded functions, GDB evaluates the arguments
+and searches for a function whose signature matches the argument types,
+using the standard C<TT>++</TT> conversion rules (see <A HREF="gdb_102.html#SEC102">C<TT>++</TT> expressions</A>, for details).  If it cannot find a match, it emits a
+message.
+<P>
+
+<DT><CODE>set overload-resolution off</CODE>
+<DD>Disable overload resolution for C<TT>++</TT> expression evaluation.  For
+overloaded functions that are not class member functions, GDB
+chooses the first function of the specified name that it finds in the
+symbol table, whether or not its arguments are of the correct type.  For
+overloaded functions that are class member functions, GDB
+searches for a function whose signature <EM>exactly</EM> matches the
+argument types.
+<P>
+
+<DT><CODE>Overloaded symbol names</CODE>
+<DD>You can specify a particular definition of an overloaded symbol, using
+the same notation that is used to declare such symbols in C<TT>++</TT>: type
+<CODE><VAR>symbol</VAR>(<VAR>types</VAR>)</CODE> rather than just <VAR>symbol</VAR>.  You can
+also use the GDB command-line word completion facilities to list the
+available choices, or to finish the type list for you.
+See section <A HREF="gdb_14.html#SEC14">Command completion</A>, for details on how to do this.
+</DL>
+<P>
+
+<A NAME="Modula-2"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_105.html#SEC105"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_107.html#SEC107"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_89.html#SEC89"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_99.html#SEC99"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_107.html#SEC107"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

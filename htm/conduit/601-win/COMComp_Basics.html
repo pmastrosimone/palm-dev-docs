@@ -1,0 +1,959 @@
+<html>
+<head>
+<title>Development Basics | COM Sync Suite Companion</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="KEYWORDS" CONTENT="COM, COM Sync, COM Sync Suite, basic, architecture, object, error, ActiveX, conduit, conduits, CDK">
+<META NAME="DESCRIPTION" CONTENT="Describes basic information about developing COM-based conduits, including the COM Sync architecture, objects, and error handling.">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource HTML 20040609">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="LASTUPDATED" CONTENT="06/28/04 08:33:40">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="995935"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="COMSyncCompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="COMComp_Intro.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="COMComp_Development.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="COMSyncCompanionIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">2 &nbsp;&nbsp;
+Development Basics</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">COM Sync Suite Companion</p>
+<p class="SubTitle">Palm OS&#174; Conduit Development Kit for  Windows, Version 6.0.1 </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="COMComp_Basics.html">2  Development Basics</a></h1>
+
+   <h2 class="SideTOC2"><a href="#995983">
+   HotSync Process</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1007001">
+   COM Sync Architecture</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996013">
+   COM Sync Client/Server DLLs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996042">
+   Client Module Types</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996073">
+   Multithreading Support</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996083">
+   COM Sync Object Model</a></h2>
+
+      <h3 class="SideTOC3"><a href="#999266">
+      System Information Objects</a></h3>
+
+      <h3 class="SideTOC3"><a href="#999424">
+      Schema Database Objects</a></h3>
+
+      <h3 class="SideTOC3"><a href="#999361">
+      Extended Database Objects</a></h3>
+
+      <h3 class="SideTOC3"><a href="#999390">
+      Classic Database Objects</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996122">
+      Installation and Support Objects</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996130">
+      Expansion Card Objects</a></h3>
+
+   <h2 class="SideTOC2"><a href="#996397">
+   COM ProgIDs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996405">
+   COM Error Handling </a></h2>
+
+   <h2 class="SideTOC2"><a href="#1004101">
+   Database Support and Extensibility</a></h2>
+
+</div>
+</td>
+<!--END SIDETOC-->
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="995938"> </a>This chapter describes the following conduit development basics:</p>
+   <blockquote class = "bq"><a name="995948"> </a><a href="COMComp_Basics.html#995983"></a><a href="COMComp_Basics.html#995983"></a><a href="COMComp_Basics.html#995983">HotSync Process</a></blockquote>
+   <blockquote class = "bq"><a name="995952"> </a><a href="COMComp_Basics.html#1007001">COM Sync Architecture</a></blockquote>
+   <blockquote class = "bq"><a name="995956"> </a><a href="COMComp_Basics.html#996013">COM Sync Client/Server DLLs</a></blockquote>
+   <blockquote class = "bq"><a name="995960"> </a><a href="COMComp_Basics.html#996042">Client Module Types</a></blockquote>
+   <blockquote class = "bq"><a name="995964"> </a><a href="COMComp_Basics.html#996073">Multithreading Support</a></blockquote>
+   <blockquote class = "bq"><a name="995968"> </a><a href="COMComp_Basics.html#996083">COM Sync Object Model</a></blockquote>
+   <blockquote class = "bq"><a name="995972"> </a><a href="COMComp_Basics.html#996397">COM ProgIDs</a></blockquote>
+   <blockquote class = "bq"><a name="995976"> </a><a href="COMComp_Basics.html#996405">COM Error Handling</a></blockquote>
+   <blockquote class = "bq"><a name="995980"> </a><a href="COMComp_Basics.html#1004101">Database Support and Extensibility</a></blockquote>
+
+<h2 class="haH2">
+  <a name="995983"> </a>HotSync Process <a href="#995935"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="995984"> </a>Good conduit development begins with understanding the HotSync<sup>&#174;</sup> process itself and how the conduit processes information between the handheld and the desktop computer. <a href="COMComp_Basics.html#995989">Figure 2.1</a> summarizes the HotSync process that begins when the user presses the HotSync button. </p>
+<div class="NINoteImportant"><hr>
+  <a name="998656"> </a> <b>NOTE: </b> For a detailed discussion, see <a href="Intro_HotSyncProc.html#995934">Chapter 7, "Understanding the HotSync Process,"</a> in the <i>Introduction to Conduit Development</i>.
+<hr>
+</div>
+
+<p class="FFigureCaption">
+  <a name="995989"> </a><b>Figure 2.1&nbsp;&nbsp;HotSync process summary</b>
+</p>
+<div align="left"><img src="images/HotSyncProcess.gif" height="597" width="427" border="0" hspace="0" vspace="0">
+</div>
+
+<h2 class="haH2">
+  <a name="1007001"> </a>COM Sync Architecture <a href="#995935"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1007002"> </a>The COM Sync architecture facilitates development of COM-based conduits to retrieve information from databases during the HotSync process. <a href="COMComp_Basics.html#996002">Figure 2.2</a> depicts the COM Sync architecture.</p>
+
+<p class="FFigureCaption">
+  <a name="996002"> </a><b>Figure 2.2&nbsp;&nbsp;COM Sync architecture </b>
+</p>
+
+<div align="left"><img src="images/COMSyncArch.gif" height="434" width="590" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="996008"> </a>The following sections describe the components of the COM Sync architecture components.</p>
+
+<h2 class="haH2">
+  <a name="996013"> </a>COM Sync Client/Server DLLs <a href="#995935"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996014"> </a>The COM Sync module is composed of several DLLs that act as client and server during the HotSync process. The server is a single DLL and is itself a standard C API-based conduit. </p>
+
+<p><a name="998147"> </a>The client consists of several DLLs that combine to supply an object model that communicates with the server, providing you another level of abstraction above the Sync Manager and other C APIs. The server DLL "wraps" the C APIs with a COM interface, while the client exposes that COM interface to you through an object model.</p>
+<div class="NINoteImportant"><hr>
+  <a name="996017"> </a> <b>IMPORTANT: </b> Because <code>COMConduit.dll</code> is a standard C API-based conduit, it is activated and executed <i>only</i> during normal HotSync operations. You will not be able to execute your conduit code outside of a HotSync operation because the COM Sync objects are not available.
+<hr>
+</div>
+
+<p><a name="996018"> </a><code>COMConduit.dll</code>, acting as the server, handles all Sync Manager API execution. The client DLLs&#8212<code>COMDirect.dll</code>, <code>COMStandard.dll</code>, <code>PSDConduit.dll</code>, and <code>DmConduit.dll</code>&#8212communicate with <code>COMConduit.dll</code> while supplying a programming interface for you to use when developing your applications or conduits.</p>
+
+<p><a name="996021"> </a>During the HotSync process, HotSync Manager runs <code>COMConduit.dll</code> like it does any other C API-based conduit. The COM Sync module activates a client process called the client module. The client module uses the COM Sync object model to communicate with the handheld, through the <code>COMConduit.dll</code>.</p>
+
+<p><a name="996022"> </a>The server and client DLLs are discussed below.</p>
+
+<h4 class="hcH4">
+  <a name="996034"> </a>Server
+</h4>
+
+<p><a name="996035"> </a>The <code>COMConduit.dll</code> is an object server. For non-ActiveX clients, the object server remains active as long as there are active objects, or as long as the original client is still alive. This means the original client can spawn a new process and then quit. For ActiveX clients, the object server remains active as long as there are active client objects.</p>
+
+<h4 class="hcH4">
+  <a name="996038"> </a>Client
+</h4>
+
+<p><a name="996039"> </a><a href="COMComp_Basics.html#998876">Table 2.1</a> lists the client DLLs, which are loaded into the process space of your client module. These combine to expose a set of objects and an object model used to perform database operations on the handheld. These DLLs establish and maintain a connection with <code>COMConduit.dll</code> using COM/DCOM. </p>
+
+<p class="fineprint">
+<p class="caption"><a name="998876"> </a><b>Table 2.1&nbsp;&nbsp;COM Sync client DLLs</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="998880"> </a><b>Client DLL</b></p>
+    </th>
+    <th><p class="tt"><a name="998981"> </a><b>Library Name</b></p>
+    </th>
+    <th><p class="tt"><a name="998882"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998884"> </a><code>COMDirect.dll</code> </p>
+    </td>
+    <td><p class="tt"><a name="998983"> </a>PDDirectLib</p>
+    </td>
+    <td><p class="tt"><a name="998886"> </a>Palm OS Classic Databases</p>
+<p class="tt"><a name="999037"> </a>Exposes objects to work with <a href="Intro_Glossary.html#918816"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">classic database</span></a>s on the handheld and files on an expansion card.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998888"> </a><code>COMStandard.dll</code> </p>
+    </td>
+    <td><p class="tt"><a name="998985"> </a>PDStandardLib</p>
+    </td>
+    <td><p class="tt"><a name="998890"> </a>Palm OS Classic Databases and Utilities</p>
+<p class="tt"><a name="999040"> </a>Exposes additional objects to work with classic databases, to register conduits, to install files on the handheld, and to perform other utility tasks.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998934"> </a><code>PSDConduit.dll</code> </p>
+    </td>
+    <td><p class="tt"><a name="998987"> </a>PSDCONDUITLib</p>
+    </td>
+    <td><p class="tt"><a name="998936"> </a>Palm OS Schema Databases</p>
+<p class="tt"><a name="999053"> </a>Exposes objects to work with <a href="Intro_Glossary.html#919802"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">schema database</span></a>s on the handheld and to perform other utility tasks.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="998938"> </a><code>DmConduit.dll</code> </p>
+    </td>
+    <td><p class="tt"><a name="998989"> </a>DMCONDUITLib</p>
+    </td>
+    <td><p class="tt"><a name="998940"> </a>Palm OS Extended Databases</p>
+<p class="tt"><a name="999084"> </a>Exposes objects to work with <a href="Intro_Glossary.html#918750"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">extended database</span></a>s on the handheld and to perform other utility tasks.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<h2 class="haH2">
+  <a name="996042"> </a>Client Module Types <a href="#995935"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996043"> </a>The COM Sync Suite defines a client notification interface, <a href="COMRef_Interface.html#995943"><code>IPDClientNotify</code></a>, that enables <code>COMConduit.dll</code> to notify or activate your client module when HotSync Manager is ready to run it, or when the user selects it via HotSync Manager's <b>Custom</b> menu. You are not required to use this interface. </p>
+
+<p><a name="996048"> </a>Clients that use the <code>IPDClientNotify</code> interface can be either EXEs or DLLs and are referred to as ActiveX clients. Those clients that do not implement the interface must be EXEs (DLLs cannot be supported unless they implement the interface) and are referred to as standard EXE clients. </p>
+
+<p><a name="996049"> </a>These two client types are discussed below. </p>
+
+<h4 class="hcH4">
+  <a name="996061"> </a>Standard EXE Client
+</h4>
+
+<p><a name="996062"> </a>The standard EXE client allows you to debug your conduit within your preferred IDE. A standard EXE is simpler to code, because there is no implementation of the notification interface. </p>
+<div class="NINoteImportant"><hr>
+  <a name="996063"> </a> <b>TIP: </b> When you develop your conduit as a standard EXE client module, you can debug your conduit with the handheld online. After everything is working properly, you can convert your application to an ActiveX EXE or ActiveX DLL. 
+<hr>
+</div>
+
+<h4 class="hcH4">
+  <a name="996066"> </a>ActiveX Client
+</h4>
+
+<p><a name="996070"> </a>The ActiveX client allows you to use the <a href="COMRef_Meth.html#996402"><code>CfgConduit()</code></a> method to configure your conduit from HotSync Manager's <b>Custom</b> menu and provides location independence through DCOM. In other words, you can access the conduit from anywhere on the network through DCOM.</p>
+
+<h2 class="haH2">
+  <a name="996073"> </a>Multithreading Support <a href="#995935"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996074"> </a>COM Sync multithreading makes it possible to run multiple threads, or client processes, that all connect with the same COM-based conduit. Because HotSync Manager does not support multithreading, the COM Sync module serializes all handheld requests to best leverage the standard HotSync process.</p>
+
+<p><a name="996075"> </a>If the client process is an EXE, top-level objects are created in separate threads. DLL clients manage their own threading model, which must be set to "Apartment Threaded." For all clients, the COM Sync thread keeps the HotSync Manager progress indicator updated. </p>
+
+<p><a name="996077"> </a>The threading capabilities combined with the use of executable client modules, ActiveX or not, make a powerful development and processing environment. For example: </p>
+<ul type="disc">
+  <li><a name="996078"> </a>During the development stages, the COM Sync module executes your development environment instead of your conduit. This is a great way to debug your conduit from within your IDE. 
+  <li><a name="996079"> </a>Because the COM Sync module takes care of updating the HotSync Manager progress indicator (<code>SyncYieldCycles()</code>), you can debug your conduits without HotSync Manager appearing to freeze.
+  <li><a name="996080"> </a>Conduits provide user interface, or other tasks, at the same time they are synchronizing remote databases using separate threads or processes.
+</ul>
+
+<h2 class="haH2">
+  <a name="996083"> </a>COM Sync Object Model <a href="#995935"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996084"> </a>The COM Sync object model consists of the following types of objects as shown in <a href="COMComp_Basics.html#996092">Figure 2.3</a> and in the following subsections. The <a href="COMRef_Interface.html#995943"><code>IPDClientNotify</code></a> interface specification defines methods that your COM-based conduit must implement so that HotSync Manager can run your conduit during a HotSync operation.</p>
+
+<p><a name="1003500"> </a>The following subsections describe each group of related objects:</p>
+   <blockquote class = "bq"><a name="1003515"> </a><a href="COMComp_Basics.html#999266">System Information Objects</a></blockquote>
+   <blockquote class = "bq"><a name="1003637"> </a><a href="COMComp_Basics.html#999424">Schema Database Objects</a></blockquote>
+   <blockquote class = "bq"><a name="1003669"> </a><a href="COMComp_Basics.html#999361">Extended Database Objects</a></blockquote>
+   <blockquote class = "bq"><a name="1003701"> </a><a href="COMComp_Basics.html#999390">Classic Database Objects</a></blockquote>
+   <blockquote class = "bq"><a name="1003733"> </a><a href="COMComp_Basics.html#996122">Installation and Support Objects</a></blockquote>
+   <blockquote class = "bq"><a name="1003765"> </a><a href="COMComp_Basics.html#996130">Expansion Card Objects</a></blockquote>
+
+<p class="FFigureCaption">
+  <a name="996092"> </a><b>Figure 2.3&nbsp;&nbsp;COM Sync interface and object model </b>
+</p>
+<div align="left"><img src="images/COMSyncObjectModel.gif" height="348" width="259" border="0" hspace="0" vspace="0">
+</div>
+<h3 class="hbH3">
+  <a name="999266"> </a>System Information Objects <a href="#995935"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996097"> </a>System information objects consist of one top-level object, <a href="COMRef_Obj.html#1185985"><code>PDSystemAdapter</code></a>, and its child objects handle system-level data. Methods for these objects in turn use the underlying Sync Manager API. </p>
+
+<p class="FFigureCaption">
+  <a name="996102"> </a><b>Figure 2.4&nbsp;&nbsp;System information objects</b>
+</p>
+<div align="left"><img src="images/COMSync-SystemObjects.gif" height="164" width="263" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="1000462"> </a><a href="COMComp_Basics.html#1000470">Table 2.2</a> summarizes the purpose of these objects. </p>
+
+<p class="fineprint">
+<p class="caption"><a name="1000470"> </a><b>Table 2.2&nbsp;&nbsp;System information objects </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1000474"> </a><b>Object</b></p>
+    </th>
+    <th><p class="tt"><a name="1000476"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1000485"> </a><a href="COMRef_Obj.html#1185985"><code>PDSystemAdapter</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1000487"> </a>Access to system methods and information.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1000492"> </a><a href="COMRef_Obj.html#1167858"><code>PDHotsyncInfo</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1000494"> </a>Information supplied by the HotSync<sup>&#174;</sup> Manager to the conduit.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1000499"> </a><a href="COMRef_Obj.html#1181153"><code>PDMemoryCardInfo</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1000501"> </a>Memory card information.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1000506"> </a><a href="COMRef_Obj.html#1191323"><code>PDUserInfo</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1000508"> </a>HotSync user information.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+<h3 class="hbH3">
+  <a name="999424"> </a>Schema Database Objects <a href="#995935"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="999802"> </a>Schema database objects consist of the top-level <a href="COMRef_Obj.html#1198575"><code>PSDDatabaseQuery</code></a> object that handles various <a href="Intro_Glossary.html#919802"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">schema database</span></a> operations. Methods for these objects in turn call the underlying schema Sync Manager API.</p>
+
+<p class="FFigureCaption">
+  <a name="1004453"> </a><b>Figure 2.5&nbsp;&nbsp;Schema database objects</b>
+</p>
+<div align="left"><img src="images/COMSync-DBObjSchema.gif" height="425" width="395" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="1001068"> </a><a href="COMComp_Basics.html#1001098">Table 2.3</a> summarizes the purpose of these objects. </p>
+
+<p class="fineprint">
+<p class="caption"><a name="1001098"> </a><b>Table 2.3&nbsp;&nbsp;Schema database objects </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1001102"> </a><b>Object</b></p>
+    </th>
+    <th><p class="tt"><a name="1001104"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001145"> </a><a href="COMRef_Obj.html#1198575"><code>PSDDatabaseQuery</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1001147"> </a>Schema database management, access, and information. Some of this objects's methods are specific to schema databases</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001152"> </a><a href="COMRef_Obj.html#1197474"><code>PSDDatabaseAdapter</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1001154"> </a>Methods to manage rows, groups of rows with the same schema (tables), columns, and each row's category membership.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001159"> </a><a href="COMRef_Obj.html#1198067"><code>PSDDatabaseInfo</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1001161"> </a>Information about a single schema database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001166"> </a><a href="COMRef_Obj.html#1198992"><code>PSDRowAdapter</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1001168"> </a>Methods and properties for access to the rows in a single open schema database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001173"> </a><a href="COMRef_Obj.html#1196187"><code>PSDCategoryAdapter</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1001175"> </a>Methods and properties to access categories in a single schema database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001180"> </a><a href="COMRef_Obj.html#1199788"><code>PSDTable</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1001182"> </a>Methods and properties to access a single table in a schema database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001187"> </a><a href="COMRef_Obj.html#1196879"><code>PSDColumnInfo</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1001189"> </a>Information about a single column in a schema database table.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001194"> </a><a href="COMRef_Obj.html#1199377"><code>PSDRowData</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1001196"> </a>Methods and properties to access a single row in a schema database table.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001201"> </a><a href="COMRef_Obj.html#1199637"><code>PSDRowSet</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1001203"> </a>Methods and properties to access a set of rows returned by some <a href="COMRef_Obj.html#1198992"><code>PSDRowAdapter</code></a> methods.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+<h3 class="hbH3">
+  <a name="999361"> </a>Extended Database Objects <a href="#995935"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="999583"> </a>Extended database objects consist of the top-level <a href="COMRef_Obj.html#1127262"><code>DmDatabaseQuery</code></a> object that handles various <a href="Intro_Glossary.html#918750"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">extended database</span></a> operations. Methods for these objects in turn call the underlying extended Sync Manager API. </p>
+
+<p class="FFigureCaption">
+  <a name="999529"> </a><b>Figure 2.6&nbsp;&nbsp;Extended database objects</b>
+</p>
+<div align="left"><img src="images/COMSync-DBObjExtended.gif" height="220" width="347" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="1001623"> </a><a href="COMComp_Basics.html#1001651">Table 2.4</a> summarizes the purpose of these objects.</p>
+
+<p class="fineprint">
+<p class="caption"><a name="1001651"> </a><b>Table 2.4&nbsp;&nbsp;Extended database objects </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1001655"> </a><b>Object</b></p>
+    </th>
+    <th><p class="tt"><a name="1001657"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001768"> </a><a href="COMRef_Obj.html#1127262"><code>DmDatabaseQuery</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1001770"> </a>Extended database management, access, and information.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001775"> </a><a href="COMRef_Obj.html#1125941"><code>DmDatabaseInfo</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1001777"> </a>Information about a single extended database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001782"> </a><a href="COMRef_Obj.html#1128455"><code>DmRecordAdapter</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1001784"> </a>Methods and properties for access to the records in a single open extended database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001789"> </a><a href="COMRef_Obj.html#1124791"><code>DmCategories</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1001791"> </a>Wrapper object for the application info block permitting easy access to the database categories.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001796"> </a><a href="COMRef_Obj.html#1192370"><code>PDUtility</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1001798"> </a>Byte array access, print formatting, and other useful utility methods.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+<h3 class="hbH3">
+  <a name="999390"> </a>Classic Database Objects <a href="#995935"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996110"> </a>Classic database objects consist of the top-level <a href="COMRef_Obj.html#1150385"><code>PDDatabaseQuery</code></a> object that handles various database operations along with record objects that handle the databases of the four classic Palm OS<sup>&#174;</sup> PIM applications (Address Book, Date Book, Memo Pad, and To Do List). Methods for these objects in turn call the underlying Sync Manager API. Another top-level object, <a href="COMRef_Obj.html#1192370"><code>PDUtility</code></a>, provides various utility methods for things like converting a byte array to a string. </p>
+<div class="NINoteImportant"><hr>
+  <a name="999446"> </a> <b>NOTE: </b> The classic PIM applications are available only on some handhelds running versions of Palm OS earlier than Palm OS Cobalt. These PIM record objects do not work with the PIM applications that ship with Palm OS Cobalt.
+<hr>
+</div>
+
+<p class="FFigureCaption">
+  <a name="996116"> </a><b>Figure 2.7&nbsp;&nbsp;Classic database objects</b>
+</p>
+<div align="left"><img src="images/COMSync-DBObjClassic.gif" height="649" width="380" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="1002207"> </a><a href="COMComp_Basics.html#1002218">Table 2.5</a> summarizes the purpose of these objects.</p>
+
+<p class="fineprint">
+<p class="caption"><a name="1002218"> </a><b>Table 2.5&nbsp;&nbsp;Classic database objects </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1002222"> </a><b>Object</b></p>
+    </th>
+    <th><p class="tt"><a name="1002224"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002374"> </a><a href="COMRef_Obj.html#1150385"><code>PDDatabaseQuery</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1002376"> </a>Classic database management, access, and information.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002381"> </a><a href="COMRef_Obj.html#1147483"><code>PDDatabaseInfo</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1002383"> </a>Information about a single classic database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002388"> </a><a href="COMRef_Obj.html#1182704"><code>PDRecordAdapter</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1002390"> </a>Methods and properties for access to the records in a single open classic database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002395"> </a><a href="COMRef_Obj.html#1138414"><code>PDCategories</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1002397"> </a>Wrapper object for the application info block permitting easy access to the database categories.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002402"> </a><a href="COMRef_Obj.html#1184437"><code>PDResourceAdapter</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1002404"> </a>Methods and properties for access to a single open resource database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002409"> </a><a href="COMRef_Obj.html#1192370"><code>PDUtility</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1002411"> </a>Byte array access, print formatting, and other useful utility methods.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002416"> </a><a href="COMRef_Obj.html#1135266"><code>PDAddressDbHHRecordAdapter</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1002418"> </a>Methods and properties for access to a single open Address Book database. Use <a href="COMRef_Obj.html#1150385"><code>PDDatabaseQuery</code></a> to obtain this object. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002426"> </a><a href="COMRef_Obj.html#1158614"><code>PDDateBookDbHHRecordAdapter</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1002428"> </a>Methods and properties for access to a single open Date Book database. Use <a href="COMRef_Obj.html#1150385"><code>PDDatabaseQuery</code></a> to obtain this object. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002436"> </a><a href="COMRef_Obj.html#1179502"><code>PDMemoDbHHRecordAdapter</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1002438"> </a>Methods and properties for access to a single open Memo Pad database. Use <a href="COMRef_Obj.html#1150385"><code>PDDatabaseQuery</code></a> to obtain this object. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002446"> </a><a href="COMRef_Obj.html#1188743"><code>PDTodoDbHHRecordAdapter</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1002448"> </a>Methods and properties for access to a single open To Do List database. Use <a href="COMRef_Obj.html#1150385"><code>PDDatabaseQuery</code></a> to obtain this object. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002456"> </a><a href="COMRef_Obj.html#1131951"><code>PDAddressDbHHRecord</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1002458"> </a>Represents the structure of a record in the Address Book database on the handheld. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002463"> </a><a href="COMRef_Obj.html#1153168"><code>PDDateBookDbHHRecord</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1002465"> </a>Represents the structure of a record in the Date Book database on the handheld. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002470"> </a><a href="COMRef_Obj.html#1177883"><code>PDMemoDbHHRecord</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1002472"> </a>Represents the structure of a record in the Memo Pad database on the handheld. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1002477"> </a><a href="COMRef_Obj.html#1187438"><code>PDTodoDbHHRecord</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1002479"> </a>Represents the structure of a record in the To Do List database on the handheld. </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+<h3 class="hbH3">
+  <a name="996122"> </a>Installation and Support Objects <a href="#995935"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="999854"> </a>Installation and support objects consist of top-level objects that provide methods for installing conduits on the desktop, databases to the handheld's primary storage, and files to the handheld's expansion cards. They also provide access to information about HotSync Manager users on the desktop. Methods for these objects in turn call the underlying Conduit Manager, Install Conduit Manager, Notifier Install Manager, Install Aide, User Data, HotSync Manager, and some Sync Manager APIs.</p>
+
+<p class="FFigureCaption">
+  <a name="996124"> </a><b>Figure 2.8&nbsp;&nbsp;Installation and support objects</b>
+</p>
+<div align="left"><img src="images/COMSync-InstallSupportObjects.gif" height="329" width="171" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="1002730"> </a><a href="COMComp_Basics.html#1002741">Table 2.6</a> summarizes the purpose of these objects.</p>
+
+<p class="fineprint">
+<p class="caption"><a name="1002741"> </a><b>Table 2.6&nbsp;&nbsp;Installation and support objects </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1002745"> </a><b>Object</b></p>
+    </th>
+    <th><p class="tt"><a name="1002747"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1003011"> </a><a href="COMRef_Obj.html#1141502"><code>PDCondMgr</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1003013"> </a>Methods to register a conduit for the current Windows user during installation. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1005815"> </a><a href="COMRef_Obj.html#1232524"><code>PDSystemCondMgr</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="1005817"> </a>Methods to register a conduit for the system during installation. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1003018"> </a><a href="COMRef_Obj.html#1144549"><code>PDConduitInfo</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1003020"> </a>Properties of a conduit required to register it with HotSync Manager.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1006316"> </a><a href="COMRef_Obj.html#1238841"><code>PSDDatabaseUtilities</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1006318"> </a>Methods for backing up and installing databases during a HotSync operation, determining desktop trust status, and managing security data.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1003025"> </a><a href="COMRef_Obj.html#1174279"><code>PDInstallConduit</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1003027"> </a>Methods to register an install conduit during installation. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1003032"> </a><a href="COMRef_Obj.html#1176123"><code>PDInstallConduitInfo</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1003034"> </a>Properties of an install conduit required to register it with HotSync Manager.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1003039"> </a><a href="COMRef_Obj.html#1170106"><code>PDHotSyncUtility</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1003041"> </a>Methods for controlling the HotSync Manager application.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1003046"> </a><a href="COMRef_Obj.html#1172233"><code>PDInstall</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1003048"> </a>Methods for queuing databases (including applications) to be installed on the handheld (or files to be copied to an expansion card) during the next HotSync operation.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1003053"> </a><a href="COMRef_Obj.html#1190026"><code>PDUserData</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1003055"> </a>Methods for accessing the users data store on the desktop computer.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+<h3 class="hbH3">
+  <a name="996130"> </a>Expansion Card Objects <a href="#995935"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="999871"> </a>Expansion card objects consist of top-level objects that represent handheld expansion cards and the volumes and files stored on them. Methods for these objects in turn call the underlying Expansion Manager and Virtual File System (VFS) Manager APIs. </p>
+
+<p class="FFigureCaption">
+  <a name="996132"> </a><b>Figure 2.9&nbsp;&nbsp;Expansion card objects</b>
+</p>
+<div align="left"><img src="images/COMSync-ExpansionObjects.gif" height="204" width="210" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="1003276"> </a><a href="COMComp_Basics.html#996148">Table 2.7</a> summarizes the purpose of these objects.</p>
+
+<p class="fineprint">
+<p class="caption"><a name="996148"> </a><b>Table 2.7&nbsp;&nbsp;Expansion card objects </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="996152"> </a><b>Object</b></p>
+    </th>
+    <th><p class="tt"><a name="996154"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996362"> </a><a href="COMRef_Obj.html#1165746"><code>PDExpansionManager</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="996364"> </a>Detects the presence of a slot and gets information about a given slot. Gets the slot reference numbers that are used subsequently to gather card information. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996369"> </a><a href="COMRef_Obj.html#1163598"><code>PDExpansionCardInfo</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="996371"> </a>Provides information about an expansion card: media type, product name, manufacturer name, and so on.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996376"> </a><a href="COMRef_Obj.html#1194445"><code>PDVFSManager</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="996378"> </a>Represents a file system on an expansion card. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996383"> </a><a href="COMRef_Obj.html#1195273"><code>PDVFSVolumeManager</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="996385"> </a>Represents a volume in a file system on an expansion card. Use it to create/update files, query for the card size, usage, and so on, and create files and directories on the volume. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996390"> </a><a href="COMRef_Obj.html#1193439"><code>PDVFSFileManager</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="996392"> </a>Manages files and directories in a given volume. Each instance carries a volume reference number. Use it to open existing files and directories and to read and write them. </p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<h2 class="haH2">
+  <a name="996397"> </a>COM ProgIDs <a href="#995935"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996398"> </a>COM uses GUIDs to uniquely name objects, interfaces, type libraries, and just about anything else that needs a unique name. With automation technology, Microsoft made the decision to add user-friendly names. </p>
+
+<p><a name="996399"> </a>These GUIDs are much easier to handle in Visual Basic and scripting languages. There are two registry entries added to the suite of entries used for component objects. These are the <code>ProgId</code> and the <code>VersionIndependentProgId</code>. They take the form <code>Application.Object.Version</code>. The <code>VersionIndependentProgId</code> loses the Version and becomes <code>Application.Object</code>.</p>
+
+<p><a name="996400"> </a>Visual Basic automatically adds these names and references to the registry. It uses the project name for the <code>Application</code> part and concatenates the object name for the <code>Object</code> part. In C++, the ATL Object Wizard gives the developer the chance to input the ProgID. These are added to the registry entries in the object's<code>.rgs</code> file. ATL also takes care of registry entries.</p>
+
+<p><a name="996401"> </a>Scripting languages generally use these names to bind to objects at run-time. The run-time scripting engine handles binding. Visual Basic can also bind to objects at run-time by using the <code>CreateObject</code> function. C++ programmers bind at run-time by calling <code>CLSIDFromProgID</code> to convert the <code>ProgId</code> to a GUID and then calling <code>CoCreateInstance</code> to get an instance of the object.</p>
+
+<h2 class="haH2">
+  <a name="996405"> </a>COM Error Handling  <a href="#995935"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996406"> </a>This section discusses error handling in Visual Basic and C/C++.</p>
+
+<h4 class="hcH4">
+  <a name="996417"> </a>COM Error Handling in Visual Basic
+</h4>
+
+<p><a name="996418"> </a>COM methods and properties are required to return <code>HRESULT</code> error types. Optionally, on an object basis, they can use the rich error handling facilities, <code>ErrorInfo</code> objects. COM defines a protocol for returning and retrieving this information. </p>
+
+<p><a name="996419"> </a>The Return protocol requires the object to implement the <code>ISupportErrorInfo</code> interface. Implementation of this interface indicates the object supports <code>ErrorInfo</code> objects. Object users must call the <code>ISupportErrorInfo::InterfaceSupportsErrorInfo</code> method for each interface the object implements to see if they can get <code>ErrorInfo</code> on that interface. <code>ErrorInfo</code> objects are available when <code>HRESULT</code> returns indicate errors.</p>
+
+<p><a name="996420"> </a>The Retrieval protocol permits object users to determine if <code>ErrorInfo</code> objects are available. Calling the API function <code>GetErrorInfo</code> retrieves an <code>ErrorInfo</code> object. These <code>ErrorInfo</code> objects contain additional information about the error that occurred.</p>
+
+<p><a name="996421"> </a>Visual Basic implements the Retrieval protocol and wraps it with the <code>Err</code> object. Visual Basic fills the <code>Err</code> object any time an error is returned from a call to a COM object interface method or property. Actions after this depend on the type and level of Visual Basic error handling in the function or subroutine that called the COM object. </p>
+
+<p><a name="996422"> </a>A detailed description of COM error handling protocol and Visual Basic error handling can be found on the MSDN CDs or Microsoft web site.</p>
+
+<h4 class="hcH4">
+  <a name="996425"> </a>COM Error Handling in C/C++
+</h4>
+
+<p><a name="996429"> </a><a href="COMComp_Basics.html#996431">Listing 2.1</a> shows a sample of typical C++ code to catch errors and exceptions.</p>
+<p class="CCodeCaption">
+  <a name="996431"> </a><b>Listing 2.1&nbsp;&nbsp;Example of COM error handling in C++</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+{<a name="996432"> </a>
+PDData baseQuery *pquery;<a name="996433"> </a>
+HRESULT hr;<a name="996434"> </a>
+hr = pquery-&gt;OpenRecordDatabase (pn, PDDirect.PRecordDatabase);<a name="996435"> </a>
+if (FAILED (hr)) {<a name="996436"> </a>
+   // Check to see if object supports exceptions.<a name="996438"> </a>
+   IsupportErrorInfo *pInfo = NULL;<a name="996439"> </a>
+   HRESULT hres = pQuery-&gt;QueryInterface (IID-ISupportErrorInfo, (void **) &amp; <a name="996440"> </a>
+      pInfo);<a name="996441"> </a>
+<a name="996442"> </a>
+   if (succeeded (hrRes) {<a name="996443"> </a>
+      hRes = pInfo-&gt; Interface supports ErrorInfo (IID-IPDDatabaseQuery),if <a name="996444"> </a>
+         (secceeded (hRes)) {<a name="996445"> </a>
+         IErrorInfo *pErrorInfo = NULL;<a name="996447"> </a>
+         hRes = GetErrorInfo (0, pErrorInfo);<a name="996448"> </a>
+         if (hRes == s_ok){<a name="996449"> </a>
+            BSTR bstrdesc;<a name="996450"> </a>
+            hRes = pErrorInfo-&gt; GetDescription(bstrDesc);<a name="996451"> </a>
+         }<a name="996452"> </a>
+   }<a name="996453"> </a>
+}<a name="996454"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h2 class="haH2">
+  <a name="1004101"> </a>Database Support and Extensibility <a href="#995935"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<h4 class="hcH4">
+  <a name="1004342"> </a>Database Support
+</h4>
+
+<p><a name="1004102"> </a>Palm Powered<sup>&#8482;</sup> handhelds support one or more of the following types of databases:</p>
+
+<dl>
+<dt><a name="1004103"> </a><a href="Intro_Glossary.html#919802"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">schema database</span></a></dt>
+<dd><a name="1004124"> </a>Highly structured, organized into tables that consist of rows and columns. Supported only in Palm OS Cobalt.</dd>
+
+<dt><a name="1004112"> </a><a href="Intro_Glossary.html#918750"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">extended database</span></a></dt>
+<dd><a name="1004128"> </a>An "extended" version of a classic database. Supports records greater than 64 KB in length. Supported only in Palm OS Cobalt.</dd>
+
+<dt><a name="1004114"> </a><a href="Intro_Glossary.html#918816"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">classic database</span></a></dt>
+<dd><a name="1004134"> </a>Minimally structured, organized into one or more records, each limited to 64 KB in length. Supported in Palm OS 1 and later. This is the type used by applications running on Palm OS Cobalt through PACE. The COM Sync module supports resources only in classic databases.</dd>
+
+</dl>
+
+<p><a name="1004168"> </a>For more information on Palm OS databases, see <a href="Intro_Databases.html#995933">Chapter 8, "Palm OS Databases,"</a> in the <i>Introduction to Conduit Development</i>.</p>
+
+<p><a name="996463"> </a>The COM Sync module implements methods to create and open databases of each of these types. These methods return <code>IUnknown</code> pointers to COM objects created to manage access to the open databases. Rather than returning pointers to fixed objects defined by the COM Sync Suite, these methods return pointers to objects declared by their ProgIDs in the <code>Create</code> or <code>Open</code> parameters. These are instances of an object that controls the I/O for that database and are called <b>database adapters</b>. </p>
+
+<p><a name="996466"> </a>The COM Sync module supplies a database adapter for each type of database. These adapters implement functionality covering the Sync Manager API. The adapter model is independent of the application database and is modeled after the structure of Palm OS<sup>&#174;</sup> databases.</p>
+
+<p><a name="1004245"> </a>When a handheld database is opened or created, the COM Sync module creates an adapter:</p>
+<ul type="disc">
+  <li><a name="1004249"> </a><a href="COMRef_Obj.html#1198992"><code>PSDRowAdapter</code></a> for rows in a schema database
+  <li><a name="1004253"> </a><a href="COMRef_Obj.html#1128455"><code>DmRecordAdapter</code></a> for records in an extended database
+  <li><a name="1004220"> </a><a href="COMRef_Obj.html#1182704"><code>PDRecordAdapter</code></a> for records and <a href="COMRef_Obj.html#1184437"><code>PDResourceAdapter</code></a> for resources in a classic database.
+</ul>
+
+<h4 class="hcH4">
+  <a name="1004286"> </a>Extensibility
+</h4>
+
+<p><a name="1004285"> </a>You can create your own adapters to access a specific handheld database, such as one of the PIM applications' databases or your own handheld application's database. However, in the case of a schema database, such as those of the Palm OS Cobalt PIM applications, you do not need to. If you know the schema database name and creator ID, you can retrieve the schema of each table, which gives the structure of the database and the data type of each column. As an example, see the Address Book sample in <code>&lt;CDK&gt;\COM\Samples\SchemaDB\AddressDB</code>.</p>
+
+<p><a name="1004328"> </a>But if you need to create your own adapter, you can. For example, instead of using <code>PDRecordAdapter</code> to access the classic Address Book database, you can create a custom adapter to handle the data format specific to the Address Book's classic database and hide all the details from the user. In CDK versions 4.03 and later, the COM Sync module includes four such adapters, one for each of the classic databases used by the classic Palm OS PIM applications that are available on most handhelds running versions of Palm OS earlier than Palm OS Cobalt: Address Book, Date Book, To Do List, and Memo Pad. These <b>PIM database adapters</b> have names of the form <code>PD&lt;PIM&gt;DbHHRecordAdapter</code>, where <code>&lt;PIM&gt;</code> is either <code>Address</code>, <code>DateBook</code>, <code>Memo</code>, or <code>Todo</code>. </p>
+<div class="NINoteImportant"><hr>
+  <a name="1004305"> </a> <b>NOTE: </b> The PIM database adapters provided in the COM Sync module access only the classic PIM databases. They do not work with the PIM databases in Palm OS Cobalt, which are schema databases.
+<hr>
+</div>
+
+<p><a name="996478"> </a>Because the <code>Create</code> and <code>Open</code> methods take the ProgID of the adapter object as a parameter, you can create and use your own adapters. These adapters extend the underlying capabilities of the COM Sync adapters to application specific methods and properties. For example, a you can create an adapter that uses the <code>PDRecordAdapter</code> object for record I/O and expose methods and properties that in turn expose the structure of the database records that your Palm OS application uses. </p>
+
+<p><a name="996480"> </a>The COM Sync module defines an interface, <code>IPDAInitialize</code>, and protocol that adapter developers must implement. Adapters use the COM Sync adapters as the basis of their implementation. They can expose the COM Sync adapter interface directly using COM aggregation or they can hide the COM Sync implementation and expose its functionality through delegation. </p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 2000-2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="COMComp_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="COMSyncCompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="COMComp_Intro.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="COMComp_Development.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="COMSyncCompanionIX.html">Index</a>
+</p>
+</td>
+</tr>
+<!-- END FOOTER -->
+
+</body>
+</html>

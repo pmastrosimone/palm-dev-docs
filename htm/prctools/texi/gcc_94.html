@@ -1,0 +1,159 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: 4.32.1 i386 floating point asm operands</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: 4.32.1 i386 floating point asm operands">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: 4.32.1 i386 floating point asm operands">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC94"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_93.html#SEC93"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_95.html#SEC95"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_93.html#SEC93"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_95.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 4.32.1 i386 floating point asm operands </H3>
+<!--docid::SEC94::-->
+<P>
+
+There are several rules on the usage of stack-like regs in
+asm_operands insns.  These rules apply only to the operands that are
+stack-like regs:
+</P><P>
+
+<OL>
+<LI>
+Given a set of input regs that die in an asm_operands, it is
+necessary to know which are implicitly popped by the asm, and
+which must be explicitly popped by gcc.
+<P>
+
+An input reg that is implicitly popped by the asm must be
+explicitly clobbered, unless it is constrained to match an
+output operand.
+</P><P>
+
+<LI>
+For any input reg that is implicitly popped by an asm, it is
+necessary to know how to adjust the stack to compensate for the pop.
+If any non-popped input is closer to the top of the reg-stack than
+the implicitly popped reg, it would not be possible to know what the
+stack looked like -- it's not clear how the rest of the stack "slides
+up".
+<P>
+
+All implicitly popped input regs must be closer to the top of
+the reg-stack than any input that is not implicitly popped.
+</P><P>
+
+It is possible that if an input dies in an insn, reload might
+use the input reg for an output reload.  Consider this example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>asm ("foo" : "=t" (a) : "f" (b));
+</pre></td></tr></table></P><P>
+
+This asm says that input B is not popped by the asm, and that
+the asm pushes a result onto the reg-stack, ie, the stack is one
+deeper after the asm than it was before.  But, it is possible that
+reload will think that it can use the same reg for both the input and
+the output, if input B dies in this insn.
+</P><P>
+
+If any input operand uses the <CODE>f</CODE> constraint, all output reg
+constraints must use the <CODE>&#38;</CODE> earlyclobber.
+</P><P>
+
+The asm above would be written as
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>asm ("foo" : "=&t" (a) : "f" (b));
+</pre></td></tr></table></P><P>
+
+<LI>
+Some operands need to be in particular places on the stack.  All
+output operands fall in this category -- there is no other way to
+know which regs the outputs appear in unless the user indicates
+this in the constraints.
+<P>
+
+Output operands must specifically indicate which reg an output
+appears in after an asm.  <CODE>=f</CODE> is not allowed: the operand
+constraints must select a class with a single reg.
+</P><P>
+
+<LI>
+Output operands may not be "inserted" between existing stack regs.
+Since no 387 opcode uses a read/write operand, all output operands
+are dead before the asm_operands, and are pushed by the asm_operands.
+It makes no sense to push anywhere but the top of the reg-stack.
+<P>
+
+Output operands must start at the top of the reg-stack: output
+operands may not "skip" a reg.
+</P><P>
+
+<LI>
+Some asm statements may need extra stack space for internal
+calculations.  This can be guaranteed by clobbering stack registers
+unrelated to the inputs and outputs.
+<P>
+
+</OL>
+<P>
+
+Here are a couple of reasonable asms to want to write.  This asm
+takes one input, which is internally popped, and produces two outputs.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>asm ("fsincos" : "=t" (cos), "=u" (sin) : "0" (inp));
+</pre></td></tr></table></P><P>
+
+This asm takes two inputs, which are popped by the <CODE>fyl2xp1</CODE> opcode,
+and replaces them with one output.  The user must code the <CODE>st(1)</CODE>
+clobber for reg-stack.c to know that <CODE>fyl2xp1</CODE> pops both inputs.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>asm ("fyl2xp1" : "=t" (result) : "0" (x), "u" (y) : "st(1)");
+</pre></td></tr></table></P><P>
+
+<A NAME="Constraints"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_93.html#SEC93"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_95.html#SEC95"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_65.html#SEC65"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_93.html#SEC93"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_95.html#SEC95"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

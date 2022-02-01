@@ -1,0 +1,553 @@
+<html>
+<head>
+<title>(Protein) Field.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:19:35">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FeatureMgr.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FileStream.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">42 &nbsp;&nbsp;
+Field.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="Field.html">42  Field.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#424941">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#425011">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="424917"> </a>The Palm OS Cobalt Field APIs have very few changes. Some function parameters and return types that were formerly unsigned 16-bit integers are now unsigned 32-bit integers. The <code>FieldType</code> structure is now completely opaque. Finally, a couple of APIs that were defined but not ever publicly used have been removed.</p>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425587"> </a><b>Table 42.1&nbsp;&nbsp;Deleted structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425591"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425593"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425595"> </a><code>FieldUndoType</code></p>
+    </td>
+    <td><p class="tt"><a name="425597"> </a>Nothing. This structure was defined but not used by any exported APIs.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425599"> </a><code>LineInfoType</code></p>
+    </td>
+    <td><p class="tt"><a name="428348"> </a>Nothing. This structure was used only in the <code>FieldType</code> structure, the contents of which are now completely private.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425608"> </a><b>Table 42.2&nbsp;&nbsp;Deleted types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425612"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425614"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425616"> </a><code>LineInfoPtr</code></p>
+    </td>
+    <td><p class="tt"><a name="425618"> </a>Nothing. This type was used only in the <code>FieldType</code> structure, the contents of which are now completely private.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425625"> </a><b>Table 42.3&nbsp;&nbsp;Deleted enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425629"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425631"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425637"> </a><code>UndoMode</code></p>
+    </td>
+    <td><p class="tt"><a name="425639"> </a>Nothing. This enum was only used by the <code>FieldUndoType</code> structure, which in turn was not used by any exported APIs.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="424941"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="425643"> </a><b>Table 42.4&nbsp;&nbsp;Modified functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425647"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425649"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425651"> </a><code>uint32_t FldCalcFieldHeight (const char *, Coord)</code></p>
+    </td>
+    <td><p class="tt"><a name="425653"> </a>This function used to return an unsigned 16-bit integer.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425671"> </a><code>uint32_t FldGetNumberOfBlankLines(const FieldType *)</code></p>
+    </td>
+    <td><p class="tt"><a name="428287"> </a>This function used to return an unsigned 16-bit integer.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425679"> </a><code>void FldGetScrollValues (const FieldType *, uint32_t *, uint32_t *, uint32_t *)</code></p>
+    </td>
+    <td><p class="tt"><a name="425681"> </a>The three final parameters used to be pointers to unsigned 16-bit integers.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425699"> </a><code>uint32_t FldGetVisibleLines (const FieldType *)</code></p>
+    </td>
+    <td><p class="tt"><a name="428293"> </a>This function used to return an unsigned 16-bit integer.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425711"> </a><code>void FldScrollField (FieldType *, uint32_t, WinDirectionType)</code></p>
+    </td>
+    <td><p class="tt"><a name="425713"> </a><code class="par">linesToScroll</code> was an unsigned 16-bit integer.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="427785"> </a><code>void FldSendHeightChangeNotification (const FieldType *, size_t, int32_t);</code></p>
+    </td>
+    <td><p class="tt"><a name="428309"> </a><code class="par">numLines</code> was an unsigned 16-bit integer.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425772"> </a><b>Table 42.5&nbsp;&nbsp;Modified structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425776"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425778"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425784"> </a><code>FieldType</code></p>
+    </td>
+    <td><p class="tt"><a name="425786"> </a>The internals of this structure are now completely private.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425803"> </a><b>Table 42.6&nbsp;&nbsp;Modified #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425807"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="425809"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425811"> </a><code>#define maxFieldTextLen SIZE_MAX</code></p>
+    </td>
+    <td><p class="tt"><a name="425813"> </a>Was <code>0x7fff</code>. Note that <code>SIZE_MAX</code> is defined in <code>stdint.h</code> (as 2147483647).</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="428323"> </a><b>Table 42.7&nbsp;&nbsp;Modified enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="428327"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="428329"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428331"> </a><code>JustificationType</code></p>
+    </td>
+    <td><p class="tt"><a name="428333"> </a>Formerly an enum, this is now a typedef that accepts one of the values defined by the <code>justifications</code> enum.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="425011"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="428134"> </a><b>Table 42.8&nbsp;&nbsp;Unchanged functions </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="428138"> </a>FldCompactText()</p>
+    </td>
+    <td><p class="tt"><a name="428140"> </a>FldCopy()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428142"> </a>FldCut()</p>
+    </td>
+    <td><p class="tt"><a name="428144"> </a><code>FldDelete()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428146"> </a>FldDirty()</p>
+    </td>
+    <td><p class="tt"><a name="428148"> </a>FldDrawField()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428150"> </a>FldEraseField()</p>
+    </td>
+    <td><p class="tt"><a name="428152"> </a>FldFreeMemory()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428154"> </a><code>FldGetAttributes()</code></p>
+    </td>
+    <td><p class="tt"><a name="428156"> </a>FldGetBounds()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428158"> </a>FldGetFont()</p>
+    </td>
+    <td><p class="tt"><a name="428160"> </a><code>FldGetInsPtPosition()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428162"> </a><code>FldGetMaxChars()</code></p>
+    </td>
+    <td><p class="tt"><a name="428164"> </a><code>FldGetScrollPosition()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428166"> </a><code>FldGetSelection()</code></p>
+    </td>
+    <td><p class="tt"><a name="428168"> </a><code>FldGetTextAllocatedSize()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428170"> </a>FldGetTextHandle()</p>
+    </td>
+    <td><p class="tt"><a name="428172"> </a><code>FldGetTextHeight()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428174"> </a><code>FldGetTextLength()</code></p>
+    </td>
+    <td><p class="tt"><a name="428176"> </a>FldGetTextPtr()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428178"> </a>FldGrabFocus()</p>
+    </td>
+    <td><p class="tt"><a name="428180"> </a>FldHandleEvent()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428182"> </a><code>FldInsert()</code></p>
+    </td>
+    <td><p class="tt"><a name="428184"> </a>FldMakeFullyVisible()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428186"> </a><code>FldNewField()</code></p>
+    </td>
+    <td><p class="tt"><a name="428188"> </a>FldPaste()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428190"> </a>FldRecalculateField()</p>
+    </td>
+    <td><p class="tt"><a name="428192"> </a>FldReleaseFocus()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428194"> </a>FldScrollable()</p>
+    </td>
+    <td><p class="tt"><a name="428196"> </a>FldSendChangeNotification()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428198"> </a>FldSetAttributes()</p>
+    </td>
+    <td><p class="tt"><a name="428200"> </a>FldSetBounds()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428202"> </a>FldSetDirty()</p>
+    </td>
+    <td><p class="tt"><a name="428204"> </a>FldSetFont()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428206"> </a><code>FldSetInsertionPoint()</code></p>
+    </td>
+    <td><p class="tt"><a name="428208"> </a><code>FldSetInsPtPosition()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428210"> </a><code>FldSetMaxChars()</code></p>
+    </td>
+    <td><p class="tt"><a name="428212"> </a>FldSetMaxVisibleLines()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428214"> </a><code>FldSetScrollPosition()</code></p>
+    </td>
+    <td><p class="tt"><a name="428216"> </a><code>FldSetSelection()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428218"> </a><code>FldSetText()</code></p>
+    </td>
+    <td><p class="tt"><a name="428220"> </a><code>FldSetTextAllocatedSize()</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428222"> </a>FldSetTextHandle()</p>
+    </td>
+    <td><p class="tt"><a name="428224"> </a>FldSetTextPtr()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428226"> </a>FldSetUsable()</p>
+    </td>
+    <td><p class="tt"><a name="428228"> </a>FldUndo()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="428230"> </a><code>FldWordWrap()</code></p>
+    </td>
+    <td><p class="tt"><a name="428232"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="427718"> </a><b>Table 42.9&nbsp;&nbsp;Unchanged structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="427726"> </a><code>FieldAttrType</code></p>
+    </td>
+    <td><p class="tt"><a name="427728"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425890"> </a><b>Table 42.10&nbsp;&nbsp;Unchanged types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425894"> </a>FieldAttrPtr</p>
+    </td>
+    <td><p class="tt"><a name="425896"> </a>FieldPtr</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425903"> </a><b>Table 42.11&nbsp;&nbsp;Unchanged #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425907"> </a>maxFieldLines</p>
+    </td>
+    <td><p class="tt"><a name="425909"> </a>undoBufferSize</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425912"> </a><b>Table 42.12&nbsp;&nbsp;Unchanged enumerated types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="425916"> </a>justifications</p>
+    </td>
+    <td><p class="tt"><a name="425918"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="425053"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FeatureMgr.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="FileStream.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

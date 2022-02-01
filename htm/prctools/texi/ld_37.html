@@ -1,0 +1,160 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Overlay Description</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Overlay Description">
+<META NAME="keywords" CONTENT="Untitled Document: Overlay Description">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC37"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_36.html#SEC36"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_38.html#SEC38"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_38.html#SEC38"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_18.html#SEC18"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.6.9 Overlay Description </H3>
+<!--docid::SEC37::-->
+An overlay description provides an easy way to describe sections which
+are to be loaded as part of a single memory image but are to be run at
+the same memory address.  At run time, some sort of overlay manager will
+copy the overlaid sections in and out of the runtime memory address as
+required, perhaps by simply manipulating addressing bits.  This approach
+can be useful, for example, when a certain region of memory is faster
+than another.
+<P>
+
+Overlays are described using the <CODE>OVERLAY</CODE> command.  The
+<CODE>OVERLAY</CODE> command is used within a <CODE>SECTIONS</CODE> command, like an
+output section description.  The full syntax of the <CODE>OVERLAY</CODE>
+command is as follows:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>OVERLAY [<VAR>start</VAR>] : [NOCROSSREFS] [AT ( <VAR>ldaddr</VAR> )]
+  {
+    <VAR>secname1</VAR>
+      {
+        <VAR>output-section-command</VAR>
+        <VAR>output-section-command</VAR>
+        <small>...</small>
+      } [:<VAR>phdr</VAR><small>...</small>] [=<VAR>fill</VAR>]
+    <VAR>secname2</VAR>
+      {
+        <VAR>output-section-command</VAR>
+        <VAR>output-section-command</VAR>
+        <small>...</small>
+      } [:<VAR>phdr</VAR><small>...</small>] [=<VAR>fill</VAR>]
+    <small>...</small>
+  } [&#62;<VAR>region</VAR>] [:<VAR>phdr</VAR><small>...</small>] [=<VAR>fill</VAR>]
+</FONT></pre></td></tr></table></P><P>
+
+Everything is optional except <CODE>OVERLAY</CODE> (a keyword), and each
+section must have a name (<VAR>secname1</VAR> and <VAR>secname2</VAR> above).  The
+section definitions within the <CODE>OVERLAY</CODE> construct are identical to
+those within the general <CODE>SECTIONS</CODE> contruct (see section <A HREF="ld_18.html#SEC18">3.6 SECTIONS Command</A>),
+except that no addresses and no memory regions may be defined for
+sections within an <CODE>OVERLAY</CODE>.
+</P><P>
+
+The sections are all defined with the same starting address.  The load
+addresses of the sections are arranged such that they are consecutive in
+memory starting at the load address used for the <CODE>OVERLAY</CODE> as a
+whole (as with normal section definitions, the load address is optional,
+and defaults to the start address; the start address is also optional,
+and defaults to the current value of the location counter).
+</P><P>
+
+If the <CODE>NOCROSSREFS</CODE> keyword is used, and there any references
+among the sections, the linker will report an error.  Since the sections
+all run at the same address, it normally does not make sense for one
+section to refer directly to another.  See section <A HREF="ld_14.html#SEC14">NOCROSSREFS</A>.
+</P><P>
+
+For each section within the <CODE>OVERLAY</CODE>, the linker automatically
+defines two symbols.  The symbol <CODE>__load_start_<VAR>secname</VAR></CODE> is
+defined as the starting load address of the section.  The symbol
+<CODE>__load_stop_<VAR>secname</VAR></CODE> is defined as the final load address of
+the section.  Any characters within <VAR>secname</VAR> which are not legal
+within C identifiers are removed.  C (or assembler) code may use these
+symbols to move the overlaid sections around as necessary.
+</P><P>
+
+At the end of the overlay, the value of the location counter is set to
+the start address of the overlay plus the size of the largest section.
+</P><P>
+
+Here is an example.  Remember that this would appear inside a
+<CODE>SECTIONS</CODE> construct.
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>  OVERLAY 0x1000 : AT (0x4000)
+   {
+     .text0 { o1/*.o(.text) }
+     .text1 { o2/*.o(.text) }
+   }
+</FONT></pre></td></tr></table>This will define both <SAMP>`.text0'</SAMP> and <SAMP>`.text1'</SAMP> to start at
+address 0x1000.  <SAMP>`.text0'</SAMP> will be loaded at address 0x4000, and
+<SAMP>`.text1'</SAMP> will be loaded immediately after <SAMP>`.text0'</SAMP>.  The
+following symbols will be defined: <CODE>__load_start_text0</CODE>,
+<CODE>__load_stop_text0</CODE>, <CODE>__load_start_text1</CODE>,
+<CODE>__load_stop_text1</CODE>.
+</P><P>
+
+C code to copy overlay <CODE>.text1</CODE> into the overlay area might look
+like the following.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>  extern char __load_start_text1, __load_stop_text1;
+  memcpy ((char *) 0x1000, &#38;__load_start_text1,
+          &#38;__load_stop_text1 - &#38;__load_start_text1);
+</FONT></pre></td></tr></table></P><P>
+
+Note that the <CODE>OVERLAY</CODE> command is just syntactic sugar, since
+everything it does can be done using the more basic commands.  The above
+example could have been written identically as follows.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>  .text0 0x1000 : AT (0x4000) { o1/*.o(.text) }
+  __load_start_text0 = LOADADDR (.text0);
+  __load_stop_text0 = LOADADDR (.text0) + SIZEOF (.text0);
+  .text1 0x1000 : AT (0x4000 + SIZEOF (.text0)) { o2/*.o(.text) }
+  __load_start_text1 = LOADADDR (.text1);
+  __load_stop_text1 = LOADADDR (.text1) + SIZEOF (.text1);
+  . = 0x1000 + MAX (SIZEOF (.text0), SIZEOF (.text1));
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="MEMORY"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_36.html#SEC36"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_38.html#SEC38"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_38.html#SEC38"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_18.html#SEC18"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_38.html#SEC38"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

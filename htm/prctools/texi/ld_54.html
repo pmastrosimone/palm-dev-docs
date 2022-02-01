@@ -1,0 +1,76 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: HPPA ELF32</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: HPPA ELF32">
+<META NAME="keywords" CONTENT="Untitled Document: HPPA ELF32">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC54"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_53.html#SEC53"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_55.html#SEC55"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_55.html#SEC55"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_50.html#SEC50"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_60.html#SEC60"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.4 <CODE>ld</CODE> and HPPA 32-bit ELF Support </H2>
+<!--docid::SEC54::-->
+When generating a shared library, <CODE>ld</CODE> will by default generate
+import stubs suitable for use with a single sub-space application.
+The <SAMP>`--multi-subspace'</SAMP> switch causes <CODE>ld</CODE> to generate export
+stubs, and different (larger) import stubs suitable for use with
+multiple sub-spaces.
+<P>
+
+<A NAME="IDX376"></A>
+<A NAME="IDX377"></A>
+Long branch stubs and import/export stubs are placed by <CODE>ld</CODE> in
+stub sections located between groups of input sections.
+<SAMP>`--stub-group-size'</SAMP> specifies the maximum size of a group of input
+sections handled by one stub section.  Since branch offsets are signed,
+a stub section may serve two groups of input sections, one group before
+the stub section, and one group after it.  However, when using
+conditional branches that require stubs, it may be better (for branch
+prediction) that stub sections only serve one group of input sections.
+A negative value for <SAMP>`N'</SAMP> chooses this scheme, ensuring that
+branches to stubs always use a negative offset.  Two special values of
+<SAMP>`N'</SAMP> are recognized, <SAMP>`1'</SAMP> and <SAMP>`-1'</SAMP>.  These both instruct
+<CODE>ld</CODE> to automatically size input section groups for the branch types
+detected, with the same behaviour regarding stub placement as other
+positive or negative values of <SAMP>`N'</SAMP> respectively.
+</P><P>
+
+Note that <SAMP>`--stub-group-size'</SAMP> does not split input sections.  A
+single input section larger than the group size specified will of course
+create a larger group (of one section).  If input sections are too
+large, it may not be possible for a branch to reach its stub.
+</P><P>
+
+<A NAME="MMIX"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

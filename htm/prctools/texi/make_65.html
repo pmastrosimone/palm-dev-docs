@@ -1,0 +1,93 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Substitution Refs</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Substitution Refs">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Substitution Refs">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC69"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_64.html#SEC68"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_66.html#SEC70"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_63.html#SEC67"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_64.html#SEC68"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_67.html#SEC71"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 6.3.1 Substitution References </H3>
+<!--docid::SEC69::-->
+<P>
+
+<A NAME="IDX271"></A>
+<A NAME="IDX272"></A>
+A <EM>substitution reference</EM> substitutes the value of a variable with
+alterations that you specify.  It has the form
+<SAMP>`$(<VAR>var</VAR>:<VAR>a</VAR>=<VAR>b</VAR>)'</SAMP> (or
+<SAMP>`${<VAR>var</VAR>:<VAR>a</VAR>=<VAR>b</VAR>}'</SAMP>) and its meaning is to take the value
+of the variable <VAR>var</VAR>, replace every <VAR>a</VAR> at the end of a word with
+<VAR>b</VAR> in that value, and substitute the resulting string.
+</P><P>
+
+When we say "at the end of a word", we mean that <VAR>a</VAR> must appear
+either followed by whitespace or at the end of the value in order to be
+replaced; other occurrences of <VAR>a</VAR> in the value are unaltered.  For
+example:</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo := a.o b.o c.o
+bar := $(foo:.o=.c)
+</pre></td></tr></table></P><P>
+
+sets <SAMP>`bar'</SAMP> to <SAMP>`a.c b.c c.c'</SAMP>.  See section <A HREF="make_68.html#SEC72">Setting Variables</A>.
+</P><P>
+
+A substitution reference is actually an abbreviation for use of the
+<CODE>patsubst</CODE> expansion function (see section <A HREF="make_81.html#SEC85">Functions for String Substitution and Analysis</A>).  We provide
+substitution references as well as <CODE>patsubst</CODE> for compatibility with
+other implementations of <CODE>make</CODE>.
+</P><P>
+
+<A NAME="IDX273"></A>
+Another type of substitution reference lets you use the full power of
+the <CODE>patsubst</CODE> function.  It has the same form
+<SAMP>`$(<VAR>var</VAR>:<VAR>a</VAR>=<VAR>b</VAR>)'</SAMP> described above, except that now
+<VAR>a</VAR> must contain a single <SAMP>`%'</SAMP> character.  This case is
+equivalent to <SAMP>`$(patsubst <VAR>a</VAR>,<VAR>b</VAR>,$(<VAR>var</VAR>))'</SAMP>.
+See section <A HREF="make_81.html#SEC85">Functions for String Substitution and Analysis</A>,
+for a description of the <CODE>patsubst</CODE> function.</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>For example:
+
+foo := a.o b.o c.o
+bar := $(foo:%.o=%.c)
+</pre></td></tr></table></P><P>
+
+sets <SAMP>`bar'</SAMP> to <SAMP>`a.c b.c c.c'</SAMP>.
+</P><P>
+
+<A NAME="Computed Names"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

@@ -1,0 +1,87 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Literal Position Directive</TITLE>
+
+<META NAME="description" CONTENT="Using as: Literal Position Directive">
+<META NAME="keywords" CONTENT="Using as: Literal Position Directive">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC437"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_427.html#SEC436"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_429.html#SEC438"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_429.html#SEC438"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_422.html#SEC431"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_432.html#SEC441"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 8.33.5.6 literal_position </H4>
+<!--docid::SEC437::-->
+<P>
+
+When using <SAMP>`--text-section-literals'</SAMP> to place literals inline
+in the section being assembled, the <CODE>.literal_position</CODE> directive
+can be used to mark a potential location for a literal pool.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    .literal_position
+</FONT></pre></td></tr></table></P><P>
+
+The <CODE>.literal_position</CODE> directive is ignored when the
+<SAMP>`--text-section-literals'</SAMP> option is not used.
+</P><P>
+
+The assembler will automatically place text section literal pools 
+before <CODE>ENTRY</CODE> instructions, so the <CODE>.literal_position</CODE>
+directive is only needed to specify some other location for a literal
+pool.  You may need to add an explicit jump instruction to skip over an
+inline literal pool.
+</P><P>
+
+For example, an interrupt vector does not begin with an <CODE>ENTRY</CODE>
+instruction so the assembler will be unable to automatically find a good
+place to put a literal pool.  Moreover, the code for the interrupt
+vector must be at a specific starting address, so the literal pool
+cannot come before the start of the code.  The literal pool for the
+vector must be explicitly positioned in the middle of the vector (before
+any uses of the literals, of course).  The <CODE>.literal_position</CODE>
+directive can be used to do this.  In the following code, the literal
+for <SAMP>`M'</SAMP> will automatically be aligned correctly and is placed after
+the unconditional jump.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    .global M
+code_start:
+    j continue
+    .literal_position
+    .align 4
+continue:
+    movi    a4, M
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="Literal Prefix Directive"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

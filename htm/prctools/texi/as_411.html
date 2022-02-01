@@ -1,0 +1,130 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Xtensa Options</TITLE>
+
+<META NAME="description" CONTENT="Using as: Xtensa Options">
+<META NAME="keywords" CONTENT="Using as: Xtensa Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC420"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_410.html#SEC419"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_412.html#SEC421"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_187.html#SEC196"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_410.html#SEC419"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_432.html#SEC441"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.33.1 Command Line Options </H3>
+<!--docid::SEC420::-->
+<P>
+
+The Xtensa version of the GNU assembler supports these
+special options:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>--density | --no-density</CODE>
+<DD><A NAME="IDX1526"></A>
+<A NAME="IDX1527"></A>
+<A NAME="IDX1528"></A>
+<A NAME="IDX1529"></A>
+Enable or disable use of the Xtensa code density option (16-bit
+instructions).  See section <A HREF="as_416.html#SEC425">Using Density Instructions</A>.  If the processor is configured with the density option,
+this is enabled by default; otherwise, it is always disabled.
+<P>
+
+<DT><CODE>--relax | --no-relax</CODE>
+<DD><A NAME="IDX1530"></A>
+<A NAME="IDX1531"></A>
+Enable or disable relaxation of instructions with immediate operands
+that are outside the legal range for the instructions.  See section <A HREF="as_418.html#SEC427">Xtensa Relaxation</A>.  The default is <SAMP>`--relax'</SAMP> and this
+default should almost always be used.  If relaxation is disabled with
+<SAMP>`--no-relax'</SAMP>, instruction operands that are out of range will cause
+errors.  Note: In the current implementation, these options also control
+whether assembler optimizations are performed, making these options
+equivalent to <SAMP>`--generics'</SAMP> and <SAMP>`--no-generics'</SAMP>.
+<P>
+
+<DT><CODE>--generics | --no-generics</CODE>
+<DD><A NAME="IDX1532"></A>
+<A NAME="IDX1533"></A>
+Enable or disable all assembler transformations of Xtensa instructions,
+including both relaxation and optimization.  The default is
+<SAMP>`--generics'</SAMP>; <SAMP>`--no-generics'</SAMP> should only be used in the rare
+cases when the instructions must be exactly as specified in the assembly
+source.
+As with <SAMP>`--no-relax'</SAMP>, using <SAMP>`--no-generics'</SAMP>
+causes out of range instruction operands to be errors.
+<P>
+
+<DT><CODE>--text-section-literals | --no-text-section-literals</CODE>
+<DD><A NAME="IDX1534"></A>
+<A NAME="IDX1535"></A>
+Control the treatment of literal pools.  The default is
+<SAMP>`--no-text-section-literals'</SAMP>, which places literals in a
+separate section in the output file.  This allows the literal pool to be
+placed in a data RAM/ROM, and it also allows the linker to combine literal
+pools from separate object files to remove redundant literals and
+improve code size.  With <SAMP>`--text-section-literals'</SAMP>, the
+literals are interspersed in the text section in order to keep them as
+close as possible to their references.  This may be necessary for large
+assembly files.
+<P>
+
+<DT><CODE>--target-align | --no-target-align</CODE>
+<DD><A NAME="IDX1536"></A>
+<A NAME="IDX1537"></A>
+Enable or disable automatic alignment to reduce branch penalties at some
+expense in code size.  See section <A HREF="as_417.html#SEC426">Automatic Instruction Alignment</A>.  This optimization is enabled by default.  Note
+that the assembler will always align instructions like <CODE>LOOP</CODE> that
+have fixed alignment requirements.
+<P>
+
+<DT><CODE>--longcalls | --no-longcalls</CODE>
+<DD><A NAME="IDX1538"></A>
+<A NAME="IDX1539"></A>
+Enable or disable transformation of call instructions to allow calls
+across a greater range of addresses.  See section <A HREF="as_420.html#SEC429">Function Call Relaxation</A>.  This option should be used when call
+targets can potentially be out of range, but it degrades both code size
+and performance.  The default is <SAMP>`--no-longcalls'</SAMP>.
+</DL>
+<P>
+
+<A NAME="Xtensa Syntax"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_410.html#SEC419"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_412.html#SEC421"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_187.html#SEC196"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_410.html#SEC419"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_432.html#SEC441"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,154 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: File Commands</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: File Commands">
+<META NAME="keywords" CONTENT="Untitled Document: File Commands">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC12"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_11.html#SEC11"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_13.html#SEC13"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_13.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_10.html#SEC10"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_15.html#SEC15"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.4.2 Commands Dealing with Files </H3>
+<!--docid::SEC12::-->
+Several linker script commands deal with files.
+<P>
+
+<DL COMPACT>
+<DT><CODE>INCLUDE <VAR>filename</VAR></CODE>
+<DD><A NAME="IDX272"></A>
+<A NAME="IDX273"></A>
+Include the linker script <VAR>filename</VAR> at this point.  The file will
+be searched for in the current directory, and in any directory specified
+with the <SAMP>`-L'</SAMP> option.  You can nest calls to <CODE>INCLUDE</CODE> up to
+10 levels deep.
+<P>
+
+<DT><CODE>INPUT(<VAR>file</VAR>, <VAR>file</VAR>, <small>...</small>)</CODE>
+<DD><DT><CODE>INPUT(<VAR>file</VAR> <VAR>file</VAR> <small>...</small>)</CODE>
+<DD><A NAME="IDX274"></A>
+<A NAME="IDX275"></A>
+<A NAME="IDX276"></A>
+<A NAME="IDX277"></A>
+The <CODE>INPUT</CODE> command directs the linker to include the named files
+in the link, as though they were named on the command line.
+<P>
+
+For example, if you always want to include <TT>`subr.o'</TT> any time you do
+a link, but you can't be bothered to put it on every link command line,
+then you can put <SAMP>`INPUT (subr.o)'</SAMP> in your linker script.
+</P><P>
+
+In fact, if you like, you can list all of your input files in the linker
+script, and then invoke the linker with nothing but a <SAMP>`-T'</SAMP> option.
+</P><P>
+
+In case a <EM>sysroot prefix</EM> is configured, and the filename starts
+with the <SAMP>`/'</SAMP> character, and the script being processed was
+located inside the <EM>sysroot prefix</EM>, the filename will be looked
+for in the <EM>sysroot prefix</EM>.  Otherwise, the linker will try to
+open the file in the current directory.  If it is not found, the
+linker will search through the archive library search path.  See the
+description of <SAMP>`-L'</SAMP> in <A HREF="ld_3.html#SEC3">Command Line Options</A>.
+</P><P>
+
+If you use <SAMP>`INPUT (-l<VAR>file</VAR>)'</SAMP>, <CODE>ld</CODE> will transform the
+name to <CODE>lib<VAR>file</VAR>.a</CODE>, as with the command line argument
+<SAMP>`-l'</SAMP>.
+</P><P>
+
+When you use the <CODE>INPUT</CODE> command in an implicit linker script, the
+files will be included in the link at the point at which the linker
+script file is included.  This can affect archive searching.
+</P><P>
+
+<DT><CODE>GROUP(<VAR>file</VAR>, <VAR>file</VAR>, <small>...</small>)</CODE>
+<DD><DT><CODE>GROUP(<VAR>file</VAR> <VAR>file</VAR> <small>...</small>)</CODE>
+<DD><A NAME="IDX278"></A>
+<A NAME="IDX279"></A>
+The <CODE>GROUP</CODE> command is like <CODE>INPUT</CODE>, except that the named
+files should all be archives, and they are searched repeatedly until no
+new undefined references are created.  See the description of <SAMP>`-('</SAMP>
+in <A HREF="ld_3.html#SEC3">Command Line Options</A>.
+<P>
+
+<DT><CODE>OUTPUT(<VAR>filename</VAR>)</CODE>
+<DD><A NAME="IDX280"></A>
+<A NAME="IDX281"></A>
+The <CODE>OUTPUT</CODE> command names the output file.  Using
+<CODE>OUTPUT(<VAR>filename</VAR>)</CODE> in the linker script is exactly like using
+<SAMP>`-o <VAR>filename</VAR>'</SAMP> on the command line (see section <A HREF="ld_3.html#SEC3">Command Line Options</A>).  If both are used, the command line option takes
+precedence.
+<P>
+
+You can use the <CODE>OUTPUT</CODE> command to define a default name for the
+output file other than the usual default of <TT>`a.out'</TT>.
+</P><P>
+
+<DT><CODE>SEARCH_DIR(<VAR>path</VAR>)</CODE>
+<DD><A NAME="IDX282"></A>
+<A NAME="IDX283"></A>
+<A NAME="IDX284"></A>
+<A NAME="IDX285"></A>
+The <CODE>SEARCH_DIR</CODE> command adds <VAR>path</VAR> to the list of paths where
+<CODE>ld</CODE> looks for archive libraries.  Using
+<CODE>SEARCH_DIR(<VAR>path</VAR>)</CODE> is exactly like using <SAMP>`-L <VAR>path</VAR>'</SAMP>
+on the command line (see section <A HREF="ld_3.html#SEC3">Command Line Options</A>).  If both
+are used, then the linker will search both paths.  Paths specified using
+the command line option are searched first.
+<P>
+
+<DT><CODE>STARTUP(<VAR>filename</VAR>)</CODE>
+<DD><A NAME="IDX286"></A>
+<A NAME="IDX287"></A>
+The <CODE>STARTUP</CODE> command is just like the <CODE>INPUT</CODE> command, except
+that <VAR>filename</VAR> will become the first input file to be linked, as
+though it were specified first on the command line.  This may be useful
+when using a system in which the entry point is always the start of the
+first file.
+</DL>
+<P>
+
+<A NAME="Format Commands"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_11.html#SEC11"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_13.html#SEC13"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_13.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_10.html#SEC10"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_15.html#SEC15"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

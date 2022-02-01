@@ -1,0 +1,152 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: Multiple code resources and globals</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: Multiple code resources and globals">
+<META NAME="keywords" CONTENT="Using PRC-Tools: Multiple code resources and globals">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC18"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_14.html#SEC17"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_16.html#SEC20"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_17.html#SEC21"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_14.html#SEC17"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_17.html#SEC21"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 3.2.1 Multiple code resources and global data </H3>
+<!--docid::SEC18::-->
+<P>
+
+The current implementation puts pointers to the code resources into the
+application's global data, and uses those pointers in the code emitted
+for each call in which the calling function and the called function are in
+different sections.  This means that you must not attempt to call between
+different sections when globals are not available.
+</P><P>
+
+In particular, all functions in your application called while processing a
+launch code that doesn't give you globals must be in the main code section.
+This always includes <CODE>PilotMain</CODE>, which is always called by the startup
+code for all launch codes.
+</P><P>
+
+<A NAME="SEC19"></A>
+<H4> Read-only data </H4>
+<!--docid::SEC19::-->
+<P>
+
+Read-only data, such as string literals and other constant data, are put
+into code sections rather than the global data section.  This saves global
+data space, which is in short supply, and is valid since the data, just
+like the code resources that contain them, are read-only.
+</P><P>
+
+When an item of read-only data has file or global scope, it will be placed
+in the main code section.  When it is local to a function, it will mostly,
+but not always, be placed in the same code section as that function.
+</P><P>
+
+GCC's optimizer will usually notice when a string literal (or other constant)
+is identical to one which has been previously emitted, and will reuse the
+storage previously emitted rather than reserving more space for a duplicate.
+</P><P>
+
+Thus, in the following example, when optimisation is on, the string literal
+referenced from <CODE>bar</CODE> may well be in the <CODE>foosec</CODE> section, while
+<CODE>bar</CODE> itself is in the main code section:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>const char *foo () __attribute__ ((section ("foosec")));
+const char *foo () { return "hello world"; }
+const char *bar () { return "hello world"; }
+</pre></td></tr></table></P><P>
+
+The code emitted for such a reference is similar to that emitted for an
+inter-section function call: when there is a data reference in which the
+referring function and the referenced item of read-only data are in different
+sections, the code emitted uses the item's code resource's pointer, which is
+located in the application's global data.
+</P><P>
+
+This means that you must ensure that this sort of reference doesn't occur
+when globals are not available.  Because this compiler optimisation (of
+course) occurs only within a single translation unit, a sufficient (but not
+necessary) way to ensure this is by placing functions which are in different
+sections in different translation units (e.g., in separate <TT>`.c'</TT> files).
+</P><P>
+
+In particular, all read-only data referenced while processing a launch code
+that doesn't give you globals must be in the main code section.  (Thus, in
+the example above, <CODE>bar</CODE> is likely to crash if it is called during a
+no-globals launch.)
+</P><P>
+
+This can be arranged in the following ways, amongst others:
+</P><P>
+
+<UL>
+<LI>
+Write functions used during no-globals launches so that they use read-only
+data with file or global scope:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>const char greeting[] = "hello world";
+const char *bar () { return greeting; }
+</pre></td></tr></table></P><P>
+
+<LI>
+Order the functions within a translation unit so that all functions in the
+main code section are defined before any functions in other code sections.
+Then any shared read-only data will be in the main code section.
+<P>
+
+(When an item of read-only data is reused, it will have been placed in the
+same section as the function from which it was <STRONG>first</STRONG> referenced.
+Thus, if the functions are ordered as described, all read-only data
+referenced from the functions in the main code section will themselves be
+in the main code section.  Any inter-section references to read-only data
+must then be from functions in other named code sections.  But in order for
+such a function to have been called, globals must be available; hence the
+inter-section reference will be safe too.)
+</UL>
+<P>
+
+<A NAME="Multiple code tutorial"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_14.html#SEC17"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_16.html#SEC20"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_17.html#SEC21"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_14.html#SEC17"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_17.html#SEC21"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

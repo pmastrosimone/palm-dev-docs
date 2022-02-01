@@ -1,0 +1,1602 @@
+<HTML>
+<HEAD>
+<TITLE>Palm OS:  &#160;6.&#160; Databases </TITLE>
+<META NAME="GENERATOR" CONTENT="Transit Central Station 3.2 by InfoAccess Inc. www.infoaccess.com">
+</HEAD>
+<BODY BACKGROUND="images/grnitbkg.gif"><A NAME="TopOfPage"> </A>
+<A HREF="http://www.oreilly.com/catalog/palmprog/"><IMG SRC="images/palm_comp_ani_ad.gif" ALT="Order the book from O'Reilly" BORDER=0 width="468" height="60"></A>
+<P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch05.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch07.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P><P><I>In this chapter:</I></P>
+
+
+  <UL COMPACT><LI><A HREF="#P28_721" NAME="LOC_P28_721">Overview of Databases and Records</A></LI>
+
+  <LI><A HREF="#P84_5937" NAME="LOC_P84_5937">Creating, Opening, and Closing Databases</A></LI>
+
+  <LI><A HREF="#P218_13516" NAME="LOC_P218_13516">Working with Records</A></LI>
+
+  <LI><A HREF="#P615_35697" NAME="LOC_P615_35697">Examining Databases in the Sales Sample</A></LI></UL>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=156>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+<H1 ALIGN=LEFT><I><FONT SIZE=+3>&#160;6.&#160; Databases</FONT></I></H1>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P23_186"></A>As we described earlier, permanent data resides in memory. This memory is divided into two sections: the dynamic and storage heaps. Permanent data resides in the storage heap and is controlled by the Data Manager (the dynamic heap is managed strictly by the Memory Manager).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Data is organized into two components: databases and records. The relationship between the two is straightforward. A database is a related collection of records. Records are relocatable blocks of memory (handles). An individual record can't exceed 64KB in size.</FONT></P>
+
+<P><A NAME="P28_721"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Overview of Databases and Records</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P30_754"></A>A database, as a collection of records, maintains certain key information about each record (see <A HREF="#P36_1398">Figure 6-1</A>):</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  The location of the record.</FONT></LI>
+
+  <LI><FONT FACE="Times">  A three-byte unique ID. This ID is unique only within a given database. It is assigned automatically by the Data Manager when the record is created.</FONT></LI>
+
+  <LI><FONT FACE="Times">  A one-byte attribute. This attribute contains a 4-bit <A NAME="P34_1098"></A>category: a deleted bit, an archived bit, a busy bit, and a secret (or private) bit. </FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">In the Palm 3.0 OS, there is one large storage heap; in previous versions, there were many small ones. A database resides in a storage heap, but its records need not be in the same heap (see <A HREF="#P36_1398">Figure 6-1</A>). </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 6- 1</FONT></B><A NAME="P36_1398"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Database with two records in a database in persistent memory</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch06-plmp.0601-1.gif" WIDTH=503 HEIGHT=255 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Databases also contain the following other types of information:</FONT></P>
+
+<P><I><FONT FACE="Times">An application info block</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P49_1547"></A>This usually contains <A NAME="P49_1569"></A>category names as well as any other database-wide information.</FONT></P>
+
+<P><I><FONT FACE="Times">A sort info block</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P51_1648"></A>This is where you store a list of record numbers in a variant order. For example, address book entries might be sorted by company rather than by a person's name. Most applications don't use a sort info block.</FONT></P>
+
+<P><I><FONT FACE="Times">Name, type, and creator</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P53_1879"></A>Databases are created with a name (which must be unique), a type, and a creator. When a user deletes an application, the Palm OS automatically deletes all databases that share the same creator. The preferences record is removed at the same time. So that this cleanup can happen correctly, it's important that your databases use the creator of their application.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Write-Protected Memory</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P57_2262"></A>In order to maintain the integrity of the storage heap, it is hardware write-protected. This ensures that a rogue application referencing a stray pointer can't accidentally destroy important data or applications. Therefore, changes to the databases can only be made through the Data Manager API. These APIs check that writes are made only within an allocated chunk of memory-writes to random areas or past the end of an allocated chunk are not allowed.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Palm 3.0 OS Heap Changes</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P62_2738"></A>In pre-3.0 versions of the OS, a database heap is limited to at most 64KB. The persistent area of memory is therefore divided into many different database heaps. In this pre-3.0 world, it is much harder to manage memory, since each allocated record must fit within one heap. The 3.0 OS does not have that 64KB limit on database heaps. Instead, the persistent memory area contains just one large database heap.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">The multiple database heaps lead to a problem: although there is free memory available, there might not be enough available for a record. The situation occurs when you have, for example, 10 databases heaps, each of size 64KB, and each half full. Although there is 320KB memory available, a record of size 40KB can't be allocated (because no single heap can hold it). The original 1.0 OS exacerbated this problem with an ill-chosen strategy for database allocations: records were allocated by attempting to keep heaps equally full. This made large record allocations more and more difficult as previous allocations were made.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">The 2.0 OS switched to a first-fit strategy (a record is allocated in the first heap in which it will fit). A change to the 2.0 OS (found in the System Update 2.0.4) modified the strategy (if there isn't room in an existing heap for a chunk, chunks from the most empty heap are moved out of that heap until there is enough space). It isn't until 3.0, however, that a full fix (one large heap) is in place.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Where Databases Are Stored</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P70_4202"></A>Although all current Palm OS devices have only one memory card, the Palm OS supports multiple cards. Cards are numbered, starting with the internal card, which is 0. When you create a database, you specify the card on which it is created. If and when multiple cards are supported, there will need to be some user interface to decide default locations. Until that time, you create your databases on card 0. </FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">While creating databases on card 0 is fine, other code in the application shouldn't rely on the value of the card being 0. By not hardcoding this value, the application will work with multiple card devices.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times" SIZE="+1">How Records Are Stored Versus How They <BR>
+Are Referenced</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P77_4867"></A>While your application is running, reference database records using handles. Database records are not stored this way, however. Within the database heap they are stored as local IDs. A local ID is an offset from the beginning of the card on which it is located. Because items are stored this way, the base address of the card can change without requiring any changes in the database heap.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">A future Palm device OS with multiple card slots would have separate base addresses for each slot. Thus, the memory address for a chunk on a memory card would depend on what slot it was in (and thus what its base address was).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This is relevant to your job as an application writer when you get to the application info block in the Database. Application info (and sort info) blocks are stored as local IDs. Also, if you need to store a reference to a memory chunk within a record, you can't store a handle (because they are valid only while your application is running). Instead, you'd need to convert the handle to a local ID (using a Memory Manager function) and store the local ID.</FONT></P>
+
+<P><A NAME="P84_5937"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Creating, Opening, and Closing Databases</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You handle these standard operations in a straightforward manner in Palm applications. </FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Creating a Database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P91_6083"></A>To create a database, you normally use </FONT><FONT FACE="Courier New">&#160;<A NAME="P91_6123"></A>DmCreateDatabase</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">Err DmCreateDatabase(UInt cardNo, CharPtr nameP, ULong creator, 
+     ULong type, Boolean resDB)</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P94_6235"></A>The </FONT><FONT FACE="Courier New">creator</FONT><FONT FACE="Times"> is the unique creator you've registered at the Palm developer web site (<A HREF="http://www.palmos.com/dev"><I>http://www.palmos.com/dev</I>)</A>. You use the </FONT><FONT FACE="Courier New">type</FONT><FONT FACE="Times"> to distinguish between multiple databases with different types of information in them. The </FONT><FONT FACE="Courier New">nameP</FONT><FONT FACE="Times"> is the name of the database, and it <I>must be unique</I>.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Until Palm Developer Support issues guidelines on how to use multiple card numbers, just use </FONT><FONT FACE="Courier New">0</FONT><FONT FACE="Times"> as your card number when creating databases.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">In order to guarantee that your database name is unique, you need to include your <A NAME="P98_6735"></A>creator as part of your database name. Developer Support recommends that you name your database with two parts, the database name followed by a hyphen (-) and your creator code. An application with a creator of &quot;Neil&quot; that created two databases might name them:</FONT><A NAME="P98_6996"></A></P><PRE><FONT SIZE="-1">Database1-Neil</FONT>
+<FONT SIZE="-1">Database2-Neil</FONT></PRE>
+
+<P><I><FONT FACE="Times">Create your database in your StartApplication routine</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You normally create your database from within your &#160;</FONT><FONT FACE="Courier New"><A NAME="P104_7129"></A>StartApplication</FONT><FONT FACE="Times"> routine. This is in cases where the database does not yet exist. Here is a typical code sequence to do that:</FONT></P><PRE><FONT SIZE="-1">// Find the Customer database.  If it doesn't exist, create it.</FONT>
+<FONT SIZE="-1">gDB = &#160;<A NAME="P107_7324"></A>DmOpenDatabaseByTypeCreator(kCustType, kSalesCreator, mode);</FONT>
+<FONT SIZE="-1">if (! gDB) {</FONT>
+<FONT SIZE="-1">   err = DmCreateDatabase(0, kCustName, kSalesCreator, </FONT>
+<FONT SIZE="-1">      kCustType, false);</FONT>
+<FONT SIZE="-1">   if (err) </FONT>
+<FONT SIZE="-1">      return err;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   gDB = DmOpenDatabaseByTypeCreator(kCustType, kSalesCreator, mode);</FONT>
+<FONT SIZE="-1">   if (!gDB) </FONT>
+<FONT SIZE="-1">      return DmGetLastErr();</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   // code to initialize records and application info   </FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Creating a database from an image</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P122_7716"></A>If your application has a database that should be initialized with a predefined set of records, it may make sense to &quot;freeze-dry&quot; a database as a resource in your application. Thus, when you build your application, add an existing database image to it. Then, when your application's </FONT><FONT FACE="Courier New">StartApplication</FONT><FONT FACE="Times"> routine is called, if the database doesn't exist, you can create it and initialize it from this freeze-dried image.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Of course, you could just provide your user with a Palm database (PDB) file to download. The advantage is that your application is smaller; the disadvantage is that the user might not download the file. In this case, you'd still need to check for the existence of your databases.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's an example:</FONT></P><PRE><FONT SIZE="-1">gDB = DmOpenDatabaseByTypeCreator(kCustType, kSalesCreator, mode);</FONT>
+<FONT SIZE="-1">if (!gDB) {</FONT>
+<FONT SIZE="-1">   VoidHand imageHandle = DmGetResource('DBIM', 1000);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   err = DmCreateDatabaseFromImage(MemHandleLock(imageHandle));</FONT>
+<FONT SIZE="-1">   MemHandleUnlock(imageHandle);</FONT>
+<FONT SIZE="-1">   DmReleaseResource(imageHandle);</FONT>
+
+<FONT SIZE="-1">   if (err)</FONT>
+<FONT SIZE="-1">      return err;</FONT>
+<FONT SIZE="-1">   gDB = DmOpenDatabaseByTypeCreator(kCustType, kSalesCreator, mode);</FONT>
+<FONT SIZE="-1">   if (!gDB) </FONT>
+<FONT SIZE="-1">      return DmGetLastErr();</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This code assumes that there's a resource of type </FONT><FONT FACE="Courier New">DBIM</FONT><FONT FACE="Times"> with ID 1000 in your application's resource database that contains an appropriate image. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You can create the database on a Palm OS device, and then do a HotSync to back up the database. The file that Palm Desktop creates is a database image (a PDB file).</FONT><A NAME="P144_9138"></A></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The exercise of getting a data file into a resource in your application is not covered here. Your development environment determines how you do this.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1"><A NAME="P148_9287"></A>Opening a Database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P151_9305"></A>You usually open your database by type and creator with a call like this:</FONT></P><PRE><FONT SIZE="-1">gDB = DmOpenDatabaseByTypeCreator(kCustType, kSalesCreator, mode);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">In your application, use a </FONT><FONT FACE="Courier New">mode</FONT><FONT FACE="Times"> of </FONT><FONT FACE="Courier New">dmModeReadWrite</FONT><FONT FACE="Times">, since you may be modifying records in the database. If you know that you aren't making any modifications, then use a </FONT><FONT FACE="Courier New">dmModeReadOnly</FONT><FONT FACE="Times"> mode.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">If your application supports private records, then you should honor the user's preference of whether to show private records by setting </FONT><FONT FACE="Courier New">dmModeShowSecret</FONT><FONT FACE="Times"> to the mode, as necessary. Here's code that adds the </FONT><FONT FACE="Courier New">dmModeShowSecret</FONT><FONT FACE="Times"> appropriately:</FONT></P><PRE><FONT SIZE="-1">SystemPreferencesType 	sysPrefs;</FONT>
+
+<FONT SIZE="-1">// Determine if secret records should be shown.</FONT>
+<FONT SIZE="-1">PrefGetPreferences(&amp;sysPrefs);</FONT>
+
+<FONT SIZE="-1">if (!sysPrefs.hideSecretRecords)</FONT>
+<FONT SIZE="-1">   mode |= dmModeShowSecret;</FONT>
+
+<FONT SIZE="-1">gDB = DmOpenDatabaseByTypeCreator(kCustType, kSalesCreator, mode);</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Closing a Database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P169_10122"></A>When you are finished with a database, call </FONT><FONT FACE="Courier New">&#160;<A NAME="P169_10167"></A>DmCloseDatabase</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">err = DmCloseDatabase(gDB);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Don't leave databases open unnecessarily, because each open database takes approximately 100 bytes of room in the dynamic heap. A good rule of thumb might be that if the user isn't in a view that has access to the data in that database, it shouldn't be open.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P174_10468"></A>Note that when you close a database, records in that database that are locked or busy remain that way. If for some reason your code must close a database while you have locked or busy records, call </FONT><FONT FACE="Courier New">&#160;<A NAME="P174_10667"></A>DmResetRecordStates</FONT><FONT FACE="Times"> before calling </FONT><FONT FACE="Courier New">DmCloseDatabase</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">err = DmResetRecordStates(gDB);</FONT>
+<FONT SIZE="-1">err = DmCloseDatabase(gDB);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The Data Manager doesn't do this resetting automatically from </FONT><FONT FACE="Courier New">DmCloseDatabase</FONT><FONT FACE="Times"> because of the performance penalty. The philosophy is that you shouldn't penalize the vast majority of applications that have released and unlocked all their records. Instead, force the minority of applications to make the extra call and incur the speed penalty in these rare cases.</FONT><A NAME="P178_11136"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Creating the Application Info Block in a Database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P183_11185"></A>The application info block is a block of memory that is associated with your database as a whole. You can use it for database-wide information. For example, you might have a database of checks and want to keep the total value of all the checks. Or you might allow the user to choose from among more than one sort order and need to keep track of the current sort order. Or you might need to keep track of <A NAME="P183_11589"></A>category names. In each of these cases, the application info block is an appropriate place to keep this information. Here's a snippet of code (normally used when you create your database) to allocate and initialize the application info block:</FONT></P><PRE><FONT SIZE="-1">UInt           cardNo;</FONT>
+<FONT SIZE="-1">LocalID        dbID;</FONT>
+<FONT SIZE="-1">LocalID        appInfoID;</FONT>
+<FONT SIZE="-1">MyAppInfoType  *appInfoP;</FONT>
+
+<FONT SIZE="-1">if (DmOpenDatabaseInfo(gDB, &amp;dbID, NULL, NULL, &amp;cardNo, NULL))</FONT>
+<FONT SIZE="-1">   return dmErrInvalidParam;</FONT>
+
+<FONT SIZE="-1">h = DmNewHandle(gDB, sizeof(MyAppInfoType));</FONT>
+<FONT SIZE="-1">if (!h) </FONT>
+<FONT SIZE="-1">   return dmErrMemError;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">appInfoID = MemHandleToLocalID(h);</FONT>
+<FONT SIZE="-1">DmSetDatabaseInfo(cardNo, dbID, NULL, NULL, NULL, </FONT>
+<FONT SIZE="-1">   NULL, NULL, NULL, NULL, &amp;appInfoID, NULL, NULL, NULL);</FONT>
+
+<FONT SIZE="-1">appInfoP = (MyAppInfoType *) MemHandleLock(h);</FONT>
+<FONT SIZE="-1">DmSet(appInfoP, 0, sizeof(MyAppInfoType), 0);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">// Code deleted to initialize fields in appInfoP</FONT>
+
+<FONT SIZE="-1">// Unlock</FONT>
+<FONT SIZE="-1">MemPtrUnlock(appInfoP);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note that you can't use </FONT><FONT FACE="Courier New">MemHandleNew</FONT><FONT FACE="Times"> to allocate the block, because you want the block to be in the same heap as the database and not in the dynamic heap. Therefore, use </FONT><FONT FACE="Courier New">DmNewHandle</FONT><FONT FACE="Times">. Also, you can't directly store the handle in the database. Instead, you must convert it to a local ID.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Remember that a local ID is an offset from the beginning of the card. This is necessary for the future in case multiple cards are supported. In such a case, the memory addresses would be dependent on the slot in which the card was placed.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you use the <A NAME="P212_12948"></A>Category Manager to manage your database, you need to make sure the first field in your application info block is of type </FONT><FONT FACE="Courier New"><A NAME="P212_13070"></A>AppInfoType</FONT><FONT FACE="Times"> (this stores the mapping from category number to category name). To initialize this field, call </FONT><FONT FACE="Courier New">&#160;<A NAME="P212_13179"></A>CategoryInitialize</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">CategoryInitialize(&amp;appInfoP-&gt;appInfo, LocalizedAppInfoStr);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The second parameter is the resource ID of an application string list (resource type </FONT><FONT FACE="Courier New">tAIS</FONT><FONT FACE="Times">) that contains the initial category names. You need to add one of these to your resource file (it's common to initialize it with &quot;Unfiled&quot;, &quot;Business&quot;, and &quot;Personal&quot;).</FONT><A NAME="P215_13516"></A></P>
+
+<P><A NAME="P218_13516"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Working with Records</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P220_13536"></A>Now that you know how to set up databases, you need to populate them with records. How you sort and therefore find a record is usually determined when you create it. Let's first look at the mechanics of finding a record. After that, we'll create a new record.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Finding a Record </FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P225_13812"></A>If your records are sorted based on the value of a field (or fields) within the record, you can do a binary search to find a particular record. If your records aren't sorted (or you are looking for a record based on the value of an unsorted field), you need to iterate through all the records, testing each record to see whether it is the one you want. <A HREF="#P425_24949">&quot;Iterating Through the Records in a Database or Category</A>&quot; later in this chapter shows how to iterate through all records. If you are looking for a unique ID, there's a call to find a record.</FONT></P>
+
+<P><I><FONT FACE="Times">Finding a record given a unique ID</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P229_14390"></A>If you've got the unique ID, <A NAME="P229_14419"></A>you get the record number using </FONT><FONT FACE="Courier New">DmFindRecordByID</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">UInt     recordNumber;</FONT>
+<FONT SIZE="-1">err = DmFindRecordByID(gDB, uniqueID, &amp;recordNumber);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note that this search starts at the first record and keeps looking until it finds the one with a matching unique ID.</FONT></P>
+
+<P><I><FONT FACE="Times">Finding a record given a key</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P237_14687"></A>If you have records sorted by some criterion (see <A HREF="#P446_25760">&quot;Sorting the Records in a Database</A>&quot; later in this chapter), you can do a binary search to find a specific record. First, you need to define a <A NAME="P237_14879"></A>comparison routine that compares two records and determines the ordering between the two. Here are the possible orderings:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  The first is greater than the second</FONT></LI>
+
+  <LI><FONT FACE="Times">  The second is greater than the first</FONT></LI>
+
+  <LI><FONT FACE="Times">  They are equal</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The comparison routine takes six parameters: </FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Record 1</FONT></LI>
+
+  <LI><FONT FACE="Times">  Record 2</FONT></LI>
+
+  <LI><FONT FACE="Times">  An &quot;other&quot; integer for your own use</FONT></LI>
+
+  <LI><FONT FACE="Times">  The attributes and unique ID for record 1</FONT></LI>
+
+  <LI><FONT FACE="Times">  The attributes and unique ID for record 2</FONT></LI>
+
+  <LI><FONT FACE="Times">  The application info block</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">The extra parameters (beyond just the records) are there to allow sorting based on further information. This is information found outside the record and includes such things as attributes (its category, for instance), a unique ID, and a specified sort order. The &quot;other&quot; integer parameter is necessary whenever you call a routine that requires a comparison routine; it is then passed on to your comparison routine. This parameter is commonly used to pass a sort order to your sorting routine. Note that the application info block is rarely used as part of a comparison routine-perhaps to sort by alphabetized categories (Business first, then Personal, then Unfiled). Since the <A NAME="P250_15986"></A>category names are stored in the application info block, it's needed by a comparison routine that wants to take into account category names.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's an example comparison function that compares first by </FONT><FONT FACE="Courier New">lastName</FONT><FONT FACE="Times"> field and then by </FONT><FONT FACE="Courier New">firstName</FONT><FONT FACE="Times"> field. The attributes, unique ID, application info block, and extra integer parameter are not used:</FONT></P><PRE><FONT SIZE="-1">static Int &#160;<A NAME="P254_16335"></A>CompareRecordFunc(MyRecordStruct *rec1, MyRecordStruct *rec2,</FONT>
+<FONT SIZE="-1">   Int unusedInt, SortRecordInfoPtr unused1, SortRecordInfoPtr unused2,</FONT>
+<FONT SIZE="-1">   VoidHand appInfoH)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Int   result;</FONT>
+
+<FONT SIZE="-1">   result = StrCompare(rec1-&gt;lastName, rec2-&gt;lastName);</FONT>
+<FONT SIZE="-1">   if (result == 0)</FONT>
+<FONT SIZE="-1">      result = StrCompare(rec1-&gt;firstName, rec2-&gt;firstName);</FONT>
+<FONT SIZE="-1">   return result;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The </FONT><FONT FACE="Courier New">&#160;<A NAME="P265_16662"></A>DmFindSortPosition</FONT><FONT FACE="Times"> is used to find a record (or to find where a record would be placed if it were in the database). It takes five parameters: </FONT></P>
+
+  <UL><LI><FONT FACE="Times">  The database</FONT></LI>
+
+  <LI><FONT FACE="Times">  The record to search for (filled in with the fields the comparison routine will look for)</FONT></LI>
+
+  <LI><FONT FACE="Times">  The attributes and the unique ID for the record (necessary because the record you're passing in isn't necessarily part of the database and doesn't really have attributes or a unique ID)</FONT></LI>
+
+  <LI><FONT FACE="Times">  The comparison function</FONT></LI>
+
+  <LI><FONT FACE="Times">  The additional integer parameter to be passed to the comparison routine</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's a search for a specific record. Note that </FONT><FONT FACE="Courier New">DmFindSortPosition</FONT><FONT FACE="Times"> returns a number in the range </FONT><FONT FACE="Courier New">0..numberOfRecords</FONT><FONT FACE="Times">. A return result of </FONT><FONT FACE="Courier New">0</FONT><FONT FACE="Times"> signifies that the passed-in record is less than any existing records. A return result equal to the number of records signifies that the passed-in record is </FONT><FONT FACE="Courier New">_</FONT><FONT FACE="Times"> the last record. A return result, </FONT><FONT FACE="Courier New">i</FONT><FONT FACE="Times">, in the range </FONT><FONT FACE="Courier New">1..numberOfRecords-1</FONT><FONT FACE="Times"> signifies that <I>record i -1</I> _ <I>passed-in record</I> &lt; <I>record i</I>. Here's a use of </FONT><FONT FACE="Courier New">DmFindSortPosition</FONT><FONT FACE="Times"> that finds the record, if present:</FONT></P><PRE><FONT SIZE="-1">Boolean          foundIt = false;</FONT>
+<FONT SIZE="-1">MyRecordStruct   findRecord;</FONT>
+<FONT SIZE="-1">UInt             recordNumber;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">findRecord.lastName = &quot;Rhodes&quot;;</FONT>
+<FONT SIZE="-1">findRecord.firstName = &quot;Neil&quot;;</FONT>
+<FONT SIZE="-1">recordNumber = DmFindSortPosition(gDB, &amp;findRecord, 0, </FONT>
+<FONT SIZE="-1">   (DmComparF *) CompareRecordFunc, 0);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">if (recordNumber &gt; 0) {</FONT>
+<FONT SIZE="-1">   MyRecordStruct    *record;</FONT>
+<FONT SIZE="-1">   Handle         theRecordHandle;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   theRecordHandle = DmQueryRecord(gDB, recordNumber - 1);</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   record = MemHandleLock(theRecordHandle);</FONT>
+<FONT SIZE="-1">   foundIt = StrCompare(findRecord.lastName, record-&gt;lastName) == 0 &amp;&amp;</FONT>
+<FONT SIZE="-1">      StrCompare(findRecord.firstName, record-&gt;firstName);</FONT>
+<FONT SIZE="-1">   MemHandleUnlock(theOrderHandle);</FONT>
+<FONT SIZE="-1">}</FONT>
+<FONT SIZE="-1">if (foundIt) {</FONT>
+<FONT SIZE="-1">   // recordNumber - 1 is the matching record</FONT>
+<FONT SIZE="-1">} else {</FONT>
+<FONT SIZE="-1">   // record at recordNumber &lt; findRecord &lt; record at recordNumber+1</FONT><A NAME="P297_18440"></A>
+<FONT SIZE="-1">}</FONT><A NAME="P298_18441"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Creating a New Record</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P301_18463"></A>You create a new record with </FONT><FONT FACE="Courier New">DmNewRecord</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">myRecordHandle = DmNewRecord(gDB, &amp;recordIndex, recordSize)</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P304_18563"></A>The </FONT><FONT FACE="Courier New">recordSize</FONT><FONT FACE="Times"> is the initial record size; you can change it later with </FONT><FONT FACE="Courier New">MemHandleSetSize</FONT><FONT FACE="Times">, just as you would with any handle. Make sure you specify a positive record size; zero-size records are not valid.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You'll notice that you need to specify the index number of the record as the second parameter. You initialize it with the desired record index; when </FONT><FONT FACE="Courier New">DmNewRecord</FONT><FONT FACE="Times"> returns, it contains the actual record index.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Record indexes are zero-based; they range from 0 to one less than the number of records. If your desired record index is in this range, the new record will be created with your desired record index. All the records with that index and above are shifted up (their record indexes are increased by one). If your desired record index is _ the number of records, your new record will be created after the last record, and the actual record index will be returned.</FONT></P>
+
+<P><I><FONT FACE="Times">Adding at the beginning of the database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To add to the beginning of the database, use 0 as a desired record index:</FONT></P><PRE><FONT SIZE="-1">UInt recordIndex = 0;</FONT>
+<FONT SIZE="-1">myRecordHandle = DmNewRecord(gDB, &amp;recordIndex, recordSize)</FONT></PRE>
+
+<P><I><FONT FACE="Times">Adding at the end of the database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To add to the end of the database, use </FONT><FONT FACE="Courier New"><A NAME="P318_19694"></A>dmMaxRecordIndex</FONT><FONT FACE="Times"> as your desired record index:</FONT></P><PRE><FONT SIZE="-1">UInt recordIndex = dmMaxRecordIndex;</FONT>
+<FONT SIZE="-1">myRecordHandle = DmNewRecord(gDB, &amp;recordIndex, recordSize)
+// now recordIndex contains the actual index</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">You should rarely add to the end of the database, because archived and deleted records are kept at the end.</FONT><A NAME="P322_19986"></A></P>
+
+<P><I><FONT FACE="Times">Adding in sort order</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Use </FONT><FONT FACE="Courier New">&#160;<A NAME="P326_20011"></A>DmFindSortPosition</FONT><FONT FACE="Times"> to determine where to insert the record:</FONT></P><PRE><FONT SIZE="-1">UInt             recordIndex;</FONT>
+<FONT SIZE="-1">MyRecordStruct   newRecord;</FONT>
+<FONT SIZE="-1">VoidHand         myRecordHandle;</FONT>
+<FONT SIZE="-1">MyRecordStruct  *newRecordPtr;</FONT>
+
+<FONT SIZE="-1">// initialize fields of newRecord</FONT>
+<FONT SIZE="-1">recordIndex = DmFindSortPosition(gDB, &amp;newRecord, 0, </FONT>
+<FONT SIZE="-1">   (DmComparF *) CompareRecordFunc, 0);</FONT>
+<FONT SIZE="-1">myRecordHandle = DmNewRecord(gDB, &amp;recordIndex, sizeof(MyRecordStruct));</FONT>
+<FONT SIZE="-1">newRecordPtr = MemHandleLock(myRecordHandle);</FONT>
+<FONT SIZE="-1">DmWrite(newRecordPtr, 0, &amp;newRecord, sizeof(newRecord));</FONT>
+<FONT SIZE="-1">MemHandleUnlock(myRecordHandle);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The </FONT><FONT FACE="Courier New">recordNumber</FONT><FONT FACE="Times"> returned by </FONT><FONT FACE="Courier New">DmFindSortPosition</FONT><FONT FACE="Times"> is the record number you use with </FONT><FONT FACE="Courier New">DmNewRecord</FONT><FONT FACE="Times">. </FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Reading from a Record</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P345_20635"></A>Reading from a record is very simple. Although records are write-protected, they are still in RAM; thus you can just get a record from a database, lock it, and then read from it. Here's an example:</FONT></P><PRE><FONT SIZE="-1">VoidHand myRecord = DmQueryRecord(gDB, recordNumber);</FONT>
+<FONT SIZE="-1">StructType *s = MemHandleLock(myRecord);</FONT>
+<FONT SIZE="-1">DoSomethingReadOnly(s-&gt;field);</FONT>
+<FONT SIZE="-1">MemHandleUnlock(myRecord);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The </FONT><FONT FACE="Courier New">DmQueryRecord</FONT><FONT FACE="Times"> call returns a record that is read-only; it can't be written to, as it doesn't mark the record as busy.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Modifying a Record</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;&#160;<A NAME="P356_21122"></A>In order to modify a record, you must use </FONT><FONT FACE="Courier New">DmGetRecord</FONT><FONT FACE="Times">, which marks the record busy. Call </FONT><FONT FACE="Courier New">DmReleaseRecord</FONT><FONT FACE="Times"> when you're finished with it. Because you can't just write to the pointer (the storage area is write-protected), you must use either </FONT><FONT FACE="Courier New">&#160;&#160;<A NAME="P356_21362"></A>DmSet</FONT><FONT FACE="Times"> (to set a range to a particular character value) or </FONT><FONT FACE="Courier New">DmWrite</FONT><FONT FACE="Times">.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Often, a record has a structure associated with it. You usually read and write the entire structure:</FONT></P><PRE><FONT SIZE="-1">VoidHand myRecord = DmGetRecord(gDB, recordNumber);</FONT>
+<FONT SIZE="-1">StructType *s = MemHandleLock(myRecord);</FONT>
+<FONT SIZE="-1">StructType theStructure;</FONT>
+
+<FONT SIZE="-1">theStructure = *s;</FONT>
+<FONT SIZE="-1">theStructure.field = newValue;</FONT>
+<FONT SIZE="-1">DmWrite(gDB, s, 0, &amp;theStructure, sizeof(theStructure));</FONT>
+<FONT SIZE="-1">MemHandleUnlock(myRecord);</FONT>
+<FONT SIZE="-1">DmReleaseRecord(gDB, recordNumber, true);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Another alternative is to write specific fields in the structure. A very handy thing to use in this case is the standard C </FONT><FONT FACE="Courier New"><A NAME="P369_21937"></A>offsetof</FONT><FONT FACE="Times"> macro (</FONT><FONT FACE="Courier New">offsetof</FONT><FONT FACE="Times"> returns the offset of a field within a structure):</FONT></P><PRE><FONT SIZE="-1">VoidHand myRecord = DmGetRecord(gDB, recordNumber);</FONT>
+<FONT SIZE="-1">StructType *s = MemHandleLock(myRecord);</FONT>
+
+<FONT SIZE="-1">DmWrite(s, offsetof(StructType, field), &amp;newValue, sizeof(newValue));</FONT>
+<FONT SIZE="-1">MemHandleUnlock(myRecord);</FONT>
+<FONT SIZE="-1">DmReleaseRecord(gDB, recordNumber, true);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The second approach has the advantage of writing less data; it writes only the data that needs to change.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The third parameter to </FONT><FONT FACE="Courier New">DmReleaseRecord</FONT><FONT FACE="Times"> tells whether the record was actually modified or not. Passing the value true causes the record to be marked as modified. If you modify a record but don't tell </FONT><FONT FACE="Courier New">&#160;<A NAME="P379_22544"></A>DmReleaseRecord</FONT><FONT FACE="Times"> that you changed it, during a HotSync the database's conduit may not realize the record has been changed.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Handling Secret Records</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P384_22688"></A>In order for a Palm OS user to feel comfortable maintaining sensitive information on his device, the Palm OS supports secret (also called private) records. In the Security application, the user can specify whether to show or hide private records. The user can specify a password that is required before private records are shown.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Each record has a bit associated with it (in the record attributes) that indicates whether it is secret. As part of the mode you use when opening a database, you can request that secret records be skipped. <A HREF="#P148_9287">&quot;Opening a Database&quot; on page&#160;143</A> shows the code you need. Once you make that request, some of the database operations on that open database completely ignore secret records. The routines that take index numbers (like </FONT><FONT FACE="Courier New">DmGetRecord</FONT><FONT FACE="Times"> or </FONT><FONT FACE="Courier New">DmQueryRecord</FONT><FONT FACE="Times">) don't ignore secret records, nor does </FONT><FONT FACE="Courier New">DmNumRecords</FONT><FONT FACE="Times">. </FONT><FONT FACE="Courier New">&#160;&#160;<A NAME="P386_23524"></A>DmNumRecordsInCategory</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">DmSeekRecordInCategory</FONT><FONT FACE="Times"> do ignore secret records, though. You can use these to find a correct index number.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The user sets the secret bit of a record in a Details dialog for that record. Here is some code that handles that request:</FONT></P><PRE><FONT SIZE="-1">ControlPtr        privateCheckbox;</FONT>
+<FONT SIZE="-1">UInt        attributes;</FONT>
+<FONT SIZE="-1">Boolean        isSecret;</FONT>
+
+<FONT SIZE="-1">DmRecordInfo(CustomerDB, recordNumber, &amp;attributes, NULL, NULL);</FONT>
+<FONT SIZE="-1">isSecret = (attributes &amp; dmRecAttrSecret) == dmRecAttrSecret;</FONT>
+
+<FONT SIZE="-1">privateCheckbox = GetObjectFromActiveForm(DetailsPrivateCheckbox);</FONT>
+<FONT SIZE="-1">   CtlSetValue(privateCheckbox, isSecret);</FONT>
+
+<FONT SIZE="-1">hitButton = FrmDoDialog(frm);</FONT>
+
+<FONT SIZE="-1">if (hitButton == DetailsOKButton) {             </FONT>
+<FONT SIZE="-1">   if (CtlGetValue(privateCheckbox) != isSecret) {</FONT>
+<FONT SIZE="-1">      if (CtlGetValue(privateCheckbox)) {</FONT>
+<FONT SIZE="-1">         attributes |= dmRecAttrSecret;</FONT>
+<FONT SIZE="-1">         // tell user how to hide private records</FONT>
+<FONT SIZE="-1">         if (!gHideSecretRecords)</FONT>
+<FONT SIZE="-1">            FrmAlert(privateRecordInfoAlert);</FONT>
+<FONT SIZE="-1">      } else</FONT>
+<FONT SIZE="-1">         attributes &amp;= ~dmRecAttrSecret;</FONT>
+<FONT SIZE="-1">      DmSetRecordInfo(CustomerDB, recordNumber, &amp;attributes, NULL);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P414_24551"></A>Note that we must put up an alert (see <A HREF="#P417_24872">Figure 6-2</A>) if the user marks a record as private while show all records is enabled. As we are still showing private records, this might be confusing for a new user, who sees this private checkbox, marks something as private, and expects something to happen as a <A NAME="P414_24853"></A>result.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 6- 2</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P417_24872"></A>Alert shown when user marks a record as private while showing private records</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch06-plmp.0602-2.gif" WIDTH=503 HEIGHT=134 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1"><A NAME="P425_24949"></A>Iterating Through the Records in a Database <BR>
+or Category</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P428_25004"></A>Whether you want only the items in a particular category or all the records, you still need to use category calls. <A NAME="P428_25119"></A>These calls skip over deleted or archived (but still present) and private records (if the database is not opened with </FONT><FONT FACE="Courier New">dmModeShowSecret</FONT><FONT FACE="Times">).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's some code to visit every record:</FONT></P><PRE><FONT SIZE="-1">UInt theCategory = dmAllCategories;     // could be a specific category</FONT>
+<FONT SIZE="-1">UInt totalItems = DmNumRecordsInCategory(gDB, theCategory);</FONT>
+<FONT SIZE="-1">UInt i;</FONT>
+<FONT SIZE="-1">UInt recordNum = 0;</FONT>
+
+<FONT SIZE="-1">for (i = 0; i &lt; totalItems; i++) {</FONT>
+<FONT SIZE="-1">   VoidHand recordH = DmQueryNextInCategory (gDB, &amp;recordNum,</FONT>
+<FONT SIZE="-1">      theCategory);</FONT>
+<FONT SIZE="-1">   // at this point, recordNum contains the desired record number. </FONT>
+<FONT SIZE="-1">   // You could use DmGetRecord to get write-access, and then </FONT>
+<FONT SIZE="-1">   // DmReleaseRecord when finished</FONT>
+
+<FONT SIZE="-1">   // do something with recordH</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1"><A NAME="P446_25760"></A>Sorting the Records in a Database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P448_25793"></A>Just as finding an item in a sorted database requires a comparison routine, sorting a database requires a similar routine. There are two different sort routines you can use. The first, </FONT><FONT FACE="Courier New">&#160;<A NAME="P448_25979"></A>DmInsertionSort</FONT><FONT FACE="Times">, uses an insertion sort (similar to the way most people sort a hand of cards, placing each card in its proper location one by one). The insertion sort works very quickly on an almost-sorted database. For example, if you change one record in a sorted database it may now be out of place while all the other records are still in sorted order. Use the insertion sort to put it back in order. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The second routine, </FONT><FONT FACE="Courier New">&#160;<A NAME="P450_26405"></A>DmQuickSort</FONT><FONT FACE="Times">, uses a <I>quicksort</I> (it successively partitions the records). If you don't know anything about the sort state of the database, use the quicksort. Changing the sort order (for instance, by name instead of by creation date) causes all records to be out of order. This is an excellent time to use the quicksort.</FONT></P>
+
+<P><I><FONT FACE="Times">Insertion sort</FONT></I></P><PRE><FONT SIZE="-1">err = DmInsertionSort(gDB,  (DmComparF *) CompareRecordFunc, 0);</FONT></PRE>
+
+<P><I><FONT FACE="Times">Quicksort</FONT></I></P><PRE><FONT SIZE="-1">err = DmQuickSort(gDB,  (DmComparF *) CompareRecordFunc, 0);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P458_26870"></A>Both sorting routines put deleted and archived records at the end of the database (deleted records aren't passed to the comparison routine, since there's no record data). Keeping deleted and archived records at the end of the database isn't required, but it is a widely followed convention used by the sorting routines and by </FONT><FONT FACE="Courier New">DmFindSortPosition</FONT><FONT FACE="Times">.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">One other difference between the two sorting routines is that </FONT><FONT FACE="Courier New">DmInsertionSort</FONT><FONT FACE="Times"> is a stable sort, while </FONT><FONT FACE="Courier New">DmQuickSort</FONT><FONT FACE="Times"> is not. That is, two records that compare the same will remain in the same relative order after </FONT><FONT FACE="Courier New">DmInsertionSort</FONT><FONT FACE="Times"> but might switch positions after </FONT><FONT FACE="Courier New">DmQuickSort</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Deleting a Record</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P465_27503"></A>Deleting a record is slightly complicated because of the interaction with conduits and the data on the desktop. The simplest record deletion is to completely remove the record from the database (using </FONT><FONT FACE="Courier New">&#160;<A NAME="P465_27705"></A>DmRemoveRecord</FONT><FONT FACE="Times">). This is used when the user creates a record but then immediately decides to delete it. Since there's no corresponding record on the desktop, there's no information that needs to be maintained in the database so that synchronization can occur.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P467_27964"></A>When a preexisting record is deleted, it also needs to be deleted on the desktop during the next Hotsync. To handle this deletion from the desktop, the unique ID and attributes are still maintained in the database (but the record's memory chunk is freed). The deleted attribute of the record is set. The conduit looks for this bit setting and then deletes such records from the desktop and from the handheld on the next HotSync. </FONT><FONT FACE="Courier New">DmDeleteRecord</FONT><FONT FACE="Times"> does this kind of deletion, leaving the record's unique ID and attributes in the database.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P469_28498"></A>The final possibility is that the user requests that a deleted record be archived on the desktop (see <A HREF="#P470_28993">Figure 6-3</A>). In this case, the memory chunk can't be freed (because the data must be copied to the desktop to be archived). Instead, the archived bit of the record is set, and it is treated on the handheld as if it were deleted. Once a HotSync occurs, the conduit copies the record to the desktop and then deletes it from the handheld database. </FONT><FONT FACE="Courier New">&#160;<A NAME="P469_28946"></A>DmArchiveRecord</FONT><FONT FACE="Times"> does this archiving.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 6- 3</FONT></B><A NAME="P470_28993"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Dialog allowing the user to archive a record on the desktop (it shows up after the user asks to delete a record)</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch06-plmp.0603-3.gif" WIDTH=503 HEIGHT=117 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P480_29105"></A>Newly archived and deleted records should be moved to the end of the database (the sorting routines and </FONT><FONT FACE="Courier New">DmFindSortPosition</FONT><FONT FACE="Times"> rely on archived and deleted records being only at the end of the database). Here's the logic you'll probably want to use when the user deletes a record:</FONT></P><PRE><FONT SIZE="-1">if (isNew &amp;&amp; !gSaveBackup)</FONT>
+<FONT SIZE="-1">   DmRemoveRecord(gDB, recordNumber); // remove all traces</FONT>
+<FONT SIZE="-1">else {</FONT>
+<FONT SIZE="-1">   if (gSaveBackup) //need to archive it on PC</FONT>
+<FONT SIZE="-1">      DmArchiveRecord(gDB, recordNumber);</FONT>
+<FONT SIZE="-1">   else</FONT>
+<FONT SIZE="-1">     DmDeleteRecord(gDB, recordNumber); // leave the unique ID and attrs</FONT>
+<FONT SIZE="-1">   // Deleted records are stored at the end of the database</FONT>
+<FONT SIZE="-1">   DmMoveRecord (gDB, recordNumber, DmNumRecords(gDB));</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">If the user doesn't explicitly request that a record be deleted, but implicitly requests it by deleting necessary data (for instance, ending up with an empty memo in the Memo Pad), you don't need to archive the record. Here's the code you use:</FONT></P><PRE><FONT SIZE="-1">if (recordIsEmpty) {</FONT>
+<FONT SIZE="-1">   if (isNew)</FONT>
+<FONT SIZE="-1">      DmRemoveRecord(gDB, recordNumber); // remove all traces</FONT>
+<FONT SIZE="-1">   else {</FONT>
+<FONT SIZE="-1">      DmDeleteRecord(gDB, recordNumber); // leave the unique ID and attrs</FONT>
+<FONT SIZE="-1">      // Deleted records are stored at the end of the database</FONT>
+<FONT SIZE="-1">      DmMoveRecord (gDB, recordNumber, DmNumRecords(gDB));</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Dealing with Large Records</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P505_30322"></A>The maximum amount of data a record can hold is slightly less than 64KB of data. If you've got larger amounts of data to deal with, there are a couple of ways to tackle the problem. </FONT></P>
+
+<P><I><FONT FACE="Times">File streaming</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P509_30518"></A>If you're using Palm OS 3.0, you can use the File Streaming Manager. The File Streaming Manager provides a file-based API (currently implemented as separate chunks within a database heap). You create a uniquely named file and a small record that stores only that filename. We suggest you use as a filename the database creator followed by the database type, followed by the record's unique ID. Use </FONT><FONT FACE="Courier New">&#160;&#160;<A NAME="P509_30918"></A>FileOpen</FONT><FONT FACE="Times"> to create a file:</FONT></P><PRE><FONT SIZE="-1">FileHand fileHandle;</FONT>
+<FONT SIZE="-1">UInt     cardNo = 0;</FONT>
+
+<FONT SIZE="-1">fileHandle = FileOpen(cardNo, uniqueFileName, kCustType, kSalesCreator,</FONT>
+<FONT SIZE="-1">   fileModeReadWrite, &amp;err);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Store the filename as the contents of the record. Read and write with </FONT><FONT FACE="Courier New">&#160;&#160;&#160;<A NAME="P516_31156"></A>FileRead</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">FileWrite</FONT><FONT FACE="Times">. When you are done reading and writing, close the file with </FONT><FONT FACE="Courier New">FileClose</FONT><FONT FACE="Times">. When you delete the record, you can delete the file with </FONT><FONT FACE="Courier New">FileDelete</FONT><FONT FACE="Times">.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">One disadvantage of file streams is that your conduit has no access to these files.</FONT><BR>
+</P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">Multiple chunks in a separate database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P523_31439"></A>If you are running Palm OS 2.0 or earlier, the File Stream Manager isn't available. Therefore, you need to allocate multiple chunks in a separate database yourself. The record stores the unique IDs of each of the chunks in the separate chunk database. Here's a rough idea of how you might support a record of up to 180KB (we'll have 18 records of 10KB each-we don't want each record to be too big, since it's easier to pack smaller objects into the many 64KB heaps than it is to pack fewer larger ones). We assume we've got two open databases: </FONT><FONT FACE="Courier New">gDB</FONT><FONT FACE="Times">, where our &quot;large&quot; records are, and </FONT><FONT FACE="Courier New">gChunkDB</FONT><FONT FACE="Times">, which contains our chunks:</FONT></P><PRE><FONT SIZE="-1">#define kNumChunks 18</FONT>
+<FONT SIZE="-1">#define kChunkSize (10 * 1024)</FONT>
+<FONT SIZE="-1">typedef struct {</FONT>
+<FONT SIZE="-1">   ULong uniqueIDs[kNumChunks];</FONT>
+<FONT SIZE="-1">} MyRecordType;</FONT>
+<FONT SIZE="-1">MyRecordType newRecord;</FONT>
+<FONT SIZE="-1">MyRecordType *newRecordPtr = 0;</FONT>
+<FONT SIZE="-1">Handle   h;</FONT>
+<FONT SIZE="-1">int      i;</FONT>
+<FONT SIZE="-1">UInt     numRecordsInChunkDatabase;</FONT>
+
+<FONT SIZE="-1">// keep track of original number of records</FONT>
+<FONT SIZE="-1">// so in case a problem occurs we can delete</FONT>
+<FONT SIZE="-1">// any we've added</FONT>
+<FONT SIZE="-1">numRecordsInChunkDatabase = DmNumRecords(gChunkDB);</FONT>
+
+<FONT SIZE="-1">for (i = 0; i &lt; kNumChunks; i++) {</FONT>
+<FONT SIZE="-1">   UInt  chunkRecordNumber = dmMaxRecordIndex;</FONT>
+<FONT SIZE="-1">   h = DmNewRecord(gChunkDB, &amp;chunkRecordNumber, kChunkSize);</FONT>
+<FONT SIZE="-1">    if (!h)</FONT>
+<FONT SIZE="-1">      break;</FONT>
+<FONT SIZE="-1">   if (DmRecordInfo(gChunkDB, chunkRecordNumber, NULL,</FONT>
+<FONT SIZE="-1">      &amp;newRecord.uniqueIDs[i], NULL) != 0)</FONT>
+<FONT SIZE="-1">      break;</FONT>
+<FONT SIZE="-1">   DmReleaseRecord(gChunkDB, chunkRecordNumber, true);</FONT>
+<FONT SIZE="-1">}</FONT>
+<FONT SIZE="-1">if (i &gt;= kNumChunks) {</FONT>
+<FONT SIZE="-1">   // we were able to allocate all the chunks</FONT>
+<FONT SIZE="-1">   UInt recordNumber = 0;</FONT>
+<FONT SIZE="-1">   h = DmNewRecord(gDB, &amp;recordNumber, sizeof(MyRecordType));</FONT>
+<FONT SIZE="-1">   if (h) {</FONT>
+<FONT SIZE="-1">      newRecordPtr = MemHandleLock(h);</FONT>
+<FONT SIZE="-1">      DmWrite(newRecordPtr, 0, &amp;newRecord, sizeof(newRecord));</FONT>
+<FONT SIZE="-1">      DmReleaseRecord(gDB, recordNumber, true);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">}</FONT>
+<FONT SIZE="-1">if (!newRecordPtr) {</FONT>
+<FONT SIZE="-1">   // unable to allocate all chunks and record</FONT>
+<FONT SIZE="-1">   // delete all the chunks we allocated</FONT>
+<FONT SIZE="-1">   UInt  recordNumToDelete;</FONT>
+<FONT SIZE="-1">   recordNumToDelete = DmNumRecords(gChunkDB) - 1;</FONT>
+<FONT SIZE="-1">   while (recordNumToDelete &gt;= numRecordsInChunkDatabase)</FONT>
+<FONT SIZE="-1">      DmRemoveRecord(gChunkDB, recordNumToDelete--);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now that you've allocated the record (and the chunks it points to), it's fairly straightforward to edit any of the 180KB bytes of data. You use the unique ID to go into the appropriate chunk (reading it from the chunk database after finding the index with </FONT><FONT FACE="Courier New">DmFindRecordByID</FONT><FONT FACE="Times">).</FONT><A NAME="P569_33649"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Editing a Record in Place</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P574_33674"></A>The <A NAME="P574_33678"></A>Field Manager can be set to edit a string field in place. The string need not take up the entire record; you specify the starting offset of the string and the current string length. The Field Manager resizes the handle as necessary while the string is edited.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This mechanism is a great way to handle editing a single string in a record. However, you can't have multiple fields simultaneously editing multiple strings in a record. For example, if you have a record containing both last name and first name, you can't create two fields in a single form to edit both the last name and first name in place. (This makes sense, because each of the fields may want to resize the handle.)</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The following sections explain this mechanism.</FONT></P>
+
+<P><I><FONT FACE="Times">Initialize the field with the handle</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P582_34439"></A>This code shows how to initialize the field with the handle:</FONT></P><PRE><FONT SIZE="-1">typedef struct {</FONT>
+<FONT SIZE="-1">   int   field;</FONT>
+<FONT SIZE="-1">   // other fields</FONT>
+<FONT SIZE="-1">   char textField[1];     // may actually be longer, null-terminated</FONT>
+<FONT SIZE="-1">} MyRecType;</FONT>
+
+<FONT SIZE="-1">Handle     theRecordHandle;</FONT>
+<FONT SIZE="-1">Handle     oldTextHandle = FldGetTextHandle(fld);</FONT>
+
+<FONT SIZE="-1">if (fld) {</FONT>
+<FONT SIZE="-1">   // must dispose of the old handle, or we'll leak memory</FONT>
+<FONT SIZE="-1">   MemHandleFree(oldTextHandle);</FONT>
+<FONT SIZE="-1">}</FONT>
+<FONT SIZE="-1">theRecordHandle = DmGetRecord(gDB, recordNumber);</FONT>
+<FONT SIZE="-1">recPtr = MemHandleLock(theRecordHandle);</FONT>
+<FONT SIZE="-1">FldSetText(fld, theRecordHandle, offsetof(MyRecType, textField),</FONT>
+<FONT SIZE="-1">   StrLen(theRecordHandle.textField) + 1);</FONT></PRE>
+
+<P><I><FONT FACE="Times">Cleanup once the editing is finished</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">When the editing is done (this usually occurs when the form is closing), three things need to be done:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Compact the text. When a field is edited, the text handle is resized in chunks rather than one byte at a time. Compacting the text resizes the text block to remove the extra space at the end of the block.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Reset the text handle. When a field is freed, it frees its text handle. We don't want the record in the database to be freed, so we set the field's handle to 0.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Release the record back to the database.</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the code:</FONT></P><PRE><FONT SIZE="-1">Boolean dirty = FldDirty(fld);</FONT>
+<FONT SIZE="-1">if (dirty)</FONT>
+<FONT SIZE="-1">   FldCompactText(fld);</FONT>
+<FONT SIZE="-1">FldSetTextHandle(fld, NULL);</FONT><A NAME="P613_35655"></A>
+<FONT SIZE="-1">DmReleaseRecord(gDB, recordNumber, dirty);</FONT><A NAME="P614_35697"></A></PRE>
+
+<P><A NAME="P615_35697"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Examining Databases in the Sales Sample</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P617_35736"></A>Now that you understand how databases and records function within the storage heap space, let's look at how we use them in our Sales application. </FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Defining the Sales Databases</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The Sales application has three different databases. The first holds customers, the second orders (one record for each order), and the third items. Here are the constant definitions for the names and types:</FONT></P><PRE><FONT SIZE="-1">#define kCustomerDBType          'Cust'</FONT>
+<FONT SIZE="-1">#define kCustomerDBName          &quot;Customers-Sles&quot;</FONT>
+<FONT SIZE="-1">#define kOrderDBType             'Ordr'</FONT>
+<FONT SIZE="-1">#define kOrderDBName             &quot;Orders-Sles&quot;</FONT>
+<FONT SIZE="-1">#define kProductDBType           'Prod'</FONT>
+<FONT SIZE="-1">#define kProductDBName           &quot;Products-Sles&quot;</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Reading and Writing the Customer</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P632_36408"></A>The <A NAME="P632_36412"></A>customer is stored as the customer ID followed by four null-terminated strings back to back (it's &quot;packed,&quot; so to speak). Here's a structure we use for the customer record (there's no way to represent the four strings, so we just specify the first one):</FONT></P><PRE><FONT SIZE="-1">typedef struct {</FONT>
+<FONT SIZE="-1">   SDWord customerID;</FONT>
+<FONT SIZE="-1">   char  name[1]; // actually may be longer than 1</FONT>
+<FONT SIZE="-1">} PackedCustomer;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">When we're working with a customer and need to access each of the fields, we use a different structure:</FONT></P><PRE><FONT SIZE="-1">typedef struct {</FONT>
+<FONT SIZE="-1">   SDWord      customerID;</FONT>
+<FONT SIZE="-1">   const char *name;</FONT>
+<FONT SIZE="-1">   const char *address;</FONT>
+<FONT SIZE="-1">   const char *city;</FONT>
+<FONT SIZE="-1">   const char *phone;</FONT>
+<FONT SIZE="-1">} Customer;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's a routine that takes a locked </FONT><FONT FACE="Courier New">PackedCustomer</FONT><FONT FACE="Times"> and fills out a customer-it unpacks the customer. Note that each field points into the </FONT><FONT FACE="Courier New">PackedCustomer</FONT><FONT FACE="Times"> (to avoid allocating additional memory). The customer is valid only while the </FONT><FONT FACE="Courier New">PackedCustomer</FONT><FONT FACE="Times"> remains locked (otherwise, the pointers are not valid):</FONT></P><PRE><FONT SIZE="-1">// packedCustomer must remain locked while customer is in use</FONT>
+<FONT SIZE="-1">static void UnpackCustomer(Customer *customer, </FONT>
+<FONT SIZE="-1">   const PackedCustomer *packedCustomer)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   const char *s = packedCustomer-&gt;name;</FONT>
+<FONT SIZE="-1">   customer-&gt;customerID = packedCustomer-&gt;customerID;</FONT>
+<FONT SIZE="-1">   customer-&gt;name = s;</FONT>
+<FONT SIZE="-1">   s += StrLen(s) + 1;</FONT>
+<FONT SIZE="-1">   customer-&gt;address = s;</FONT>
+<FONT SIZE="-1">   s += StrLen(s) + 1;</FONT>
+<FONT SIZE="-1">   customer-&gt;city = s;</FONT>
+<FONT SIZE="-1">   s += StrLen(s) + 1;</FONT>
+<FONT SIZE="-1">   customer-&gt;phone = s;</FONT>
+<FONT SIZE="-1">   s += StrLen(s) + 1;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We have an inverse routine that packs a customer:</FONT></P><PRE><FONT SIZE="-1">static void PackCustomer(Customer *customer, VoidHand customerDBEntry)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   // figure out necessary size</FONT>
+<FONT SIZE="-1">   UInt     length = 0;</FONT>
+<FONT SIZE="-1">   CharPtr     s;</FONT>
+<FONT SIZE="-1">   UInt     offset = 0;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   length = sizeof(customer-&gt;customerID) + StrLen(customer-&gt;name) +</FONT>
+<FONT SIZE="-1">      StrLen(customer-&gt;address) + StrLen(customer-&gt;city) +</FONT>
+<FONT SIZE="-1">      StrLen(customer-&gt;phone) + 4;  // 4 for string terminators</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   // resize the VoidHand</FONT>
+<FONT SIZE="-1">   if (MemHandleResize(customerDBEntry, length) == 0) {</FONT>
+<FONT SIZE="-1">      // copy the fields</FONT>
+<FONT SIZE="-1">      s = MemHandleLock(customerDBEntry);</FONT>
+<FONT SIZE="-1">      offset = 0;</FONT>
+<FONT SIZE="-1">      DmWrite(s, offset, (CharPtr) &amp;customer-&gt;customerID,</FONT>
+<FONT SIZE="-1">         sizeof(customer-&gt;customerID));</FONT>
+<FONT SIZE="-1">      offset += sizeof(customer-&gt;customerID);</FONT>
+<FONT SIZE="-1">      DmStrCopy(s, offset, (CharPtr) customer-&gt;name);</FONT>
+<FONT SIZE="-1">      offset += StrLen(customer-&gt;name) + 1;</FONT>
+<FONT SIZE="-1">      DmStrCopy(s, offset, (CharPtr) customer-&gt;address);</FONT>
+<FONT SIZE="-1">      offset += StrLen(customer-&gt;address) + 1;</FONT>
+<FONT SIZE="-1">      DmStrCopy(s, offset, (CharPtr) customer-&gt;city);</FONT>
+<FONT SIZE="-1">      offset += StrLen(customer-&gt;city) + 1;</FONT>
+<FONT SIZE="-1">      DmStrCopy(s, offset, (CharPtr) customer-&gt;phone);</FONT>
+<FONT SIZE="-1">      MemHandleUnlock(customerDBEntry);</FONT>
+<FONT SIZE="-1">   }</FONT><A NAME="P693_38839"></A>
+<FONT SIZE="-1">}</FONT><A NAME="P694_38840"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Reading and Writing Products</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P697_38868"></A>Similarly, <A NAME="P697_38879"></A>we have structures for packed and unpacked products:</FONT><A NAME="P697_38931"></A></P><PRE><FONT SIZE="-1">typedef struct {</FONT>
+<FONT SIZE="-1">   ULong productID;</FONT>
+<FONT SIZE="-1">   ULong price;   // in cents</FONT>
+<FONT SIZE="-1">   const char  *name;</FONT>
+<FONT SIZE="-1">} Product;</FONT>
+
+<FONT SIZE="-1">typedef struct {</FONT>
+<FONT SIZE="-1">   DWord productID;</FONT>
+<FONT SIZE="-1">   DWord price;   // in cents</FONT>
+<FONT SIZE="-1">   char  name[1]; // actually may be longer than 1</FONT>
+<FONT SIZE="-1">} PackedProduct;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Since the structure for packed and unpacked products is so similar, we could write our code to not distinguish between the two. However, in the future, we may want to represent the data in records differently from the data in memory. By separating the two now, we prepare for possible changes in the future.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The </FONT><FONT FACE="Courier New">productID</FONT><FONT FACE="Times"> is unique within the database. We keep the price in cents so we don't have to deal with floating-point numbers.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We have routines that pack and unpack:</FONT></P><PRE><FONT SIZE="-1">static void &#160;<A NAME="P716_39639"></A>PackProduct(Product *product, VoidHand productDBEntry)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   // figure out necessary size</FONT>
+<FONT SIZE="-1">   UInt     length = 0;</FONT>
+<FONT SIZE="-1">   CharPtr  s;</FONT>
+<FONT SIZE="-1">   UInt     offset = 0;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   length = sizeof(product-&gt;productID) + sizeof(product-&gt;price) +</FONT>
+<FONT SIZE="-1">      StrLen(product-&gt;name) + 1;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   // resize the VoidHand</FONT>
+<FONT SIZE="-1">   if (MemHandleResize(productDBEntry, length) == 0) {</FONT>
+<FONT SIZE="-1">      // copy the fields</FONT>
+<FONT SIZE="-1">      s = MemHandleLock(productDBEntry);</FONT>
+<FONT SIZE="-1">      DmWrite(s, offsetof(PackedProduct, productID), &amp;product-&gt;productID,</FONT>
+<FONT SIZE="-1">         sizeof(product-&gt;productID));</FONT>
+<FONT SIZE="-1">      DmWrite(s, offsetof(PackedProduct, price), &amp;product-&gt;price, </FONT>
+<FONT SIZE="-1">         sizeof(product-&gt;price));</FONT>
+<FONT SIZE="-1">      DmStrCopy(s, offsetof(PackedProduct, name), (CharPtr) product-&gt;name);</FONT>
+<FONT SIZE="-1">      MemHandleUnlock(productDBEntry);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">}</FONT>
+
+<FONT SIZE="-1">// packedProduct must remain locked while product is in use</FONT>
+<FONT SIZE="-1">static void &#160;<A NAME="P740_40433"></A>UnpackProduct(Product *product, </FONT>
+<FONT SIZE="-1">   const PackedProduct *packedProduct)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   product-&gt;productID = packedProduct-&gt;productID;</FONT>
+<FONT SIZE="-1">   product-&gt;price = packedProduct-&gt;price;</FONT>
+<FONT SIZE="-1">   product-&gt;name = packedProduct-&gt;name;</FONT><A NAME="P745_40633"></A>
+<FONT SIZE="-1">}</FONT><A NAME="P746_40634"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Working with Orders</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P749_40653"></A>Orders have a variable number of items:</FONT></P><PRE><FONT SIZE="-1">typedef struct {</FONT>
+<FONT SIZE="-1">   DWord productID;</FONT>
+<FONT SIZE="-1">   DWord quantity;</FONT>
+<FONT SIZE="-1">} Item;</FONT>
+
+<FONT SIZE="-1">typedef struct {</FONT>
+<FONT SIZE="-1">   SDWord   customerID;</FONT>
+<FONT SIZE="-1">   Word  numItems;</FONT>
+<FONT SIZE="-1">   Item  items[1];   // this array will actually be numItems long.</FONT>
+<FONT SIZE="-1">} Order;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">There is zero or one order per customer. An order is matched to its customer via the </FONT><FONT FACE="Courier New">customerUniqueID</FONT><FONT FACE="Times">.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We have variables for the open databases:</FONT></P><PRE><FONT SIZE="-1">static DmOpenRef     gCustomerDB;</FONT>
+<FONT SIZE="-1">static DmOpenRef     gOrderDB;</FONT>
+<FONT SIZE="-1">static DmOpenRef     gProductDB;</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Opening, Creating, and Closing the Sales Databases</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P771_41171"></A>Here's our </FONT><FONT FACE="Courier New">StartApplication</FONT><FONT FACE="Times"> that opens the databases (after creating each one, if necessary):</FONT></P><PRE><FONT SIZE="-1">static Err StartApplication(void)</FONT><FONT FACE="Courier New">&#160;</FONT><A NAME="P773_41298"></A>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   UInt                    prefsSize;</FONT>
+<FONT SIZE="-1">   UInt                    mode = dmModeReadWrite;</FONT>
+<FONT SIZE="-1">   Err                     err = 0;</FONT>
+<FONT SIZE="-1">   CategoriesStruct        *c;</FONT>
+<FONT SIZE="-1">   Boolean                 created;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // code that reads preferences deleted</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // Determime if secret records should be shown.</FONT>
+<FONT SIZE="-1">   gHideSecretRecords = PrefGetPreference(prefHidePrivateRecords);</FONT>
+<FONT SIZE="-1">   if (!gHideSecretRecords)</FONT>
+<FONT SIZE="-1">      mode |= dmModeShowSecret;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // Find the Customer database.  If it doesn't exist, create it.</FONT>
+<FONT SIZE="-1">   OpenOrCreateDB(&amp;gCustomerDB, kCustomerDBType, kSalesCreator, mode, </FONT>
+<FONT SIZE="-1">      0, kCustomerDBName, &amp;created);</FONT>
+<FONT SIZE="-1">   if (created)</FONT>
+<FONT SIZE="-1">      InitializeCustomers();</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // Find the Order database.  If it doesn't exist, create it.</FONT>
+<FONT SIZE="-1">   OpenOrCreateDB(&amp;gOrderDB, kOrderDBType, kSalesCreator, mode, </FONT>
+<FONT SIZE="-1">      0, kOrderDBName, &amp;created);</FONT>
+<FONT SIZE="-1">   if (created)</FONT>
+<FONT SIZE="-1">      InitializeOrders();</FONT>
+
+<FONT SIZE="-1">   // Find the Product database.  If it doesn't exist, create it.</FONT>
+<FONT SIZE="-1">   OpenOrCreateDB(&amp;gProductDB, kProductDBType, kSalesCreator, mode, </FONT>
+<FONT SIZE="-1">      0, kProductDBName, &amp;created);</FONT>
+<FONT SIZE="-1">   if (created)</FONT>
+<FONT SIZE="-1">      InitializeProducts();</FONT>
+
+<FONT SIZE="-1">   c = GetLockedAppInfo();</FONT>
+<FONT SIZE="-1">   gNumCategories = c-&gt;numCategories;</FONT>
+<FONT SIZE="-1">   MemPtrUnlock(c);</FONT>
+
+<FONT SIZE="-1">   return err;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">It uses a utility routine to open (and create, if necessary) each database:</FONT></P><PRE><FONT SIZE="-1">// open a database. If it doesn't exist, create it.</FONT>
+<FONT SIZE="-1">static Err &#160;<A NAME="P815_42573"></A>OpenOrCreateDB(DmOpenRef *dbP, ULong type, ULong creator, </FONT>
+<FONT SIZE="-1">   ULong mode, UInt cardNo, char *name, Boolean *created)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Err   err;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   *created = false;</FONT>
+<FONT SIZE="-1">   *dbP = DmOpenDatabaseByTypeCreator(type, creator, mode);</FONT>
+<FONT SIZE="-1">   err = DmGetLastErr();</FONT>
+<FONT SIZE="-1">   if (! *dbP)</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      err = DmCreateDatabase(0, name, creator, type, false);</FONT>
+<FONT SIZE="-1">      if (err) </FONT>
+<FONT SIZE="-1">         return err;</FONT>
+<FONT SIZE="-1">      *created = true;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      *dbP = DmOpenDatabaseByTypeCreator(type, creator, mode);</FONT>
+<FONT SIZE="-1">      if (! *dbP) </FONT>
+<FONT SIZE="-1">         return DmGetLastErr();</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   return err;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">It uses another utility routine to read the categories from the application info block for the product database:</FONT></P><PRE><FONT SIZE="-1">static CategoriesStruct *&#160;<A NAME="P838_43217"></A>GetLockedAppInfo()</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   UInt  cardNo;</FONT>
+<FONT SIZE="-1">   LocalID  dbID;</FONT>
+<FONT SIZE="-1">   LocalID  appInfoID;</FONT>
+<FONT SIZE="-1">   Err      err;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">    if ((err = DmOpenDatabaseInfo(gProductDB, &amp;dbID, NULL, NULL, </FONT>
+<FONT SIZE="-1">      &amp;cardNo, NULL)) != 0)</FONT>
+<FONT SIZE="-1">      return NULL;</FONT>
+<FONT SIZE="-1">   if ((err = DmDatabaseInfo(cardNo, dbID, NULL, NULL, NULL, NULL, NULL,</FONT>
+<FONT SIZE="-1">      NULL, NULL, &amp;appInfoID, NULL, NULL, NULL)) != 0)</FONT>
+<FONT SIZE="-1">      return NULL;</FONT>
+<FONT SIZE="-1">   return MemLocalIDToLockedPtr(appInfoID, cardNo);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">When the application closes, it has to close the databases:</FONT></P><PRE><FONT SIZE="-1">static void &#160;<A NAME="P855_43688"></A>StopApplication(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   // code that saves preferences deleted</FONT>
+
+<FONT SIZE="-1">   // Close all open forms,  this will force any unsaved data to </FONT>
+<FONT SIZE="-1">   // be written to the database.</FONT>
+<FONT SIZE="-1">   FrmCloseAllForms();</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // Close the databases.</FONT>
+<FONT SIZE="-1">   DmCloseDatabase(gCustomerDB); </FONT>
+<FONT SIZE="-1">   DmCloseDatabase(gOrderDB); </FONT>
+<FONT SIZE="-1">   DmCloseDatabase(gProductDB);  </FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P867_43997"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Initializing the Sales Databases</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P870_44029"></A>We have routines to initialize each of the databases. At some point, these routines could be removed (instead, our conduit would initialize the database during a HotSync).</FONT></P>
+
+<P><I><FONT FACE="Times">Initializing the customer database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the initialization routine for customers:</FONT><A NAME="P874_44282"></A></P><PRE><FONT SIZE="-1">static void InitializeCustomers(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Customer c1 = {1, &quot;Joe's toys-1&quot;, &quot;123 Main St.&quot; ,&quot;Anytown&quot;, </FONT>
+<FONT SIZE="-1">      &quot;(123) 456-7890&quot;};</FONT>
+<FONT SIZE="-1">   Customer c2 = {2, &quot;Bucket of Toys-2&quot;, &quot;&quot; ,&quot;&quot;, &quot;&quot;};</FONT>
+<FONT SIZE="-1">   Customer c3 = {3, &quot;Toys we be-3&quot;, &quot;&quot; ,&quot;&quot;, &quot;&quot;};</FONT>
+<FONT SIZE="-1">   Customer c4 = {4, &quot;a&quot;, &quot;&quot; ,&quot;&quot;, &quot;&quot;};</FONT>
+<FONT SIZE="-1">   Customer c5 = {5, &quot;b&quot;, &quot;&quot; ,&quot;&quot;, &quot;&quot;};</FONT>
+<FONT SIZE="-1">   Customer c6 = {6, &quot;c&quot;, &quot;&quot; ,&quot;&quot;, &quot;&quot;};</FONT>
+<FONT SIZE="-1">   Customer c7 = {7, &quot;d&quot;, &quot;&quot; ,&quot;&quot;, &quot;&quot;};</FONT>
+<FONT SIZE="-1">   Customer *customers[7];</FONT>
+<FONT SIZE="-1">   UInt  numCustomers = sizeof(customers) / sizeof(customers[0]);</FONT>
+<FONT SIZE="-1">   UInt  i;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   customers[0] = &amp;c1;</FONT>
+<FONT SIZE="-1">   customers[1] = &amp;c2;</FONT>
+<FONT SIZE="-1">   customers[2] = &amp;c3;</FONT>
+<FONT SIZE="-1">   customers[3] = &amp;c4;</FONT>
+<FONT SIZE="-1">   customers[4] = &amp;c5;</FONT>
+<FONT SIZE="-1">   customers[5] = &amp;c6;</FONT>
+<FONT SIZE="-1">   customers[6] = &amp;c7;</FONT>
+<FONT SIZE="-1">   for (i = 0; i &lt; numCustomers; i++) {</FONT>
+<FONT SIZE="-1">      UInt  index = dmMaxRecordIndex;</FONT>
+<FONT SIZE="-1">      VoidHand h = DmNewRecord(gCustomerDB, &amp;index, 1);</FONT>
+<FONT SIZE="-1">      if (h) {</FONT>
+<FONT SIZE="-1">         PackCustomer(customers[i], h);</FONT>
+<FONT SIZE="-1">         DmReleaseRecord(gCustomerDB, index, true);</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Initializing the product database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the routine to initialize products:</FONT><A NAME="P908_45243"></A></P><PRE><FONT SIZE="-1">static void InitializeProducts(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">#define  kMaxPerCategory 4</FONT>
+<FONT SIZE="-1">#define  kNumCategories 3</FONT>
+<FONT SIZE="-1">   Product prod1 = {125, 253 ,&quot;GI-Joe&quot;};</FONT>
+<FONT SIZE="-1">   Product prod2 = {135, 1122 ,&quot;Barbie&quot;};</FONT>
+<FONT SIZE="-1">   Product prod3 = {145, 752 ,&quot;Ken&quot;};</FONT>
+<FONT SIZE="-1">   Product prod4 = {9,   852 ,&quot;Skipper&quot;};</FONT>
+<FONT SIZE="-1">   Product prod5 = {126, 253 ,&quot;Kite&quot;};</FONT>
+<FONT SIZE="-1">   Product prod6 = {127, 350 , &quot;Silly-Putty&quot;};</FONT>
+<FONT SIZE="-1">   Product prod7 = {138, 650 ,&quot;Yo-yo&quot;};</FONT>
+<FONT SIZE="-1">   Product prod8 = {199, 950 ,&quot;Legos&quot;};</FONT>
+<FONT SIZE="-1">   Product prod9 = {120, 999 ,&quot;Monopoly&quot;};</FONT>
+<FONT SIZE="-1">   Product prod10= {129, 888 , &quot;Yahtzee&quot;};</FONT>
+<FONT SIZE="-1">   Product prod11= {10, 899 ,  &quot;Life&quot;};</FONT>
+<FONT SIZE="-1">   Product prod12= {20, 1199 ,&quot;Battleship&quot;};</FONT>
+<FONT SIZE="-1">   Product *products[kNumCategories][kMaxPerCategory];</FONT>
+<FONT SIZE="-1">   UInt  i;</FONT>
+<FONT SIZE="-1">   UInt  j;</FONT>
+<FONT SIZE="-1">   VoidHand h;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   products[0][0] = &amp;prod1;</FONT>
+<FONT SIZE="-1">   products[0][1] = &amp;prod2;</FONT>
+<FONT SIZE="-1">   products[0][2] = &amp;prod3;</FONT>
+<FONT SIZE="-1">   products[0][3] = &amp;prod4;</FONT>
+<FONT SIZE="-1">   products[1][0] = &amp;prod5;</FONT>
+<FONT SIZE="-1">   products[1][1] = &amp;prod6;</FONT>
+<FONT SIZE="-1">   products[1][2] = &amp;prod7;</FONT>
+<FONT SIZE="-1">   products[1][3] = &amp;prod8;</FONT>
+<FONT SIZE="-1">   products[2][0] = &amp;prod9;</FONT>
+<FONT SIZE="-1">   products[2][1] = &amp;prod10;</FONT>
+<FONT SIZE="-1">   products[2][2] = &amp;prod11;</FONT>
+<FONT SIZE="-1">   products[2][3] = &amp;prod12;</FONT>
+<FONT SIZE="-1">   for (i = 0; i &lt; kNumCategories; i++) {</FONT>
+<FONT SIZE="-1">      for (j = 0; j &lt; kMaxPerCategory &amp;&amp; products[i][j]-&gt;name; j++) {</FONT>
+<FONT SIZE="-1">         UInt        index;</FONT>
+<FONT SIZE="-1">         PackedProduct  findRecord;</FONT>
+<FONT SIZE="-1">         VoidHand       h;</FONT>
+<FONT SIZE="-1">         </FONT>
+<FONT SIZE="-1">         findRecord.productID = products[i][j]-&gt;productID;</FONT>
+<FONT SIZE="-1">         index = DmFindSortPosition(gProductDB, &amp;findRecord, 0, </FONT>
+<FONT SIZE="-1">            (DmComparF* ) CompareIDFunc, 0);</FONT>
+<FONT SIZE="-1">         h = DmNewRecord(gProductDB, &amp;index, 1);</FONT>
+<FONT SIZE="-1">         if (h) {</FONT>
+<FONT SIZE="-1">            UInt  attr;</FONT>
+<FONT SIZE="-1">            // Set the category of the new record to the category it </FONT>
+<FONT SIZE="-1">            // belongs in.</FONT>
+<FONT SIZE="-1">            DmRecordInfo(gProductDB, index, &amp;attr, NULL, NULL);</FONT>
+<FONT SIZE="-1">            attr &amp;= ~dmRecAttrCategoryMask;</FONT>
+<FONT SIZE="-1">            attr |= i;       // category is kept in low bits of attr</FONT>
+<FONT SIZE="-1">            </FONT>
+<FONT SIZE="-1">            DmSetRecordInfo(gProductDB, index, &amp;attr, NULL);</FONT>
+<FONT SIZE="-1">            PackProduct(products[i][j], h);</FONT>
+<FONT SIZE="-1">            DmReleaseRecord(gProductDB, index, true);</FONT>
+<FONT SIZE="-1">         }</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   h = DmNewHandle(gProductDB, </FONT>
+<FONT SIZE="-1">      offsetof(CategoriesStruct, names[kNumCategories]));</FONT>
+<FONT SIZE="-1">   if (h) {</FONT>
+<FONT SIZE="-1">      char  *categories[] = {&quot;Dolls&quot;, &quot;Toys&quot;, &quot;Games&quot;};</FONT>
+<FONT SIZE="-1">      CategoriesStruct  *c = MemHandleLock(h);</FONT>
+<FONT SIZE="-1">      LocalID           dbID;</FONT>
+<FONT SIZE="-1">      LocalID           appInfoID;</FONT>
+<FONT SIZE="-1">      UInt           cardNo;</FONT>
+<FONT SIZE="-1">      UInt           num = kNumCategories;</FONT>
+<FONT SIZE="-1">      Err               err;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      DmWrite(c, offsetof(CategoriesStruct, numCategories), &amp;num, </FONT>
+<FONT SIZE="-1">         sizeof(num)); </FONT>
+<FONT SIZE="-1">      for (i = 0; i &lt; kNumCategories; i++)</FONT>
+<FONT SIZE="-1">         DmStrCopy(c, </FONT>
+<FONT SIZE="-1">            offsetof(CategoriesStruct, names[i]), categories[i]);</FONT>
+<FONT SIZE="-1">      MemHandleUnlock(h);</FONT>
+<FONT SIZE="-1">         appInfoID = MemHandleToLocalID( h);</FONT>
+<FONT SIZE="-1">         err = DmOpenDatabaseInfo(gProductDB, &amp;dbID, NULL, NULL, </FONT>
+<FONT SIZE="-1">            &amp;cardNo, NULL);</FONT>
+<FONT SIZE="-1">         if (err == 0) {</FONT>
+<FONT SIZE="-1">         err = DmSetDatabaseInfo(cardNo, dbID, NULL, NULL, NULL, NULL, </FONT>
+<FONT SIZE="-1">            NULL, NULL, NULL, &amp;appInfoID, NULL, NULL, NULL);</FONT>
+<FONT SIZE="-1">         ErrNonFatalDisplayIf(err, &quot;DmSetDatabaseInfo failed&quot;);</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The code inserts the products sorted by product ID (an alternative would be to create the products in unsorted order and then sort them afterward). Note also that the attributes of each record are modified to set the category of the product.</FONT><A NAME="P995_48378"></A></P>
+
+<P><I><FONT FACE="Times">The comparison routine for sorting</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P999_48412"></A>Here's the comparison routine used for sorting products, companies, and orders:</FONT></P><PRE><FONT SIZE="-1">static Int CompareIDFunc(SDWord *p1, SDWord *p2, Int i, </FONT>
+<FONT SIZE="-1">   SortRecordInfoPtr s1, SortRecordInfoPtr s2, VoidHand appInfoH)</FONT>
+<FONT SIZE="-1">{  </FONT>
+<FONT SIZE="-1">   // can't just return *p1 - *p2 because that's a long that may overflow</FONT>
+<FONT SIZE="-1">   // our return type of Int.  Therefore, we do the subtraction ourself</FONT>
+<FONT SIZE="-1">   // and check</FONT>
+<FONT SIZE="-1">   long difference = *p1 - *p2;</FONT>
+<FONT SIZE="-1">   if (difference &lt; 0)</FONT>
+<FONT SIZE="-1">      return -1;</FONT>
+<FONT SIZE="-1">   else if (difference &gt; 0)</FONT>
+<FONT SIZE="-1">      return 1;</FONT>
+<FONT SIZE="-1">   else</FONT>
+<FONT SIZE="-1">      return 0;</FONT>
+<FONT SIZE="-1">   return (*p1 - *p2);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Initializing the orders database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Finally, the orders must be initialized:</FONT><A NAME="P1018_49002"></A></P><PRE><FONT SIZE="-1">static void InitializeOrders(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Item item1 =  {125, 253};</FONT>
+<FONT SIZE="-1">   Item item2 =  {126, 999};</FONT>
+<FONT SIZE="-1">   Item item3 =  {127, 888};</FONT>
+<FONT SIZE="-1">   Item item4 =  {138, 777};</FONT>
+<FONT SIZE="-1">   Item item5 =  {125, 6};</FONT>
+<FONT SIZE="-1">   Item item6 =  {120, 5};</FONT>
+<FONT SIZE="-1">   Item item7 =  {129, 5};</FONT>
+<FONT SIZE="-1">   Item item8 =  {10,  3};</FONT>
+<FONT SIZE="-1">   Item item9 =  {20,  45};</FONT>
+<FONT SIZE="-1">   Item item10 = {125, 66};</FONT>
+<FONT SIZE="-1">   Item item11 = {125, 75};</FONT>
+<FONT SIZE="-1">   Item item12 = {125, 23};</FONT>
+<FONT SIZE="-1">   Item item13 = {125, 55};</FONT>
+<FONT SIZE="-1">   Item item14 = {125, 888};</FONT>
+<FONT SIZE="-1">   Item item15 = {125, 456};</FONT>
+<FONT SIZE="-1">   Item items[15];</FONT>
+<FONT SIZE="-1">   VoidHand h;</FONT>
+<FONT SIZE="-1">   Order    *order;</FONT>
+<FONT SIZE="-1">   UInt  recordNum;</FONT>
+<FONT SIZE="-1">   UInt  numItems = sizeof(items) / sizeof(items[0]);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   items[0] =  item1;</FONT>
+<FONT SIZE="-1">   items[1] =  item2;</FONT>
+<FONT SIZE="-1">   items[2] =  item3;</FONT>
+<FONT SIZE="-1">   items[3] =  item4;</FONT>
+<FONT SIZE="-1">   items[4] =  item5;</FONT>
+<FONT SIZE="-1">   items[5] =  item6;</FONT>
+<FONT SIZE="-1">   items[6] =  item7;</FONT>
+<FONT SIZE="-1">   items[7] =  item8;</FONT>
+<FONT SIZE="-1">   items[8] =  item9;</FONT>
+<FONT SIZE="-1">   items[9] =  item10;</FONT>
+<FONT SIZE="-1">   items[10] = item11;</FONT>
+<FONT SIZE="-1">   items[11] = item12;</FONT>
+<FONT SIZE="-1">   items[12] = item13;</FONT>
+<FONT SIZE="-1">   items[13] = item14;</FONT>
+<FONT SIZE="-1">   items[14] = item15;</FONT>
+
+<FONT SIZE="-1">   order= GetOrCreateOrderForCustomer(1, &amp;recordNum);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // write numItems</FONT>
+<FONT SIZE="-1">   DmWrite(order, offsetof(Order, numItems), &amp;numItems, sizeof(numItems));</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // resize to hold more items</FONT>
+<FONT SIZE="-1">   h = MemPtrRecoverHandle(order);</FONT>
+<FONT SIZE="-1">   MemHandleUnlock(h);</FONT>
+<FONT SIZE="-1">   MemHandleResize(h, offsetof(Order, items) + sizeof(Item) * numItems);</FONT>
+<FONT SIZE="-1">   order = MemHandleLock(h);</FONT>
+
+<FONT SIZE="-1">   // write new items</FONT>
+<FONT SIZE="-1">   DmWrite(order, offsetof(Order, items), items, sizeof(items));</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // done with it</FONT>
+<FONT SIZE="-1">   MemHandleUnlock(h);</FONT>
+<FONT SIZE="-1">   DmReleaseRecord(gOrderDB, recordNum, true);</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P1076_50406"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Adding Records</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1079_50420"></A>All we do is add some items to the first customer. The remaining customers we treat as still needing an order. (We do this primarily to test later code that shows which customers do and do not have orders.) We use a routine that takes a customer ID and returns the corresponding order (or creates it as necessary). This routine is used not only for initializing the database, but also at other points in the program:</FONT></P><PRE><FONT SIZE="-1">static Order *&#160;<A NAME="P1081_50851"></A>GetOrCreateOrderForCustomer(Long customerID, </FONT>
+<FONT SIZE="-1">   UInt *recordNumPtr)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   VoidHand theOrderHandle;</FONT>
+<FONT SIZE="-1">   Order    *order;</FONT>
+<FONT SIZE="-1">   Boolean  exists;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   *recordNumPtr = OrderRecordNumber(customerID, &amp;exists);</FONT>
+<FONT SIZE="-1">   if (exists) {</FONT>
+<FONT SIZE="-1">      theOrderHandle = DmGetRecord(gOrderDB, *recordNumPtr);</FONT>
+<FONT SIZE="-1">      ErrNonFatalDisplayIf(!theOrderHandle, &quot;DMGetRecord failed!&quot;);</FONT>
+<FONT SIZE="-1">      order = MemHandleLock(theOrderHandle);</FONT>
+<FONT SIZE="-1">   } else { </FONT>
+<FONT SIZE="-1">      Order o;</FONT>
+<FONT SIZE="-1">      theOrderHandle = DmNewRecord(gOrderDB, recordNumPtr, sizeof(Order));</FONT>
+<FONT SIZE="-1">      if (!theOrderHandle) {</FONT>
+<FONT SIZE="-1">         FrmAlert(DeviceFullAlert);</FONT>
+<FONT SIZE="-1">         return NULL;</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">      o.numItems = 0;</FONT>
+<FONT SIZE="-1">      o.customerID = customerID; </FONT>
+<FONT SIZE="-1">      order = MemHandleLock(theOrderHandle);</FONT>
+<FONT SIZE="-1">      DmWrite(order, 0, &amp;o, sizeof(o));</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   return order;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">OrderRecordNumber</FONT><FONT FACE="Times"> returns the record number of a customer's order or the location at which the order should be inserted, if no such order exists:</FONT></P><PRE><FONT SIZE="-1">// returns record number for order, if it exists, or where it </FONT>
+<FONT SIZE="-1">// should be inserted</FONT>
+<FONT SIZE="-1">static UInt &#160;<A NAME="P1111_51822"></A>OrderRecordNumber(Long customerID, Boolean *orderExists)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Order    findRecord;</FONT>
+<FONT SIZE="-1">   UInt     recordNumber;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   *orderExists = false;</FONT>
+<FONT SIZE="-1">   findRecord.customerID = customerID;</FONT>
+<FONT SIZE="-1">   recordNumber = DmFindSortPosition(gOrderDB, &amp;findRecord, 0, </FONT>
+<FONT SIZE="-1">      (DmComparF *) CompareIDFunc, 0);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (recordNumber &gt; 0) {</FONT>
+<FONT SIZE="-1">      Order *order;</FONT>
+<FONT SIZE="-1">      VoidHand theOrderHandle;</FONT>
+<FONT SIZE="-1">      Boolean  foundIt;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      theOrderHandle = DmQueryRecord(gOrderDB, recordNumber - 1);</FONT>
+<FONT SIZE="-1">      ErrNonFatalDisplayIf(!theOrderHandle, &quot;DMGetRecord failed!&quot;);</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      order = MemHandleLock(theOrderHandle);</FONT>
+<FONT SIZE="-1">      foundIt = order-&gt;customerID == customerID;</FONT>
+<FONT SIZE="-1">      MemHandleUnlock(theOrderHandle);</FONT>
+<FONT SIZE="-1">      if (foundIt) {</FONT>
+<FONT SIZE="-1">         *orderExists = true;</FONT>
+<FONT SIZE="-1">         return recordNumber - 1;</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   return recordNumber;</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P1138_52585"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">The Customers Form</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1141_52603"></A>Let's now look at how the customers are displayed in the Customers form. Customers are displayed in a list that has a drawing callback function that displays the customer for a particular row (since it's called by the system, it must have the </FONT><FONT FACE="Courier New">CALLBACK</FONT><FONT FACE="Times"> macros for GCC). The customers that already have an order are shown in bold, to distinguish them from the others. The text pointer is unused, since we don't store our customer names in the list but obtain them from the database. Here's the routine:</FONT></P><PRE><FONT SIZE="-1">static void &#160;<A NAME="P1143_53116"></A>DrawOneCustomerInListWithFont(UInt itemNumber, RectanglePtr bounds, CharPtr *text)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   VoidHand h;</FONT>
+<FONT SIZE="-1">   Int      seekAmount = itemNumber;</FONT>
+<FONT SIZE="-1">   UInt  index = 0;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_PROLOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   // must do seek to skip over secret records</FONT>
+<FONT SIZE="-1">   DmSeekRecordInCategory(gCustomerDB, &amp;index, seekAmount, dmSeekForward,</FONT>
+<FONT SIZE="-1">      dmAllCategories);</FONT>
+<FONT SIZE="-1">   h = DmQueryRecord(gCustomerDB, index);</FONT>
+<FONT SIZE="-1">   if (h) {</FONT>
+<FONT SIZE="-1">      FontID   curFont;</FONT>
+<FONT SIZE="-1">      Boolean  setFont = false;</FONT>
+<FONT SIZE="-1">      PackedCustomer *packedCustomer = MemHandleLock(h);</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      if (!OrderExistsForCustomer(packedCustomer-&gt;customerID)) {</FONT>
+<FONT SIZE="-1">         setFont = true;</FONT>
+<FONT SIZE="-1">         curFont = FntSetFont(boldFont);</FONT>
+<FONT SIZE="-1">      }  </FONT>
+<FONT SIZE="-1">      DrawCharsToFitWidth(packedCustomer-&gt;name, bounds);</FONT>
+<FONT SIZE="-1">      MemHandleUnlock(h);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">      if (setFont)</FONT>
+<FONT SIZE="-1">         FntSetFont(curFont);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_EPILOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The routine uses two other routines: one that finds the unique ID for a specific row number and one that tells whether an order exists. Here's the routine that returns a unique ID:</FONT></P><PRE><FONT SIZE="-1">static ULong &#160;<A NAME="P1177_54130"></A>GetCustomerIDForNthCustomer(UInt itemNumber)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Long        customerID;</FONT>
+<FONT SIZE="-1">   UInt        index = 0;</FONT>
+<FONT SIZE="-1">   Int            seekAmount = itemNumber;</FONT>
+<FONT SIZE="-1">   VoidHand       h;</FONT>
+<FONT SIZE="-1">   PackedCustomer *packedCustomer;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // must do seek to skip over secret records</FONT>
+<FONT SIZE="-1">   DmSeekRecordInCategory(gCustomerDB, &amp;index, seekAmount, dmSeekForward,</FONT>
+<FONT SIZE="-1">      dmAllCategories);</FONT>
+<FONT SIZE="-1">   h = DmQueryRecord(gCustomerDB, index);</FONT>
+<FONT SIZE="-1">   ErrNonFatalDisplayIf(!h, </FONT>
+<FONT SIZE="-1">      &quot;can't get customer in GetCustomerIDForNthCustomer&quot;);</FONT>
+<FONT SIZE="-1">   packedCustomer = MemHandleLock(h);</FONT>
+<FONT SIZE="-1">   customerID = packedCustomer-&gt;customerID;</FONT>
+<FONT SIZE="-1">   MemHandleUnlock(h);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   return customerID;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note the use of </FONT><FONT FACE="Courier New">&#160;<A NAME="P1197_54739"></A>DmSeekRecordInCategory</FONT><FONT FACE="Times">, which skips over any secret records. Here's the code that calls </FONT><FONT FACE="Courier New">OrderRecordNumber</FONT><FONT FACE="Times"> to figure out whether an order exists (so that the customer name can be bolded or not):</FONT></P><PRE><FONT SIZE="-1">static Boolean &#160;<A NAME="P1199_54948"></A>OrderExistsForCustomer(Long customerID)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Boolean  orderExists;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   OrderRecordNumber(customerID, &amp;orderExists);</FONT>
+<FONT SIZE="-1">   return  orderExists;</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P1205_55086"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Editing Customers</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the </FONT><FONT FACE="Courier New">&#160;<A NAME="P1208_55115"></A>EditCustomerWithSelection</FONT><FONT FACE="Times"> routine that handles editing customers, deleting customers, and setting/clearing the private record attribute. The </FONT><FONT FACE="Courier New">gotoData</FONT><FONT FACE="Times"> parameter is used to preselect some text in a field (used for displaying the results of a Find):</FONT></P><PRE><FONT SIZE="-1">static void EditCustomerWithSelection(UInt recordNumber, Boolean isNew,</FONT>
+<FONT SIZE="-1">   Boolean *deleted, Boolean *hidden, struct frmGoto *gotoData)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr  previousForm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">   FormPtr  frm;</FONT>
+<FONT SIZE="-1">   UInt     hitButton;</FONT>
+<FONT SIZE="-1">   Boolean  dirty = false;</FONT>
+<FONT SIZE="-1">   ControlPtr  privateCheckbox;</FONT>
+<FONT SIZE="-1">   UInt     attributes;</FONT>
+<FONT SIZE="-1">   Boolean     isSecret;</FONT>
+<FONT SIZE="-1">   FieldPtr nameField;</FONT>
+<FONT SIZE="-1">   FieldPtr addressField;</FONT>
+<FONT SIZE="-1">   FieldPtr cityField;</FONT>
+<FONT SIZE="-1">   FieldPtr phoneField;</FONT>
+<FONT SIZE="-1">   Customer theCustomer;</FONT>
+<FONT SIZE="-1">   UInt     offset = offsetof(PackedCustomer, name);</FONT>
+<FONT SIZE="-1">   VoidHand    customerHandle = DmGetRecord(gCustomerDB, recordNumber);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   *hidden = *deleted = false;</FONT>
+<FONT SIZE="-1">   DmRecordInfo(gCustomerDB, recordNumber, &amp;attributes, NULL, NULL);</FONT>
+<FONT SIZE="-1">   isSecret = (attributes &amp; dmRecAttrSecret) == dmRecAttrSecret;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   frm = FrmInitForm(CustomerForm);</FONT>
+<FONT SIZE="-1">   FrmSetEventHandler(frm, CustomerHandleEvent);</FONT>
+<FONT SIZE="-1">   FrmSetActiveForm(frm);</FONT>
+
+<FONT SIZE="-1">   &#160;<A NAME="P1236_56203"></A>UnpackCustomer(&amp;theCustomer, MemHandleLock(customerHandle));</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // code deleted that initializes the fields</FONT>
+
+<FONT SIZE="-1">   // unlock the customer</FONT>
+<FONT SIZE="-1">   MemHandleUnlock(customerHandle);</FONT>
+
+<FONT SIZE="-1">   privateCheckbox = GetObjectFromActiveForm(CustomerPrivateCheckbox);</FONT>
+<FONT SIZE="-1">   CtlSetValue(privateCheckbox, isSecret);</FONT>
+
+<FONT SIZE="-1">   hitButton = FrmDoDialog(frm);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (hitButton == CustomerOKButton) {      </FONT>
+<FONT SIZE="-1">      dirty = FldDirty(nameField) || FldDirty(addressField) ||</FONT>
+<FONT SIZE="-1">         FldDirty(cityField) || FldDirty(phoneField);</FONT>
+<FONT SIZE="-1">      if (dirty) {</FONT>
+<FONT SIZE="-1">         // code deleted that reads the fields into theCustomer</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">      &#160;<A NAME="P1254_56774"></A>PackCustomer(&amp;theCustomer, customerHandle);</FONT>
+<FONT SIZE="-1">      if (CtlGetValue(privateCheckbox) != isSecret) {</FONT>
+<FONT SIZE="-1">         dirty = true;</FONT>
+<FONT SIZE="-1">         if (CtlGetValue(privateCheckbox)) {</FONT>
+<FONT SIZE="-1">            attributes |= dmRecAttrSecret;</FONT>
+<FONT SIZE="-1">            // tell user how to hide private records</FONT>
+<FONT SIZE="-1">            if (gHideSecretRecords)</FONT>
+<FONT SIZE="-1">               *hidden = true;</FONT>
+<FONT SIZE="-1">            else</FONT>
+<FONT SIZE="-1">               FrmAlert(privateRecordInfoAlert);</FONT>
+<FONT SIZE="-1">         } else</FONT>
+<FONT SIZE="-1">            attributes &amp;= ~dmRecAttrSecret;</FONT>
+<FONT SIZE="-1">         DmSetRecordInfo(gCustomerDB, recordNumber, &amp;attributes, NULL);</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   &#160;<A NAME="P1270_57306"></A>DmReleaseRecord(gCustomerDB, recordNumber, dirty);</FONT>
+<FONT SIZE="-1">   if (hitButton == CustomerDeleteButton) {</FONT>
+<FONT SIZE="-1">      *deleted = true;</FONT>
+<FONT SIZE="-1">      if (isNew &amp;&amp; !gSaveBackup)</FONT>
+<FONT SIZE="-1">         DmRemoveRecord(gCustomerDB, recordNumber);</FONT>
+<FONT SIZE="-1">      else {</FONT>
+<FONT SIZE="-1">         if (gSaveBackup)  // Need to archive it on PC</FONT>
+<FONT SIZE="-1">            DmArchiveRecord(gCustomerDB, recordNumber);</FONT>
+<FONT SIZE="-1">         else</FONT>
+<FONT SIZE="-1">            DmDeleteRecord(gCustomerDB, recordNumber);</FONT>
+<FONT SIZE="-1">         // Deleted records are stored at the end of the database</FONT>
+<FONT SIZE="-1">         DmMoveRecord(gCustomerDB, recordNumber,</FONT>
+<FONT SIZE="-1">            DmNumRecords(gCustomerDB));</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   else if (hitButton == CustomerOKButton &amp;&amp; isNew &amp;&amp; </FONT>
+<FONT SIZE="-1">      !(StrLen(theCustomer.name) || StrLen(theCustomer.address) ||</FONT>
+<FONT SIZE="-1">      StrLen(theCustomer.city) || StrLen(theCustomer.phone))) {</FONT>
+<FONT SIZE="-1">      *deleted = true;</FONT>
+<FONT SIZE="-1">      // delete Customer if it is new &amp; empty</FONT>
+<FONT SIZE="-1">      DmRemoveRecord(gCustomerDB, recordNumber);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   else if (hitButton == CustomerCancelButton &amp;&amp; isNew) {</FONT>
+<FONT SIZE="-1">      *deleted = true;</FONT>
+<FONT SIZE="-1">      DmRemoveRecord(gCustomerDB, recordNumber);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (previousForm)</FONT>
+<FONT SIZE="-1">      FrmSetActiveForm(previousForm);</FONT>
+<FONT SIZE="-1">   FrmDeleteForm(frm);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We have a utility routine we use that doesn't require a </FONT><FONT FACE="Courier New">gotoData</FONT><FONT FACE="Times"> parameter:</FONT></P><PRE><FONT SIZE="-1">static void EditCustomer(UInt recordNumber, Boolean isNew, Boolean *deleted, Boolean *hidden)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   EditCustomerWithSelection(recordNumber, isNew, deleted, hidden, NULL);</FONT>
+<FONT SIZE="-1">}</FONT><FONT FACE="Courier New">&#160;</FONT><A NAME="P1306_58615"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">The Order Form</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1309_58629"></A>Most of the functionality in this form is provided in a table (see &quot;Tables&quot; on page&#160;204). We won't look at the table parts specifically, but it's worth knowing that each visible row of the table has an item index number associated with it (this is retrieved with </FONT><FONT FACE="Courier New">TblGetRowID</FONT><FONT FACE="Times">). Here's the code that draws a product name for a particular row:</FONT></P><PRE><FONT SIZE="-1">static void &#160;<A NAME="P1311_58982"></A>OrderDrawProductName(VoidPtr table, Word row, Word column, </FONT>
+<FONT SIZE="-1">   RectanglePtr bounds)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   VoidHand h = NULL;</FONT>
+<FONT SIZE="-1">   Product  p;</FONT>
+<FONT SIZE="-1">   UInt  itemNumber;</FONT>
+<FONT SIZE="-1">   ULong productID;</FONT>
+<FONT SIZE="-1">   CharPtr  toDraw;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_PROLOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   toDraw = &quot;-Product-&quot;;</FONT>
+<FONT SIZE="-1">   itemNumber = TblGetRowID(table, row);</FONT>
+<FONT SIZE="-1">   productID = gCurrentOrder-&gt;items[itemNumber].productID;</FONT>
+<FONT SIZE="-1">   if (productID) {</FONT>
+<FONT SIZE="-1">      h = GetProductFromProductID(productID, &amp;p, NULL);</FONT>
+<FONT SIZE="-1">      if (h)</FONT>
+<FONT SIZE="-1">         toDraw = (CharPtr) p.name;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   DrawCharsToFitWidth(toDraw, bounds);</FONT>
+<FONT SIZE="-1">   if (h)</FONT>
+<FONT SIZE="-1">      MemHandleUnlock(h);</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_EPILOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Looking up a product</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P1341_59585"></A>GetProductFromProductId</FONT><FONT FACE="Times"> looks up a product given a product ID. Here's the code for that:</FONT></P><PRE><FONT SIZE="-1">// if successful, returns the product, and the locked VoidHand</FONT>
+<FONT SIZE="-1">static VoidHand GetProductFromProductID(ULong productID, Product *theProduct, UInt *indexPtr)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   UInt           index;</FONT>
+<FONT SIZE="-1">   PackedProduct  findRecord;</FONT>
+<FONT SIZE="-1">   VoidHand       foundHandle = 0;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   findRecord.productID = productID;</FONT>
+<FONT SIZE="-1">   index = DmFindSortPosition(gProductDB, &amp;findRecord, 0, </FONT>
+<FONT SIZE="-1">      (DmComparF *) CompareIDFunc, 0);</FONT>
+<FONT SIZE="-1">   if (index &gt; 0) {</FONT>
+<FONT SIZE="-1">      PackedProduct  *p;</FONT>
+<FONT SIZE="-1">      VoidHand       h;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      index--;</FONT>
+<FONT SIZE="-1">      h = DmQueryRecord(gProductDB, index);</FONT>
+<FONT SIZE="-1">      p = MemHandleLock(h);</FONT>
+<FONT SIZE="-1">      if (p-&gt;productID == productID) {</FONT>
+<FONT SIZE="-1">         if (theProduct)</FONT>
+<FONT SIZE="-1">            UnpackProduct(theProduct, p);</FONT>
+<FONT SIZE="-1">         else</FONT>
+<FONT SIZE="-1">            MemHandleUnlock(h);</FONT>
+<FONT SIZE="-1">         if (indexPtr)</FONT>
+<FONT SIZE="-1">            *indexPtr = index;</FONT>
+<FONT SIZE="-1">         return h;</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">      MemHandleUnlock(h);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   return NULL;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Editing an item</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P1375_60492"></A>The code to display the product ID and quantity doesn't use the Database Manager (so we don't show that code).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's a snippet of code from </FONT><FONT FACE="Courier New">OrderSaveAmount</FONT><FONT FACE="Times"> that modifies the quantity, if it has been edited:</FONT></P><PRE><FONT SIZE="-1">CharPtr textP = FldGetTextPtr(fld);</FONT>
+<FONT SIZE="-1">Item  oldItem = gCurrentOrder-&gt;items[gCurrentSelectedItemIndex];</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">if (table-&gt;currentColumn == kQuantityColumn) {</FONT>
+<FONT SIZE="-1">   if (textP)</FONT>
+<FONT SIZE="-1">      oldItem.quantity = StrAToI(textP);</FONT>
+<FONT SIZE="-1">   else</FONT>
+<FONT SIZE="-1">      oldItem.quantity = 0;</FONT>
+<FONT SIZE="-1">}</FONT>
+<FONT SIZE="-1">DmWrite(gCurrentOrder, </FONT>
+<FONT SIZE="-1">   offsetof(Order, items[gCurrentSelectedItemIndex]),</FONT>
+<FONT SIZE="-1">   &amp;oldItem, sizeof(oldItem));</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note that </FONT><FONT FACE="Courier New">DmWrite</FONT><FONT FACE="Times"> is used to modify </FONT><FONT FACE="Courier New">gCurrentOrder</FONT><FONT FACE="Times">, since </FONT><FONT FACE="Courier New">gCurrentOrder</FONT><FONT FACE="Times"> is a record in the order database and can't be written to directly.</FONT></P>
+
+<P><I><FONT FACE="Times">Deleting an item</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P1395_61195"></A>We need to delete an item in certain circumstances (if the user explicitly chooses to delete an item, or sets the quantity to 0, and then stops editing that item). Here's the code that does that (note that it uses </FONT><FONT FACE="Courier New">DmWrite</FONT><FONT FACE="Times"> to move succeeding items forward and uses </FONT><FONT FACE="Courier New">MemPtrResize</FONT><FONT FACE="Times"> to make the record smaller):</FONT></P><PRE><FONT SIZE="-1">// gCurrentOrder changes after this routine. </FONT>
+<FONT SIZE="-1">// gCurrentItem is no longer valid</FONT>
+<FONT SIZE="-1">static void DeleteNthItem(UInt itemNumber)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   UInt     newNumItems;</FONT>
+<FONT SIZE="-1">   ErrNonFatalDisplayIf(itemNumber &gt;= gCurrentOrder-&gt;numItems, </FONT>
+<FONT SIZE="-1">      &quot;bad itemNumber&quot;);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // move items from itemNumber+1..numItems down 1 to </FONT>
+<FONT SIZE="-1">   // itemNumber .. numItems - 1</FONT>
+<FONT SIZE="-1">   if (itemNumber &lt; gCurrentOrder-&gt;numItems - 1)</FONT>
+<FONT SIZE="-1">      DmWrite(gCurrentOrder,</FONT>
+<FONT SIZE="-1">         offsetof(Order, items[itemNumber]),</FONT>
+<FONT SIZE="-1">         &amp;gCurrentOrder-&gt;items[itemNumber+1],</FONT>
+<FONT SIZE="-1">         (gCurrentOrder-&gt;numItems - itemNumber - 1) * sizeof(Item));</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // decrement numItems;</FONT>
+<FONT SIZE="-1">   newNumItems = gCurrentOrder-&gt;numItems - 1;</FONT>
+<FONT SIZE="-1">   DmWrite(gCurrentOrder,</FONT>
+<FONT SIZE="-1">      offsetof(Order, numItems), &amp;newNumItems, sizeof(newNumItems));</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   // resize the pointer smaller. We could use MemPtrRecoverHandle, </FONT>
+<FONT SIZE="-1">   // MemHandleUnlock, MemHandleResize, MemHandleLock. </FONT>
+<FONT SIZE="-1">   // However, MemPtrResize will always work</FONT>
+<FONT SIZE="-1">   // as long as your are making a chunk smaller.  Thanks, Bob!</FONT>
+<FONT SIZE="-1">   MemPtrResize(gCurrentOrder, </FONT>
+<FONT SIZE="-1">      offsetof(Order, items[gCurrentOrder-&gt;numItems]));</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Adding a new item</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">&#160;<A NAME="P1427_62563"></A>Similarly, we must have a routine to add a new item:</FONT></P><PRE><FONT SIZE="-1">// returns true if successfull. itemNumber is location at which it was</FONT>
+<FONT SIZE="-1">// added</FONT>
+<FONT SIZE="-1">static Boolean AddNewItem(UInt *itemNumber)</FONT>
+<FONT SIZE="-1">{  </FONT>
+<FONT SIZE="-1">   VoidHand theOrderHandle;</FONT>
+<FONT SIZE="-1">   Err      err;</FONT>
+<FONT SIZE="-1">   UInt  numItems;</FONT>
+<FONT SIZE="-1">   Item  newItem = {0, 0};</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   ErrNonFatalDisplayIf(!gCurrentOrder, &quot;no current order&quot;);</FONT>
+<FONT SIZE="-1">   theOrderHandle = MemPtrRecoverHandle(gCurrentOrder);</FONT>
+<FONT SIZE="-1">   MemHandleUnlock(theOrderHandle);</FONT>
+<FONT SIZE="-1">   err = MemHandleResize(theOrderHandle, </FONT>
+<FONT SIZE="-1">      MemHandleSize(theOrderHandle) + sizeof(Item));</FONT>
+<FONT SIZE="-1">   gCurrentOrder = MemHandleLock(theOrderHandle);</FONT>
+<FONT SIZE="-1">   if (err != 0) {</FONT>
+<FONT SIZE="-1">      FrmAlert(DeviceFullAlert);</FONT>
+<FONT SIZE="-1">      return false;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   numItems = gCurrentOrder-&gt;numItems + 1;</FONT>
+<FONT SIZE="-1">   DmWrite(gCurrentOrder, offsetof(Order, numItems), &amp;numItems, </FONT>
+<FONT SIZE="-1">      sizeof(numItems));</FONT>
+<FONT SIZE="-1">   *itemNumber = gCurrentOrder-&gt;numItems - 1;</FONT>
+<FONT SIZE="-1">   DmWrite(gCurrentOrder, offsetof(Order, items[*itemNumber]), &amp;newItem, </FONT>
+<FONT SIZE="-1">      sizeof(newItem));</FONT>
+<FONT SIZE="-1">   gCurrentOrderChanged = true;</FONT>
+<FONT SIZE="-1">   return true;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note that if we can't resize the handle, we display the system alert telling the user that the device is full.</FONT></P>
+
+<P><I><FONT FACE="Times">Finishing an order record</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">When the Order form is closed, the records in the order database must be updated. If there are no items, the entire order is deleted:</FONT></P><PRE><FONT SIZE="-1">static void &#160;<A NAME="P1463_63793"></A>OrderFormClose(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   VoidHand theOrderHandle;</FONT>
+<FONT SIZE="-1">   UInt  numItems;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   OrderDeselectRowAndDeleteIfEmpty();</FONT>
+<FONT SIZE="-1">   numItems = gCurrentOrder-&gt;numItems;</FONT>
+<FONT SIZE="-1">   // unlock the order</FONT>
+<FONT SIZE="-1">   theOrderHandle = MemPtrRecoverHandle(gCurrentOrder);</FONT>
+<FONT SIZE="-1">   MemHandleUnlock(theOrderHandle);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // delete Order if it is empty; release it back to the database otherwise</FONT>
+<FONT SIZE="-1">   if (numItems == 0) </FONT>
+<FONT SIZE="-1">      DmRemoveRecord(gOrderDB, gCurrentOrderIndex);</FONT>
+<FONT SIZE="-1">   else</FONT>
+<FONT SIZE="-1">      DmReleaseRecord(gOrderDB, gCurrentOrderIndex, gCurrentOrderChanged);</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P1479_64284"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">The Item Form</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P1482_64297"></A>Once the form is initialized, the user interacts with it until a button is tapped. The event handler for the form handles the button tap:</FONT></P><PRE><FONT SIZE="-1">static Boolean &#160;<A NAME="P1484_64450"></A>ItemHandleEvent(EventPtr event)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Boolean     handled = false;</FONT>
+<FONT SIZE="-1">   FieldPtr    fld;</FONT>
+
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_PROLOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   switch (event-&gt;eType) {</FONT>
+<FONT SIZE="-1">      case ctlSelectEvent:  </FONT>
+<FONT SIZE="-1">         switch (event-&gt;data.ctlSelect.controlID) {</FONT>
+<FONT SIZE="-1">         case ItemOKButton:</FONT>
+<FONT SIZE="-1">            {</FONT>
+<FONT SIZE="-1">               char  *textPtr;</FONT>
+<FONT SIZE="-1">               ULong quantity;</FONT>
+<FONT SIZE="-1">               </FONT>
+<FONT SIZE="-1">            fld = GetObjectFromActiveForm(ItemQuantityField);</FONT>
+<FONT SIZE="-1">            textPtr = FldGetTextPtr(fld);</FONT>
+<FONT SIZE="-1">            ErrNonFatalDisplayIf(!textPtr, &quot;No quantity text&quot;);</FONT>
+<FONT SIZE="-1">            quantity = StrAToI(textPtr);</FONT>
+<FONT SIZE="-1">            DmWrite(gCurrentOrder, </FONT>
+<FONT SIZE="-1">               offsetof(Order, items[gCurrentItemNumber].quantity), </FONT>
+<FONT SIZE="-1">               &amp;quantity, sizeof(quantity));</FONT>
+<FONT SIZE="-1">               </FONT>
+<FONT SIZE="-1">            if (gHaveProductIndex) {</FONT>
+<FONT SIZE="-1">               VoidHand       h;</FONT>
+<FONT SIZE="-1">               PackedProduct  *p;</FONT>
+<FONT SIZE="-1">               </FONT>
+<FONT SIZE="-1">               h = DmQueryRecord(gProductDB, gCurrentProductIndex);</FONT>
+<FONT SIZE="-1">               ErrNonFatalDisplayIf(!h, &quot;Can't find the record&quot;);</FONT>
+<FONT SIZE="-1">               p = MemHandleLock(h);</FONT>
+<FONT SIZE="-1">               DmWrite(gCurrentOrder, </FONT>
+<FONT SIZE="-1">                  offsetof(Order, items[gCurrentItemNumber].productID), </FONT>
+<FONT SIZE="-1">                  &amp;p-&gt;productID, sizeof(p-&gt;productID));</FONT>
+<FONT SIZE="-1">               MemHandleUnlock(h);</FONT>
+<FONT SIZE="-1">            }</FONT>
+<FONT SIZE="-1">         }</FONT>
+<FONT SIZE="-1">         break;</FONT>
+<FONT SIZE="-1">                  </FONT>
+<FONT SIZE="-1">         case ItemCancelButton:</FONT>
+<FONT SIZE="-1">            break;</FONT>
+<FONT SIZE="-1">            </FONT>
+<FONT SIZE="-1">         case ItemDeleteButton:</FONT>
+<FONT SIZE="-1">            if (FrmAlert(DeleteItemAlert) == DeleteItemOK) </FONT>
+<FONT SIZE="-1">               DeleteNthItem(gCurrentItemNumber);</FONT>
+<FONT SIZE="-1">            else</FONT>
+<FONT SIZE="-1">               handled = true;</FONT>
+<FONT SIZE="-1">            break;</FONT>
+<FONT SIZE="-1">         }</FONT>
+<FONT SIZE="-1">      break;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      // code for other events deleted</FONT>
+<FONT SIZE="-1">         </FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">#ifdef __GNUC__</FONT>
+<FONT SIZE="-1">   CALLBACK_EPILOGUE</FONT>
+<FONT SIZE="-1">#endif</FONT>
+<FONT SIZE="-1">   return handled;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">If the user taps OK, the code updates the quantity and product ID of the current item (if the user has edited it). If the user taps Delete, the code calls </FONT><FONT FACE="Courier New">DeleteNthItem</FONT><FONT FACE="Times"> (which we've already seen). <A NAME="P1543_66302"></A>On a Cancel, the code doesn't modify the current order.</FONT><A NAME="P1543_66357"></A></P>
+<HR ALIGN=LEFT SIZE=2 WIDTH=100% NOSHADE>
+<!-- TRANSIT - TEXTBAR -->
+
+<ADDRESS><FONT SIZE=-1>Palm Programming: The Developer's Guide
+<BR>Copyright &#169; 1999, O'Rielly and Associates, Inc.
+<BR>Published on the web by permission of O'Rielly and Associates, Inc. Contents modified for web display.</FONT></ADDRESS><P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch05.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch07.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P>
+</BODY>
+</HTML>

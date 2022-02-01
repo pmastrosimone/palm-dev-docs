@@ -1,0 +1,179 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Nested Functions</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Nested Functions">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Nested Functions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC65"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_64.html#SEC64"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_66.html#SEC66"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_66.html#SEC66"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.4 Nested Functions </H2>
+<!--docid::SEC65::-->
+<P>
+
+A <EM>nested function</EM> is a function defined inside another function.
+(Nested functions are not supported for GNU C++.)  The nested function's
+name is local to the block where it is defined.  For example, here we
+define a nested function named <CODE>square</CODE>, and call it twice:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo (double a, double b)
+{
+  double square (double z) { return z * z; }
+
+  return square (a) + square (b);
+}
+</pre></td></tr></table></P><P>
+
+The nested function can access all the variables of the containing
+function that are visible at the point of its definition.  This is
+called <EM>lexical scoping</EM>.  For example, here we show a nested
+function which uses an inherited variable named <CODE>offset</CODE>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>bar (int *array, int offset, int size)
+{
+  int access (int *array, int index)
+    { return array[index + offset]; }
+  int i;
+  <small>...</small>
+  for (i = 0; i &#60; size; i++)
+    <small>...</small> access (array, i) <small>...</small>
+}
+</pre></td></tr></table></P><P>
+
+Nested function definitions are permitted within functions in the places
+where variable definitions are allowed; that is, in any block, before
+the first statement in the block.
+</P><P>
+
+It is possible to call the nested function from outside the scope of its
+name by storing its address or passing the address to another function:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>hack (int *array, int size)
+{
+  void store (int index, int value)
+    { array[index] = value; }
+
+  intermediate (store, size);
+}
+</pre></td></tr></table></P><P>
+
+Here, the function <CODE>intermediate</CODE> receives the address of
+<CODE>store</CODE> as an argument.  If <CODE>intermediate</CODE> calls <CODE>store</CODE>,
+the arguments given to <CODE>store</CODE> are used to store into <CODE>array</CODE>.
+But this technique works only so long as the containing function
+(<CODE>hack</CODE>, in this example) does not exit.
+</P><P>
+
+If you try to call the nested function through its address after the
+containing function has exited, all hell will break loose.  If you try
+to call it after a containing scope level has exited, and if it refers
+to some of the variables that are no longer in scope, you may be lucky,
+but it's not wise to take the risk.  If, however, the nested function
+does not refer to anything that has gone out of scope, you should be
+safe.
+</P><P>
+
+GNU CC implements taking the address of a nested function using a
+technique called <EM>trampolines</EM>.   A paper describing them is
+available as <SAMP>`http://master.debian.org/~karlheg/Usenix88-lexic.pdf'</SAMP>.
+</P><P>
+
+A nested function can jump to a label inherited from a containing
+function, provided the label was explicitly declared in the containing
+function (see section <A HREF="gcc_63.html#SEC63">4.2 Locally Declared Labels</A>).  Such a jump returns instantly to the
+containing function, exiting the nested function which did the
+<CODE>goto</CODE> and any intermediate functions as well.  Here is an example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>bar (int *array, int offset, int size)
+{
+  __label__ failure;
+  int access (int *array, int index)
+    {
+      if (index &#62; size)
+        goto failure;
+      return array[index + offset];
+    }
+  int i;
+  <small>...</small>
+  for (i = 0; i &#60; size; i++)
+    <small>...</small> access (array, i) <small>...</small>
+  <small>...</small>
+  return 0;
+
+ /* Control comes here from <CODE>access</CODE>
+    if it detects an error.  */
+ failure:
+  return -1;
+}
+</pre></td></tr></table></P><P>
+
+A nested function always has internal linkage.  Declaring one with
+<CODE>extern</CODE> is erroneous.  If you need to declare the nested function
+before its definition, use <CODE>auto</CODE> (which is otherwise meaningless
+for function declarations).
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>bar (int *array, int offset, int size)
+{
+  __label__ failure;
+  auto int access (int *, int);
+  <small>...</small>
+  int access (int *array, int index)
+    {
+      if (index &#62; size)
+        goto failure;
+      return array[index + offset];
+    }
+  <small>...</small>
+}
+</pre></td></tr></table></P><P>
+
+<A NAME="Constructing Calls"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_64.html#SEC64"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_66.html#SEC66"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_66.html#SEC66"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

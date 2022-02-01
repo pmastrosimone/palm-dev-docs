@@ -1,0 +1,135 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using PRC-Tools: Palm OS-specific GDB features</TITLE>
+
+<META NAME="description" CONTENT="Using PRC-Tools: Palm OS-specific GDB features">
+<META NAME="keywords" CONTENT="Using PRC-Tools: Palm OS-specific GDB features">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC31"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_25.html#SEC30"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_27.html#SEC32"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_24.html#SEC29"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_24.html#SEC29"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_27.html#SEC32"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.2 Palm OS-specific GDB features </H2>
+<!--docid::SEC31::-->
+<P>
+
+<A NAME="IDX10"></A>
+</P><P>
+
+To debug Palm OS applications, GDB needs to load symbolic information from
+the bfd executable corresponding to your application, and to be connected
+to the Palm OS device where the application is running.  You generally
+specify the bfd executable on the command line (for example, to debug an
+application <TT>`myapp.prc'</TT>)
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>$ m68k-palmos-gdb myapp
+</pre></td></tr></table></P><P>
+
+and connect using the <SAMP>`target'</SAMP> command.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>target palmos <VAR>port</VAR></CODE>
+<DD><DT><CODE>target pilot <VAR>port</VAR></CODE>
+<DD>Connects the GDB host environment to a Palm OS device via <VAR>port</VAR>, using
+the Palm debugger protocol.  The argument <VAR>port</VAR> may be a device such
+as <TT>`/dev/ttyS0'</TT> (Unix) or <TT>`COM1'</TT> (Windows) to connect to a real
+device over a serial line, or a socket such as <SAMP>`localhost:2000'</SAMP> to
+connect to the Palm OS Emulator.
+<P>
+
+Using <CODE>pilot</CODE> is equivalent to <CODE>palmos</CODE>, and is provided for
+compatibility with earlier releases.  If <VAR>port</VAR> is omitted, GDB will
+attempt to connect to <SAMP>`localhost:2000'</SAMP> by default.
+</P><P>
+
+(The prc-tools 2.0 release only supported the <CODE>pilot</CODE> keyword, and
+<VAR>port</VAR> was not optional.)
+</DL>
+<P>
+
+After you have connected to the device, you should enable the debugger
+stub (see section <A HREF="prc-tools_25.html#SEC30">5.1 Building an application with debugging enabled</A>), which is done automatically if you
+are connecting to Poser, and start your application, which you've compiled
+and linked with <SAMP>`-g'</SAMP>.
+</P><P>
+
+When your application starts up, GDB receives data from the
+debugger stub telling it how to correlate the bfd executable's debugging
+information with where in memory the application has been loaded.  Because
+of this, you need to ensure that the debugging information has been loaded
+<EM>before</EM> the breakpoint is received--hence typically the bfd file of
+debugging information is specified on the GDB command line.
+</P><P>
+
+The debugger stub also causes execution to stop as if at a breakpoint at
+the start of <CODE>PilotMain</CODE>, giving you a chance to interact with the
+debugger before your program runs but after you're connected to it.
+However, <CODE>PilotMain</CODE> can be entered multiple times--for example,
+if your application is sublaunched with another launch code or if you
+(or a gremlin) switch to another application and back again--and you
+may not want to break into the debugger every time.  You can control
+whether the debugger stops at this implicit breakpoint by changing the
+way GDB handles the <CODE>SIGSTOP</CODE> signal (see section `Signals' in <CITE>Debugging with GDB</CITE>).
+</P><P>
+
+There are some other features and limitations:
+</P><P>
+
+<UL>
+<LI>
+As a last resort before printing <SAMP>`??'</SAMP> for a function name, GDB will
+try to get the (mangled) name by querying the target for a MacsBug symbol.
+For example, this makes backtraces containing the stack frames of functions
+in the Palm OS ROM more informative.
+<P>
+
+<LI>
+At present, GDB won't work well with applications with multiple code resources.
+</UL>
+<P>
+
+<A NAME="Post-linker and other tools"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_25.html#SEC30"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_27.html#SEC32"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_24.html#SEC29"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_24.html#SEC29"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_27.html#SEC32"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="prc-tools_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

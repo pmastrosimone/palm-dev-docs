@@ -1,0 +1,117 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Directives-i960</TITLE>
+
+<META NAME="description" CONTENT="Using as: Directives-i960">
+<META NAME="keywords" CONTENT="Using as: Directives-i960">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC291"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_281.html#SEC290"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_283.html#SEC292"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_283.html#SEC292"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_279.html#SEC288"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_286.html#SEC295"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.14.3 i960 Machine Directives </H3>
+<!--docid::SEC291::-->
+<P>
+
+<A NAME="IDX830"></A>
+<A NAME="IDX831"></A>
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX832"></A>
+<DT><CODE>.bss <VAR>symbol</VAR>, <VAR>length</VAR>, <VAR>align</VAR></CODE>
+<DD>Reserve <VAR>length</VAR> bytes in the bss section for a local <VAR>symbol</VAR>,
+aligned to the power of two specified by <VAR>align</VAR>.  <VAR>length</VAR> and
+<VAR>align</VAR> must be positive absolute expressions.  This directive
+differs from <SAMP>`.lcomm'</SAMP> only in that it permits you to specify
+an alignment.  See section <A HREF="as_110.html#SEC113"><CODE>.lcomm</CODE></A>.
+</DL>
+<P>
+
+<DL COMPACT>
+<A NAME="IDX833"></A>
+<DT><CODE>.extended <VAR>flonums</VAR></CODE>
+<DD><CODE>.extended</CODE> expects zero or more flonums, separated by commas; for
+each flonum, <SAMP>`.extended'</SAMP> emits an IEEE extended-format (80-bit)
+floating-point number.
+<P>
+
+<A NAME="IDX834"></A>
+<DT><CODE>.leafproc <VAR>call-lab</VAR>, <VAR>bal-lab</VAR></CODE>
+<DD>You can use the <SAMP>`.leafproc'</SAMP> directive in conjunction with the
+optimized <CODE>callj</CODE> instruction to enable faster calls of leaf
+procedures.  If a procedure is known to call no other procedures, you
+may define an entry point that skips procedure prolog code (and that does
+not depend on system-supplied saved context), and declare it as the
+<VAR>bal-lab</VAR> using <SAMP>`.leafproc'</SAMP>.  If the procedure also has an
+entry point that goes through the normal prolog, you can specify that
+entry point as <VAR>call-lab</VAR>.
+<P>
+
+A <SAMP>`.leafproc'</SAMP> declaration is meant for use in conjunction with the
+optimized call instruction <SAMP>`callj'</SAMP>; the directive records the data
+needed later to choose between converting the <SAMP>`callj'</SAMP> into a
+<CODE>bal</CODE> or a <CODE>call</CODE>.
+</P><P>
+
+<VAR>call-lab</VAR> is optional; if only one argument is present, or if the
+two arguments are identical, the single argument is assumed to be the
+<CODE>bal</CODE> entry point.
+</P><P>
+
+<A NAME="IDX835"></A>
+<DT><CODE>.sysproc <VAR>name</VAR>, <VAR>index</VAR></CODE>
+<DD>The <SAMP>`.sysproc'</SAMP> directive defines a name for a system procedure.
+After you define it using <SAMP>`.sysproc'</SAMP>, you can use <VAR>name</VAR> to
+refer to the system procedure identified by <VAR>index</VAR> when calling
+procedures with the optimized call instruction <SAMP>`callj'</SAMP>.
+<P>
+
+Both arguments are required; <VAR>index</VAR> must be between 0 and 31
+(inclusive).
+</DL>
+<P>
+
+<A NAME="Opcodes for i960"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_281.html#SEC290"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_283.html#SEC292"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_283.html#SEC292"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_279.html#SEC288"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_286.html#SEC295"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

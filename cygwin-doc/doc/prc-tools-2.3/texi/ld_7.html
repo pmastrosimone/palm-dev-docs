@@ -1,0 +1,111 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Basic Script Concepts</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Basic Script Concepts">
+<META NAME="keywords" CONTENT="Untitled Document: Basic Script Concepts">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC7"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_6.html#SEC6"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_8.html#SEC8"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_6.html#SEC6"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_6.html#SEC6"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_50.html#SEC50"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.1 Basic Linker Script Concepts </H2>
+<!--docid::SEC7::-->
+We need to define some basic concepts and vocabulary in order to
+describe the linker script language.
+<P>
+
+The linker combines input files into a single output file.  The output
+file and each input file are in a special data format known as an
+<EM>object file format</EM>.  Each file is called an <EM>object file</EM>.
+The output file is often called an <EM>executable</EM>, but for our
+purposes we will also call it an object file.  Each object file has,
+among other things, a list of <EM>sections</EM>.  We sometimes refer to a
+section in an input file as an <EM>input section</EM>; similarly, a section
+in the output file is an <EM>output section</EM>.
+</P><P>
+
+Each section in an object file has a name and a size.  Most sections
+also have an associated block of data, known as the <EM>section
+contents</EM>.  A section may be marked as <EM>loadable</EM>, which mean that
+the contents should be loaded into memory when the output file is run.
+A section with no contents may be <EM>allocatable</EM>, which means that an
+area in memory should be set aside, but nothing in particular should be
+loaded there (in some cases this memory must be zeroed out).  A section
+which is neither loadable nor allocatable typically contains some sort
+of debugging information.
+</P><P>
+
+Every loadable or allocatable output section has two addresses.  The
+first is the <EM>VMA</EM>, or virtual memory address.  This is the address
+the section will have when the output file is run.  The second is the
+<EM>LMA</EM>, or load memory address.  This is the address at which the
+section will be loaded.  In most cases the two addresses will be the
+same.  An example of when they might be different is when a data section
+is loaded into ROM, and then copied into RAM when the program starts up
+(this technique is often used to initialize global variables in a ROM
+based system).  In this case the ROM address would be the LMA, and the
+RAM address would be the VMA.
+</P><P>
+
+You can see the sections in an object file by using the <CODE>objdump</CODE>
+program with the <SAMP>`-h'</SAMP> option.
+</P><P>
+
+Every object file also has a list of <EM>symbols</EM>, known as the
+<EM>symbol table</EM>.  A symbol may be defined or undefined.  Each symbol
+has a name, and each defined symbol has an address, among other
+information.  If you compile a C or C++ program into an object file, you
+will get a defined symbol for every defined function and global or
+static variable.  Every undefined function or global variable which is
+referenced in the input file will become an undefined symbol.
+</P><P>
+
+You can see the symbols in an object file by using the <CODE>nm</CODE>
+program, or by using the <CODE>objdump</CODE> program with the <SAMP>`-t'</SAMP>
+option.
+</P><P>
+
+<A NAME="Script Format"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_6.html#SEC6"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_8.html#SEC8"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_6.html#SEC6"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_6.html#SEC6"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_50.html#SEC50"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

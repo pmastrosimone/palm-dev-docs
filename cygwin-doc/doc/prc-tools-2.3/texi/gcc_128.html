@@ -1,0 +1,111 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: External Bugs</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: External Bugs">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: External Bugs">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC128"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_127.html#SEC127"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_129.html#SEC129"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_129.html#SEC129"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.5 Problems Compiling Certain Programs </H2>
+<!--docid::SEC128::-->
+<P>
+
+Certain programs have problems compiling.
+</P><P>
+
+<UL>
+<LI>
+Parse errors may occur compiling X11 on a Decstation running Ultrix 4.2
+because of problems in DEC's versions of the X11 header files
+<TT>`X11/Xlib.h'</TT> and <TT>`X11/Xutil.h'</TT>.  People recommend adding
+<SAMP>`-I/usr/include/mit'</SAMP> to use the MIT versions of the header files,
+using the <SAMP>`-traditional'</SAMP> switch to turn off ANSI C, or fixing the
+header files by adding this:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#ifdef __STDC__
+#define NeedFunctionPrototypes 0
+#endif
+</pre></td></tr></table></P><P>
+
+<LI>
+If you have trouble compiling Perl on a SunOS 4 system, it may be
+because Perl specifies <SAMP>`-I/usr/ucbinclude'</SAMP>.  This accesses the
+unfixed header files.  Perl specifies the options
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>-traditional -Dvolatile=__volatile__
+-I/usr/include/sun -I/usr/ucbinclude
+-fpcc-struct-return
+</pre></td></tr></table></P><P>
+
+most of which are unnecessary with GCC 2.4.5 and newer versions.  You
+can make a properly working Perl by setting <CODE>ccflags</CODE> to
+<SAMP>`-fwritable-strings'</SAMP> (implied by the <SAMP>`-traditional'</SAMP> in the
+original options) and <CODE>cppflags</CODE> to empty in <TT>`config.sh'</TT>, then
+typing <SAMP>`./doSH; make depend; make'</SAMP>.
+</P><P>
+
+<LI>
+On various 386 Unix systems derived from System V, including SCO, ISC,
+and ESIX, you may get error messages about running out of virtual memory
+while compiling certain programs.
+<P>
+
+You can prevent this problem by linking GCC with the GNU malloc
+(which thus replaces the malloc that comes with the system).  GNU malloc
+is available as a separate package, and also in the file
+<TT>`src/gmalloc.c'</TT> in the GNU Emacs 19 distribution.
+</P><P>
+
+If you have installed GNU malloc as a separate library package, use this
+option when you relink GCC:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>MALLOC=/usr/local/lib/libgmalloc.a
+</pre></td></tr></table></P><P>
+
+Alternatively, if you have compiled <TT>`gmalloc.c'</TT> from Emacs 19, copy
+the object file to <TT>`gmalloc.o'</TT> and use this option when you relink
+GCC:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>MALLOC=gmalloc.o
+</pre></td></tr></table></UL>
+<P>
+
+<A NAME="Incompatibilities"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

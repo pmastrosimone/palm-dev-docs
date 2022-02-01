@@ -1,0 +1,704 @@
+<html>
+<head>
+<title>Writing an Installer | COM Sync Suite Companion</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="KEYWORDS" CONTENT="COM, COM Sync, COM Sync Suite, install, installer, register, files, tips, conduit, conduits, CDK">
+<META NAME="DESCRIPTION" CONTENT="Provides general tips for writing an installer for your COM-based conduit.">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource HTML 20040609">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="LASTUPDATED" CONTENT="06/28/04 08:33:41">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="995936"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="COMSyncCompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="COMComp_Development.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="COMComp_Expansion.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="COMSyncCompanionIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">4 &nbsp;&nbsp;
+Writing an Installer</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">COM Sync Suite Companion</p>
+<p class="SubTitle">Palm OS&#174; Conduit Development Kit for  Windows, Version 6.0.1 </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="COMComp_Install.html">4  Writing an Installer</a></h1>
+
+   <h2 class="SideTOC2"><a href="#995993">
+   Installer Tasks</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996057">
+   Files to Install</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1006755">
+   Sample for Registering a COM-based Conduit</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996352">
+   Installing Files on the Handheld with PDInstall </a></h2>
+
+      <h3 class="SideTOC3"><a href="#996382">
+      How PDInstall Works</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996416">
+      Install Directory Terminology</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996489">
+      Expansion Slot Support in PDInstall</a></h3>
+
+   <h2 class="SideTOC2"><a href="#996526">
+   Controlling HotSync Manager with PDHotSyncUtility </a></h2>
+
+   <h2 class="SideTOC2"><a href="#996584">
+   Accessing User Data with PDUserData</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1003046">
+   Installing an Install Conduit with PDInstallConduit </a></h2>
+
+      <h3 class="SideTOC3"><a href="#996634">
+      Registering an Install Conduit</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996670">
+      Unregistering an Install Conduit </a></h3>
+
+      <h3 class="SideTOC3"><a href="#996679">
+      Adding or Modifying Install Conduit Configuration Entries</a></h3>
+
+   <h2 class="SideTOC2"><a href="#996689">
+   Installing a Notifier with PDCondMgr </a></h2>
+
+   <h2 class="SideTOC2"><a href="#996709">
+   Uninstalling Your Conduit</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996726">
+   Testing Your Installer</a></h2>
+
+   <h2 class="SideTOC2"><a href="#996738">
+   Installation Troubleshooting Tips </a></h2>
+
+</div>
+</td>
+<!--END SIDETOC-->
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="995941"> </a>Creating an easy-to-use installer is an important part of product development. You need to make it easy for end users to install your conduit and your desktop and handheld applications. This chapter describes what your installer needs to do and the components that the COM Sync Suite provides to help you create an installer. </p>
+<div class="NINoteImportant"><hr>
+  <a name="1000341"> </a> <b>NOTE: </b> This chapter describes conduit installation on desktops running HotSync Manager versions 6.0 or later, which include the COM Sync module; earlier versions do not. If your conduit must work with earlier versions of HotSync Manager, use CDK version 4.03 and refer to its documentation.
+<hr>
+</div>
+
+<p><a name="995942"> </a>The sections in this chapter are: </p>
+   <blockquote class = "bq"><a name="995946"> </a><a href="COMComp_Install.html#995993">Installer Tasks</a> </blockquote>
+   <blockquote class = "bq"><a name="995950"> </a><a href="COMComp_Install.html#996057">Files to Install</a> </blockquote>
+   <blockquote class = "bq"><a name="995958"> </a><a href="COMComp_Install.html#1006755">Sample for Registering a COM-based Conduit</a> </blockquote>
+   <blockquote class = "bq"><a name="995962"> </a><a href="COMComp_Install.html#996352">Installing Files on the Handheld with PDInstall</a> </blockquote>
+   <blockquote class = "bq"><a name="995966"> </a><a href="COMComp_Install.html#996526">Controlling HotSync Manager with PDHotSyncUtility</a> </blockquote>
+   <blockquote class = "bq"><a name="995970"> </a><a href="COMComp_Install.html#996584">Accessing User Data with PDUserData</a> </blockquote>
+   <blockquote class = "bq"><a name="995974"> </a><a href="COMComp_Install.html#1003046">Installing an Install Conduit with PDInstallConduit</a> </blockquote>
+   <blockquote class = "bq"><a name="995978"> </a><a href="COMComp_Install.html#996689">Installing a Notifier with PDCondMgr</a> </blockquote>
+   <blockquote class = "bq"><a name="995982"> </a><a href="COMComp_Install.html#996709">Uninstalling Your Conduit</a> </blockquote>
+   <blockquote class = "bq"><a name="995986"> </a><a href="COMComp_Install.html#996726">Testing Your Installer</a> </blockquote>
+   <blockquote class = "bq"><a name="995990"> </a><a href="COMComp_Install.html#996738">Installation Troubleshooting Tips</a> </blockquote>
+
+<h2 class="haH2">
+  <a name="995993"> </a>Installer Tasks <a href="#995936"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1000144"> </a>Your installer may need to install a handheld application and databases, a desktop application, as well as a conduit. So the best user experience is to write a single installer to install all of these at once. For handheld databases, your installer should display a user list if there is more than one HotSync<sup>&#174;</sup> user and prepare the databases to be installed on the next HotSync operation. Your installer must register your conduit, otherwise HotSync Manager cannot run it. And finally, it must request that the user perform a HotSync operation to actually install your application and databases on the handheld. </p>
+
+<p><a name="995995"> </a>To summarize, your installer must perform at least some of the following tasks to successfully deploy your product on an end user's desktop computer and handheld: </p>
+<ul type="disc">
+  <li><a name="995996"> </a>If your conduit must work with HotSync Manager versions earlier than 6.0, then install the COM Sync libraries as described in <a href="COMComp_Install.html#996057">"Files to Install."</a> If it must work only with HotSync Manager 6.0 or later, do not install these libraries.
+  <li><a name="1007213"> </a>Copy all of your install files to the end user's desktop computer.
+  <li><a name="995997"> </a>Install your desktop application, if your product includes one.
+  <li><a name="996002"> </a>If necessary, ensure your required files are installed with your desktop application or conduit and, if any are ActiveX controls, that they are registered with Windows using <code>regsvr32.exe</code>.
+  <li><a name="996010"> </a>Copy your conduit files (and notifier DLL, if you provide one) to their final destination directory.
+  <li><a name="996011"> </a>Register your conduit with HotSync Manager by using the Conduit Manager, <a href="COMRef_Obj.html#1141502"><code>PDCondMgr</code></a>.<a href="COMRef_Meth.html#1001730"><code>RegisterConduit()</code></a> (required for any user conduit), or <a href="COMRef_Obj.html#1232524"><code>PDSystemCondMgr</code></a>.<a href="COMRef_Meth.html#1001730"><code>RegisterConduit()</code></a> (required for a system conduit).
+  <li><a name="1002386"> </a>Register your notifier with HotSync Manager by calling <a href="COMRef_Obj.html#1141502"><code>PDCondMgr</code></a>.<a href="COMRef_Meth.html#1001958"><code>RegisterNotifier()</code></a> (required only if you are providing a notifier).
+  <li><a name="1002393"> </a>Restart or refresh HotSync Manager (after you register your conduit) by using <a href="COMRef_Obj.html#1170106"><code>PDHotSyncUtility</code></a>.<a href="COMRef_Meth.html#1002500"><code>RestartHotSyncMgr()</code></a> or <a href="COMRef_Meth.html#1001694"><code>RefreshConduitInfo()</code></a>. Required only for a conduit registered with HotSync Manager versions earlier than 6.0. Versions 6.0 and later do not require this.
+  <li><a name="1002403"> </a>Queue databases or applications to be installed on the handheld (or files to be installed on handheld expansion cards) during the next HotSync operation by using <a href="COMRef_Obj.html#1172233"><code>PDInstall</code></a>.<a href="COMRef_Meth.html#1000018"><code>InstallFileToHH()</code></a> or <a href="COMRef_Meth.html#1000077"><code>InstallFileToSlot()</code></a> (required for any databases or files to be put on the handheld). 
+  <li><a name="996045"> </a>Uninstall your desktop application, conduit, and notifier (if you provide one), which includes unregistering your conduit (and notifier) using <a href="COMRef_Obj.html#1141502"><code>PDCondMgr</code></a>.<a href="COMRef_Meth.html#1003559"><code>UnregisterConduit()</code></a> and <a href="COMRef_Meth.html#1003685"><code>UnregisterNotifier()</code></a> for user conduits, and <a href="COMRef_Obj.html#1232524"><code>PDSystemCondMgr</code></a>.<a href="COMRef_Meth.html#1003559"><code>UnregisterConduit()</code></a> for system conduits.
+</ul>
+
+<h2 class="haH2">
+  <a name="996057"> </a>Files to Install <a href="#995936"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1005452"> </a>Typically, the files you need to install on end users' machines include:</p>
+<ul type="disc">
+  <li><a name="1005453"> </a><code>MyApp.prc</code> and supporting databases, if any (your handheld application)
+  <li><a name="1005454"> </a><code>MyConduit.dll</code> (your conduit) 
+  <li><a name="1005492"> </a><code>MyApp.exe</code> and supporting files (your desktop application, if your product includes one) 
+</ul>
+<div class="NINoteImportant"><hr>
+  <a name="1007442"> </a> <b>IMPORTANT: </b> If you are using Visual Basic .NET to develop your conduit, then you must deploy your conduit in the end user's HotSync Manager executable directory. Otherwise, COM Sync will not be able to find the libraries it needs and will cause an error.
+<hr>
+</div>
+
+<p><a name="1005493"> </a>Whether you must install additional files depends on the version of HotSync Manager on your end users' machines, as described below.</p>
+
+<h4 class="hcH4">
+  <a name="1005324"> </a>HotSync Manager Versions 6.0 and Later
+</h4>
+
+<p><a name="996058"> </a>HotSync Manager versions 6.0 and later include the COM Sync libraries, so you need only to install your product's files. Everything else is already present.</p>
+
+<h4 class="hcH4">
+  <a name="1004264"> </a>HotSync Manager Versions Earlier than 6.0
+</h4>
+
+<p><a name="1005511"> </a>Versions of HotSync Manager earlier than 6.0 do not include the COM Sync libraries. Therefore, if your conduit must work with these earlier versions, then you must install and register the COM Sync libraries on the end user's system.</p>
+
+<p><a name="1005536"> </a>The following procedure describes what your installer must do:</p>
+<ol type="1">
+  <li value="1"><a name="1005544"> </a>Find the path of the HotSync Manager binaries as described in <a href="CComp_Install.html#1000914">"Finding the HotSync Manager Binaries"</a> in <i>C/C++ Sync Suite Companion</i>. Note that this step requires that you install a temporary copy of <code>CondMgr.dll</code> and make a C API call to find the HotSync Manager executable folder.
+  <li value="2"><a name="1005564"> </a>If the version of HotSync Manager is 6.0 or later, then stop here because the COM Sync libraries are already present; otherwise, continue to the next step.
+  <li value="3"><a name="1005607"> </a>Copy the following COM Sync DLLs to the HotSync Manager executable folder that you discovered in step <a href="COMComp_Install.html#1005544">1</a>:
+  <ul type="disc">
+    <li><a name="1005582"> </a><code>ComConduit.dll</code> 
+    <li><a name="1005583"> </a><code>ComDirect.dll</code> 
+    <li><a name="1005584"> </a><code>ComStandard.dll</code> 
+   <p><a name="1005565"> </a>PalmSource, Inc. permits you to redistribute and install these three files. You can get them from the following CDK folder:</p>
+   <p><a name="1005637"> </a><code>&lt;CDK&gt;\Common\Bin</code> </p>
+   <p><a name="1005649"> </a>Unless otherwise specified, PalmSource does not permit you to redistribute any other binary files from the CDK.</p>
+  </ul>
+  <li value="4"><a name="1005601"> </a>Run <code>regsvr32.exe</code> in silent mode (<code>runsvr32.exe /s</code>) to register the COM objects contained in <code>ComConduit.dll</code>, <code>ComDirect.dll</code> and <code>ComStandard.dll</code>. Silent mode does not display any messages to the user during installation.
+  <li value="5"><a name="1006752"> </a>Continue installing your own conduit, application, or other files. The COM Sync libraries are now available for you to use.
+</ol>
+
+<h2 class="haH2">
+  <a name="1006755"> </a>Sample for Registering a COM-based Conduit <a href="#995936"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1006760"> </a>The COM Sync Suite includes the <a href="COMRef_Obj.html#1141502"><code>PDCondMgr</code></a> (and <a href="COMRef_Obj.html#1232524"><code>PDSystemCondMgr</code></a>) and <a href="COMRef_Obj.html#1144549"><code>PDConduitInfo</code></a> objects that you can use to register and unregister a COM-based conduit. The sample in <a href="COMComp_Install.html#996200">Listing 4.1</a> registers and unregisters the COM-based conduit you specify by passing in a creator ID string. </p>
+<div class="NINoteImportant"><hr>
+  <a name="996153"> </a> <b>NOTE: </b> <code>PDCondMgr</code> can register conduits only for the current Windows user, not for the system (all users); you must use <code>PDSystemCondMgr</code> to register conduits for the system. For details, see <a href="Intro_Registering.html#997389">"User- and System-registered Conduits and Notifiers"</a> in the <i>Introduction to Conduit Development</i>.
+<hr>
+</div>
+
+<p><a name="996160"> </a>The following steps outline the behavior of the sample in <a href="COMComp_Install.html#996200">Listing 4.1</a>. To try this sample, create a new Visual Basic project and add the following COM library as a reference. </p>
+<pre class="sl">Palm OS&#174; Classic Databases and Utilities</pre>
+<ol type="1">
+  <li value="1"><a name="996161"> </a>To get the long value of the creator ID, use <a href="COMRef_Obj.html#1141502"><code>PDCondMgr</code></a>.<a href="COMRef_Meth.html#1003314"><code>StringToCreatorID()</code></a> (or <a href="COMRef_Obj.html#1232524"><code>PDSystemCondMgr</code></a>.<a href="COMRef_Meth.html#1003314"><code>StringToCreatorID()</code></a>) and check whether a conduit with that creator ID already exists. If it does, this sample prompts whether you want to unregister it. 
+  <li value="2"><a name="996168"> </a>To specify the conduit configuration entries, create a <a href="COMRef_Obj.html#1144549"><code>PDConduitInfo</code></a> object and set its properties. Note that in this sample the <a href="COMRef_Prop.html#996327"><code>COMClassID</code></a> property is set to the Windows Calculator program just so that this sample will run. You should replace this with the path of your IDE executable while you're debugging your conduit, any EXE you want to run, or the class ID of your COM-based conduit if it implements the <a href="COMRef_Interface.html#995943"><code>IPDClientNotify</code></a> interface (see <a href="COMComp_Development.html#996220">"Convert Your Conduit to an ActiveX Client"</a>). 
+  <li value="3"><a name="1008864"> </a>To register the conduit, pass the <a href="COMRef_Obj.html#1144549"><code>PDConduitInfo</code></a> object to <a href="COMRef_Obj.html#1141502"><code>PDCondMgr</code></a>.<a href="COMRef_Meth.html#1001730"><code>RegisterConduit()</code></a> or <a href="COMRef_Obj.html#1232524"><code>PDSystemCondMgr</code></a>.<a href="COMRef_Meth.html#1001730"><code>RegisterConduit()</code></a>. 
+  <li value="4"><a name="996191"> </a>To confirm the conduit is registered, pass <a href="COMRef_Obj.html#1141502"><code>PDCondMgr</code></a>.<a href="COMRef_Meth.html#998151"><code>GetConduitInfo()</code></a> (or <a href="COMRef_Obj.html#1232524"><code>PDSystemCondMgr</code></a>.<a href="COMRef_Meth.html#998151"><code>GetConduitInfo()</code></a>) the same creator ID and view the retrieved information.
+</ol>
+<p class="CCodeCaption">
+  <a name="996200"> </a><b>Listing 4.1&nbsp;&nbsp;Register a conduit using COM Sync objects</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+Private Function RegisterConduit(strConduitCreatorID As String) As Boolean<a name="996201"> </a>
+<a name="996202"> </a>
+   Dim CreatorID As Long<a name="996203"> </a>
+   Dim PDCondMgr As New PDCondMgr<a name="996204"> </a>
+   Dim PConduitInfo As New PDConduitInfo<a name="996205"> </a>
+   Dim RetrievePDConduitInfo As New PDConduitInfo<a name="996206"> </a>
+   Dim CreatorIDExists As Boolean<a name="996207"> </a>
+<a name="996208"> </a>
+   On Error GoTo ErrorHandler<a name="996209"> </a>
+<a name="996210"> </a>
+   CreatorIDExists = True<a name="996211"> </a>
+   CreatorID = PDCondMgr.StringToCreatorID(strConduitCreatorID)<a name="996212"> </a>
+   ' Make sure a valid CreatorID could be retrieved from the string.<a name="996213"> </a>
+   If CreatorID = 0 Then<a name="996214"> </a>
+      MsgBox "CreatorID '" &amp; strConduitCreatorID &amp; "' was invalid.", _<a name="996215"> </a>
+         vbCritical, "Invalid CreatorID"<a name="996216"> </a>
+      Exit Function<a name="996217"> </a>
+   Else<a name="996218"> </a>
+      Set RetrievePDConduitInfo = PDCondMgr.GetConduitInfo(CreatorID)<a name="996219"> </a>
+   End If<a name="996220"> </a>
+<a name="996221"> </a>
+   ' Check whether a conduit with the specified CreatorID currently exists.<a name="996222"> </a>
+   If CreatorIDExists Then<a name="996223"> </a>
+      If MsgBox("A conduit with CreatorID '" &amp; strConduitCreatorID &amp; _<a name="996224"> </a>
+         "' already exists." &amp; " Do you want to remove it ?", vbYesNo + _ <a name="996225"> </a>
+         vbQuestion, "Remove Conduit") = vbYes Then<a name="996226"> </a>
+         Call PDCondMgr.UnregisterConduit(CreatorID)<a name="996227"> </a>
+      Else<a name="996228"> </a>
+         Exit Function<a name="996229"> </a>
+      End If<a name="996230"> </a>
+   End If<a name="996231"> </a>
+<a name="996232"> </a>
+   Set RetrievePDConduitInfo = Nothing<a name="996233"> </a>
+<a name="996234"> </a>
+   ' Set the conduit entries<a name="996235"> </a>
+   With PConduitInfo<a name="996236"> </a>
+      .COMClassID = "c:\winnt\system32\calc.exe"     ' Change to your IDE or<a name="996237"> </a>
+                                                     ' class ID<a name="996238"> </a>
+      .CreatorID = CreatorID<a name="996239"> </a>
+      .DeskTopDataDirectory = "DeskTopDataDirectory"<a name="996240"> </a>
+      .HandHeldDB = "HandHeldDB"<a name="996241"> </a>
+      .DeskTopDataFile = "DeskTopDataFile"<a name="996242"> </a>
+      .DisplayName = "DisplayName"<a name="996243"> </a>
+      .Priority = 2<a name="996244"> </a>
+   End With<a name="996245"> </a>
+<a name="996246"> </a>
+   Call PDCondMgr.RegisterConduit(PConduitInfo)<a name="996247"> </a>
+<a name="996248"> </a>
+   ' Sample to retrieve the conduit info and display one of the entries.<a name="996249"> </a>
+   Set RetrievePDConduitInfo = PDCondMgr.GetConduitInfo(CreatorID)<a name="996250"> </a>
+   MsgBox "COM Conduit '" &amp; TitleRetrievePDConduitInfo.DisplayName &amp; "' was _<a name="996251"> </a>
+      successfully registered.", vbInformation, "Information"<a name="996252"> </a>
+<a name="996253"> </a>
+   RegisterConduit = True<a name="996254"> </a>
+   Exit Function<a name="996255"> </a>
+<a name="996256"> </a>
+<a name="996257"> </a>
+ErrorHandler:<a name="996258"> </a>
+   ' The specified CreatorId is not valid or not found<a name="996259"> </a>
+   If Err.Number - vbObjectError = 8223 Then<a name="996260"> </a>
+      Err.Clear<a name="996261"> </a>
+      CreatorIDExists = False<a name="996262"> </a>
+      Resume Next<a name="996263"> </a>
+   Else<a name="996264"> </a>
+      MsgBox "Conduit registration failed." &amp; vbCr &amp; "Error Detail : " _ <a name="996265"> </a>
+         &amp; Err.Description, vbCritical, "Conduit Registration Error : " _ <a name="996266"> </a>
+         &amp; Err.Number<a name="996267"> </a>
+   End If<a name="996268"> </a>
+   Exit Function<a name="996269"> </a>
+End Function<a name="996270"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1008351"> </a>For background information on conduit registration, see <a href="Intro_Registering.html#995934">Chapter 6, "Registering Conduits and Notifiers with HotSync Manager,"</a> in <i>Introduction to Conduit Development</i>.</p>
+<div class="NINoteImportant"><hr>
+  <a name="1008384"> </a> <b>NOTE: </b> HotSync Manager does not support folder-based conduit registration for COM-based conduits&#8212that is, you cannot register a COM-based conduit by copying it to the <code>Conduits</code> folder. You must use <code>PDCondMgr</code> or <code>PDSystemCondMgr</code> to register a COM-based conduit.
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="996352"> </a>Installing Files on the Handheld with PDInstall  <a href="#995936"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1001047"> </a>The <a href="COMRef_Obj.html#1172233"><code>PDInstall</code></a> object does not actually move data between the desktop and handheld; it simply moves files into a queue directory on the desktop and tells HotSync Manager that something needs to be installed. A registered <a href="Intro_Glossary.html#914890"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">install conduit</span></a> called by HotSync Manager during a HotSync operation actually transfers queued files to primary storage or to an expansion card in a handheld. HotSync Manager ships with several install conduits, so you likely do not need to implement your own install conduit. <a href="Intro_HotSyncProc.html#996281">"Running Install Conduits"</a> in the <i>Introduction to Conduit Development</i> lists these install conduits and the file types they can install.</p>
+<div class="NINoteImportant"><hr>
+  <a name="1001948"> </a> <b>NOTE: </b> An alternative to using PDInstall is the <a href="COMRef_Obj.html#1198575"><code>PSDDatabaseQuery</code></a>.<a href="COMRef_Meth.html#1588976"><code>InstallDatabase()</code></a> method. You can call this method only during a HotSync operation; instead of queueing a file for installation later, this method actually transfers the file to the handheld's primary storage when you call it.
+<hr>
+</div>
+
+<p><a name="996361"> </a>The rest of this section covers the following topics:</p>
+<ul type="disc">
+  <li><a name="996365"> </a><a href="COMComp_Install.html#996382">How PDInstall Works</a> 
+  <li><a name="996369"> </a><a href="COMComp_Install.html#996416">Install Directory Terminology</a> 
+  <li><a name="996373"> </a><a href="COMComp_Install.html#996489">Expansion Slot Support in PDInstall</a> 
+</ul>
+
+<p><a name="996377"> </a>For details on the <code>PDInstall</code> object, see <a href="COMRef_Obj.html#1172233">"PDInstall"</a> in the <i>COM Sync Suite Reference</i>. </p>
+<h3 class="hbH3">
+  <a name="996382"> </a>How PDInstall Works <a href="#995936"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1001104"> </a>The <a href="COMRef_Obj.html#1172233"><code>PDInstall</code></a> object provides two methods that your installer, desktop application, or conduit can call to queue files for installation: <a href="COMRef_Meth.html#1000018"><code>InstallFileToHH()</code></a> for files destined for primary storage and <a href="COMRef_Meth.html#1000077"><code>InstallFileToSlot()</code></a> for files destined for an expansion card. When you call one of these methods, you specify the HotSync user and the path of the file you want to install. At the time you call one of these methods, <code>PDInstall</code> performs the following tasks:</p>
+<ol type="1">
+  <li value="1"><a name="1001189"> </a><code>PDInstall</code> selects a default install conduit to run based on the <i>extension</i> of the file you specify and the install <i>method</i> you call, as shown in <a href="COMComp_Install.html#1001196">Table 4.1</a>. Each install conduit is registered to handle certain filename extensions.
+</ol>
+
+<p class="fineprint">
+<p class="caption"><a name="1001196"> </a><b>Table 4.1&nbsp;&nbsp;PDInstall's choice of install conduit and destination based on filename extension</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1001204"> </a><b>Filename Extension</b></p>
+    </th>
+    <th><p class="tt"><a name="1001206"> </a><b>Method Called</b></p>
+    </th>
+    <th><p class="tt"><a name="1001208"> </a><b>Install Conduit used by PDInstall</b></p>
+    </th>
+    <th><p class="tt"><a name="1001210"> </a><b>Destination on Handheld</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001212"> </a>PRC, PDB, SDB, SSD, PQA</p>
+    </td>
+    <td><p class="tt"><a name="1001217"> </a><a href="COMRef_Meth.html#1000018"><code>InstallFileToHH()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1001219"> </a>Install</p>
+    </td>
+    <td><p class="tt"><a name="1001221"> </a>Primary storage</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001223"> </a>PNC, SCP</p>
+    </td>
+    <td><p class="tt"><a name="1001228"> </a><a href="COMRef_Meth.html#1000018"><code>InstallFileToHH()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1001230"> </a>Install Service Templates<a href="#1001233"><sup>1</sup></a></p>
+    </td>
+    <td><p class="tt"><a name="1001235"> </a>Primary storage</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001246"> </a>*.*</p>
+    </td>
+    <td><p class="tt"><a name="1001251"> </a><a href="COMRef_Meth.html#1000018"><code>InstallFileToHH()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1001253"> </a>HotSync Exchange</p>
+    </td>
+    <td><p class="tt"><a name="1001255"> </a>Primary storage</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001257"> </a>*.*</p>
+    </td>
+    <td><p class="tt"><a name="1001262"> </a><a href="COMRef_Meth.html#1000077"><code>InstallFileToSlot()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="1001264"> </a>Install to Card</p>
+    </td>
+    <td><p class="tt"><a name="1001266"> </a>Card in specified expansion slot</p>
+    </td>
+  </tr>
+</table>
+<div class="tablediv"><table cellspacing="0" class="tTableNR">
+   <tr>
+     <td><div class="FNTFootnoteTable">
+<a name="1001233"> </a><a href="#1001230">1</a>. 
+Works only with handhelds running a version of Palm OS earlier than Palm OS Cobalt.</div>
+</td>
+   </tr>
+</table></div>
+
+</div>
+
+</p>
+   <p><a name="1001359"> </a><code>PDInstall</code> chooses the HotSync Exchange conduit if the filename extension does not match one of the preceding Palm OS filename extensions but does match an extension that a handheld application has registered with the Exchange Manager on the handheld. See <a href="Intro_HotSyncExch.html#608590">Chapter 3, "Using HotSync Exchange,"</a> in the <i>Introduction to Conduit Development</i>.</p>
+<ol type="1">
+  <li value="2"><a name="1009326"> </a><code>PDInstall</code> copies the file to the install directory that is associated with the install conduit that it selected in step <a href="COMComp_Install.html#1001189">1</a>. 
+  <li value="3"><a name="1001388"> </a><code>PDInstall</code> creates an install flag for the specified HotSync user in the configuration entries. 
+  <li value="4"><a name="1001406"> </a><code>PDInstall</code> sets the value of the install flag to the value of the bit mask associated with the install conduit that is registered to handle files of the specified type. HotSync Manager reads this install flag the next time it runs install conduits for the specified user. This flag tells HotSync Manager that it must run the install conduit with the matching mask value.
+</ol>
+
+<p><a name="1001429"> </a>If you call one of the install methods again before HotSync Manager runs the install conduits again, these steps repeat&#8212except that the <code>PDInstall</code> ORs the existing value of the install flag with that of each subsequent call. For example, if the first call selects an install conduit with a bit mask value of 1 and the second call selects one with a value of 4, the resulting value of this install flag is 5 the next time the install conduits are run. Therefore HotSync Manager will run two install conduits, one registered with a bit mask of 1 and another with a bit mask of 4.</p>
+
+<p><a name="1001430"> </a>Each install conduit decides whether to remove its mask value from the HotSync user's install flag after a successful or unsuccessful installation. The Install install conduit leaves the mask value if unsuccessful; it removes it if successful. The HotSync Exchange install conduit runs independent of the mask, because there could be files that need to be transferred from the handheld to the desktop.</p>
+
+<p><a name="1001431"> </a>HotSync Manager calls install conduits twice: before it runs all synchronization conduits and again after. If one of the install methods is called outside of a HotSync operation, then an install conduit installs the queued file at the <i>beginning</i> of the <i>next</i> HotSync operation. If a conduit calls one of the install methods during a HotSync operation, then an install conduit installs the queued file at the <i>end</i> of the <i>current</i> HotSync operation.</p>
+
+<p><a name="996407"> </a>The <code>PDInstall</code> object provides other methods to help manage files queued to be installed. See <a href="COMRef_Obj.html#1172233">"PDInstall"</a> in the <i>COM Sync Suite Reference</i> for details.</p>
+<h3 class="hbH3">
+  <a name="996416"> </a>Install Directory Terminology <a href="#995936"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="1001587"> </a><a href="COMComp_Install.html#1001594">Table 4.2</a> defines the various desktop directories to which the <a href="COMRef_Obj.html#1172233"><code>PDInstall</code></a> object copies files queued to be installed by the default install conduits during the next HotSync operation. <a href="COMComp_Install.html#1001635">Figure 4.1</a> shows the relative locations of these directories for the current Windows user. </p>
+
+<p class="fineprint">
+<p class="caption"><a name="1001594"> </a><b>Table 4.2&nbsp;&nbsp;Desktop directories associated with PDInstall</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="1001598"> </a><b>Directory Name</b></p>
+    </th>
+    <th><p class="tt"><a name="1001600"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001602"> </a>Windows user's directory</p>
+    </td>
+    <td><p class="tt"><a name="1001604"> </a>For the current Windows user, this directory contains all HotSync Manager files and user directories (by default) for all HotSync users. To get this path, call <a href="COMRef_Obj.html#1190026"><code>PDUserData</code></a>.<a href="COMRef_Meth.html#998779"><code>GetRootDirectory()</code></a>.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001610"> </a>HotSync user's directory </p>
+    </td>
+    <td><p class="tt"><a name="1001612"> </a>For each HotSync user, this directory contains the handheld-install and slot directories, as well as data directories for each default conduit. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001615"> </a>Handheld-install directory </p>
+    </td>
+    <td><p class="tt"><a name="1001617"> </a>For each HotSync user, this directory contains Palm OS applications and databases queued to be installed by an associated install conduit into the handheld's main memory the next time install conduits run. There can be such a directory for each of multiple install conduits. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001620"> </a>Slot directory </p>
+    </td>
+    <td><p class="tt"><a name="1001622"> </a>For each HotSync user, this directory contains subdirectories (slot-install directories) for each slot on the user's handheld. This directory and its subdirectories are associated with an install conduit that installs files to expansion cards. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001625"> </a>Slot-install directory </p>
+    </td>
+    <td><p class="tt"><a name="1001627"> </a>For each slot on each HotSync user's handheld, this directory contains files queued to be installed to a card in the associated slot the next time install conduits run. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="1001630"> </a>HotSync Exchange directory</p>
+    </td>
+    <td><p class="tt"><a name="1001632"> </a>For each HotSync user, the <code>Exchange</code> directory contains <code>To</code> and <code>From</code> subdirectories. The <code>To</code> directory contains files to be installed to the handheld's main memory via HotSync Exchange. The <code>From</code> directory contains files that have been sent to the desktop from the handheld.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<p class="FFigureCaption">
+  <a name="1001635"> </a><b>Figure 4.1&nbsp;&nbsp;Directories that default install conduits queue <br>files in </b>
+</p>
+<div align="left"><img src="images/COMComp_Installa.gif" height="413" width="585" border="0" hspace="0" vspace="0">
+</div>
+<h3 class="hbH3">
+  <a name="996489"> </a>Expansion Slot Support in PDInstall <a href="#995936"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996493"> </a>Several <a href="COMRef_Obj.html#1172233"><code>PDInstall</code></a> methods support copying files from the desktop to cards in handheld expansion slots. The most commonly used <code>PDInstall</code> methods are:</p>
+<ul type="disc">
+  <li><a name="996498"> </a><a href="COMRef_Meth.html#1000077"><code>InstallFileToSlot()</code></a>&#8212queues files to copy to an expansion card during the next HotSync operation. 
+  <li><a name="996506"> </a><a href="COMRef_Meth.html#996590"><code>ChangeFileDestinationSlotToHH()</code></a>, <a href="COMRef_Meth.html#996528"><code>ChangeFileDestinationHHToSlot()</code></a>, and <a href="COMRef_Meth.html#996655"><code>ChangeFileSlotDestination()</code></a>&#8212move files on the desktop between slot-install directories and between slot-install directories and handheld-install directories
+  <li><a name="996520"> </a><a href="COMRef_Meth.html#998918"><code>GetSlotFileCount()</code></a>, <a href="COMRef_Meth.html#998968"><code>GetSlotFileSize()</code></a>&#8212get information about files already queued to be installed on expansion cards in a specific user's handheld
+</ul>
+
+<p><a name="996521"> </a>Your desktop application or installer calls <code>PDInstall</code> methods to queue files for installation. During the next HotSync operation, HotSync Manager calls the install conduit registered to handle the type of files you queued for installation. The install conduit copies the files during the HotSync operation. </p>
+
+<p><a name="996522"> </a>HotSync Manager retrieves information about a handheld's expansion slots (or lack thereof) at the beginning of each HotSync operation and saves it for the corresponding user in the user information store on the desktop. However, between HotSync operations, the user can change or update the handheld&#8212for example, the user could upgrade to a handheld with more slots or switch to one with no slots at all. Upon the next HotSync operation, HotSync Manager asks the user either to create a new user name or to choose one from the list of users who have previously performed a HotSync operation on this desktop computer. If the user chooses a user name from the list, the slot information saved for that user at the beginning of the last HotSync operation is now inaccurate. </p>
+
+<p><a name="996523"> </a>Because your application or installer calls <code>PDInstall</code> methods outside of a HotSync operation, be aware that your files might not be installed during the next HotSync operation if the slot or card does not exist at that time. </p>
+
+<h2 class="haH2">
+  <a name="996526"> </a>Controlling HotSync Manager with PDHotSyncUtility  <a href="#995936"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996530"> </a>Use the <a href="COMRef_Obj.html#1170106"><code>PDHotSyncUtility</code></a> object to enable your application to control HotSync Manager in the following ways:</p>
+<ul type="disc">
+  <li><a name="996539"> </a><a href="COMRef_Meth.html#1003526"><code>TerminateHotSyncMgr()</code></a>, <a href="COMRef_Meth.html#1003277"><code>StartHotSyncMgr()</code></a>, <a href="COMRef_Meth.html#1002500"><code>RestartHotSyncMgr()</code></a>, and <a href="COMRef_Meth.html#1001694"><code>RefreshConduitInfo()</code></a>&#8212stop, start, restart, or refresh HotSync Manager (useful after registering a conduit). 
+  <li><a name="996560"> </a><a href="COMRef_Meth.html#1000295"><code>LaunchCustomDlg()</code></a>, <a href="COMRef_Meth.html#1000374"><code>LaunchSetupDlg()</code></a>, and <a href="COMRef_Meth.html#997576"><code>DisplayLog()</code></a>&#8212call HotSync Manager dialogs to customize conduits or change connection settings; or to display the HotSync Log.
+  <li><a name="996569"> </a><a href="COMRef_Meth.html#998084"><code>GetCommStatus()</code></a> and <a href="COMRef_Meth.html#1002678"><code>SetCommStatus()</code></a>&#8212check or set the connection status type for serial, modem, and network connections. 
+  <li><a name="996574"> </a><a href="COMRef_Meth.html#1000226"><code>IsSyncInProgress()</code></a>&#8212checks whether HotSync Manager is idle or synchronizing. 
+</ul>
+
+<p><a name="996575"> </a>For details on the <code>PDHotSyncUtility</code> methods, see <a href="COMRef_Obj.html#1170106">"PDHotSyncUtility"</a> in the <i>COM Sync Suite Reference</i>. </p>
+
+<h2 class="haH2">
+  <a name="996584"> </a>Accessing User Data with PDUserData <a href="#995936"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996588"> </a>The <a href="COMRef_Obj.html#1190026"><code>PDUserData</code></a> object is the preferred way to access information in the users data store on the desktop. The <b>users data store</b> holds name, synchronization preferences, directory, and password information about users who have synchronized Palm Powered<sup>&#8482;</sup> handhelds with the desktop computer. </p>
+
+<p><a name="1003038"> </a>For details on the <code>PDUserData</code> methods, see <a href="COMRef_Obj.html#1190026">"PDUserData"</a> in the <i>COM Sync Suite Reference</i>. </p>
+
+<h2 class="haH2">
+  <a name="1003046"> </a>Installing an Install Conduit with PDInstallConduit  <a href="#995936"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996603"> </a>The <a href="COMRef_Obj.html#1174279"><code>PDInstallConduit</code></a> object registers or unregisters install conduit with HotSync Manager. It provides most of the same functionality for registering install conduits as the <a href="COMRef_Obj.html#1141502"><code>PDCondMgr</code></a> (or <a href="COMRef_Obj.html#1232524"><code>PDSystemCondMgr</code></a>) object provides for registering standard synchronization conduits. An <a href="Intro_Glossary.html#914890"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">install conduit</span></a> is a special type of conduit that installs databases or applications on a handheld (or copies files from the desktop to handheld expansion cards). For more information on how the <a href="COMRef_Obj.html#1172233"><code>PDInstall</code></a> object uses install conduits, see <a href="COMComp_Install.html#996382">"How PDInstall Works."</a> </p>
+
+<p><a name="996613"> </a>Most conduits are synchronization conduits, not install conduits, and should be registered with the <a href="COMRef_Obj.html#1141502"><code>PDCondMgr</code></a> (or <a href="COMRef_Obj.html#1232524"><code>PDSystemCondMgr</code></a>) object instead (see <a href="COMComp_Install.html#1006755">"Sample for Registering a COM-based Conduit"</a>). </p>
+<div class="NINoteImportant"><hr>
+  <a name="1002065"> </a> <b>NOTE: </b> The <code>PDInstallCondMgr</code> can register install conduits only for the current Windows user, not for the system (all users). For details, see <a href="Intro_Registering.html#997389">"User- and System-registered Conduits and Notifiers"</a> in the <i>Introduction to Conduit Development</i>.
+<hr>
+</div>
+
+<p><a name="996620"> </a>This section discusses the following topics:</p>
+<ul type="disc">
+  <li><a name="996624"> </a><a href="COMComp_Install.html#996634">Registering an Install Conduit</a> 
+  <li><a name="996628"> </a><a href="COMComp_Install.html#996670">Unregistering an Install Conduit</a> 
+  <li><a name="996632"> </a><a href="COMComp_Install.html#996679">Adding or Modifying Install Conduit Configuration Entries</a> 
+</ul>
+<h3 class="hbH3">
+  <a name="996634"> </a>Registering an Install Conduit <a href="#995936"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996635"> </a>When you register an install conduit with HotSync Manager, you must create and set the properties of a <a href="COMRef_Obj.html#1176123"><code>PDInstallConduitInfo</code></a> object. These properties specify a unique bit mask value (<a href="COMRef_Prop.html#997861"><code>Mask</code></a>) and a unique ID (<a href="COMRef_Prop.html#1557093"><code>UniqueId</code></a>) associated with your install conduit. HotSync Manager uses only the mask value to identify your install conduit, but the unique ID is also required to register it. You use the <a href="COMRef_Obj.html#1174279"><code>PDInstallConduit</code></a> object to add these and other values associated with your install conduit in the conduit configuration entries. PalmSource, Inc. recommends that you check the <a href="COMRef_Prop.html#997861"><code>Mask</code></a> and <a href="COMRef_Prop.html#1557093"><code>UniqueId</code></a> values of install conduits that are already registered before registering your install conduit.</p>
+
+<p><a name="996658"> </a>To register your install conduit, call the <a href="COMRef_Meth.html#1001875"><code>RegisterIC()</code></a> method. This method adds all of the properties you defined in the associated <a href="COMRef_Obj.html#1176123"><code>PDInstallConduitInfo</code></a> object to the install conduit configuration entries on the desktop.</p>
+
+<p><a name="996662"> </a>For details on the <code>PDInstallConduit</code> methods, see <a href="COMRef_Obj.html#1174279">"PDInstallConduit"</a> in the <i>COM Sync Suite Reference</i>. </p>
+<h3 class="hbH3">
+  <a name="996670"> </a>Unregistering an Install Conduit  <a href="#995936"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996671"> </a>The <code>PDInstallConduit</code> object also provides a method for unregistering an install conduit. Simply call the <a href="COMRef_Meth.html#1003617"><code>UnregisterIC()</code></a> method, specifying its <a href="COMRef_Prop.html#1557093"><code>UniqueId</code></a> value. </p>
+<h3 class="hbH3">
+  <a name="996679"> </a>Adding or Modifying Install Conduit Configuration Entries <a href="#995936"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996680"> </a>With the <code>PDInstallConduit</code> object, you can also create your own install conduit configuration entries or modify the predefined entries. To add your own, call the <a href="COMRef_Meth.html#1002734"><code>SetDWORDData()</code></a> or <a href="COMRef_Meth.html#1002898"><code>SetStringData()</code></a> methods, passing in the name of the entry you want to create/modify and the value you want to assign it. </p>
+
+<h2 class="haH2">
+  <a name="996689"> </a>Installing a Notifier with PDCondMgr  <a href="#995936"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996693"> </a>In addition to handling conduit information, the <a href="COMRef_Obj.html#1141502"><code>PDCondMgr</code></a> object also registers and unregisters notifier DLLs with HotSync Manager. It uses only the filename of your notifier to register it. To register your notifier, call the <a href="COMRef_Meth.html#1001958"><code>RegisterNotifier()</code></a> method and pass it the filename. To unregister it, call the <a href="COMRef_Meth.html#1003685"><code>UnregisterNotifier()</code></a> method. You can also specify a fully qualified path, but note that these methods only read/write configuration entries. Therefore if you specify a full path when you register a notifier, you must specify the same full path when you unregister it. </p>
+
+<p><a name="996700"> </a>The <code>PDCondMgr</code> object provides several other methods for accessing information about registered notifiers. See <a href="COMRef_Obj.html#1141502">"PDCondMgr"</a> in the <i>COM Sync Suite Reference</i> for details on these additional methods. </p>
+
+<h2 class="haH2">
+  <a name="996709"> </a>Uninstalling Your Conduit <a href="#995936"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996710"> </a>It is customary that applications provide end users a facility to easily remove all the relevant files and other information that were put on the user's computer during installation. Your uninstall application must:</p>
+<ul type="disc">
+  <li><a name="996711"> </a>Unregister your conduit&#8212that is, it must delete the configuration entries it created. The Conduit Manager API provides functions for removing configuration entries. You can do this easily in COM Sync via <a href="COMRef_Obj.html#1141502"><code>PDCondMgr</code></a>.<a href="COMRef_Meth.html#1003559"><code>UnregisterConduit()</code></a> or <a href="COMRef_Obj.html#1232524"><code>PDSystemCondMgr</code></a>.<a href="COMRef_Meth.html#1003559"><code>UnregisterConduit()</code></a>. 
+  <li><a name="996718"> </a>Unregister your notifier DLLs, if you installed them.
+  <li><a name="996719"> </a>Remove all installed files. 
+  <li><a name="996720"> </a>Perform any other cleanup. 
+</ul>
+
+<p><a name="996721"> </a>And ideally, if your conduit replaced a conduit that was already installed on the end user's machine (like the conduits for any of the built-in applications), you should at least offer the user the option to reregister it with HotSync Manager, leaving the user's machine exactly as you found it. </p>
+<div class="NINoteImportant"><hr>
+  <a name="1007298"> </a> <b>NOTE: </b> If you installed the COM Sync libraries on a machine running a version of HotSync Manager earlier than 6.0 (as described in <a href="COMComp_Install.html#996057">"Files to Install"</a>), then you must <i>not</i> uninstall them. The reason is that other third-party COM-based conduits might be installed as well as yours on the end user's computer. If you uninstall the COM Sync libraries, then you make it impossible for any other remaining COM-based conduits to run. 
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="996726"> </a>Testing Your Installer <a href="#995936"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996727"> </a>Because one of the most important goals of the HotSync process is simplicity for users, ensure that your conduit installs and uninstalls correctly and easily. PalmSource, Inc. strongly recommends that, at a minimum, you test the following conduit installation and removal conditions:</p>
+<ul type="disc">
+  <li><a name="996728"> </a>If the COM Sync module is not present, your conduit is being installed on a desktop running a version of HotSync Manager earlier than 6.0 and should fail gracefully.
+  <li><a name="996729"> </a>After installing your conduit, the user can press the HotSync button and have synchronization operations proceed correctly and without required intervention. 
+  <li><a name="996730"> </a>After removing (uninstalling) your conduit, the user can press the HotSync button and have synchronization operations proceed correctly and without required intervention. 
+  <li><a name="996731"> </a>After removal of your conduit, the conduit configuration entries are restored to what they were prior to its installation. 
+</ul>
+
+<p><a name="996732"> </a>Unlike earlier versions, HotSync Manager versions 6.0 and later automatically recognize newly registered conduits (earlier versions required that you call a method to refresh HotSync Manager after changing a conduit's configuration entries). However, if you change any other configuration entries&#8212for example, the backup conduit, communications settings, and so on&#8212you still must restart HotSync Manager regardless of the version.</p>
+
+<p><a name="996733"> </a>In addition to verifying that your conduit installation and removal operations leave the user's desktop computer in fully operational condition, you need to be aware of the following situations that can cause your conduit to generate unpleasant side effects for users of Palm Powered<sup>&#8482;</sup> handhelds:</p>
+<ul type="disc">
+  <li><a name="996734"> </a>If your conduit stores state information on the handheld, you must remember to clean up the state information upon removal of your conduit.
+  <li><a name="996735"> </a>If you create data for a creator ID that you do not own, your conduit can generate very unpleasant results. Do not use a creator ID that does not belong to you.
+</ul>
+
+<h2 class="haH2">
+  <a name="996738"> </a>Installation Troubleshooting Tips  <a href="#995936"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996739"> </a>This section suggests a few things to look for when you have installation problems:</p>
+<ul type="disc">
+  <li><a name="996742"> </a>Check the HotSync log after you run your conduit. The log contains any error messages that may result. Ensure that you are looking at the log entry for the correct user.
+  <li><a name="996743"> </a>For additional (verbose) logging information, exit HotSync Manager, click the <b>Start</b> button, then <b>Run</b>, and type <code>c:\&lt;HotSync Manager directory&gt;\hotsync.exe -v</code>. 
+  <li><a name="996744"> </a>Conduits are run by HotSync Manager versions earlier than 6.0 only when there is a application with a matching creator ID on the handheld. HotSync Manager versions 6.0 and later run all COM-based conduits regardless of whether a matching application is present.
+  <li><a name="996746"> </a>Use CondCfg.exe to view the conduit configuration settings. 
+</ul>
+
+<p><a name="996751"> </a>See the <a href="Util_Front.html#1008477">Conduit Development Utilities Guide</a> for details on using the Conduit Configuration utility and other helpful tools. </p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 2000-2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="COMComp_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="COMSyncCompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="COMComp_Development.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="COMComp_Expansion.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="COMSyncCompanionIX.html">Index</a>
+</p>
+</td>
+</tr>
+<!-- END FOOTER -->
+
+</body>
+</html>

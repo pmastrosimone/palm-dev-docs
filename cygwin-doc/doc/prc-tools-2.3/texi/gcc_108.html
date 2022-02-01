@@ -1,0 +1,110 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Other Builtins</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Other Builtins">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Other Builtins">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC108"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_107.html#SEC107"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_109.html#SEC109"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_66.html#SEC66"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.40 Other built-in functions provided by GNU CC </H2>
+<!--docid::SEC108::-->
+<P>
+
+GNU CC provides a large number of built-in functions other than the ones
+mentioned above.  Some of these are for internal use in the processing
+of exceptions or variable-length argument lists and will not be
+documented here because they may change from time to time; we do not
+recommend general use of these functions.
+</P><P>
+
+The remaining functions are provided for optimization purposes.
+</P><P>
+
+GNU CC includes builtin versions of many of the functions in the
+standard C library.  These will always be treated as having the same
+meaning as the C library function even if you specify the
+<SAMP>`-fno-builtin'</SAMP> (see section <A HREF="gcc_6.html#SEC6">2.4 Options Controlling C Dialect</A>) option.  These functions
+correspond to the C library functions <CODE>alloca</CODE>, <CODE>ffs</CODE>,
+<CODE>abs</CODE>, <CODE>fabsf</CODE>, <CODE>fabs</CODE>, <CODE>fabsl</CODE>, <CODE>labs</CODE>,
+<CODE>memcpy</CODE>, <CODE>memcmp</CODE>, <CODE>strcmp</CODE>, <CODE>strcpy</CODE>,
+<CODE>strlen</CODE>, <CODE>sqrtf</CODE>, <CODE>sqrt</CODE>, <CODE>sqrtl</CODE>, <CODE>sinf</CODE>,
+<CODE>sin</CODE>, <CODE>sinl</CODE>, <CODE>cosf</CODE>, <CODE>cos</CODE>, and <CODE>cosl</CODE>.
+</P><P>
+
+<A NAME="IDX365"></A>
+You can use the builtin function <CODE>__builtin_constant_p</CODE> to
+determine if a value is known to be constant at compile-time and hence
+that GNU CC can perform constant-folding on expressions involving that
+value.  The argument of the function is the value to test.  The function
+returns the integer 1 if the argument is known to be a compile-time
+constant and 0 if it is not known to be a compile-time constant.  A
+return of 0 does not indicate that the value is <EM>not</EM> a constant,
+but merely that GNU CC cannot prove it is a constant with the specified
+value of the <SAMP>`-O'</SAMP> option.
+</P><P>
+
+You would typically use this function in an embedded application where
+memory was a critical resource.  If you have some complex calculation,
+you may want it to be folded if it involves constants, but need to call
+a function if it does not.  For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>#define Scale_Value(X)  \
+  (__builtin_constant_p (X) ? ((X) * SCALE + OFFSET) : Scale (X))
+</FONT></pre></td></tr></table></P><P>
+
+You may use this builtin function in either a macro or an inline
+function.  However, if you use it in an inlined function and pass an
+argument of the function as the argument to the builtin, GNU CC will
+never return 1 when you call the inline function with a string constant
+or constructor expression (see section <A HREF="gcc_80.html#SEC80">4.19 Constructor Expressions</A>) and will not return 1
+when you pass a constant numeric value to the inline function unless you
+specify the <SAMP>`-O'</SAMP> option.
+</P><P>
+
+<A NAME="Deprecated Features"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_107.html#SEC107"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_109.html#SEC109"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_66.html#SEC66"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

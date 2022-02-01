@@ -1,0 +1,203 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Section</TITLE>
+
+<META NAME="description" CONTENT="Using as: Section">
+<META NAME="keywords" CONTENT="Using as: Section">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC137"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_133.html#SEC136"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_135.html#SEC140"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_75.html#SEC78"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_68.html#SEC71"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_159.html#SEC168"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.66 <CODE>.section <VAR>name</VAR></CODE> </H2>
+<!--docid::SEC137::-->
+<P>
+
+<A NAME="IDX409"></A>
+Use the <CODE>.section</CODE> directive to assemble the following code into a section
+named <VAR>name</VAR>.
+</P><P>
+
+This directive is only supported for targets that actually support arbitrarily
+named sections; on <CODE>a.out</CODE> targets, for example, it is not accepted, even
+with a standard <CODE>a.out</CODE> section name.
+</P><P>
+
+<A NAME="SEC138"></A>
+<H3> COFF Version </H3>
+<!--docid::SEC138::-->
+<P>
+
+<A NAME="IDX410"></A>
+For COFF targets, the <CODE>.section</CODE> directive is used in one of the following
+ways:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>.section <VAR>name</VAR>[, "<VAR>flags</VAR>"]
+.section <VAR>name</VAR>[, <VAR>subsegment</VAR>]
+</FONT></pre></td></tr></table></P><P>
+
+If the optional argument is quoted, it is taken as flags to use for the
+section.  Each flag is a single character.  The following flags are recognized:
+<DL COMPACT>
+<DT><CODE>b</CODE>
+<DD>bss section (uninitialized data)
+<DT><CODE>n</CODE>
+<DD>section is not loaded
+<DT><CODE>w</CODE>
+<DD>writable section
+<DT><CODE>d</CODE>
+<DD>data section
+<DT><CODE>r</CODE>
+<DD>read-only section
+<DT><CODE>x</CODE>
+<DD>executable section
+<DT><CODE>s</CODE>
+<DD>shared section (meaningful for PE targets)
+<DT><CODE>a</CODE>
+<DD>ignored.  (For compatibility with the ELF version)
+</DL>
+<P>
+
+If no flags are specified, the default flags depend upon the section name.  If
+the section name is not recognized, the default will be for the section to be
+loaded and writable.  Note the <CODE>n</CODE> and <CODE>w</CODE> flags remove attributes
+from the section, rather than adding them, so if they are used on their own it
+will be as if no flags had been specified at all.
+</P><P>
+
+If the optional argument to the <CODE>.section</CODE> directive is not quoted, it is
+taken as a subsegment number (see section <A HREF="as_44.html#SEC45">4.4 Sub-Sections</A>).
+</P><P>
+
+<A NAME="SEC139"></A>
+<H3> ELF Version </H3>
+<!--docid::SEC139::-->
+<P>
+
+<A NAME="IDX411"></A>
+This is one of the ELF section stack manipulation directives.  The others are
+<CODE>.subsection</CODE> (see section <A HREF="as_145.html#SEC152">7.77 <CODE>.subsection <VAR>name</VAR></CODE></A>), <CODE>.pushsection</CODE> 
+(see section <A HREF="as_129.html#SEC132">7.61 <CODE>.pushsection <VAR>name</VAR> , <VAR>subsection</VAR></CODE></A>), <CODE>.popsection</CODE> (see section <A HREF="as_124.html#SEC127">7.56 <CODE>.popsection</CODE></A>), and
+<CODE>.previous</CODE> (see section <A HREF="as_123.html#SEC126">7.55 <CODE>.previous</CODE></A>).
+</P><P>
+
+<A NAME="IDX412"></A>
+For ELF targets, the <CODE>.section</CODE> directive is used like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>.section <VAR>name</VAR> [, "<VAR>flags</VAR>"[, @<VAR>type</VAR>[, @<VAR>entsize</VAR>]]]
+</FONT></pre></td></tr></table></P><P>
+
+The optional <VAR>flags</VAR> argument is a quoted string which may contain any
+combination of the following characters:
+<DL COMPACT>
+<DT><CODE>a</CODE>
+<DD>section is allocatable
+<DT><CODE>w</CODE>
+<DD>section is writable
+<DT><CODE>x</CODE>
+<DD>section is executable
+<DT><CODE>M</CODE>
+<DD>section is mergeable
+<DT><CODE>S</CODE>
+<DD>section contains zero terminated strings
+</DL>
+<P>
+
+The optional <VAR>type</VAR> argument may contain one of the following constants:
+<DL COMPACT>
+<DT><CODE>@progbits</CODE>
+<DD>section contains data
+<DT><CODE>@nobits</CODE>
+<DD>section does not contain data (i.e., section only occupies space)
+</DL>
+<P>
+
+Note on targets where the <CODE>@</CODE> character is the start of a comment (eg
+ARM) then another character is used instead.  For example the ARM port uses the
+<CODE>%</CODE> character.
+</P><P>
+
+If <VAR>flags</VAR> contains <CODE>M</CODE> flag, <VAR>type</VAR> argument must be specified
+as well as <VAR>entsize</VAR> argument. Sections with <CODE>M</CODE> flag but not
+<CODE>S</CODE> flag must contain fixed size constants, each <VAR>entsize</VAR> octets
+long. Sections with both <CODE>M</CODE> and <CODE>S</CODE> must contain zero terminated
+strings where each character is <VAR>entsize</VAR> bytes long. The linker may remove
+duplicates within sections with the same name, same entity size and same flags. 
+</P><P>
+
+If no flags are specified, the default flags depend upon the section name.  If
+the section name is not recognized, the default will be for the section to have
+none of the above flags: it will not be allocated in memory, nor writable, nor
+executable.  The section will contain data.
+</P><P>
+
+For ELF targets, the assembler supports another type of <CODE>.section</CODE>
+directive for compatibility with the Solaris assembler:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>.section "<VAR>name</VAR>"[, <VAR>flags</VAR>...]
+</FONT></pre></td></tr></table></P><P>
+
+Note that the section name is quoted.  There may be a sequence of comma
+separated flags:
+<DL COMPACT>
+<DT><CODE>#alloc</CODE>
+<DD>section is allocatable
+<DT><CODE>#write</CODE>
+<DD>section is writable
+<DT><CODE>#execinstr</CODE>
+<DD>section is executable
+</DL>
+<P>
+
+This directive replaces the current section and subsection.  The replaced
+section and subsection are pushed onto the section stack.  See the contents of
+the gas testsuite directory <CODE>gas/testsuite/gas/elf</CODE> for some examples of
+how this directive and the other section stack directives work.
+</P><P>
+
+<A NAME="Set"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_133.html#SEC136"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_135.html#SEC140"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_75.html#SEC78"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_68.html#SEC71"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_159.html#SEC168"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

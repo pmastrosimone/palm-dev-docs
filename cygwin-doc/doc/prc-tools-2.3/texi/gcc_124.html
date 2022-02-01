@@ -1,0 +1,81 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Actual Bugs</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Actual Bugs">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Actual Bugs">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC124"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_125.html#SEC125"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 7.1 Actual Bugs We Haven't Fixed Yet </H2>
+<!--docid::SEC124::-->
+<P>
+
+<UL>
+<LI>
+The <CODE>fixincludes</CODE> script interacts badly with automounters; if the
+directory of system header files is automounted, it tends to be
+unmounted while <CODE>fixincludes</CODE> is running.  This would seem to be a
+bug in the automounter.  We don't know any good way to work around it.
+<P>
+
+<LI>
+The <CODE>fixproto</CODE> script will sometimes add prototypes for the
+<CODE>sigsetjmp</CODE> and <CODE>siglongjmp</CODE> functions that reference the
+<CODE>jmp_buf</CODE> type before that type is defined.  To work around this,
+edit the offending file and place the typedef in front of the
+prototypes.
+<P>
+
+<LI>
+There are several obscure case of mis-using struct, union, and
+enum tags that are not detected as errors by the compiler.
+<P>
+
+<LI>
+When <SAMP>`-pedantic-errors'</SAMP> is specified, GCC will incorrectly give
+an error message when a function name is specified in an expression
+involving the comma operator.
+<P>
+
+<LI>
+Loop unrolling doesn't work properly for certain C++ programs.  This is
+a bug in the C++ front end.  It sometimes emits incorrect debug info, and
+the loop unrolling code is unable to recover from this error.
+</UL>
+<P>
+
+<A NAME="Installation Problems"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

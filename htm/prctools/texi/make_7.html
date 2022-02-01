@@ -1,0 +1,120 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: How Make Works</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: How Make Works">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: How Make Works">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC8"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_6.html#SEC7"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_8.html#SEC9"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_4.html#SEC5"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_4.html#SEC5"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 2.3 How <CODE>make</CODE> Processes a Makefile </H2>
+<!--docid::SEC8::-->
+<P>
+
+By default, <CODE>make</CODE> starts with the first target (not targets whose
+names start with <SAMP>`.'</SAMP>).  This is called the <EM>default goal</EM>.
+(<EM>Goals</EM> are the targets that <CODE>make</CODE> strives ultimately to
+update.  See section <A HREF="make_93.html#SEC97">Arguments to Specify the Goals</A>.)
+<A NAME="IDX19"></A>
+<A NAME="IDX20"></A>
+<A NAME="IDX21"></A>
+</P><P>
+
+In the simple example of the previous section, the default goal is to
+update the executable program <TT>`edit'</TT>; therefore, we put that rule
+first.
+</P><P>
+
+Thus, when you give the command:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>make
+</pre></td></tr></table></P><P>
+
+<CODE>make</CODE> reads the makefile in the current directory and begins by
+processing the first rule.  In the example, this rule is for relinking
+<TT>`edit'</TT>; but before <CODE>make</CODE> can fully process this rule, it
+must process the rules for the files that <TT>`edit'</TT> depends on,
+which in this case are the object files.  Each of these files is
+processed according to its own rule.  These rules say to update each
+<SAMP>`.o'</SAMP> file by compiling its source file.  The recompilation must
+be done if the source file, or any of the header files named as
+prerequisites, is more recent than the object file, or if the object
+file does not exist.
+</P><P>
+
+The other rules are processed because their targets appear as
+prerequisites of the goal.  If some other rule is not depended on by the
+goal (or anything it depends on, etc.), that rule is not processed,
+unless you tell <CODE>make</CODE> to do so (with a command such as
+<CODE>make clean</CODE>).
+</P><P>
+
+Before recompiling an object file, <CODE>make</CODE> considers updating its
+prerequisites, the source file and header files.  This makefile does not
+specify anything to be done for them--the <SAMP>`.c'</SAMP> and <SAMP>`.h'</SAMP> files
+are not the targets of any rules--so <CODE>make</CODE> does nothing for these
+files.  But <CODE>make</CODE> would update automatically generated C programs,
+such as those made by Bison or Yacc, by their own rules at this time.
+</P><P>
+
+After recompiling whichever object files need it, <CODE>make</CODE> decides
+whether to relink <TT>`edit'</TT>.  This must be done if the file
+<TT>`edit'</TT> does not exist, or if any of the object files are newer than
+it.  If an object file was just recompiled, it is now newer than
+<TT>`edit'</TT>, so <TT>`edit'</TT> is relinked.
+<A NAME="IDX22"></A>
+</P><P>
+
+Thus, if we change the file <TT>`insert.c'</TT> and run <CODE>make</CODE>,
+<CODE>make</CODE> will compile that file to update <TT>`insert.o'</TT>, and then
+link <TT>`edit'</TT>.  If we change the file <TT>`command.h'</TT> and run
+<CODE>make</CODE>, <CODE>make</CODE> will recompile the object files <TT>`kbd.o'</TT>,
+<TT>`command.o'</TT> and <TT>`files.o'</TT> and then link the file <TT>`edit'</TT>.
+</P><P>
+
+<A NAME="Variables Simplify"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_6.html#SEC7"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_8.html#SEC9"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_4.html#SEC5"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_4.html#SEC5"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

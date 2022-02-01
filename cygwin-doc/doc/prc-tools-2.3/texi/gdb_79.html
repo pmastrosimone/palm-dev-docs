@@ -1,0 +1,71 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Analyze Collected Data</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Analyze Collected Data">
+<META NAME="keywords" CONTENT="Debugging with GDB: Analyze Collected Data">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC79"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_78.html#SEC78"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_80.html#SEC80"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_83.html#SEC83"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_71.html#SEC71"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_83.html#SEC83"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 10.2 Using the collected data </H2>
+<!--docid::SEC79::-->
+<P>
+
+After the tracepoint experiment ends, you use GDB commands
+for examining the trace data.  The basic idea is that each tracepoint
+collects a trace <EM>snapshot</EM> every time it is hit and another
+snapshot every time it single-steps.  All these snapshots are
+consecutively numbered from zero and go into a buffer, and you can
+examine them later.  The way you examine them is to <EM>focus</EM> on a
+specific trace snapshot.  When the remote stub is focused on a trace
+snapshot, it will respond to all GDB requests for memory and
+registers by reading from the buffer which belongs to that snapshot,
+rather than from <EM>real</EM> memory or registers of the program being
+debugged.  This means that <STRONG>all</STRONG> GDB commands
+(<CODE>print</CODE>, <CODE>info registers</CODE>, <CODE>backtrace</CODE>, etc.) will
+behave as if we were currently debugging the program state as it was
+when the tracepoint occurred.  Any requests for data that are not in
+the buffer will fail.
+</P><P>
+
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_80.html#SEC80">10.2.1 <CODE>tfind <VAR>n</VAR></CODE></A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to select a trace snapshot</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_81.html#SEC81">10.2.2 <CODE>tdump</CODE></A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to display all data for a snapshot</TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="gdb_82.html#SEC82">10.2.3 <CODE>save-tracepoints <VAR>filename</VAR></CODE></A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to save tracepoints for a future run</TD></TR>
+</TABLE></BLOCKQUOTE>
+<P>
+
+<A NAME="tfind"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

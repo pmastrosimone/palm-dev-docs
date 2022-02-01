@@ -1,0 +1,1337 @@
+<HTML>
+<HEAD>
+<TITLE>Palm OS:  &#160;12.&#160; Uploading and Downloading Data with a Conduit </TITLE>
+<META NAME="GENERATOR" CONTENT="Transit Central Station 3.2 by InfoAccess Inc. www.infoaccess.com">
+</HEAD>
+<BODY BACKGROUND="images/grnitbkg.gif"><A NAME="TopOfPage"> </A>
+<A HREF="http://www.oreilly.com/catalog/palmprog/"><IMG SRC="images/palm_comp_ani_ad.gif" ALT="Order the book from O'Reilly" BORDER=0 width="468" height="60"></A>
+<P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch11.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch13.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P><P><I>In this chapter:</I></P>
+
+
+  <UL COMPACT><LI><A HREF="#P32_1097" NAME="LOC_P32_1097">Conduit Requirements</A></LI>
+
+  <LI><A HREF="#P41_1393" NAME="LOC_P41_1393">Where to Store Data</A></LI>
+
+  <LI><A HREF="#P52_2272" NAME="LOC_P52_2272">Creating, Opening, and Closing Databases</A></LI>
+
+  <LI><A HREF="#P107_4686" NAME="LOC_P107_4686">Downloading to the Handheld</A></LI>
+
+  <LI><A HREF="#P176_9359" NAME="LOC_P176_9359">Uploading to the Desktop</A></LI>
+
+  <LI><A HREF="#P278_15716" NAME="LOC_P278_15716">When the HotSync Button Gets Pressed</A></LI>
+
+  <LI><A HREF="#P317_17670" NAME="LOC_P317_17670">Portability Issues</A></LI>
+
+  <LI><A HREF="#P374_20104" NAME="LOC_P374_20104">The Sales Conduit</A></LI></UL>
+<P><UL><UL><UL><UL><UL><UL><UL><UL><UL><UL>
+<TABLE>
+<TR>
+<TD WIDTH=156>
+</TD></TR></TABLE></UL></UL></UL></UL></UL></UL></UL></UL></UL></UL>
+
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+<H1 ALIGN=LEFT><I><FONT SIZE=+3>&#160;12.&#160; Uploading and Downloading Data with a Conduit</FONT></I></H1>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now we are going to show you how to move data back and forth from the desktop to the handheld. To do this, we need to discuss quite a few Sync Manager functions. We show you the functionality required in a conduit to support data transfers and some useful additional features as well. After we discuss these topics, we return to our walkthrough of what happens after the HotSync button gets pressed.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Next we discuss portability issues. Knowing that you are breathless with anticipation by this point, we return to the Sales application conduit. We walk through the code that handles uploading and downloading. We show how to upload the sales orders and customers from the handheld, and download the products and customers from the desktop. We also handle deleted records in the customer database.</FONT></P>
+
+<P><A NAME="P32_1097"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Conduit Requirements</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P34_1117"></A>At a bare minimum, a conduit that handles data uploading and downloading has to do all of the following:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Register and unregister the conduit with the Sync Manager</FONT></LI>
+
+  <LI><FONT FACE="Times">  Open and close databases</FONT></LI>
+
+  <LI><FONT FACE="Times">  Read and write records</FONT></LI>
+
+  <LI><FONT FACE="Times">  Deal with categories (if the application supports categories)</FONT></LI></UL>
+
+<P><A NAME="P41_1393"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Where to Store Data</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P43_1412"></A>There<A NAME="P43_1417"></A> is an important demarcation to remember when deciding where to store data on the desktop. Data specific to a particular user should be stored in a private location, whereas data shared among many users should be stored in a group location. For example, in our Sales Application each salesperson has her or his own list of customers but gets the product list from a general location. The first set of data is specific to a particular user; the second type is general. They should be stored in separate locations.</FONT></P>
+
+<P><I><FONT FACE="Times">Specific data</FONT></I></P>
+
+<P><FONT FACE="Times">Store this data in your conduit folder in the user's folder in the HotSync folder. </FONT></P>
+
+<P><I><FONT FACE="Times">General data</FONT></I></P>
+
+<P><FONT FACE="Times">Store this data in your application's desktop folder. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Also keep in mind that data doesn't necessary need to be stored locally. While it may be stored on a particular desktop, it is just as likely to be stored on a server or a web site.</FONT></P>
+
+<P><A NAME="P52_2272"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Creating, Opening, and Closing Databases</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P54_2312"></A>Database management during synchronization is handled completely by the conduit.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Creating a Database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P59_2411"></A>There is a standard database call used by the Sync Manger to create a database:</FONT></P><PRE><FONT SIZE="-1">&#160;<A NAME="P61_2491"></A>SyncCreateDB(CDbCreateDB&amp; rDbStats)</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">SyncCreateDB</FONT><FONT FACE="Times"> creates a new record or resource database on the handheld and then opens it. You have the same control over database creation from within the conduit that you have on the handheld. The </FONT><FONT FACE="Courier New">rDbStats</FONT><FONT FACE="Times"> parameter is of type </FONT><FONT FACE="Courier New">CDbCreateDBClass</FONT><FONT FACE="Times"> and contains the following important fields:</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_FileHandle</FONT></P>
+
+<P><FONT FACE="Times">Output field. On a successful return, this contains a handle to the created database with read/write access.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_Creator</FONT></P>
+
+<P><FONT FACE="Times">Database creator ID. This should match the creator ID of the application.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_Flags</FONT></P>
+
+<P><FONT FACE="Times">The database attributes. Choose one of the following: </FONT><FONT FACE="Courier New">eRecord</FONT><FONT FACE="Times"> for a standard database, </FONT><FONT FACE="Courier New">eResource</FONT><FONT FACE="Times"> for a resource database. Another flag is </FONT><FONT FACE="Courier New">eBackupDB</FONT><FONT FACE="Times">, which you set for the backup bit.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_Type</FONT></P>
+
+<P><FONT FACE="Times">The four-byte database type.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_CardNo</FONT></P>
+
+<P><FONT FACE="Times">Memory card where the database is located. Use 0, since no Palm OS device currently has more than one memory card.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_Name</FONT></P>
+
+<P><FONT FACE="Times">The database name.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_Version</FONT></P>
+
+<P><FONT FACE="Times">The version of the database.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_dwReserved</FONT></P>
+
+<P><FONT FACE="Times">Reserved for future use. Must be set to 0.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Opening a Database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P83_3495"></A>The Sync Manager call to open a remote database is:</FONT></P><PRE><FONT SIZE="-1">&#160;<A NAME="P85_3547"></A>SyncOpenDB(char *pname, int nCardNum, Byte&amp; rHandle, Byte openMode)</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The values for the four parameters are:</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">pName</FONT></P>
+
+<P><FONT FACE="Times">Name of the database.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">nCardNum</FONT></P>
+
+<P><FONT FACE="Times">Memory card where database is located. Use 0, since no Palm OS device currently has more than one memory card.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">rHandle</FONT></P>
+
+<P><FONT FACE="Times">Output parameter. On a successful return, this contains a handle to the open database.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">openMode</FONT></P>
+
+<P><FONT FACE="Times">Use (</FONT><FONT FACE="Courier New">eDbRead</FONT><FONT FACE="Times"> | </FONT><FONT FACE="Courier New">eDbShowSecret</FONT><FONT FACE="Times">) to read all records, including private ones. Use (</FONT><FONT FACE="Courier New">eDbRead</FONT><FONT FACE="Times"> | </FONT><FONT FACE="Courier New">eDbWrite</FONT><FONT FACE="Times"> | </FONT><FONT FACE="Courier New">eDbShowSecret</FONT><FONT FACE="Times">) to be able to write and/or delete records.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You need to close any database you open; only one can be open at a time. An error results if you try to open a new database without closing the prior one.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Closing the Database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P101_4230"></A>The Sync <A NAME="P101_4239"></A>Manager call to close a remote database should come as no surprise. It is </FONT><FONT FACE="Courier New">SyncCloseDB</FONT><FONT FACE="Times">, and it takes only one parameter, the handle you created when you opened or created a database:</FONT></P><PRE><FONT SIZE="-1">&#160;<A NAME="P103_4421"></A>SyncCloseDB(Byte fHandle)</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Slightly more sophisticated results can be had from </FONT><FONT FACE="Courier New">&#160;<A NAME="P104_4499"></A>SyncCloseDBEx</FONT><FONT FACE="Times">. This function also allows you to modify the database's backup and modification date. Both functions close databases that were opened with either </FONT><FONT FACE="Courier New">SyncCreateDB</FONT><FONT FACE="Times"> or<A NAME="P104_4674"></A> </FONT><FONT FACE="Courier New">SyncOpenDB</FONT><FONT FACE="Times">.</FONT><A NAME="P104_4686"></A></P>
+
+<P><A NAME="P107_4686"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Downloading to the Handheld</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P109_4713"></A>As we <A NAME="P109_4719"></A>discussed earlier, there are several different ways that you might want to move data around during a synchronization. Let's look at what is involved in moving data from the desktop to the handheld. This is commonly done with databases that are exclusively updated on the desktop and are routinely downloaded to handhelds where they aren't modified. Or you may do this in the case that the user chooses &quot;Desktop overwrites handheld&quot; in the HotSync settings dialog (see Figure 11-3 on page&#160;315).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You need to create the database if it doesn't yet exist. You should also delete any existing records before downloading the ones from the desktop. This is necessary because you don't want the old ones; all you want are the newly downloaded ones.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Deleting Existing Records</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P116_5482"></A>There are a few different routines to choose from for deleting records:</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P118_5554"></A>SyncDeleteRec</FONT></I></P>
+
+<P><FONT FACE="Times">Deletes one specific record</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P120_5595"></A>SyncPurgeAllRecs</FONT></I></P>
+
+<P><FONT FACE="Times">Deletes all records</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P122_5631"></A>SyncPurgeAllRecsInCategory</FONT></I></P>
+
+<P><FONT FACE="Times">Deletes all records from the specified category</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P124_5705"></A>SyncPurgeDeletedRecs</FONT></I></P>
+
+<P><FONT FACE="Times">Deletes all records that have been marked as deleted or archived</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">In our particular case, </FONT><FONT FACE="Courier New">SyncPurgeAllRecs</FONT><FONT FACE="Times"> is the call we want to use.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Writing Records</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P131_5872"></A>Once you have a nice, empty database, you can fill it up with fresh records from the desktop. You do this with the Sync Manager call </FONT><FONT FACE="Courier New">SyncWriteRec</FONT><FONT FACE="Times">.</FONT></P><PRE><FONT SIZE="-1">&#160;<A NAME="P133_6019"></A>SyncWriteRec (CRawRecordInfo &amp;rInfo)</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The parameter </FONT><FONT FACE="Courier New">rInfo</FONT><FONT FACE="Times"> (of class </FONT><FONT FACE="Courier New">CRawRecordInfo</FONT><FONT FACE="Times">) contains several important fields:</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_FileHandle</FONT></P>
+
+<P><FONT FACE="Times">Handle to the open database.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_RecId</FONT></P>
+
+<P><FONT FACE="Times">Input/output field; the record's unique ID. To add a new record, set this field to 0; on return, the field contains the new record's unique ID. To modify an existing record, set this field to the unique ID of one of the records in the database. An error occurs if this field doesn't match an existing unique record ID. Note that when you add a new record, it's the handheld that assigns the unique record ID.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_Attribs</FONT></P>
+
+<P><FONT FACE="Times">The attributes of the record. See &quot;Working with Records&quot; on page&#160;145 for a complete discussion.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_CatId</FONT></P>
+
+<P><FONT FACE="Times">The record's category index. Use values from 0 to 14.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_RecSize</FONT></P>
+
+<P><FONT FACE="Times">The number of bytes in the record.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_TotalBytes</FONT></P>
+
+<P><FONT FACE="Times">The number of bytes of data in the </FONT><FONT FACE="Courier New">m_pBytes</FONT><FONT FACE="Times"> buffer. It should be set to the number of bytes in the record, however, to work around bugs in some versions of the Sync Manager.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Unique record IDs are not perfect. A record maintains its unique ID unless a hard reset happens. Prior to HotSync 3.0, after a hard reset HotSync would generate new unique IDs for the records when it restored the database. Only HotSync 3.0 or later restores the unique record IDs correctly.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">On the handheld, when you create a database record you specify the location in the database of that record. When using a conduit, on the other hand, you have no way to specify the record's exact location. Although it could change in the future, </FONT><FONT FACE="Courier New">SyncWriteRec</FONT><FONT FACE="Times"> currently adds new records at the end of the database.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This lack of control over the order of records can be a problem for databases that need to have a specific order. For example, you may have a database sorted by date. The question then becomes, &quot;How can the conduit create the database in sorted order?&quot;</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The answer is that unfortunately it can't.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">There is a workaround with existing versions of the Sync Manager. If your conduit is writing records to an empty database, it should add them in sorted order. With existing versions of the Sync Manager, the records will then be in the correct order. Be careful, however, as future versions of the Sync Manager may cause the records not to be in sorted order.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">In such cases, the </FONT><FONT FACE="Courier New">sysAppLaunchCmdSyncNotify</FONT><FONT FACE="Times"> launch code for Palm OS applications comes to the rescue. After a sync occurs for a database with a specific creator, that database's application is called with the </FONT><FONT FACE="Courier New">sysAppLaunchCmdSyncNotify</FONT><FONT FACE="Times"> launch code. This launch code tells the application that its database has changed, and gives the application a chance to sort it.</FONT><A NAME="P158_8601"></A></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Writing the AppInfo Block</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You commonly use the </FONT><FONT FACE="Courier New"><A NAME="P162_8647"></A>AppInfo</FONT><FONT FACE="Times"> block of a database to store categories and other information relevant to the database as a whole. The Sync Manager call that you use to write the AppInfo block is:</FONT></P><PRE><FONT SIZE="-1">&#160;<A NAME="P164_8820"></A>SyncWriteDBAppInfoBlock (BYTE fHandle, CDbGenInfo &amp;rInfo)</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The parameter </FONT><FONT FACE="Courier New">rInfo</FONT><FONT FACE="Times"> is an object of type </FONT><FONT FACE="Courier New">CdbGenInfo</FONT><FONT FACE="Times"> and contains the following fields:</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_pBytes</FONT></P>
+
+<P><FONT FACE="Times">A pointer to the data you want copied to the app info block.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_TotalBytes</FONT></P>
+
+<P><FONT FACE="Times">The number of bytes of data in the </FONT><FONT FACE="Courier New">m_pBytes</FONT><FONT FACE="Times"> buffer. This should be set to the number of bytes in the record to work around bugs in some versions of the Sync Manager.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_BytesRead</FONT></P>
+
+<P><FONT FACE="Times">To work around bugs in some versions of the Sync Manager, set this to </FONT><FONT FACE="Courier New">m_TotalBytes</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_dwReserved</FONT></P>
+
+<P><FONT FACE="Times">Reserved for the future. Set this field to 0.</FONT><A NAME="P174_9359"></A></P>
+
+<P><A NAME="P176_9359"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Uploading to the Desktop</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P178_9383"></A>When you need to send data from the handheld to the desktop you have to read through the records of the remote database and translate them into appropriate structures on the desktop. Here is the process, a step at a time, starting with the choices you have in how you read through the records.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Finding the Number of Records</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P183_9706"></A>SyncGetDBRecordCount</FONT><FONT FACE="Times"> finds the number of records in a database:</FONT></P><PRE><FONT SIZE="-1">long SycnGetDBRecordCount(BYTE fHandle, WORD &amp;rNumRecs);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Call it with:</FONT></P><PRE><FONT SIZE="-1">WORD numRecords;</FONT>
+<FONT SIZE="-1">err = SyncGetDBRecordCount(rHandle, numRecords);</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Reading Records</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P192_9917"></A>You can read records in a remote database using any of the following strategies:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Iterate through each record, locating the next altered record</FONT></LI>
+
+  <LI><FONT FACE="Times">  Look up exact records via unique record ID</FONT></LI>
+
+  <LI><FONT FACE="Times">  Read the <I>nth</I> record in the database</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">We employ the last strategy for reading the records from our Sales order databases and the first strategy when we fully synchronize our customer list. There are a few points worth mentioning about each strategy.</FONT></P>
+
+<P><I><FONT FACE="Times">Iterating through each record stopping only for altered ones</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P201_10412"></A>If you want to iterate through the records and stop only on the ones that have been modified, use </FONT><FONT FACE="Courier New">&#160;<A NAME="P201_10511"></A>SyncReadNextModifiedRec</FONT><FONT FACE="Times">. It retrieves a record from the remote database if the dirty bit in the record has been set.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">A variation of this routine is </FONT><FONT FACE="Courier New">&#160;<A NAME="P203_10659"></A>SyncReadNextModifiedRecInCategory</FONT><FONT FACE="Times">, which also filters based on the record's category. This function takes the category index as an additional parameter.</FONT></P>
+
+<P><I><FONT FACE="Times">Looking up exact records via unique record ID</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P207_10856"></A>Sometimes <A NAME="P207_10866"></A>you want to read records based on their unique record IDs. In such cases, use </FONT><FONT FACE="Courier New">&#160;<A NAME="P207_10945"></A>SyncReadRecordByID</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><I><FONT FACE="Times">Iterating through the records of a database from beginning to end</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Use </FONT><FONT FACE="Courier New">&#160;<A NAME="P211_11034"></A>SyncReadRecordByIndex</FONT><FONT FACE="Times"> to get a record based on the record number. Use this when you want to read through a database from beginning to end. This function takes one parameter, </FONT><FONT FACE="Courier New">rInfo</FONT><FONT FACE="Times">, which has the record index as one of its fields. </FONT></P>
+
+<P><I><FONT FACE="Times">The CRawRecordInfo class</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Each of these read routines takes as a parameter an object of the </FONT><FONT FACE="Courier New"><A NAME="P215_11354"></A>CRawRecordInfo</FONT><FONT FACE="Times"> class. The needed fields in the class are:</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_FileHandle</FONT></P>
+
+<P><FONT FACE="Times">This is a handle to the open database.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_pBytes</FONT></P>
+
+<P><FONT FACE="Times">A pointer that you allocate into which the record will be copied.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_TotalBytes</FONT></P>
+
+<P><FONT FACE="Times">The size of the </FONT><FONT FACE="Courier New">m_pBytes</FONT><FONT FACE="Times"> pointer. This is the number of bytes that can be copied into </FONT><FONT FACE="Courier New">m_pBytes</FONT><FONT FACE="Times"> without overflowing it.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_BytesRead</FONT></P>
+
+<P><FONT FACE="Times">Output field; the number of bytes read. If </FONT><FONT FACE="Courier New">m_BytesRead</FONT><FONT FACE="Times"> is greater than </FONT><FONT FACE="Courier New">m_TotalBytes</FONT><FONT FACE="Times">, the record is too large. Sync Manager 2.1 or later copies the first </FONT><FONT FACE="Courier New">m_totalBytes</FONT><FONT FACE="Times"> of record data to </FONT><FONT FACE="Courier New">m_pBytes</FONT><FONT FACE="Times">. Previous versions of the Sync Manager copy nothing.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_catId</FONT></P>
+
+<P><FONT FACE="Times">Input field for </FONT><FONT FACE="Courier New">SyncReadNextRecInCategory</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">SyncReadNextModifiedRecInCategory</FONT><FONT FACE="Times">. Output field for the other read routines. This contains the category, as a number between 0 and 14.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_RecIndex</FONT></P>
+
+<P><FONT FACE="Times">Input field for </FONT><FONT FACE="Courier New">SyncReadRecordByIndex</FONT><FONT FACE="Times">. Output field for other read routines for Sync Manager 2.1 or later (earlier versions of Sync Manager don't write to this field).</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_Attribs</FONT></P>
+
+<P><FONT FACE="Times">The attributes of the record.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_dwReserved</FONT></P>
+
+<P><FONT FACE="Times">Reserved for the future. Set this field to 0.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Beware of modifying the records in a database while iterating with </FONT><FONT FACE="Courier New">&#160;<A NAME="P234_12447"></A>SyncReadNextModifiedRec</FONT><FONT FACE="Times"> or </FONT><FONT FACE="Courier New">&#160;<A NAME="P234_12475"></A>SyncReadNextModifiedRecInCatgegory</FONT><FONT FACE="Times">. In pre-2.0 versions of the Palm OS, the iteration routines don't work right. In Palm OS 2.0, a modified record is read again by the iteration routines. In Palm OS 3.0, the modified record isn't reread.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">If the record you read is larger than you've allocated space for, the Sync read routines will not return an error. You need to explicitly check for this problem. If, after the read, </FONT><FONT FACE="Courier New">m_BytesRead</FONT><FONT FACE="Times"> is greater than </FONT><FONT FACE="Courier New">m_TotalBytes</FONT><FONT FACE="Times">, you haven't allocated enough space. For Palm OS 3.0 and earlier, no record can be more than 65,505 bytes.</FONT><A NAME="P235_13041"></A></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Reading the AppInfo Block</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P239_13066"></A>There are times when you need to read information from the AppInfo block. For example, if the AppInfo block contains category names, you'll need to read it to get them. The Sync Manager call to use is </FONT><FONT FACE="Courier New">&#160;<A NAME="P239_13268"></A>SyncReadDBAppInfoBlock</FONT><FONT FACE="Times">. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This function takes two parameters, a handle to the open record or database on the handheld, and the object, </FONT><FONT FACE="Courier New">rInfo</FONT><FONT FACE="Times">, that contains information about the database header. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The parameter </FONT><FONT FACE="Courier New">rInfo</FONT><FONT FACE="Times"> is an object of type </FONT><FONT FACE="Courier New">CdbGenInfo</FONT><FONT FACE="Times"> with the following fields:</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_pBytes</FONT></P>
+
+<P><FONT FACE="Times">A pointer to memory you've allocated into which you are going to copy the AppInfo block.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_TotalBytes</FONT></P>
+
+<P><FONT FACE="Times">The number of bytes allocated for the </FONT><FONT FACE="Courier New">m_pBytes</FONT><FONT FACE="Times"> field.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_BytesRead</FONT></P>
+
+<P><FONT FACE="Times">Output field; the number of bytes read. If </FONT><FONT FACE="Courier New">m_BytesRead</FONT><FONT FACE="Times"> is greater than </FONT><FONT FACE="Courier New">m_TotalBytes</FONT><FONT FACE="Times">, the AppInfo block is too large. Sync Manager 2.1 or later copies the first </FONT><FONT FACE="Courier New">m_totalBytes</FONT><FONT FACE="Times"> of AppInfo block data to </FONT><FONT FACE="Courier New">m_pBytes</FONT><FONT FACE="Times">. Previous versions of the Sync Manager copy nothing.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">m_dwReserved</FONT></P>
+
+<P><FONT FACE="Times">Reserved for the future. Set this field to 0.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Deleted/Archived Records</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P256_14051"></A>For databases that will be two-way synced, the handheld application doesn't completely remove a deleted record; it marks it as deleted, instead. When a sync occurs, those marked records need to be deleted from the desktop database.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are a couple of ways that you can delete marked records and a few pitfalls to avoid. First, note that you have two different ways in which records might be removed from a database. They can be either completely deleted or just archived. <A HREF="#P259_15034">Figure 12-1</A> shows you the two possible dialog settings that a user can select when given the option to delete a record. Choosing <A NAME="P258_14654"></A>&quot;Save archive copy on PC&quot; means the record is marked as deleted until the next sync, at which point it is saved in an archive file and then deleted from the database. Not choosing &quot;Save archive copy on PC&quot; means the record is marked as deleted until the next sync and then completely deleted from the database. See &quot;Deleting a Record&quot; on page&#160;152 for further details.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 12- 1</FONT></B><A NAME="P259_15034"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Saving or not saving an archive copy when deleting a record</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch12-plmp.1201-1.gif" WIDTH=503 HEIGHT=125 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">Archiving records</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You should create a separate archive file and append archived records there. This is for situations in which the user doesn't want the records cluttering up the handheld or the normal desktop application, but does want the record available if needed. It's customary to create a separate archive file for each category.</FONT></P>
+
+<P><I><FONT FACE="Times">Deleting records</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Once any archived records have been archived, and any deleted records have been removed from the corresponding desktop file, those records should be completely deleted from the <A NAME="P275_15621"></A>handheld. </FONT><FONT FACE="Courier New">&#160;<A NAME="P275_15632"></A>SyncPurgeDeletedRecs</FONT><FONT FACE="Times"> is the call you should use:</FONT><A NAME="P275_15680"></A></P><PRE><FONT SIZE="-1">err = SyncPurgeDeletedRecs(rHandle);</FONT><A NAME="P277_15716"></A></PRE>
+
+<P><A NAME="P278_15716"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">When the HotSync Button Gets Pressed</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P280_15752"></A>We left off in the previous discussion at the point where we are ready to exchange information between the conduit on the desktop and the handheld unit. Let's continue now walking through the chain of events (see <A HREF="#P281_15989">Table 12-1</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Table 12- 1</FONT></B><A NAME="P281_15989"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">When the HotSync Button Gets Pressed</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=212><P><B><FONT FACE="Times" SIZE="-1">Action (by the User or by the System)</FONT></B></P>
+</TD>
+<TD WIDTH=268><P><B><FONT FACE="Times" SIZE="-1">What Is Happening Programmatically</FONT></B></P>
+</TD></TR>
+<TR>
+<TD WIDTH=212><P><FONT FACE="Times" SIZE="-1">The HotSync Manager gets the conduit name so that it can display information in the status dialog.</FONT></P>
+</TD>
+<TD WIDTH=268><P><FONT FACE="Courier New" SIZE="+0">GetConduitName</FONT><FONT FACE="Times"> is called and returns.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=212><P><FONT FACE="Times" SIZE="-1">The HotSync Manager prepares to sync by passing the synchronization off to the conduit.</FONT></P>
+</TD>
+<TD WIDTH=268><P><FONT FACE="Courier New" SIZE="+0">OpenConduit</FONT><FONT FACE="Times"> gets called and the conduit's DLL gets loaded into memory. It is told whether to do a fast sync, a slow sync, a copy from handheld to desktop, a copy from desktop to handheld, or to do nothing. When </FONT><FONT FACE="Courier New">OpenConduit</FONT><FONT FACE="Times"> returns, it will have completed the task.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=212><P><FONT FACE="Times" SIZE="-1">The conduit registers with the HotSync Manager.</FONT></P>
+</TD>
+<TD WIDTH=268><P><FONT FACE="Courier New" SIZE="+0">SyncRegisterConduit</FONT><FONT FACE="Times"> returns a handle.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=212><P><FONT FACE="Times" SIZE="-1">The conduit notifies the log that syncing is about to start.</FONT></P>
+</TD>
+<TD WIDTH=268><P><FONT FACE="Times" SIZE="-1">Conduit calls </FONT><FONT FACE="Courier New">LogAddEntry(&quot;&quot;, slSyncStarted, false).</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=212><P><FONT FACE="Times" SIZE="-1">The conduit opens the remote order database on the handheld.</FONT></P>
+</TD>
+<TD WIDTH=268><P><FONT FACE="Times" SIZE="-1">Conduit calls </FONT><FONT FACE="Courier New">SyncOpenDB</FONT><FONT FACE="Times">, which returns a handle to the remote order database.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=212><P><FONT FACE="Times" SIZE="-1">The user sees that the Sales orders are being synced.</FONT></P>
+</TD>
+<TD WIDTH=268><P><FONT FACE="Times" SIZE="-1">All the data is written from the handheld to the desktop.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=212><P><FONT FACE="Times" SIZE="-1">The conduit closes the remote database.</FONT></P>
+</TD>
+<TD WIDTH=268><P><FONT FACE="Times" SIZE="-1">Conduit calls </FONT><FONT FACE="Courier New">SyncCloseDB</FONT><FONT FACE="Times"> to close the Sales order database.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=212><P><FONT FACE="Times" SIZE="-1">The user sees that the Sales application product list is being synced.</FONT></P>
+</TD>
+<TD WIDTH=268><P><FONT FACE="Times" SIZE="-1">Conduit calls </FONT><FONT FACE="Courier New">SyncOpenDB</FONT><FONT FACE="Times">, which returns a handle to the product database.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=212><P><FONT FACE="Times" SIZE="-1">The conduit closes the remote database.</FONT></P>
+</TD>
+<TD WIDTH=268><P><FONT FACE="Times" SIZE="-1">Conduit calls </FONT><FONT FACE="Courier New">SyncCloseDB</FONT><FONT FACE="Times">, which destroys the handle opened earlier for that database.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=212><P><I><FONT FACE="Times" SIZE="-1">The user sees that the Customer List is being synced.</FONT></I></P>
+</TD>
+<TD WIDTH=268>&#160;
+</TD></TR>
+<TR>
+<TD WIDTH=212><P><FONT FACE="Times" SIZE="-1">Close up the conduit after syncing is finished.</FONT></P>
+</TD>
+<TD WIDTH=268><P><FONT FACE="Times" SIZE="-1">The application calls <I>SyncUnRegisterConduit</I> to dispose of the handle that was set in <I>SyncRegisterConduit</I>.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=212><P><FONT FACE="Times" SIZE="-1">The HotSync Manager backs up other stuff.</FONT></P>
+</TD>
+<TD WIDTH=268><P><FONT FACE="Times" SIZE="-1">The Backup conduit gets called.</FONT></P>
+</TD></TR></TABLE></UL>
+
+<P><A NAME="P317_17670"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Portability Issues</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P319_17688"></A>There are two important portability issues that you need to take into account when moving data back and forth from the handheld to the desktop. They are byte ordering and structure packing.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Byte Ordering</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P324_17890"></A>The Palm OS runs on a Motorola platform, which stores bytes differently from Windows running on an Intel platform. This crucial difference can royally mess up data transfers if you are not careful.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">On the handheld, the 16-bit number 0x0102 is stored with the high byte, 0x01, first, and the low byte, 0x02, second. In the conduit on Windows, the same number is stored with the low byte, 0x02, first, and the high byte, 0x01, second. As a result, any two-byte values stored in your records or in your AppInfo block must be swapped when transferred between the two systems. (If you fail to swap, a simple request for 3 boxes of toys on the handheld would be processed on the desktop as a request for 768 boxes!) A similar problem occurs with four-byte values; they are also stored in switched forms (see <A HREF="#P327_18715">Table 12-2</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Table 12- 2</FONT></B><A NAME="P327_18715"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Comparison of Byte Orderings for the Four-Byte Value 0x01020304</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=152><P><B><FONT FACE="Times" SIZE="-1">Palm Handheld Byte Order</FONT></B></P>
+</TD>
+<TD WIDTH=150><P><B><FONT FACE="Times" SIZE="-1">Wintel Byte Order</FONT></B></P>
+</TD></TR>
+<TR>
+<TD WIDTH=152><P><FONT FACE="Times" SIZE="-1">0x01</FONT></P>
+</TD>
+<TD WIDTH=150><P><FONT FACE="Times" SIZE="-1">0x04</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=152><P><FONT FACE="Times" SIZE="-1">0x02</FONT></P>
+</TD>
+<TD WIDTH=150><P><FONT FACE="Times" SIZE="-1">0x03</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=152><P><FONT FACE="Times" SIZE="-1">0x03</FONT></P>
+</TD>
+<TD WIDTH=150><P><FONT FACE="Times" SIZE="-1">0x02</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=152><P><FONT FACE="Times" SIZE="-1">0x04</FONT></P>
+</TD>
+<TD WIDTH=150><P><FONT FACE="Times" SIZE="-1">0x01</FONT></P>
+</TD></TR></TABLE></UL>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Strings are not affected by this byte ordering. On both platforms, the string &quot;abc&quot; is stored in the order &quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;\0&quot;.</FONT><BR>
+</P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The HotSync Manager provides routines for <A NAME="P348_19020"></A>converting two- and four-byte values from the handheld to host byte ordering:</FONT></P><PRE><FONT SIZE="-1">Word &#160;<A NAME="P350_19103"></A>SyncHHtoHostWord(Word value)</FONT>
+<FONT SIZE="-1">DWord &#160;<A NAME="P351_19138"></A>SyncHHToHostDWord(DWord value)</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">and for the opposite conversion:</FONT></P><PRE><FONT SIZE="-1">Word SyncHostToHHWord(Word value)</FONT>
+<FONT SIZE="-1">DWord SyncHostToHHDWord(DWord value)</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here are the return values:</FONT></P>
+
+  <UL><LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> SyncHHtoHostWord(0x0102)</FONT><FONT FACE="Times"> returns </FONT><FONT FACE="Courier New">0x0201</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> SyncHostToHHWord(0x0201)</FONT><FONT FACE="Times"> returns </FONT><FONT FACE="Courier New">0x0102</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> SyncHHToHostDWord(0x01020304)</FONT><FONT FACE="Times"> returns </FONT><FONT FACE="Courier New">0x04030201</FONT></LI>
+
+  <LI><FONT FACE="Times"> </FONT><FONT FACE="Courier New"> SyncHostToHHDWord(0x04030201)</FONT><FONT FACE="Times"> returns </FONT><FONT FACE="Courier New">0x012020304</FONT><A NAME="P361_19479"></A></LI></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Structure Packing</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P365_19496"></A>Sometimes<A NAME="P365_19505"></A> the compiler leaves holes in structures between successive fields. This is done in order for fields to begin on specific byte/word/double-word boundaries. As a result, you need to lay out the structures, defining your records and/or AppInfo block in the same way for both the compiler you use for creating your handheld application and the compiler you use to create your conduit.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">For Visual C++, we've found that the <A NAME="P367_19923"></A>pack pragma can be used to change the packing rules to match that of CodeWarrior:</FONT></P><PRE><FONT SIZE="-1">#pragma pack(2)</FONT>
+
+<I><FONT FACE="Times" SIZE="-1">structure declarations for structures that will be read from the handheld</FONT></I>
+
+<FONT SIZE="-1">#pragma pack</FONT><A NAME="P373_20104"></A></PRE>
+
+<P><A NAME="P374_20104"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">The Sales Conduit</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P376_20121"></A>We extend the Sales conduit so that our shell from the previous chapter also supports &quot;Desktop overwrites handheld&quot; and &quot;Handheld overwrites desktop.&quot; We postponing syncing until Chapter&#160;13, <I>Two-Way Syncing</I>.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">For our conduit, we've got to define what it means to do each of these types of overwriting. Here's the logic that we think makes sense for the Sales application:</FONT></P>
+
+<P><I><FONT FACE="Times">Desktop overwrites handheld</FONT></I></P>
+
+<P><FONT FACE="Times">The products database and the customers database are completely overwritten from the desktop; nothing happens to the orders database.</FONT></P>
+
+<P><I><FONT FACE="Times">Handheld overwrites database</FONT></I></P>
+
+<P><FONT FACE="Times">The products are ignored (since they can't have changed on the handheld). The customers and orders databases are copied to the desktop. Any archived customers are appended to a separate file; deleted customers are removed from the handheld.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Format Used to Store Data on the Desktop</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P387_20958"></A>We <A NAME="P387_20961"></A>store data on the desktop as tab-delimited text files.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The customers will be stored in a file named <I>Customers.txt</I> in the user's directory within the Sales conduit directory. Each line in the file is of the form:</FONT></P><PRE><FONT FACE="Times" SIZE="-1"><I>Customer ID</I>&lt;tab&gt;<I>Name</I>&lt;tab&gt;<I>Address</I>&lt;tab&gt;<I>City</I>&lt;tab&gt;<I>Phone</I></FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The orders will be stored in a file named <I>Orders.txt</I> in the same directory. Each order is stored as:</FONT></P><PRE><FONT SIZE="-1">ORDER </FONT><I><FONT FACE="Times" SIZE="-1">Customer ID</FONT></I>
+<FONT FACE="Times" SIZE="-1"><I>quantity</I>&lt;tab&gt;<I>Product ID</I></FONT>
+<FONT FACE="Times" SIZE="-1"><I>quantity</I>&lt;tab&gt;<I>Product ID</I></FONT>
+<FONT SIZE="-1">...</FONT>
+<FONT FACE="Times" SIZE="-1"><I>qauntity</I>&lt;tab&gt;<I>Product ID</I></FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Orders follow one another in the file.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The products are stored in a <I>Products.txt</I> file and start with the categories, followed by the products:</FONT></P><PRE><I><FONT FACE="Times" SIZE="-1">Name of Category 0</FONT></I>
+<I><FONT FACE="Times" SIZE="-1">Name of Category 1</FONT></I>
+<FONT SIZE="-1">...</FONT>
+<I><FONT FACE="Times" SIZE="-1">Name of last Category</FONT></I>
+<FONT SIZE="-1">&lt;empty line&gt;</FONT>
+<FONT FACE="Times" SIZE="-1"><I>Product ID</I>&lt;tab&gt;<I>Name</I>&lt;tab&gt;<I>Category Number</I>&lt;tab&gt;<I>Price in dollars and cents</I></FONT>
+<FONT SIZE="-1">...</FONT>
+<FONT FACE="Times" SIZE="-1"><I>Product ID</I>&lt;tab&gt;<I>Name</I>&lt;tab&gt;<I>Category Number</I>&lt;tab&gt;<I>Price in dollars and cents</I></FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Modifying OpenConduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We modify </FONT><FONT FACE="Courier New">&#160;<A NAME="P413_21799"></A>OpenConduit</FONT><FONT FACE="Times"> to handle copying from handheld to desktop (</FONT><FONT FACE="Courier New">eHHtoPC</FONT><FONT FACE="Times">) and from desktop to handheld (</FONT><FONT FACE="Courier New">ePCtoHH</FONT><FONT FACE="Times">):</FONT></P><PRE><FONT SIZE="-1">__declspec(dllexport) long OpenConduit(PROGRESSFN progress, </FONT>
+<FONT SIZE="-1">                                       CSyncProperties &amp;sync)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    AFX_MANAGE_STATE(AfxGetStaticModuleState());</FONT>
+<FONT SIZE="-1">    long err = 0;</FONT>
+
+<FONT SIZE="-1">    if (sync.m_SyncType == eDoNothing) {</FONT>
+<FONT SIZE="-1">        LogAddEntry(&quot;Sales - sync configured to Do Nothing&quot;, slText, </FONT>
+<FONT SIZE="-1">            false);</FONT>
+<FONT SIZE="-1">            return 0;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    CONDHANDLE myConduitHandle;</FONT>
+<FONT SIZE="-1">    if ((err = SyncRegisterConduit(myConduitHandle)) != 0) return err;</FONT>
+
+<FONT SIZE="-1">    LogAddEntry(&quot;&quot;, slSyncStarted, false);</FONT>
+
+<B><FONT SIZE="-1">    if (sync.m_SyncType == eHHtoPC) {</FONT></B>
+<B><FONT SIZE="-1">        if ((err = CopyOrdersFromHH(sync)) != 0)</FONT></B>
+<B><FONT SIZE="-1">            goto exit;</FONT></B>
+<B><FONT SIZE="-1">        if ((err = CopyCustomersFromHH(sync)) != 0)</FONT></B>
+<B><FONT SIZE="-1">            goto exit;</FONT></B>
+<B><FONT SIZE="-1">    } else if (sync.m_SyncType == ePCtoHH) {</FONT></B>
+<B><FONT SIZE="-1">        if ((err = CopyProductsAndCategoriesToHH(sync)) != 0)</FONT></B>
+<B><FONT SIZE="-1">            goto exit;</FONT></B>
+<B><FONT SIZE="-1">        if ((err = CopyCustomersToHH(sync)) != 0)</FONT></B>
+<B><FONT SIZE="-1">            goto exit;</FONT></B>
+<B><FONT SIZE="-1">    } else if (sync.m_SyncType == eFast || sync.m_SyncType == eSlow) {</FONT></B>
+<B><FONT SIZE="-1">&#160;&#160;&#160;&#160;}</FONT></B>
+
+<FONT SIZE="-1">exit:</FONT>
+<FONT SIZE="-1">    LogAddEntry(kConduitName, err ? slSyncAborted : slSyncFinished, </FONT>
+<FONT SIZE="-1">        false);</FONT>
+<FONT SIZE="-1">    SyncUnRegisterConduit(myConduitHandle);</FONT>
+
+<FONT SIZE="-1">    return err;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">General Code</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We have some other code to add, as well. We need to define our databases, create a global variable, and add some data structures.</FONT></P>
+
+<P><I><FONT FACE="Times">Database defines</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We've got defines for the databases (these can be copied directly from the code for the handheld application):</FONT></P><PRE><FONT SIZE="-1">#define salesCreator    'Sles'</FONT>
+<FONT SIZE="-1">#define salesVersion    0</FONT>
+<FONT SIZE="-1">#define customerDBType  'cust'</FONT>
+<FONT SIZE="-1">#define customerDBName  &quot;Customers_Sles&quot;</FONT>
+<FONT SIZE="-1">#define orderDBType     'Ordr'</FONT>
+<FONT SIZE="-1">#define orderDBName     &quot;Orders_Sles&quot;</FONT>
+<FONT SIZE="-1">#define productDBType   'Prod'</FONT>
+<FONT SIZE="-1">#define productDBName   &quot;Products_Sles&quot;</FONT></PRE>
+
+<P><I><FONT FACE="Times">Globals</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We read and write records using a global buffer. We size it to be bigger than any possible record (at least on Palm OS 3.0 or earlier):</FONT></P><PRE><FONT SIZE="-1">#define kMaxRecordSize  66000</FONT>
+<FONT SIZE="-1">char    gBigBuffer[kMaxRecordSize];</FONT></PRE>
+
+<P><I><FONT FACE="Times">Data structures</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We have structures that need to correspond exactly to structures on the handheld (thus, we use the pack pragma). We then use these structures to read and write data on the handheld:</FONT></P><PRE><FONT SIZE="-1">// on the Palm handheld, the items array in PackedOrder starts at offset 6 </FONT>
+<FONT SIZE="-1">// Natural alignment on Windows would start it at offset 8</FONT>
+<FONT SIZE="-1">#pragma pack(2)</FONT>
+
+<FONT SIZE="-1">struct <A NAME="P482_24072"></A>Item {</FONT>
+<FONT SIZE="-1">    unsigned long   productID;</FONT>
+<FONT SIZE="-1">    unsigned long   quantity;</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">struct PackedOrder {</FONT><A NAME="P487_24159"></A>
+<FONT SIZE="-1">    long            customerID;</FONT>
+<FONT SIZE="-1">    unsigned short  numItems;</FONT>
+<FONT SIZE="-1">    Item            items[1];</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">struct PackedCustomer{</FONT><A NAME="P493_24272"></A>
+<FONT SIZE="-1">    long customerID;</FONT>
+<FONT SIZE="-1">    char name[1];</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">struct PackedProduct {</FONT><A NAME="P498_24333"></A>
+<FONT SIZE="-1">    unsigned long   productID;</FONT>
+<FONT SIZE="-1">    unsigned long   price;  // in cents</FONT>
+<FONT SIZE="-1">    char    name[1];</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">#define kCategoryNameLength 15</FONT>
+<FONT SIZE="-1">typedef char    CategoryName[kCategoryNameLength + 1];</FONT>
+
+<FONT SIZE="-1">struct PackedCategories {</FONT><A NAME="P507_24533"></A>
+<FONT SIZE="-1">    unsigned short  numCategories;</FONT>
+<FONT SIZE="-1">    CategoryName    names[1];</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">#pragma pack()</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Next, we've got some structures that we use to store data in memory in the conduit. Since we're using C++, we have constructors and destructors to make our lives easier:</FONT></P><PRE><FONT SIZE="-1">struct Customer {</FONT><A NAME="P515_24798"></A>
+<FONT SIZE="-1">    Customer() { name = address = city = phone = 0;}</FONT>
+<FONT SIZE="-1">    ~Customer() {delete [] name; delete [] address; delete [] city; </FONT>
+<FONT SIZE="-1">        delete [] phone; };</FONT>
+<FONT SIZE="-1">    long customerID;</FONT>
+<FONT SIZE="-1">    char *name;</FONT>
+<FONT SIZE="-1">    char *address;</FONT>
+<FONT SIZE="-1">    char *city;</FONT>
+<FONT SIZE="-1">    char *phone;</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">struct Categories {</FONT><A NAME="P526_25050"></A>
+<FONT SIZE="-1">    Categories(int num) { numCategories = num; </FONT>
+<FONT SIZE="-1">        names = new CategoryName[num];}</FONT>
+<FONT SIZE="-1">    ~Categories() {delete [] names;};</FONT>
+<FONT SIZE="-1">    unsigned short numCategories;</FONT>
+<FONT SIZE="-1">    CategoryName *names;</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">struct Order {</FONT><A NAME="P534_25246"></A>
+<FONT SIZE="-1">    Order(unsigned short num) { numItems = num; </FONT>
+<FONT SIZE="-1">       items = new Item[numItems];};</FONT>
+<FONT SIZE="-1">    ~Order() { delete [] items;};</FONT>
+<FONT SIZE="-1">    long            customerID;</FONT>
+<FONT SIZE="-1">    unsigned short  numItems;</FONT>
+<FONT SIZE="-1">    Item            *items;</FONT>
+<FONT SIZE="-1">};</FONT>
+
+<FONT SIZE="-1">struct Product {</FONT><A NAME="P543_25468"></A>
+<FONT SIZE="-1">    Product() {name = 0;};</FONT>
+<FONT SIZE="-1">    ~Product() {delete [] name;};</FONT>
+
+<FONT SIZE="-1">    unsigned long   productID;</FONT>
+<FONT SIZE="-1">    unsigned long   price;  // in cents</FONT>
+<FONT SIZE="-1">    unsigned char   category:4;</FONT>
+<FONT SIZE="-1">    char    *name;</FONT>
+<FONT SIZE="-1">};</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Downloading to the Handheld</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P554_25674"></A>To <A NAME="P554_25677"></A>download data to the handheld, we have to take care of a number of things. First, we need to copy the customers to the handheld. If the database doesn't exist, we need to create it. Once the database is open, we need to read through the records. When we finish with customers, we need to do the same things for products.</FONT></P>
+
+<P><I><FONT FACE="Times">Downloading customers</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P558_26018"></A>We've got to copy the customers to the handheld. We do this in </FONT><FONT FACE="Courier New">&#160;<A NAME="P558_26082"></A>CopyCustomersToHH</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">int CopyCustomersToHH(CSyncProperties &amp;sync)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    FILE *fp = NULL;</FONT>
+<FONT SIZE="-1">    BYTE rHandle;</FONT>
+<FONT SIZE="-1">    int err;</FONT>
+<FONT SIZE="-1">    bool dbOpen = false;</FONT>
+
+<FONT SIZE="-1">    if ((err = SyncOpenDB(customerDBName, 0, rHandle, eDbWrite | eDbRead</FONT>
+<FONT SIZE="-1">      | eDbShowSecret)) != 0) {</FONT>
+<FONT SIZE="-1">        LogAddEntry(&quot;SyncOpenDB failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">        if (err == SYNCERR_FILE_NOT_FOUND)</FONT>
+<FONT SIZE="-1">        {</FONT>
+<FONT SIZE="-1">            CDbCreateDB dbInfo;</FONT>
+<FONT SIZE="-1">            memset(&amp;dbInfo, 0, sizeof(dbInfo));</FONT>
+<FONT SIZE="-1">            dbInfo.m_Creator  = salesCreator; </FONT>
+<FONT SIZE="-1">            dbInfo.m_Flags    = eRecord; </FONT>
+<FONT SIZE="-1">            dbInfo.m_CardNo   = 0; </FONT>
+<FONT SIZE="-1">            dbInfo.m_Type     = customerDBType; </FONT>
+<FONT SIZE="-1">            strcpy(dbInfo.m_Name, customerDBName);</FONT>
+
+<FONT SIZE="-1">            if ((err = SyncCreateDB(dbInfo)) != 0)</FONT>
+<FONT SIZE="-1">            {</FONT>
+<FONT SIZE="-1">                LogAddEntry(&quot;SyncCreateDB failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">                goto exit;</FONT>
+<FONT SIZE="-1">            }</FONT>
+<FONT SIZE="-1">            rHandle = dbInfo.m_FileHandle; </FONT>
+<FONT SIZE="-1">        } else</FONT>
+<FONT SIZE="-1">            goto exit;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    dbOpen = true;</FONT>
+
+<FONT SIZE="-1">    char    buffer[BIG_PATH *2];</FONT>
+<FONT SIZE="-1">    strcpy(buffer, sync.m_PathName);</FONT>
+<FONT SIZE="-1">    strcat(buffer, &quot;Customers.txt&quot;);</FONT>
+
+<FONT SIZE="-1">    if ((fp = fopen(buffer, &quot;r&quot;)) == NULL) {</FONT>
+<FONT SIZE="-1">        err = 1;</FONT>
+<FONT SIZE="-1">        LogAddFormattedEntry(slWarning, false, &quot;fopen(%s) failed&quot;,</FONT>
+<FONT SIZE="-1">            buffer);</FONT>
+<FONT SIZE="-1">        goto exit;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    if ((err = SyncPurgeAllRecs(rHandle)) != 0) {</FONT>
+<FONT SIZE="-1">        LogAddEntry(&quot;SyncPurgeAllRecs failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">        goto exit;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    Customer *c;</FONT>
+<FONT SIZE="-1">    while (c = ReadCustomer(fp)) {</FONT>
+<FONT SIZE="-1">        CRawRecordInfo recordInfo;</FONT>
+<FONT SIZE="-1">        recordInfo.m_FileHandle = rHandle;</FONT>
+<FONT SIZE="-1">        recordInfo.m_RecId = 0;</FONT>
+<FONT SIZE="-1">        recordInfo.m_pBytes = (unsigned char *) gBigBuffer;</FONT>
+<FONT SIZE="-1">        recordInfo.m_Attribs = 0;</FONT>
+<FONT SIZE="-1">        recordInfo.m_CatId = 0;</FONT>
+<FONT SIZE="-1">        recordInfo.m_RecSize = CustomerToRawRecord(gBigBuffer,</FONT>
+<FONT SIZE="-1">            sizeof(gBigBuffer), c);</FONT>
+<FONT SIZE="-1">        recordInfo.m_dwReserved = 0;</FONT>
+
+<FONT SIZE="-1">        if ((err = SyncWriteRec(recordInfo)) !=0) {</FONT>
+<FONT SIZE="-1">            delete c;</FONT>
+<FONT SIZE="-1">            LogAddEntry(&quot;SyncWriteRec failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">            goto exit;</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">        delete c;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">exit:</FONT>
+<FONT SIZE="-1">    if (fp)</FONT>
+<FONT SIZE="-1">        fclose(fp);</FONT>
+<FONT SIZE="-1">    if (dbOpen)</FONT>
+<FONT SIZE="-1">        if ((err = SyncCloseDB(rHandle)) != 0)</FONT>
+<FONT SIZE="-1">            LogAddEntry(&quot;SyncDBClose failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">    return err;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We try to open the customers database on the handheld. If it doesn't exist, we create it. Next, we open <I>Customers.txt</I>, the file with the customers. We delete all the existing records from the customers database on the handheld and then start reading each customer (using </FONT><FONT FACE="Courier New">ReadCustomer</FONT><FONT FACE="Times">) and writing the customer to the database with </FONT><FONT FACE="Courier New">SyncWriteRec</FONT><FONT FACE="Times">. </FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">We added a couple of log entries in this code, as well. These were not intended for users, but to help in our debugging. We get notified via the log if the code failed to properly open </FONT><FONT FACE="Times" SIZE="-1"><I>Customers.txt</I> or if we failed to delete all the existing records.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P640_28791"></A>ReadCustomer</FONT><FONT FACE="Times"> reads a customer from a text file, returning 0 if there are no more customers:</FONT></P><PRE><FONT SIZE="-1">Customer *ReadCustomer(FILE *fp)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    const char *separator = &quot;\t&quot;;</FONT>
+<FONT SIZE="-1">    if (fgets(gBigBuffer, sizeof(gBigBuffer), fp) == NULL)</FONT>
+<FONT SIZE="-1">        return 0;</FONT>
+<FONT SIZE="-1">    char *customerID = strtok(gBigBuffer, separator);</FONT>
+<FONT SIZE="-1">    char *name = strtok(NULL, separator);</FONT>
+<FONT SIZE="-1">    char *address = strtok(NULL, separator);</FONT>
+<FONT SIZE="-1">    char *city = strtok(NULL, separator);</FONT>
+<FONT SIZE="-1">    char *phone = strtok(NULL, separator);</FONT>
+
+<FONT SIZE="-1">    if (!address)</FONT>
+<FONT SIZE="-1">        address = &quot;&quot;;</FONT>
+<FONT SIZE="-1">    if (!city)</FONT>
+<FONT SIZE="-1">        city = &quot;&quot;;</FONT>
+<FONT SIZE="-1">    if (!phone)</FONT>
+<FONT SIZE="-1">        phone = &quot;&quot;;</FONT>
+<FONT SIZE="-1">    if (customerID &amp;&amp; name) {</FONT>
+<FONT SIZE="-1">        Customer *c = new Customer;</FONT>
+<FONT SIZE="-1">        c-&gt;customerID = atol(customerID);</FONT>
+<FONT SIZE="-1">        c-&gt;name = new char[strlen(name) + 1];</FONT>
+<FONT SIZE="-1">        strcpy(c-&gt;name, name);</FONT>
+<FONT SIZE="-1">        c-&gt;address = new char[strlen(address) + 1];</FONT>
+<FONT SIZE="-1">        strcpy(c-&gt;address, address);</FONT>
+<FONT SIZE="-1">        c-&gt;city = new char[strlen(city) + 1];</FONT>
+<FONT SIZE="-1">        strcpy(c-&gt;city, city);</FONT>
+<FONT SIZE="-1">        c-&gt;phone = new char[strlen(phone) + 1];</FONT>
+<FONT SIZE="-1">        strcpy(c-&gt;phone, phone);</FONT>
+<FONT SIZE="-1">        return c;</FONT>
+<FONT SIZE="-1">    } else</FONT>
+<FONT SIZE="-1">        return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P674_29815"></A>CustomerToRawRecord</FONT><FONT FACE="Times"> writes a customer to the passed-in buffer in the format the handheld expects. It returns the number of bytes it has written. Note that it must swap the four-byte </FONT><FONT FACE="Courier New">customerID</FONT><FONT FACE="Times"> to match the byte ordering on the handheld:</FONT></P><PRE><FONT SIZE="-1">int CustomerToRawRecord(void *buf, int bufLength, Customer *c)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    PackedCustomer *cp = (PackedCustomer *) buf;</FONT>
+<FONT SIZE="-1">    cp-&gt;customerID = SyncHostToHHDWord(c-&gt;customerID);</FONT>
+<FONT SIZE="-1">    char *s = cp-&gt;name;</FONT>
+<FONT SIZE="-1">    strcpy(s, c-&gt;name);</FONT>
+<FONT SIZE="-1">    s += strlen(s) + 1;</FONT>
+<FONT SIZE="-1">    strcpy(s, c-&gt;address);</FONT>
+<FONT SIZE="-1">    s += strlen(s) + 1;</FONT>
+<FONT SIZE="-1">    strcpy(s, c-&gt;city);</FONT>
+<FONT SIZE="-1">    s += strlen(s) + 1;</FONT>
+<FONT SIZE="-1">    strcpy(s, c-&gt;phone);</FONT>
+<FONT SIZE="-1">    s += strlen(s) + 1;</FONT>
+<FONT SIZE="-1">    return s - (char *) buf;</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P690_30456"></A></PRE>
+
+<P><I><FONT FACE="Times">Downloading products </FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P693_30477"></A>The </FONT><FONT FACE="Courier New">&#160;<A NAME="P693_30482"></A>CopyProductsAndCategoriesToHH</FONT><FONT FACE="Times"> function updates the products database on the handheld from the <I>Products.txt</I> file on the PC:</FONT></P><PRE><FONT SIZE="-1">int CopyProductsAndCategoriesToHH(CSyncProperties &amp;sync)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    FILE *fp = NULL;</FONT>
+<FONT SIZE="-1">    BYTE rHandle;</FONT>
+<FONT SIZE="-1">    int err;</FONT>
+<FONT SIZE="-1">    bool dbOpen = false;</FONT>
+
+<FONT SIZE="-1">    char    buffer[BIG_PATH *2];</FONT>
+<FONT SIZE="-1">    strcpy(buffer, sync.m_PathName);</FONT>
+<FONT SIZE="-1">    strcat(buffer, &quot;Products.txt&quot;);</FONT>
+
+<FONT SIZE="-1">    if ((fp = fopen(buffer, &quot;r&quot;)) == NULL) {</FONT>
+<FONT SIZE="-1">        err = 1;</FONT>
+<FONT SIZE="-1">        LogAddFormattedEntry(slWarning, false, &quot;fopen(%s) failed&quot;,</FONT>
+<FONT SIZE="-1">            buffer);</FONT>
+<FONT SIZE="-1">        goto exit;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    if ((err = SyncOpenDB(productDBName, 0, rHandle, </FONT>
+<FONT SIZE="-1">        eDbWrite | eDbRead | eDbShowSecret)) != 0) {</FONT>
+<FONT SIZE="-1">        if (err == SYNCERR_FILE_NOT_FOUND)</FONT>
+<FONT SIZE="-1">        {</FONT>
+<FONT SIZE="-1">            CDbCreateDB dbInfo;</FONT>
+<FONT SIZE="-1">            memset(&amp;dbInfo, 0, sizeof(dbInfo));</FONT>
+<FONT SIZE="-1">            dbInfo.m_Creator  = salesCreator; </FONT>
+<FONT SIZE="-1">            dbInfo.m_Flags    = eRecord; </FONT>
+<FONT SIZE="-1">            dbInfo.m_CardNo   = 0; </FONT>
+<FONT SIZE="-1">            dbInfo.m_Type     = productDBType; </FONT>
+<FONT SIZE="-1">            strcpy(dbInfo.m_Name, productDBName);</FONT>
+
+<FONT SIZE="-1">            if ((err = SyncCreateDB(dbInfo)) != 0)</FONT>
+<FONT SIZE="-1">            {</FONT>
+<FONT SIZE="-1">                LogAddEntry(&quot;SyncCreateDB failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">                goto exit;</FONT>
+<FONT SIZE="-1">            }</FONT>
+<FONT SIZE="-1">            rHandle = dbInfo.m_FileHandle; </FONT>
+<FONT SIZE="-1">        } else</FONT>
+<FONT SIZE="-1">            goto exit;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    dbOpen = true;</FONT>
+
+<FONT SIZE="-1">    if ((err = SyncPurgeAllRecs(rHandle)) != 0) {</FONT>
+<FONT SIZE="-1">        LogAddEntry(&quot;SyncPurgeAllRecs failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">        goto exit;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    Categories *c;</FONT>
+<FONT SIZE="-1">    if (c = ReadCategories(fp)) {</FONT>
+<FONT SIZE="-1">        CDbGenInfo  rInfo;</FONT>
+
+<FONT SIZE="-1">        rInfo.m_pBytes = (unsigned char *) gBigBuffer;</FONT>
+<FONT SIZE="-1">        rInfo.m_TotalBytes = CategoriesToRawRecord(gBigBuffer,</FONT>
+<FONT SIZE="-1">            sizeof(gBigBuffer), c);</FONT>
+<FONT SIZE="-1">        rInfo.m_BytesRead = rInfo.m_TotalBytes; // Because older versions</FONT>
+<FONT SIZE="-1">                  // of the sync manager looked in the wrong field for</FONT>
+<FONT SIZE="-1">                  // the total size, the documented API of</FONT>
+<FONT SIZE="-1">                  // SyncWriteDBAppInfoBLock is that both m_TotalBytes</FONT>
+<FONT SIZE="-1">                  // and m_BytesRead should be filled in with the total</FONT>
+<FONT SIZE="-1">        rInfo.m_dwReserved = 0;</FONT>
+<FONT SIZE="-1">        if ((err = SyncWriteDBAppInfoBlock(rHandle, rInfo)) !=0) {</FONT>
+<FONT SIZE="-1">            delete c;</FONT>
+<FONT SIZE="-1">            LogAddEntry(&quot;SyncWriteDBAppInfoBlock failed&quot;, slWarning,</FONT>
+<FONT SIZE="-1">              false);</FONT>
+<FONT SIZE="-1">            goto exit;</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">        delete c;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    Product *p;</FONT>
+<FONT SIZE="-1">    while (p = ReadProduct(fp)) {</FONT>
+<FONT SIZE="-1">        CRawRecordInfo recordInfo;</FONT>
+<FONT SIZE="-1">        recordInfo.m_FileHandle = rHandle;</FONT>
+<FONT SIZE="-1">        recordInfo.m_RecId = 0;</FONT>
+<FONT SIZE="-1">        recordInfo.m_pBytes = (unsigned char *) gBigBuffer;</FONT>
+<FONT SIZE="-1">        recordInfo.m_Attribs = 0;</FONT>
+<FONT SIZE="-1">        recordInfo.m_CatId = p-&gt;category;</FONT>
+<FONT SIZE="-1">        recordInfo.m_RecSize = ProductToRawRecord(gBigBuffer,</FONT>
+<FONT SIZE="-1">            sizeof(gBigBuffer), p);</FONT>
+<FONT SIZE="-1">        recordInfo.m_dwReserved = 0;</FONT>
+
+<FONT SIZE="-1">        if ((err = SyncWriteRec(recordInfo)) !=0) {</FONT>
+<FONT SIZE="-1">            delete p;</FONT>
+<FONT SIZE="-1">            LogAddEntry(&quot;SyncWriteRec failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">            goto exit;</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">        delete p;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">exit:</FONT>
+<FONT SIZE="-1">    if (fp)</FONT>
+<FONT SIZE="-1">        fclose(fp);</FONT>
+
+<FONT SIZE="-1">    if (dbOpen)</FONT>
+<FONT SIZE="-1">        if ((err = SyncCloseDB(rHandle)) != 0)</FONT>
+<FONT SIZE="-1">            LogAddEntry(&quot;SyncDBClose failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">    return err;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This routine has almost exactly the same structure as </FONT><FONT FACE="Courier New">CopyCustomersToHH</FONT><FONT FACE="Times">. The categories are written to the AppInfo block using </FONT><FONT FACE="Courier New">SyncWriteDBAppInfoBlock</FONT><FONT FACE="Times"> instead.</FONT><FONT FACE="Courier New"> </FONT><FONT FACE="Times">It uses </FONT><FONT FACE="Courier New">&#160;<A NAME="P792_33653"></A>ReadCategories</FONT><FONT FACE="Times"> to read the categories from the <I>Products.txt</I> file. The function continues reading categories, one per line, until it reaches an empty line:</FONT></P><PRE><FONT SIZE="-1">#define kMaxCategories  15</FONT>
+<FONT SIZE="-1">Categories *ReadCategories(FILE *fp)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    const char *separator = &quot;\n&quot;;</FONT>
+<FONT SIZE="-1">    int numCategories = 0;</FONT>
+<FONT SIZE="-1">    Categories *c = new Categories(kMaxCategories);</FONT>
+<FONT SIZE="-1">    for (int i = 0; i &lt; kMaxCategories ; i++) {</FONT>
+<FONT SIZE="-1">        if (fgets(gBigBuffer, sizeof(gBigBuffer), fp) == NULL)</FONT>
+<FONT SIZE="-1">            break;</FONT>
+<FONT SIZE="-1">        // strip newline</FONT>
+<FONT SIZE="-1">        if (gBigBuffer[strlen(gBigBuffer) - 1] == '\n')</FONT>
+<FONT SIZE="-1">            gBigBuffer[strlen(gBigBuffer) - 1] = '\0';</FONT>
+<FONT SIZE="-1">        if (gBigBuffer[0] == '\0')</FONT>
+<FONT SIZE="-1">            break;</FONT>
+<FONT SIZE="-1">        // copy it</FONT>
+<FONT SIZE="-1">        strncpy(c-&gt;names[i], gBigBuffer, kCategoryNameLength);</FONT>
+<FONT SIZE="-1">        c-&gt;names[i][kCategoryNameLength] = '\0';</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    c-&gt;numCategories = i;</FONT>
+<FONT SIZE="-1">    return c;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P816_34465"></A>ReadProduct</FONT><FONT FACE="Times"> reads the products that follow in the file:</FONT></P><PRE><FONT SIZE="-1">Product *ReadProduct(FILE *fp)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    const char *separator = &quot;\t&quot;;</FONT>
+<FONT SIZE="-1">    if (fgets(gBigBuffer, sizeof(gBigBuffer), fp) == NULL)</FONT>
+<FONT SIZE="-1">        return 0;</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    char *productID = strtok(gBigBuffer, separator);</FONT>
+<FONT SIZE="-1">    char *name = strtok(NULL, separator);</FONT>
+<FONT SIZE="-1">    char *categoryNumber = strtok(NULL, separator);</FONT>
+<FONT SIZE="-1">    char *price = strtok(NULL, separator);</FONT>
+
+<FONT SIZE="-1">    if (productID &amp;&amp; name &amp;&amp; categoryNumber) {</FONT>
+<FONT SIZE="-1">        Product *p = new Product;</FONT>
+<FONT SIZE="-1">        p-&gt;productID = atol(productID);</FONT>
+<FONT SIZE="-1">        p-&gt;name = new char[strlen(name) + 1];</FONT>
+<FONT SIZE="-1">        strcpy(p-&gt;name, name);</FONT>
+<FONT SIZE="-1">        p-&gt;category = (unsigned char) atoi(categoryNumber);</FONT>
+<FONT SIZE="-1">        p-&gt;price = (long) (atof(price) * 100);  // convert to cents</FONT>
+<FONT SIZE="-1">        return p;</FONT>
+<FONT SIZE="-1">    } else</FONT>
+<FONT SIZE="-1">        return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P840_35214"></A>CategoriesToRawRecord</FONT><FONT FACE="Times"> writes the categories in the format expected by the handheld (therefore, the </FONT><FONT FACE="Courier New">numCategories</FONT><FONT FACE="Times"> two-byte field must be swapped):</FONT></P><PRE><FONT SIZE="-1">int CategoriesToRawRecord(void *buf, int bufLength, Categories *c)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    PackedCategories *pc = (PackedCategories *) buf;</FONT>
+<FONT SIZE="-1">    pc-&gt;numCategories = SyncHostToHHWord(c-&gt;numCategories);</FONT>
+<FONT SIZE="-1">    char *s = (char *) pc-&gt;names;</FONT>
+<FONT SIZE="-1">    for (int i = 0; i &lt; c-&gt;numCategories; i++) {</FONT>
+<FONT SIZE="-1">        memcpy(s, c-&gt;names[i], sizeof(CategoryName));</FONT>
+<FONT SIZE="-1">        s += sizeof(CategoryName);</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    return s - (char *) buf;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P853_35740"></A>ProductToRawRecord</FONT><FONT FACE="Times"> is similar, but must swap both the </FONT><FONT FACE="Courier New">productID</FONT><FONT FACE="Times"> and the </FONT><FONT FACE="Courier New">price</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">int ProductToRawRecord(void *buf, int bufLength, Product *p)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    PackedProduct *pp = (PackedProduct *) buf;</FONT>
+<FONT SIZE="-1">    pp-&gt;productID = SyncHostToHHDWord(p-&gt;productID);</FONT>
+<FONT SIZE="-1">    pp-&gt;price = SyncHostToHHDWord(p-&gt;price);</FONT>
+<FONT SIZE="-1">    strcpy(pp-&gt;name, p-&gt;name);</FONT>
+<FONT SIZE="-1">    return offsetof(PackedProduct, name) + strlen(pp-&gt;name) + 1;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">That completes the conduit code for downloading. Remember, however, that the order in which </FONT><FONT FACE="Courier New">SyncWriteRec</FONT><FONT FACE="Times"> adds new records to the database isn't defined. As a result, the handheld must re-sort the databases (to be sorted by ID). Here's the code in our </FONT><FONT FACE="Courier New">PilotMain</FONT><FONT FACE="Times"> handheld function that does this:</FONT></P><PRE><FONT SIZE="-1">} else if (cmd == sysAppLaunchCmdSyncNotify) {</FONT>
+<FONT SIZE="-1">    DmOpenRef   db;</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    // code for beaming removed</FONT>
+<FONT SIZE="-1">        </FONT>
+<FONT SIZE="-1">// After a sync, we aren't guaranteed the order of any changed databases.</FONT>
+<FONT SIZE="-1">// We'll just resort the products and customer which could have changed.</FONT>
+<FONT SIZE="-1">// we're going to do an insertion sort because the databases</FONT>
+<FONT SIZE="-1">// should be almost completel sorted (and an insertion sort is</FONT>
+<FONT SIZE="-1">// quicker on an almost-sorted database than a quicksort).</FONT>
+<FONT SIZE="-1">// Since the current implementation of the Sync Manager creates new</FONT>
+<FONT SIZE="-1">// records at the end of the database, our database are probably sorted.</FONT>
+<FONT SIZE="-1">    db= DmOpenDatabaseByTypeCreator(customerDBType, salesCreator, </FONT>
+<FONT SIZE="-1">        dmModeReadWrite);</FONT>
+<FONT SIZE="-1">    if (db) {</FONT>
+<FONT SIZE="-1">        DmInsertionSort(db, (DmComparF *) CompareIDFunc, 0);</FONT>
+<FONT SIZE="-1">        DmCloseDatabase(db);</FONT>
+<FONT SIZE="-1">    } else </FONT>
+<FONT SIZE="-1">        error = DmGetLastErr();</FONT>
+<FONT SIZE="-1">    db= DmOpenDatabaseByTypeCreator(productDBType, salesCreator,    </FONT>
+<FONT SIZE="-1">        dmModeReadWrite);</FONT>
+<FONT SIZE="-1">    if (db) {</FONT>
+<FONT SIZE="-1">        DmInsertionSort(db, (DmComparF *) CompareIDFunc, 0);</FONT>
+<FONT SIZE="-1">        DmCloseDatabase(db);</FONT>
+<FONT SIZE="-1">    } else </FONT>
+<FONT SIZE="-1">        error = DmGetLastErr();</FONT><A NAME="P890_37452"></A>
+<FONT SIZE="-1">}</FONT><A NAME="P891_37453"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Uploading to the Desktop</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P894_37477"></A>We need to handle the same sorts of things when we are uploading instead of downloading data. First, we copy orders from the handheld to the desktop by opening the database, reading the records, doing the proper conversion, and sending them along their merry way to the desktop. Then we do the same for customers.</FONT></P>
+
+<P><I><FONT FACE="Times">Uploading orders</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P898_37806"></A>We've got to copy the orders from the handheld to the desktop:</FONT></P><PRE><FONT SIZE="-1">int &#160;<A NAME="P900_37873"></A>CopyOrdersFromHH(CSyncProperties &amp;sync)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    FILE *fp = NULL;</FONT>
+<FONT SIZE="-1">    BYTE rHandle;</FONT>
+<FONT SIZE="-1">    int err;</FONT>
+<FONT SIZE="-1">    bool dbOpen = false;</FONT>
+<FONT SIZE="-1">    int i;</FONT>
+
+<FONT SIZE="-1">    if ((err = SyncOpenDB(orderDBName, 0, rHandle, </FONT>
+<FONT SIZE="-1">        eDbRead | eDbShowSecret )) != 0) {</FONT>
+<FONT SIZE="-1">        LogAddEntry(&quot;SyncOpenDB failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">        goto exit;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    dbOpen = true;</FONT>
+
+<FONT SIZE="-1">    char    buffer[BIG_PATH *2];</FONT>
+<FONT SIZE="-1">    strcpy(buffer, sync.m_PathName);</FONT>
+<FONT SIZE="-1">    strcat(buffer, &quot;Orders.txt&quot;);</FONT>
+
+<FONT SIZE="-1">    if ((fp = fopen(buffer, &quot;w&quot;)) == NULL) {</FONT>
+<FONT SIZE="-1">        LogAddFormattedEntry(slWarning, false, &quot;fopen(%s) failed&quot;,</FONT>
+<FONT SIZE="-1">            buffer);</FONT>
+<FONT SIZE="-1">        goto exit;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    WORD recordCount;</FONT>
+<FONT SIZE="-1">    if ((err = SyncGetDBRecordCount(rHandle, recordCount)) !=0) {</FONT>
+<FONT SIZE="-1">        LogAddEntry(&quot;SyncGetDBRecordCount failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">        goto exit;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    CRawRecordInfo recordInfo;</FONT>
+<FONT SIZE="-1">    recordInfo.m_FileHandle = rHandle;</FONT>
+
+<FONT SIZE="-1">    for (i = 0; i &lt; recordCount; i++) {</FONT>
+<FONT SIZE="-1">        recordInfo.m_RecIndex = i;</FONT>
+<FONT SIZE="-1">        recordInfo.m_TotalBytes = (unsigned short) sizeof(gBigBuffer);</FONT>
+<FONT SIZE="-1">        recordInfo.m_pBytes = (unsigned char *) gBigBuffer;</FONT>
+<FONT SIZE="-1">        recordInfo.m_dwReserved = 0;</FONT>
+<FONT SIZE="-1">        </FONT>
+<FONT SIZE="-1">        if ((err = SyncReadRecordByIndex(recordInfo)) !=0) {</FONT>
+<FONT SIZE="-1">            LogAddEntry(&quot;SyncReadRecordByIndex failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">            goto exit;</FONT>
+<FONT SIZE="-1">        }   </FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">        Order *o = RawRecordToOrder(recordInfo.m_pBytes);</FONT>
+<FONT SIZE="-1">        if ((err = WriteOrderToFile(fp, o)) != 0) {</FONT>
+<FONT SIZE="-1">            LogAddEntry(&quot;WriteOrderToFile failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">            delete o;</FONT>
+<FONT SIZE="-1">            goto exit;</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">        delete o;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">exit:</FONT>
+<FONT SIZE="-1">    if (fp)</FONT>
+<FONT SIZE="-1">        fclose(fp);</FONT>
+
+<FONT SIZE="-1">    if (dbOpen)</FONT>
+<FONT SIZE="-1">        if ((err = SyncCloseDB(rHandle)) != 0)</FONT>
+<FONT SIZE="-1">            LogAddEntry(&quot;SyncDBClose failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">    return err;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The code opens the orders database (read-only, since it won't change the database). Then it creates the <I>Orders.txt</I> file. It finds the number of records in the database with </FONT><FONT FACE="Courier New">SyncGetDBRecordCount</FONT><FONT FACE="Times">. Then it reads record by record using </FONT><FONT FACE="Courier New">SyncReadRecordByIndex</FONT><FONT FACE="Times">. </FONT><FONT FACE="Courier New">RawRecordToOrder</FONT><FONT FACE="Times"> reads the raw record and converts it to an in-memory record. Finally, the order is written to the file with </FONT><FONT FACE="Courier New">WriteOrderToFile</FONT><FONT FACE="Times">.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the code that converts a record to an order (again, byte-swapping is necessary):</FONT></P><PRE><FONT SIZE="-1">Order *&#160;<A NAME="P966_40026"></A>RawRecordToOrder(void *p)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    PackedOrder *po = (PackedOrder *) p;</FONT>
+<FONT SIZE="-1">    unsigned short numItems = SyncHHToHostWord(po-&gt;numItems);</FONT>
+<FONT SIZE="-1">    Order *o = new Order(numItems);</FONT>
+<FONT SIZE="-1">    o-&gt;customerID = SyncHHToHostDWord(po-&gt;customerID);</FONT>
+<FONT SIZE="-1">    for (int i = 0; i &lt; o-&gt;numItems; i++) {</FONT>
+<FONT SIZE="-1">        o-&gt;items[i].productID = SyncHHToHostDWord(po-&gt;items[i].productID);</FONT>
+<FONT SIZE="-1">        o-&gt;items[i].quantity = SyncHHToHostDWord(po-&gt;items[i].quantity);</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    return o;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Last, here's the code that writes the order to the file:</FONT></P><PRE><FONT SIZE="-1">int WriteOrderToFile(FILE *fp, const Order *o)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    int result;</FONT>
+
+<FONT SIZE="-1">    if ((result = fprintf(fp, &quot;ORDER %ld\n&quot;, o-&gt;customerID)) &lt; 0)</FONT>
+<FONT SIZE="-1">        return result;</FONT>
+<FONT SIZE="-1">    for (int i = 0; i &lt; o-&gt;numItems; i++) {</FONT>
+<FONT SIZE="-1">        if ((result = fprintf(fp, &quot;%ld %ld\n&quot;, o-&gt;items[i].quantity, </FONT>
+<FONT SIZE="-1">            o-&gt;items[i].productID)) &lt; 0)</FONT>
+<FONT SIZE="-1">            return result;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    return 0;</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P992_40852"></A></PRE>
+
+<P><I><FONT FACE="Times">Uploading customers</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P995_40871"></A>Here's the routine that uploads the customers database:</FONT></P><PRE><FONT SIZE="-1">int &#160;<A NAME="P997_40931"></A>CopyCustomersFromHH(CSyncProperties &amp;sync)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    FILE *fp = NULL;</FONT>
+<FONT SIZE="-1">    FILE *archivefp = NULL;</FONT>
+<FONT SIZE="-1">    BYTE rHandle;</FONT>
+<FONT SIZE="-1">    int err;</FONT>
+<FONT SIZE="-1">    bool dbOpen = false;</FONT>
+<FONT SIZE="-1">    int i;</FONT>
+
+<FONT SIZE="-1">    if ((err = SyncOpenDB(customerDBName, 0, rHandle, </FONT>
+<FONT SIZE="-1">        eDbWrite | eDbRead | eDbShowSecret)) != 0) {</FONT>
+<FONT SIZE="-1">        LogAddEntry(&quot;SyncOpenDB failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">        goto exit;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    dbOpen = true;</FONT>
+
+<FONT SIZE="-1">    char    buffer[BIG_PATH *2];</FONT>
+<FONT SIZE="-1">    strcpy(buffer, sync.m_PathName);</FONT>
+<FONT SIZE="-1">    strcat(buffer, &quot;Customers.txt&quot;);</FONT>
+
+<FONT SIZE="-1">    if ((fp = fopen(buffer, &quot;w&quot;)) == NULL) {</FONT>
+<FONT SIZE="-1">        LogAddFormattedEntry(slWarning, false, &quot;fopen(%s) failed&quot;,</FONT>
+<FONT SIZE="-1">            buffer);</FONT>
+<FONT SIZE="-1">        goto exit;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    strcpy(buffer, sync.m_PathName);</FONT>
+<FONT SIZE="-1">    strcat(buffer, &quot;CustomersArchive.txt&quot;);</FONT>
+
+<FONT SIZE="-1">    if ((archivefp = fopen(buffer, &quot;a&quot;)) == NULL) {</FONT>
+<FONT SIZE="-1">        LogAddFormattedEntry(slWarning, false, &quot;fopen(%s) failed&quot;,</FONT>
+<FONT SIZE="-1">            buffer);</FONT>
+<FONT SIZE="-1">        goto exit;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    WORD recordCount;</FONT>
+<FONT SIZE="-1">    if ((err = SyncGetDBRecordCount(rHandle, recordCount)) !=0) {</FONT>
+<FONT SIZE="-1">        LogAddEntry(&quot;SyncGetDBRecordCount failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">        goto exit;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    CRawRecordInfo recordInfo;</FONT>
+<FONT SIZE="-1">    recordInfo.m_FileHandle = rHandle;</FONT>
+
+<FONT SIZE="-1">    for (i = 0; i &lt; recordCount; i++) {</FONT>
+<FONT SIZE="-1">        recordInfo.m_RecIndex = i;</FONT>
+<FONT SIZE="-1">        recordInfo.m_TotalBytes = (unsigned short) sizeof(gBigBuffer);</FONT>
+<FONT SIZE="-1">        recordInfo.m_pBytes = (unsigned char *) gBigBuffer;</FONT>
+<FONT SIZE="-1">        recordInfo.m_dwReserved = 0;</FONT>
+<FONT SIZE="-1">        </FONT>
+<FONT SIZE="-1">        if ((err = SyncReadRecordByIndex(recordInfo)) !=0) {</FONT>
+<FONT SIZE="-1">            LogAddEntry(&quot;SyncReadRecordByIndex failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">            goto exit;</FONT>
+<FONT SIZE="-1">        }   </FONT>
+
+<FONT SIZE="-1">        FILE *fileToWriteTo;</FONT>
+<FONT SIZE="-1">        if (recordInfo.m_Attribs &amp; eRecAttrArchived)</FONT>
+<FONT SIZE="-1">            fileToWriteTo = archivefp;</FONT>
+<FONT SIZE="-1">        else if (recordInfo.m_Attribs &amp; eRecAttrDeleted)</FONT>
+<FONT SIZE="-1">            continue;   // skip deleted records</FONT>
+<FONT SIZE="-1">        else</FONT>
+<FONT SIZE="-1">            fileToWriteTo = fp;</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">        Customer *c = RawRecordToCustomer(recordInfo.m_pBytes);</FONT>
+<FONT SIZE="-1">        if ((err = WriteCustomerToFile(fileToWriteTo, c)) != 0) {</FONT>
+<FONT SIZE="-1">            delete c;</FONT>
+<FONT SIZE="-1">            LogAddEntry(&quot;WriteCustomerToFile failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">            goto exit;</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">        delete c;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    if ((err = SyncPurgeDeletedRecs(rHandle)) != 0)</FONT>
+<FONT SIZE="-1">        LogAddEntry(&quot;SyncPurgeDeletedRecs failed&quot;, slWarning, false);</FONT>
+
+<FONT SIZE="-1">exit:</FONT>
+<FONT SIZE="-1">    if (fp)</FONT>
+<FONT SIZE="-1">        fclose(fp);</FONT>
+<FONT SIZE="-1">    </FONT>
+<FONT SIZE="-1">    if (archivefp)</FONT>
+<FONT SIZE="-1">        fclose(archivefp);</FONT>
+
+<FONT SIZE="-1">    if (dbOpen)</FONT>
+<FONT SIZE="-1">        if ((err = SyncCloseDB(rHandle)) != 0)</FONT>
+<FONT SIZE="-1">            LogAddEntry(&quot;SyncDBClose failed&quot;, slWarning, false);</FONT>
+<FONT SIZE="-1">    return err;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Uploading customers is slightly more complicated than uploading orders, because the handheld supports deleting and archiving customers (see &quot;Editing Customers&quot; on page&#160;168). </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">After reading each record with </FONT><FONT FACE="Courier New">SyncReadRecordByIndex</FONT><FONT FACE="Times">, we examine the record attributes (</FONT><FONT FACE="Courier New">m_Attribs</FONT><FONT FACE="Times">). If the archive bit is set, we write the record to a different file (appending to </FONT><FONT FACE="Courier New">CustomersArchive.txt</FONT><FONT FACE="Times">). If the delete bit is set, we skip this record.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Once we're done iterating through the records, we remove the deleted and archived records from the handheld (using </FONT><FONT FACE="Courier New">SyncPurgeDeletedRecs</FONT><FONT FACE="Times">). In order to change the database in this way, we had to open the database with write permission (</FONT><FONT FACE="Courier New">eDbWrite</FONT><FONT FACE="Times">).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">With this code in place, we have a conduit that can upload and download data as needed. Now we are ready to tackle full <A NAME="P1090_44120"></A>two-way <A NAME="P1090_44128"></A>data <A NAME="P1090_44133"></A>syncing.</FONT><A NAME="P1090_44141"></A></P>
+<HR ALIGN=LEFT SIZE=2 WIDTH=100% NOSHADE>
+<!-- TRANSIT - TEXTBAR -->
+
+<ADDRESS><FONT SIZE=-1>Palm Programming: The Developer's Guide
+<BR>Copyright &#169; 1999, O'Rielly and Associates, Inc.
+<BR>Published on the web by permission of O'Rielly and Associates, Inc. Contents modified for web display.</FONT></ADDRESS><P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch11.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch13.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P>
+</BODY>
+</HTML>

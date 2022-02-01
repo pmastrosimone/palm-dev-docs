@@ -1,0 +1,149 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: i386-Memory</TITLE>
+
+<META NAME="description" CONTENT="Using as: i386-Memory">
+<META NAME="keywords" CONTENT="Using as: i386-Memory">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC272"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_262.html#SEC271"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_264.html#SEC273"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_264.html#SEC273"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.12.6 Memory References </H3>
+<!--docid::SEC272::-->
+<P>
+
+<A NAME="IDX757"></A>
+<A NAME="IDX758"></A>
+<A NAME="IDX759"></A>
+<A NAME="IDX760"></A>
+An Intel syntax indirect memory reference of the form
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre><VAR>section</VAR>:[<VAR>base</VAR> + <VAR>index</VAR>*<VAR>scale</VAR> + <VAR>disp</VAR>]
+</FONT></pre></td></tr></table></P><P>
+
+is translated into the AT&#38;T syntax
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre><VAR>section</VAR>:<VAR>disp</VAR>(<VAR>base</VAR>, <VAR>index</VAR>, <VAR>scale</VAR>)
+</FONT></pre></td></tr></table></P><P>
+
+where <VAR>base</VAR> and <VAR>index</VAR> are the optional 32-bit base and
+index registers, <VAR>disp</VAR> is the optional displacement, and
+<VAR>scale</VAR>, taking the values 1, 2, 4, and 8, multiplies <VAR>index</VAR>
+to calculate the address of the operand.  If no <VAR>scale</VAR> is
+specified, <VAR>scale</VAR> is taken to be 1.  <VAR>section</VAR> specifies the
+optional section register for the memory operand, and may override the
+default section register (see a 80386 manual for section register
+defaults). Note that section overrides in AT&#38;T syntax <EM>must</EM>
+be preceded by a <SAMP>`%'</SAMP>.  If you specify a section override which
+coincides with the default section register, <CODE>as</CODE> does <EM>not</EM>
+output any section register override prefixes to assemble the given
+instruction.  Thus, section overrides can be specified to emphasize which
+section register is used for a given memory operand.
+</P><P>
+
+Here are some examples of Intel and AT&#38;T style memory references:
+</P><P>
+
+<DL COMPACT>
+<DT>AT&#38;T: <SAMP>`-4(%ebp)'</SAMP>, Intel:  <SAMP>`[ebp - 4]'</SAMP>
+<DD><VAR>base</VAR> is <SAMP>`%ebp'</SAMP>; <VAR>disp</VAR> is <SAMP>`-4'</SAMP>. <VAR>section</VAR> is
+missing, and the default section is used (<SAMP>`%ss'</SAMP> for addressing with
+<SAMP>`%ebp'</SAMP> as the base register).  <VAR>index</VAR>, <VAR>scale</VAR> are both missing.
+<P>
+
+<DT>AT&#38;T: <SAMP>`foo(,%eax,4)'</SAMP>, Intel: <SAMP>`[foo + eax*4]'</SAMP>
+<DD><VAR>index</VAR> is <SAMP>`%eax'</SAMP> (scaled by a <VAR>scale</VAR> 4); <VAR>disp</VAR> is
+<SAMP>`foo'</SAMP>.  All other fields are missing.  The section register here
+defaults to <SAMP>`%ds'</SAMP>.
+<P>
+
+<DT>AT&#38;T: <SAMP>`foo(,1)'</SAMP>; Intel <SAMP>`[foo]'</SAMP>
+<DD>This uses the value pointed to by <SAMP>`foo'</SAMP> as a memory operand.
+Note that <VAR>base</VAR> and <VAR>index</VAR> are both missing, but there is only
+<EM>one</EM> <SAMP>`,'</SAMP>.  This is a syntactic exception.
+<P>
+
+<DT>AT&#38;T: <SAMP>`%gs:foo'</SAMP>; Intel <SAMP>`gs:foo'</SAMP>
+<DD>This selects the contents of the variable <SAMP>`foo'</SAMP> with section
+register <VAR>section</VAR> being <SAMP>`%gs'</SAMP>.
+</DL>
+<P>
+
+Absolute (as opposed to PC relative) call and jump operands must be
+prefixed with <SAMP>`*'</SAMP>.  If no <SAMP>`*'</SAMP> is specified, <CODE>as</CODE>
+always chooses PC relative addressing for jump/call labels.
+</P><P>
+
+Any instruction that has a memory operand, but no register operand,
+<EM>must</EM> specify its size (byte, word, long, or quadruple) with an
+instruction mnemonic suffix (<SAMP>`b'</SAMP>, <SAMP>`w'</SAMP>, <SAMP>`l'</SAMP> or <SAMP>`q'</SAMP>,
+respectively).
+</P><P>
+
+The x86-64 architecture adds an RIP (instruction pointer relative)
+addressing.  This addressing mode is specified by using <SAMP>`rip'</SAMP> as a
+base register.  Only constant offsets are valid. For example:
+</P><P>
+
+<DL COMPACT>
+<DT>AT&#38;T: <SAMP>`1234(%rip)'</SAMP>, Intel: <SAMP>`[rip + 1234]'</SAMP>
+<DD>Points to the address 1234 bytes past the end of the current
+instruction.
+<P>
+
+<DT>AT&#38;T: <SAMP>`symbol(%rip)'</SAMP>, Intel: <SAMP>`[rip + symbol]'</SAMP>
+<DD>Points to the <CODE>symbol</CODE> in RIP relative way, this is shorter than
+the default absolute addressing.
+</DL>
+<P>
+
+Other addressing modes remain unchanged in x86-64 architecture, except
+registers used are 64-bit instead of 32-bit.
+</P><P>
+
+<A NAME="i386-Jumps"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_262.html#SEC271"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_264.html#SEC273"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_264.html#SEC273"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

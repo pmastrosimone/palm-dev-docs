@@ -1,0 +1,1309 @@
+<HTML>
+<HEAD>
+<TITLE>Palm OS:  &#160;11.&#160; Getting Started with Conduits </TITLE>
+<META NAME="GENERATOR" CONTENT="Transit Central Station 3.2 by InfoAccess Inc. www.infoaccess.com">
+</HEAD>
+<BODY BACKGROUND="images/grnitbkg.gif"><A NAME="TopOfPage"> </A>
+<A HREF="http://www.oreilly.com/catalog/palmprog/"><IMG SRC="images/palm_comp_ani_ad.gif" ALT="Order the book from O'Reilly" BORDER=0 width="468" height="60"></A>
+<P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="part3.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch12.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P><P><I>In this chapter:</I></P>
+
+
+  <UL COMPACT><LI><A HREF="#P33_1291" NAME="LOC_P33_1291">Overview of Conduits</A></LI>
+
+  <LI><A HREF="#P111_7021" NAME="LOC_P111_7021">Registering and Unregistering a Conduit</A></LI>
+
+  <LI><A HREF="#P389_22477" NAME="LOC_P389_22477">Conduit Entry Points</A></LI>
+
+  <LI><A HREF="#P454_26280" NAME="LOC_P454_26280">The HotSync Log</A></LI>
+
+  <LI><A HREF="#P494_27971" NAME="LOC_P494_27971">When the HotSync Button Gets Pressed</A></LI>
+
+  <LI><A HREF="#P547_31942" NAME="LOC_P547_31942">Using the Backup Conduit</A></LI>
+
+  <LI><A HREF="#P598_35019" NAME="LOC_P598_35019">Creating a Minimal Sales Conduit</A></LI></UL>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=156>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+<H1 ALIGN=LEFT><I><FONT SIZE=+3>&#160;11.&#160; Getting Started <BR>
+with Conduits</FONT></I></H1>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">It is time to discuss <A NAME="P26_292"></A>conduits-what they do, how to create them, what's involved in getting a minimal conduit working. It would also help if you understood (codewise) what happens when a Palm device is plopped into a cradle and the user pushes the HotSync button. </FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">This is useful if you want a detailed understanding of what happens when your conduit code is called, and how it interacts with the Sync Manager to perform its tasks.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We take a brief detour to discuss the types of applications that can profitably use the Backup conduit (a conduit that simply archives application data on the desktop). We also show you the code changes required to do this. Last, we create an actual conduit. As you might imagine, we build a conduit for the Sales application using Visual C++. This conduit doesn't do much; it just writes a message to the log file. However, it's still quite useful. You can see very easily what is involved in creating a minimal conduit and what it takes to get to the point where syncing is ready to begin.</FONT></P>
+
+<P><A NAME="P33_1291"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Overview of Conduits</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">A conduit can be simple or complex, depending on the job it has to do. Regardless of its complexity, you create it in the same way-a conduit is a desktop plug-in made in a desktop development environment. This isn't code that runs on the Palm handheld, but an executable library that runs during the HotSync synchronization.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">What Does a Conduit Do?</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">A conduit is responsible for the application's data during a synchronization between the handheld and a desktop computer. The conduit needs to:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Open and close databases on the Palm device.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Determine whether data should be uploaded only, downloaded only, or some combination of both.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Appropriately add, delete, and modify records on the handheld and on the desktop.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Be able to work within a multiuser environment where more that one Palm handheld may be syncing to the same network or desktop computer (though not necessarily at the same time).</FONT></LI>
+
+  <LI><FONT FACE="Times">  Convert the data in the application's database records to appropriate data structures on the desktop computer.</FONT></LI>
+
+  <LI><FONT FACE="Times">  Optionally, though usually recommended, compare records so that only modified records are synced.</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Your conduit is responsible for saving the data on the desktop in whatever way makes sense. If your conduit syncs to a file for a desktop application, it needs to read and write data in that application's file format. Your conduit may read and write records from a database on the desktop or some database on the network. As a result, each conduit handles storing and retrieving desktop data differently.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are three broad categories of conduits:</FONT></P>
+
+<P><I><FONT FACE="Times">Upload- or download-only</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P53_2889"></A>Conduits that just copy a database to or from the handheld.</FONT></P>
+
+<P><I><FONT FACE="Times">Mirror-image record synchronization</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P55_2983"></A>Conduits that do a two-way synchronization. The conduits for Address Book, Memo Pad, and To Do are examples.</FONT></P>
+
+<P><I><FONT FACE="Times">Transaction processing</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P57_3113"></A>Conduits that do some sort of processing of records but aren't doing a mirror-image synchronization. A good example might be an order entry application on the handheld that sends transactions out the conduit to be processed on the desktop.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Conduit Development on Windows</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P61_3382"></A>At the current time, conduit development is only possible on Windows 95/98/NT. Releases of the <A NAME="P61_3477"></A>Conduit Development Kit (CDK) in the very near future will see this change, but for now we are discussing only Windows.</FONT></P>
+
+<P><I><FONT FACE="Times">CDK 3.0</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">At the time this book was written, the final version of CDK 3.0 had not yet been released. We, of course, did the logical thing and used the beta version. As a result, our information is based on that and on the planned content of the final version.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The final version should include the following important features:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  A wizard for creating conduits</FONT></LI>
+
+  <LI><FONT FACE="Times">  The ability to use languages other than C++ (C rather than C++ or Visual Basic, for example)</FONT></LI>
+
+  <LI><FONT FACE="Times">  The ability to use compilers other than Visual C++ (Borland C++, for example)</FONT></LI></UL>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Conduits developed using the older 2.1 version of the CDK work with both the PalmPilot Desktop 2.0 (shipped with the PalmPilot and PalmPilot Pro) and the Pilot Desktop 1.1 (shipped with various versions of the Pilot 1000 and 5000). 2.1-based conduits are also upward compatible with Palm Desktop 3.0 (shipped with the Palm III).</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Certain new features of Palm Desktop 3.0 are only supported for conduits created with CDK 3.0. The major new feature is <A NAME="P74_4571"></A>File Linking, which provides a way to copy information from an external file to a separate category. An example of this would be as part of syncing to a user's personal address book on the desktop, to copy entries from a company-wide address book to a special category on the handheld. There are some other slight API changes in 3.0.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Conduits created with CDK 3.0 are generally backward-compatible with older versions of the desktop software, although the new API calls can't be called in earlier versions (your application can make a call to find out what version of the APIs is available).</FONT></P>
+
+<P><I><FONT FACE="Times">Using Visual C++</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P80_5177"></A>The beta version of CDK 3.0 requires Visual C++ 5.0 or later running on Windows 95/NT or later. We use Visual C++ 5.0 to create our Sales conduit.</FONT></P>
+
+<P><I><FONT FACE="Times">Using Java</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P84_5333"></A>Using the CDK Java Edition you can also create a conduit using everyone's favorite caffeinated development language.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">This CDK supports development using Visual J++ or Symantec Visual Cafe for Java. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We don't cover creating Java conduits in this book.</FONT><A NAME="P88_5581"></A></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Although other Java development environments aren't officially supported, it seems to us that they should work. Remember, however, this is advice coming from people who haven't actually used these products.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Conduit Development on Macintosh</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P95_5819"></A>As the time of this book's writing, the CDK C/C++ version for Macintosh was still in its infancy (read: an almost unusable alpha version). When Palm finishes the Mac OS HotSync Manager and this development kit, you will be able to create conduits on Macintosh using CodeWarrior for Macintosh, developing in C/C++. Hopefully, by the time this book is in your hands, it will be out. See <I><A HREF="http://www.palmos.com/dev">http://www.palm.com/devzone</A> </I>for the status of this project.</FONT><A NAME="P95_6263"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Required Elements in a Minimal Conduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">In a little while, we will show you how to create a minimal conduit. That conduit will contain a few essential elements that we want to tell you about now: </FONT></P>
+
+<P><I><FONT FACE="Times">A mechanism for installation and uninstallation</FONT></I></P>
+
+<P><FONT FACE="Times">Different versions of the CDK require different mechanisms for registering and unregistering your application.</FONT></P>
+
+<P><I><FONT FACE="Times">Three C entry points</FONT></I></P>
+
+<P><FONT FACE="Times">One entry point registers the conduit's name, another its version number, and the last serves as an entryway into the conduit.</FONT></P>
+
+<P><I><FONT FACE="Times">Log messages</FONT></I></P>
+
+<P><FONT FACE="Times">You need to provide log messages to the user. Among other things, you must tell the user whether the sync was successful or not.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We first look at installation and uninstallation issues and then discuss the entry points. Last, we discuss log messages.</FONT></P>
+
+<P><A NAME="P111_7021"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Registering and Unregistering a Conduit</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P113_7060"></A>Before the conduit can be used, it needs to be registered. This is how the HotSync Manager application knows that it exists and knows which databases the conduit is responsible for syncing. Depending on which version of the CDK you have, there are differences in what you do to register. We talk about the old, difficult way and then the new improved methods.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">The Old, Ugly Way</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">In version 2.1 (and earlier versions) of the CDK, this registration was done by adding entries to the Windows Registry. Unregistration required removing entries from the Registry (and possibly renaming existing entries). Further, this process for adding entries was fragile-one developer modifying the registry incorrectly could cause some or all of the other conduits to fail.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">These troubles only increased during the acquisition frenzy, when the keys used for the Windows Registry by various versions of HotSync Manager and the Desktop Manager changed from Palm Computing to U.S. Robotics.<A HREF="#P121_8026">*</A></FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Conduits then needed to be aware of various registry keys and needed to perform a careful set of steps when registering and an even more careful set when unregistering.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The time was ripe for a better approach to registration.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">The New, Sleek Way</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The <A NAME="P129_8354"></A>Conduit Manager, provided as part of Palm Desktop 3.0 and as part of the 3.0 version of the CDK, contains an API for registration and unregistration. It knows about the various versions of HotSync, the different keys used in the Windows Registry, and the careful steps needed for registering and unregistering. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The Conduit Manager functionality is provided in a DLL that ships with the new version of the Palm Desktop. As we discuss later in <A HREF="#P271_15858">&quot;Finding the Correct Conduit Manager DLL</A>,&quot; you also need to include the DLL as part of your installer. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The 3.0 version of HotSync Manager continues to use the Windows Registry for the sake of older conduits that don't use the Conduit Manager. You should expect, however, that future versions of HotSync may not use the Windows Registry at all.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">As long as you use the Conduit Manager, you'll be shielded from any such changes to the underlying registry mechanism.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">CDK 3.0-Information Needed to Register </FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There are different types of entries that you need to have in order to register a conduit. Some are required; others are optional. </FONT></P>
+
+<P><I><FONT FACE="Times">Required conduit entries</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The following entries are required to register a conduit:</FONT></P>
+
+<P><I><FONT FACE="Times">Conduit</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P148_9515"></A>The name of the conduit DLL. If this entry doesn't include a directory, the name must be found in the HotSync directory or current PATH; otherwise, it should include the full pathname to the DLL. (Generally, you keep your DLLs in the HotSync directory.) If your conduit is written using Java, this entry should be &quot;JSync.DLL&quot;, a C++ shim that translates between C++ and Java.</FONT></P>
+
+<P><I><FONT FACE="Times">Creator</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P150_9897"></A>The four-character creator ID of the database(s) your conduit is responsible for. Your conduit will be called during a HotSync only if an application with this creator ID exists on the handheld. </FONT></P>
+
+<P><I><FONT FACE="Times">Directory</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P152_10101"></A>In the HotSync directory, each user has a subdirectory. Within each user's directory, each conduit has its own directory where it can store files. This string specifies the conduit's directory name.</FONT></P>
+
+<P><I><FONT FACE="Times">Optional entries</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The optional entries are more numerous. They include the following:</FONT></P>
+
+<P><I><FONT FACE="Times">File</FONT></I></P>
+
+<P><FONT FACE="Times">A string specifying a file (if the string doesn't include a directory, it is assumed to be within the conduit's directory). This is intended to be the local file that the conduit will sync the handheld against. However, your conduit is not restricted to using only this file (some conduits may need to read/write multiple files on the desktop).</FONT></P>
+
+<P><I><FONT FACE="Times">Information</FONT></I></P>
+
+<P><FONT FACE="Times">A string that provides information about your conduit. This string can be used to resolve conflicts. If more than one conduit wants to handle the same creator ID, an installation tool could display this string and ask the user which conduit should be used for syncing.</FONT></P>
+
+<P><I><FONT FACE="Times">Name</FONT></I></P>
+
+<P><FONT FACE="Times">A string that is the user-visible name of the conduit.</FONT></P>
+
+<P><I><FONT FACE="Times">Priority</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P165_11075"></A>A value between 0 and 4, this controls the relative order in which conduits run. Conduits registered with a lower priority run before conduits registered with higher priorities. If you don't set this value, the HotSync Manger uses a default value of 2 for your application.</FONT></P>
+
+<P><I><FONT FACE="Times">Remote DB</FONT></I></P>
+
+<P><FONT FACE="Times">A string specifying a database name on the handheld. This string is provided for you to use in your conduit when it runs; your conduit isn't required to use it, however.</FONT></P>
+
+<P><I><FONT FACE="Times">Username</FONT></I></P>
+
+<P><FONT FACE="Times">The name of the user for which this conduit is installed. Note that this entry is not currently used.</FONT></P>
+
+<P><I><FONT FACE="Times">Java-only entries</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Finally, there are entries relevant only if the conduit is written in Java:</FONT></P>
+
+<P><I><FONT FACE="Times">Class name</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P176_11737"></A>The name of the Java conduit class (including package).</FONT></P>
+
+<P><I><FONT FACE="Times">Class path</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P178_11802"></A>The directory that contains all the classes used by the Java conduit.</FONT></P>
+
+<P><I><FONT FACE="Times">VM</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P180_11873"></A>Specify &quot;Sun&quot; for the Sun Java Virtual Machine or &quot;MS&quot; for the Microsoft Java Virtual Machine. This is provided since some Java code is, unfortunately, sensitive to the virtual machine on which it runs.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Registering and Unregistering Manually <BR>
+Using CondCfg</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Along with the Conduit Manager DLL is an application, <I><A NAME="P184_12181"></A>CondCfg</I>, that uses the Conduit Manager (see <A HREF="#P187_12393">Figure 11-1</A>). This application displays all the registered conduits and allows you to register conduits, change registered information, and delete conduits.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 11- 1</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P187_12393"></A>CondCfg-a developer utility for registering and unregistering conduits</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch11-plmp.1101-1.gif" WIDTH=503 HEIGHT=255 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Your end users won't use or even see </FONT><FONT FACE="Courier New">CondCfg</FONT><FONT FACE="Times">, however, as you automate the conduit registration process as part of installing and uninstalling it on the desktop.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Automatically Installing and Uninstalling <BR>
+a Conduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P200_12675"></A>A small command-line program (<I>ConduitInstall.exe</I>) is going to install and register our conduit. We use a separate one (<I>ConduitDeinstall.exe</I>) to uninstall.</FONT></P>
+
+<P><I><FONT FACE="Times">Installing the conduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P204_12851"></A>As <I>ConduitInstall.exe</I> executes, it makes calls to the Conduit Manager API to install and register our conduit. It also needs to make calls to the three required entry points of the conduit (</FONT><FONT FACE="Courier New">Conduit</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">Creator</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">Directory</FONT><FONT FACE="Times">) and to any of the optional entry points we want to set.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">We use </FONT><FONT FACE="Times" SIZE="-1"><I>ConduitInstall.exe</I>, a simple command-line program, to avoid clouding the relevant issues with a lot of technical details concerning Windows application programming. We couldn't possibly cover all the available methods. You could fold your installation into a program that handles other installations, as well. You could be using the popular installer utility <I>InstallShield</I> (the CDK contains a sample that shows how to use this). In any event, we keep things simple so that you can understand exactly what is necessary to install and register a conduit.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The first call you make is one that registers the </FONT><FONT FACE="Courier New">Creator</FONT><FONT FACE="Times"> entry point of the conduit:</FONT></P><PRE><FONT SIZE="-1">int &#160;<A NAME="P210_13774"></A>CmInstallCreator(const char *creatorString, int conduitType);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">If that succeeds, you call a different </FONT><FONT FACE="Courier New">CmSetCreator</FONT><FONT FACE="Times"> routine for all the rest of your entry points. Most of the </FONT><FONT FACE="Courier New">CmSetCreator</FONT><FONT FACE="Times"> routines match the entry point name and are easy to figure out (the two exceptions are </FONT><FONT FACE="Courier New">CmSetCreatorName</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">CmSetCreatorTitle</FONT><FONT FACE="Times">). Here are the routines we use and the entry points they register:</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P213_14152"></A>CmSetCreatorName</FONT></I></P>
+
+<P><FONT FACE="Times">Sets the required </FONT><FONT FACE="Courier New">Conduit</FONT><FONT FACE="Times"> entry point</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P215_14206"></A>CmSetCreatorDirectory</FONT></I></P>
+
+<P><FONT FACE="Times">Sets the required </FONT><FONT FACE="Courier New">Directory</FONT><FONT FACE="Times"> entry point </FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P217_14268"></A>CmSetCreatorFile</FONT></I></P>
+
+<P><FONT FACE="Times">Sets the </FONT><FONT FACE="Courier New">file</FONT><FONT FACE="Times"> entry point</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P219_14310"></A>CmSetCreatorPriority</FONT></I></P>
+
+<P><FONT FACE="Times">Sets the </FONT><FONT FACE="Courier New">priority</FONT><FONT FACE="Times"> entry point</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P221_14360"></A>CmSetCreatorTitle</FONT></I></P>
+
+<P><FONT FACE="Times">Sets the </FONT><FONT FACE="Courier New">name</FONT><FONT FACE="Times"> entry point</FONT></P>
+
+<P><I><FONT FACE="Times">ConduitInstall.exe</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's our command-line program, <I>ConduitInstall.exe</I>, that registers a conduit:</FONT></P><PRE><FONT SIZE="-1">#include &lt;Windows.h&gt;</FONT>
+<FONT SIZE="-1">#include &quot;CondMgre.h&quot;</FONT>
+<FONT SIZE="-1">#include &lt;stdio.h&gt;</FONT>
+
+<FONT SIZE="-1">int main(int argc, char **argv)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   const char *kCreator = &quot;Sles&quot;;</FONT>
+
+<FONT SIZE="-1">   err = CmInstallCreator(kCreator, CONDUIT_APPLICATION);</FONT>
+<FONT SIZE="-1">   if (err == 0)</FONT>
+<FONT SIZE="-1">      err = CmSetCreatorName(kCreator, </FONT>
+<FONT SIZE="-1">           &quot;C:\\SalesCond\\Debug\\SalesCond.DLL&quot;);</FONT>
+<FONT SIZE="-1">   if (err == 0)</FONT>
+<FONT SIZE="-1">      err = CmSetCreatorDirectory(kCreator, &quot;Sales&quot;);</FONT>
+<FONT SIZE="-1">   if (err == 0)</FONT>
+<FONT SIZE="-1">      err = CmSetCreatorFile(kCreator, &quot;Sales&quot;);</FONT>
+<FONT SIZE="-1">   if (err == 0)</FONT>
+<FONT SIZE="-1">      err = CmSetCreatorPriority(kCreator, 2);</FONT>
+<FONT SIZE="-1">   if (err == 0)</FONT>
+<FONT SIZE="-1">      printf(&quot;Registration succeeded\n&quot;);</FONT>
+<FONT SIZE="-1">        else</FONT>
+<FONT SIZE="-1">      printf(&quot;Registration failed %d\n&quot;, err);</FONT>
+<FONT SIZE="-1">   return err;</FONT>
+<FONT SIZE="-1">}</FONT><A NAME="P251_15109"></A></PRE>
+
+<P><I><FONT FACE="Times">Automatically uninstalling a conduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P254_15145"></A>Uninstalling is just as simple. Our application, <I>ConduitDeinstall.exe</I>, uses </FONT><FONT FACE="Courier New">CmRemoveConduitByCreatorID</FONT><FONT FACE="Times">, which removes all the conduits registered with a particular creator ID. It returns with the number of conduits removed (or a negative number in the case of an error). The application prints the number of conduits it unregistered.</FONT></P>
+
+<P><I><FONT FACE="Times">ConduitDeinstall.exe</FONT></I></P><PRE><FONT SIZE="-1">#include &lt;Windows.h&gt;</FONT>
+<FONT SIZE="-1">#include &quot;CondMgre.h&quot;</FONT>
+
+<FONT SIZE="-1">int main(int argc, char **argv)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   const char *kCreator = &quot;Sles&quot;;</FONT>
+<FONT SIZE="-1">   int numConduitsRemoved = CmRemoveConduitByCreatorID(kCreator);</FONT>
+<FONT SIZE="-1">   if (numConduitsRemoved &gt;= 0)</FONT>
+<FONT SIZE="-1">      printf(&quot;Unregistration succeeded for %d conduits\n&quot;,</FONT>
+<FONT SIZE="-1">         numConduitsRemoved);</FONT>
+<FONT SIZE="-1">   else</FONT>
+<FONT SIZE="-1">      printf(&quot;Unregistration failed %d\n&quot;, numConduitsRemoved);</FONT><A NAME="P269_15857"></A>
+<FONT SIZE="-1">}</FONT><A NAME="P270_15858"></A></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1"><A NAME="P271_15858"></A>Finding the Correct Conduit Manager DLL</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The <A NAME="P273_15901"></A>Conduit Manager calls that our installation program relies on are in a DLL, specifically the <I>CondMgr.DLL</I>. This is quite useful, as we are not required to recompile if the underlying registration architecture changes. A new DLL could register in a different way, and our code won't need to know about it.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">There is a problem, however, and it doesn't have a very simple workaround. You might wonder how it is that your installation code could use a new version of the conduit manager DLL. You might assume that Palm Computing would help you out here and ensure that <I>CondMgr.DLL</I> would always be found in the same place. For example, if <I>CondMgr.DLL</I> were installed in the system directory, it would be part of the path that the system searched to load DLLs and would be automatically found and loaded when your installation program ran. Well, things are not that simple.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><I>CondMgr.DLL</I> is not (currently) installed in the system directory when the user installs the Palm Desktop software. Instead, it is put in the same directory as the Palm Desktop software. You might say that this is no big deal; you just need to know where the Palm Desktop software is. The folks at Palm Computing are happy to provide that information-they tell you the path to that directory in the Windows Registry.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here is the problem. You may remember how we get into the Registry. Yep-using the Conduit Manager APIs that are in the Conduit Manager DLL. It's a chicken-and-egg problem. Fortunately, we have a solution.</FONT></P>
+
+<P><I><FONT FACE="Times">The solution to finding CondMgr.DLL</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the solution:</FONT></P>
+
+<P><FONT FACE="Times"> 1. Check to see if the <I>CondMgr.DLL</I> is in the system path. If so, use it (it was probably installed by a later version of the Palm Desktop software).</FONT></P>
+
+<P><FONT FACE="Times"> 2. If not, use a copy of <I>CondMgr.DLL</I> that you ship with your installation program to find the directory containing the Palm Desktop software (</FONT><FONT FACE="Courier New">CmGetCorePath</FONT><FONT FACE="Times"> returns the directory). Check in that directory for <I>CondMgr.DLL</I>. If it's there, use it (it may be newer than the version you are shipping in your installation program).</FONT></P>
+
+<P><FONT FACE="Times"> 3. If there's no <I>CondMgr.DLL</I> in the system path, and no <I>CondMgr.DLL</I> in the Palm Desktop software, revert to using the <I>CondMgr.DLL</I> that you ship along with your installation program (Palm Desktop software prior to version 3.0 didn't have <I>CondMgr.DLL</I>).</FONT></P>
+
+<P><I><FONT FACE="Times">Implementing the solution</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We use a separate program that checks for which <I>CondMgr.DLL</I> to use. Once this program finds that slippery little DLL, it changes the current directory to that location. This location is one of the following:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  A subdirectory containing a version of <I>CondMgr.DLL</I> that we ship.</FONT></LI>
+
+  <LI><FONT FACE="Times">  The Palm Desktop directory.</FONT></LI>
+
+  <LI><FONT FACE="Times">  If we're using <I>CondMgr.DLL</I> from the system path, we won't change the directory. </FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Then this program launches our real installation program, which automatically loads the <I>CondMgr.DLL</I> from the current directory.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">An alternative approach would have been to have one program and call </FONT><FONT FACE="Courier New">LoadLibrary</FONT><FONT FACE="Times"> to explicitly load the <I>CondMgr.DLL</I> we wanted. We didn't go this route because it's not as simple to call routines in an explicitly loaded DLL as it is in an implicitly loaded DLL.</FONT></P>
+
+<P><I><FONT FACE="Times">The elements in our installation</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Our installation directory contains:</FONT></P>
+
+<P><I><FONT FACE="Times">Install.exe</FONT></I></P>
+
+<P><FONT FACE="Times">This is the program that figures out which <I>CondMgr.DLL</I> to use. It then changes the current directory and runs <I>ConduitInstall.exe</I>.</FONT></P>
+
+<P><I><FONT FACE="Times">ConduitInstall.exe</FONT></I></P>
+
+<P><FONT FACE="Times">This application just makes Conduit Manager API calls and is blissfully unaware of the trouble of finding the correct <I>CondMgr.DLL</I>. It implicitly loads <I>CondMgr.DLL</I> (that is, the system loads it when the application starts; if the system can't find <I>CondMgr.DLL</I>, it produces an error-<I>Install.exe</I> sets things up to guarantee the system can find <I>CondMgr.DLL</I>).</FONT></P>
+
+<P><I><FONT FACE="Times">CondMgr</FONT></I></P>
+
+<P><FONT FACE="Times">A subdirectory containing one file:</FONT></P>
+
+  <UL><P><I><FONT FACE="Times">CondMgr.DLL</FONT></I></P>
+
+  <P><FONT FACE="Times">The Palm DLL that we ship with our installation. We use it to find the Palm Desktop directory. In the case that <I>Install.exe</I> can't find an installed <I>CondMgr.DLL</I>, we also use this DLL for our registration.</FONT></P>
+
+</UL><P ALIGN=LEFT><FONT FACE="Times">Here's the entire code for <I><A NAME="P312_19819"></A>Install.exe</I> (</FONT><FONT FACE="Courier New">LoadLibrary</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">GetProcAddress</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">FreeLibrary</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">_getcwd</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">_chdir</FONT><FONT FACE="Times">, and </FONT><FONT FACE="Courier New">system</FONT><FONT FACE="Times"> are all calls provided by the Windows OS):</FONT></P><PRE><FONT SIZE="-1">#include &lt;Windows.h&gt;</FONT>
+<FONT SIZE="-1">#include &lt;Condmgre.h&gt;</FONT>
+<FONT SIZE="-1">#include &lt;stdio.h&gt;</FONT>
+<FONT SIZE="-1">#include &lt;direct.h&gt;</FONT>
+<FONT SIZE="-1">#include &lt;process.h&gt;</FONT>
+
+<FONT SIZE="-1">typedef int (WINAPI *CmGetCorePathPtr)(TCHAR *pPath, int *piSize);</FONT>
+
+<FONT SIZE="-1">int main(int argc, char **argv)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    int result = 0;</FONT>
+<FONT SIZE="-1">    char    conduitExecutable[_MAX_PATH];</FONT>
+
+<FONT SIZE="-1">   /* Get the current working directory: */</FONT>
+<FONT SIZE="-1">    if( _getcwd( conduitExecutable, _MAX_PATH ) == NULL ) {</FONT>
+<FONT SIZE="-1">        fprintf(stderr, &quot;_getcwd error&quot; );</FONT>
+<FONT SIZE="-1">        result = 3;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    else</FONT>
+<FONT SIZE="-1">        strcat(conduitExecutable, &quot;\\ConduitInstall.exe&quot;);</FONT>
+
+<FONT SIZE="-1">   if (LoadLibrary(&quot;Condmgr.dll&quot;))</FONT>
+<FONT SIZE="-1">        printf(&quot;loaded library using normal path\n&quot;);</FONT>
+<FONT SIZE="-1">    else {</FONT>
+<FONT SIZE="-1">        printf(&quot;didn't find library in normal path\n&quot;);</FONT>
+
+<FONT SIZE="-1">        HINSTANCE lib;</FONT>
+<FONT SIZE="-1">        if ((lib = LoadLibrary(&quot;.\\CondMgr\\CondMgr.dll&quot;)) != NULL) {</FONT>
+<FONT SIZE="-1">            printf(&quot;loaded my version of condmgr\n&quot;);</FONT>
+<FONT SIZE="-1">            char    buffer[512];</FONT>
+<FONT SIZE="-1">            int     size = sizeof(buffer);</FONT>
+<FONT SIZE="-1">            CmGetCorePathPtr corePathFunc;</FONT>
+
+<FONT SIZE="-1">            corePathFunc = (CmGetCorePathPtr) GetProcAddress(</FONT>
+<FONT SIZE="-1">                lib, &quot;CmGetCorePath&quot;);</FONT>
+<FONT SIZE="-1">            if (corePathFunc) {</FONT>
+<FONT SIZE="-1">                if ((*corePathFunc)(buffer, &amp;size) == 0) {</FONT>
+<FONT SIZE="-1">                    char    fullPathnameConduitMgr[512];</FONT>
+<FONT SIZE="-1">                    printf(&quot;path = \&quot;%s\&quot;\n&quot;, buffer);</FONT>
+<FONT SIZE="-1">                    FreeLibrary(lib);</FONT>
+
+<FONT SIZE="-1">                    strcpy(fullPathnameConduitMgr, buffer);</FONT>
+<FONT SIZE="-1">                    strcat(fullPathnameConduitMgr, &quot;\\CondMgr.dll&quot;);</FONT>
+<FONT SIZE="-1">                    HINSTANCE full = LoadLibrary(fullPathnameConduitMgr);</FONT>
+<FONT SIZE="-1">                    if (full != NULL) {</FONT>
+<FONT SIZE="-1">                        printf(&quot;Found %s\n&quot;, fullPathnameConduitMgr);</FONT>
+<FONT SIZE="-1">                        FreeLibrary(full);</FONT>
+<FONT SIZE="-1">                        result = _chdir(buffer);</FONT>
+<FONT SIZE="-1">                    } else {</FONT>
+<FONT SIZE="-1">                        printf(&quot;must use our conduit mgr\n&quot;);</FONT>
+<FONT SIZE="-1">                        result = _chdir(&quot;.\\CondMgr&quot;);</FONT>
+<FONT SIZE="-1">                    }</FONT>
+<FONT SIZE="-1">                }</FONT>
+<FONT SIZE="-1">            } else {</FONT>
+<FONT SIZE="-1">                fprintf(stderr, &quot;couldn't load CmGetCorePath\n&quot;);</FONT>
+<FONT SIZE="-1">                result = 1;</FONT>
+<FONT SIZE="-1">            }</FONT>
+<FONT SIZE="-1">        } else {</FONT>
+<FONT SIZE="-1">            fprintf(stderr, &quot;Couldn't load .\\CondMgr\\CondMgr.dll\n&quot;);</FONT>
+<FONT SIZE="-1">            result = 2;</FONT>
+<FONT SIZE="-1">        }</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    if (result == 0) {</FONT>
+<FONT SIZE="-1">        // we found a library and we've changed directories,</FONT>
+<FONT SIZE="-1">        // if necessary</FONT>
+<FONT SIZE="-1">        fprintf(stderr, &quot;running \&quot;%s\&quot;\n&quot;, conduitExecutable);</FONT>
+<FONT SIZE="-1">        result = system(conduitExecutable);</FONT>
+<FONT SIZE="-1">        if (result != 0)</FONT>
+<FONT SIZE="-1">            fprintf(stderr, &quot;Calling ConduitInstall failed\n&quot;);</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    return result;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">As it runs, it prints a commentary of what is happening. When it's complete, it returns 0 in case of success; a nonzero result indicates an <A NAME="P386_22471"></A>error.</FONT><A NAME="P386_22477"></A></P>
+
+<P><A NAME="P389_22477"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Conduit Entry Points</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P391_22497"></A>We told you before that a conduit has three required entry points. There are also some optional ones (including some that are only for CDK 3.0), which we look at next.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Required Entry Points</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The required entry points are as follows:</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P398_22727"></A>GetConduitName</FONT></I></P>
+
+<P><FONT FACE="Times">This returns the conduit's name.</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P400_22774"></A>GetConduitVersion</FONT></I></P>
+
+<P><FONT FACE="Times">This function returns the version of the conduit as a four-byte value. The minor version is in the low byte. The major version is in the next byte. The upper two bytes are unused. A conduit with Version 2.1 would return 0x21.</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P402_23017"></A>OpenConduit</FONT></I></P>
+
+<P><FONT FACE="Times">It is from this entry point that the conduit actually does its work. This point passes a parameter that is a class object with information about the sync. The information includes: </FONT></P>
+
+  <UL><P><FONT FACE="Times">&#183;  The username</FONT></P>
+
+  <P><FONT FACE="Times">&#183;  Remote database and filename</FONT></P>
+
+  <P><FONT FACE="Times">&#183;  The type of synchronization to be performed-copy handheld to desktop, copy desktop to PC, fast sync, slow sync, or do nothing</FONT></P>
+
+</UL><P><I><FONT FACE="Times" SIZE="+1">Optional Entry Points</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The optional entry points have to do with customization (and File Linking in 3.0):</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P412_23484"></A>ConfigureConduit (CfgConduit is a newer version of this)</FONT></I></P>
+
+<P><FONT FACE="Times">This is called when the user wants to customize the conduit by pressing Change in the Custom Hotsync dialog (see <A HREF="#P420_24850">Figure 11-2</A>). The conduit is responsible for displaying a dialog and saving user choices. A mirror-image synchronization conduit is responsible for displaying the dialog shown in <A HREF="#P429_24901">Figure 11-3</A>. The user chooses what action should happen when a sync occurs (unchecking the permanent checkbox in the dialog specifies that the dialog setting should occur only on the next sync). </FONT></P>
+
+<P><FONT FACE="Times">Specific conduits may also have different things the user can configure. In any case, conduit configuration should always allow the user the option to do nothing. This way, the user can pick and choose which conduits are active (for example, to expedite syncing just the address book before rushing to a meeting).</FONT></P>
+
+<P><FONT FACE="Times">If this entry point isn't present in your conduit, pressing the Change button does nothing-an action guaranteed to be confusing and annoying to users. Even if you are unwilling to provide a way for the user to configure your conduit to do nothing, you should provide this entry point and have it tell the user that the conduit can't be configured.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Our reasoning relies on an age-old adage of good design: every allowable user action should produce a visible effect. Words to warm a designer's heart.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 11- 2</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P420_24850"></A>HotSync dialog for customizing conduits</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch11-plmp.1102-2.gif" WIDTH=503 HEIGHT=214 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 11- 3</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P429_24901"></A>A conduit's configuration dialog</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch11-plmp.1103-3.gif" WIDTH=503 HEIGHT=225 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P436_24934"></A>CfgConduit</FONT></I></P>
+
+<P><FONT FACE="Times">This is a newer entry point that replaces </FONT><FONT FACE="Courier New">ConfigureConduit</FONT><FONT FACE="Times">. Its purpose is the same as that of </FONT><FONT FACE="Courier New">ConfigureConduit</FONT><FONT FACE="Times">, but it receives more information when called. Because it is extensible (due to a variable-size argument block), even more information will probably be provided in the future. </FONT></P>
+
+<P><FONT FACE="Times">It's called by HotSync Manager 3.0 and later. If this entry point isn't there, HotSync Manager 3.0 reverts to calling </FONT><FONT FACE="Courier New">ConfigureConduit</FONT><FONT FACE="Times">. </FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Support for calling </FONT><FONT FACE="Courier New" SIZE="-1">ConfigureConduit</FONT><FONT FACE="Times" SIZE="-1"> may be phased out in future versions of the HotSync Manager.</FONT><BR>
+</P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P441_25466"></A>GetConduitInfo</FONT></I></P>
+
+<P><FONT FACE="Times">This is called by the HotSync Manager to return the name of the conduit (as an alternative to </FONT><FONT FACE="Courier New">GetConduitName</FONT><FONT FACE="Times">), the version of Microsoft Foundation Classes (MFC) used to build the conduit, and the default action of the conduit (the choices being: no action, sync, handheld overwrites desktop, or desktop overwrites handheld).</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">These are the entry points used only for <A NAME="P443_25845"></A>File Linking. (File Linking is provided in HotSync 3.0 or later and is not covered in this book):</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P445_25943"></A>SubscriptionSupported</FONT></I></P>
+
+<P><FONT FACE="Times">If this entry point exists and returns 0, File Linking is supported by this conduit.</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P447_26049"></A>ConfigureSubscription</FONT></I></P>
+
+<P><FONT FACE="Times">Called to provide information necessary for File Linking.</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P449_26128"></A>ImportData</FONT></I></P>
+
+<P><FONT FACE="Times">Imports data from a linked file and displays it to the user.</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P451_26199"></A>UpdateTables</FONT></I></P>
+
+<P><FONT FACE="Times">Called to update desktop files when File Linking information changes.</FONT><A NAME="P452_26280"></A></P>
+
+<P><A NAME="P454_26280"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">The HotSync Log</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P456_26295"></A>The CDK provides routines that add to a HotSync log. There are several useful routines, but the main one to use is </FONT><FONT FACE="Courier New">LogAddEntry</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><I><FONT FACE="Times">&#160;<A NAME="P458_26423"></A>LogAddEntry</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Use this routine to add entries to the HotSync all the time.</FONT></P>
+
+<P><I><FONT FACE="Times">LogAddEntry(logString, activity, timestamp)</FONT></I></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">timestamp</FONT></P>
+
+<P><FONT FACE="Times">This is a boolean. True means that the log entry will be timestamped.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">activity</FONT></P>
+
+<P><FONT FACE="Times">This is an enumerated type. There are many different enumeration constants available for your use. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The enumerated types used most often as a value for </FONT><FONT FACE="Courier New">activity</FONT><FONT FACE="Times"> are:</FONT></P>
+
+  <UL><P><I><FONT FACE="Times"><A NAME="P470_26787"></A>slSyncStarted</FONT></I></P>
+
+  <P><FONT FACE="Times">Tells the log that your conduit is beginning synchronization. Call the following when you begin the sync process:</FONT></P>
+
+  <P><FONT FACE="Times" SIZE="-1">LogAddEntry(&quot;&quot;, slSyncStarted, false)</FONT></P>
+
+  <P><I><FONT FACE="Times"><A NAME="P473_26950"></A>slSyncAborted</FONT></I></P>
+
+  <P><FONT FACE="Times">Tells the log that your conduit is done and that there was an error. Call:</FONT></P>
+
+  <P><FONT FACE="Times" SIZE="-1">LogAddEntry(<I>your conduit name</I>, slSyncAborted, false) </FONT></P>
+
+  <P><FONT FACE="Times">when you finish syncing with an error.</FONT></P>
+
+  <P><I><FONT FACE="Times"><A NAME="P477_27128"></A>slSyncFinished</FONT></I></P>
+
+  <P><FONT FACE="Times">Tells the log that your conduit is done without errors. Call:</FONT></P>
+
+  <P><FONT FACE="Times" SIZE="-1">LogAddEntry(<I>your conduit name</I>, slSyncFinished, false) </FONT></P>
+
+  <P><FONT FACE="Times">when you finish syncing without an error.</FONT></P>
+
+  <P><I><FONT FACE="Times"><A NAME="P481_27298"></A>slWarning</FONT></I></P>
+
+  <P><FONT FACE="Times">Adds the specified </FONT><FONT FACE="Courier New">logString</FONT><FONT FACE="Times"> to the log and tells the user at the end of the HotSync that there are messages in the log.</FONT></P>
+
+  <P><FONT FACE="Times" SIZE="-1">slText</FONT></P>
+
+  <P><FONT FACE="Times">Adds the specified </FONT><FONT FACE="Courier New">logString</FONT><FONT FACE="Times"> to the log, but doesn't tell the user about the message.</FONT></P>
+
+</UL><P><I><FONT FACE="Times">&#160;</FONT></I><A NAME="P485_27519"></A></P>
+
+<P><I><FONT FACE="Times">LogAddFormattedEntry</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Another useful routine is </FONT><FONT FACE="Courier New">LogAddFormattedEntry</FONT><FONT FACE="Times">. It acts as a combination of </FONT><FONT FACE="Courier New">sprintf</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">LogAddEntry</FONT><FONT FACE="Times"> and helps if you need to construct the log string from numbers or other strings. Here's an example of its use:</FONT></P><PRE><FONT SIZE="-1">LogAddFormattedEntry(slText, false, &quot;The number (%d) is bad&quot;, myNumber)</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This is all that you need to know about installation, entry points, and log messages. Next, we discuss the events that occur when the user does a sync.</FONT><A NAME="P491_27971"></A></P>
+
+<P><A NAME="P494_27971"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">When the HotSync Button Gets Pressed</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P496_28007"></A>It is worth going through a step-by-step sequence of the events that occur when the user pops a Palm device into the cradle and pushes the HotSync button. From this sequence (started here and continued in the next chapter), you can see exactly when and how the code in your conduit interacts with the desktop, the Palm device, and the Sync Manager. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">For the purposes of this example, you should assume that our sample application has been successfully installed and contains no problems. <A HREF="#P502_28929">Table 11-1</A> contains a description on the left of what the user does or what activity is occurring; the right column indicates what's going on programmatically in your conduit or on the desktop.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">For now, we are just going to wave our hands around when we get to a description of data up/downloading, and exporting and importing. We fill in these gaps in the next chapter. The whole grand system should be clear by that point.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Table 11- 1</FONT></B><A NAME="P502_28929"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">What Happens When a Synchronization Occurs</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=208><P><B><FONT FACE="Times" SIZE="-1">Action (by the User or by the System)</FONT></B></P>
+</TD>
+<TD WIDTH=272><P><B><FONT FACE="Times" SIZE="-1">What Is Happening Programmatically</FONT></B></P>
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><FONT FACE="Times" SIZE="-1">User pushes the HotSync Button.</FONT></P>
+</TD>
+<TD WIDTH=272><P><FONT FACE="Times" SIZE="-1">The handheld sends an &quot;Are you there&quot; message out the serial port until the HotSync Manger on the desktop notices that someone is knocking.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><FONT FACE="Times" SIZE="-1">HotSync synchronizing starts.</FONT></P>
+</TD>
+<TD WIDTH=272><P><FONT FACE="Times" SIZE="-1">The HotSync Manager negotiates a baud rate with the handheld and begins communication. It reads the user ID and name from the handheld and tries to find a corresponding HotSync user. If it doesn't find one, it prompts on the desktop for the user to select one or to create a new one.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><FONT FACE="Times" SIZE="-1">The user gets the message: <I>Connecting with the desktop. </I>HotSync retrieves from the handheld a list of all databases and their creators.</FONT></P>
+</TD>
+<TD WIDTH=272><P><FONT FACE="Times" SIZE="-1">For each database on the handheld, the HotSync Manager tries to find a conduit registered for that creator. </FONT></P>
+<P><FONT FACE="Times" SIZE="-1">Databases that don't have a corresponding conduit but that have the backup bit set get added to the list to be backed up by the Backup conduit. Remaining databases are ignored completely.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><B><FONT FACE="Times" SIZE="-1">3.0 or later-Sync Manager installs new databases.</FONT></B></P>
+</TD>
+<TD WIDTH=272><P><B><FONT FACE="Times" SIZE="-1">The Install conduit gets called to install databases.</FONT></B></P>
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><FONT FACE="Times" SIZE="-1">The HotSync Manager determines whether a fast sync is possible (if this is the same desktop machine last synced with) or whether a slow sync is required (if it is different).</FONT></P>
+</TD>
+<TD WIDTH=272><P><FONT FACE="Times" SIZE="-1">Conduits can take advantage of a fast sync by only reading from the handheld records marked as modified; nonmarked records won't have changed since the last sync.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><FONT FACE="Times" SIZE="-1">The user gets notified that syncing has now started.</FONT></P>
+</TD>
+<TD WIDTH=272><P><FONT FACE="Times" SIZE="-1">Install conduit gets run and new applications are installed.</FONT></P>
+<P><FONT FACE="Times" SIZE="-1">The HotSync Manager starts the iteration through its list of conduits based on their priority code (as specified when the conduit was registered).</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><FONT FACE="Times" SIZE="-1">The HotSync Manager finishes with the conduit prior to ours.</FONT></P>
+</TD>
+<TD WIDTH=272>&#160;
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><FONT FACE="Times" SIZE="-1">The HotSync Manager prepares to sync.</FONT></P>
+</TD>
+<TD WIDTH=272><P><FONT FACE="Times" SIZE="-1">Our conduit gets loaded.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><FONT FACE="Times" SIZE="-1">The HotSync Manager checks the conduit's version number.</FONT></P>
+</TD>
+<TD WIDTH=272><P><FONT FACE="Courier New" SIZE="-1">GetConduitVersion</FONT><FONT FACE="Times" SIZE="-1"> is called and returns the conduit's version number.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><FONT FACE="Times" SIZE="-1">The HotSync Manager gets the conduit name so that is can display information in the Status dialog.</FONT></P>
+</TD>
+<TD WIDTH=272><P><FONT FACE="Courier New" SIZE="-1">GetConduitName</FONT><FONT FACE="Times" SIZE="-1"> is called and returns the name of the conduit.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><FONT FACE="Times" SIZE="-1">The HotSync Manager prepares to sync by passing the synchronization off to the conduit.</FONT></P>
+</TD>
+<TD WIDTH=272><P><FONT FACE="Courier New" SIZE="-1">OpenConduit</FONT><FONT FACE="Times" SIZE="-1"> gets called, and the conduit's DLL gets loaded into memory. It is told whether to do a fast sync, a slow sync, a copy from handheld to desktop, a copy from desktop to handheld, or nothing. When </FONT><FONT FACE="Courier New" SIZE="-1">OpenConduit</FONT><FONT FACE="Times" SIZE="-1"> returns, it has completed the task.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><B><FONT FACE="Times" SIZE="-1">The HotSync Manager runs the remaining conduits.</FONT></B></P>
+</TD>
+<TD WIDTH=272>&#160;
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><FONT FACE="Times" SIZE="-1">The HotSync Manager backs up modified databases that don't have a corresponding conduit but do have the backup bit set.</FONT></P>
+</TD>
+<TD WIDTH=272><P><FONT FACE="Times" SIZE="-1">The Backup conduit gets called.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><B><FONT FACE="Times" SIZE="-1">2.0 or earlier-Sync Manager installs new databases.</FONT></B></P>
+</TD>
+<TD WIDTH=272><P><B><FONT FACE="Times" SIZE="-1">The Install conduit gets called to install databases.</FONT></B></P>
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><FONT FACE="Times" SIZE="-1">Handheld notifies applications whose conduits have run that their database(s) have been synced.</FONT></P>
+</TD>
+<TD WIDTH=272><P><FONT FACE="Times" SIZE="-1">Your handheld application gets a </FONT><FONT FACE="Courier New">sysAppLaunchCmdSyncNotify</FONT><FONT FACE="Times"> launch code if any of its databases have been modified during the sync.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=208><P><FONT FACE="Times" SIZE="-1">Syncing is complete.</FONT></P>
+</TD>
+<TD WIDTH=272>&#160;
+</TD></TR></TABLE></UL>
+
+<P><A NAME="P547_31942"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Using the Backup Conduit</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P549_31966"></A>You may have an application that doesn't require its own conduit. In such cases, you can rely on the Backup conduit. First, let's discuss the types of applications that can profitably use this approach and then tell you what you need to do to your application.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The Backup conduit works on any application's database that:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Has no other conduit </FONT></LI>
+
+  <LI><FONT FACE="Times">  Has the backup flag set </FONT></LI>
+
+  <LI><FONT FACE="Times">  Has been modified since the last sync</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Whenever the Backup conduit is used, the data in the database is completely copied from the Palm device to the desktop and saved as a PDB (database) or PRC (application) file. This type of backup occurs during every sync, which is why you don't want to use this as a solution for large databases or most applications.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Applications That Might Use the Backup Conduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P561_32737"></A>The Backup conduit is well suited to the following types of applications:</FONT></P>
+
+<P><I><FONT FACE="Times">Games</FONT></I></P>
+
+<P><FONT FACE="Times">Where you save top score information</FONT></P>
+
+<P><I><FONT FACE="Times">Utilities</FONT></I></P>
+
+<P><FONT FACE="Times">Where you save some user settings</FONT></P>
+
+<P><I><FONT FACE="Times">Alarm clocks or other timers</FONT></I></P>
+
+<P><FONT FACE="Times">Where you save world clock information or other types of alarm settings</FONT></P>
+
+<P><I><FONT FACE="Times">Electronic books</FONT></I></P>
+
+<P><FONT FACE="Times">Where you save display information, bookmarks, or the books themselves</FONT></P>
+
+<P><I><FONT FACE="Times">Newsreaders</FONT></I></P>
+
+<P><FONT FACE="Times">Where you save newsgroup lists</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Using System Prefs Instead</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P576_33145"></A>Another approach for these types of applications is to use the System Prefs database. This database contains a record for each application that stores preferences. These preferences are automatically backed up because the Systems Prefs database has the backup bit set.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Actually, when you create system preferences, you can specify whether you want them to be backed up or not (a true value for the </FONT><FONT FACE="Courier New">saved</FONT><FONT FACE="Times"> parameter to </FONT><FONT FACE="Courier New">&#160;<A NAME="P579_33562"></A>PrefSetAppPreferences</FONT><FONT FACE="Times"> means you want the preferences backed up). If you've got some information that you want to save between calls to your application but that you don't need backed up, you'll use the nonbacked-up preferences (a false value for the </FONT><FONT FACE="Courier New">saved</FONT><FONT FACE="Times"> parameter).</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">A game might want the 512 bytes of high scores backed up (heaven forbid </FONT><FONT FACE="Times" SIZE="-1"><I>they</I> get lost!), but not the 6K of information about what level the user was on, what weapons were in what hands, etc.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Setting the Backup Bit for a Database</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To set the backup bit, you can use the </FONT><FONT FACE="Courier New">&#160;<A NAME="P584_34096"></A>DmSetDatabaseInfo</FONT><FONT FACE="Times"> call on the handheld to change the attributes of a database. Here's code for the handheld that changes the open database </FONT><FONT FACE="Courier New">myDB</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">LocalID    theLocalID;</FONT>
+<FONT SIZE="-1">UInt       theCardNum;
+UInt       theAttributes;</FONT>
+
+<FONT SIZE="-1">DmOpenDatabaseInfo(myDB, &amp;theLocalID, NULL, NULL, &amp;theCardNum, NULL);</FONT>
+<FONT SIZE="-1">DmDatabaseInfo(theCardNum, theLocalID, NULL, &amp;theAttributes, NULL, </FONT>
+<FONT SIZE="-1">   NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);</FONT>
+<FONT SIZE="-1">theAttributes |= dmHdrAttrBackup;</FONT>
+<FONT SIZE="-1">DmSetDatabaseInfo(theCardNum, theLocalID, NULL, &amp;theAttributes, NULL,</FONT>
+<FONT SIZE="-1">   NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note that the backup bit isn't reset automatically after a backup. With devices running versions of the Palm OS prior to 2.0, as long as the backup bit of a database is set-and there is no conduit installed for it-the database is backed up every time the user syncs. With Palm OS 2.0 and later, the database is backed up only if it has been modified since the last sync.</FONT><A NAME="P595_35019"></A></P>
+
+<P><A NAME="P598_35019"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Creating a Minimal Sales Conduit</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P600_35051"></A>Using Visual C++ and the development kit, only a few steps are required to create a minimal conduit. We assume that you've installed the CDK on your C: drive in the <I>\CDK</I> folder. Let's walk through the steps.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">The final 3.0 version of the CDK promises a Conduit Wizard, which may make this creation process even easier.</FONT><BR>
+</P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><FONT FACE="Times"> 1. Create a new project of type <I>MFC AppWizard (dll) </I>(see <A HREF="#P613_36395">Figure 11-4</A>). </FONT></P>
+
+<P><FONT FACE="Times"> 2. Specify that the project is a regular DLL using the MFC shared library as shown in <A HREF="#P622_36471">Figure 11-5</A>.</FONT></P>
+
+<P><FONT FACE="Times"> 3. Add the Conduit SDK's include directory to the list of places the compiler searches for include files. To do this, after you've created the project, open the Project Settings dialog and, in the C/C++ settings panel (see <A HREF="#P631_36513">Figure 11-6</A>), add the following to the Project Options area:</FONT></P><PRE><FONT FACE="Courier New" SIZE="+0">/I &quot;C:\CDK\INCLUDE&quot; </FONT></PRE>
+
+<P><FONT FACE="Times"> 4. Add needed libraries to the project in the Link panel of the same dialog (see <A HREF="#P642_36583">Figure 11-7</A>). For this minimal conduit, you need to add three libraries, one containing entry points for logging, one containing entry points for the HotSync dialog, and the last containing entry points for the Sync Manager initialization/deinitialization:</FONT></P><PRE><FONT SIZE="-1">C:\CDK\lib\hslog20d.lib </FONT>
+<FONT SIZE="-1">C:\CDK\lib\pdcmn21d.lib </FONT>
+<FONT SIZE="-1">C:\CDK\lib\sync20d.lib </FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you edit the Win32 version of your DLL, link with the nondebug versions of the libraries (<I>hslog20.lib</I>, <I>pdcmn21.lib</I>, and <I>sync20.lib</I>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 11- 4</FONT></B><A NAME="P613_36395"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">A new MFC AppWizard project for our do-nothing minimal conduit</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch11-plmp.1104-4.gif" WIDTH=503 HEIGHT=343 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">  </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 11- 5</FONT></B><A NAME="P622_36471"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">Selecting the type of MFC DLL</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=511><P ALIGN=CENTER><IMG SRC="images/ch11-plmp.1105-5.gif" WIDTH=503 HEIGHT=330 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"> </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 11- 6</FONT></B><A NAME="P631_36513"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">C/C++ Project Settings to add to the include search path</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch11-plmp.1106-6.gif" WIDTH=503 HEIGHT=318 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"> </FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 11- 7</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P642_36583"></A>Adding libraries to link with</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch11-plmp.1107-7.gif" WIDTH=503 HEIGHT=318 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"> </FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Code for the Sales Conduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">As we said before, this is a conduit that does very little. It considers itself successful if it writes a message to the log file. It's great, however, at distilling the process you use for creating the outer shell of the conduit. We first cover the code and then look at registering and testing the conduit.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The <I>SalesCond.cpp</I> file already contains the shell of a DLL as created by the MFC DLL wizard.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Let's add some include files we need:</FONT></P><PRE><FONT SIZE="-1">#include &lt;afxwin.h&gt;         // MFC core and standard components</FONT>
+<FONT SIZE="-1">#include &lt;HSLog.h&gt;          // for LogAddEntry</FONT>
+<FONT SIZE="-1">#include &lt;SyncMgr.h&gt;</FONT>
+<FONT SIZE="-1">#include &lt;CondAPI.h&gt;</FONT>
+
+<FONT SIZE="-1">#include &lt;pdcmnDll.h&gt;       // for the dialogs</FONT>
+<FONT SIZE="-1">#include &lt;cmnres.h&gt;</FONT>
+<FONT SIZE="-1">#include &lt;ActDlg.h&gt;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We'll create some constants that define the conduit name and major and minor version numbers:</FONT></P><PRE><FONT SIZE="-1">#define kConduitName    &quot;Sales&quot;</FONT>
+<FONT SIZE="-1">#define kMajorVersion   1</FONT>
+<FONT SIZE="-1">#define kMinorVersion   0</FONT></PRE>
+
+<P><I><FONT FACE="Times">Adding GetConduitName</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The first entry point we look at is </FONT><FONT FACE="Courier New">&#160;<A NAME="P674_37541"></A>GetConduitName</FONT><FONT FACE="Times">. It gets passed a buffer in which it writes the name and the length of that name. It returns 0 in the case of no error. </FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Like all the entry points of the conduit, </FONT><FONT FACE="Courier New" SIZE="-1">GetConduitName</FONT><FONT FACE="Times" SIZE="-1"> must call the </FONT><FONT FACE="Courier New">AFX_MANAGE_STATE</FONT><FONT FACE="Times"> macro before doing anything else (this is a requirement of these types of MFC DLLs). All the entry points must also be declared with the </FONT><FONT FACE="Courier New">__declsepc(dllexport)</FONT><FONT FACE="Times"> type modifiers.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE><PRE><FONT SIZE="-1">__declspec(dllexport) long GetConduitName(char *name, WORD maxLen)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    AFX_MANAGE_STATE(AfxGetStaticModuleState());</FONT>
+<FONT SIZE="-1">    memset(name, 0, maxLen);</FONT>
+<FONT SIZE="-1">    strncpy(name, kConduitName, maxLen-1);</FONT>
+
+<FONT SIZE="-1">    return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Adding GetConduitVersion</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here is </FONT><FONT FACE="Courier New">&#160;<A NAME="P688_38170"></A>GetConduitVersion</FONT><FONT FACE="Times">, whose low byte is the minor version and whose next higher byte is the major version:</FONT></P><PRE><FONT SIZE="-1">__declspec(dllexport) DWORD GetConduitVersion()</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    AFX_MANAGE_STATE(AfxGetStaticModuleState());</FONT>
+<FONT SIZE="-1">    return (kMajorVersion &lt;&lt; 8) | kMinorVersion;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Adding OpenConduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P697_38437"></A>OpenConduit</FONT><FONT FACE="Times"> is passed a class, </FONT><FONT FACE="Courier New"><A NAME="P697_38468"></A>CSyncProperties</FONT><FONT FACE="Times">, which contains information about the sync that will take place. We're interested in the </FONT><FONT FACE="Courier New">m_SyncType</FONT><FONT FACE="Times"> field of that class. This tells us what type of sync we have. The only type of sync we can handle is </FONT><FONT FACE="Courier New">eDoNothing</FONT><FONT FACE="Times">. In that case, we write an appropriate message to the log and then return.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">For any other type of sync, we begin the sync process by calling </FONT><FONT FACE="Courier New">&#160;<A NAME="P699_38836"></A>SyncRegisterConduit</FONT><FONT FACE="Times"> (if that fails, we return the error) then we write to the log that we've begun. When we finish, we write to the log that we've finished (or, if an error had occurred, that we've aborted). We call </FONT><FONT FACE="Courier New">&#160;<A NAME="P699_39053"></A>SyncUnRegisterConduit</FONT><FONT FACE="Times"> and return any error:</FONT></P><PRE><FONT SIZE="-1">__declspec(dllexport) long OpenConduit(PROGRESSFN progress, </FONT>
+<FONT SIZE="-1">&thorn;&thorn;&thorn;&thorn;CSyncProperties &amp;sync)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    AFX_MANAGE_STATE(AfxGetStaticModuleState());</FONT>
+<FONT SIZE="-1">    long err = 0;</FONT>
+
+<FONT SIZE="-1">    if (sync.m_SyncType == eDoNothing) {</FONT>
+<FONT SIZE="-1">        LogAddEntry(&quot;Sales - sync configured to Do Nothing&quot;, slText, </FONT>
+<FONT SIZE="-1">        &thorn;&thorn;&thorn;&thorn;false);</FONT>
+<FONT SIZE="-1">        return 0;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    CONDHANDLE myConduitHandle;</FONT>
+<FONT SIZE="-1">    if ((err = SyncRegisterConduit(myConduitHandle)) != 0) {</FONT>
+<FONT SIZE="-1">        return err;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    LogAddEntry(&quot;&quot;, slSyncStarted, false);</FONT>
+
+<FONT SIZE="-1">    // this is where we'll actually sync</FONT>
+
+<FONT SIZE="-1">    LogAddEntry(kConduitName, err ? slSyncAborted : slSyncFinished, </FONT>
+<FONT SIZE="-1">    &thorn;&thorn;&thorn;&thorn;false);</FONT>
+<FONT SIZE="-1">    SyncUnRegisterConduit(myConduitHandle);</FONT>
+
+<FONT SIZE="-1">    return err;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Adding ConfigureConduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Although these three functions, </FONT><FONT FACE="Courier New">GetConduitName</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">GetConduitVersion</FONT><FONT FACE="Times">, and </FONT><FONT FACE="Courier New">OpenConduit</FONT><FONT FACE="Times">, are the only required entry points, we also provide </FONT><FONT FACE="Courier New">&#160;<A NAME="P730_39897"></A>ConfigureConduit</FONT><FONT FACE="Times">, so that the user can change what happens in our conduit on a sync:</FONT></P><PRE><FONT SIZE="-1">__declspec(dllexport) long ConfigureConduit(CSyncPreference&amp; pref)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    AFX_MANAGE_STATE(AfxGetStaticModuleState());</FONT>
+<FONT SIZE="-1">    long nRtn = -1;</FONT>
+<FONT SIZE="-1">    CHotSyncActionDlg actDlg;</FONT>
+
+<FONT SIZE="-1">    pref.m_SyncPref = eNoPreference;</FONT>
+<FONT SIZE="-1">    actDlg.m_csGroupText = kConduitName;</FONT>
+
+<FONT SIZE="-1">    switch (pref.m_SyncType)</FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">        case eFast:</FONT>
+<FONT SIZE="-1">        case eSlow:</FONT>
+<FONT SIZE="-1">            actDlg.m_nActionIndex = 0;</FONT>
+<FONT SIZE="-1">        break;</FONT>
+<FONT SIZE="-1">        case ePCtoHH:</FONT>
+<FONT SIZE="-1">            actDlg.m_nActionIndex = 1;</FONT>
+<FONT SIZE="-1">        break;</FONT>
+<FONT SIZE="-1">        case eHHtoPC:</FONT>
+<FONT SIZE="-1">            actDlg.m_nActionIndex = 2;</FONT>
+<FONT SIZE="-1">        break;</FONT>
+<FONT SIZE="-1">        case eDoNothing:</FONT>
+<FONT SIZE="-1">        default:</FONT>
+<FONT SIZE="-1">            actDlg.m_nActionIndex = 3;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    if (actDlg.DoModal() == IDOK)</FONT>
+<FONT SIZE="-1">    {</FONT>
+
+<FONT SIZE="-1">        switch (actDlg.m_nActionIndex)</FONT>
+<FONT SIZE="-1">        {</FONT>
+<FONT SIZE="-1">            case 0:</FONT>
+<FONT SIZE="-1">                pref.m_SyncType = eFast;</FONT>
+<FONT SIZE="-1">            break;</FONT>
+<FONT SIZE="-1">            case 1:</FONT>
+<FONT SIZE="-1">                pref.m_SyncType = ePCtoHH;</FONT>
+<FONT SIZE="-1">            break;</FONT>
+<FONT SIZE="-1">            case 2:</FONT>
+<FONT SIZE="-1">                    pref.m_SyncType = eHHtoPC;</FONT>
+<FONT SIZE="-1">            break;</FONT>
+<FONT SIZE="-1">            case 3:</FONT>
+<FONT SIZE="-1">            default:</FONT>
+<FONT SIZE="-1">                    pref.m_SyncType = eDoNothing;</FONT>
+<FONT SIZE="-1">                break;</FONT>
+<FONT SIZE="-1">        }</FONT>
+
+<FONT SIZE="-1">        pref.m_SyncPref = (actDlg.m_bMakeDefault) ? ePermanentPreference : </FONT>
+<FONT SIZE="-1">            eTemporaryPreference;</FONT>
+
+<FONT SIZE="-1">        nRtn = 0;</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    return nRtn;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The code gets a standard HotSync dialog, putting the conduit's name and current sync type setting in it. After the dialog is dismissed, it updates the sync type.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">We use </FONT><FONT FACE="Courier New" SIZE="-1">ConfigureConduit</FONT><FONT FACE="Times" SIZE="-1"> instead of </FONT><FONT FACE="Courier New" SIZE="-1">CfgConduit</FONT><FONT FACE="Times" SIZE="-1"> because we want our conduit to work on versions of HotSync earlier than 3.0. Plus, we really don't need the additional information that </FONT><FONT FACE="Courier New" SIZE="-1">CfgConduit</FONT><FONT FACE="Times" SIZE="-1"> provides.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The dialog that </FONT><FONT FACE="Courier New">ConfigureConduit</FONT><FONT FACE="Times"> uses is provided by the pdcmn DLL. In order to use it, our DLL must initialize the pdcmn DLL. We'll do that when our DLL starts.</FONT></P>
+
+<P><I><FONT FACE="Times">DLL doings</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's our DLL's class declaration (as created by the Visual C++ automatically) to which we've overridden </FONT><FONT FACE="Courier New">&#160;&#160;<A NAME="P794_41804"></A>InitInstance</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">ExitInstance</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">class CSalesCondDll : public CWinApp</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">public:</FONT>
+<FONT SIZE="-1">    //CSalesCondDll();</FONT>
+<B><FONT SIZE="-1">    virtual BOOL InitInstance(); // Initialization</FONT></B>
+<B><FONT SIZE="-1">    virtual int ExitInstance();  // Termination </FONT></B>
+
+<FONT SIZE="-1">// Overrides</FONT>
+<FONT SIZE="-1">    // ClassWizard generated virtual function overrides</FONT>
+<FONT SIZE="-1">    //{{AFX_VIRTUAL(CSalesCondDll)</FONT>
+<FONT SIZE="-1">    //}}AFX_VIRTUAL</FONT>
+
+<FONT SIZE="-1">    //{{AFX_MSG(CSalesCondDll)</FONT>
+<FONT SIZE="-1">        // NOTE - the ClassWizard will add/remove member functions here.</FONT>
+<FONT SIZE="-1">        //    DO NOT EDIT what you see in these blocks of generated code !</FONT>
+<FONT SIZE="-1">    //}}AFX_MSG</FONT>
+<FONT SIZE="-1">    DECLARE_MESSAGE_MAP()</FONT>
+<FONT SIZE="-1">};</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We define a global count to keep track of how many instances of our DLL are active:</FONT></P><PRE><FONT SIZE="-1">static int ClientCount = 0;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Our </FONT><FONT FACE="Courier New">InitInstance</FONT><FONT FACE="Times"> will increment the </FONT><FONT FACE="Courier New">ClientCount</FONT><FONT FACE="Times"> and initialize the pdcmn DLL:</FONT></P><PRE><FONT SIZE="-1">BOOL CSalesCondApp::InitInstance()</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    // DLL initialization </FONT>
+<FONT SIZE="-1">    TRACE0(&quot;SalesCond.DLL initializing\n&quot;);</FONT>
+
+<FONT SIZE="-1">    if (!ClientCount ) {</FONT>
+
+<FONT SIZE="-1">        // add any extension DLLs into CDynLinkLibrary chain</FONT>
+<FONT SIZE="-1">        InitPdcmn5DLL();</FONT>
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    ClientCount++;</FONT>
+
+<FONT SIZE="-1">    return TRUE;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Our </FONT><FONT FACE="Courier New">ExitInstance</FONT><FONT FACE="Times"> will decrement the </FONT><FONT FACE="Courier New">ClientCount</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">int CSalesCondApp::ExitInstance()</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    TRACE0(&quot;UpDownCond.DLL Terminating!\n&quot;);</FONT>
+
+<FONT SIZE="-1">    // Check for last client and clean up potential memory leak.</FONT>
+<FONT SIZE="-1">    if (--ClientCount &lt;= 0) </FONT>
+<FONT SIZE="-1">    {</FONT>
+
+<FONT SIZE="-1">    }</FONT>
+
+<FONT SIZE="-1">    // DLL clean up, if required</FONT>
+<FONT SIZE="-1">    return CWinApp::ExitInstance();</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Adding GetConduitInfo</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We also provide </FONT><FONT FACE="Courier New">&#160;<A NAME="P851_43109"></A>GetConduitInfo</FONT><FONT FACE="Times">. It can return the name of the conduit, the default action of the conduit, as well as the version of MFC used by the conduit:</FONT></P><PRE><FONT SIZE="-1">__declspec(dllexport) long GetConduitInfo(ConduitInfoEnum infoType, </FONT>
+<FONT SIZE="-1">&#160;&#160;&#160;void *pInArgs, void *pOut, DWORD *pdwOutSize)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">    AFX_MANAGE_STATE(AfxGetStaticModuleState());</FONT>
+
+<FONT SIZE="-1">    if (!pOut)</FONT>
+<FONT SIZE="-1">        return CONDERR_INVALID_PTR;</FONT>
+<FONT SIZE="-1">    if (!pdwOutSize)</FONT>
+<FONT SIZE="-1">        return CONDERR_INVALID_OUTSIZE_PTR;</FONT>
+
+<FONT SIZE="-1">    switch (infoType) {</FONT>
+<FONT SIZE="-1">        case eConduitName:</FONT>
+
+<FONT SIZE="-1">             if (!pInArgs)</FONT>
+<FONT SIZE="-1">                return CONDERR_INVALID_INARGS_PTR;</FONT>
+<FONT SIZE="-1">            ConduitRequestInfoType *pInfo;</FONT>
+<FONT SIZE="-1">            pInfo = (ConduitRequestInfoType *)pInArgs;</FONT>
+<FONT SIZE="-1">            if ((pInfo-&gt;dwVersion != CONDUITREQUESTINFO_VERSION_1) ||</FONT>
+<FONT SIZE="-1">                (pInfo-&gt;dwSize != SZ_CONDUITREQUESTINFO))</FONT>
+<FONT SIZE="-1">                return CONDERR_INVALID_INARGS_STRUCT;</FONT>
+<FONT SIZE="-1">            </FONT>
+<FONT SIZE="-1">            strncpy((TCHAR*) pOut, kConduitName, (*pdwOutSize) - 1);</FONT>
+<FONT SIZE="-1">            break;</FONT>
+<FONT SIZE="-1">        case eDefaultAction:</FONT>
+<FONT SIZE="-1">            if (*pdwOutSize != sizeof(eSyncTypes))</FONT>
+<FONT SIZE="-1">                return CONDERR_INVALID_BUFFER_SIZE;</FONT>
+<FONT SIZE="-1">            (*(eSyncTypes*)pOut) = eFast;</FONT>
+<FONT SIZE="-1">            break;</FONT>
+<FONT SIZE="-1">        case eMfcVersion:</FONT>
+<FONT SIZE="-1">            if (*pdwOutSize != sizeof(DWORD))</FONT>
+<FONT SIZE="-1">                return CONDERR_INVALID_BUFFER_SIZE;</FONT>
+<FONT SIZE="-1">            (*(DWORD*)pOut) = MFC_VERSION_50;</FONT>
+<FONT SIZE="-1">            break;</FONT>
+<FONT SIZE="-1">        default:</FONT>
+<FONT SIZE="-1">            return CONDERR_UNSUPPORTED_CONDUITINFO_ENUM;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times" SIZE="+1">Registering the Conduit</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P893_44510"></A>We run </FONT><FONT FACE="Courier New">CondCfg</FONT><FONT FACE="Times"> and add a new entry. <A HREF="#P896_44596">Figure 11-8</A> shows the settings we use.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 11- 8</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P896_44596"></A>Registering the Sales conduit in CondCfg</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=504><P ALIGN=CENTER><IMG SRC="images/ch11-plmp.1108-8.gif" WIDTH=503 HEIGHT=409 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times" SIZE="+1">Testing</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P907_44643"></A>Once you've registered the conduit, start the <A NAME="P907_44689"></A>HotSync Manager (quit it first if it is already running so that the registry gets properly updated). If you've registered a debug version of your conduit, make sure you start the debug version of HotSync Manager. Then choose Custom from the HotSync menu. You should see the Sales conduit in the list of conduits (see <A HREF="#P910_45031">Figure 11-9</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 11- 9</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P910_45031"></A>The Custom dialog of HotSync showing the list of registered conduits</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch11-plmp.1109-9.gif" WIDTH=503 HEIGHT=225 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><I><FONT FACE="Times">Proving ChangeConduit works</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Select the Sales application and click the Change button. You should see the dialog shown in <A HREF="#P923_45333">Figure 11-10</A>. Bringing this dialog up proves that your conduit's </FONT><FONT FACE="Courier New">&#160;<A NAME="P920_45285"></A>ChangeConduit</FONT><FONT FACE="Times"> function gets called.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 11- 10</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P923_45333"></A>Changing the HotSync settings of the Sales conduit</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch11-plmp.1110-10.gif" WIDTH=503 HEIGHT=225 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Next, it's time to test syncing. First, make sure that the Sales application has been installed on the handheld (otherwise, a database with the correct creator won't exist on the handheld, and the Sales conduit won't be invoked). </FONT></P>
+
+<P><I><FONT FACE="Times">Seeing the conduit in the HotSync log</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P935_45650"></A>When you sync, you should see the message &quot;Synchronizing Sales&quot; as part of the process. Once a sync has been completed, open the HotSync log for that device. You should see information that includes a line about the Sales conduit. For example:</FONT></P><PRE><FONT SIZE="-1">HotSync started 07/30/98 11:59:53</FONT>
+<FONT SIZE="-1">OK Date Book</FONT>
+<FONT SIZE="-1">OK Address Book</FONT>
+<FONT SIZE="-1">OK To Do List</FONT>
+<FONT SIZE="-1">OK Memo Pad</FONT>
+<B><FONT SIZE="-1">OK Sales</FONT></B>
+<FONT SIZE="-1">OK Expense</FONT></PRE>
+
+<P><I><FONT FACE="Times">Setting the conduit to Do Nothing</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now change the HotSync settings for the Sales conduit to <A NAME="P946_46085"></A>Do Nothing. After you sync, the log should show the following:</FONT></P><PRE><FONT SIZE="-1">HotSync started 07/30/98 12:02:37</FONT>
+<FONT SIZE="-1">OK Date Book</FONT>
+<FONT SIZE="-1">OK Address Book</FONT>
+<FONT SIZE="-1">OK To Do List</FONT>
+<FONT SIZE="-1">OK Memo Pad</FONT>
+<B><FONT SIZE="-1">Sales - sync configured to Do Nothing</FONT></B>
+<FONT SIZE="-1">OK Expense</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">If you run into any problems getting the conduit to work, see Chapter&#160;14, <I>Debugging Conduits</I>.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now that you have a conduit shell that has been tested and works correctly, we can continue adding functionality to it. Let's start in the next chapter by uploading and <A NAME="P957_46540"></A>downloading <A NAME="P957_46552"></A>data.</FONT><A NAME="P957_46557"></A></P>
+<HR ALIGN=LEFT SIZE=2 WIDTH=100% NOSHADE>
+
+<P><A NAME="P121_8026"></A>
+* <FONT FACE="Times" SIZE="-1">Palm Computing was acquired by U.S. Robotics, which was in turn acquired by 3Com.</FONT></P>
+<!-- TRANSIT - TEXTBAR -->
+
+<ADDRESS><FONT SIZE=-1>Palm Programming: The Developer's Guide
+<BR>Copyright &#169; 1999, O'Rielly and Associates, Inc.
+<BR>Published on the web by permission of O'Rielly and Associates, Inc. Contents modified for web display.</FONT></ADDRESS><P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="part3.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch12.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P>
+</BODY>
+</HTML>

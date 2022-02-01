@@ -1,0 +1,1395 @@
+This is gdb.info, produced by makeinfo version 4.3 from
+/netrel/src/gdb-20030919-1/gdb/doc/gdb.texinfo.
+
+INFO-DIR-SECTION Programming & development tools.
+START-INFO-DIR-ENTRY
+* Gdb: (gdb).                     The GNU debugger.
+END-INFO-DIR-ENTRY
+
+   This file documents the GNU debugger GDB.
+
+   This is the Ninth Edition, of `Debugging with GDB: the GNU
+Source-Level Debugger' for GDB Version 2003-09-20-cvs (cygwin-special).
+
+   Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996,
+1998,
+1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
+
+   Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs Free
+Documentation", with the Front-Cover Texts being "A GNU Manual," and
+with the Back-Cover Texts as in (a) below.
+
+   (a) The Free Software Foundation's Back-Cover Text is: "You have
+freedom to copy and modify this GNU Manual, like GNU software.  Copies
+published by the Free Software Foundation raise funds for GNU
+development."
+
+
+File: gdb.info,  Node: Cygwin Native,  Prev: DJGPP Native,  Up: Native
+
+Features for Debugging MS Windows PE executables
+------------------------------------------------
+
+   GDB supports native debugging of MS Windows programs, including DLLs
+with and without symbolic debugging information. There are various
+additional Cygwin-specific commands, described in this subsection.  The
+subsubsection *note Non-debug DLL symbols:: describes working with DLLs
+that have no debugging symbols.
+
+`info w32'
+     This is a prefix of MS Windows specific commands which print
+     information about the target system and important OS structures.
+
+`info w32 selector'
+     This command displays information returned by the Win32 API
+     `GetThreadSelectorEntry' function.  It takes an optional argument
+     that is evaluated to a long value to give the information about
+     this given selector.  Without argument, this command displays
+     information about the the six segment registers.
+
+`info dll'
+     This is a Cygwin specific alias of info shared.
+
+`dll-symbols'
+     This command loads symbols from a dll similarly to add-sym command
+     but without the need to specify a base address.
+
+`set new-console MODE'
+     If MODE is `on' the debuggee will be started in a new console on
+     next start.  If MODE is `off'i, the debuggee will be started in
+     the same console as the debugger.
+
+`show new-console'
+     Displays whether a new console is used when the debuggee is
+     started.
+
+`set new-group MODE'
+     This boolean value controls whether the debuggee should start a
+     new group or stay in the same group as the debugger.  This affects
+     the way the Windows OS handles Ctrl-C.
+
+`show new-group'
+     Displays current value of new-group boolean.
+
+`set debugevents'
+     This boolean value adds debug output concerning events seen by the
+     debugger.
+
+`set debugexec'
+     This boolean value adds debug output concerning execute events
+     seen by the debugger.
+
+`set debugexceptions'
+     This boolean value adds debug ouptut concerning exception events
+     seen by the debugger.
+
+`set debugmemory'
+     This boolean value adds debug ouptut concerning memory events seen
+     by the debugger.
+
+`set shell'
+     This boolean values specifies whether the debuggee is called via a
+     shell or directly (default value is on).
+
+`show shell'
+     Displays if the debuggee will be started with a shell.
+
+* Menu:
+
+* Non-debug DLL symbols::  Support for DLLs without debugging symbols
+
+
+File: gdb.info,  Node: Non-debug DLL symbols,  Up: Cygwin Native
+
+Support for DLLs without debugging symbols
+..........................................
+
+   Very often on windows, some of the DLLs that your program relies on
+do not include symbolic debugging information (for example,
+`kernel32.dll'). When GDB doesn't recognize any debugging symbols in a
+DLL, it relies on the minimal amount of symbolic information contained
+in the DLL's export table. This subsubsection describes working with
+such symbols, known internally to GDB as "minimal symbols".
+
+   Note that before the debugged program has started execution, no DLLs
+will have been loaded. The easiest way around this problem is simply to
+start the program -- either by setting a breakpoint or letting the
+program run once to completion. It is also possible to force GDB to
+load a particular DLL before starting the executable -- see the shared
+library information in *note Files:: or the `dll-symbols' command in
+*note Cygwin Native::. Currently, explicitly loading symbols from a DLL
+with no debugging information will cause the symbol names to be
+duplicated in GDB's lookup table, which may adversely affect symbol
+lookup performance.
+
+DLL name prefixes
+.................
+
+   In keeping with the naming conventions used by the Microsoft
+debugging tools, DLL export symbols are made available with a prefix
+based on the DLL name, for instance `KERNEL32!CreateFileA'.  The plain
+name is also entered into the symbol table, so `CreateFileA' is often
+sufficient. In some cases there will be name clashes within a program
+(particularly if the executable itself includes full debugging symbols)
+necessitating the use of the fully qualified name when referring to the
+contents of the DLL. Use single-quotes around the name to avoid the
+exclamation mark ("!")  being interpreted as a language operator.
+
+   Note that the internal name of the DLL may be all upper-case, even
+though the file name of the DLL is lower-case, or vice-versa. Since
+symbols within GDB are _case-sensitive_ this may cause some confusion.
+If in doubt, try the `info functions' and `info variables' commands or
+even `maint print msymbols' (see *note Symbols::). Here's an example:
+
+     (gdb) info function CreateFileA
+     All functions matching regular expression "CreateFileA":
+     
+     Non-debugging symbols:
+     0x77e885f4  CreateFileA
+     0x77e885f4  KERNEL32!CreateFileA
+
+     (gdb) info function !
+     All functions matching regular expression "!":
+     
+     Non-debugging symbols:
+     0x6100114c  cygwin1!__assert
+     0x61004034  cygwin1!_dll_crt0@0
+     0x61004240  cygwin1!dll_crt0(per_process *)
+     [etc...]
+
+Working with minimal symbols
+............................
+
+   Symbols extracted from a DLL's export table do not contain very much
+type information. All that GDB can do is guess whether a symbol refers
+to a function or variable depending on the linker section that contains
+the symbol. Also note that the actual contents of the memory contained
+in a DLL are not available unless the program is running. This means
+that you cannot examine the contents of a variable or disassemble a
+function within a DLL without a running program.
+
+   Variables are generally treated as pointers and dereferenced
+automatically. For this reason, it is often necessary to prefix a
+variable name with the address-of operator ("&") and provide explicit
+type information in the command. Here's an example of the type of
+problem:
+
+     (gdb) print 'cygwin1!__argv'
+     $1 = 268572168
+
+     (gdb) x 'cygwin1!__argv'
+     0x10021610:      "\230y\""
+
+   And two possible solutions:
+
+     (gdb) print ((char **)'cygwin1!__argv')[0]
+     $2 = 0x22fd98 "/cygdrive/c/mydirectory/myprogram"
+
+     (gdb) x/2x &'cygwin1!__argv'
+     0x610c0aa8 <cygwin1!__argv>:    0x10021608      0x00000000
+     (gdb) x/x 0x10021608
+     0x10021608:     0x0022fd98
+     (gdb) x/s 0x0022fd98
+     0x22fd98:        "/cygdrive/c/mydirectory/myprogram"
+
+   Setting a break point within a DLL is possible even before the
+program starts execution. However, under these circumstances, GDB can't
+examine the initial instructions of the function in order to skip the
+function's frame set-up code. You can work around this by using "*&" to
+set the breakpoint at a raw memory address:
+
+     (gdb) break *&'python22!PyOS_Readline'
+     Breakpoint 1 at 0x1e04eff0
+
+   The author of these extensions is not entirely convinced that
+setting a break point within a shared DLL like `kernel32.dll' is
+completely safe.
+
+
+File: gdb.info,  Node: Embedded OS,  Next: Embedded Processors,  Prev: Native,  Up: Configurations
+
+Embedded Operating Systems
+==========================
+
+   This section describes configurations involving the debugging of
+embedded operating systems that are available for several different
+architectures.
+
+* Menu:
+
+* VxWorks::                     Using GDB with VxWorks
+
+   GDB includes the ability to debug programs running on various
+real-time operating systems.
+
+
+File: gdb.info,  Node: VxWorks,  Up: Embedded OS
+
+Using GDB with VxWorks
+----------------------
+
+`target vxworks MACHINENAME'
+     A VxWorks system, attached via TCP/IP.  The argument MACHINENAME
+     is the target system's machine name or IP address.
+
+   On VxWorks, `load' links FILENAME dynamically on the current target
+system as well as adding its symbols in GDB.
+
+   GDB enables developers to spawn and debug tasks running on networked
+VxWorks targets from a Unix host.  Already-running tasks spawned from
+the VxWorks shell can also be debugged.  GDB uses code that runs on
+both the Unix host and on the VxWorks target.  The program `gdb' is
+installed and executed on the Unix host.  (It may be installed with the
+name `vxgdb', to distinguish it from a GDB for debugging programs on
+the host itself.)
+
+`VxWorks-timeout ARGS'
+     All VxWorks-based targets now support the option `vxworks-timeout'.
+     This option is set by the user, and  ARGS represents the number of
+     seconds GDB waits for responses to rpc's.  You might use this if
+     your VxWorks target is a slow software simulator or is on the far
+     side of a thin network line.
+
+   The following information on connecting to VxWorks was current when
+this manual was produced; newer releases of VxWorks may use revised
+procedures.
+
+   To use GDB with VxWorks, you must rebuild your VxWorks kernel to
+include the remote debugging interface routines in the VxWorks library
+`rdb.a'.  To do this, define `INCLUDE_RDB' in the VxWorks configuration
+file `configAll.h' and rebuild your VxWorks kernel.  The resulting
+kernel contains `rdb.a', and spawns the source debugging task
+`tRdbTask' when VxWorks is booted.  For more information on configuring
+and remaking VxWorks, see the manufacturer's manual.
+
+   Once you have included `rdb.a' in your VxWorks system image and set
+your Unix execution search path to find GDB, you are ready to run GDB.
+From your Unix host, run `gdb' (or `vxgdb', depending on your
+installation).
+
+   GDB comes up showing the prompt:
+
+     (vxgdb)
+
+* Menu:
+
+* VxWorks Connection::          Connecting to VxWorks
+* VxWorks Download::            VxWorks download
+* VxWorks Attach::              Running tasks
+
+
+File: gdb.info,  Node: VxWorks Connection,  Next: VxWorks Download,  Up: VxWorks
+
+Connecting to VxWorks
+.....................
+
+   The GDB command `target' lets you connect to a VxWorks target on the
+network.  To connect to a target whose host name is "`tt'", type:
+
+     (vxgdb) target vxworks tt
+
+   GDB displays messages like these:
+
+     Attaching remote machine across net...
+     Connected to tt.
+
+   GDB then attempts to read the symbol tables of any object modules
+loaded into the VxWorks target since it was last booted.  GDB locates
+these files by searching the directories listed in the command search
+path (*note Your program's environment: Environment.); if it fails to
+find an object file, it displays a message such as:
+
+     prog.o: No such file or directory.
+
+   When this happens, add the appropriate directory to the search path
+with the GDB command `path', and execute the `target' command again.
+
+
+File: gdb.info,  Node: VxWorks Download,  Next: VxWorks Attach,  Prev: VxWorks Connection,  Up: VxWorks
+
+VxWorks download
+................
+
+   If you have connected to the VxWorks target and you want to debug an
+object that has not yet been loaded, you can use the GDB `load' command
+to download a file from Unix to VxWorks incrementally.  The object file
+given as an argument to the `load' command is actually opened twice:
+first by the VxWorks target in order to download the code, then by GDB
+in order to read the symbol table.  This can lead to problems if the
+current working directories on the two systems differ.  If both systems
+have NFS mounted the same filesystems, you can avoid these problems by
+using absolute paths.  Otherwise, it is simplest to set the working
+directory on both systems to the directory in which the object file
+resides, and then to reference the file by its name, without any path.
+For instance, a program `prog.o' may reside in `VXPATH/vw/demo/rdb' in
+VxWorks and in `HOSTPATH/vw/demo/rdb' on the host.  To load this
+program, type this on VxWorks:
+
+     -> cd "VXPATH/vw/demo/rdb"
+
+Then, in GDB, type:
+
+     (vxgdb) cd HOSTPATH/vw/demo/rdb
+     (vxgdb) load prog.o
+
+   GDB displays a response similar to this:
+
+     Reading symbol data from wherever/vw/demo/rdb/prog.o... done.
+
+   You can also use the `load' command to reload an object module after
+editing and recompiling the corresponding source file.  Note that this
+makes GDB delete all currently-defined breakpoints, auto-displays, and
+convenience variables, and to clear the value history.  (This is
+necessary in order to preserve the integrity of debugger's data
+structures that reference the target system's symbol table.)
+
+
+File: gdb.info,  Node: VxWorks Attach,  Prev: VxWorks Download,  Up: VxWorks
+
+Running tasks
+.............
+
+   You can also attach to an existing task using the `attach' command as
+follows:
+
+     (vxgdb) attach TASK
+
+where TASK is the VxWorks hexadecimal task ID.  The task can be running
+or suspended when you attach to it.  Running tasks are suspended at the
+time of attachment.
+
+
+File: gdb.info,  Node: Embedded Processors,  Next: Architectures,  Prev: Embedded OS,  Up: Configurations
+
+Embedded Processors
+===================
+
+   This section goes into details specific to particular embedded
+configurations.
+
+* Menu:
+
+* ARM::                         ARM
+* H8/300::                      Hitachi H8/300
+* H8/500::                      Hitachi H8/500
+* M32R/D::                      Mitsubishi M32R/D
+* M68K::                        Motorola M68K
+* MIPS Embedded::               MIPS Embedded
+* OpenRISC 1000::               OpenRisc 1000
+* PA::                          HP PA Embedded
+* PowerPC:                      PowerPC
+* SH::                          Hitachi SH
+* Sparclet::                    Tsqware Sparclet
+* Sparclite::                   Fujitsu Sparclite
+* ST2000::                      Tandem ST2000
+* Z8000::                       Zilog Z8000
+
+
+File: gdb.info,  Node: ARM,  Next: H8/300,  Up: Embedded Processors
+
+ARM
+---
+
+`target rdi DEV'
+     ARM Angel monitor, via RDI library interface to ADP protocol.  You
+     may use this target to communicate with both boards running the
+     Angel monitor, or with the EmbeddedICE JTAG debug device.
+
+`target rdp DEV'
+     ARM Demon monitor.
+
+
+File: gdb.info,  Node: H8/300,  Next: H8/500,  Prev: ARM,  Up: Embedded Processors
+
+Hitachi H8/300
+--------------
+
+`target hms DEV'
+     A Hitachi SH, H8/300, or H8/500 board, attached via serial line to
+     your host.  Use special commands `device' and `speed' to control
+     the serial line and the communications speed used.
+
+`target e7000 DEV'
+     E7000 emulator for Hitachi H8 and SH.
+
+`target sh3 DEV'
+`target sh3e DEV'
+     Hitachi SH-3 and SH-3E target systems.
+
+   When you select remote debugging to a Hitachi SH, H8/300, or H8/500
+board, the `load' command downloads your program to the Hitachi board
+and also opens it as the current executable target for GDB on your host
+(like the `file' command).
+
+   GDB needs to know these things to talk to your Hitachi SH, H8/300,
+or H8/500:
+
+  1. that you want to use `target hms', the remote debugging interface
+     for Hitachi microprocessors, or `target e7000', the in-circuit
+     emulator for the Hitachi SH and the Hitachi 300H.  (`target hms' is
+     the default when GDB is configured specifically for the Hitachi SH,
+     H8/300, or H8/500.)
+
+  2. what serial device connects your host to your Hitachi board (the
+     first serial device available on your host is the default).
+
+  3. what speed to use over the serial device.
+
+* Menu:
+
+* Hitachi Boards::      Connecting to Hitachi boards.
+* Hitachi ICE::         Using the E7000 In-Circuit Emulator.
+* Hitachi Special::     Special GDB commands for Hitachi micros.
+
+
+File: gdb.info,  Node: Hitachi Boards,  Next: Hitachi ICE,  Up: H8/300
+
+Connecting to Hitachi boards
+............................
+
+   Use the special `GDB' command `device PORT' if you need to
+explicitly set the serial device.  The default PORT is the first
+available port on your host.  This is only necessary on Unix hosts,
+where it is typically something like `/dev/ttya'.
+
+   `GDB' has another special command to set the communications speed:
+`speed BPS'.  This command also is only used from Unix hosts; on DOS
+hosts, set the line speed as usual from outside GDB with the DOS `mode'
+command (for instance, `mode com2:9600,n,8,1,p' for a 9600bps
+connection).
+
+   The `device' and `speed' commands are available only when you use a
+Unix host to debug your Hitachi microprocessor programs.  If you use a
+DOS host, GDB depends on an auxiliary terminate-and-stay-resident
+program called `asynctsr' to communicate with the development board
+through a PC serial port.  You must also use the DOS `mode' command to
+set up the serial port on the DOS side.
+
+   The following sample session illustrates the steps needed to start a
+program under GDB control on an H8/300.  The example uses a sample
+H8/300 program called `t.x'.  The procedure is the same for the Hitachi
+SH and the H8/500.
+
+   First hook up your development board.  In this example, we use a
+board attached to serial port `COM2'; if you use a different serial
+port, substitute its name in the argument of the `mode' command.  When
+you call `asynctsr', the auxiliary comms program used by the debugger,
+you give it just the numeric part of the serial port's name; for
+example, `asyncstr 2' below runs `asyncstr' on `COM2'.
+
+     C:\H8300\TEST> asynctsr 2
+     C:\H8300\TEST> mode com2:9600,n,8,1,p
+     
+     Resident portion of MODE loaded
+     
+     COM2: 9600, n, 8, 1, p
+
+     _Warning:_ We have noticed a bug in PC-NFS that conflicts with
+     `asynctsr'.  If you also run PC-NFS on your DOS host, you may need
+     to disable it, or even boot without it, to use `asynctsr' to
+     control your development board.
+
+   Now that serial communications are set up, and the development board
+is connected, you can start up GDB.  Call `gdb' with the name of your
+program as the argument.  `GDB' prompts you, as usual, with the prompt
+`(gdb)'.  Use two special commands to begin your debugging session:
+`target hms' to specify cross-debugging to the Hitachi board, and the
+`load' command to download your program to the board.  `load' displays
+the names of the program's sections, and a `*' for each 2K of data
+downloaded.  (If you want to refresh GDB data on symbols or on the
+executable file without downloading, use the GDB commands `file' or
+`symbol-file'.  These commands, and `load' itself, are described in
+*Note Commands to specify files: Files.)
+
+     (eg-C:\H8300\TEST) gdb t.x
+     GDB is free software and you are welcome to distribute copies
+      of it under certain conditions; type "show copying" to see
+      the conditions.
+     There is absolutely no warranty for GDB; type "show warranty"
+     for details.
+     GDB 2003-09-20-cvs (cygwin-special), Copyright 1992 Free Software Foundation, Inc...
+     (gdb) target hms
+     Connected to remote H8/300 HMS system.
+     (gdb) load t.x
+     .text   : 0x8000 .. 0xabde ***********
+     .data   : 0xabde .. 0xad30 *
+     .stack  : 0xf000 .. 0xf014 *
+
+   At this point, you're ready to run or debug your program.  From here
+on, you can use all the usual GDB commands.  The `break' command sets
+breakpoints; the `run' command starts your program; `print' or `x'
+display data; the `continue' command resumes execution after stopping
+at a breakpoint.  You can use the `help' command at any time to find
+out more about GDB commands.
+
+   Remember, however, that _operating system_ facilities aren't
+available on your development board; for example, if your program hangs,
+you can't send an interrupt--but you can press the RESET switch!
+
+   Use the RESET button on the development board
+   * to interrupt your program (don't use `ctl-C' on the DOS host--it
+     has no way to pass an interrupt signal to the development board);
+     and
+
+   * to return to the GDB command prompt after your program finishes
+     normally.  The communications protocol provides no other way for
+     GDB to detect program completion.
+
+   In either case, GDB sees the effect of a RESET on the development
+board as a "normal exit" of your program.
+
+
+File: gdb.info,  Node: Hitachi ICE,  Next: Hitachi Special,  Prev: Hitachi Boards,  Up: H8/300
+
+Using the E7000 in-circuit emulator
+...................................
+
+   You can use the E7000 in-circuit emulator to develop code for either
+the Hitachi SH or the H8/300H.  Use one of these forms of the `target
+e7000' command to connect GDB to your E7000:
+
+`target e7000 PORT SPEED'
+     Use this form if your E7000 is connected to a serial port.  The
+     PORT argument identifies what serial port to use (for example,
+     `com2').  The third argument is the line speed in bits per second
+     (for example, `9600').
+
+`target e7000 HOSTNAME'
+     If your E7000 is installed as a host on a TCP/IP network, you can
+     just specify its hostname; GDB uses `telnet' to connect.
+
+
+File: gdb.info,  Node: Hitachi Special,  Prev: Hitachi ICE,  Up: H8/300
+
+Special GDB commands for Hitachi micros
+.......................................
+
+   Some GDB commands are available only for the H8/300:
+
+`set machine h8300'
+`set machine h8300h'
+     Condition GDB for one of the two variants of the H8/300
+     architecture with `set machine'.  You can use `show machine' to
+     check which variant is currently in effect.
+
+
+File: gdb.info,  Node: H8/500,  Next: M32R/D,  Prev: H8/300,  Up: Embedded Processors
+
+H8/500
+------
+
+`set memory MOD'
+`show memory'
+     Specify which H8/500 memory model (MOD) you are using with `set
+     memory'; check which memory model is in effect with `show memory'.
+     The accepted values for MOD are `small', `big', `medium', and
+     `compact'.
+
+
+File: gdb.info,  Node: M32R/D,  Next: M68K,  Prev: H8/500,  Up: Embedded Processors
+
+Mitsubishi M32R/D
+-----------------
+
+`target m32r DEV'
+     Mitsubishi M32R/D ROM monitor.
+
+
+File: gdb.info,  Node: M68K,  Next: MIPS Embedded,  Prev: M32R/D,  Up: Embedded Processors
+
+M68k
+----
+
+   The Motorola m68k configuration includes ColdFire support, and
+target command for the following ROM monitors.
+
+`target abug DEV'
+     ABug ROM monitor for M68K.
+
+`target cpu32bug DEV'
+     CPU32BUG monitor, running on a CPU32 (M68K) board.
+
+`target dbug DEV'
+     dBUG ROM monitor for Motorola ColdFire.
+
+`target est DEV'
+     EST-300 ICE monitor, running on a CPU32 (M68K) board.
+
+`target rom68k DEV'
+     ROM 68K monitor, running on an M68K IDP board.
+
+`target rombug DEV'
+     ROMBUG ROM monitor for OS/9000.
+
+
+File: gdb.info,  Node: MIPS Embedded,  Next: OpenRISC 1000,  Prev: M68K,  Up: Embedded Processors
+
+MIPS Embedded
+-------------
+
+   GDB can use the MIPS remote debugging protocol to talk to a MIPS
+board attached to a serial line.  This is available when you configure
+GDB with `--target=mips-idt-ecoff'.
+
+   Use these GDB commands to specify the connection to your target
+board:
+
+`target mips PORT'
+     To run a program on the board, start up `gdb' with the name of
+     your program as the argument.  To connect to the board, use the
+     command `target mips PORT', where PORT is the name of the serial
+     port connected to the board.  If the program has not already been
+     downloaded to the board, you may use the `load' command to
+     download it.  You can then use all the usual GDB commands.
+
+     For example, this sequence connects to the target board through a
+     serial port, and loads and runs a program called PROG through the
+     debugger:
+
+          host$ gdb PROG
+          GDB is free software and ...
+          (gdb) target mips /dev/ttyb
+          (gdb) load PROG
+          (gdb) run
+
+`target mips HOSTNAME:PORTNUMBER'
+     On some GDB host configurations, you can specify a TCP connection
+     (for instance, to a serial line managed by a terminal
+     concentrator) instead of a serial port, using the syntax
+     `HOSTNAME:PORTNUMBER'.
+
+`target pmon PORT'
+     PMON ROM monitor.
+
+`target ddb PORT'
+     NEC's DDB variant of PMON for Vr4300.
+
+`target lsi PORT'
+     LSI variant of PMON.
+
+`target r3900 DEV'
+     Densan DVE-R3900 ROM monitor for Toshiba R3900 Mips.
+
+`target array DEV'
+     Array Tech LSI33K RAID controller board.
+
+GDB also supports these special commands for MIPS targets:
+
+`set processor ARGS'
+`show processor'
+     Use the `set processor' command to set the type of MIPS processor
+     when you want to access processor-type-specific registers.  For
+     example, `set processor R3041' tells GDB to use the CPU registers
+     appropriate for the 3041 chip.  Use the `show processor' command
+     to see what MIPS processor GDB is using.  Use the `info reg'
+     command to see what registers GDB is using.
+
+`set mipsfpu double'
+`set mipsfpu single'
+`set mipsfpu none'
+`show mipsfpu'
+     If your target board does not support the MIPS floating point
+     coprocessor, you should use the command `set mipsfpu none' (if you
+     need this, you may wish to put the command in your GDB init file).
+     This tells GDB how to find the return value of functions which
+     return floating point values.  It also allows GDB to avoid saving
+     the floating point registers when calling functions on the board.
+     If you are using a floating point coprocessor with only single
+     precision floating point support, as on the R4650 processor, use
+     the command `set mipsfpu single'.  The default double precision
+     floating point coprocessor may be selected using `set mipsfpu
+     double'.
+
+     In previous versions the only choices were double precision or no
+     floating point, so `set mipsfpu on' will select double precision
+     and `set mipsfpu off' will select no floating point.
+
+     As usual, you can inquire about the `mipsfpu' variable with `show
+     mipsfpu'.
+
+`set remotedebug N'
+`show remotedebug'
+     You can see some debugging information about communications with
+     the board by setting the `remotedebug' variable.  If you set it to
+     `1' using `set remotedebug 1', every packet is displayed.  If you
+     set it to `2', every character is displayed.  You can check the
+     current value at any time with the command `show remotedebug'.
+
+`set timeout SECONDS'
+`set retransmit-timeout SECONDS'
+`show timeout'
+`show retransmit-timeout'
+     You can control the timeout used while waiting for a packet, in
+     the MIPS remote protocol, with the `set timeout SECONDS' command.
+     The default is 5 seconds.  Similarly, you can control the timeout
+     used while waiting for an acknowledgement of a packet with the `set
+     retransmit-timeout SECONDS' command.  The default is 3 seconds.
+     You can inspect both values with `show timeout' and `show
+     retransmit-timeout'.  (These commands are _only_ available when
+     GDB is configured for `--target=mips-idt-ecoff'.)
+
+     The timeout set by `set timeout' does not apply when GDB is
+     waiting for your program to stop.  In that case, GDB waits forever
+     because it has no way of knowing how long the program is going to
+     run before stopping.
+
+
+File: gdb.info,  Node: OpenRISC 1000,  Next: PA,  Prev: MIPS Embedded,  Up: Embedded Processors
+
+OpenRISC 1000
+-------------
+
+   See OR1k Architecture document (`www.opencores.org') for more
+information about platform and commands.
+
+`target jtag jtag://HOST:PORT'
+     Connects to remote JTAG server.  JTAG remote server can be either
+     an or1ksim or JTAG server, connected via parallel port to the
+     board.
+
+     Example: `target jtag jtag://localhost:9999'
+
+`or1ksim COMMAND'
+     If connected to `or1ksim' OpenRISC 1000 Architectural Simulator,
+     proprietary commands can be executed.
+
+`info or1k spr'
+     Displays spr groups.
+
+`info or1k spr GROUP'
+`info or1k spr GROUPNO'
+     Displays register names in selected group.
+
+`info or1k spr GROUP REGISTER'
+`info or1k spr REGISTER'
+`info or1k spr GROUPNO REGISTERNO'
+`info or1k spr REGISTERNO'
+     Shows information about specified spr register.
+
+`spr GROUP REGISTER VALUE'
+`spr REGISTER VALUE'
+`spr GROUPNO REGISTERNO VALUE'
+`spr REGISTERNO VALUE'
+     Writes VALUE to specified spr register.
+
+   Some implementations of OpenRISC 1000 Architecture also have
+hardware trace.  It is very similar to GDB trace, except it does not
+interfere with normal program execution and is thus much faster.
+Hardware breakpoints/watchpoint triggers can be set using:
+`$LEA/$LDATA'
+     Load effective address/data
+
+`$SEA/$SDATA'
+     Store effective address/data
+
+`$AEA/$ADATA'
+     Access effective address ($SEA or $LEA) or data ($SDATA/$LDATA)
+
+`$FETCH'
+     Fetch data
+
+   When triggered, it can capture low level data, like: `PC', `LSEA',
+`LDATA', `SDATA', `READSPR', `WRITESPR', `INSTR'.
+
+   `htrace' commands:
+`hwatch CONDITIONAL'
+     Set hardware watchpoint on combination of Load/Store Effecive
+     Address(es) or Data.  For example:
+
+     `hwatch ($LEA == my_var) && ($LDATA < 50) || ($SEA == my_var) &&
+     ($SDATA >= 50)'
+
+     `hwatch ($LEA == my_var) && ($LDATA < 50) || ($SEA == my_var) &&
+     ($SDATA >= 50)'
+
+`htrace info'
+     Display information about current HW trace configuration.
+
+`htrace trigger CONDITIONAL'
+     Set starting criteria for HW trace.
+
+`htrace qualifier CONDITIONAL'
+     Set acquisition qualifier for HW trace.
+
+`htrace stop CONDITIONAL'
+     Set HW trace stopping criteria.
+
+`htrace record [DATA]*'
+     Selects the data to be recorded, when qualifier is met and HW
+     trace was triggered.
+
+`htrace enable'
+`htrace disable'
+     Enables/disables the HW trace.
+
+`htrace rewind [FILENAME]'
+     Clears currently recorded trace data.
+
+     If filename is specified, new trace file is made and any newly
+     collected data will be written there.
+
+`htrace print [START [LEN]]'
+     Prints trace buffer, using current record configuration.
+
+`htrace mode continuous'
+     Set continuous trace mode.
+
+`htrace mode suspend'
+     Set suspend trace mode.
+
+
+File: gdb.info,  Node: PowerPC,  Next: SH,  Prev: PA,  Up: Embedded Processors
+
+PowerPC
+-------
+
+`target dink32 DEV'
+     DINK32 ROM monitor.
+
+`target ppcbug DEV'
+
+`target ppcbug1 DEV'
+     PPCBUG ROM monitor for PowerPC.
+
+`target sds DEV'
+     SDS monitor, running on a PowerPC board (such as Motorola's ADS).
+
+
+File: gdb.info,  Node: PA,  Next: PowerPC,  Prev: OpenRISC 1000,  Up: Embedded Processors
+
+HP PA Embedded
+--------------
+
+`target op50n DEV'
+     OP50N monitor, running on an OKI HPPA board.
+
+`target w89k DEV'
+     W89K monitor, running on a Winbond HPPA board.
+
+
+File: gdb.info,  Node: SH,  Next: Sparclet,  Prev: PowerPC,  Up: Embedded Processors
+
+Hitachi SH
+----------
+
+`target hms DEV'
+     A Hitachi SH board attached via serial line to your host.  Use
+     special commands `device' and `speed' to control the serial line
+     and the communications speed used.
+
+`target e7000 DEV'
+     E7000 emulator for Hitachi SH.
+
+`target sh3 DEV'
+
+`target sh3e DEV'
+     Hitachi SH-3 and SH-3E target systems.
+
+
+File: gdb.info,  Node: Sparclet,  Next: Sparclite,  Prev: SH,  Up: Embedded Processors
+
+Tsqware Sparclet
+----------------
+
+   GDB enables developers to debug tasks running on Sparclet targets
+from a Unix host.  GDB uses code that runs on both the Unix host and on
+the Sparclet target.  The program `gdb' is installed and executed on
+the Unix host.
+
+`remotetimeout ARGS'
+     GDB supports the option `remotetimeout'.  This option is set by
+     the user, and  ARGS represents the number of seconds GDB waits for
+     responses.
+
+   When compiling for debugging, include the options `-g' to get debug
+information and `-Ttext' to relocate the program to where you wish to
+load it on the target.  You may also want to add the options `-n' or
+`-N' in order to reduce the size of the sections.  Example:
+
+     sparclet-aout-gcc prog.c -Ttext 0x12010000 -g -o prog -N
+
+   You can use `objdump' to verify that the addresses are what you
+intended:
+
+     sparclet-aout-objdump --headers --syms prog
+
+   Once you have set your Unix execution search path to find GDB, you
+are ready to run GDB.  From your Unix host, run `gdb' (or
+`sparclet-aout-gdb', depending on your installation).
+
+   GDB comes up showing the prompt:
+
+     (gdbslet)
+
+* Menu:
+
+* Sparclet File::                Setting the file to debug
+* Sparclet Connection::          Connecting to Sparclet
+* Sparclet Download::            Sparclet download
+* Sparclet Execution::           Running and debugging
+
+
+File: gdb.info,  Node: Sparclet File,  Next: Sparclet Connection,  Up: Sparclet
+
+Setting file to debug
+.....................
+
+   The GDB command `file' lets you choose with program to debug.
+
+     (gdbslet) file prog
+
+   GDB then attempts to read the symbol table of `prog'.  GDB locates
+the file by searching the directories listed in the command search path.
+If the file was compiled with debug information (option "-g"), source
+files will be searched as well.  GDB locates the source files by
+searching the directories listed in the directory search path (*note
+Your program's environment: Environment.).  If it fails to find a file,
+it displays a message such as:
+
+     prog: No such file or directory.
+
+   When this happens, add the appropriate directories to the search
+paths with the GDB commands `path' and `dir', and execute the `target'
+command again.
+
+
+File: gdb.info,  Node: Sparclet Connection,  Next: Sparclet Download,  Prev: Sparclet File,  Up: Sparclet
+
+Connecting to Sparclet
+......................
+
+   The GDB command `target' lets you connect to a Sparclet target.  To
+connect to a target on serial port "`ttya'", type:
+
+     (gdbslet) target sparclet /dev/ttya
+     Remote target sparclet connected to /dev/ttya
+     main () at ../prog.c:3
+
+   GDB displays messages like these:
+
+     Connected to ttya.
+
+
+File: gdb.info,  Node: Sparclet Download,  Next: Sparclet Execution,  Prev: Sparclet Connection,  Up: Sparclet
+
+Sparclet download
+.................
+
+   Once connected to the Sparclet target, you can use the GDB `load'
+command to download the file from the host to the target.  The file
+name and load offset should be given as arguments to the `load' command.
+Since the file format is aout, the program must be loaded to the
+starting address.  You can use `objdump' to find out what this value
+is.  The load offset is an offset which is added to the VMA (virtual
+memory address) of each of the file's sections.  For instance, if the
+program `prog' was linked to text address 0x1201000, with data at
+0x12010160 and bss at 0x12010170, in GDB, type:
+
+     (gdbslet) load prog 0x12010000
+     Loading section .text, size 0xdb0 vma 0x12010000
+
+   If the code is loaded at a different address then what the program
+was linked to, you may need to use the `section' and `add-symbol-file'
+commands to tell GDB where to map the symbol table.
+
+
+File: gdb.info,  Node: Sparclet Execution,  Prev: Sparclet Download,  Up: Sparclet
+
+Running and debugging
+.....................
+
+   You can now begin debugging the task using GDB's execution control
+commands, `b', `step', `run', etc.  See the GDB manual for the list of
+commands.
+
+     (gdbslet) b main
+     Breakpoint 1 at 0x12010000: file prog.c, line 3.
+     (gdbslet) run
+     Starting program: prog
+     Breakpoint 1, main (argc=1, argv=0xeffff21c) at prog.c:3
+     3        char *symarg = 0;
+     (gdbslet) step
+     4        char *execarg = "hello!";
+     (gdbslet)
+
+
+File: gdb.info,  Node: Sparclite,  Next: ST2000,  Prev: Sparclet,  Up: Embedded Processors
+
+Fujitsu Sparclite
+-----------------
+
+`target sparclite DEV'
+     Fujitsu sparclite boards, used only for the purpose of loading.
+     You must use an additional command to debug the program.  For
+     example: target remote DEV using GDB standard remote protocol.
+
+
+File: gdb.info,  Node: ST2000,  Next: Z8000,  Prev: Sparclite,  Up: Embedded Processors
+
+Tandem ST2000
+-------------
+
+   GDB may be used with a Tandem ST2000 phone switch, running Tandem's
+STDBUG protocol.
+
+   To connect your ST2000 to the host system, see the manufacturer's
+manual.  Once the ST2000 is physically attached, you can run:
+
+     target st2000 DEV SPEED
+
+to establish it as your debugging environment.  DEV is normally the
+name of a serial device, such as `/dev/ttya', connected to the ST2000
+via a serial line.  You can instead specify DEV as a TCP connection
+(for example, to a serial line attached via a terminal concentrator)
+using the syntax `HOSTNAME:PORTNUMBER'.
+
+   The `load' and `attach' commands are _not_ defined for this target;
+you must load your program into the ST2000 as you normally would for
+standalone operation.  GDB reads debugging information (such as
+symbols) from a separate, debugging version of the program available on
+your host computer.
+
+   These auxiliary GDB commands are available to help you with the
+ST2000 environment:
+
+`st2000 COMMAND'
+     Send a COMMAND to the STDBUG monitor.  See the manufacturer's
+     manual for available commands.
+
+`connect'
+     Connect the controlling terminal to the STDBUG command monitor.
+     When you are done interacting with STDBUG, typing either of two
+     character sequences gets you back to the GDB command prompt:
+     `<RET>~.' (Return, followed by tilde and period) or `<RET>~<C-d>'
+     (Return, followed by tilde and control-D).
+
+
+File: gdb.info,  Node: Z8000,  Prev: ST2000,  Up: Embedded Processors
+
+Zilog Z8000
+-----------
+
+   When configured for debugging Zilog Z8000 targets, GDB includes a
+Z8000 simulator.
+
+   For the Z8000 family, `target sim' simulates either the Z8002 (the
+unsegmented variant of the Z8000 architecture) or the Z8001 (the
+segmented variant).  The simulator recognizes which architecture is
+appropriate by inspecting the object code.
+
+`target sim ARGS'
+     Debug programs on a simulated CPU.  If the simulator supports setup
+     options, specify them via ARGS.
+
+After specifying this target, you can debug programs for the simulated
+CPU in the same style as programs for your host computer; use the
+`file' command to load a new program image, the `run' command to run
+your program, and so on.
+
+   As well as making available all the usual machine registers (*note
+Registers: Registers.), the Z8000 simulator provides three additional
+items of information as specially named registers:
+
+`cycles'
+     Counts clock-ticks in the simulator.
+
+`insts'
+     Counts instructions run in the simulator.
+
+`time'
+     Execution time in 60ths of a second.
+
+   You can refer to these values in GDB expressions with the usual
+conventions; for example, `b fputc if $cycles>5000' sets a conditional
+breakpoint that suspends only after at least 5000 simulated clock ticks.
+
+
+File: gdb.info,  Node: Architectures,  Prev: Embedded Processors,  Up: Configurations
+
+Architectures
+=============
+
+   This section describes characteristics of architectures that affect
+all uses of GDB with the architecture, both native and cross.
+
+* Menu:
+
+* A29K::
+* Alpha::
+* MIPS::
+
+
+File: gdb.info,  Node: A29K,  Next: Alpha,  Up: Architectures
+
+A29K
+----
+
+`set rstack_high_address ADDRESS'
+     On AMD 29000 family processors, registers are saved in a separate
+     "register stack".  There is no way for GDB to determine the extent
+     of this stack.  Normally, GDB just assumes that the stack is
+     "large enough".  This may result in GDB referencing memory
+     locations that do not exist.  If necessary, you can get around
+     this problem by specifying the ending address of the register
+     stack with the `set rstack_high_address' command.  The argument
+     should be an address, which you probably want to precede with `0x'
+     to specify in hexadecimal.
+
+`show rstack_high_address'
+     Display the current limit of the register stack, on AMD 29000
+     family processors.
+
+
+File: gdb.info,  Node: Alpha,  Next: MIPS,  Prev: A29K,  Up: Architectures
+
+Alpha
+-----
+
+   See the following section.
+
+
+File: gdb.info,  Node: MIPS,  Prev: Alpha,  Up: Architectures
+
+MIPS
+----
+
+   Alpha- and MIPS-based computers use an unusual stack frame, which
+sometimes requires GDB to search backward in the object code to find
+the beginning of a function.
+
+   To improve response time (especially for embedded applications, where
+GDB may be restricted to a slow serial line for this search) you may
+want to limit the size of this search, using one of these commands:
+
+`set heuristic-fence-post LIMIT'
+     Restrict GDB to examining at most LIMIT bytes in its search for
+     the beginning of a function.  A value of 0 (the default) means
+     there is no limit.  However, except for 0, the larger the limit
+     the more bytes `heuristic-fence-post' must search and therefore
+     the longer it takes to run.
+
+`show heuristic-fence-post'
+     Display the current limit.
+
+These commands are available _only_ when GDB is configured for
+debugging programs on Alpha or MIPS processors.
+
+
+File: gdb.info,  Node: Controlling GDB,  Next: Sequences,  Prev: Configurations,  Up: Top
+
+Controlling GDB
+***************
+
+   You can alter the way GDB interacts with you by using the `set'
+command.  For commands controlling how GDB displays data, see *Note
+Print settings: Print Settings.  Other settings are described here.
+
+* Menu:
+
+* Prompt::                      Prompt
+* Editing::                     Command editing
+* History::                     Command history
+* Screen Size::                 Screen size
+* Numbers::                     Numbers
+* ABI::                         Configuring the current ABI
+* Messages/Warnings::           Optional warnings and messages
+* Debugging Output::            Optional messages about internal happenings
+
+
+File: gdb.info,  Node: Prompt,  Next: Editing,  Up: Controlling GDB
+
+Prompt
+======
+
+   GDB indicates its readiness to read a command by printing a string
+called the "prompt".  This string is normally `(gdb)'.  You can change
+the prompt string with the `set prompt' command.  For instance, when
+debugging GDB with GDB, it is useful to change the prompt in one of the
+GDB sessions so that you can always tell which one you are talking to.
+
+   _Note:_  `set prompt' does not add a space for you after the prompt
+you set.  This allows you to set a prompt which ends in a space or a
+prompt that does not.
+
+`set prompt NEWPROMPT'
+     Directs GDB to use NEWPROMPT as its prompt string henceforth.
+
+`show prompt'
+     Prints a line of the form: `Gdb's prompt is: YOUR-PROMPT'
+
+
+File: gdb.info,  Node: Editing,  Next: History,  Prev: Prompt,  Up: Controlling GDB
+
+Command editing
+===============
+
+   GDB reads its input commands via the "readline" interface.  This GNU
+library provides consistent behavior for programs which provide a
+command line interface to the user.  Advantages are GNU Emacs-style or
+"vi"-style inline editing of commands, `csh'-like history substitution,
+and a storage and recall of command history across debugging sessions.
+
+   You may control the behavior of command line editing in GDB with the
+command `set'.
+
+`set editing'
+`set editing on'
+     Enable command line editing (enabled by default).
+
+`set editing off'
+     Disable command line editing.
+
+`show editing'
+     Show whether command line editing is enabled.
+
+
+File: gdb.info,  Node: History,  Next: Screen Size,  Prev: Editing,  Up: Controlling GDB
+
+Command history
+===============
+
+   GDB can keep track of the commands you type during your debugging
+sessions, so that you can be certain of precisely what happened.  Use
+these commands to manage the GDB command history facility.
+
+`set history filename FNAME'
+     Set the name of the GDB command history file to FNAME.  This is
+     the file where GDB reads an initial command history list, and
+     where it writes the command history from this session when it
+     exits.  You can access this list through history expansion or
+     through the history command editing characters listed below.  This
+     file defaults to the value of the environment variable
+     `GDBHISTFILE', or to `./.gdb_history' (`./_gdb_history' on MS-DOS)
+     if this variable is not set.
+
+`set history save'
+`set history save on'
+     Record command history in a file, whose name may be specified with
+     the `set history filename' command.  By default, this option is
+     disabled.
+
+`set history save off'
+     Stop recording command history in a file.
+
+`set history size SIZE'
+     Set the number of commands which GDB keeps in its history list.
+     This defaults to the value of the environment variable `HISTSIZE',
+     or to 256 if this variable is not set.
+
+   History expansion assigns special meaning to the character `!'.
+
+   Since `!' is also the logical not operator in C, history expansion
+is off by default. If you decide to enable history expansion with the
+`set history expansion on' command, you may sometimes need to follow
+`!' (when it is used as logical not, in an expression) with a space or
+a tab to prevent it from being expanded.  The readline history
+facilities do not attempt substitution on the strings `!=' and `!(',
+even when history expansion is enabled.
+
+   The commands to control history expansion are:
+
+`set history expansion on'
+`set history expansion'
+     Enable history expansion.  History expansion is off by default.
+
+`set history expansion off'
+     Disable history expansion.
+
+     The readline code comes with more complete documentation of
+     editing and history expansion features.  Users unfamiliar with GNU
+     Emacs or `vi' may wish to read it.
+
+`show history'
+`show history filename'
+`show history save'
+`show history size'
+`show history expansion'
+     These commands display the state of the GDB history parameters.
+     `show history' by itself displays all four states.
+
+`show commands'
+     Display the last ten commands in the command history.
+
+`show commands N'
+     Print ten commands centered on command number N.
+
+`show commands +'
+     Print ten commands just after the commands last printed.
+
+
+File: gdb.info,  Node: Screen Size,  Next: Numbers,  Prev: History,  Up: Controlling GDB
+
+Screen size
+===========
+
+   Certain commands to GDB may produce large amounts of information
+output to the screen.  To help you read all of it, GDB pauses and asks
+you for input at the end of each page of output.  Type <RET> when you
+want to continue the output, or `q' to discard the remaining output.
+Also, the screen width setting determines when to wrap lines of output.
+Depending on what is being printed, GDB tries to break the line at a
+readable place, rather than simply letting it overflow onto the
+following line.
+
+   Normally GDB knows the size of the screen from the terminal driver
+software.  For example, on Unix GDB uses the termcap data base together
+with the value of the `TERM' environment variable and the `stty rows'
+and `stty cols' settings.  If this is not correct, you can override it
+with the `set height' and `set width' commands:
+
+`set height LPP'
+`show height'
+`set width CPL'
+`show width'
+     These `set' commands specify a screen height of LPP lines and a
+     screen width of CPL characters.  The associated `show' commands
+     display the current settings.
+
+     If you specify a height of zero lines, GDB does not pause during
+     output no matter how long the output is.  This is useful if output
+     is to a file or to an editor buffer.
+
+     Likewise, you can specify `set width 0' to prevent GDB from
+     wrapping its output.
+
+
+File: gdb.info,  Node: Numbers,  Next: ABI,  Prev: Screen Size,  Up: Controlling GDB
+
+Numbers
+=======
+
+   You can always enter numbers in octal, decimal, or hexadecimal in
+GDB by the usual conventions: octal numbers begin with `0', decimal
+numbers end with `.', and hexadecimal numbers begin with `0x'.  Numbers
+that begin with none of these are, by default, entered in base 10;
+likewise, the default display for numbers--when no particular format is
+specified--is base 10.  You can change the default base for both input
+and output with the `set radix' command.
+
+`set input-radix BASE'
+     Set the default base for numeric input.  Supported choices for
+     BASE are decimal 8, 10, or 16.  BASE must itself be specified
+     either unambiguously or using the current default radix; for
+     example, any of
+
+          set radix 012
+          set radix 10.
+          set radix 0xa
+
+     sets the base to decimal.  On the other hand, `set radix 10'
+     leaves the radix unchanged no matter what it was.
+
+`set output-radix BASE'
+     Set the default base for numeric display.  Supported choices for
+     BASE are decimal 8, 10, or 16.  BASE must itself be specified
+     either unambiguously or using the current default radix.
+
+`show input-radix'
+     Display the current default base for numeric input.
+
+`show output-radix'
+     Display the current default base for numeric display.
+

@@ -1,0 +1,142 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: i386-Prefixes</TITLE>
+
+<META NAME="description" CONTENT="Using as: i386-Prefixes">
+<META NAME="keywords" CONTENT="Using as: i386-Prefixes">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC271"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_261.html#SEC270"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_263.html#SEC272"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_263.html#SEC272"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 8.12.5 Instruction Prefixes </H3>
+<!--docid::SEC271::-->
+<P>
+
+<A NAME="IDX747"></A>
+<A NAME="IDX748"></A>
+<A NAME="IDX749"></A>
+Instruction prefixes are used to modify the following instruction.  They
+are used to repeat string instructions, to provide section overrides, to
+perform bus lock operations, and to change operand and address sizes.
+(Most instructions that normally operate on 32-bit operands will use
+16-bit operands if the instruction has an "operand size" prefix.)
+Instruction prefixes are best written on the same line as the instruction
+they act upon. For example, the <SAMP>`scas'</SAMP> (scan string) instruction is
+repeated with:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>        repne scas %es:(%edi),%al
+</FONT></pre></td></tr></table></P><P>
+
+You may also place prefixes on the lines immediately preceding the
+instruction, but this circumvents checks that <CODE>as</CODE> does
+with prefixes, and will not work with all prefixes.
+</P><P>
+
+Here is a list of instruction prefixes:
+</P><P>
+
+<A NAME="IDX750"></A>
+<UL>
+<LI>
+Section override prefixes <SAMP>`cs'</SAMP>, <SAMP>`ds'</SAMP>, <SAMP>`ss'</SAMP>, <SAMP>`es'</SAMP>,
+<SAMP>`fs'</SAMP>, <SAMP>`gs'</SAMP>.  These are automatically added by specifying
+using the <VAR>section</VAR>:<VAR>memory-operand</VAR> form for memory references.
+<P>
+
+<A NAME="IDX751"></A>
+<LI>
+Operand/Address size prefixes <SAMP>`data16'</SAMP> and <SAMP>`addr16'</SAMP>
+change 32-bit operands/addresses into 16-bit operands/addresses,
+while <SAMP>`data32'</SAMP> and <SAMP>`addr32'</SAMP> change 16-bit ones (in a
+<CODE>.code16</CODE> section) into 32-bit operands/addresses.  These prefixes
+<EM>must</EM> appear on the same line of code as the instruction they
+modify. For example, in a 16-bit <CODE>.code16</CODE> section, you might
+write:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>        addr32 jmpl *(%ebx)
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX752"></A>
+<A NAME="IDX753"></A>
+<LI>
+The bus lock prefix <SAMP>`lock'</SAMP> inhibits interrupts during execution of
+the instruction it precedes.  (This is only valid with certain
+instructions; see a 80386 manual for details).
+<P>
+
+<A NAME="IDX754"></A>
+<LI>
+The wait for coprocessor prefix <SAMP>`wait'</SAMP> waits for the coprocessor to
+complete the current instruction.  This should never be needed for the
+80386/80387 combination.
+<P>
+
+<A NAME="IDX755"></A>
+<LI>
+The <SAMP>`rep'</SAMP>, <SAMP>`repe'</SAMP>, and <SAMP>`repne'</SAMP> prefixes are added
+to string instructions to make them repeat <SAMP>`%ecx'</SAMP> times (<SAMP>`%cx'</SAMP>
+times if the current address size is 16-bits).
+<A NAME="IDX756"></A>
+<LI>
+The <SAMP>`rex'</SAMP> family of prefixes is used by x86-64 to encode
+extensions to i386 instruction set.  The <SAMP>`rex'</SAMP> prefix has four
+bits -- an operand size overwrite (<CODE>64</CODE>) used to change operand size
+from 32-bit to 64-bit and X, Y and Z extensions bits used to extend the
+register set.
+<P>
+
+You may write the <SAMP>`rex'</SAMP> prefixes directly. The <SAMP>`rex64xyz'</SAMP>
+instruction emits <SAMP>`rex'</SAMP> prefix with all the bits set.  By omitting
+the <CODE>64</CODE>, <CODE>x</CODE>, <CODE>y</CODE> or <CODE>z</CODE> you may write other
+prefixes as well.  Normally, there is no need to write the prefixes
+explicitly, since gas will automatically generate them based on the
+instruction operands.
+</UL>
+<P>
+
+<A NAME="i386-Memory"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_261.html#SEC270"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_263.html#SEC272"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_263.html#SEC272"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_257.html#SEC266"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_271.html#SEC280"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

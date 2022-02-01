@@ -1,0 +1,175 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Signals</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Signals">
+<META NAME="keywords" CONTENT="Debugging with GDB: Signals">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC39"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_40.html#SEC40"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_40.html#SEC40"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_41.html#SEC41"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.3 Signals </H2>
+<!--docid::SEC39::-->
+<P>
+
+A signal is an asynchronous event that can happen in a program.  The
+operating system defines the possible kinds of signals, and gives each
+kind a name and a number.  For example, in Unix <CODE>SIGINT</CODE> is the
+signal a program gets when you type an interrupt character (often <KBD>C-c</KBD>);
+<CODE>SIGSEGV</CODE> is the signal a program gets from referencing a place in
+memory far away from all the areas in use; <CODE>SIGALRM</CODE> occurs when
+the alarm clock timer goes off (which happens only if your program has
+requested an alarm).
+</P><P>
+
+<A NAME="IDX210"></A>
+Some signals, including <CODE>SIGALRM</CODE>, are a normal part of the
+functioning of your program.  Others, such as <CODE>SIGSEGV</CODE>, indicate
+errors; these signals are <EM>fatal</EM> (they kill your program immediately) if the
+program has not specified in advance some other way to handle the signal.
+<CODE>SIGINT</CODE> does not indicate an error in your program, but it is normally
+fatal so it can carry out the purpose of the interrupt: to kill the program.
+</P><P>
+
+GDB has the ability to detect any occurrence of a signal in your
+program.  You can tell GDB in advance what to do for each kind of
+signal.
+</P><P>
+
+<A NAME="IDX211"></A>
+Normally, GDB is set up to let the non-erroneous signals like
+<CODE>SIGALRM</CODE> be silently passed to your program
+(so as not to interfere with their role in the program's functioning)
+but to stop your program immediately whenever an error signal happens.
+You can change these settings with the <CODE>handle</CODE> command.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX212"></A>
+<DT><CODE>info signals</CODE>
+<DD><DT><CODE>info handle</CODE>
+<DD>Print a table of all the kinds of signals and how GDB has been told to
+handle each one.  You can use this to see the signal numbers of all
+the defined types of signals.
+<P>
+
+<CODE>info handle</CODE> is an alias for <CODE>info signals</CODE>.
+</P><P>
+
+<A NAME="IDX213"></A>
+<DT><CODE>handle <VAR>signal</VAR> <VAR>keywords</VAR><small>...</small></CODE>
+<DD>Change the way GDB handles signal <VAR>signal</VAR>.  <VAR>signal</VAR>
+can be the number of a signal or its name (with or without the
+<SAMP>`SIG'</SAMP> at the beginning); a list of signal numbers of the form
+<SAMP>`<VAR>low</VAR>-<VAR>high</VAR>'</SAMP>; or the word <SAMP>`all'</SAMP>, meaning all the
+known signals.  The <VAR>keywords</VAR> say what change to make.
+</DL>
+<P>
+
+The keywords allowed by the <CODE>handle</CODE> command can be abbreviated.
+Their full names are:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>nostop</CODE>
+<DD>GDB should not stop your program when this signal happens.  It may
+still print a message telling you that the signal has come in.
+<P>
+
+<DT><CODE>stop</CODE>
+<DD>GDB should stop your program when this signal happens.  This implies
+the <CODE>print</CODE> keyword as well.
+<P>
+
+<DT><CODE>print</CODE>
+<DD>GDB should print a message when this signal happens.
+<P>
+
+<DT><CODE>noprint</CODE>
+<DD>GDB should not mention the occurrence of the signal at all.  This
+implies the <CODE>nostop</CODE> keyword as well.
+<P>
+
+<DT><CODE>pass</CODE>
+<DD><DT><CODE>noignore</CODE>
+<DD>GDB should allow your program to see this signal; your program
+can handle the signal, or else it may terminate if the signal is fatal
+and not handled.  <CODE>pass</CODE> and <CODE>noignore</CODE> are synonyms.
+<P>
+
+<DT><CODE>nopass</CODE>
+<DD><DT><CODE>ignore</CODE>
+<DD>GDB should not allow your program to see this signal.
+<CODE>nopass</CODE> and <CODE>ignore</CODE> are synonyms.
+</DL>
+<P>
+
+When a signal stops your program, the signal is not visible to the
+program until you
+continue.  Your program sees the signal then, if <CODE>pass</CODE> is in
+effect for the signal in question <EM>at that time</EM>.  In other words,
+after GDB reports a signal, you can use the <CODE>handle</CODE>
+command with <CODE>pass</CODE> or <CODE>nopass</CODE> to control whether your
+program sees that signal when you continue.
+</P><P>
+
+The default is set to <CODE>nostop</CODE>, <CODE>noprint</CODE>, <CODE>pass</CODE> for
+non-erroneous signals such as <CODE>SIGALRM</CODE>, <CODE>SIGWINCH</CODE> and
+<CODE>SIGCHLD</CODE>, and to <CODE>stop</CODE>, <CODE>print</CODE>, <CODE>pass</CODE> for the
+erroneous signals.
+</P><P>
+
+You can also use the <CODE>signal</CODE> command to prevent your program from
+seeing a signal, or cause it to see a signal it normally would not see,
+or to give it any signal at any time.  For example, if your program stopped
+due to some sort of memory reference error, you might store correct
+values into the erroneous variables and continue, hoping to see more
+execution; but your program would probably terminate immediately as
+a result of the fatal signal once it saw the signal.  To prevent this,
+you can continue with <SAMP>`signal 0'</SAMP>.  See section <A HREF="gdb_120.html#SEC120">Giving your program a signal</A>.
+</P><P>
+
+<A NAME="Thread Stops"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_38.html#SEC38"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_40.html#SEC40"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_40.html#SEC40"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_27.html#SEC27"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_41.html#SEC41"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,554 @@
+<html>
+<head>
+<title>Implementing Conduit Entry Points | C/C++ Sync Suite Companion</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="KEYWORDS" CONTENT="C, C++, C/C++ Sync Suite, entry point, OpenConduit, CDK, conduit, conduits, Windows">
+<META NAME="DESCRIPTION" CONTENT="Describes the required and optional entry points that your conduit must implement for HotSync  Manager to run your conduit.">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource HTML 20040609">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="LASTUPDATED" CONTENT="06/28/04 08:29:32">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="995934"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncCompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_Basics.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_SyncMgr.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncCompanionIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">3 &nbsp;&nbsp;
+Implementing Conduit Entry Points</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">C/C++ Sync Suite Companion</p>
+<p class="SubTitle">Palm OS&#174; Conduit Development Kit for  Windows, Version 6.0.1 </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="CComp_EntryPoints.html">3  Implementing Conduit Entry Points</a></h1>
+
+   <h2 class="SideTOC2"><a href="#1002226">
+   Overview</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1003609">
+   Required Entry Points</a></h2>
+
+      <h3 class="SideTOC3"><a href="#996131">
+      GetConduitInfo()</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996208">
+      GetConduitVersion()</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996227">
+      OpenConduit()</a></h3>
+
+   <h2 class="SideTOC2"><a href="#996261">
+   Optional Entry Points</a></h2>
+
+      <h3 class="SideTOC3"><a href="#996284">
+      CfgConduit()</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996312">
+      ConfigureConduit()</a></h3>
+
+      <h3 class="SideTOC3"><a href="#996323">
+      GetConduitName()</a></h3>
+
+</div>
+</td>
+<!--END SIDETOC-->
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="995946"> </a>This chapter describes the required and optional entry points that your conduit must implement for HotSync<sup>&#174;</sup> Manager to run your conduit. The sections in this chapter are:</p>
+   <blockquote class = "bq"><a name="999024"> </a><a href="CComp_EntryPoints.html#1002226">Overview</a></blockquote>
+   <blockquote class = "bq"><a name="999125"> </a><a href="CComp_EntryPoints.html#1003609">Required Entry Points</a></blockquote>
+   <blockquote class = "bq"><a name="999137"> </a><a href="CComp_EntryPoints.html#996261">Optional Entry Points</a></blockquote>
+
+<h2 class="haH2">
+  <a name="1002226"> </a>Overview <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1002227"> </a>There are two types of entry points that HotSync Manager calls in your conduit: </p>
+<ul type="disc">
+  <li><a name="995967"> </a><a href="CComp_EntryPoints.html#1003609">Required Entry Points</a>&#8212must be implemented in each conduit. 
+  <li><a name="995971"> </a><a href="CComp_EntryPoints.html#996261">Optional Entry Points</a>&#8212enable users to configure your conduit via the HotSync Manager <b>Custom</b> dialog box.
+</ul>
+
+<p><a name="995976"> </a>This section provides a brief description of these conduit entry points. For more information about these functions, see <a href="CRef_CnAPI.html#995935">Chapter 6, "Conduit Entry Point API,"</a> in the <i>C/C++ Sync Suite Reference</i>.</p>
+
+<p><a name="995986"> </a><a href="CComp_EntryPoints.html#995990">Table 3.1</a> provides a summary of the entry point functions. </p>
+
+<p class="fineprint">
+<p class="caption"><a name="995990"> </a><b>Table 3.1&nbsp;&nbsp;Conduit entry points called by <br>HotSync Manager </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="995999"> </a><b>Function Type</b></p>
+    </th>
+    <th><p class="tt"><a name="996001"> </a><b>Function Name</b></p>
+    </th>
+    <th><p class="tt"><a name="996003"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996005"> </a>Required</p>
+    </td>
+    <td><p class="tt"><a name="996010"> </a><a href="CRef_CnAPI.html#996679"><code>GetConduitVersion()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="996012"> </a>Returns the conduit's version number.</p>
+<p class="tt"><a name="996013"> </a>The supported range for conduit versions is <code>0x00000101</code> to <code>0x00000200</code> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996015"> </a>Required</p>
+    </td>
+    <td><p class="tt"><a name="996020"> </a><a href="CRef_CnAPI.html#996737"><code>OpenConduit()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="996022"> </a>The main conduit entry point. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996024"> </a>Required</p>
+    </td>
+    <td><p class="tt"><a name="996029"> </a><a href="CRef_CnAPI.html#1013446"><code>GetConduitInfo()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="996031"> </a>Returns information about the conduit to HotSync Manager.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="3" rowspan="1"><p class="tt"><a name="996033"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996039"> </a>Customization<br>(optional)</p>
+    </td>
+    <td><p class="tt"><a name="996044"> </a><a href="CRef_CnAPI.html#996417"><code>ConfigureConduit()</code></a> <br>(prior to HotSync 3.0.1)</p>
+<p class="tt"><a name="996045"> </a>or</p>
+<p class="tt"><a name="996049"> </a><a href="CRef_CnAPI.html#996369"><code>CfgConduit()</code></a> <br>(HotSync 3.0.1 or later)</p>
+    </td>
+    <td><p class="tt"><a name="996051"> </a>Presents a dialog that allows the user to configure the conduit.</p>
+<p class="tt"><a name="996052"> </a>PalmSource, Inc. strongly recommends that you provide this function.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="996054"> </a>Optional</p>
+    </td>
+    <td><p class="tt"><a name="996059"> </a><a href="CRef_CnAPI.html#996635"><code>GetConduitName()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="996061"> </a>Returns the conduit's name for HotSync Manager to display. Required only for versions of HotSync Manager earlier than 3.0.1.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+ 
+</p>
+
+<h2 class="haH2">
+  <a name="1003609"> </a>Required Entry Points <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1003610"> </a>This section describes the following entry points for which you must implement your own versions:</p>
+<ul type="disc">
+  <li><a name="996113"> </a><a href="CComp_EntryPoints.html#996131">GetConduitInfo()</a> 
+  <li><a name="996117"> </a><a href="CComp_EntryPoints.html#996208">GetConduitVersion()</a> 
+  <li><a name="996121"> </a><a href="CComp_EntryPoints.html#996227">OpenConduit()</a> 
+</ul>
+
+<p><a name="996124"> </a>For details on these entry points, see <a href="CRef_CnAPI.html#995935">Chapter 6, "Conduit Entry Point API,"</a> the <i>C/C++ Sync Suite Reference</i>. </p>
+<h3 class="hbH3">
+  <a name="996131"> </a>GetConduitInfo() <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996135"> </a>HotSync Manager calls the <a href="CRef_CnAPI.html#1013446"><code>GetConduitInfo()</code></a> function to retrieve information about your conduit. Your implementation of this function must respond to several different information requests, including requests for the following:</p>
+<ul type="disc">
+  <li><a name="996136"> </a>the display name of your conduit
+  <li><a name="996138"> </a>your conduit's default action
+</ul>
+<div class="NINoteImportant"><hr>
+  <a name="996139"> </a> <b>NOTE: </b> HotSync Manager versions 6.0 and later do not query a conduit for its MFC version, so responding to this query is optional. <br><br>However, a conduit intended to work with earlier versions of HotSync Manager must respond. In this case, you <i>must</i> implement <code>GetConduitInfo()</code> and return the appropriate MFC version constant. If you are recompiling a conduit you created with an older version of the CDK and did not originally implement <code>GetConduitInfo()</code> (now required), HotSync Manager assumes that your conduit is built on MFC 4.1. If it is not, HotSync Manager will crash when it calls your conduit.
+<hr>
+</div>
+
+<p><a name="996140"> </a>HotSync Manager versions 6.0 and later request three additional, but optional, pieces of information:</p>
+<ul type="disc">
+  <li><a name="1000039"> </a>Registration information. Your conduit must respond if it is folder-registered (see <a href="CComp_Install.html#1004408">"Registering a Conduit by Folder"</a>), but not if it is a <a href="Intro_Glossary.html#926674"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">conventionally registered conduit</span></a>.
+  <li><a name="1000051"> </a>Whether your conduit's name should not be displayed in the HotSync Manager <b>Custom</b> and <b>HotSync Progress</b> dialog boxes.
+  <li><a name="1000083"> </a>Whether HotSync Manager should always run your conduit, or only when an application with the same creator ID is on the handheld.
+</ul>
+
+<p><a name="1003939"> </a>The Generic Conduit Framework's version of the <code>GetConduitInfo()</code> function, which is shown in <a href="CComp_EntryPoints.html#1003945">Listing 3.1</a>, is typical. Based on the <code class="par">infoType</code> parameter passed in, it returns the requested type of information. </p>
+<p class="CCodeCaption">
+  <a name="1003945"> </a><b>Listing 3.1&nbsp;&nbsp;Example of GetConduitInfo() entry point</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+ExportFunc long GetConduitInfo(ConduitInfoEnum infoType, void *pInArgs, <a name="1003946"> </a>
+   void *pOut, DWORD *pdwOutSize)<a name="1001443"> </a>
+{<a name="996149"> </a>
+   // Do some error checking on passed-in parameters.<a name="996150"> </a>
+   // Do not modify these lines.<a name="996151"> </a>
+   if (!pOut)<a name="996152"> </a>
+      return CONDERR_INVALID_PTR;<a name="996153"> </a>
+   if (!pdwOutSize)<a name="996154"> </a>
+      return CONDERR_INVALID_OUTSIZE_PTR;<a name="996155"> </a>
+<a name="996156"> </a>
+   // HotSync Manager requests information from your conduit through <a name="996157"> </a>
+   // repeated calls to GetConduitInfo. <a name="996158"> </a>
+   // The type of information requested is determined by infoType.<a name="996159"> </a>
+   // Your conduit responds appropriately.<a name="996160"> </a>
+   switch (infoType) {<a name="996161"> </a>
+<a name="996162"> </a>
+      case eConduitName:<a name="1001346"> </a>
+         // HotSync Manager wants to know the conduit name. <a name="996164"> </a>
+         // When HotSync Manager requests the conduit name, it also <a name="996166"> </a>
+         // passes in a ConduitRequestInfoType structure that <a name="996167"> </a>
+         // your conduit can examine, if necessary. The following <a name="996168"> </a>
+         // block of code shows how to check the version of this <a name="996169"> </a>
+         // structure in case PalmSource, Inc. changes the structure in the <a name="996170"> </a>
+         // future. You can omit this code if you do not need any <a name="996171"> </a>
+         // information in the ConduitRequestInfoType structure. <a name="996172"> </a>
+         if (!pInArgs)<a name="996173"> </a>
+            return CONDERR_INVALID_INARGS_PTR;<a name="996174"> </a>
+         ConduitRequestInfoType *pInfo;<a name="996175"> </a>
+         pInfo = (ConduitRequestInfoType *)pInArgs;<a name="996176"> </a>
+         if ((pInfo-&gt;dwVersion != CONDUITREQUESTINFO_VERSION_1) || <a name="996177"> </a>
+            (pInfo-&gt;dwSize != SZ_CONDUITREQUESTINFO))<a name="996178"> </a>
+            return CONDERR_INVALID_INARGS_STRUCT;<a name="996179"> </a>
+         // OK, actually return the name of the conduit taken from the <a name="996181"> </a>
+         // resource IDS_CONDUIT_NAME.<a name="996182"> </a>
+      if (!::LoadString((HINSTANCE)hLangInstance, IDS_CONDUIT_NAME, <a name="996183"> </a>
+         (TCHAR*)pOut, *pdwOutSize))<a name="996184"> </a>
+         return CONDERR_CONDUIT_RESOURCE_FAILURE;<a name="996185"> </a>
+      break;<a name="996186"> </a>
+<a name="996187"> </a>
+      case eDefaultAction:<a name="996188"> </a>
+         // HotSync Manager wants to know the default sync action.<a name="996190"> </a>
+         if (*pdwOutSize != sizeof(eSyncTypes))<a name="996191"> </a>
+            return CONDERR_INVALID_BUFFER_SIZE;<a name="996192"> </a>
+         (*(eSyncTypes*)pOut) = eDoNothing;<a name="996193"> </a>
+      break;<a name="996194"> </a>
+<a name="1000611"> </a>
+      case eRegistrationInfo:<a name="1000621"> </a>
+         // HotSync Manager wants your folder-based conduit's registration <a name="1001366"> </a>
+         // information. Conventionally registered conduits do not respond.<a name="1001367"> </a>
+         if (*pdwOutSize != sizeof(RegistrationInfoType)) {<a name="1000622"> </a>
+            return CONDERR_INVALID_BUFFER_SIZE;<a name="1000623"> </a>
+         }<a name="1000624"> </a>
+         RegistrationInfoType* sRIT;<a name="1000625"> </a>
+         sRIT = (RegistrationInfoType*) pOut;<a name="1000626"> </a>
+         DWORD dwCreatorID;<a name="1000627"> </a>
+         int iError;<a name="1000628"> </a>
+         iError = CmConvertStringToCreatorID(GENERIC_CONDUIT_CREATOR_ID,<a name="1000629"> </a>
+            &amp;dwCreatorID);<a name="1000725"> </a>
+         sRIT-&gt;dwCreatorID = dwCreatorID;<a name="1000630"> </a>
+         sRIT-&gt;dwPriority = GENERIC_CONDUIT_PRIORITY;<a name="1000631"> </a>
+         _tcscpy(sRIT-&gt;szLocalDirectory, GENERIC_CONDUIT_LOCAL_DIRECTORY);<a name="1000632"> </a>
+         _tcscpy(sRIT-&gt;szLocalFile, GENERIC_CONDUIT_LOCAL_FILE);<a name="1000633"> </a>
+         _tcscpy(sRIT-&gt;szRemoteDB, GENERIC_CONDUIT_REMOTE_DB);<a name="1000634"> </a>
+         if (!::LoadString((HINSTANCE)hLangInstance, IDS_CONDUIT_NAME, <a name="1000641"> </a>
+            sRIT-&gt;szTitle, sizeof(sRIT-&gt;szTitle))) {<a name="1000749"> </a>
+            return CONDERR_CONDUIT_RESOURCE_FAILURE;<a name="1000642"> </a>
+         }<a name="1000643"> </a>
+      break;<a name="1000645"> </a>
+<a name="1000616"> </a>
+      case eRunAlways:<a name="1000814"> </a>
+         // HotSync Manager wants to know whether to run your conduit even <a name="1001381"> </a>
+         // if there is no application on the device with the same creator ID.<a name="1001382"> </a>
+         if (*pdwOutSize != sizeof(SInt8)) {<a name="1000815"> </a>
+            return CONDERR_INVALID_BUFFER_SIZE;<a name="1000816"> </a>
+         }<a name="1000817"> </a>
+         // Run this conduit even if the creator ID it is registered for is <a name="1000818"> </a>
+         // not on the device.<a name="1000864"> </a>
+         *(SInt8*)pOut = 1;<a name="1000819"> </a>
+      break;<a name="1000820"> </a>
+<a name="1000617"> </a>
+      case eDoNotDisplayProgress:<a name="1000905"> </a>
+         // HotSync Manager wants to know whether to display your conduit's <a name="1001396"> </a>
+         // name in the HotSync Progress dialog box's Status field.<a name="1001397"> </a>
+         if (*pdwOutSize != sizeof(SInt8)) {<a name="1000906"> </a>
+            return CONDERR_INVALID_BUFFER_SIZE;<a name="1000907"> </a>
+         }<a name="1000908"> </a>
+         // Do not opt out of HotSync Progress dialog box.<a name="1000909"> </a>
+         *(SInt8*)pOut = 0;<a name="1000910"> </a>
+      break;<a name="1000911"> </a>
+<a name="1000897"> </a>
+      case eDoNotDisplayInConduitListForUser: <a name="1001029"> </a>
+         // HotSync Manager wants to know whether to display your conduit's <a name="1001411"> </a>
+         // name in HotSync Manager's Custom dialog box.<a name="1001412"> </a>
+         if (!pInArgs) {<a name="1001030"> </a>
+            return CONDERR_INVALID_INARGS_PTR;<a name="1001031"> </a>
+         }<a name="1001032"> </a>
+         if (*pdwOutSize != sizeof(SInt8)) {<a name="1001033"> </a>
+            return CONDERR_INVALID_BUFFER_SIZE;<a name="1001034"> </a>
+         }<a name="1001035"> </a>
+         // ConduitRequestInfoType* pInfo = (ConduitRequestInfoType*) pInArgs;<a name="1001037"> </a>
+         // Decide whether to display conduit name in Custom list for<a name="1001038"> </a>
+         // particular pInfo-&gt;szUser<a name="1001202"> </a>
+         *(SInt8*)pOut = 0;<a name="1001039"> </a>
+      break;<a name="1001040"> </a>
+<a name="1001508"> </a>
+      case eMfcVersion:<a name="1001496"> </a>
+         // HotSync Manager wants to know the version of MFC. <a name="1001497"> </a>
+         // Only HotSync Manager versions earlier than 6.0 request this<a name="1001513"> </a>
+         // information. If you conduit works only with HotSync Manager 6.0 or <a name="1001533"> </a>
+         // later, it does not need to respond.<a name="1001555"> </a>
+         if (*pdwOutSize != sizeof(DWORD))<a name="1001498"> </a>
+            return CONDERR_INVALID_BUFFER_SIZE;<a name="1001499"> </a>
+         (*(DWORD*)pOut) = MFC_NOT_USED;<a name="1001500"> </a>
+         break;<a name="1001501"> </a>
+<a name="1001027"> </a>
+   default:<a name="996201"> </a>
+      return CONDERR_UNSUPPORTED_CONDUITINFO_ENUM;<a name="996202"> </a>
+   }<a name="996203"> </a>
+   return 0;<a name="996204"> </a>
+}<a name="996205"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h3 class="hbH3">
+  <a name="996208"> </a>GetConduitVersion() <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996212"> </a>HotSync Manager calls the <a href="CRef_CnAPI.html#996679"><code>GetConduitVersion()</code></a> function to retrieve the version of your conduit that is running on the desktop computer. Your implementation must pack your major version number into the high byte of the low word in the result, and must pack your minor version number into the low byte of the low word in the result.</p>
+
+<p><a name="996213"> </a>The Generic Conduit Framework's version of the <code>GetConduitVersion()</code> function, which is shown in <a href="CComp_EntryPoints.html#996218">Listing 3.2</a> is typical. This function simply returns a constant value that specifies the version number.</p>
+<p class="CCodeCaption">
+  <a name="996218"> </a><b>Listing 3.2&nbsp;&nbsp;Example of the GetConduitVersion() entry point</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+#define GENERIC_CONDUIT_VERSION 0x00000102<a name="996219"> </a>
+<a name="996220"> </a>
+ExportFunc DWORD GetConduitVersion()<a name="996221"> </a>
+{<a name="996222"> </a>
+   return GENERIC_CONDUIT_VERSION;<a name="996223"> </a>
+}<a name="996224"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h3 class="hbH3">
+  <a name="996227"> </a>OpenConduit() <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996231"> </a>HotSync Manager calls the <a href="CRef_CnAPI.html#996737"><code>OpenConduit()</code></a> function to begin the process of synchronizing data between the desktop computer and the handheld. For conduits using the Generic Conduit Framework, your implementation of <code>OpenConduit()</code> needs to perform operations such as the following:</p>
+<ul type="disc">
+  <li><a name="996232"> </a>instantiate an object of the <code>CSynchronizer</code> class and specify whether your conduit needs to handle categories or the application info block 
+  <li><a name="996233"> </a>engage your synchronization by calling the <code>CSynchronizer</code>'s <code>Perform()</code> method
+  <li><a name="996234"> </a>delete the conduit's <code>CSynchronizer</code> object 
+</ul>
+
+<p><a name="996238"> </a><a href="CComp_EntryPoints.html#996240">Listing 3.3</a> shows the Generic Conduit's <code>OpenConduit()</code> entry point. </p>
+<p class="CCodeCaption">
+  <a name="996240"> </a><b>Listing 3.3&nbsp;&nbsp;Example of the OpenConduit() entry point</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+ExportFunc long OpenConduit(PROGRESSFN pFn, CSyncProperties&amp; rProps) {<a name="996241"> </a>
+   if (pFn) {<a name="996243"> </a>
+      CSynchronizer* pGeneric;<a name="996245"> </a>
+<a name="996246"> </a>
+      // You will need to make this decision in your code.<a name="996247"> </a>
+      pGeneric = new CSynchronizer(rProps, GENERIC_FLAG_CATEGORY_SUPPORTED | <a name="996248"> </a>
+         GENERIC_FLAG_APPINFO_SUPPORTED);<a name="996249"> </a>
+      if (pGeneric) {<a name="996250"> </a>
+         retval = pGeneric-&gt;Perform();<a name="996251"> </a>
+         delete pGeneric;<a name="996253"> </a>
+      }<a name="996254"> </a>
+   }<a name="996255"> </a>
+   return(retval);<a name="996256"> </a>
+}<a name="996257"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h2 class="haH2">
+  <a name="996261"> </a>Optional Entry Points <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="996262"> </a>This section describes the following optional entry points:</p>
+<ul type="disc">
+  <li><a name="1002930"> </a><a href="CComp_EntryPoints.html#996284">CfgConduit()</a> 
+  <li><a name="1002934"> </a><a href="CComp_EntryPoints.html#996312">ConfigureConduit()</a> 
+  <li><a name="1002938"> </a><a href="CComp_EntryPoints.html#996323">GetConduitName()</a> 
+</ul>
+
+<p><a name="996275"> </a>You can implement these functions in your conduit, or you can use the default functionality, which is described in <a href="CRef_CnAPI.html#995935">Chapter 6, "Conduit Entry Point API,"</a> of the <i>C/C++ Sync Suite Reference</i>. PalmSource, Inc. recommends that you provide your own implementation of each of these functions.</p>
+<h3 class="hbH3">
+  <a name="996284"> </a>CfgConduit() <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996288"> </a>HotSync Manager calls your <a href="CRef_CnAPI.html#996369"><code>CfgConduit()</code></a> function when the user clicks <b>Custom</b> from the HotSync Manager menu, chooses your conduit, and clicks <b>Change</b>. </p>
+
+<p><a name="996289"> </a>The <code>CfgConduit()</code> function is the HotSync Manager 3.0 and later version of the <a href="CRef_CnAPI.html#996417"><code>ConfigureConduit()</code></a> function. The <code>CfgConduit()</code> function receives more information than the <code>ConfigureConduit()</code> function does, in the form of an extensible data structure.</p>
+
+<p><a name="996293"> </a>HotSync Manager 3.0 and later attempts to call <code>CfgConduit()</code> first. If your conduit does not provide this entry point, HotSync Manager attempts to call the <code>ConfigureConduit()</code> function.Versions of HotSync Manager prior to version 3.0 unconditionally call the <code>ConfigureConduit()</code> function. </p>
+<div class="NINoteImportant"><hr>
+  <a name="996294"> </a> <b>IMPORTANT: </b> PalmSource, Inc. strongly recommends providing this entry point. Otherwise, nothing happens when the user chooses to customize your conduit. If your conduit does not support configuration, it is still a good idea to provide a version of this function that notifies the user of this limitation.
+<hr>
+</div>
+
+<p><a name="996296"> </a>When HotSync Manager calls the <code>CfgConduit()</code> function, your conduit responds by displaying a configuration dialog box. This dialog box allows the user to specify what actions your conduit is to perform. <a href="CComp_EntryPoints.html#996301">Figure 3.1</a> shows the configuration dialog box displayed by the To Do List conduit.</p>
+
+<p class="FFigureCaption">
+  <a name="996301"> </a><b>Figure 3.1&nbsp;&nbsp;"Custom" dialog box for the To Do List conduit</b>
+</p>
+<div align="left"><img src="images/Custom-ChangeDialog.gif" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="996309"> </a><a href="CComp_EntryPoints.html#996301">Figure 3.1</a> shows a typical configuration dialog box for a mirror-image synchronization. Your conduit might allow additional configuration options. </p>
+<h3 class="hbH3">
+  <a name="996312"> </a>ConfigureConduit() <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996313"> </a>Versions of HotSync Manager earlier than version 3.0 call the <a href="CRef_CnAPI.html#996417"><code>ConfigureConduit()</code></a> function instead of the <a href="CRef_CnAPI.html#996369"><code>CfgConduit()</code></a> function. The purpose of each function is exactly the same.</p>
+<h3 class="hbH3">
+  <a name="996323"> </a>GetConduitName() <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="996327"> </a>HotSync Manager can call the <a href="CRef_CnAPI.html#996635"><code>GetConduitName()</code></a> function to retrieve the name of your conduit. Your implementation fills in the name buffer with your conduit's name, and returns a status value that indicates whether the operation was successful.</p>
+
+<p><a name="996328"> </a>HotSync Manager versions 3.0.1 and later attempt to retrieve the name of your conduit in this sequence:</p>
+<ol type="1">
+  <li value="1"><a name="996332"> </a>Read the <a href="Intro_CfgEntries.html#992989"><code>Name</code></a> entry written with the CondCfg utility or the Conduit Manager API during conduit installation.
+  <li value="2"><a name="996336"> </a>Else call <a href="CRef_CnAPI.html#1013446"><code>GetConduitInfo()</code></a>. 
+  <li value="3"><a name="996340"> </a>Else call <a href="CRef_CnAPI.html#996635"><code>GetConduitName()</code></a>. 
+</ol>
+
+<p><a name="996341"> </a>Therefore you are not required to implement <code>GetConduitName()</code> if your conduit needs to be compatible with only HotSync Manager versions 3.0.1 and later. </p>
+
+<p><a name="996342"> </a>HotSync Manager versions 3.0 and earlier require that your conduit implement <code>GetConduitName()</code>. In which case, your implementation must fill in the <code>name</code> buffer with a string that you want HotSync Manager to display to the user.</p>
+
+<p><a name="996343"> </a>The Generic Conduit Framework's version of the <code>GetConduitName()</code> function, which is shown in <a href="CComp_EntryPoints.html#996348">Listing 3.4</a>, is typical. It passes back a pointer to the string defined in the string table (<code>IDS_CONDUIT_NAME</code>), and returns 0 to indicate success. </p>
+<p class="CCodeCaption">
+  <a name="996348"> </a><b>Listing 3.4&nbsp;&nbsp;Example of the GetConduitName() entry point</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+ExportFunc long GetConduitName(char* pszName, WORD nLen)<a name="996349"> </a>
+{<a name="996350"> </a>
+   long retval = -1;<a name="996351"> </a>
+<a name="996352"> </a>
+   if (::LoadString((HINSTANCE)hLangInstance, IDS_CONDUIT_NAME, pszName, nLen))<a name="996353"> </a>
+      retval = 0;<a name="996354"> </a>
+<a name="996355"> </a>
+   return retval;<a name="996356"> </a>
+}<a name="996357"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="996410"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1999-2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="CComp_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncCompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_Basics.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_SyncMgr.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncCompanionIX.html">Index</a>
+</p>
+</td>
+</tr>
+<!-- END FOOTER -->
+
+</body>
+</html>

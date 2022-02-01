@@ -1,0 +1,134 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Gcov Data Files</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Gcov Data Files">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Gcov Data Files">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC122"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_121.html#SEC121"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 6.4 Brief description of <CODE>gcov</CODE> data files </H2>
+<!--docid::SEC122::-->
+<P>
+
+<CODE>gcov</CODE> uses three files for doing profiling.  The names of these
+files are derived from the original <EM>source</EM> file by substituting
+the file suffix with either <CODE>.bb</CODE>, <CODE>.bbg</CODE>, or <CODE>.da</CODE>.  All
+of these files are placed in the same directory as the source file, and
+contain data stored in a platform-independent method.
+</P><P>
+
+The <CODE>.bb</CODE> and <CODE>.bbg</CODE> files are generated when the source file
+is compiled with the GNU CC <SAMP>`-ftest-coverage'</SAMP> option.  The
+<CODE>.bb</CODE> file contains a list of source files (including headers),
+functions within those files, and line numbers corresponding to each
+basic block in the source file.
+</P><P>
+
+The <CODE>.bb</CODE> file format consists of several lists of 4-byte integers
+which correspond to the line numbers of each basic block in the
+file.  Each list is terminated by a line number of 0.  A line number of -1
+is used to designate that the source file name (padded to a 4-byte
+boundary and followed by another -1) follows.  In addition, a line number
+of -2 is used to designate that the name of a function (also padded to a
+4-byte boundary and followed by a -2) follows.
+</P><P>
+
+The <CODE>.bbg</CODE> file is used to reconstruct the program flow graph for
+the source file.  It contains a list of the program flow arcs (possible
+branches taken from one basic block to another) for each function which,
+in combination with the <CODE>.bb</CODE> file, enables gcov to reconstruct the
+program flow.
+</P><P>
+
+In the <CODE>.bbg</CODE> file, the format is:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>        number of basic blocks for function #0 (4-byte number)
+        total number of arcs for function #0 (4-byte number)
+        count of arcs in basic block #0 (4-byte number)
+        destination basic block of arc #0 (4-byte number)
+        flag bits (4-byte number)
+        destination basic block of arc #1 (4-byte number)
+        flag bits (4-byte number)
+        ...
+        destination basic block of arc #N (4-byte number)
+        flag bits (4-byte number)
+        count of arcs in basic block #1 (4-byte number)
+        destination basic block of arc #0 (4-byte number)
+        flag bits (4-byte number)
+        ...
+</FONT></pre></td></tr></table></P><P>
+
+A -1 (stored as a 4-byte number) is used to separate each function's
+list of basic blocks, and to verify that the file has been read
+correctly.
+</P><P>
+
+The <CODE>.da</CODE> file is generated when a program containing object files
+built with the GNU CC <SAMP>`-fprofile-arcs'</SAMP> option is executed.  A
+separate <CODE>.da</CODE> file is created for each source file compiled with
+this option, and the name of the <CODE>.da</CODE> file is stored as an
+absolute pathname in the resulting object file.  This path name is
+derived from the source file name by substituting a <CODE>.da</CODE> suffix.
+</P><P>
+
+The format of the <CODE>.da</CODE> file is fairly simple.  The first 8-byte
+number is the number of counts in the file, followed by the counts
+(stored as 8-byte numbers).  Each count corresponds to the number of
+times each arc in the program is executed.  The counts are cumulative;
+each time the program is executed, it attemps to combine the existing
+<CODE>.da</CODE> files with the new counts for this invocation of the
+program.  It ignores the contents of any <CODE>.da</CODE> files whose number of
+arcs doesn't correspond to the current program, and merely overwrites
+them instead.
+</P><P>
+
+All three of these files use the functions in <CODE>gcov-io.h</CODE> to store
+integers; the functions in this header provide a machine-independent
+mechanism for storing and retrieving data from a stream.
+</P><P>
+
+<A NAME="Trouble"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_121.html#SEC121"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_123.html#SEC123"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

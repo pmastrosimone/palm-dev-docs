@@ -1,0 +1,86 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: MAKEFILE_LIST Variable</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: MAKEFILE_LIST Variable">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: MAKEFILE_LIST Variable">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC18"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_16.html#SEC17"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_18.html#SEC19"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_12.html#SEC13"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 3.5 The Variable <CODE>MAKEFILE_LIST</CODE> </H2>
+<!--docid::SEC18::-->
+<P>
+
+As <CODE>make</CODE> reads various makefiles, including any obtained from the
+<CODE>MAKEFILES</CODE> variable, the command line, the default files, or
+from <CODE>include</CODE> directives, their names will be automatically
+appended to the <CODE>MAKEFILE_LIST</CODE> variable.  They are added right
+before <CODE>make</CODE> begins to parse them.
+</P><P>
+
+This means that if the first thing a makefile does is examine the last
+word in this variable, it will be the name of the current makefile.
+Once the current makefile has used <CODE>include</CODE>, however, the last
+word will be the just-included makefile.
+</P><P>
+
+If a makefile named <CODE>Makefile</CODE> has this content:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>name1 := $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+
+include inc.mk
+
+name2 := $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+
+all:
+        @echo name1 = $(name1)
+        @echo name2 = $(name2)
+</pre></td></tr></table></P><P>
+
+then you would expect to see this output:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>name1 = Makefile
+name2 = inc.mk
+</pre></td></tr></table></P><P>
+
+See section <A HREF="make_81.html#SEC85">8.2 Functions for String Substitution and Analysis</A>, for more information on the <CODE>word</CODE> and
+<CODE>words</CODE> functions used above.  See section <A HREF="make_63.html#SEC67">The Two Flavors of Variables</A>, for more information on simply-expanded (<CODE>:=</CODE>)
+variable definitions.
+</P><P>
+
+<A NAME="Special Variables"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

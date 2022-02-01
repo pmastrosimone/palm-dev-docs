@@ -1,0 +1,176 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: HPPA Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: HPPA Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: HPPA Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC32"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_31.html#SEC31"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_33.html#SEC33"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_18.html#SEC18"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 2.14.16 HPPA Options </H3>
+<!--docid::SEC32::-->
+<P>
+
+These <SAMP>`-m'</SAMP> options are defined for the HPPA family of computers:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-march=<VAR>architecture type</VAR></CODE>
+<DD>Generate code for the specified architecture.  The choices for
+<VAR>architecture type</VAR> are <SAMP>`1.0'</SAMP> for PA 1.0, <SAMP>`1.1'</SAMP> for PA
+1.1, and <SAMP>`2.0'</SAMP> for PA 2.0 processors.  Refer to
+<TT>`/usr/lib/sched.models'</TT> on an HP-UX system to determine the proper
+architecture option for your machine.  Code compiled for lower numbered
+architectures will run on higher numbered architectures, but not the
+other way around.
+<P>
+
+PA 2.0 support currently requires gas snapshot 19990413 or later.  The
+next release of binutils (current is 2.9.1) will probably contain PA 2.0
+support.  
+</P><P>
+
+<DT><CODE>-mpa-risc-1-0</CODE>
+<DD><DT><CODE>-mpa-risc-1-1</CODE>
+<DD><DT><CODE>-mpa-risc-2-0</CODE>
+<DD>Synonyms for -march=1.0, -march=1.1, and -march=2.0 respectively.
+<P>
+
+<DT><CODE>-mbig-switch</CODE>
+<DD>Generate code suitable for big switch tables.  Use this option only if
+the assembler/linker complain about out of range branches within a switch
+table.
+<P>
+
+<DT><CODE>-mjump-in-delay</CODE>
+<DD>Fill delay slots of function calls with unconditional jump instructions
+by modifying the return pointer for the function call to be the target
+of the conditional jump.
+<P>
+
+<DT><CODE>-mdisable-fpregs</CODE>
+<DD>Prevent floating point registers from being used in any manner.  This is
+necessary for compiling kernels which perform lazy context switching of
+floating point registers.  If you use this option and attempt to perform
+floating point operations, the compiler will abort.
+<P>
+
+<DT><CODE>-mdisable-indexing</CODE>
+<DD>Prevent the compiler from using indexing address modes.  This avoids some
+rather obscure problems when compiling MIG generated code under MACH.
+<P>
+
+<DT><CODE>-mno-space-regs</CODE>
+<DD>Generate code that assumes the target has no space registers.  This allows
+GCC to generate faster indirect calls and use unscaled index address modes.
+<P>
+
+Such code is suitable for level 0 PA systems and kernels.
+</P><P>
+
+<DT><CODE>-mfast-indirect-calls</CODE>
+<DD>Generate code that assumes calls never cross space boundaries.  This
+allows GCC to emit code which performs faster indirect calls.
+<P>
+
+This option will not work in the presense of shared libraries or nested
+functions.
+</P><P>
+
+<DT><CODE>-mspace</CODE>
+<DD>Optimize for space rather than execution time.  Currently this only
+enables out of line function prologues and epilogues.  This option is
+incompatible with PIC code generation and profiling.
+<P>
+
+<DT><CODE>-mlong-load-store</CODE>
+<DD>Generate 3-instruction load and store sequences as sometimes required by
+the HP-UX 10 linker.  This is equivalent to the <SAMP>`+k'</SAMP> option to
+the HP compilers.
+<P>
+
+<DT><CODE>-mportable-runtime</CODE>
+<DD>Use the portable calling conventions proposed by HP for ELF systems.
+<P>
+
+<DT><CODE>-mgas</CODE>
+<DD>Enable the use of assembler directives only GAS understands.
+<P>
+
+<DT><CODE>-mschedule=<VAR>cpu type</VAR></CODE>
+<DD>Schedule code according to the constraints for the machine type
+<VAR>cpu type</VAR>.  The choices for <VAR>cpu type</VAR> are <SAMP>`700'</SAMP> 
+<SAMP>`7100'</SAMP>, <SAMP>`7100LC'</SAMP>, <SAMP>`7200'</SAMP>, and <SAMP>`8000'</SAMP>.  Refer to 
+<TT>`/usr/lib/sched.models'</TT> on an HP-UX system to determine the
+proper scheduling option for your machine.
+<P>
+
+<DT><CODE>-mlinker-opt</CODE>
+<DD>Enable the optimization pass in the HPUX linker.  Note this makes symbolic
+debugging impossible.  It also triggers a bug in the HPUX 8 and HPUX 9 linkers
+in which they give bogus error messages when linking some programs.
+<P>
+
+<DT><CODE>-msoft-float</CODE>
+<DD>Generate output containing library calls for floating point.
+<STRONG>Warning:</STRONG> the requisite libraries are not available for all HPPA
+targets.  Normally the facilities of the machine's usual C compiler are
+used, but this cannot be done directly in cross-compilation.  You must make
+your own arrangements to provide suitable library functions for
+cross-compilation.  The embedded target <SAMP>`hppa1.1-*-pro'</SAMP>
+does provide software floating point support.
+<P>
+
+<SAMP>`-msoft-float'</SAMP> changes the calling convention in the output file;
+therefore, it is only useful if you compile <EM>all</EM> of a program with
+this option.  In particular, you need to compile <TT>`libgcc.a'</TT>, the
+library that comes with GCC, with <SAMP>`-msoft-float'</SAMP> in order for
+this to work.
+</DL>
+<P>
+
+<A NAME="Intel 960 Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_31.html#SEC31"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_33.html#SEC33"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_18.html#SEC18"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

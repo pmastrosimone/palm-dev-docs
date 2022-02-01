@@ -1,0 +1,739 @@
+<html>
+<head>
+<title>(Protein) VFSMgr.h | Porting Applications to Palm OS&#174; Cobalt</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:20:36">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="424916"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="UIResources.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Window.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">130 &nbsp;&nbsp;
+VFSMgr.h</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Porting Applications to Palm OS&#174; Cobalt</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="PortingPalmApps_Part2.html">Part II: 68K vs ARM-Native APIs</a> </h1>
+<h1 class="SideTOC1"><a href="VFSMgr.html">130  VFSMgr.h</a></h1>
+
+   <h2 class="SideTOC2"><a href="#424918">
+   Deleted APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#425029">
+   Modified APIs</a></h2>
+
+   <h2 class="SideTOC2"><a href="#425103">
+   Unchanged APIs</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="424917"> </a>The VFS Manager APIs are largely unchanged. </p>
+
+<p><a name="429827"> </a>Due to security and architectural requirements imposed by the new runtime model, Palm OS Cobalt doesn't support 68K-style file system plug-ins. Other changes in the file system plug-in architecture necessitated the removal of those functions used to mainpulate file system plug-ins. Because third-party applications were not likely to have been manipulating file system plug-ins, however, the removal of those functions should have little, if any effect on a applications.</p>
+
+<h2 class="haH2">
+  <a name="424918"> </a>Deleted APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="429866"> </a><b>Table 130.1&nbsp;&nbsp;Deleted functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="429870"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="429872"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429874"> </a><code>VFSInit()</code></p>
+    </td>
+    <td><p class="tt"><a name="429876"> </a>Nothing. This function was documented as "System Use Only" and should not have been used by applications.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429878"> </a><code>VFSInstallFSLib()</code></p>
+    </td>
+    <td><p class="tt"><a name="429880"> </a>Nothing. Applications cannot manipulate file system plug-ins in Palm OS Cobalt, version 6.0.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429885"> </a><code>VFSRemoveFSLib()</code></p>
+    </td>
+    <td><p class="tt"><a name="429887"> </a>Nothing. Applications cannot manipulate file system plug-ins in Palm OS Cobalt, version 6.0.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425882"> </a><b>Table 130.2&nbsp;&nbsp;Deleted macros</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425886"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425888"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425890"> </a><code>VFSMGR_TRAP()</code></p>
+    </td>
+    <td><p class="tt"><a name="428773"> </a>Nothing. The VFS Manager is a standard part of the operating system in Palm OS Cobalt.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="425895"> </a><b>Table 130.3&nbsp;&nbsp;Deleted #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="425899"> </a><b>Deleted API</b></p>
+    </th>
+    <th><p class="tt"><a name="425901"> </a><b>Use instead</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425903"> </a><code>sysTrapVFSMgr</code></p>
+    </td>
+    <td><p class="tt"><a name="428806"> </a>See <a href="../System_Management/SharedLibraries.html#993294">"Patching Shared Libraries"</a> of <i>Exploring Palm OS: System Management</i> for information on function entry points.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425907"> </a><code>vfsMaxSelector</code></p>
+    </td>
+    <td><p class="tt"><a name="428798"> </a>See <a href="../System_Management/SharedLibraries.html#993294">"Patching Shared Libraries"</a> of <i>Exploring Palm OS: System Management</i> for information on function entry points.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425911"> </a><code>vfsMountClass_Simulator</code></p>
+    </td>
+    <td><p class="tt"><a name="425913"> </a>One of the other mount classes. Note that in Palm OS Cobalt there are now big-endian variants of the supported mount classes.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="425915"> </a><code>vfsTrap...</code></p>
+    </td>
+    <td><p class="tt"><a name="428786"> </a>See <a href="../System_Management/SharedLibraries.html#993294">"Patching Shared Libraries"</a> of <i>Exploring Palm OS: System Management</i> for information on function entry points.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="425029"> </a>Modified APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="426113"> </a><b>Table 130.4&nbsp;&nbsp;Modified functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="426117"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="426119"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426121"> </a><code>status_t VFSExportDatabaseToFile (uint16_t, const char *, DatabaseID)</code></p>
+    </td>
+    <td><p class="tt"><a name="426123"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426125"> </a><code>status_t VFSExportDatabaseToFileCustom (uint16_t, const char *, DatabaseID, VFSExportProcPtr, void *)</code></p>
+    </td>
+    <td><p class="tt"><a name="428819"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426133"> </a><code>status_t VFSImportDatabaseFromFile (uint16_t, const char *, DatabaseID *)</code></p>
+    </td>
+    <td><p class="tt"><a name="428833"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426137"> </a><code>status_t VFSImportDatabaseFromFileCustom (uint16_t, const char *, DatabaseID *, VFSImportProcPtr, void *)</code></p>
+    </td>
+    <td><p class="tt"><a name="428839"> </a>The card number parameter has been removed.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426156"> </a><b>Table 130.5&nbsp;&nbsp;Modified structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="426160"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="426162"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426164"> </a><code>FileInfoType</code></p>
+    </td>
+    <td><p class="tt"><a name="426166"> </a>A reserved field has been added to this structure.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426168"> </a><code>VFSAnyMountParamType</code></p>
+    </td>
+    <td><p class="tt"><a name="426170"> </a>The <code>reserved</code> field is now named <code>size</code>.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426172"> </a><code>VFSPOSEMountParamType</code></p>
+    </td>
+    <td><p class="tt"><a name="426174"> </a>Two reserved fields have been added to this structure.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426178"> </a><b>Table 130.6&nbsp;&nbsp;Modified #defines</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="426182"> </a><b>Modified API</b></p>
+    </th>
+    <th><p class="tt"><a name="426184"> </a><b>Description of change</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426230"> </a><code>#define vfsMgrVersionNum ((uint16_t)300)</code></p>
+    </td>
+    <td><p class="tt"><a name="426232"> </a>Previously this had a value of 200.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="425103"> </a>Unchanged APIs <a href="#424916"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p class="caption"><a name="429378"> </a><b>Table 130.7&nbsp;&nbsp;Unchanged functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="429382"> </a>VFSCustomControl()</p>
+    </td>
+    <td><p class="tt"><a name="429384"> </a>VFSDirCreate()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429386"> </a>VFSDirEntryEnumerate()</p>
+    </td>
+    <td><p class="tt"><a name="429388"> </a>VFSFileClose()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429390"> </a>VFSFileCreate()</p>
+    </td>
+    <td><p class="tt"><a name="429392"> </a>VFSFileDBGetRecord()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429394"> </a><code>VFSFileDBGetResource</code>()</p>
+    </td>
+    <td><p class="tt"><a name="429396"> </a>VFSFileDBInfo()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429398"> </a>VFSFileDelete()</p>
+    </td>
+    <td><p class="tt"><a name="429400"> </a>VFSFileEOF()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429402"> </a>VFSFileGetAttributes()</p>
+    </td>
+    <td><p class="tt"><a name="429404"> </a>VFSFileGetDate()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429406"> </a>VFSFileOpen()</p>
+    </td>
+    <td><p class="tt"><a name="429408"> </a>VFSFileRead()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429410"> </a>VFSFileReadData()</p>
+    </td>
+    <td><p class="tt"><a name="429412"> </a>VFSFileRename()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429414"> </a>VFSFileResize()</p>
+    </td>
+    <td><p class="tt"><a name="429416"> </a>VFSFileSeek()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429418"> </a>VFSFileSetAttributes()</p>
+    </td>
+    <td><p class="tt"><a name="429420"> </a>VFSFileSetDate()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429422"> </a>VFSFileSize()</p>
+    </td>
+    <td><p class="tt"><a name="429424"> </a>VFSFileTell()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429426"> </a>VFSFileWrite()</p>
+    </td>
+    <td><p class="tt"><a name="429428"> </a>VFSGetDefaultDirectory()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429430"> </a>VFSRegisterDefaultDirectory()</p>
+    </td>
+    <td><p class="tt"><a name="429432"> </a>VFSUnregisterDefaultDirectory()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429434"> </a>VFSVolumeEnumerate()</p>
+    </td>
+    <td><p class="tt"><a name="429436"> </a>VFSVolumeFormat()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429438"> </a><code>VFSVolumeGetLabel()</code></p>
+    </td>
+    <td><p class="tt"><a name="429440"> </a>VFSVolumeInfo()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429442"> </a>VFSVolumeMount()</p>
+    </td>
+    <td><p class="tt"><a name="429444"> </a>VFSVolumeSetLabel()</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429446"> </a>VFSVolumeSize()</p>
+    </td>
+    <td><p class="tt"><a name="429448"> </a>VFSVolumeUnmount()</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426489"> </a><b>Table 130.8&nbsp;&nbsp;Unchanged structures</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426493"> </a>VFSSlotMountParamType</p>
+    </td>
+    <td><p class="tt"><a name="426495"> </a>VolumeInfoType</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426502"> </a><b>Table 130.9&nbsp;&nbsp;Unchanged types</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426506"> </a>FileOrigin</p>
+    </td>
+    <td><p class="tt"><a name="426508"> </a>FileRef</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="426510"> </a>VFSAnyMountParamPtr</p>
+    </td>
+    <td><p class="tt"><a name="426512"> </a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="429617"> </a><b>Table 130.10&nbsp;&nbsp;Unchanged #defines </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="429621"> </a>vfsErrBadData</p>
+    </td>
+    <td><p class="tt"><a name="429623"> </a>vfsErrBadName</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429625"> </a>vfsErrBufferOverflow</p>
+    </td>
+    <td><p class="tt"><a name="429627"> </a>vfsErrDirectoryNotFound</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429629"> </a>vfsErrDirNotEmpty</p>
+    </td>
+    <td><p class="tt"><a name="429631"> </a>vfsErrFileAlreadyExists</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429633"> </a>vfsErrFileBadRef</p>
+    </td>
+    <td><p class="tt"><a name="429635"> </a>vfsErrFileEOF</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429637"> </a>vfsErrFileGeneric</p>
+    </td>
+    <td><p class="tt"><a name="429639"> </a>vfsErrFileNotFound</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429641"> </a>vfsErrFilePermissionDenied</p>
+    </td>
+    <td><p class="tt"><a name="429643"> </a>vfsErrFileStillOpen</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429645"> </a>vfsErrIsADirectory</p>
+    </td>
+    <td><p class="tt"><a name="429647"> </a>vfsErrNameShortened</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429649"> </a>vfsErrNoFileSystem</p>
+    </td>
+    <td><p class="tt"><a name="429651"> </a>vfsErrNotADirectory</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429653"> </a>vfsErrUnimplemented</p>
+    </td>
+    <td><p class="tt"><a name="429655"> </a>vfsErrVolumeBadRef</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429657"> </a>vfsErrVolumeFull</p>
+    </td>
+    <td><p class="tt"><a name="429659"> </a>vfsErrVolumeStillMounted</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429661"> </a>vfsFileAttrAll</p>
+    </td>
+    <td><p class="tt"><a name="429663"> </a>vfsFileAttrArchive</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429665"> </a>vfsFileAttrDirectory</p>
+    </td>
+    <td><p class="tt"><a name="429667"> </a>vfsFileAttrHidden</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429669"> </a>vfsFileAttrLink</p>
+    </td>
+    <td><p class="tt"><a name="429671"> </a>vfsFileAttrReadOnly</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429673"> </a>vfsFileAttrSystem</p>
+    </td>
+    <td><p class="tt"><a name="429675"> </a>vfsFileAttrVolumeLabel</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429677"> </a><code>vfsFileDateAccessed</code></p>
+    </td>
+    <td><p class="tt"><a name="429679"> </a><code>vfsFileDateCreated</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429681"> </a><code>vfsFileDateModified</code></p>
+    </td>
+    <td><p class="tt"><a name="429683"> </a>vfsFilesystemType_AFS</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429685"> </a>vfsFilesystemType_EXT2</p>
+    </td>
+    <td><p class="tt"><a name="429687"> </a>vfsFilesystemType_FAT</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429689"> </a>vfsFilesystemType_FFS</p>
+    </td>
+    <td><p class="tt"><a name="429691"> </a>vfsFilesystemType_HFS</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429693"> </a>vfsFilesystemType_HFSPlus</p>
+    </td>
+    <td><p class="tt"><a name="429695"> </a>vfsFilesystemType_HPFS</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429697"> </a>vfsFilesystemType_MFS</p>
+    </td>
+    <td><p class="tt"><a name="429699"> </a>vfsFilesystemType_NFS</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429701"> </a>vfsFilesystemType_Novell</p>
+    </td>
+    <td><p class="tt"><a name="429703"> </a>vfsFilesystemType_NTFS</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429705"> </a>vfsFilesystemType_VFAT</p>
+    </td>
+    <td><p class="tt"><a name="429707"> </a><code>vfsFtrIDDefaultFS</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429709"> </a><code>vfsFtrIDVersion</code></p>
+    </td>
+    <td><p class="tt"><a name="429711"> </a><code>vfsHandledStartPrc</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429713"> </a><code>vfsHandledUIAppSwitch</code></p>
+    </td>
+    <td><p class="tt"><a name="429715"> </a><code>vfsInvalidFileRef</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429717"> </a><code>vfsInvalidVolRef</code></p>
+    </td>
+    <td><p class="tt"><a name="429719"> </a><code>vfsIteratorStart</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429721"> </a><code>vfsIteratorStop</code></p>
+    </td>
+    <td><p class="tt"><a name="429723"> </a>vfsModeAll</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429725"> </a>vfsModeCreate</p>
+    </td>
+    <td><p class="tt"><a name="429727"> </a>vfsModeExclusive</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429729"> </a>vfsModeLeaveOpen</p>
+    </td>
+    <td><p class="tt"><a name="429731"> </a>vfsModeRead</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429733"> </a>vfsModeReadWrite</p>
+    </td>
+    <td><p class="tt"><a name="429735"> </a>vfsModeTruncate</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429737"> </a>vfsModeVFSLayerOnly</p>
+    </td>
+    <td><p class="tt"><a name="429739"> </a>vfsModeWrite</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429741"> </a>vfsMountClass_POSE</p>
+    </td>
+    <td><p class="tt"><a name="429743"> </a>vfsMountClass_SlotDriver</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429745"> </a><code>vfsMountFlagsReserved1</code></p>
+    </td>
+    <td><p class="tt"><a name="429747"> </a><code>vfsMountFlagsReserved2</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429749"> </a><code>vfsMountFlagsReserved3</code></p>
+    </td>
+    <td><p class="tt"><a name="429751"> </a><code>vfsMountFlagsReserved4</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429753"> </a><code>vfsMountFlagsReserved5</code></p>
+    </td>
+    <td><p class="tt"><a name="429755"> </a><code>vfsMountFlagsUseThisFileSystem</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429757"> </a><code>vfsOriginBeginning</code></p>
+    </td>
+    <td><p class="tt"><a name="429759"> </a><code>vfsOriginCurrent</code></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429761"> </a><code>vfsOriginEnd</code></p>
+    </td>
+    <td><p class="tt"><a name="429763"> </a>vfsVolumeAttrHidden</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="429765"> </a>vfsVolumeAttrReadOnly</p>
+    </td>
+    <td><p class="tt"><a name="429767"> </a>vfsVolumeAttrSlotBased</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="426639"> </a><b>Table 130.11&nbsp;&nbsp;Unchanged application-defined functions</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="426643"> </a>VFSExportProcPtr()</p>
+    </td>
+    <td><p class="tt"><a name="426645"> </a>VFSImportProcPtr()</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="425207"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="PortingPalmApps_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="PortingPalmAppsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="UIResources.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Window.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

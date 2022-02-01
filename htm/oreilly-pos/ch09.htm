@@ -1,0 +1,1184 @@
+<HTML>
+<HEAD>
+<TITLE>Palm OS:  &#160;9.&#160; Communications </TITLE>
+<META NAME="GENERATOR" CONTENT="Transit Central Station 3.2 by InfoAccess Inc. www.infoaccess.com">
+</HEAD>
+<BODY BACKGROUND="images/grnitbkg.gif"><A NAME="TopOfPage"> </A>
+<A HREF="http://www.oreilly.com/catalog/palmprog/"><IMG SRC="images/palm_comp_ani_ad.gif" ALT="Order the book from O'Reilly" BORDER=0 width="468" height="60"></A>
+<P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch08.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch10.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P><P><I>In this chapter:</I></P>
+
+
+  <UL COMPACT><LI><A HREF="#P32_1204" NAME="LOC_P32_1204">Serial</A></LI>
+
+  <LI><A HREF="#P441_22255" NAME="LOC_P441_22255">TCP/IP</A></LI></UL>
+<P><UL><UL><UL><UL><UL><UL><UL><UL><UL><UL>
+<TABLE>
+<TR>
+<TD WIDTH=156>
+</TD></TR></TABLE></UL></UL></UL></UL></UL></UL></UL></UL></UL></UL>
+
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+<H1 ALIGN=LEFT><I><FONT SIZE=+3>&#160;9.&#160; Communications</FONT></I></H1>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P21_68"></A>In this chapter, we discuss the types of communication available on the Palm OS. Next we go into detail about two of these types and show you how to write code to use them.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Palm OS supports three kinds of communication: IrDA, serial, and TCP/IP:</FONT></P>
+
+<P><I><FONT FACE="Times">IrDA</FONT></I></P>
+
+<P><FONT FACE="Times">This is an industry-standard hardware and software protocol. We won't discuss the details of communicating using IrDA. We will, however, show you how to use the Exchange Manager to implement beaming (see the section entitled &quot;Beaming&quot; on page&#160;235). Beaming is a data exchange method built on top of IrDA.</FONT></P>
+
+<P><I><FONT FACE="Times">Serial</FONT></I></P>
+
+<P><FONT FACE="Times">Serial communication occurs between the handheld and other devices using the cradle port. This is the most common form of communication on the Palm OS, and as an example we develop a special serial application that communicates (indirectly) with satellites.</FONT></P>
+
+<P><I><FONT FACE="Times">TCP/IP</FONT></I></P>
+
+<P><FONT FACE="Times">Currently, this communication standard is available only via a serial or modem connection. The future has no boundaries, however, so you might expect to see built-in Ethernet or devices using wireless TCP/IP appear some day. To show you how to use TCP/IP, we create a small application that sends email to a server.</FONT></P>
+
+<P><A NAME="P32_1204"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">Serial</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P34_1210"></A>The Serial Manager is fairly straightforward. There are routines to do all of the following:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  Open and close the serial port</FONT></LI>
+
+  <LI><FONT FACE="Times">  Read and write data</FONT></LI>
+
+  <LI><FONT FACE="Times">  Query how many bytes are ready to be read</FONT></LI>
+
+  <LI><FONT FACE="Times">  Set options</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">Serial I/O is synchronous, so there's no notification when data gets received. Instead, your code must poll to see whether data has arrived.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Tips for Using the Serial Manager</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P45_1584"></A>Here are a bunch of miscellaneous tips that will help you when it's time to add serial functionality to an application:</FONT></P>
+
+<P><I><FONT FACE="Times">Open port error</FONT></I></P>
+
+<P><FONT FACE="Times">If your code calls </FONT><FONT FACE="Courier New">SerOpen</FONT><FONT FACE="Times"> and it returns the error </FONT><FONT FACE="Courier New"><A NAME="P48_1770"></A>serErrAlreadyOpen</FONT><FONT FACE="Times">, your open has succeeded, but some other code already opened the port. Although it's possible to share the port, a sane person wouldn't normally want to do so. Sharing reads and writes with some other code is a recipe for mangled data. If you get this error, you should notify the user that the port is in use and gracefully call </FONT><FONT FACE="Courier New">SerClose</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><I><FONT FACE="Times">Open the serial port only for short periods of time</FONT></I></P>
+
+<P><FONT FACE="Times">Don't leave the serial port open any longer than absolutely necessary. If your application reads data from the serial port every five minutes, don't leave it open for that entire time. Instead, close the port, and reopen it after five minutes. <I>As a rule of thumb, leave the serial port open for no longer than 30 seconds if it is not in use.</I></FONT></P>
+
+<P><FONT FACE="Times">Similar advice is often given to drivers about stopped cars. If you will move again within a few minutes, leave the car idling; otherwise, shut the car off and restart it when you are ready to go. Just as an idling car wastes gas, an idle serial port wastes batteries by providing power to the serial chip. Such behavior will really annoy your users, who don't want an application that sucks all the life out of their batteries. Don't have sloppy serial code.</FONT></P>
+
+<P><I><FONT FACE="Times">Preventing automatic sleep</FONT></I></P>
+
+<P><FONT FACE="Times">If you don't want the Palm OS device to sleep while you are communicating, call </FONT><FONT FACE="Courier New">&#160;<A NAME="P53_3085"></A>EvtResetAutoOffTimer</FONT><FONT FACE="Times"> at least once a minute. This prevents the automatic sleep that happens when no user input occurs. If you have communication that shouldn't be interrupted, you certainly should do this, as you will lose the serial data when the device goes to sleep.</FONT></P>
+
+<P><I><FONT FACE="Times">Adjusting the receiving buffer size</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P55_3389"></A>The default receive buffer is 512 bytes. Think of this receiving buffer as similar to a reservoir. The incoming data flows into the buffer, and reads from the buffer drain the data out the other side. Just as with a reservoir, if you get too much incoming data, the buffer overflows, and data spills out and is lost. The error you get is </FONT><FONT FACE="Courier New"><A NAME="P55_3727"></A>serLineErrorSWOverrun</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><FONT FACE="Times">If you expect a lot of data, it's best to adjust your buffer to accommodate greater inflows. You can set the size using </FONT><FONT FACE="Courier New">&#160;<A NAME="P56_3870"></A>SerSetReceiveBuffer</FONT><FONT FACE="Times">. When you're done, make sure to release the buffer before you close the port; do so by calling </FONT><FONT FACE="Courier New">SerSetReceiveBuffer</FONT><FONT FACE="Times"> with a size of </FONT><FONT FACE="Courier New">0</FONT><FONT FACE="Times">. </FONT><FONT FACE="Courier New">SerClose</FONT><FONT FACE="Times"> won't release the buffer, so if you don't do it yourself, you'll leak memory.</FONT></P>
+
+<P><I><FONT FACE="Times">Knowing when there is data in the receive buffer</FONT></I></P>
+
+<P><FONT FACE="Times">When reading data, it is best to do it in two steps. The first step is to call </FONT><FONT FACE="Courier New">&#160;<A NAME="P58_4237"></A>SerReceiveWait</FONT><FONT FACE="Times">, which blocks until the specified number of bytes are available in the buffer. To provide a timeout mechanism, </FONT><FONT FACE="Courier New">SerReceiveWait</FONT><FONT FACE="Times"> takes as a parameter an interbyte tick timeout. This timeout is used for a watchdog timer that is reset on every received byte. If the timer expires, the function returns with </FONT><FONT FACE="Courier New"><A NAME="P58_4554"></A>serErrTimeOut</FONT><FONT FACE="Times">. Once </FONT><FONT FACE="Courier New">SerReceiveWait </FONT><FONT FACE="Times">returns, the second step is to call </FONT><FONT FACE="Courier New">SerReceive</FONT><FONT FACE="Times"> to actually read the data from the receive buffer.</FONT></P>
+
+<P><FONT FACE="Times">The timeout measures the time between successive bytes, not the time for all bytes. For example, if you call </FONT><FONT FACE="Courier New">SerReceiveWait</FONT><FONT FACE="Times"> waiting for 200 bytes with a 50-tick timeout, </FONT><FONT FACE="Courier New">SerReceiveWait</FONT><FONT FACE="Times"> returns either when 200 bytes are available, or when 50 ticks have passed since the last received byte. In the slowest case, if bytes come in one every 49 ticks, </FONT><FONT FACE="Courier New">SerReceiveWait</FONT><FONT FACE="Times"> won't time out.</FONT></P>
+
+<P><FONT FACE="Courier New" SIZE="+0">SerReceiveWait</FONT><FONT FACE="Times"> is the preferred call, because it can put the processor into a low-power state while waiting for incoming data-another battery-saving technique that will make your users happy.</FONT></P>
+
+<P><I><FONT FACE="Times">Handling user input during a serial event</FONT></I></P>
+
+<P><FONT FACE="Times"><A NAME="P62_5295"></A>Don't ignore user input while communicating. Wherever possible, you need to structure your application so that it deals with serial communication when the user isn't doing other stuff. Practically, this means you can do one of two things. Your application could communicate every so often by calling </FONT><FONT FACE="Courier New">EvtGetEvent</FONT><FONT FACE="Times"> with a timeout value. Or, if your communication code is in a tight loop that doesn't call </FONT><FONT FACE="Courier New">EvtGetEvent</FONT><FONT FACE="Times">, you can call </FONT><FONT FACE="Courier New">&#160;&#160;<A NAME="P62_5725"></A>SysEventAvail</FONT><FONT FACE="Times"> every so often (certainly no less than once a second). This allows you to see whether there's a user event to process. If there are user events, return to your event loop to process the event before attempting any more serial communication.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">A user who can't cancel is an unhappy user.</FONT><BR>
+<BR>
+</P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">Receiving error messages</FONT></I></P>
+
+<P><FONT FACE="Times">If </FONT><FONT FACE="Courier New">SerReceive</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">SerReceiveWait</FONT><FONT FACE="Times">, or </FONT><FONT FACE="Courier New">SerReceiveCheck</FONT><FONT FACE="Times"> return </FONT><FONT FACE="Courier New">&#160;&#160;<A NAME="P66_6105"></A>serErrLineErr</FONT><FONT FACE="Times">, you need to clear the error using </FONT><FONT FACE="Courier New">SerClearErr</FONT><FONT FACE="Times">. Alternatively, you should use </FONT><FONT FACE="Courier New">SerReceiveFlush</FONT><FONT FACE="Times"> if you also need to flush the buffer, since it will call </FONT><FONT FACE="Courier New">SerClearErr</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><I><FONT FACE="Times">Palm OS version differences</FONT></I></P>
+
+<P><FONT FACE="Courier New" SIZE="+0"><A NAME="P68_6309"></A>SerSend</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">SerReceive</FONT><FONT FACE="Times"> have been enhanced in Palm OS 2.0. In this OS, they return the number of bytes sent or received. If you are running on Palm OS 1.0, you need to use </FONT><FONT FACE="Courier New">SerSend10</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">SerReceive10</FONT><FONT FACE="Times">, which have different parameters. Make sure your code does the right thing for each OS version.</FONT></P>
+
+<P><I><FONT FACE="Times">Serial to a state machine</FONT></I></P>
+
+<P><FONT FACE="Times">Often, serial protocols are best written as though they are going to a <A NAME="P70_6698"></A>state machine. You can do this by defining various states and the transitions that cause changes from one state to another. You use a global to contain information on the current state. While it might sound complicated, writing your serial code this way often makes it simpler and easier to maintain.</FONT></P>
+
+<P><FONT FACE="Times">For example, if you use your Palm device to log into a Unix machine, you might send </FONT><FONT FACE="Courier New">&lt;CR&gt;&lt;CR&gt;</FONT><FONT FACE="Times"> and then enter the &quot;Waiting for login:&quot; state. In this state, you'd read until you got the characters &quot;</FONT><FONT FACE="Courier New">login:</FONT><FONT FACE="Times">&quot;. You would then send your account name and enter the &quot;Waiting for password:&quot; state. In that state, you'd read until you got the characters &quot;</FONT><FONT FACE="Courier New">password:</FONT><FONT FACE="Times">&quot;. Then you would send the password and enter yet another state.</FONT><A NAME="P71_7415"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Sample Serial Application</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P75_7440"></A>Our Sales application doesn't have serial code in it. Instead, we've written a small application that communicates with a Global Positioning System (GPS) device. A GPS device reads information sent by orbiting satellites; from that data it determines the location of the device. In addition to the location (latitude, longitude, and altitude), the device obtains the Universal Time Coordinate (UTC) time.</FONT></P>
+
+<P><I><FONT FACE="Times">Features of the sample application</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Our sample application communicates with this GPS device using the industry-standard National Marine Electronics Association (NMEA) 0183 serial protocol. </FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The application's startup screen is shown in <A HREF="#P84_8667">Figure 9-1</A>. As you can see, it is blank except for telling the user that it has no GPS information. The state changes as soon as the handheld has established communication with the GPS device and has acquired a satellite. Now it displays the time, latitude, and longitude, as shown in <A HREF="#P93_8751">Figure 9-2</A>. The application updates these values every five seconds to make sure the location and time are up-to-date. If the GPS device loses contact with the satellite (as might happen when the user enters a building), the sample application promptly warns the user (as shown in <A HREF="#P102_8834">Figure 9-3</A>).</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Figure 9- 1</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P84_8667"></A>The GPS application when it is has not recently heard from the GPS device</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch09-plmp.0901-1.gif" WIDTH=503 HEIGHT=120 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 9- 2</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P93_8751"></A>The GPS application displaying the current time, latitude, and longitude</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch09-plmp.0902-2.gif" WIDTH=503 HEIGHT=120 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 9- 3</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P102_8834"></A>The GPS application warning that the satellite has been lost</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch09-plmp.0903-3.gif" WIDTH=503 HEIGHT=138 align=left></P>
+</TD></TR></TABLE></UL>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">A GPS device hooked to a Palm OS handheld is a compact and useful combination. Imagine the versatile and convenient applications you could create that would use information augmented with exact location and precision time-stamping. For example, a nature specialist could create a custom trail guide that other people could use to retrace the guide's path.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">The GPS device</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We're using a <A NAME="P115_9277"></A>Garmin 12 GPS device purchased for under $200 from the sporting goods section of a discount store. The serial connector on this device is custom, so we bought a Garmin-to-DB-9 serial cable. (A DB-9 connector is a nine-pin connector commonly used for serial connections.) Connected to the Palm device is a HotSync cable. Between the two devices is a null-modem converter. The Garmin is configured to send NMEA 0183 2.0 at 9600 baud. <A HREF="#P116_9747">Figure 9-4</A> shows the setup.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">Figure 9- 4</FONT></B><A NAME="P116_9747"></A>. 
+
+<B><FONT FACE="Times" SIZE="-1">The GPS device and handheld setup</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=512><P ALIGN=CENTER><IMG SRC="images/ch09-plmp.0904-4.gif" WIDTH=503 HEIGHT=284 align=left></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A HREF="#P125_9780">*</A></FONT></P>
+
+<P><I><FONT FACE="Times">The <A NAME="P127_10027"></A>NMEA protocol</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">In our application, we want to update the time, latitude, and longitude every 5 seconds. Updating more often seems unnecessary and would reduce the battery life of the Palm OS device. The GPS device sends 10 lines of information every second; of the 50 that are sent over a 5-second period, we simply parse out the information we need. The rest we ignore. As a result, we don't have to understand the entire NMEA 0183 protocol, but just the bit that pertains to our one line of interest.<A HREF="#P130_10527">Ý</A></FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">If we have valid satellite data, the relevant part will look similar to this string:</FONT></P><PRE><FONT SIZE="-1">$GPRMC,204700,A,3403.868,N,11709.432,W,001.9,336.9,170698,013.6,E*6E </FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Let's look more closely at this example to see what each part means. Note that we care about only the first seven pieces of data. In <A HREF="#P137_11045">Table 9-1</A> the important parts of the string are laid out with the definitions beside each item.</FONT></P>
+
+<P><B><FONT FACE="Times" SIZE="-1">-Table 9- 1</FONT></B>. 
+
+<B><FONT FACE="Times" SIZE="-1"><A NAME="P137_11045"></A>NMEA String from GPS Device</FONT></B><BR>
+<P><UL>
+<TABLE>
+<TR>
+<TD WIDTH=93><P><B><FONT FACE="Times" SIZE="-1">Sample String Value</FONT></B></P>
+</TD>
+<TD WIDTH=92><P><B><FONT FACE="Times" SIZE="-1">NMEA 0183 Protocol</FONT></B></P>
+</TD>
+<TD WIDTH=294><P><B><FONT FACE="Times" SIZE="-1">Description</FONT></B></P>
+</TD></TR>
+<TR>
+<TD WIDTH=93><P><FONT FACE="Times" SIZE="-1">$GPRMC</FONT></P>
+</TD>
+<TD WIDTH=92>&#160;
+</TD>
+<TD WIDTH=294><P><FONT FACE="Times" SIZE="-1">GPS Recommended Minimum data.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=93><P><FONT FACE="Times" SIZE="-1">204700</FONT></P>
+</TD>
+<TD WIDTH=92><P><I><FONT FACE="Times">UTC_TIME</FONT></I></P>
+</TD>
+<TD WIDTH=294><P><FONT FACE="Times" SIZE="-1">This comes in the form of a 24-hour clock, where the time uses HHMMSS as the format.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=93><P><FONT FACE="Times" SIZE="-1">A</FONT></P>
+</TD>
+<TD WIDTH=92><P><FONT FACE="Courier New" SIZE="+0">A</FONT><FONT FACE="Times"> or </FONT><FONT FACE="Courier New">V</FONT></P>
+</TD>
+<TD WIDTH=294><P><FONT FACE="Courier New" SIZE="+0">A</FONT><FONT FACE="Times"> means the data is OK; </FONT><FONT FACE="Courier New">V</FONT><FONT FACE="Times"> is a warning.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=93><P><FONT FACE="Times" SIZE="-1">3403.868</FONT></P>
+</TD>
+<TD WIDTH=92><P><I><FONT FACE="Times">LAT</FONT></I></P>
+</TD>
+<TD WIDTH=294><P><FONT FACE="Times" SIZE="-1">This comes in the form of a number like ####.###</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=93><P><FONT FACE="Times" SIZE="-1">N</FONT></P>
+</TD>
+<TD WIDTH=92><P><I><FONT FACE="Times">LAT_DIR</FONT></I></P>
+</TD>
+<TD WIDTH=294><P><FONT FACE="Times" SIZE="-1">This isV (N)orth or (S)outh.</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=93><P><FONT FACE="Times" SIZE="-1">11709.432</FONT></P>
+</TD>
+<TD WIDTH=92><P><I><FONT FACE="Times">LON</FONT></I></P>
+</TD>
+<TD WIDTH=294><P><FONT FACE="Times" SIZE="-1">#####.###</FONT></P>
+</TD></TR>
+<TR>
+<TD WIDTH=93><P><FONT FACE="Times" SIZE="-1">W</FONT></P>
+</TD>
+<TD WIDTH=92><P><I><FONT FACE="Times">LON_DIR</FONT></I></P>
+</TD>
+<TD WIDTH=294><P><FONT FACE="Times" SIZE="-1">This is (W)est or (E)ast.</FONT></P>
+</TD></TR></TABLE></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">If we aren't receiving valid satellite data, the string is of the form: </FONT></P><PRE><FONT FACE="Courier New" SIZE="+0">$GPRMC,</FONT><I><FONT FACE="Times">UTC_TIME</FONT></I><FONT FACE="Courier New">,V,</FONT><I><FONT FACE="Times">...</FONT></I></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">And here's a typical example:</FONT></P><PRE><FONT SIZE="-1">$GPRMC,204149,V,,,,,,,170698,,*3A </FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now that you have an idea of what we want to accomplish and the tools we are going to use, it is time to look at the code for the sample application.</FONT></P>
+
+<P><I><FONT FACE="Times">The sample application serial code</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We are going to open the serial port in our </FONT><FONT FACE="Courier New">StartApplication</FONT><FONT FACE="Times"> routine:</FONT></P><PRE><FONT SIZE="-1">UInt  gSerialRefNum;</FONT>
+<FONT SIZE="-1">char  gSerialBuffer[900];  // should be more than enough for one second of </FONT>
+<FONT SIZE="-1">                           // data--10 lines @ 80 chars per line</FONT>
+
+<FONT SIZE="-1">static Boolean StartApplication(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   Err   err;</FONT>
+<FONT SIZE="-1">   </FONT>
+<B><FONT SIZE="-1">   err = SysLibFind(&quot;Serial Library&quot;, &amp;gSerialRefNum);</FONT></B>
+<FONT SIZE="-1">   ErrNonFatalDisplayIf(err != 0, &quot;Can't find serial library&quot;);</FONT>
+<FONT SIZE="-1">   </FONT>
+<B><FONT SIZE="-1">&#160;&#160;&#160;err = SerOpen(gSerialRefNum, 0, 9600);</FONT></B>
+<FONT SIZE="-1">   if (err != 0) {</FONT>
+<FONT SIZE="-1">      if (err == serErrAlreadyOpen) {</FONT>
+<FONT SIZE="-1">         FrmAlert(SerialInUseAlert);</FONT>
+<FONT SIZE="-1">         SerClose(gSerialRefNum);</FONT>
+<FONT SIZE="-1">      } else</FONT>
+<FONT SIZE="-1">         FrmAlert(CantopenserialAlert);</FONT>
+<FONT SIZE="-1">      return true;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<B><FONT SIZE="-1">&#160;&#160;&#160;err = SerSetReceiveBuffer(gSerialRefNum, gSerialBuffer,</FONT></B>
+<B><FONT SIZE="-1">&#160;&#160;&#160;&#160;&#160;&#160;sizeof(gSerialBuffer));</FONT></B>
+<FONT SIZE="-1">   return false;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We set our own receive buffer so that we can hold an entire second's worth of data. We don't want to risk losing any data, so we give ourselves ample room.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">In </FONT><FONT FACE="Courier New">StopApplication</FONT><FONT FACE="Times">, we close the port (after resetting the buffer to the default):</FONT></P><PRE><FONT SIZE="-1">static void StopApplication(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   // restore the default buffer before closing the serial port</FONT>
+<B><FONT SIZE="-1">   SerSetReceiveBuffer(gSerialRefNum, NULL, 0);</FONT></B>
+<B><FONT SIZE="-1">   SerClose(gSerialRefNum);</FONT></B>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We need to create some globals to store information about timing:</FONT></P><PRE><FONT SIZE="-1">// tickCount of last time we read data from GPS</FONT>
+<FONT SIZE="-1">ULong    gLastSuccessfulReception = 0;    </FONT>
+
+<FONT SIZE="-1">// tickCount of last time we displayed GPS data on the Palm device</FONT>
+<FONT SIZE="-1">ULong    gLastTimeDisplay = 0;</FONT>
+
+<FONT SIZE="-1">// tickCount of the next scheduled read</FONT>
+<FONT SIZE="-1">ULong    gNextReadTime = 0;</FONT>
+
+<FONT SIZE="-1">Boolean  gFormOpened = false;</FONT>
+
+<FONT SIZE="-1">// if we go this long without updating the time</FONT>
+<FONT SIZE="-1">// then update as soon as we get a valid time</FONT>
+<FONT SIZE="-1">// (without waiting for an even 5-second time)</FONT>
+<FONT SIZE="-1">#define  kMaxTicksWithoutTime (6 * sysTicksPerSecond)</FONT>
+
+<FONT SIZE="-1">// if we go this long without communicating with GPS,</FONT>
+<FONT SIZE="-1">// we've lost it and need to notify the user</FONT>
+<FONT SIZE="-1">#define  kTicksToLoseGPS (15 * sysTicksPerSecond)</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We initialize </FONT><FONT FACE="Courier New">gFormOpened</FONT><FONT FACE="Times"> in </FONT><FONT FACE="Courier New">MainViewInit</FONT><FONT FACE="Times">. We keep track of this because we don't want to start receiving nil events until the form has been opened and displayed:</FONT></P><PRE><FONT SIZE="-1">static void MainViewInit(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr        frm = FrmGetActiveForm();</FONT>
+
+<FONT SIZE="-1">   // Draw the form.</FONT>
+<FONT SIZE="-1">   FrmDrawForm(frm);</FONT>
+<B><FONT SIZE="-1">   gFormOpened = true;</FONT></B>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">In our event loop, instead of calling </FONT><FONT FACE="Courier New">EvtGetEvent</FONT><FONT FACE="Times"> with no timeout, we call the function </FONT><FONT FACE="Courier New">&#160;<A NAME="P245_14010"></A>TimeUntilNextRead</FONT><FONT FACE="Times"> to obtain a timeout when we need it. Here's our </FONT><FONT FACE="Courier New">EventLoop</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">static void EventLoop(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   EventType   event;</FONT>
+<FONT SIZE="-1">   Word        error;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   do</FONT>
+<FONT SIZE="-1">      {</FONT>
+<FONT SIZE="-1">      // Get the next available event.</FONT>
+<B><FONT SIZE="-1">      EvtGetEvent(&amp;event, TimeUntilNextRead());</FONT></B>
+<FONT SIZE="-1">      if (! SysHandleEvent(&amp;event))</FONT>
+<FONT SIZE="-1">         if (! MenuHandleEvent(0, &amp;event, &amp;error))</FONT>
+<FONT SIZE="-1">            if (! ApplicationHandleEvent(&amp;event))</FONT>
+<FONT SIZE="-1">               FrmDispatchEvent(&amp;event);</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">   while (event.eType != appStopEvent);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P264_14478"></A>EvtGetEvent</FONT><FONT FACE="Times">, like </FONT><FONT FACE="Courier New">SerReceiveCheck</FONT><FONT FACE="Times">, enters a low-power processor mode if possible.</FONT><BR>
+</P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note that </FONT><FONT FACE="Courier New">TimeUntilNextRead</FONT><FONT FACE="Times"> returns the number of ticks until the next scheduled read:</FONT></P><PRE><FONT SIZE="-1">static long TimeUntilNextRead(void)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   if (!gFormOpened)</FONT>
+<FONT SIZE="-1">      return evtWaitForever;</FONT>
+<FONT SIZE="-1">   else {</FONT>
+<FONT SIZE="-1">      Long  timeRemaining;</FONT>
+<FONT SIZE="-1">         </FONT>
+<FONT SIZE="-1">      timeRemaining = gNextReadTime - TimGetTicks();</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">      if (timeRemaining &lt; 0)</FONT>
+<FONT SIZE="-1">         timeRemaining = 0;</FONT>
+<FONT SIZE="-1">      return timeRemaining;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The guts of the application are in the event handler, </FONT><FONT FACE="Courier New">MainViewHandleEvent</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">case nilEvent:</FONT>
+<FONT SIZE="-1">   handled = true;</FONT>
+<B><FONT SIZE="-1">   SerReceiveFlush(gSerialRefNum, 1);  // throw away anything in the, </FONT></B>
+<FONT SIZE="-1">                                       // buffer-- we want fresh data</FONT>
+<FONT SIZE="-1">   // we loop until an event occurs, or until</FONT>
+<FONT SIZE="-1">   // we update the display</FONT>
+<FONT SIZE="-1">   do {  </FONT>
+<FONT SIZE="-1">      ULong numBytesPending;</FONT>
+<FONT SIZE="-1">         // is the lost satellite label currently displayed</FONT>
+<FONT SIZE="-1">      static Boolean showingLostSatellite = false;</FONT>
+<FONT SIZE="-1">      ULong now = TimGetTicks();</FONT>
+<FONT SIZE="-1">      char     theData[165];  // two lines (80 chars with &lt;CR&gt;&lt;LF&gt;</FONT>
+<FONT SIZE="-1">                              //  + one for null byte</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      // if we've gone too long without hearing from the GPS</FONT>
+<FONT SIZE="-1">      // tell the user</FONT>
+<FONT SIZE="-1">      if ((now - gLastSuccessfulReception) &gt; kTicksToLoseGPS) {</FONT>
+<FONT SIZE="-1">         FormPtr  frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">         </FONT>
+<FONT SIZE="-1">         FrmCopyLabel(frm, GPSMainTimeLabel, &quot;No GPS!&quot;);</FONT>
+<FONT SIZE="-1">         FrmCopyLabel(frm, GPSMainLatitudeLabel, &quot;&quot;);</FONT>
+<FONT SIZE="-1">         FrmCopyLabel(frm, GPSMainLongtitudeLabel, &quot;&quot;);</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      // We'll fill our read buffer, or 1/2 second between</FONT>
+<FONT SIZE="-1">      // bytes, whichever comes first.</FONT>
+<B><FONT SIZE="-1">      err = SerReceiveWait(gSerialRefNum, sizeof(theData) - 1, 30);</FONT></B>
+<FONT SIZE="-1">      if (err == serErrLineErr) {</FONT>
+<B><FONT SIZE="-1">         SerReceiveFlush(gSerialRefNum, 1);  // will clear the error</FONT></B>
+<FONT SIZE="-1">         continue;         // go back and try reading again</FONT>
+<FONT SIZE="-1">      } </FONT>
+<FONT SIZE="-1">      if (err != serErrTimeOut)</FONT>
+<FONT SIZE="-1">         ErrFatalDisplayIf(err != 0, &quot;SerReceiveWait&quot;);</FONT>
+<B><FONT SIZE="-1">      err = SerReceiveCheck(gSerialRefNum, &amp;numBytesPending);</FONT></B>
+<FONT SIZE="-1">      if (err == serErrLineErr) {</FONT>
+<B><FONT SIZE="-1">         SerReceiveFlush(gSerialRefNum, 1);  // will clear the error</FONT></B>
+<FONT SIZE="-1">         continue;         // go back and try reading again</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">      ErrFatalDisplayIf(err != 0, &quot;SerReceiveCheckFail&quot;);</FONT>
+<FONT SIZE="-1">      if (numBytesPending &gt; 0) {</FONT>
+<FONT SIZE="-1">         ULong    numBytes;</FONT>
+<FONT SIZE="-1">         char     *startOfMessage;</FONT>
+<FONT SIZE="-1">         </FONT>
+<FONT SIZE="-1">         // read however many bytes are waiting</FONT>
+<B><FONT SIZE="-1">         numBytes = SerReceive(gSerialRefNum, theData, </FONT></B>
+<B><FONT SIZE="-1">            numBytesPending, 0, &amp;err);</FONT></B>
+<FONT SIZE="-1">         if (err == serErrLineErr) {</FONT>
+<B><FONT SIZE="-1">            SerReceiveFlush(gSerialRefNum, 1);  // will clear the error</FONT></B>
+<FONT SIZE="-1">            continue;      // go back and try reading again</FONT>
+<FONT SIZE="-1">         }</FONT>
+<FONT SIZE="-1">         theData[numBytes] = '\0';  // null-terminate theData</FONT>
+<FONT SIZE="-1">         </FONT>
+<FONT SIZE="-1">         // look for our magic string</FONT>
+<FONT SIZE="-1">         if ((startOfMessage = StrStr(theData, &quot;$GPRMC&quot;)) != NULL) {</FONT>
+<FONT SIZE="-1">            char  s[10];</FONT>
+<FONT SIZE="-1">            gLastSuccessfulReception = now;  // we successfully read</FONT>
+<FONT SIZE="-1">            if (GetField(startOfMessage, 1, s)) {</FONT>
+<FONT SIZE="-1">               // even multiple of five seconds OR it's been at </FONT>
+<FONT SIZE="-1">               // least kMaxTicksWithoutTime seconds since a display</FONT>
+<FONT SIZE="-1">               // That way, if we lose 11:11:35, we won't have the</FONT>
+<FONT SIZE="-1">               // time go from 11:11:30 to 11:11:40. Instead, it'll go</FONT>
+<FONT SIZE="-1">               // 11:11:30, 11:11:36, 11:11:40</FONT>
+<FONT SIZE="-1">               if (s[5] == '0' || s[5] == '5' ||</FONT>
+<FONT SIZE="-1">                  (now - gLastTimeDisplay) &gt; kMaxTicksWithoutTime) {</FONT>
+<FONT SIZE="-1">                  FormPtr  frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">                  </FONT>
+<FONT SIZE="-1">                  updatedTime = true;</FONT>
+<FONT SIZE="-1">                  // change from HHMMSS to HH:MM:SS</FONT>
+<FONT SIZE="-1">                  s[8] = '\0';</FONT>
+<FONT SIZE="-1">                  s[7] = s[5];</FONT>
+<FONT SIZE="-1">                  s[6] = s[4];</FONT>
+<FONT SIZE="-1">                  s[5] = ':';</FONT>
+<FONT SIZE="-1">                  s[4] = s[3];</FONT>
+<FONT SIZE="-1">                  s[3] = s[2];</FONT>
+<FONT SIZE="-1">                  s[2] = ':';</FONT>
+<FONT SIZE="-1">                  </FONT>
+<FONT SIZE="-1">                  // Most of the time, we'll be on a multiple of five. </FONT>
+<FONT SIZE="-1">                  // Thus, we want to read in four more seconds.</FONT>
+<FONT SIZE="-1">                  // Otherwise, we want to read immediately</FONT>
+<FONT SIZE="-1">                  if (s[5] == '0' || s[5] == '5')</FONT>
+<FONT SIZE="-1">                     gNextReadTime = gLastSuccessfulReception + </FONT>
+<FONT SIZE="-1">                     &thorn;&thorn;&thorn;4*sysTicksPerSecond;</FONT>
+<FONT SIZE="-1">                  else</FONT>
+<FONT SIZE="-1">                     gNextReadTime = 0;</FONT>
+<FONT SIZE="-1">                  </FONT>
+<FONT SIZE="-1">                  // update the time display</FONT>
+<FONT SIZE="-1">                  FrmCopyLabel(frm, GPSMainTimeLabel, s);</FONT>
+<FONT SIZE="-1">                  gLastTimeDisplay = gLastSuccessfulReception;</FONT>
+<FONT SIZE="-1">                  </FONT>
+<FONT SIZE="-1">                  if (GetField(startOfMessage, 2, s)) {</FONT>
+<FONT SIZE="-1">                     // update &quot;Lost satellite&quot; label</FONT>
+<FONT SIZE="-1">                     if (s[0] == 'V' &amp;&amp; !showingLostSatellite) {</FONT>
+<FONT SIZE="-1">                        showingLostSatellite = true;</FONT>
+<FONT SIZE="-1">                        FrmShowObject(frm, FrmGetObjectIndex(frm, </FONT>
+<FONT SIZE="-1">                           GPSMainLostSatelliteLabel));</FONT>
+<FONT SIZE="-1">                     } else if (s[0] == 'A' &amp;&amp; showingLostSatellite) {</FONT>
+<FONT SIZE="-1">                        showingLostSatellite = false;</FONT>
+<FONT SIZE="-1">                        FrmHideObject(frm, FrmGetObjectIndex(frm, </FONT>
+<FONT SIZE="-1">                           GPSMainLostSatelliteLabel));</FONT>
+<FONT SIZE="-1">                     }</FONT>
+<FONT SIZE="-1">                     </FONT>
+<FONT SIZE="-1">                     // update Lat &amp; Lon</FONT>
+<FONT SIZE="-1">                     if (s[0] != 'V')  {</FONT>
+<FONT SIZE="-1">                        // 4 is N or S for Lat direction, 3 is lat</FONT>
+<FONT SIZE="-1">                        if (GetField(startOfMessage, 4, s) &amp;&amp; </FONT>
+<FONT SIZE="-1">                           GetField(startOfMessage, 3, s + StrLen(s)))</FONT>
+<FONT SIZE="-1">                           FrmCopyLabel(frm, GPSMainLatitudeLabel, s);</FONT>
+<FONT SIZE="-1">                        </FONT>
+<FONT SIZE="-1">                        // 5 is E or W for Lat direction, 6 is lon</FONT>
+<FONT SIZE="-1">                        if (GetField(startOfMessage, 6, s) &amp;&amp; </FONT>
+<FONT SIZE="-1">                           GetField(startOfMessage, 5, s + StrLen(s)))</FONT>
+<FONT SIZE="-1">                           FrmCopyLabel(frm, GPSMainLongtitudeLabel, s);</FONT>
+<FONT SIZE="-1">                     }</FONT>
+<FONT SIZE="-1">                  }</FONT>
+<FONT SIZE="-1">               }</FONT>
+<FONT SIZE="-1">            }</FONT>
+<FONT SIZE="-1">         }</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">   } while (!updatedTime &amp;&amp; !EvtSysEventAvail(false));</FONT>
+<FONT SIZE="-1">   break;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Remember that the GPS device is spewing out data once a second. We are not going to update that often; we've settled on updating every five seconds as a happy medium. Normally when we receive an idle event, we have just been in the event loop, dozing for four seconds. Thus, our receive buffer could have old data in it or could have overflowed. In the previous code, we first flush our buffer (we don't want any stale information from the buffer) and then read in two lines of data.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Next, we look for our string by searching for </FONT><FONT FACE="Courier New">$GPRMC</FONT><FONT FACE="Times">. If we find it, we know we've communicated with the GPS device. </FONT><FONT FACE="Courier New">gLastSuccessfulReception</FONT><FONT FACE="Times"> then gets updated.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Next, we parse out the time from the string. If it is a multiple of five or we've gone too long without updating the display, we do all of the following: </FONT></P>
+
+<P><FONT FACE="Times"> 1. Set the next time to read.</FONT></P>
+
+<P><FONT FACE="Times"> 2. Parse out the remaining information.</FONT></P>
+
+<P><FONT FACE="Times"> 3. Update our display with the new information (the current position or an indication that the link to the satellite is lost).</FONT></P>
+
+<P><FONT FACE="Times"> 4. Return to the event loop.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Otherwise, we continue in a loop until we do successfully read or until a user event occurs.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Last, we need a small utility routine, </FONT><FONT FACE="Courier New">GetField</FONT><FONT FACE="Times">, to parse out a comma-delimited field:</FONT></P><PRE><FONT SIZE="-1">// returns n'th (0-based) comma-delimeted field within buffer</FONT>
+<FONT SIZE="-1">// true if field found, false otherwise</FONT>
+<FONT SIZE="-1">static Boolean GetField(const char *buffer, UInt n, char *result)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   int   i;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   // skip n commas</FONT>
+<FONT SIZE="-1">   for (i = 0; i &lt; n; i++) {</FONT>
+<FONT SIZE="-1">      while (*buffer &amp;&amp; *buffer != ',')</FONT>
+<FONT SIZE="-1">         buffer++;</FONT>
+<FONT SIZE="-1">      if (*buffer == '\0')</FONT>
+<FONT SIZE="-1">         return false;</FONT>
+<FONT SIZE="-1">      buffer++;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   while (*buffer &amp;&amp; *buffer != ',')</FONT>
+<FONT SIZE="-1">      *result++ = *buffer++;</FONT>
+<FONT SIZE="-1">   if (*buffer != ',')</FONT>
+<FONT SIZE="-1">      return false;</FONT>
+<FONT SIZE="-1">   *result = '\0';</FONT>
+<FONT SIZE="-1">   return true;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">That is all there is to our application. But as you can see from the discussion prior to the code, the difficulty with serial is not in the actual calls but in configuring your application to do the right thing. Much of the complexity is in being responsive to the user while doing communications and in conserving battery life by idling with </FONT><FONT FACE="Courier New">EvtGetEvent</FONT><FONT FACE="Times"> and<A NAME="P438_22239"></A> </FONT><FONT FACE="Courier New">SerReceiveWait</FONT><FONT FACE="Times">.</FONT><A NAME="P438_22255"></A></P>
+
+<P><A NAME="P441_22255"></A>
+
+<TABLE BORDER=0 WIDTH="100%">
+<TR>
+<TD><H1 ALIGN=LEFT><I><FONT FACE="Times" SIZE="+2">TCP/IP</FONT></I></H1></TD>
+<TD><P ALIGN=RIGHT><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A></P></TD></TR></TABLE></P>
+<P ALIGN=LEFT><IMG SRC="images/applespl.gif" width="751" height="7"></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P443_22261"></A>In this section, we show you how to use TCP/IP on a Palm device. To accomplish this, we discuss the API for networking on a Palm device, we give you some programming tips for implementing TCP/IP, and last we create a small sample application that sends email to a Simple Mail Transfer Protocol (SMTP) server.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Network API</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The Palm SDK (Version 2.0 or later) contains a net library that provides network services, like TCP/IP, to applications. With this library, an application on the Palm device can connect to any other machine on a network using standard TCP/IP protocols. The API for this library is a socket interface, modeled very closely on the Berkeley Sockets API.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P451_22930"></A>Sockets are a communication mechanism. Information is sent into a socket on one machine and comes out of a socket on a remote machine (and vice versa). With a connection-oriented socket interface, you can establish the connection between the two machines prior to sending data. The connection stay opens whether or not data is sent. A good example of this is TCP. Sockets also allow a connectionless mode for sending datagrams. These can be sent to an address without any prior connection using a protocol like User Datagram Protocol (UDP).</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">For a brief introduction to Berkeley Sockets and socket programming, see </FONT><FONT FACE="Times" SIZE="-1"><I><A HREF="http://world.std.com/~jimf/papers/sockets/sockets.html">http://world.std.com/~jimf/papers/sockets/sockets.html</A></I>. For a more detailed discussion, see <I>Unix Network Programming</I>, by W. Richard Stevens (Prentice Hall; ISBN: 0-13-949876-1).</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The similarity between the Berkeley Sockets API and the net library is so close that you can compile Berkeley Sockets code for the Palm OS with minor-and sometimes no-changes. As a result, porting networking code to the Palm OS is very simple.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The ported code works so nicely because the net library includes header files with macros that convert Berkeley Sockets calls to Palm OS calls. The main difference between the two is that calls to the net library accept three additional parameters. These are: </FONT></P>
+
+<P><I><FONT FACE="Times">A networking reference number</FONT></I></P>
+
+<P><FONT FACE="Times">All calls to the net library need to use an integer reference to the net library. The Berkeley Sockets macros pass the global <I><A NAME="P458_24355"></A>AppNetRefnum</I> as their first parameter.</FONT></P>
+
+<P><I><FONT FACE="Times">An error code pointer</FONT></I></P>
+
+<P><FONT FACE="Times">The Berkeley Sockets macros pass the address of the global variable </FONT><FONT FACE="Courier New">errno</FONT><FONT FACE="Times">.</FONT></P>
+
+<P><I><FONT FACE="Times">A timeout</FONT></I></P>
+
+<P><FONT FACE="Times">The net library routines return if they haven't finished before the timeout. The Berkeley Sockets macros pass the global </FONT><FONT FACE="Courier New"><A NAME="P462_24618"></A>AppNetTimeout</FONT><FONT FACE="Times">. Note that the default timeout (two seconds) may be too short for communicating by modem to busy servers.</FONT></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Tips for Using TCP/IP</FONT></I></P>
+
+<P><I><FONT FACE="Times"><A NAME="P466_24758"></A>Use Berkeley Sockets</FONT></I></P>
+
+<P><FONT FACE="Times">Use the Berkeley Sockets interface in preference to the Palm OS API. This gives you two advantages. Your networking code is portable to other platforms, and programmers who are new to the Palm OS will find your code easier to read.</FONT></P>
+
+<P><I><FONT FACE="Times">Use the Palm OS API if necessary</FONT></I></P>
+
+<P><FONT FACE="Times">If you need to call networking code when your application globals aren't available, you must use the Palm OS API. You can't use the Berkeley Sockets API (which relies on the global variables </FONT><FONT FACE="Courier New">errno</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">AppNetRefnum</FONT><FONT FACE="Times">, and </FONT><FONT FACE="Courier New">AppNetTimeout</FONT><FONT FACE="Times">). Indeed, the only choice available to you is the Palm OS API, which allows, but doesn't require, globals.</FONT></P>
+
+<P><I><FONT FACE="Times">Write and test the code on another platform</FONT></I></P>
+
+<P><FONT FACE="Times">Consider writing and testing your networking code on another platform, perhaps Unix or Linux. Debugging tools for networking for the Palm OS are very primitive at the time of this book's writing (although POSE can make a dial-up connection on some machines, it's not able to do so reliably on all configurations). Much more sophisticated debugging tools are available in the Unix/Linux world.</FONT></P>
+
+<P><FONT FACE="Times">Even if source-level debugging were available, the need to dial up a remote machine still makes this a choice of last resort. As debugging would require a dial-up connection, the test portion of the edit/compile/download/test cycle would be tediously long. On a Unix/Linux machine, you can probably test without a dial-up connection, as your machine might be on Ethernet. Single-machine testing is also possible via the loopback interface (an interface enabling a machine to make a network connection to itself).</FONT></P>
+
+<P><I><FONT FACE="Times">Don't immediately close the connection</FONT></I></P>
+
+<P><FONT FACE="Times">When you close the net library with </FONT><FONT FACE="Courier New">NetLibClose</FONT><FONT FACE="Times">, pass </FONT><FONT FACE="Courier New">false</FONT><FONT FACE="Times"> as the </FONT><FONT FACE="Courier New">immediate</FONT><FONT FACE="Times"> parameter; the net library then remains open until the user-specified timer expires. As a result of the clever design of </FONT><FONT FACE="Courier New">NetLibClose</FONT><FONT FACE="Times">, the user can switch to another application that makes networking calls without having to redial. If you pass </FONT><FONT FACE="Courier New">true</FONT><FONT FACE="Times"> as the </FONT><FONT FACE="Courier New">immediate</FONT><FONT FACE="Times"> parameter, the dial-up connection closed immediately, and the connection must be reestablished when the user switches to another application.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">Imagine the situation of a user with three different network applications on the Palm device. The user might first check email with one application, next read a newsgroup, and last look at a few web sites. This is so common a situation that you should account for it in your code. If the emailer, newsreader, and web browser each closed the network connection when they closed, the user would be fairly annoyed at the unnecessary waits to reestablish a connection.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">A better solution is to let the user determine when to close the network connection using the Preferences application. While it is true that the net library, when open, sucks up an enormous amount of memory and should be closed when not needed, it is also true that users often handle network tasks during discrete periods of time. Letting the network close after a user-specified time seems the best solution to both conditions. In your network application documentation, you can direct the user to the Preferences dialog, explain the situation concerning the network connection, and guide the choice of setting.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">When to open a network connection</FONT></I></P>
+
+<P><FONT FACE="Times">Consider carefully when to open the net library and establish a connection. Your </FONT><FONT FACE="Courier New">StartApplication</FONT><FONT FACE="Times"> routine is probably not a very good choice, as the Palm device would dial-up for a connection as soon as the user tapped the application icon. A better way to handle this is to wait for some explicit user request to make the connection; such a request could be put in a menu.</FONT><A NAME="P479_28328"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">Sample Network Application</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P483_28354"></A>Our Sales application does not use network services, so we've created a custom sample application to show you how to use the net library and communicate over a network. Our example sends email to an SMTP server. The user fills in:</FONT></P>
+
+  <UL><LI><FONT FACE="Times">  SMTP host name (the host that's running the SMTP server)</FONT></LI>
+
+  <LI><FONT FACE="Times">  A From email address</FONT></LI>
+
+  <LI><FONT FACE="Times">  A To email address</FONT></LI>
+
+  <LI><FONT FACE="Times">  Subject</FONT></LI>
+
+  <LI><FONT FACE="Times">  Body of the message</FONT></LI></UL>
+
+<P ALIGN=LEFT><FONT FACE="Times">When the user taps Send, we connect to the SMTP server and send the email message using the SMTP protocol.</FONT></P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=6>
+
+<TR BGCOLOR="#DCF0FF">
+
+<TD>
+
+NOTE:<BR>
+<P ALIGN=LEFT><FONT FACE="Times">The SMTP protocol is documented in RFC 821. Various sites contain the RFC documents; see </FONT><FONT FACE="Times" SIZE="-1"><I><A HREF="http://www.yahoo.com/Computers_and_Internet/Standards/RFCs/">http://www.yahoo.com/Computers_and_Internet/Standards/RFCs/</A></I> for a list.</FONT></P>
+</TD>
+
+</TR>
+
+</TABLE>
+
+<P><I><FONT FACE="Times">The sample on Linux</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times"><A NAME="P497_28999"></A>Following our own advice, we first created this sample application on another platform and then ported it to the Palm OS. The application was originally written on a Linux machine and tested with a simple command-line interface. Here's the header file that describes the interface to </FONT><FONT FACE="Courier New"><A NAME="P497_29283"></A>sendmail</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">typedef void   (*StatusCallbackFunc)(char *status);</FONT>
+<FONT SIZE="-1">typedef void   (*ErrorCallbackFunc)(char *problem, char *extraInfo);</FONT>
+
+<FONT SIZE="-1">int sendmail(char *smtpHost, char *from, char *to, char *subject, </FONT>
+<FONT SIZE="-1">   char *data, StatusCallbackFunc statusFunc,</FONT>
+<FONT SIZE="-1">   ErrorCallbackFunc errorFunc);</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The </FONT><FONT FACE="Courier New">data</FONT><FONT FACE="Times"> parameter is the body of the mail message, with individual lines separated by newline characters (</FONT><FONT FACE="Courier New">'\n'</FONT><FONT FACE="Times">). The </FONT><FONT FACE="Courier New">&#160;&#160;<A NAME="P505_29674"></A>StatusCallbackFunc</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">ErrorCallbackFunc</FONT><FONT FACE="Times"> are used to provide status (although </FONT><FONT FACE="Courier New">sendmail</FONT><FONT FACE="Times"> doesn't currently provide status) and error information to the caller. These are abstracted from the <I>sendmail</I> routine itself to make porting the program easier. A Linux command-line program has very different error reporting than a Palm OS application.</FONT></P>
+
+<P><I><FONT FACE="Times">The Linux main program</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the Linux main program that operates as a test harness for </FONT><FONT FACE="Courier New">sendmail</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">#include &quot;sendmail.h&quot;</FONT>
+<FONT SIZE="-1">#include &lt;stdio.h&gt;</FONT>
+
+<FONT SIZE="-1">void MyStatusFunc(char *status)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   printf(&quot;status: %s\n&quot;, status);</FONT>
+<FONT SIZE="-1">}</FONT>
+
+<FONT SIZE="-1">void MyErrorFunc(char *err, char *extra)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   if (extra)</FONT>
+<FONT SIZE="-1">      printf(&quot;error %s: %s\n&quot;, err, extra);</FONT>
+<FONT SIZE="-1">   else</FONT>
+<FONT SIZE="-1">      printf(&quot;error %s\n&quot;, err);</FONT>
+<FONT SIZE="-1">}</FONT>
+
+<FONT SIZE="-1">char    gMailMessage[5000];</FONT>
+
+<FONT SIZE="-1">int main(int argc, char **argv)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   if (argc != 5) {</FONT>
+<FONT SIZE="-1">      fprintf(stderr,</FONT>
+<FONT SIZE="-1">         &quot;Usage: TestSendMail smtpServer fromAddress toAddres subject\n&quot;);</FONT>
+<FONT SIZE="-1">         exit(1);</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   fread(gMailMessage, sizeof(gMailMessage), 1, stdin);</FONT>
+<FONT SIZE="-1">   sendmail(argv[1], argv[2], argv[3],</FONT>
+<FONT SIZE="-1">      argv[4], gMailMessage,</FONT>
+<FONT SIZE="-1">      MyStatusFunc, MyErrorFunc);</FONT>
+<FONT SIZE="-1">   return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P><I><FONT FACE="Times">Linux include files and global definitions</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here are the include files and global definitions from <I>sendmail.c</I>:</FONT></P><PRE><FONT SIZE="-1">#include &lt;sys/socket.h&gt;</FONT>
+<FONT SIZE="-1">#include &lt;netdb.h&gt;</FONT>
+<FONT SIZE="-1">#include &lt;netinet/in.h&gt;</FONT>
+<FONT SIZE="-1">#include &lt;arpa/inet.h&gt;</FONT>
+
+<FONT SIZE="-1">// Application headers</FONT>
+
+<FONT SIZE="-1">#include &quot;sendmail.h&quot;</FONT>
+
+
+<FONT SIZE="-1">static const int kLinefeedChr = '\012';</FONT>
+<FONT SIZE="-1">static const int kCrChr = '\015';</FONT>
+
+<FONT SIZE="-1">static StatusCallbackFunc gStatusFunc;</FONT>
+<FONT SIZE="-1">static ErrorCallbackFunc  gErrorFunc;</FONT></PRE>
+
+<P><I><FONT FACE="Times">Sending the mail</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the </FONT><FONT FACE="Courier New">sendmail</FONT><FONT FACE="Times"> function, where we send data:</FONT></P><PRE><FONT SIZE="-1">#define  kOK         '2'</FONT>
+<FONT SIZE="-1">#define  kWantMore   '3'</FONT>
+
+<FONT SIZE="-1">int sendmail(char *smtpHost, char *from, char *to, char *subject, </FONT>
+<FONT SIZE="-1">   char *data, StatusCallbackFunc statusFunc,</FONT>
+<FONT SIZE="-1">   ErrorCallbackFunc errorFunc)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   int success = 0;</FONT>
+<FONT SIZE="-1">   int   fd        = -1;      // socket file descriptor</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   gErrorFunc = errorFunc;</FONT>
+<FONT SIZE="-1">   gStatusFunc = statusFunc;</FONT>
+
+<FONT SIZE="-1">   // open connection to the server</FONT>
+<FONT SIZE="-1">   if ((fd = make_connection(&quot;smtp&quot;, SOCK_STREAM, smtpHost)) &lt; 0 )</FONT>
+<FONT SIZE="-1">   {</FONT>
+<FONT SIZE="-1">      (*errorFunc)(&quot;Couldn't open connection&quot;, NULL);</FONT>
+<FONT SIZE="-1">      goto _Exit;</FONT>
+<FONT SIZE="-1">   }</FONT>
+
+<FONT SIZE="-1">   // send &amp; receive the data</FONT>
+<FONT SIZE="-1">   if (!GotReply(fd, kOK))</FONT>
+<FONT SIZE="-1">      goto _Exit;</FONT>
+<FONT SIZE="-1">            </FONT>
+<FONT SIZE="-1">   if (!Send(fd, &quot;HELO [&quot;, &quot;127.0.0.1&quot;, &quot;]&quot;))</FONT>
+<FONT SIZE="-1">      goto _Exit;    </FONT>
+<FONT SIZE="-1">   if (!GotReply(fd, kOK))</FONT>
+<FONT SIZE="-1">      goto _Exit;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   if (!Send(fd, &quot;MAIL from:&lt;&quot;, from, &quot;&gt;&quot;))</FONT>
+<FONT SIZE="-1">      goto _Exit;    </FONT>
+<FONT SIZE="-1">   if (!GotReply(fd, kOK))</FONT>
+<FONT SIZE="-1">      goto _Exit;</FONT>
+
+<FONT SIZE="-1">   if (!Send(fd, &quot;RCPT to:&lt;&quot;, to, &quot;&gt;&quot;))</FONT>
+<FONT SIZE="-1">      goto _Exit;    </FONT>
+<FONT SIZE="-1">   if (!GotReply(fd, kOK))</FONT>
+<FONT SIZE="-1">      goto _Exit;</FONT>
+
+<FONT SIZE="-1">   if (!Send(fd, &quot;DATA&quot;, NULL, NULL))</FONT>
+<FONT SIZE="-1">      goto _Exit;    </FONT>
+<FONT SIZE="-1">   if (!GotReply(fd, kWantMore))    </FONT>
+<FONT SIZE="-1">      goto _Exit;</FONT>
+
+<FONT SIZE="-1">   if (!Send(fd, &quot;Subject: &quot;, subject, NULL))</FONT>
+<FONT SIZE="-1">      goto _Exit;    </FONT>
+
+<FONT SIZE="-1">// need empty line between headers and data</FONT>
+<FONT SIZE="-1">   if (!Send(fd, NULL, NULL, NULL))</FONT>
+<FONT SIZE="-1">      goto _Exit;    </FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (!SendBody(fd,data))</FONT>
+<FONT SIZE="-1">      goto _Exit;    </FONT>
+<FONT SIZE="-1">   if (!Send(fd, &quot;.&quot;, NULL, NULL))</FONT>
+<FONT SIZE="-1">      goto _Exit;    </FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">   if (!GotReply(fd, kOK))    </FONT>
+<FONT SIZE="-1">      goto _Exit;</FONT>
+
+<FONT SIZE="-1">   if (!Send(fd, &quot;QUIT&quot;, NULL, NULL))</FONT>
+<FONT SIZE="-1">      goto _Exit;    </FONT>
+<FONT SIZE="-1">      </FONT>
+
+<FONT SIZE="-1">   success = 1;</FONT>
+<FONT SIZE="-1">   // cleanup the mess...</FONT>
+
+<FONT SIZE="-1">_Exit:</FONT>
+
+<FONT SIZE="-1">   if ( fd &gt;= 0 ) close( fd );</FONT>
+
+<FONT SIZE="-1">   return success;</FONT>
+<FONT SIZE="-1">}  </FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We make a connection to the SMTP server and alternate receiving status information and sending data. The entire conversation is in ASCII; every response from the SMTP server has a numeric code as the first three digits. We look at the first digit to determine whether a problem has occurred. A digit of &quot;2&quot; signifies that everything is fine. A digit of &quot;3&quot; signifies that more data is needed (the expected response when we send the </FONT><FONT FACE="Courier New">DATA</FONT><FONT FACE="Times"> command; it's asking us to send the body of the email). Any other digit (for our purposes) represents an error.</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The protocol specifies that each sent line ends with &lt;CRLF&gt; and that the body of the email ends with a period (.) on a line by itself. Any lines beginning with a period must have the period duplicated (for instance, &quot;.xyz&quot; is sent as &quot;..xyz&quot;); the SMTP server strips the extra period before processing the email.</FONT></P>
+
+<P><I><FONT FACE="Times">Connecting to the server</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">The function </FONT><FONT FACE="Courier New">&#160;<A NAME="P643_33566"></A>make_connection</FONT><FONT FACE="Times"> actually makes the connection to the SMTP server:</FONT></P><PRE><FONT SIZE="-1">/* This is a generic function to make a connection to a given server/port.</FONT>
+<FONT SIZE="-1">   service is the port name/number,</FONT>
+<FONT SIZE="-1">   type is either SOCK_STREAM or SOCK_DGRAM, and</FONT>
+<FONT SIZE="-1">   netaddress is the host name to connect to.</FONT>
+<FONT SIZE="-1">   The function returns the socket, ready for action.*/</FONT>
+<FONT SIZE="-1">static int make_connection(char *service, int type, char *netaddress)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">  /* First convert service from a string, to a number... */</FONT>
+<FONT SIZE="-1">  int port = -1;</FONT>
+<FONT SIZE="-1">  struct in_addr *addr;</FONT>
+<FONT SIZE="-1">  int sock, connected;</FONT>
+<FONT SIZE="-1">  struct sockaddr_in address;</FONT>
+
+<FONT SIZE="-1">  if (type == SOCK_STREAM) </FONT>
+<FONT SIZE="-1">    port = atoport(service, &quot;tcp&quot;);</FONT>
+<FONT SIZE="-1">  if (type == SOCK_DGRAM)</FONT>
+<FONT SIZE="-1">    port = atoport(service, &quot;udp&quot;);</FONT>
+<FONT SIZE="-1">  if (port == -1) {</FONT>
+<FONT SIZE="-1">   (*gErrorFunc)(&quot;make_connection:  Invalid socket type.\n&quot;, NULL);</FONT>
+<FONT SIZE="-1">    return -1;</FONT>
+<FONT SIZE="-1">  }</FONT>
+<FONT SIZE="-1">  addr = atoaddr(netaddress);</FONT>
+<FONT SIZE="-1">  if (addr == NULL) {</FONT>
+<FONT SIZE="-1">    (*gErrorFunc)(&quot;make_connection:  Invalid network address.\n&quot;, NULL);</FONT>
+<FONT SIZE="-1">    return -1;</FONT>
+<FONT SIZE="-1">  }</FONT>
+<FONT SIZE="-1"> </FONT>
+<FONT SIZE="-1">  memset((char *) &amp;address, 0, sizeof(address));</FONT>
+<FONT SIZE="-1">  address.sin_family = AF_INET;</FONT>
+<FONT SIZE="-1">  address.sin_port = (port);</FONT>
+<FONT SIZE="-1">  address.sin_addr.s_addr = addr-&gt;s_addr;</FONT>
+
+<FONT SIZE="-1">  sock = socket(AF_INET, type, 0);</FONT>
+
+<FONT SIZE="-1">  if (type == SOCK_STREAM) {</FONT>
+<FONT SIZE="-1">    connected = connect(sock, (struct sockaddr *) &amp;address, </FONT>
+<FONT SIZE="-1">      sizeof(address));</FONT>
+<FONT SIZE="-1">    if (connected &lt; 0) {</FONT>
+<FONT SIZE="-1">     (*gErrorFunc)(&quot;connect&quot;, NULL);</FONT>
+<FONT SIZE="-1">      return -1;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    return sock;</FONT>
+<FONT SIZE="-1">  }</FONT>
+<FONT SIZE="-1">  /* Otherwise, must be for udp, so bind to address. */</FONT>
+<FONT SIZE="-1">  if (bind(sock, (struct sockaddr *) &amp;address, sizeof(address)) &lt; 0) {</FONT>
+<FONT SIZE="-1">   (*gErrorFunc)(&quot;bind&quot;, NULL);</FONT>
+<FONT SIZE="-1">    return -1;</FONT>
+<FONT SIZE="-1">  }</FONT>
+<FONT SIZE="-1">  return sock;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This function uses the Berkeley Sockets API calls </FONT><FONT FACE="Courier New">socket</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">connect</FONT><FONT FACE="Times"> (</FONT><FONT FACE="Courier New">bind</FONT><FONT FACE="Times"> is used only for datagram sockets). Note that </FONT><FONT FACE="Courier New">connect</FONT><FONT FACE="Times"> returns a file descriptor that is used in later </FONT><FONT FACE="Courier New">read</FONT><FONT FACE="Times">, </FONT><FONT FACE="Courier New">write</FONT><FONT FACE="Times">, and </FONT><FONT FACE="Courier New">close</FONT><FONT FACE="Times"> calls. </FONT></P>
+
+<P><I><FONT FACE="Times">Getting a port</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">To connect, we have to specify an address consisting of an IP address and a port number. We use </FONT><FONT FACE="Courier New"><A NAME="P699_35370"></A>atoport</FONT><FONT FACE="Times"> to convert a well-known service name to a port number:</FONT></P><PRE><FONT SIZE="-1">/* Take a service name, and a service type, and return a port number.  The </FONT>
+<FONT SIZE="-1">   number returned is byte ordered for the network. */</FONT>
+<FONT SIZE="-1">static int atoport(char *service, char *proto)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">  int port;</FONT>
+<FONT SIZE="-1">  struct servent *serv;</FONT>
+
+<FONT SIZE="-1">  /* First try to read it from /etc/services */</FONT>
+<FONT SIZE="-1">  serv = getservbyname(service, proto);</FONT>
+<FONT SIZE="-1">  if (serv != NULL)</FONT>
+<FONT SIZE="-1">    port = serv-&gt;s_port;</FONT>
+<FONT SIZE="-1">  else { </FONT>
+<FONT SIZE="-1">      return -1; /* Invalid port address */</FONT>
+<FONT SIZE="-1">  }</FONT>
+<FONT SIZE="-1">  return port;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">atoport</FONT><FONT FACE="Times"> uses the Berkeley Sockets API function </FONT><FONT FACE="Courier New">getservbyname</FONT><FONT FACE="Times">. Then </FONT><FONT FACE="Courier New">atoaddr </FONT><FONT FACE="Times">converts a hostname (or string of the form &quot;aaa.bbb.ccc.ddd&quot;) to an IP address:</FONT></P><PRE><FONT SIZE="-1">/* Converts ascii text to in_addr struct.  NULL is returned if the address</FONT>
+<FONT SIZE="-1">   can not be found. */</FONT>
+<FONT SIZE="-1">static struct in_addr *atoaddr(char *address)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">  struct hostent *host;</FONT>
+<FONT SIZE="-1">  static struct in_addr saddr;</FONT>
+
+<FONT SIZE="-1">  /* First try it as aaa.bbb.ccc.ddd. */</FONT>
+<FONT SIZE="-1">  saddr.s_addr = inet_addr(address);</FONT>
+<FONT SIZE="-1">  if (saddr.s_addr != -1) {</FONT>
+<FONT SIZE="-1">    return &amp;saddr;</FONT>
+<FONT SIZE="-1">  }</FONT>
+<FONT SIZE="-1">  host = gethostbyname(address);</FONT>
+<FONT SIZE="-1">  if (host != NULL) {</FONT>
+<FONT SIZE="-1">    return (struct in_addr *) *host-&gt;h_addr_list;</FONT>
+<FONT SIZE="-1">  }</FONT>
+<FONT SIZE="-1">  return NULL;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Note also that </FONT><FONT FACE="Courier New">atoaddr</FONT><FONT FACE="Times"> uses the Berkley Sockets </FONT><FONT FACE="Courier New">gethostbyname</FONT><FONT FACE="Times"> call.</FONT></P>
+
+<P><I><FONT FACE="Times">Reading data character by character</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Once the connection has been made, we need to start sending and receiving data. We use a utility routine, </FONT><FONT FACE="Courier New">&#160;<A NAME="P741_36644"></A>sock_gets</FONT><FONT FACE="Times">, to read an entire &lt;CRLF&gt;-delimited line (note that it reads one character at a time):</FONT></P><PRE><FONT SIZE="-1">/* This function reads from a socket, until it receives a linefeed</FONT>
+<FONT SIZE="-1">   character.  It fills the buffer &quot;str&quot; up to the maximum size &quot;count&quot;.</FONT>
+<FONT SIZE="-1">   This function will return -1 if the socket is closed during the read</FONT>
+<FONT SIZE="-1">   operation.</FONT>
+
+<FONT SIZE="-1">   Note that if a single line exceeds the length of count, the extra data</FONT>
+<FONT SIZE="-1">   will be read and discarded!  You have been warned. */</FONT>
+<FONT SIZE="-1">static int sock_gets(int sockfd, char *str, size_t count)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">  int bytes_read;</FONT>
+<FONT SIZE="-1">  int total_count = 0;</FONT>
+<FONT SIZE="-1">  char *current_position;</FONT>
+<FONT SIZE="-1">  char last_read = 0;</FONT>
+<FONT SIZE="-1">  const char kLinefeed = 10;</FONT>
+<FONT SIZE="-1">  const char kCR = 13;</FONT>
+
+<FONT SIZE="-1">  current_position = str;</FONT>
+<FONT SIZE="-1">  while (last_read != kLinefeed) {</FONT>
+<FONT SIZE="-1">    bytes_read = read(sockfd, &amp;last_read, 1);</FONT>
+<FONT SIZE="-1">    if (bytes_read &lt;= 0) {</FONT>
+<FONT SIZE="-1">      /* The other side may have closed unexpectedly */</FONT>
+<FONT SIZE="-1">      return -1; /* Is this effective on other platforms than linux? */</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">    if ( (total_count &lt; count) &amp;&amp; (last_read != kLinefeed) &amp;&amp; </FONT>
+<FONT SIZE="-1">       (last_read != kCR) ) </FONT>
+<FONT SIZE="-1">    {</FONT>
+<FONT SIZE="-1">      current_position[0] = last_read;</FONT>
+<FONT SIZE="-1">      current_position++;</FONT>
+<FONT SIZE="-1">      total_count++;</FONT>
+<FONT SIZE="-1">    }</FONT>
+<FONT SIZE="-1">  }</FONT>
+<FONT SIZE="-1">  if (count &gt; 0)</FONT>
+<FONT SIZE="-1">    current_position[0] = 0;</FONT>
+<FONT SIZE="-1">  return total_count;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The </FONT><FONT FACE="Courier New">sendmail</FONT><FONT FACE="Times"> protocol specifies that the server may send us multiple lines for any reply. The last line will start with a three-digit numeric code and a space (###&thorn; ); any previous lines will have a - instead of the space (###-). We need to keep reading until we read the last line. </FONT><FONT FACE="Courier New">&#160;<A NAME="P778_38081"></A>ReadReply</FONT><FONT FACE="Times"> does that:</FONT></P><PRE><FONT SIZE="-1">#define IsDigit(c) ((c) &gt;= '0' &amp;&amp; (c) &lt;= '9')</FONT>
+
+<FONT SIZE="-1">// reads lines until we get a non-continuation line</FONT>
+<FONT SIZE="-1">static int ReadReply(int fd, char *s, unsigned int sLen)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   int      numBytes;</FONT>
+<FONT SIZE="-1">   do {</FONT>
+<FONT SIZE="-1">      numBytes = sock_gets(fd, s, sLen);</FONT>
+<FONT SIZE="-1">   } while (numBytes &gt;= 0 &amp;&amp; !(strlen(s) &gt;= 4 &amp;&amp; s[3] == ' ' &amp;&amp; </FONT>
+<FONT SIZE="-1">      IsDigit(s[0]) &amp;&amp; IsDigit(s[1]) &amp;&amp; IsDigit(s[2])));</FONT>
+<FONT SIZE="-1">   if (numBytes &lt; 0)</FONT>
+<FONT SIZE="-1">         return numBytes;</FONT>
+<FONT SIZE="-1">   else</FONT>
+<FONT SIZE="-1">      return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We use </FONT><FONT FACE="Courier New">ReadReply</FONT><FONT FACE="Times"> in </FONT><FONT FACE="Courier New">&#160;<A NAME="P795_38531"></A>GotReply</FONT><FONT FACE="Times">, which takes an expected status character and returns true if we receive that character and false otherwise:</FONT></P><PRE><FONT SIZE="-1">#define kMaxReplySize 512</FONT>
+
+<FONT SIZE="-1">static int GotReply(int fd, char expectedLeadingChar)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   int      err;</FONT>
+<FONT SIZE="-1">   char  reply[kMaxReplySize];</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   err = ReadReply(fd, reply, sizeof(reply));</FONT>
+<FONT SIZE="-1">   if (err != 0) {</FONT>
+<FONT SIZE="-1">      (*gErrorFunc)(&quot;Read error&quot;, NULL);</FONT>
+<FONT SIZE="-1">      return 0;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   if (*reply != expectedLeadingChar) {</FONT>
+<FONT SIZE="-1">      (*gErrorFunc)(&quot;Protocol error&quot;, reply);</FONT>
+<FONT SIZE="-1">      return 0;</FONT>
+<FONT SIZE="-1">   }     </FONT>
+<FONT SIZE="-1">   return 1;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The SMTP protocol specifies that no reply will exceed 512 characters (including the trailing &lt;CRLF&gt; characters); that's why we can safely define </FONT><FONT FACE="Courier New">kMaxReplySize</FONT><FONT FACE="Times"> as we did. If the digit we read doesn't match the expected character, we call the error function, passing the line itself. This works well because the server usually provides a reasonable English error message with the numeric code. As a result, the user gets more than &quot;Protocol error&quot; for error information. This is all there is to reading data. </FONT></P>
+
+<P><I><FONT FACE="Times">Sending data character by character</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Having taken care of reading data, now we need to deal with sending it. </FONT><FONT FACE="Courier New">&#160;<A NAME="P819_39634"></A>Send</FONT><FONT FACE="Times"> sends one line of data (and tacks on a &lt;CRLF&gt; pair at the end):</FONT></P><PRE><FONT SIZE="-1">// sends s1 followed by s2 followed by s3 followed by CRLF</FONT>
+<FONT SIZE="-1">static int Send(int fd, char *s1, char *s2, char *s3)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (s1 &amp;&amp; nwrite(fd, s1, strlen(s1)) &lt; 0)</FONT>
+<FONT SIZE="-1">      goto error;</FONT>
+<FONT SIZE="-1">   if (s2 &amp;&amp; nwrite(fd, s2, strlen(s2)) &lt; 0)</FONT>
+<FONT SIZE="-1">      goto error;</FONT>
+<FONT SIZE="-1">   if (s3 &amp;&amp; nwrite(fd, s3, strlen(s3)) &lt; 0)</FONT>
+<FONT SIZE="-1">      goto error;</FONT>
+<FONT SIZE="-1">   if (nwrite(fd, &quot;\015\012&quot;, 2) &lt; 0)</FONT>
+<FONT SIZE="-1">      goto error;</FONT>
+<FONT SIZE="-1">   return 1;</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">error:</FONT>
+<FONT SIZE="-1">   (*gErrorFunc)(&quot;Write error&quot;, NULL);</FONT>
+<FONT SIZE="-1">   return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Courier New" SIZE="+0">&#160;<A NAME="P839_40127"></A>SendBody</FONT><FONT FACE="Times"> sends the body of the email:</FONT></P><PRE><FONT SIZE="-1">static int SendBody(int fd, char *body)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   char  *lineStart = body;</FONT>
+<FONT SIZE="-1">   int   result = 0;</FONT>
+
+<FONT SIZE="-1">   // send all the newline-terminated lines</FONT>
+<FONT SIZE="-1">   while (*body != '\0' &amp;&amp; result == 0) {</FONT>
+<FONT SIZE="-1">      if (*body == '\n') {</FONT>
+<FONT SIZE="-1">         result = SendSingleBodyLine(fd, lineStart,</FONT>
+<FONT SIZE="-1">            body - lineStart);</FONT>
+<FONT SIZE="-1">         lineStart = body + 1;</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">      body++;</FONT>
+<FONT SIZE="-1">   }</FONT>
+
+<FONT SIZE="-1">   // send the last partial line</FONT>
+<FONT SIZE="-1">   if (lineStart &lt; body &amp;&amp; result == 0) </FONT>
+<FONT SIZE="-1">      result = SendSingleBodyLine(fd, lineStart,</FONT>
+<FONT SIZE="-1">         body - lineStart);</FONT>
+<FONT SIZE="-1">   return result;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">It relies on </FONT><FONT FACE="Courier New">&#160;<A NAME="P862_40675"></A>SendSingleBodyLine</FONT><FONT FACE="Times">, which converts </FONT><FONT FACE="Courier New">\n</FONT><FONT FACE="Times"> chars to &lt;CRLF&gt; and doubles &quot;.&quot; characters that occur at the beginning of lines:</FONT></P><PRE><FONT SIZE="-1"> // sends aLine which is length chars long</FONT>
+<FONT SIZE="-1">static int SendSingleBodyLine(int fd, char *aLine, int length)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   if (*aLine == '.') // double-up on '.' lines</FONT>
+<FONT SIZE="-1">      if (nwrite(fd, &quot;.&quot;, 1) &lt; 0)</FONT>
+<FONT SIZE="-1">         goto error;</FONT>
+<FONT SIZE="-1">   if (nwrite(fd, aLine, length) &lt; 0)</FONT>
+<FONT SIZE="-1">      goto error;</FONT>
+<FONT SIZE="-1">   if (nwrite(fd, &quot;\015\012&quot;, 2) &lt; 0)</FONT>
+<FONT SIZE="-1">      goto error;</FONT>
+<FONT SIZE="-1">error:</FONT>
+<FONT SIZE="-1">   (*gErrorFunc)(&quot;Write error&quot;, NULL);</FONT>
+<FONT SIZE="-1">   return 0;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Both these sending routines use </FONT><FONT FACE="Courier New">&#160;<A NAME="P877_41195"></A>nwrite</FONT><FONT FACE="Times">, a utility routine that does our writing:</FONT></P><PRE><FONT SIZE="-1">static unsigned int nwrite(int fd, char *ptr, unsigned int nbytes)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   unsigned int   nleft;</FONT>
+<FONT SIZE="-1">   int            chunk;</FONT>
+<FONT SIZE="-1">   int         nwritten;</FONT>
+
+<FONT SIZE="-1">   nleft = nbytes;</FONT>
+<FONT SIZE="-1">   while (nleft &gt; 0) {</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">      if (nleft &gt; 0x7000) chunk = 0x7000;</FONT>
+<FONT SIZE="-1">      else chunk = nleft;</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      nwritten = write(fd, ptr, chunk);</FONT>
+<FONT SIZE="-1">      if (nwritten &lt;= 0)</FONT>
+<FONT SIZE="-1">         return(nwritten);    /* error */</FONT>
+
+<FONT SIZE="-1">      nleft -= nwritten;</FONT>
+<FONT SIZE="-1">      ptr   += nwritten;</FONT>
+<FONT SIZE="-1">   }</FONT>
+<FONT SIZE="-1">   return(nbytes - nleft);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">This routine loops through, calling write over and over until all the data is sent. For sockets, the write routine may not send all the data you request. A lesser amount may be all that will fit in a packet.</FONT><A NAME="P900_41887"></A></P>
+
+<P><I><FONT FACE="Times">Testing the Linux application</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Testing was simplified because the Linux machine is on a network with a full-time connection to the Internet. Therefore, we have no time delays in making a connection. (If it hadn't had a full-time connection, we could have run an SMTP server on the Linux machine and run standalone, with no connection to the Internet.)</FONT></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">We used the Linux source-level debugger, GDB, to step through the original code. We also fixed some errors in our original attempt.</FONT><A NAME="P906_42367"></A></P>
+
+<P><I><FONT FACE="Times">Porting the Linux application to Palm OS</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">Now let's take a look at what it will take to port the Linux application to the Palm OS world. The <I>sendmail.c</I> requires only one small change in order to work under the Palm OS. Another couple of changes need to be made to the include files for the Palm OS, as they are slightly different. We use <I>sys_socket.h</I> instead of <I>sys/socket.h</I>. No other changes to the guts of the application, <I>sendmail.c</I>, are necessary:</FONT></P><PRE><B><FONT SIZE="-1">#ifdef linux</FONT></B>
+<FONT SIZE="-1">#include &lt;sys/socket.h&gt;</FONT>
+<FONT SIZE="-1">#include &lt;netdb.h&gt;</FONT>
+<FONT SIZE="-1">#include &lt;netinet/in.h&gt;</FONT>
+<FONT SIZE="-1">#include &lt;arpa/inet.h&gt;</FONT>
+<B><FONT SIZE="-1">#else</FONT></B>
+<B><FONT SIZE="-1">#include &lt;sys_socket.h&gt;</FONT></B>
+<B><FONT SIZE="-1">#endif</FONT></B></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We need to handle the user interface of a Palm OS application. We won't use the command-line interface of the Linux application. In our main source file, <I>PilotSend.c</I>, we must include <I>NetMgr.h</I>, declare </FONT><FONT FACE="Courier New"><A NAME="P920_43149"></A>AppNetRefnum</FONT><FONT FACE="Times">, and define </FONT><FONT FACE="Courier New">errno</FONT><FONT FACE="Times">:</FONT></P><PRE><FONT SIZE="-1">#include &lt;NetMgr.h&gt;</FONT>
+<FONT SIZE="-1">extern Word AppNetRefnum;</FONT>
+<FONT SIZE="-1">Err   errno;               // needed for Berkely socket interfaces</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We have fairly primitive </FONT><FONT FACE="Courier New">error</FONT><FONT FACE="Times"> and </FONT><FONT FACE="Courier New">status</FONT><FONT FACE="Times"> routines; all they do is put up an alert:</FONT></P><PRE><FONT SIZE="-1">static void MyErrorFunc(char *error, char *additional)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FrmCustomAlert(ErrorAlert, error, additional ? additional : &quot;&quot;, NULL);</FONT>
+<FONT SIZE="-1">}</FONT>
+
+<FONT SIZE="-1">static void MyStatusFunc(char *status)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FrmCustomAlert(StatusAlert, status, NULL, NULL);</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">We also need a new utility routine that returns the text in a field:</FONT></P><PRE><FONT SIZE="-1">// returns (locked) text in a field object</FONT>
+<FONT SIZE="-1">static char *GetLockedPtr(Word objectID)</FONT>
+<FONT SIZE="-1">{</FONT>
+<FONT SIZE="-1">   FormPtr  frm = FrmGetActiveForm();</FONT>
+<FONT SIZE="-1">   FieldPtr fld = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, objectID));</FONT>
+<FONT SIZE="-1">   Handle   h = FldGetTextHandle(fld);</FONT>
+<FONT SIZE="-1">   </FONT>
+<FONT SIZE="-1">   if (h)</FONT>
+<FONT SIZE="-1">      return MemHandleLock(h);</FONT>
+<FONT SIZE="-1">   else</FONT>
+<FONT SIZE="-1">      return 0;</FONT>
+<FONT SIZE="-1">}</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">Here's the guts of the sending portion of our event-handling routine. Just as in the Linux version of the application, we still call </FONT><FONT FACE="Courier New">sendmail</FONT><FONT FACE="Times"> to send the data:</FONT></P><PRE><FONT SIZE="-1">if (event-&gt;data.ctlEnter.controlID == SendmailMainSendButton) {</FONT>
+<FONT SIZE="-1">   if (SysLibFind( &quot;Net.lib&quot;, &amp;AppNetRefnum) == 0) {</FONT>
+<FONT SIZE="-1">      Word  interfaceError;</FONT>
+<FONT SIZE="-1">      Err   error;</FONT>
+<FONT SIZE="-1">      char  *smtpServer = GetLockedPtr(SendmailMainSmtpHostField);</FONT>
+<FONT SIZE="-1">      char  *to = GetLockedPtr(SendmailMainToField);</FONT>
+<FONT SIZE="-1">      char  *from = GetLockedPtr(SendmailMainFromField);</FONT>
+<FONT SIZE="-1">      char  *subject = GetLockedPtr(SendmailMainSubjectField);</FONT>
+<FONT SIZE="-1">      char  *body = GetLockedPtr(SendmailMainBodyField);</FONT>
+<FONT SIZE="-1">      </FONT>
+<FONT SIZE="-1">      if (!smtpServer)</FONT>
+<FONT SIZE="-1">         MyErrorFunc(&quot;Missing smtpServer&quot;, NULL);</FONT>
+<FONT SIZE="-1">      else if (!to)</FONT>
+<FONT SIZE="-1">         MyErrorFunc(&quot;Missing to&quot;, NULL);</FONT>
+<FONT SIZE="-1">      else if (!from)</FONT>
+<FONT SIZE="-1">         MyErrorFunc(&quot;Missing from&quot;, NULL);</FONT>
+<FONT SIZE="-1">      else if (!body)</FONT>
+<FONT SIZE="-1">         MyErrorFunc(&quot;Missing body&quot;, NULL);</FONT>
+<FONT SIZE="-1">      else  {</FONT>
+<FONT SIZE="-1">         error = NetLibOpen(AppNetRefnum, &amp;interfaceError);</FONT>
+<FONT SIZE="-1">         if (interfaceError != 0) {</FONT>
+<FONT SIZE="-1">            MyErrorFunc(&quot;NetLibOpen: interface error&quot;, NULL);</FONT>
+<FONT SIZE="-1">            NetLibClose(AppNetRefnum, true);</FONT>
+<FONT SIZE="-1">         } else if (error == 0 || error == netErrAlreadyOpen) {</FONT>
+<FONT SIZE="-1">            if (sendmail(smtpServer, from, to, </FONT>
+<FONT SIZE="-1">               subject, body, MyStatusFunc, MyErrorFunc))</FONT>
+<FONT SIZE="-1">               MyStatusFunc(&quot;Completed successfully&quot;);</FONT>
+<FONT SIZE="-1">            NetLibClose(AppNetRefnum, false);   </FONT>
+<FONT SIZE="-1">         } else</FONT>
+<FONT SIZE="-1">            MyErrorFunc(&quot;netLibOpen error&quot;, NULL);</FONT>
+<FONT SIZE="-1">      }</FONT>
+<FONT SIZE="-1">         if (smtpServer)</FONT>
+<FONT SIZE="-1">            MemPtrUnlock(smtpServer);</FONT>
+<FONT SIZE="-1">         if (to)</FONT>
+<FONT SIZE="-1">            MemPtrUnlock(to);</FONT>
+<FONT SIZE="-1">         if (from)</FONT>
+<FONT SIZE="-1">            MemPtrUnlock(from);</FONT>
+<FONT SIZE="-1">         if (subject)</FONT>
+<FONT SIZE="-1">            MemPtrUnlock(subject);</FONT>
+<FONT SIZE="-1">         if (body)</FONT>
+<FONT SIZE="-1">            MemPtrUnlock(body);</FONT>
+<FONT SIZE="-1">  }</FONT>
+<FONT SIZE="-1">   else</FONT>
+<FONT SIZE="-1">      MyErrorFunc(&quot;Can't SysLibFind&quot;, NULL);</FONT>
+<FONT SIZE="-1">}</FONT>
+<FONT SIZE="-1">handled = true;</FONT>
+<FONT SIZE="-1">break;</FONT></PRE>
+
+<P ALIGN=LEFT><FONT FACE="Times">The only additional networking code we need is a call to open the net library (</FONT><FONT FACE="Courier New">NetLibOpen</FONT><FONT FACE="Times">) and a call to close it (</FONT><FONT FACE="Courier New">NetLibClose</FONT><FONT FACE="Times">). Note that </FONT><FONT FACE="Courier New">NetLibClose</FONT><FONT FACE="Times"> does not immediately close the network connection, but relies on the user's preferences for when to do so.</FONT><A NAME="P999_45978"></A></P>
+
+<P><I><FONT FACE="Times" SIZE="+1">TCP/IP Summary</FONT></I></P>
+
+<P ALIGN=LEFT><FONT FACE="Times">You can see from this example that writing code that uses network services on the Palm OS is fairly simple. A distinct advantage of Palm's implementation of the Berkeley Sockets API is that you can easily have code that ports to many platforms. This also made it possible to write the data-sending portion of the email program, the </FONT><FONT FACE="Courier New">sendmail</FONT><FONT FACE="Times"> function, on another platform where testing was easier. Very little was required to get that email program up and running on the Palm platform after the Linux version was tested. We simply had to give the Palm application a user interface, including error information, and put a new shell around the data-sending portion of the <A NAME="P1004_46661"></A>code. </FONT><A NAME="P1004_46667"></A></P>
+<HR ALIGN=LEFT SIZE=2 WIDTH=100% NOSHADE>
+
+<P><A NAME="P125_9780"></A>
+* <FONT FACE="Times" SIZE="-1">Had we been willing to sacrifice a HotSync cable, we could have cut off the DB-9 end and soldered on a replacement Garmin end. However, we weren't willing to make the sacrifice (although <A HREF="#P116_9747">Figure 9-4</A> would certainly have looked less cluttered).</FONT></P>
+
+<P><A NAME="P130_10527"></A>
+Ý <FONT FACE="Times" SIZE="-1">The NMEA 0183 protocol is a document that is available only in hard copy form. It can be ordered from NMEA at (252) 638-2626.</FONT></P>
+<!-- TRANSIT - TEXTBAR -->
+
+<ADDRESS><FONT SIZE=-1>Palm Programming: The Developer's Guide
+<BR>Copyright &#169; 1999, O'Rielly and Associates, Inc.
+<BR>Published on the web by permission of O'Rielly and Associates, Inc. Contents modified for web display.</FONT></ADDRESS><P ALIGN=RIGHT><!-- TRANSIT - PREVIOUS PAGE --><A HREF="ch08.htm#TopOfPage"><IMG SRC="images/appleppv.gif" ALT="Previous Page" BORDER=0 width="34" height="26"></A><A HREF="#TopOfPage"><IMG SRC="images/appletop.gif" ALT="Top Of Page" BORDER=0 width="34" height="26"></A><!-- TRANSIT - TOC --><A HREF="TableOfContents.htm#TopOfPage" TARGET="_top"><IMG SRC="images/appletoc.gif" ALT="Table Of Contents" BORDER=0 width="34" height="26"></A><!-- TRANSIT - INDEX --><A HREF="index.htm#TopOfPage"><IMG SRC="images/appleidx.gif" ALT="Index" BORDER=0 width="34" height="26"></A><!-- TRANSIT - NEXT PAGE --><A HREF="ch10.htm#TopOfPage"><IMG SRC="images/applepnx.gif" ALT="Next Page" BORDER=0 width="34" height="26"></A></P>
+</BODY>
+</HTML>

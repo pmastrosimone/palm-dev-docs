@@ -1,0 +1,328 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: DEC Alpha Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: DEC Alpha Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: DEC Alpha Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC34"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_33.html#SEC33"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_35.html#SEC35"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_18.html#SEC18"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 2.14.18 DEC Alpha Options </H3>
+<!--docid::SEC34::-->
+<P>
+
+These <SAMP>`-m'</SAMP> options are defined for the DEC Alpha implementations:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-mno-soft-float</CODE>
+<DD><DT><CODE>-msoft-float</CODE>
+<DD>Use (do not use) the hardware floating-point instructions for
+floating-point operations.  When <CODE>-msoft-float</CODE> is specified,
+functions in <TT>`libgcc1.c'</TT> will be used to perform floating-point
+operations.  Unless they are replaced by routines that emulate the
+floating-point operations, or compiled in such a way as to call such
+emulations routines, these routines will issue floating-point
+operations.   If you are compiling for an Alpha without floating-point
+operations, you must ensure that the library is built so as not to call
+them.
+<P>
+
+Note that Alpha implementations without floating-point operations are
+required to have floating-point registers.
+</P><P>
+
+<DT><CODE>-mfp-reg</CODE>
+<DD><DT><CODE>-mno-fp-regs</CODE>
+<DD>Generate code that uses (does not use) the floating-point register set.
+<CODE>-mno-fp-regs</CODE> implies <CODE>-msoft-float</CODE>.  If the floating-point
+register set is not used, floating point operands are passed in integer
+registers as if they were integers and floating-point results are passed
+in $0 instead of $f0.  This is a non-standard calling sequence, so any
+function with a floating-point argument or return value called by code
+compiled with <CODE>-mno-fp-regs</CODE> must also be compiled with that
+option.
+<P>
+
+A typical use of this option is building a kernel that does not use,
+and hence need not save and restore, any floating-point registers.
+</P><P>
+
+<DT><CODE>-mieee</CODE>
+<DD>The Alpha architecture implements floating-point hardware optimized for
+maximum performance.  It is mostly compliant with the IEEE floating
+point standard.  However, for full compliance, software assistance is
+required.  This option generates code fully IEEE compliant code
+<EM>except</EM> that the <VAR>inexact flag</VAR> is not maintained (see below).
+If this option is turned on, the CPP macro <CODE>_IEEE_FP</CODE> is defined
+during compilation.  The option is a shorthand for: <SAMP>`-D_IEEE_FP
+-mfp-trap-mode=su -mtrap-precision=i -mieee-conformant'</SAMP>.  The resulting
+code is less efficient but is able to correctly support denormalized
+numbers and exceptional IEEE values such as not-a-number and plus/minus
+infinity.  Other Alpha compilers call this option
+<CODE>-ieee_with_no_inexact</CODE>.
+<P>
+
+<DT><CODE>-mieee-with-inexact</CODE>
+<DD>This is like <SAMP>`-mieee'</SAMP> except the generated code also maintains the
+IEEE <VAR>inexact flag</VAR>.  Turning on this option causes the generated
+code to implement fully-compliant IEEE math.  The option is a shorthand
+for <SAMP>`-D_IEEE_FP -D_IEEE_FP_INEXACT'</SAMP> plus the three following:
+<SAMP>`-mieee-conformant'</SAMP>,
+<SAMP>`-mfp-trap-mode=sui'</SAMP>, 
+and <SAMP>`-mtrap-precision=i'</SAMP>.  
+On some Alpha implementations the resulting code may execute
+significantly slower than the code generated by default.  Since there
+is very little code that depends on the <VAR>inexact flag</VAR>, you should
+normally not specify this option.  Other Alpha compilers call this
+option <SAMP>`-ieee_with_inexact'</SAMP>.
+<P>
+
+<DT><CODE>-mfp-trap-mode=<VAR>trap mode</VAR></CODE>
+<DD>This option controls what floating-point related traps are enabled.
+Other Alpha compilers call this option <SAMP>`-fptm '</SAMP><VAR>trap mode</VAR>.
+The trap mode can be set to one of four values:
+<P>
+
+<DL COMPACT>
+<DT><SAMP>`n'</SAMP>
+<DD>This is the default (normal) setting.  The only traps that are enabled
+are the ones that cannot be disabled in software (e.g., division by zero
+trap).
+<P>
+
+<DT><SAMP>`u'</SAMP>
+<DD>In addition to the traps enabled by <SAMP>`n'</SAMP>, underflow traps are enabled
+as well.
+<P>
+
+<DT><SAMP>`su'</SAMP>
+<DD>Like <SAMP>`su'</SAMP>, but the instructions are marked to be safe for software
+completion (see Alpha architecture manual for details).
+<P>
+
+<DT><SAMP>`sui'</SAMP>
+<DD>Like <SAMP>`su'</SAMP>, but inexact traps are enabled as well.
+</DL>
+<P>
+
+<DT><CODE>-mfp-rounding-mode=<VAR>rounding mode</VAR></CODE>
+<DD>Selects the IEEE rounding mode.  Other Alpha compilers call this option
+<SAMP>`-fprm '</SAMP><VAR>rounding mode</VAR>.  The <VAR>rounding mode</VAR> can be one
+of:
+<P>
+
+<DL COMPACT>
+<DT><SAMP>`n'</SAMP>
+<DD>Normal IEEE rounding mode.  Floating point numbers are rounded towards
+the nearest machine number or towards the even machine number in case
+of a tie.
+<P>
+
+<DT><SAMP>`m'</SAMP>
+<DD>Round towards minus infinity.
+<P>
+
+<DT><SAMP>`c'</SAMP>
+<DD>Chopped rounding mode.  Floating point numbers are rounded towards zero.
+<P>
+
+<DT><SAMP>`d'</SAMP>
+<DD>Dynamic rounding mode.  A field in the floating point control register
+(<VAR>fpcr</VAR>, see Alpha architecture reference manual) controls the
+rounding mode in effect.  The C library initializes this register for
+rounding towards plus infinity.  Thus, unless your program modifies the
+<VAR>fpcr</VAR>, <SAMP>`d'</SAMP> corresponds to round towards plus infinity.
+</DL>
+<P>
+
+<DT><CODE>-mtrap-precision=<VAR>trap precision</VAR></CODE>
+<DD>In the Alpha architecture, floating point traps are imprecise.  This
+means without software assistance it is impossible to recover from a
+floating trap and program execution normally needs to be terminated.
+GCC can generate code that can assist operating system trap handlers
+in determining the exact location that caused a floating point trap.
+Depending on the requirements of an application, different levels of
+precisions can be selected:
+<P>
+
+<DL COMPACT>
+<DT><SAMP>`p'</SAMP>
+<DD>Program precision.  This option is the default and means a trap handler
+can only identify which program caused a floating point exception.
+<P>
+
+<DT><SAMP>`f'</SAMP>
+<DD>Function precision.  The trap handler can determine the function that
+caused a floating point exception.
+<P>
+
+<DT><SAMP>`i'</SAMP>
+<DD>Instruction precision.  The trap handler can determine the exact
+instruction that caused a floating point exception.
+</DL>
+<P>
+
+Other Alpha compilers provide the equivalent options called
+<SAMP>`-scope_safe'</SAMP> and <SAMP>`-resumption_safe'</SAMP>.
+</P><P>
+
+<DT><CODE>-mieee-conformant</CODE>
+<DD>This option marks the generated code as IEEE conformant.  You must not
+use this option unless you also specify <SAMP>`-mtrap-precision=i'</SAMP> and either
+<SAMP>`-mfp-trap-mode=su'</SAMP> or <SAMP>`-mfp-trap-mode=sui'</SAMP>.  Its only effect
+is to emit the line <SAMP>`.eflag 48'</SAMP> in the function prologue of the
+generated assembly file.  Under DEC Unix, this has the effect that
+IEEE-conformant math library routines will be linked in.
+<P>
+
+<DT><CODE>-mbuild-constants</CODE>
+<DD>Normally GCC examines a 32- or 64-bit integer constant to
+see if it can construct it from smaller constants in two or three
+instructions.  If it cannot, it will output the constant as a literal and
+generate code to load it from the data segment at runtime.
+<P>
+
+Use this option to require GCC to construct <EM>all</EM> integer constants
+using code, even if it takes more instructions (the maximum is six).
+</P><P>
+
+You would typically use this option to build a shared library dynamic
+loader.  Itself a shared library, it must relocate itself in memory
+before it can find the variables and constants in its own data segment.
+</P><P>
+
+<DT><CODE>-malpha-as</CODE>
+<DD><DT><CODE>-mgas</CODE>
+<DD>Select whether to generate code to be assembled by the vendor-supplied
+assembler (<SAMP>`-malpha-as'</SAMP>) or by the GNU assembler <SAMP>`-mgas'</SAMP>.
+<P>
+
+<DT><CODE>-mbwx</CODE>
+<DD><DT><CODE>-mno-bwx</CODE>
+<DD><DT><CODE>-mcix</CODE>
+<DD><DT><CODE>-mno-cix</CODE>
+<DD><DT><CODE>-mmax</CODE>
+<DD><DT><CODE>-mno-max</CODE>
+<DD>Indicate whether GCC should generate code to use the optional BWX,
+CIX, and MAX instruction sets.  The default is to use the instruction sets
+supported by the CPU type specified via <SAMP>`-mcpu='</SAMP> option or that
+of the CPU on which GCC was built if none was specified.
+<P>
+
+<DT><CODE>-mcpu=<VAR>cpu_type</VAR></CODE>
+<DD>Set the instruction set, register set, and instruction scheduling
+parameters for machine type <VAR>cpu_type</VAR>.  You can specify either the
+<SAMP>`EV'</SAMP> style name or the corresponding chip number.  GCC
+supports scheduling parameters for the EV4 and EV5 family of processors
+and will choose the default values for the instruction set from
+the processor you specify.  If you do not specify a processor type,
+GCC will default to the processor on which the compiler was built.
+<P>
+
+Supported values for <VAR>cpu_type</VAR> are
+</P><P>
+
+<DL COMPACT>
+<DT><SAMP>`ev4'</SAMP>
+<DD><DT><SAMP>`21064'</SAMP>
+<DD>Schedules as an EV4 and has no instruction set extensions.
+<P>
+
+<DT><SAMP>`ev5'</SAMP>
+<DD><DT><SAMP>`21164'</SAMP>
+<DD>Schedules as an EV5 and has no instruction set extensions.
+<P>
+
+<DT><SAMP>`ev56'</SAMP>
+<DD><DT><SAMP>`21164a'</SAMP>
+<DD>Schedules as an EV5 and supports the BWX extension.
+<P>
+
+<DT><SAMP>`pca56'</SAMP>
+<DD><DT><SAMP>`21164pc'</SAMP>
+<DD><DT><SAMP>`21164PC'</SAMP>
+<DD>Schedules as an EV5 and supports the BWX and MAX extensions.
+<P>
+
+<DT><SAMP>`ev6'</SAMP>
+<DD><DT><SAMP>`21264'</SAMP>
+<DD>Schedules as an EV5 (until Digital releases the scheduling parameters
+for the EV6) and supports the BWX, CIX, and MAX extensions.
+</DL>
+<P>
+
+<DT><CODE>-mmemory-latency=<VAR>time</VAR></CODE>
+<DD>Sets the latency the scheduler should assume for typical memory
+references as seen by the application.  This number is highly
+dependant on the memory access patterns used by the application
+and the size of the external cache on the machine.
+<P>
+
+Valid options for <VAR>time</VAR> are
+</P><P>
+
+<DL COMPACT>
+<DT><SAMP>`<VAR>number</VAR>'</SAMP>
+<DD>A decimal number representing clock cycles.
+<P>
+
+<DT><SAMP>`L1'</SAMP>
+<DD><DT><SAMP>`L2'</SAMP>
+<DD><DT><SAMP>`L3'</SAMP>
+<DD><DT><SAMP>`main'</SAMP>
+<DD>The compiler contains estimates of the number of clock cycles for
+"typical" EV4 &#38; EV5 hardware for the Level 1, 2 &#38; 3 caches
+(also called Dcache, Scache, and Bcache), as well as to main memory.
+Note that L3 is only valid for EV5.
+<P>
+
+</DL>
+</DL>
+<P>
+
+<A NAME="Clipper Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_33.html#SEC33"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_35.html#SEC35"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_18.html#SEC18"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

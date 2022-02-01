@@ -1,0 +1,1463 @@
+This is gdb.info, produced by makeinfo version 4.3 from
+/netrel/src/gdb-20030919-1/gdb/doc/gdb.texinfo.
+
+INFO-DIR-SECTION Programming & development tools.
+START-INFO-DIR-ENTRY
+* Gdb: (gdb).                     The GNU debugger.
+END-INFO-DIR-ENTRY
+
+   This file documents the GNU debugger GDB.
+
+   This is the Ninth Edition, of `Debugging with GDB: the GNU
+Source-Level Debugger' for GDB Version 2003-09-20-cvs (cygwin-special).
+
+   Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996,
+1998,
+1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
+
+   Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs Free
+Documentation", with the Front-Cover Texts being "A GNU Manual," and
+with the Back-Cover Texts as in (a) below.
+
+   (a) The Free Software Foundation's Back-Cover Text is: "You have
+freedom to copy and modify this GNU Manual, like GNU software.  Copies
+published by the Free Software Foundation raise funds for GNU
+development."
+
+
+File: gdb.info,  Node: Formatting Documentation,  Next: Command Line Editing,  Prev: GDB Bugs,  Up: Top
+
+Formatting Documentation
+************************
+
+   The GDB 4 release includes an already-formatted reference card, ready
+for printing with PostScript or Ghostscript, in the `gdb' subdirectory
+of the main source directory(1).  If you can use PostScript or
+Ghostscript with your printer, you can print the reference card
+immediately with `refcard.ps'.
+
+   The release also includes the source for the reference card.  You
+can format it, using TeX, by typing:
+
+     make refcard.dvi
+
+   The GDB reference card is designed to print in "landscape" mode on
+US "letter" size paper; that is, on a sheet 11 inches wide by 8.5 inches
+high.  You will need to specify this form of printing as an option to
+your DVI output program.
+
+   All the documentation for GDB comes as part of the machine-readable
+distribution.  The documentation is written in Texinfo format, which is
+a documentation system that uses a single source file to produce both
+on-line information and a printed manual.  You can use one of the Info
+formatting commands to create the on-line version of the documentation
+and TeX (or `texi2roff') to typeset the printed version.
+
+   GDB includes an already formatted copy of the on-line Info version
+of this manual in the `gdb' subdirectory.  The main Info file is
+`gdb-2003-09-20-cvs (cygwin-special)/gdb/gdb.info', and it refers to
+subordinate files matching `gdb.info*' in the same directory.  If
+necessary, you can print out these files, or read them with any editor;
+but they are easier to read using the `info' subsystem in GNU Emacs or
+the standalone `info' program, available as part of the GNU Texinfo
+distribution.
+
+   If you want to format these Info files yourself, you need one of the
+Info formatting programs, such as `texinfo-format-buffer' or `makeinfo'.
+
+   If you have `makeinfo' installed, and are in the top level GDB
+source directory (`gdb-2003-09-20-cvs (cygwin-special)', in the case of
+version 2003-09-20-cvs (cygwin-special)), you can make the Info file by
+typing:
+
+     cd gdb
+     make gdb.info
+
+   If you want to typeset and print copies of this manual, you need TeX,
+a program to print its DVI output files, and `texinfo.tex', the Texinfo
+definitions file.
+
+   TeX is a typesetting program; it does not print files directly, but
+produces output files called DVI files.  To print a typeset document,
+you need a program to print DVI files.  If your system has TeX
+installed, chances are it has such a program.  The precise command to
+use depends on your system; `lpr -d' is common; another (for PostScript
+devices) is `dvips'.  The DVI print command may require a file name
+without any extension or a `.dvi' extension.
+
+   TeX also requires a macro definitions file called `texinfo.tex'.
+This file tells TeX how to typeset a document written in Texinfo
+format.  On its own, TeX cannot either read or typeset a Texinfo file.
+`texinfo.tex' is distributed with GDB and is located in the
+`gdb-VERSION-NUMBER/texinfo' directory.
+
+   If you have TeX and a DVI printer program installed, you can typeset
+and print this manual.  First switch to the the `gdb' subdirectory of
+the main source directory (for example, to `gdb-2003-09-20-cvs
+(cygwin-special)/gdb') and type:
+
+     make gdb.dvi
+
+   Then give `gdb.dvi' to your DVI printing program.
+
+   ---------- Footnotes ----------
+
+   (1) In `gdb-2003-09-20-cvs (cygwin-special)/gdb/refcard.ps' of the
+version 2003-09-20-cvs (cygwin-special) release.
+
+
+File: gdb.info,  Node: Installing GDB,  Next: Maintenance Commands,  Prev: Using History Interactively,  Up: Top
+
+Installing GDB
+**************
+
+   GDB comes with a `configure' script that automates the process of
+preparing GDB for installation; you can then use `make' to build the
+`gdb' program.
+
+   The GDB distribution includes all the source code you need for GDB
+in a single directory, whose name is usually composed by appending the
+version number to `gdb'.
+
+   For example, the GDB version 2003-09-20-cvs (cygwin-special)
+distribution is in the `gdb-2003-09-20-cvs (cygwin-special)' directory.
+That directory contains:
+
+`gdb-2003-09-20-cvs (cygwin-special)/configure (and supporting files)'
+     script for configuring GDB and all its supporting libraries
+
+`gdb-2003-09-20-cvs (cygwin-special)/gdb'
+     the source specific to GDB itself
+
+`gdb-2003-09-20-cvs (cygwin-special)/bfd'
+     source for the Binary File Descriptor library
+
+`gdb-2003-09-20-cvs (cygwin-special)/include'
+     GNU include files
+
+`gdb-2003-09-20-cvs (cygwin-special)/libiberty'
+     source for the `-liberty' free software library
+
+`gdb-2003-09-20-cvs (cygwin-special)/opcodes'
+     source for the library of opcode tables and disassemblers
+
+`gdb-2003-09-20-cvs (cygwin-special)/readline'
+     source for the GNU command-line interface
+
+`gdb-2003-09-20-cvs (cygwin-special)/glob'
+     source for the GNU filename pattern-matching subroutine
+
+`gdb-2003-09-20-cvs (cygwin-special)/mmalloc'
+     source for the GNU memory-mapped malloc package
+
+   The simplest way to configure and build GDB is to run `configure'
+from the `gdb-VERSION-NUMBER' source directory, which in this example
+is the `gdb-2003-09-20-cvs (cygwin-special)' directory.
+
+   First switch to the `gdb-VERSION-NUMBER' source directory if you are
+not already in it; then run `configure'.  Pass the identifier for the
+platform on which GDB will run as an argument.
+
+   For example:
+
+     cd gdb-2003-09-20-cvs (cygwin-special)
+     ./configure HOST
+     make
+
+where HOST is an identifier such as `sun4' or `decstation', that
+identifies the platform where GDB will run.  (You can often leave off
+HOST; `configure' tries to guess the correct value by examining your
+system.)
+
+   Running `configure HOST' and then running `make' builds the `bfd',
+`readline', `mmalloc', and `libiberty' libraries, then `gdb' itself.
+The configured source files, and the binaries, are left in the
+corresponding source directories.
+
+   `configure' is a Bourne-shell (`/bin/sh') script; if your system
+does not recognize this automatically when you run a different shell,
+you may need to run `sh' on it explicitly:
+
+     sh configure HOST
+
+   If you run `configure' from a directory that contains source
+directories for multiple libraries or programs, such as the
+`gdb-2003-09-20-cvs (cygwin-special)' source directory for version
+2003-09-20-cvs (cygwin-special), `configure' creates configuration
+files for every directory level underneath (unless you tell it not to,
+with the `--norecursion' option).
+
+   You should run the `configure' script from the top directory in the
+source tree, the `gdb-VERSION-NUMBER' directory.  If you run
+`configure' from one of the subdirectories, you will configure only
+that subdirectory.  That is usually not what you want.  In particular,
+if you run the first `configure' from the `gdb' subdirectory of the
+`gdb-VERSION-NUMBER' directory, you will omit the configuration of
+`bfd', `readline', and other sibling directories of the `gdb'
+subdirectory.  This leads to build errors about missing include files
+such as `bfd/bfd.h'.
+
+   You can install `gdb' anywhere; it has no hardwired paths.  However,
+you should make sure that the shell on your path (named by the `SHELL'
+environment variable) is publicly readable.  Remember that GDB uses the
+shell to start your program--some systems refuse to let GDB debug child
+processes whose programs are not readable.
+
+* Menu:
+
+* Separate Objdir::             Compiling GDB in another directory
+* Config Names::                Specifying names for hosts and targets
+* Configure Options::           Summary of options for configure
+
+
+File: gdb.info,  Node: Separate Objdir,  Next: Config Names,  Up: Installing GDB
+
+Compiling GDB in another directory
+==================================
+
+   If you want to run GDB versions for several host or target machines,
+you need a different `gdb' compiled for each combination of host and
+target.  `configure' is designed to make this easy by allowing you to
+generate each configuration in a separate subdirectory, rather than in
+the source directory.  If your `make' program handles the `VPATH'
+feature (GNU `make' does), running `make' in each of these directories
+builds the `gdb' program specified there.
+
+   To build `gdb' in a separate directory, run `configure' with the
+`--srcdir' option to specify where to find the source.  (You also need
+to specify a path to find `configure' itself from your working
+directory.  If the path to `configure' would be the same as the
+argument to `--srcdir', you can leave out the `--srcdir' option; it is
+assumed.)
+
+   For example, with version 2003-09-20-cvs (cygwin-special), you can
+build GDB in a separate directory for a Sun 4 like this:
+
+     cd gdb-2003-09-20-cvs (cygwin-special)
+     mkdir ../gdb-sun4
+     cd ../gdb-sun4
+     ../gdb-2003-09-20-cvs (cygwin-special)/configure sun4
+     make
+
+   When `configure' builds a configuration using a remote source
+directory, it creates a tree for the binaries with the same structure
+(and using the same names) as the tree under the source directory.  In
+the example, you'd find the Sun 4 library `libiberty.a' in the
+directory `gdb-sun4/libiberty', and GDB itself in `gdb-sun4/gdb'.
+
+   Make sure that your path to the `configure' script has just one
+instance of `gdb' in it.  If your path to `configure' looks like
+`../gdb-2003-09-20-cvs (cygwin-special)/gdb/configure', you are
+configuring only one subdirectory of GDB, not the whole package.  This
+leads to build errors about missing include files such as `bfd/bfd.h'.
+
+   One popular reason to build several GDB configurations in separate
+directories is to configure GDB for cross-compiling (where GDB runs on
+one machine--the "host"--while debugging programs that run on another
+machine--the "target").  You specify a cross-debugging target by giving
+the `--target=TARGET' option to `configure'.
+
+   When you run `make' to build a program or library, you must run it
+in a configured directory--whatever directory you were in when you
+called `configure' (or one of its subdirectories).
+
+   The `Makefile' that `configure' generates in each source directory
+also runs recursively.  If you type `make' in a source directory such
+as `gdb-2003-09-20-cvs (cygwin-special)' (or in a separate configured
+directory configured with `--srcdir=DIRNAME/gdb-2003-09-20-cvs
+(cygwin-special)'), you will build all the required libraries, and then
+build GDB.
+
+   When you have multiple hosts or targets configured in separate
+directories, you can run `make' on them in parallel (for example, if
+they are NFS-mounted on each of the hosts); they will not interfere
+with each other.
+
+
+File: gdb.info,  Node: Config Names,  Next: Configure Options,  Prev: Separate Objdir,  Up: Installing GDB
+
+Specifying names for hosts and targets
+======================================
+
+   The specifications used for hosts and targets in the `configure'
+script are based on a three-part naming scheme, but some short
+predefined aliases are also supported.  The full naming scheme encodes
+three pieces of information in the following pattern:
+
+     ARCHITECTURE-VENDOR-OS
+
+   For example, you can use the alias `sun4' as a HOST argument, or as
+the value for TARGET in a `--target=TARGET' option.  The equivalent
+full name is `sparc-sun-sunos4'.
+
+   The `configure' script accompanying GDB does not provide any query
+facility to list all supported host and target names or aliases.
+`configure' calls the Bourne shell script `config.sub' to map
+abbreviations to full names; you can read the script, if you wish, or
+you can use it to test your guesses on abbreviations--for example:
+
+     % sh config.sub i386-linux
+     i386-pc-linux-gnu
+     % sh config.sub alpha-linux
+     alpha-unknown-linux-gnu
+     % sh config.sub hp9k700
+     hppa1.1-hp-hpux
+     % sh config.sub sun4
+     sparc-sun-sunos4.1.1
+     % sh config.sub sun3
+     m68k-sun-sunos4.1.1
+     % sh config.sub i986v
+     Invalid configuration `i986v': machine `i986v' not recognized
+
+`config.sub' is also distributed in the GDB source directory
+(`gdb-2003-09-20-cvs (cygwin-special)', for version 2003-09-20-cvs
+(cygwin-special)).
+
+
+File: gdb.info,  Node: Configure Options,  Prev: Config Names,  Up: Installing GDB
+
+`configure' options
+===================
+
+   Here is a summary of the `configure' options and arguments that are
+most often useful for building GDB.  `configure' also has several other
+options not listed here.  *note (configure.info)What Configure Does::,
+for a full explanation of `configure'.
+
+     configure [--help]
+               [--prefix=DIR]
+               [--exec-prefix=DIR]
+               [--srcdir=DIRNAME]
+               [--norecursion] [--rm]
+               [--target=TARGET]
+               HOST
+
+You may introduce options with a single `-' rather than `--' if you
+prefer; but you may abbreviate option names if you use `--'.
+
+`--help'
+     Display a quick summary of how to invoke `configure'.
+
+`--prefix=DIR'
+     Configure the source to install programs and files under directory
+     `DIR'.
+
+`--exec-prefix=DIR'
+     Configure the source to install programs under directory `DIR'.
+
+`--srcdir=DIRNAME'
+     *Warning: using this option requires GNU `make', or another `make'
+     that implements the `VPATH' feature.*
+     Use this option to make configurations in directories separate
+     from the GDB source directories.  Among other things, you can use
+     this to build (or maintain) several configurations simultaneously,
+     in separate directories.  `configure' writes configuration
+     specific files in the current directory, but arranges for them to
+     use the source in the directory DIRNAME.  `configure' creates
+     directories under the working directory in parallel to the source
+     directories below DIRNAME.
+
+`--norecursion'
+     Configure only the directory level where `configure' is executed;
+     do not propagate configuration to subdirectories.
+
+`--target=TARGET'
+     Configure GDB for cross-debugging programs running on the specified
+     TARGET.  Without this option, GDB is configured to debug programs
+     that run on the same machine (HOST) as GDB itself.
+
+     There is no convenient way to generate a list of all available
+     targets.
+
+`HOST ...'
+     Configure GDB to run on the specified HOST.
+
+     There is no convenient way to generate a list of all available
+     hosts.
+
+   There are many other options available as well, but they are
+generally needed for special purposes only.
+
+
+File: gdb.info,  Node: Maintenance Commands,  Next: Remote Protocol,  Prev: Installing GDB,  Up: Top
+
+Maintenance Commands
+********************
+
+   In addition to commands intended for GDB users, GDB includes a
+number of commands intended for GDB developers.  These commands are
+provided here for reference.
+
+`maint info breakpoints'
+     Using the same format as `info breakpoints', display both the
+     breakpoints you've set explicitly, and those GDB is using for
+     internal purposes.  Internal breakpoints are shown with negative
+     breakpoint numbers.  The type column identifies what kind of
+     breakpoint is shown:
+
+    `breakpoint'
+          Normal, explicitly set breakpoint.
+
+    `watchpoint'
+          Normal, explicitly set watchpoint.
+
+    `longjmp'
+          Internal breakpoint, used to handle correctly stepping through
+          `longjmp' calls.
+
+    `longjmp resume'
+          Internal breakpoint at the target of a `longjmp'.
+
+    `until'
+          Temporary internal breakpoint used by the GDB `until' command.
+
+    `finish'
+          Temporary internal breakpoint used by the GDB `finish'
+          command.
+
+    `shlib events'
+          Shared library events.
+
+`maint internal-error'
+`maint internal-warning'
+     Cause GDB to call the internal function `internal_error' or
+     `internal_warning' and hence behave as though an internal error or
+     internal warning has been detected.  In addition to reporting the
+     internal problem, these functions give the user the opportunity to
+     either quit GDB or create a core file of the current GDB session.
+
+          (gdb) maint internal-error testing, 1, 2
+          .../maint.c:121: internal-error: testing, 1, 2
+          A problem internal to GDB has been detected.  Further
+          debugging may prove unreliable.
+          Quit this debugging session? (y or n) n
+          Create a core file? (y or n) n
+          (gdb)
+
+     Takes an optional parameter that is used as the text of the error
+     or warning message.
+
+`maint print dummy-frames'
+     Prints the contents of GDB's internal dummy-frame stack.
+
+          (gdb) b add
+          ...
+          (gdb) print add(2,3)
+          Breakpoint 2, add (a=2, b=3) at ...
+          58	  return (a + b);
+          The program being debugged stopped while in a function called from GDB.
+          ...
+          (gdb) maint print dummy-frames
+          0x1a57c80: pc=0x01014068 fp=0x0200bddc sp=0x0200bdd6
+           top=0x0200bdd4 id={stack=0x200bddc,code=0x101405c}
+           call_lo=0x01014000 call_hi=0x01014001
+          (gdb)
+
+     Takes an optional file parameter.
+
+`maint print registers'
+`maint print raw-registers'
+`maint print cooked-registers'
+`maint print register-groups'
+     Print GDB's internal register data structures.
+
+     The command `maint print raw-registers' includes the contents of
+     the raw register cache; the command `maint print cooked-registers'
+     includes the (cooked) value of all registers; and the command
+     `maint print register-groups' includes the groups that each
+     register is a member of.  *Note Registers: (gdbint)Registers.
+
+     Takes an optional file parameter.
+
+`maint print reggroups'
+     Print GDB's internal register group data structures.
+
+     Takes an optional file parameter.
+
+          (gdb) maint print reggroups
+           Group      Type
+           general    user
+           float      user
+           all        user
+           vector     user
+           system     user
+           save       internal
+           restore    internal
+
+`maint set profile'
+`maint show profile'
+     Control profiling of GDB.
+
+     Profiling will be disabled until you use the `maint set profile'
+     command to enable it.  When you enable profiling, the system will
+     begin collecting timing and execution count data; when you disable
+     profiling or exit GDB, the results will be written to a log file.
+     Remember that if you use profiling, GDB will overwrite the
+     profiling log file (often called `gmon.out').  If you have a
+     record of important profiling data in a `gmon.out' file, be sure
+     to move it to a safe location.
+
+     Configuring with `--enable-profiling' arranges for GDB to be
+     compiled with the `-pg' compiler option.
+
+
+File: gdb.info,  Node: Remote Protocol,  Next: Agent Expressions,  Prev: Maintenance Commands,  Up: Top
+
+GDB Remote Serial Protocol
+**************************
+
+* Menu:
+
+* Overview::
+* Packets::
+* Stop Reply Packets::
+* General Query Packets::
+* Register Packet Format::
+* Examples::
+* File-I/O remote protocol extension::
+
+
+File: gdb.info,  Node: Overview,  Next: Packets,  Up: Remote Protocol
+
+Overview
+========
+
+   There may be occasions when you need to know something about the
+protocol--for example, if there is only one serial port to your target
+machine, you might want your program to do something special if it
+recognizes a packet meant for GDB.
+
+   In the examples below, `->' and `<-' are used to indicate
+transmitted and received data respectfully.
+
+   All GDB commands and responses (other than acknowledgments) are sent
+as a PACKET.  A PACKET is introduced with the character `$', the actual
+PACKET-DATA, and the terminating character `#' followed by a two-digit
+CHECKSUM:
+
+     `$'PACKET-DATA`#'CHECKSUM
+
+The two-digit CHECKSUM is computed as the modulo 256 sum of all
+characters between the leading `$' and the trailing `#' (an eight bit
+unsigned checksum).
+
+   Implementors should note that prior to GDB 5.0 the protocol
+specification also included an optional two-digit SEQUENCE-ID:
+
+     `$'SEQUENCE-ID`:'PACKET-DATA`#'CHECKSUM
+
+That SEQUENCE-ID was appended to the acknowledgment.  GDB has never
+output SEQUENCE-IDs.  Stubs that handle packets added since GDB 5.0
+must not accept SEQUENCE-ID.
+
+   When either the host or the target machine receives a packet, the
+first response expected is an acknowledgment: either `+' (to indicate
+the package was received correctly) or `-' (to request retransmission):
+
+     -> `$'PACKET-DATA`#'CHECKSUM
+     <- `+'
+
+The host (GDB) sends COMMANDs, and the target (the debugging stub
+incorporated in your program) sends a RESPONSE.  In the case of step
+and continue COMMANDs, the response is only sent when the operation has
+completed (the target has again stopped).
+
+   PACKET-DATA consists of a sequence of characters with the exception
+of `#' and `$' (see `X' packet for additional exceptions).
+
+   Fields within the packet should be separated using `,' `;' or `:'.
+Except where otherwise noted all numbers are represented in HEX with
+leading zeros suppressed.
+
+   Implementors should note that prior to GDB 5.0, the character `:'
+could not appear as the third character in a packet (as it would
+potentially conflict with the SEQUENCE-ID).
+
+   Response DATA can be run-length encoded to save space.  A `*' means
+that the next character is an ASCII encoding giving a repeat count
+which stands for that many repetitions of the character preceding the
+`*'.  The encoding is `n+29', yielding a printable character where `n
+>=3' (which is where rle starts to win).  The printable characters `$',
+`#', `+' and `-' or with a numeric value greater than 126 should not be
+used.
+
+   Some remote systems have used a different run-length encoding
+mechanism loosely refered to as the cisco encoding.  Following the `*'
+character are two hex digits that indicate the size of the packet.
+
+   So:
+     "`0* '"
+
+means the same as "0000".
+
+   The error response returned for some packets includes a two character
+error number.  That number is not well defined.
+
+   For any COMMAND not supported by the stub, an empty response
+(`$#00') should be returned.  That way it is possible to extend the
+protocol.  A newer GDB can tell if a packet is supported based on that
+response.
+
+   A stub is required to support the `g', `G', `m', `M', `c', and `s'
+COMMANDs.  All other COMMANDs are optional.
+
+
+File: gdb.info,  Node: Packets,  Next: Stop Reply Packets,  Prev: Overview,  Up: Remote Protocol
+
+Packets
+=======
+
+   The following table provides a complete list of all currently defined
+COMMANDs and their corresponding response DATA.
+
+`!' -- extended mode
+     Enable extended mode.  In extended mode, the remote server is made
+     persistent.  The `R' packet is used to restart the program being
+     debugged.
+
+     Reply:
+    `OK'
+          The remote target both supports and has enabled extended mode.
+
+`?' -- last signal
+     Indicate the reason the target halted.  The reply is the same as
+     for step and continue.
+
+     Reply: *Note Stop Reply Packets::, for the reply specifications.
+
+`a' -- reserved
+     Reserved for future use.
+
+`A'ARGLEN`,'ARGNUM`,'ARG`,...' --  set program arguments *(reserved)*
+     Initialized `argv[]' array passed into program. ARGLEN specifies
+     the number of bytes in the hex encoded byte stream ARG.  See
+     `gdbserver' for more details.
+
+     Reply:
+    `OK'
+
+    `ENN'
+
+`b'BAUD -- set baud *(deprecated)*
+     Change the serial line speed to BAUD.
+
+     JTC: _When does the transport layer state change?  When it's
+     received, or after the ACK is transmitted.  In either case, there
+     are problems if the command or the acknowledgment packet is
+     dropped._
+
+     Stan: _If people really wanted to add something like this, and get
+     it working for the first time, they ought to modify ser-unix.c to
+     send some kind of out-of-band message to a specially-setup stub
+     and have the switch happen "in between" packets, so that from
+     remote protocol's point of view, nothing actually happened._
+
+`B'ADDR,MODE -- set breakpoint *(deprecated)*
+     Set (MODE is `S') or clear (MODE is `C') a breakpoint at ADDR.
+
+     This packet has been replaced by the `Z' and `z' packets (*note
+     insert breakpoint or watchpoint packet::).
+
+`c'ADDR -- continue
+     ADDR is address to resume.  If ADDR is omitted, resume at current
+     address.
+
+     Reply: *Note Stop Reply Packets::, for the reply specifications.
+
+`C'SIG`;'ADDR -- continue with signal
+     Continue with signal SIG (hex signal number).  If `;'ADDR is
+     omitted, resume at same address.
+
+     Reply: *Note Stop Reply Packets::, for the reply specifications.
+
+`d' -- toggle debug *(deprecated)*
+     Toggle debug flag.
+
+`D' -- detach
+     Detach GDB from the remote system.  Sent to the remote target
+     before GDB disconnects via the `detach' command.
+
+     Reply:
+    `_no response_'
+          GDB does not check for any response after sending this packet.
+
+`e' -- reserved
+     Reserved for future use.
+
+`E' -- reserved
+     Reserved for future use.
+
+`f' -- reserved
+     Reserved for future use.
+
+`F'RC`,'EE`,'CF`;'XX -- Reply to target's F packet.
+     This packet is send by GDB as reply to a `F' request packet sent
+     by the target.  This is part of the File-I/O protocol extension.
+     *Note File-I/O remote protocol extension::, for the specification.
+
+`g' -- read registers
+     Read general registers.
+
+     Reply:
+    `XX...'
+          Each byte of register data is described by two hex digits.
+          The bytes with the register are transmitted in target byte
+          order.  The size of each register and their position within
+          the `g' PACKET are determined by the GDB internal macros
+          REGISTER_RAW_SIZE and REGISTER_NAME macros.  The
+          specification of several standard `g' packets is specified
+          below.
+
+    `ENN'
+          for an error.
+
+`G'XX... -- write regs
+     *Note read registers packet::, for a description of the XX...
+     data.
+
+     Reply:
+    `OK'
+          for success
+
+    `ENN'
+          for an error
+
+`h' -- reserved
+     Reserved for future use.
+
+`H'CT... -- set thread
+     Set thread for subsequent operations (`m', `M', `g', `G', et.al.).
+     C depends on the operation to be performed: it should be `c' for
+     step and continue operations, `g' for other operations.  The
+     thread designator T... may be -1, meaning all the threads, a
+     thread number, or zero which means pick any thread.
+
+     Reply:
+    `OK'
+          for success
+
+    `ENN'
+          for an error
+
+`i'ADDR`,'NNN -- cycle step *(draft)*
+     Step the remote target by a single clock cycle.  If `,'NNN is
+     present, cycle step NNN cycles.  If ADDR is present, cycle step
+     starting at that address.
+
+`I' -- signal then cycle step *(reserved)*
+     *Note step with signal packet::.  *Note cycle step packet::.
+
+`j' -- reserved
+     Reserved for future use.
+
+`J' -- reserved
+     Reserved for future use.
+
+`k' -- kill request
+     FIXME: _There is no description of how to operate when a specific
+     thread context has been selected (i.e. does 'k' kill only that
+     thread?)_.
+
+`K' -- reserved
+     Reserved for future use.
+
+`l' -- reserved
+     Reserved for future use.
+
+`L' -- reserved
+     Reserved for future use.
+
+`m'ADDR`,'LENGTH -- read memory
+     Read LENGTH bytes of memory starting at address ADDR.  Neither GDB
+     nor the stub assume that sized memory transfers are assumed using
+     word aligned accesses. FIXME: _A word aligned memory transfer
+     mechanism is needed._
+
+     Reply:
+    `XX...'
+          XX... is mem contents. Can be fewer bytes than requested if
+          able to read only part of the data.  Neither GDB nor the stub
+          assume that sized memory transfers are assumed using word
+          aligned accesses. FIXME: _A word aligned memory transfer
+          mechanism is needed._
+
+    `ENN'
+          NN is errno
+
+`M'ADDR,LENGTH`:'XX... -- write mem
+     Write LENGTH bytes of memory starting at address ADDR.  XX... is
+     the data.
+
+     Reply:
+    `OK'
+          for success
+
+    `ENN'
+          for an error (this includes the case where only part of the
+          data was written).
+
+`n' -- reserved
+     Reserved for future use.
+
+`N' -- reserved
+     Reserved for future use.
+
+`o' -- reserved
+     Reserved for future use.
+
+`O' -- reserved
+     Reserved for future use.
+
+`p'N... -- read reg *(reserved)*
+     *Note write register packet::.
+
+     Reply:
+    `R....'
+          The hex encoded value of the register in target byte order.
+
+`P'N...`='R... -- write register
+     Write register N... with value R..., which contains two hex digits
+     for each byte in the register (target byte order).
+
+     Reply:
+    `OK'
+          for success
+
+    `ENN'
+          for an error
+
+`q'QUERY -- general query
+     Request info about QUERY.  In general GDB queries have a leading
+     upper case letter.  Custom vendor queries should use a company
+     prefix (in lower case) ex: `qfsf.var'.  QUERY may optionally be
+     followed by a `,' or `;' separated list.  Stubs must ensure that
+     they match the full QUERY name.
+
+     Reply:
+    `XX...'
+          Hex encoded data from query.  The reply can not be empty.
+
+    `ENN'
+          error reply
+
+    `'
+          Indicating an unrecognized QUERY.
+
+`Q'VAR`='VAL -- general set
+     Set value of VAR to VAL.
+
+     *Note general query packet::, for a discussion of naming
+     conventions.
+
+`r' -- reset *(deprecated)*
+     Reset the entire system.
+
+`R'XX -- remote restart
+     Restart the program being debugged.  XX, while needed, is ignored.
+     This packet is only available in extended mode.
+
+     Reply:
+    `_no reply_'
+          The `R' packet has no reply.
+
+`s'ADDR -- step
+     ADDR is address to resume.  If ADDR is omitted, resume at same
+     address.
+
+     Reply: *Note Stop Reply Packets::, for the reply specifications.
+
+`S'SIG`;'ADDR -- step with signal
+     Like `C' but step not continue.
+
+     Reply: *Note Stop Reply Packets::, for the reply specifications.
+
+`t'ADDR`:'PP`,'MM -- search
+     Search backwards starting at address ADDR for a match with pattern
+     PP and mask MM.  PP and MM are 4 bytes.  ADDR must be at least 3
+     digits.
+
+`T'XX -- thread alive
+     Find out if the thread XX is alive.
+
+     Reply:
+    `OK'
+          thread is still alive
+
+    `ENN'
+          thread is dead
+
+`u' -- reserved
+     Reserved for future use.
+
+`U' -- reserved
+     Reserved for future use.
+
+`v' -- reserved
+     Reserved for future use.
+
+`V' -- reserved
+     Reserved for future use.
+
+`w' -- reserved
+     Reserved for future use.
+
+`W' -- reserved
+     Reserved for future use.
+
+`x' -- reserved
+     Reserved for future use.
+
+`X'ADDR`,'LENGTH:XX... -- write mem (binary)
+     ADDR is address, LENGTH is number of bytes, XX...  is binary data.
+     The characters `$', `#', and `0x7d' are escaped using `0x7d'.
+
+     Reply:
+    `OK'
+          for success
+
+    `ENN'
+          for an error
+
+`y' -- reserved
+     Reserved for future use.
+
+`Y' reserved
+     Reserved for future use.
+
+`z'TYPE`,'ADDR`,'LENGTH -- remove breakpoint or watchpoint *(draft)*
+`Z'TYPE`,'ADDR`,'LENGTH -- insert breakpoint or watchpoint *(draft)*
+     Insert (`Z') or remove (`z') a TYPE breakpoint or watchpoint
+     starting at address ADDRESS and covering the next LENGTH bytes.
+
+     Each breakpoint and watchpoint packet TYPE is documented
+     separately.
+
+     _Implementation notes: A remote target shall return an empty string
+     for an unrecognized breakpoint or watchpoint packet TYPE.  A
+     remote target shall support either both or neither of a given
+     `Z'TYPE... and `z'TYPE... packet pair.  To avoid potential
+     problems with duplicate packets, the operations should be
+     implemented in an idempotent way._
+
+`z'`0'`,'ADDR`,'LENGTH -- remove memory breakpoint *(draft)*
+
+`Z'`0'`,'ADDR`,'LENGTH -- insert memory breakpoint *(draft)*
+     Insert (`Z0') or remove (`z0') a memory breakpoint at address
+     `addr' of size `length'.
+
+     A memory breakpoint is implemented by replacing the instruction at
+     ADDR with a software breakpoint or trap instruction.  The `length'
+     is used by targets that indicates the size of the breakpoint (in
+     bytes) that should be inserted (e.g., the ARM and MIPS can insert
+     either a 2 or 4 byte breakpoint).
+
+     _Implementation note: It is possible for a target to copy or move
+     code that contains memory breakpoints (e.g., when implementing
+     overlays).  The behavior of this packet, in the presence of such a
+     target, is not defined._
+
+     Reply:
+    `OK'
+          success
+
+    `'
+          not supported
+
+    `ENN'
+          for an error
+
+`z'`1'`,'ADDR`,'LENGTH -- remove hardware breakpoint *(draft)*
+
+`Z'`1'`,'ADDR`,'LENGTH -- insert hardware breakpoint *(draft)*
+     Insert (`Z1') or remove (`z1') a hardware breakpoint at address
+     `addr' of size `length'.
+
+     A hardware breakpoint is implemented using a mechanism that is not
+     dependant on being able to modify the target's memory.
+
+     _Implementation note: A hardware breakpoint is not affected by code
+     movement._
+
+     Reply:
+    `OK'
+          success
+
+    `'
+          not supported
+
+    `ENN'
+          for an error
+
+`z'`2'`,'ADDR`,'LENGTH -- remove write watchpoint *(draft)*
+
+`Z'`2'`,'ADDR`,'LENGTH -- insert write watchpoint *(draft)*
+     Insert (`Z2') or remove (`z2') a write watchpoint.
+
+     Reply:
+    `OK'
+          success
+
+    `'
+          not supported
+
+    `ENN'
+          for an error
+
+`z'`3'`,'ADDR`,'LENGTH -- remove read watchpoint *(draft)*
+
+`Z'`3'`,'ADDR`,'LENGTH -- insert read watchpoint *(draft)*
+     Insert (`Z3') or remove (`z3') a read watchpoint.
+
+     Reply:
+    `OK'
+          success
+
+    `'
+          not supported
+
+    `ENN'
+          for an error
+
+`z'`4'`,'ADDR`,'LENGTH -- remove access watchpoint *(draft)*
+
+`Z'`4'`,'ADDR`,'LENGTH -- insert access watchpoint *(draft)*
+     Insert (`Z4') or remove (`z4') an access watchpoint.
+
+     Reply:
+    `OK'
+          success
+
+    `'
+          not supported
+
+    `ENN'
+          for an error
+
+
+File: gdb.info,  Node: Stop Reply Packets,  Next: General Query Packets,  Prev: Packets,  Up: Remote Protocol
+
+Stop Reply Packets
+==================
+
+   The `C', `c', `S', `s' and `?' packets can receive any of the below
+as a reply.  In the case of the `C', `c', `S' and `s' packets, that
+reply is only returned when the target halts.  In the below the exact
+meaning of `signal number' is poorly defined.  In general one of the
+UNIX signal numbering conventions is used.
+
+`SAA'
+     AA is the signal number
+
+``T'AAN...`:'R...`;'N...`:'R...`;'N...`:'R...`;''
+     AA = two hex digit signal number; N... = register number (hex),
+     R...  = target byte ordered register contents, size defined by
+     `REGISTER_RAW_SIZE'; N... = `thread', R... = thread process ID,
+     this is a hex integer; N... = (`watch' | `rwatch' | `awatch', R...
+     = data address, this is a hex integer; N... = other string not
+     starting with valid hex digit.  GDB should ignore this N..., R...
+     pair and go on to the next.  This way we can extend the protocol.
+
+`WAA'
+     The process exited, and AA is the exit status.  This is only
+     applicable to certain targets.
+
+`XAA'
+     The process terminated with signal AA.
+
+`NAA;T...;D...;B... *(obsolete)*'
+     AA = signal number; T... = address of symbol `_start'; D... = base
+     of data section; B... = base of bss section.  _Note: only used by
+     Cisco Systems targets.  The difference between this reply and the
+     `qOffsets' query is that the `N' packet may arrive spontaneously
+     whereas the `qOffsets' is a query initiated by the host debugger._
+
+`OXX...'
+     XX... is hex encoding of ASCII data.  This can happen at any time
+     while the program is running and the debugger should continue to
+     wait for `W', `T', etc.
+
+`FCALL-ID`,'PARAMETER...'
+     CALL-ID is the identifier which says which host system call should
+     be called.  This is just the name of the function.  Translation
+     into the correct system call is only applicable as it's defined in
+     GDB.  *Note File-I/O remote protocol extension::, for a list of
+     implemented system calls.
+
+     PARAMETER... is a list of parameters as defined for this very
+     system call.
+
+     The target replies with this packet when it expects GDB to call a
+     host system call on behalf of the target.  GDB replies with an
+     appropriate `F' packet and keeps up waiting for the next reply
+     packet from the target.  The latest `C', `c', `S' or `s' action is
+     expected to be continued.  *Note File-I/O remote protocol
+     extension::, for more details.
+
+
+File: gdb.info,  Node: General Query Packets,  Next: Register Packet Format,  Prev: Stop Reply Packets,  Up: Remote Protocol
+
+General Query Packets
+=====================
+
+   The following set and query packets have already been defined.
+
+`q'`C' -- current thread
+     Return the current thread id.
+
+     Reply:
+    ``QC'PID'
+          Where PID is a HEX encoded 16 bit process id.
+
+    `*'
+          Any other reply implies the old pid.
+
+`q'`fThreadInfo' - all thread ids
+     `q'`sThreadInfo'
+
+     Obtain a list of active thread ids from the target (OS).  Since
+     there may be too many active threads to fit into one reply packet,
+     this query works iteratively: it may require more than one
+     query/reply sequence to obtain the entire list of threads.  The
+     first query of the sequence will be the `qf'`ThreadInfo' query;
+     subsequent queries in the sequence will be the `qs'`ThreadInfo'
+     query.
+
+     NOTE: replaces the `qL' query (see below).
+
+     Reply:
+    ``m'ID'
+          A single thread id
+
+    ``m'ID,ID...'
+          a comma-separated list of thread ids
+
+    ``l''
+          (lower case 'el') denotes end of list.
+
+     In response to each query, the target will reply with a list of
+     one or more thread ids, in big-endian hex, separated by commas.
+     GDB will respond to each reply with a request for more thread ids
+     (using the `qs' form of the query), until the target responds with
+     `l' (lower-case el, for `'last'').
+
+`q'`ThreadExtraInfo'`,'ID -- extra thread info
+     Where ID is a thread-id in big-endian hex.  Obtain a printable
+     string description of a thread's attributes from the target OS.
+     This string may contain anything that the target OS thinks is
+     interesting for GDB to tell the user about the thread.  The string
+     is displayed in GDB's `info threads' display.  Some examples of
+     possible thread extra info strings are "Runnable", or "Blocked on
+     Mutex".
+
+     Reply:
+    `XX...'
+          Where XX... is a hex encoding of ASCII data, comprising the
+          printable string containing the extra information about the
+          thread's attributes.
+
+`q'`L'STARTFLAGTHREADCOUNTNEXTTHREAD -- query LIST or THREADLIST *(deprecated)*
+     Obtain thread information from RTOS.  Where: STARTFLAG (one hex
+     digit) is one to indicate the first query and zero to indicate a
+     subsequent query; THREADCOUNT (two hex digits) is the maximum
+     number of threads the response packet can contain; and NEXTTHREAD
+     (eight hex digits), for subsequent queries (STARTFLAG is zero), is
+     returned in the response as ARGTHREAD.
+
+     NOTE: this query is replaced by the `q'`fThreadInfo' query (see
+     above).
+
+     Reply:
+    ``q'`M'COUNTDONEARGTHREADTHREAD...'
+          Where: COUNT (two hex digits) is the number of threads being
+          returned; DONE (one hex digit) is zero to indicate more
+          threads and one indicates no further threads; ARGTHREADID
+          (eight hex digits) is NEXTTHREAD from the request packet;
+          THREAD...  is a sequence of thread IDs from the target.
+          THREADID (eight hex digits).  See
+          `remote.c:parse_threadlist_response()'.
+
+`q'`CRC:'ADDR`,'LENGTH -- compute CRC of memory block
+     Reply:
+    ``E'NN'
+          An error (such as memory fault)
+
+    ``C'CRC32'
+          A 32 bit cyclic redundancy check of the specified memory
+          region.
+
+`q'`Offsets' -- query sect offs
+     Get section offsets that the target used when re-locating the
+     downloaded image.  _Note: while a `Bss' offset is included in the
+     response, GDB ignores this and instead applies the `Data' offset
+     to the `Bss' section._
+
+     Reply:
+    ``Text='XXX`;Data='YYY`;Bss='ZZZ'
+
+`q'`P'MODETHREADID -- thread info request
+     Returns information on THREADID.  Where: MODE is a hex encoded 32
+     bit mode; THREADID is a hex encoded 64 bit thread ID.
+
+     Reply:
+    `*'
+     See `remote.c:remote_unpack_thread_info_response()'.
+
+`q'`Rcmd,'COMMAND -- remote command
+     COMMAND (hex encoded) is passed to the local interpreter for
+     execution.  Invalid commands should be reported using the output
+     string.  Before the final result packet, the target may also
+     respond with a number of intermediate `O'OUTPUT console output
+     packets.  _Implementors should note that providing access to a
+     stubs's interpreter may have security implications_.
+
+     Reply:
+    `OK'
+          A command response with no output.
+
+    `OUTPUT'
+          A command response with the hex encoded output string OUTPUT.
+
+    ``E'NN'
+          Indicate a badly formed request.
+
+    ``''
+          When `q'`Rcmd' is not recognized.
+
+`qSymbol::' -- symbol lookup
+     Notify the target that GDB is prepared to serve symbol lookup
+     requests.  Accept requests from the target for the values of
+     symbols.
+
+     Reply:
+    ``OK''
+          The target does not need to look up any (more) symbols.
+
+    ``qSymbol:'SYM_NAME'
+          The target requests the value of symbol SYM_NAME (hex
+          encoded).  GDB may provide the value by using the
+          `qSymbol:'SYM_VALUE:SYM_NAME message, described below.
+
+`qSymbol:'SYM_VALUE:SYM_NAME -- symbol value
+     Set the value of SYM_NAME to SYM_VALUE.
+
+     SYM_NAME (hex encoded) is the name of a symbol whose value the
+     target has previously requested.
+
+     SYM_VALUE (hex) is the value for symbol SYM_NAME.  If GDB cannot
+     supply a value for SYM_NAME, then this field will be empty.
+
+     Reply:
+    ``OK''
+          The target does not need to look up any (more) symbols.
+
+    ``qSymbol:'SYM_NAME'
+          The target requests the value of a new symbol SYM_NAME (hex
+          encoded).  GDB will continue to supply the values of symbols
+          (if available), until the target ceases to request them.
+
+
+File: gdb.info,  Node: Register Packet Format,  Next: Examples,  Prev: General Query Packets,  Up: Remote Protocol
+
+Register Packet Format
+======================
+
+   The following `g'/`G' packets have previously been defined.  In the
+below, some thirty-two bit registers are transferred as sixty-four
+bits.  Those registers should be zero/sign extended (which?)  to fill
+the space allocated.  Register bytes are transfered in target byte
+order.  The two nibbles within a register byte are transfered
+most-significant - least-significant.
+
+MIPS32
+     All registers are transfered as thirty-two bit quantities in the
+     order: 32 general-purpose; sr; lo; hi; bad; cause; pc; 32
+     floating-point registers; fsr; fir; fp.
+
+MIPS64
+     All registers are transfered as sixty-four bit quantities
+     (including thirty-two bit registers such as `sr').  The ordering
+     is the same as `MIPS32'.
+
+
+File: gdb.info,  Node: Examples,  Next: File-I/O remote protocol extension,  Prev: Register Packet Format,  Up: Remote Protocol
+
+Examples
+========
+
+   Example sequence of a target being re-started.  Notice how the
+restart does not get any direct output:
+
+     -> `R00'
+     <- `+'
+     _target restarts_
+     -> `?'
+     <- `+'
+     <- `T001:1234123412341234'
+     -> `+'
+
+   Example sequence of a target being stepped by a single instruction:
+
+     -> `G1445...'
+     <- `+'
+     -> `s'
+     <- `+'
+     _time passes_
+     <- `T001:1234123412341234'
+     -> `+'
+     -> `g'
+     <- `+'
+     <- `1455...'
+     -> `+'
+
+
+File: gdb.info,  Node: File-I/O remote protocol extension,  Prev: Examples,  Up: Remote Protocol
+
+File-I/O remote protocol extension
+==================================
+
+* Menu:
+
+* File-I/O Overview::
+* Protocol basics::
+* The `F' request packet::
+* The `F' reply packet::
+* Memory transfer::
+* The Ctrl-C message::
+* Console I/O::
+* The isatty call::
+* The system call::
+* List of supported calls::
+* Protocol specific representation of datatypes::
+* Constants::
+* File-I/O Examples::
+
+
+File: gdb.info,  Node: File-I/O Overview,  Next: Protocol basics,  Up: File-I/O remote protocol extension
+
+File-I/O Overview
+-----------------
+
+   The File I/O remote protocol extension (short: File-I/O) allows the
+target to use the hosts file system and console I/O when calling various
+system calls.  System calls on the target system are translated into a
+remote protocol packet to the host system which then performs the needed
+actions and returns with an adequate response packet to the target
+system.  This simulates file system operations even on targets that
+lack file systems.
+
+   The protocol is defined host- and target-system independent.  It uses
+it's own independent representation of datatypes and values.  Both, GDB
+and the target's GDB stub are responsible for translating the system
+dependent values into the unified protocol values when data is
+transmitted.
+
+   The communication is synchronous.  A system call is possible only
+when GDB is waiting for the `C', `c', `S' or `s' packets.  While GDB
+handles the request for a system call, the target is stopped to allow
+deterministic access to the target's memory.  Therefore File-I/O is not
+interuptible by target signals.  It is possible to interrupt File-I/O
+by a user interrupt (Ctrl-C), though.
+
+   The target's request to perform a host system call does not finish
+the latest `C', `c', `S' or `s' action.  That means, after finishing
+the system call, the target returns to continuing the previous activity
+(continue, step).  No additional continue or step request from GDB is
+required.
+
+     (gdb) continue
+       <- target requests 'system call X'
+       target is stopped, GDB executes system call
+       -> GDB returns result
+       ... target continues, GDB returns to wait for the target
+       <- target hits breakpoint and sends a Txx packet
+
+   The protocol is only used for files on the host file system and for
+I/O on the console.  Character or block special devices, pipes, named
+pipes or sockets or any other communication method on the host system
+are not supported by this protocol.
+
+
+File: gdb.info,  Node: Protocol basics,  Next: The `F' request packet,  Prev: File-I/O Overview,  Up: File-I/O remote protocol extension
+
+Protocol basics
+---------------
+
+   The File-I/O protocol uses the `F' packet, as request as well as as
+reply packet.  Since a File-I/O system call can only occur when GDB is
+waiting for the continuing or stepping target, the File-I/O request is
+a reply that GDB has to expect as a result of a former `C', `c', `S' or
+`s' packet.  This `F' packet contains all information needed to allow
+GDB to call the appropriate host system call:
+
+   * A unique identifier for the requested system call.
+
+   * All parameters to the system call.  Pointers are given as addresses
+     in the target memory address space.  Pointers to strings are given
+     as pointer/length pair.  Numerical values are given as they are.
+     Numerical control values are given in a protocol specific
+     representation.
+
+
+   At that point GDB has to perform the following actions.
+
+   * If parameter pointer values are given, which point to data needed
+     as input to a system call, GDB requests this data from the target
+     with a standard `m' packet request.  This additional communication
+     has to be expected by the target implementation and is handled as
+     any other `m' packet.
+
+   * GDB translates all value from protocol representation to host
+     representation as needed.  Datatypes are coerced into the host
+     types.
+
+   * GDB calls the system call
+
+   * It then coerces datatypes back to protocol representation.
+
+   * If pointer parameters in the request packet point to buffer space
+     in which a system call is expected to copy data to, the data is
+     transmitted to the target using a `M' or `X' packet.  This packet
+     has to be expected by the target implementation and is handled as
+     any other `M' or `X' packet.
+
+
+   Eventually GDB replies with another `F' packet which contains all
+necessary information for the target to continue.  This at least
+contains
+
+   * Return value.
+
+   * `errno', if has been changed by the system call.
+
+   * "Ctrl-C" flag.
+
+
+   After having done the needed type and value coercion, the target
+continues the latest continue or step action.
+
+
+File: gdb.info,  Node: The `F' request packet,  Next: The `F' reply packet,  Prev: Protocol basics,  Up: File-I/O remote protocol extension
+
+The `F' request packet
+----------------------
+
+   The `F' request packet has the following format:
+
+          `F'CALL-ID`,'PARAMETER...
+
+     CALL-ID is the identifier to indicate the host system call to be
+     called.  This is just the name of the function.
+
+     PARAMETER... are the parameters to the system call.
+
+   Parameters are hexadecimal integer values, either the real values in
+case of scalar datatypes, as pointers to target buffer space in case of
+compound datatypes and unspecified memory areas or as pointer/length
+pairs in case of string parameters.  These are appended to the call-id,
+each separated from its predecessor by a comma.  All values are
+transmitted in ASCII string representation, pointer/length pairs
+separated by a slash.
+

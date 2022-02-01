@@ -1,0 +1,384 @@
+<html>
+<head>
+<title>(68K) Standard IO Applications | Palm OS&#174; Programmer's Companion</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 10:43:29">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="1056400"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="CompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="DebuggingStrats.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">16 &nbsp;&nbsp;
+Standard IO Applications</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Palm OS&#174; Programmer's Companion</p>
+<p class="SubTitle">Volume I </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="StandardIOApp.html">16  Standard IO Applications</a></h1>
+
+   <h2 class="SideTOC2"><a href="#1056410">
+   Creating a Standard IO Application</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1056423">
+   Creating a Standard IO Provider Application</a></h2>
+
+   <h2 class="SideTOC2"><a href="#1056516">
+   Summary of Standard IO</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="1056402"> </a>The Palm OS<sup>&#174;</sup> supports command line (UNIX style) applications for debugging and special purposes such as communications utilities. This capability is not intended for general users, but for developers. This feature is not implemented in the Palm OS, but rather by additional C modules that you must link with your application.</p>
+
+<div><hr>
+  <a name="1056403"> </a> <b>NOTE: </b> Don't confuse this standard IO functionality with the file streaming API. They are unrelated.
+<hr>
+</div>
+
+<p><a name="1056404"> </a>There are two parts necessary for a standard IO application:</p>
+<ul type="disc">
+  <li><a name="1056405"> </a>The standard IO application itself.
+   <p><a name="1056406"> </a>A standard IO application is not like a normal Palm<sup>&#8482;</sup> application. It is executed by a command line and has minimal user interface. It can take character input from the stdin device (the keyboard) and write character output to the stdout window.</p>
+  <li><a name="1056407"> </a>The standard IO provider application.
+   <p><a name="1056408"> </a>A standard IO provider application is necessary to execute and see output from a standard IO application. The standard IO provider application is a normal Palm application that provides a field in which you can enter commands to execute standard IO applications. The field also serves as a stdout window where output from the executing application is written.</p>
+</ul>
+
+<p><a name="1056409"> </a>The details of creating these two different applications are described in the following sections.</p>
+
+<h2 class="haH2">
+  <a name="1056410"> </a>Creating a Standard IO Application <a href="#1056400"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1056411"> </a>To create a standard IO application, you must include the header file <code>StdIOPalm.h</code>. In addition to including this header, you must link the application with the module <code>StdIOPalm.c</code>. This module provides a <code>PilotMain</code> routine that extracts the command line arguments from the <code>cmd</code> and <code>cmdPBP</code> parameters and the glue code necessary for executing the appropriate callbacks supplied by the standard IO provider application.</p>
+
+<p><a name="1056412"> </a>You build the application normally, but give it a database type of <code>sioDBType</code> ('sdio') instead of 'appl'. In addition, it must be named "Cmd-<i>cmdname</i>" where <i>cmdname</i> is the name of the command used to execute the application. For example, the ping command would be placed in a database named "Cmd-ping".</p>
+
+<p><a name="1056413"> </a>In the Palm VII<sup>&#8482;</sup> handheld, the Network panel, whose log window is a standard IO provider application, has two standard IO commands built-in: info and finger. The ROM has two additional ones: ping and nettrace.</p>
+
+<p><a name="1056414"> </a>When compiling for the Palm Powered<sup>&#8482;</sup> handheld, the entry point must be named <code>SioMain</code> and must accept two parameters: <code>argc</code> and <code>argv</code>. Here's the simplest possible example of a standard IO application.</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+#include &lt;StdIOPalm.h&gt;<a name="1056415"> </a>
+Int16 SioMain(UInt16 argc, Char* argv[ ])<a name="1056416"> </a>
+{ <a name="1056417"> </a>
+    printf("Hello World\n");<a name="1056418"> </a>
+}<a name="1056419"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1056420"> </a>Standard IO applications can use several input and output functions that mimic their similarly named UNIX counterparts. These are listed in the <a href="StandardIOApp.html#1056516">summary table</a> at the end of this chapter.</p>
+
+<p><a name="1056422"> </a>Your standard IO application can accept input from stdin and write output to stdout. The stdin device corresponds to the text field in the standard IO provider application that is used for input and output. The stdout device corresponds to that same text field.</p>
+
+<h2 class="haH2">
+  <a name="1056423"> </a>Creating a Standard IO Provider Application <a href="#1056400"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1056424"> </a>In order for a standard IO application to be invoked and able to provide results, you need a standard IO provider application. This application provides the user interface support; that is, the stdin device support and the stdout window that the standard IO application reads from and writes to.</p>
+
+<p><a name="1056425"> </a>The standard IO provider launches the standard IO application when the user types in a command line and Return (using Graffiti<sup>&#174;</sup> or Graffiti<sup>&#174;</sup> 2 writing). The provider application passes a structure pointer that contains the callbacks necessary for performing IO to the standard IO application through the <code>cmdPBP</code> parameter of <code>PilotMain</code>.</p>
+
+<p><a name="1056426"> </a>To create a standard IO provider application, you must link the application with the module <code>StdIOProvider.c</code>.</p>
+
+<p><a name="1056427"> </a>To handle input and output, the standard IO provider application must provide a form with a text field and a scroll bar. The standard IO provider application must do the following: </p>
+<ol type="1">
+  <li value="1"><a name="1056431"> </a>Call <a href="../PalmOSReference/StandardIO.html#1059976"><code>SioInit</code></a> during application initialization. <code>SioInit</code> saves the object ID of the form that contains the input/output field, the field itself, and the scroll bar.
+  <li value="2"><a name="1056435"> </a>Call <a href="../PalmOSReference/StandardIO.html#1059959"><code>SioHandleEvent</code></a> from the form's event handler before doing application specific processing of the event. In other words, the form event handler that the application installs with <code>FrmSetEventHandler</code> should call <code>SioHandleEvent</code> before it does anything else with the event.
+  <li value="3"><a name="1056439"> </a>Call <a href="../PalmOSReference/StandardIO.html#1059945"><code>SioFree</code></a> during application shutdown.
+</ol>
+
+<p><a name="1056440"> </a>The application is free to call any of the standard IO macros and functions between the <code>SioInit</code> and <code>SioFree</code> calls. If the current form is not the standard IO form when these calls are made, they will record changes to the active text and display it the next time the form becomes active. </p>
+
+<p><a name="1056441"> </a>A typical standard IO provider application will have a routine called <code>ApplicationHandleEvent</code>, which gets called from its main event loop after <code>SysHandleEvent</code> and <code>MenuHandleEvent</code>. An example is shown in <a href="StandardIOApp.html#1056446">Listing 16.1</a>.</p>
+<p class="CCodeCaption">
+  <a name="1056446"> </a><b>Listing 16.1&nbsp;&nbsp;Standard IO Provider ApplicationHandleEvent Routine</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+   static Boolean ApplicationHandleEvent (EventPtr event)<a name="1056447"> </a>
+   {<a name="1056448"> </a>
+      FormType* frm;<a name="1056449"> </a>
+      UInt16 formId;<a name="1056450"> </a>
+ <a name="1056451"> </a>
+      if (event-&gt;eType == frmLoadEvent) {<a name="1056452"> </a>
+        formId = event-&gt;data.frmLoad.formID;<a name="1056453"> </a>
+        frm = FrmInitForm (formId);<a name="1056454"> </a>
+        FrmSetActiveForm (frm);		<a name="1056455"> </a>
+        <a name="1056456"> </a>
+        switch (formId) {<a name="1056457"> </a>
+           .....<a name="1056458"> </a>
+           case myViewWithStdIO:<a name="1056459"> </a>
+              FrmSetEventHandler (frm, MyViewHandleEvent);<a name="1056460"> </a>
+              break;<a name="1056461"> </a>
+           }<a name="1056462"> </a>
+        return (true);<a name="1056463"> </a>
+        }<a name="1056464"> </a>
+ <a name="1056465"> </a>
+      return (false);<a name="1056466"> </a>
+      }<a name="1056467"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<p><a name="1056471"> </a>A typical application form event handler is shown in <a href="StandardIOApp.html#1056473">Listing 16.2</a>.</p>
+<p class="CCodeCaption">
+  <a name="1056473"> </a><b>Listing 16.2&nbsp;&nbsp;Standard IO Provider Form Event Handler</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+   static Boolean MyViewHandleEvent (EventPtr event)<a name="1056474"> </a>
+   {<a name="1056475"> </a>
+      FormType* frm;<a name="1056476"> </a>
+      Boolean handled = false;<a name="1056477"> </a>
+ <a name="1056478"> </a>
+      // Let StdIO handler do its thing first.<a name="1056479"> </a>
+      if (SioHandleEvent(event)) return true;<a name="1056480"> </a>
+ <a name="1056481"> </a>
+      // If StdIO did not completely handle the event...<a name="1056482"> </a>
+      if (event-&gt;eType == ctlSelectEvent) {<a name="1056483"> </a>
+         switch (event-&gt;data.ctlSelect.controlID) {<a name="1056484"> </a>
+            case myViewDoneButtonID:<a name="1056485"> </a>
+              FrmGotoForm (networkFormID);<a name="1056486"> </a>
+              handled = true;<a name="1056487"> </a>
+              break;<a name="1056488"> </a>
+           }<a name="1056489"> </a>
+         }<a name="1056490"> </a>
+ <a name="1056491"> </a>
+      else if (event-&gt;eType == menuEvent) <a name="1056492"> </a>
+        return MyMenuDoCommand( event-&gt;data.menu.itemID );<a name="1056493"> </a>
+        <a name="1056494"> </a>
+      else if (event-&gt;eType == frmUpdateEvent) {<a name="1056495"> </a>
+        MyViewDraw( FrmGetActiveForm() );<a name="1056496"> </a>
+        handled = true;<a name="1056497"> </a>
+        }<a name="1056498"> </a>
+ <a name="1056499"> </a>
+      else if (event-&gt;eType == frmOpenEvent) {<a name="1056500"> </a>
+        frm = FrmGetActiveForm();<a name="1056501"> </a>
+        MyViewInit( frm );<a name="1056502"> </a>
+        MyViewDraw( frm );<a name="1056503"> </a>
+        handled = true;<a name="1056504"> </a>
+        }<a name="1056505"> </a>
+ <a name="1056506"> </a>
+      else if (event-&gt;eType == frmCloseEvent) {<a name="1056507"> </a>
+        frm = FrmGetActiveForm();<a name="1056508"> </a>
+        MyViewClose(frm);<a name="1056509"> </a>
+        }<a name="1056510"> </a>
+ <a name="1056511"> </a>
+      return (handled);<a name="1056512"> </a>
+   }<a name="1056513"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h2 class="haH2">
+  <a name="1056516"> </a>Summary of Standard IO <a href="#1056400"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th colspan="2" rowspan="1"><p class="tt"><a name="1056519"> </a><b><span style="color: #000000;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">Standard IO Macros and Functions</span></b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td colspan="1" rowspan="6"><p class="tt"><a name="1056526"> </a><a href="../PalmOSReference/StandardIO.html#1059298">fgetc</a><br><a href="../PalmOSReference/StandardIO.html#1059317">fgets</a><br><a href="../PalmOSReference/StandardIO.html#1059342">fprintf</a><br><a href="../PalmOSReference/StandardIO.html#1059370">fputc</a><br><a href="../PalmOSReference/StandardIO.html#1059391">fputs</a><br><a href="../PalmOSReference/StandardIO.html#1059412">getchar</a><br><a href="../PalmOSReference/StandardIO.html#1059428">gets</a><br><a href="../PalmOSReference/StandardIO.html#1059449">printf</a><br><a href="../PalmOSReference/StandardIO.html#1059475">putc</a><br><a href="../PalmOSReference/StandardIO.html#1059496">putchar</a><br><a href="../PalmOSReference/StandardIO.html#1059515">puts</a><br><a href="../PalmOSReference/StandardIO.html#1059533">SioAddCommand</a><br><a href="../PalmOSReference/StandardIO.html#1059556">Siofgetc</a></p>
+    </td>
+    <td colspan="1" rowspan="6"><p class="tt"><a name="1056567"> </a><a href="../PalmOSReference/StandardIO.html#1059576">Siofgets</a><br><a href="../PalmOSReference/StandardIO.html#1059602">Siofprintf</a><br><a href="../PalmOSReference/StandardIO.html#1059631">Siofputc</a><br><a href="../PalmOSReference/StandardIO.html#1059653">Siofputs</a><br><a href="../PalmOSReference/StandardIO.html#1059675">Siogets</a><br><a href="../PalmOSReference/StandardIO.html#1059697">Sioprintf</a><br><a href="../PalmOSReference/StandardIO.html#1059724">Sioputs</a><br><a href="../PalmOSReference/StandardIO.html#1059744">Siosystem</a><br><a href="../PalmOSReference/StandardIO.html#1059769">Siovfprintf</a><br><a href="../PalmOSReference/StandardIO.html#1059799">sprintf</a><br><a href="../PalmOSReference/StandardIO.html#1059825">system</a><br><a href="../PalmOSReference/StandardIO.html#1059851">vfprintf</a><br><a href="../PalmOSReference/StandardIO.html#1059879">vsprintf</a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th colspan="2" rowspan="1"><p class="tt"><a name="1056627"> </a><b>Application-Defined Functions</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td colspan="1" rowspan="6"><p class="tt"><a name="1056634"> </a><a href="../PalmOSReference/StandardIO.html#1059998">SioMain</a></p>
+    </td>
+    <td colspan="1" rowspan="6"><p class="tt"><a name="1056636"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+</table>
+
+</div>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th colspan="2" rowspan="1"><p class="tt"><a name="1056660"> </a><b>Standard IO Provider Functions</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td colspan="1" rowspan="6"><p class="tt"><a name="1056667"> </a><a href="../PalmOSReference/StandardIO.html#1059909">SioClearScreen</a><br><a href="../PalmOSReference/StandardIO.html#1059923">SioExecCommand</a><br><a href="../PalmOSReference/StandardIO.html#1059945">SioFree</a></p>
+    </td>
+    <td colspan="1" rowspan="6"><p class="tt"><a name="1056678"> </a><a href="../PalmOSReference/StandardIO.html#1059959">SioHandleEvent</a><br><a href="../PalmOSReference/StandardIO.html#1059976">SioInit</a><br></p>
+    </td>
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+  <tr valign="top">
+  </tr>
+</table>
+
+</div>
+
+
+<p><a name="1056703"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996-2004, PalmSource, Inc. and its affiliates.  All rights reserved. <br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="Companion_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="CompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="DebuggingStrats.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CompanionIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

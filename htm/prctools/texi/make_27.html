@@ -1,0 +1,92 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Wildcard Examples</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Wildcard Examples">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Wildcard Examples">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC31"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_26.html#SEC30"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_28.html#SEC32"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_25.html#SEC29"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_26.html#SEC30"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 4.4.1 Wildcard Examples </H3>
+<!--docid::SEC31::-->
+<P>
+
+Wildcards can be used in the commands of a rule, where they are expanded
+by the shell.  For example, here is a rule to delete all the object files:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>clean:
+        rm -f *.o
+</pre></td></tr></table><A NAME="IDX97"></A>
+</P><P>
+
+Wildcards are also useful in the prerequisites of a rule.  With the
+following rule in the makefile, <SAMP>`make print'</SAMP> will print all the
+<SAMP>`.c'</SAMP> files that have changed since the last time you printed them:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>print: *.c
+        lpr -p $?
+        touch print
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX98"></A>
+<A NAME="IDX99"></A>
+<A NAME="IDX100"></A>
+This rule uses <TT>`print'</TT> as an empty target file; see <A HREF="make_39.html#SEC43">Empty Target Files to Record Events</A>.  (The automatic variable
+<SAMP>`$?'</SAMP> is used to print only those files that have changed; see
+<A HREF="make_107.html#SEC111">Automatic Variables</A>.)</P><P>
+
+Wildcard expansion does not happen when you define a variable.  Thus, if
+you write this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>objects = *.o
+</pre></td></tr></table></P><P>
+
+then the value of the variable <CODE>objects</CODE> is the actual string
+<SAMP>`*.o'</SAMP>.  However, if you use the value of <CODE>objects</CODE> in a target,
+prerequisite or command, wildcard expansion will take place at that time.
+To set <CODE>objects</CODE> to the expansion, instead use:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>objects := $(wildcard *.o)
+</pre></td></tr></table></P><P>
+
+See section <A HREF="make_29.html#SEC33">4.4.3 The Function <CODE>wildcard</CODE></A>.
+</P><P>
+
+<A NAME="Wildcard Pitfall"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

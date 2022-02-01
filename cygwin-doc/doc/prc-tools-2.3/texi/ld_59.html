@@ -1,0 +1,101 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Xtensa</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Xtensa">
+<META NAME="keywords" CONTENT="Untitled Document: Xtensa">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC59"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_58.html#SEC58"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_60.html#SEC60"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_50.html#SEC50"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_50.html#SEC50"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_60.html#SEC60"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.9 <CODE>ld</CODE> and Xtensa Processors </H2>
+<!--docid::SEC59::-->
+<P>
+
+<A NAME="IDX388"></A>
+The default <CODE>ld</CODE> behavior for Xtensa processors is to interpret
+<CODE>SECTIONS</CODE> commands so that lists of explicitly named sections in a
+specification with a wildcard file will be interleaved when necessary to
+keep literal pools within the range of PC-relative load offsets.  For
+example, with the command:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS
+{
+  .text : {
+    *(.literal .text)
+  }
+}
+</FONT></pre></td></tr></table></P><P>
+
+<CODE>ld</CODE> may interleave some of the <CODE>.literal</CODE>
+and <CODE>.text</CODE> sections from different object files to ensure that the
+literal pools are within the range of PC-relative load offsets.  A valid
+interleaving might place the <CODE>.literal</CODE> sections from an initial
+group of files followed by the <CODE>.text</CODE> sections of that group of
+files.  Then, the <CODE>.literal</CODE> sections from the rest of the files
+and the <CODE>.text</CODE> sections from the rest of the files would follow.
+The non-interleaved order can still be specified as:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>SECTIONS
+{
+  .text : {
+    *(.literal) *(.text)
+  }
+}
+</FONT></pre></td></tr></table></P><P>
+
+<A NAME="IDX389"></A>
+<A NAME="IDX390"></A>
+<A NAME="IDX391"></A>
+The Xtensa version of <CODE>ld</CODE> enables the <SAMP>`--relax'</SAMP> option by
+default to attempt to reduce space in the output image by combining
+literals with identical values.  It also provides the
+<SAMP>`--no-relax'</SAMP> option to disable this optimization.  When enabled,
+the relaxation algorithm ensures that a literal will only be merged with
+another literal when the new merged literal location is within the
+offset range of all of its uses.
+</P><P>
+
+The relaxation mechanism will also attempt to optimize
+assembler-generated "longcall" sequences of
+<CODE>L32R</CODE>/<CODE>CALLX<VAR>n</VAR></CODE> when the target is known to fit into a
+<CODE>CALL<VAR>n</VAR></CODE> instruction encoding.  The current optimization
+converts the sequence into <CODE>NOP</CODE>/<CODE>CALL<VAR>n</VAR></CODE> and removes the
+literal referenced by the <CODE>L32R</CODE> instruction.
+</P><P>
+
+<A NAME="BFD"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

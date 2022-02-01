@@ -1,0 +1,175 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Instead of Execution</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Instead of Execution">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Instead of Execution">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC98"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_93.html#SEC97"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_95.html#SEC99"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 9.3 Instead of Executing the Commands </H2>
+<!--docid::SEC98::-->
+<P>
+
+The makefile tells <CODE>make</CODE> how to tell whether a target is up to date,
+and how to update each target.  But updating the targets is not always
+what you want.  Certain options specify other activities for <CODE>make</CODE>.
+</P><P>
+
+<DL COMPACT>
+<DT><SAMP>`-n'</SAMP>
+<DD><DT><SAMP>`--just-print'</SAMP>
+<DD><DT><SAMP>`--dry-run'</SAMP>
+<DD><DT><SAMP>`--recon'</SAMP>
+<DD><A NAME="IDX358"></A>
+<A NAME="IDX359"></A>
+<A NAME="IDX360"></A>
+<A NAME="IDX361"></A>
+<P>
+
+"No-op".  The activity is to print what commands would be used to make
+the targets up to date, but not actually execute them.
+</P><P>
+
+<DT><SAMP>`-t'</SAMP>
+<DD><DT><SAMP>`--touch'</SAMP>
+<DD><A NAME="IDX362"></A>
+<A NAME="IDX363"></A>
+<A NAME="IDX364"></A>
+<A NAME="IDX365"></A>
+<P>
+
+"Touch".  The activity is to mark the targets as up to date without
+actually changing them.  In other words, <CODE>make</CODE> pretends to compile
+the targets but does not really change their contents.
+</P><P>
+
+<DT><SAMP>`-q'</SAMP>
+<DD><DT><SAMP>`--question'</SAMP>
+<DD><A NAME="IDX366"></A>
+<A NAME="IDX367"></A>
+<A NAME="IDX368"></A>
+<P>
+
+"Question".  The activity is to find out silently whether the targets
+are up to date already; but execute no commands in either case.  In other
+words, neither compilation nor output will occur.
+</P><P>
+
+<DT><SAMP>`-W <VAR>file</VAR>'</SAMP>
+<DD><DT><SAMP>`--what-if=<VAR>file</VAR>'</SAMP>
+<DD><DT><SAMP>`--assume-new=<VAR>file</VAR>'</SAMP>
+<DD><DT><SAMP>`--new-file=<VAR>file</VAR>'</SAMP>
+<DD><A NAME="IDX369"></A>
+<A NAME="IDX370"></A>
+<A NAME="IDX371"></A>
+<A NAME="IDX372"></A>
+<A NAME="IDX373"></A>
+<A NAME="IDX374"></A>
+<P>
+
+"What if".  Each <SAMP>`-W'</SAMP> flag is followed by a file name.  The given
+files' modification times are recorded by <CODE>make</CODE> as being the present
+time, although the actual modification times remain the same.
+You can use the <SAMP>`-W'</SAMP> flag in conjunction with the <SAMP>`-n'</SAMP> flag
+to see what would happen if you were to modify specific files.</DL>
+<P>
+
+With the <SAMP>`-n'</SAMP> flag, <CODE>make</CODE> prints the commands that it would
+normally execute but does not execute them.
+</P><P>
+
+With the <SAMP>`-t'</SAMP> flag, <CODE>make</CODE> ignores the commands in the rules
+and uses (in effect) the command <CODE>touch</CODE> for each target that needs to
+be remade.  The <CODE>touch</CODE> command is also printed, unless <SAMP>`-s'</SAMP> or
+<CODE>.SILENT</CODE> is used.  For speed, <CODE>make</CODE> does not actually invoke
+the program <CODE>touch</CODE>.  It does the work directly.
+</P><P>
+
+With the <SAMP>`-q'</SAMP> flag, <CODE>make</CODE> prints nothing and executes no
+commands, but the exit status code it returns is zero if and only if the
+targets to be considered are already up to date.  If the exit status is
+one, then some updating needs to be done.  If <CODE>make</CODE> encounters an
+error, the exit status is two, so you can distinguish an error from a
+target that is not up to date.
+</P><P>
+
+It is an error to use more than one of these three flags in the same
+invocation of <CODE>make</CODE>.
+</P><P>
+
+<A NAME="IDX375"></A>
+The <SAMP>`-n'</SAMP>, <SAMP>`-t'</SAMP>, and <SAMP>`-q'</SAMP> options do not affect command
+lines that begin with <SAMP>`+'</SAMP> characters or contain the strings
+<SAMP>`$(MAKE)'</SAMP> or <SAMP>`${MAKE}'</SAMP>.  Note that only the line containing
+the <SAMP>`+'</SAMP> character or the strings <SAMP>`$(MAKE)'</SAMP> or <SAMP>`${MAKE}'</SAMP>
+is run regardless of these options.  Other lines in the same rule are
+not run unless they too begin with <SAMP>`+'</SAMP> or contain <SAMP>`$(MAKE)'</SAMP> or
+<SAMP>`${MAKE}'</SAMP> (See section <A HREF="make_55.html#SEC59">How the <CODE>MAKE</CODE> Variable Works</A>.)
+</P><P>
+
+The <SAMP>`-W'</SAMP> flag provides two features:
+</P><P>
+
+<UL>
+<LI>
+If you also use the <SAMP>`-n'</SAMP> or <SAMP>`-q'</SAMP> flag, you can see what
+<CODE>make</CODE> would do if you were to modify some files.
+<P>
+
+<LI>
+Without the <SAMP>`-n'</SAMP> or <SAMP>`-q'</SAMP> flag, when <CODE>make</CODE> is actually
+executing commands, the <SAMP>`-W'</SAMP> flag can direct <CODE>make</CODE> to act
+as if some files had been modified, without actually modifying the
+files.</UL>
+<P>
+
+Note that the options <SAMP>`-p'</SAMP> and <SAMP>`-v'</SAMP> allow you to obtain other
+information about <CODE>make</CODE> or about the makefiles in use
+(see section <A HREF="make_98.html#SEC102">Summary of Options</A>).</P><P>
+
+<A NAME="Avoiding Compilation"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_93.html#SEC97"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_95.html#SEC99"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,84 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: Literal Directive</TITLE>
+
+<META NAME="description" CONTENT="Using as: Literal Directive">
+<META NAME="keywords" CONTENT="Using as: Literal Directive">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC436"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_426.html#SEC435"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_428.html#SEC437"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_428.html#SEC437"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_422.html#SEC431"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_432.html#SEC441"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 8.33.5.5 literal </H4>
+<!--docid::SEC436::-->
+<P>
+
+The <CODE>.literal</CODE> directive is used to define literal pool data, i.e., 
+read-only 32-bit data accessed via <CODE>L32R</CODE> instructions.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    .literal <VAR>label</VAR>, <VAR>value</VAR>[, <VAR>value</VAR><small>...</small>]
+</FONT></pre></td></tr></table></P><P>
+
+This directive is similar to the standard <CODE>.word</CODE> directive, except
+that the actual location of the literal data is determined by the
+assembler and linker, not by the position of the <CODE>.literal</CODE>
+directive.  Using this directive gives the assembler freedom to locate
+the literal data in the most appropriate place and possibly to combine
+identical literals.  For example, the code:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    entry sp, 40
+    .literal .L1, sym
+    l32r    a4, .L1
+</FONT></pre></td></tr></table></P><P>
+
+can be used to load a pointer to the symbol <CODE>sym</CODE> into register
+<CODE>a4</CODE>.  The value of <CODE>sym</CODE> will not be placed between the
+<CODE>ENTRY</CODE> and <CODE>L32R</CODE> instructions; instead, the assembler puts
+the data in a literal pool.
+</P><P>
+
+By default literal pools are placed in a separate section; however, when
+using the <SAMP>`--text-section-literals'</SAMP> option (see section <A HREF="as_411.html#SEC420">Command Line Options</A>), the literal pools are placed in the
+current section.  These text section literal pools are created
+automatically before <CODE>ENTRY</CODE> instructions and manually after
+<SAMP>`.literal_position'</SAMP> directives (see section <A HREF="as_428.html#SEC437">literal_position</A>).  If there are no preceding <CODE>ENTRY</CODE>
+instructions or <CODE>.literal_position</CODE> directives, the assembler will
+print a warning and place the literal pool at the beginning of the
+current section.  In such cases, explicit <CODE>.literal_position</CODE>
+directives should be used to place the literal pools.
+</P><P>
+
+<A NAME="Literal Position Directive"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

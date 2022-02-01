@@ -1,0 +1,335 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: SPARC Options</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: SPARC Options">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: SPARC Options">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC19"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_18.html#SEC18"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_20.html#SEC20"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_20.html#SEC20"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 2.14.3 SPARC Options </H3>
+<!--docid::SEC19::-->
+<P>
+
+These <SAMP>`-m'</SAMP> switches are supported on the SPARC:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-mno-app-regs</CODE>
+<DD><DT><CODE>-mapp-regs</CODE>
+<DD>Specify <SAMP>`-mapp-regs'</SAMP> to generate output using the global registers
+2 through 4, which the SPARC SVR4 ABI reserves for applications.  This
+is the default.
+<P>
+
+To be fully SVR4 ABI compliant at the cost of some performance loss,
+specify <SAMP>`-mno-app-regs'</SAMP>.  You should compile libraries and system
+software with this option.
+</P><P>
+
+<DT><CODE>-mfpu</CODE>
+<DD><DT><CODE>-mhard-float</CODE>
+<DD>Generate output containing floating point instructions.  This is the
+default.
+<P>
+
+<DT><CODE>-mno-fpu</CODE>
+<DD><DT><CODE>-msoft-float</CODE>
+<DD>Generate output containing library calls for floating point.
+<STRONG>Warning:</STRONG> the requisite libraries are not available for all SPARC
+targets.  Normally the facilities of the machine's usual C compiler are
+used, but this cannot be done directly in cross-compilation.  You must make
+your own arrangements to provide suitable library functions for
+cross-compilation.  The embedded targets <SAMP>`sparc-*-aout'</SAMP> and
+<SAMP>`sparclite-*-*'</SAMP> do provide software floating point support.
+<P>
+
+<SAMP>`-msoft-float'</SAMP> changes the calling convention in the output file;
+therefore, it is only useful if you compile <EM>all</EM> of a program with
+this option.  In particular, you need to compile <TT>`libgcc.a'</TT>, the
+library that comes with GCC, with <SAMP>`-msoft-float'</SAMP> in order for
+this to work.
+</P><P>
+
+<DT><CODE>-mhard-quad-float</CODE>
+<DD>Generate output containing quad-word (long double) floating point
+instructions.
+<P>
+
+<DT><CODE>-msoft-quad-float</CODE>
+<DD>Generate output containing library calls for quad-word (long double)
+floating point instructions.  The functions called are those specified
+in the SPARC ABI.  This is the default.
+<P>
+
+As of this writing, there are no sparc implementations that have hardware
+support for the quad-word floating point instructions.  They all invoke
+a trap handler for one of these instructions, and then the trap handler
+emulates the effect of the instruction.  Because of the trap handler overhead,
+this is much slower than calling the ABI library routines.  Thus the
+<SAMP>`-msoft-quad-float'</SAMP> option is the default.
+</P><P>
+
+<DT><CODE>-mno-epilogue</CODE>
+<DD><DT><CODE>-mepilogue</CODE>
+<DD>With <SAMP>`-mepilogue'</SAMP> (the default), the compiler always emits code for
+function exit at the end of each function.  Any function exit in
+the middle of the function (such as a return statement in C) will
+generate a jump to the exit code at the end of the function.
+<P>
+
+With <SAMP>`-mno-epilogue'</SAMP>, the compiler tries to emit exit code inline
+at every function exit.
+</P><P>
+
+<DT><CODE>-mno-flat</CODE>
+<DD><DT><CODE>-mflat</CODE>
+<DD>With <SAMP>`-mflat'</SAMP>, the compiler does not generate save/restore instructions
+and will use a "flat" or single register window calling convention.
+This model uses %i7 as the frame pointer and is compatible with the normal
+register window model.  Code from either may be intermixed.
+The local registers and the input registers (0-5) are still treated as
+"call saved" registers and will be saved on the stack as necessary.
+<P>
+
+With <SAMP>`-mno-flat'</SAMP> (the default), the compiler emits save/restore
+instructions (except for leaf functions) and is the normal mode of operation.
+</P><P>
+
+<DT><CODE>-mno-unaligned-doubles</CODE>
+<DD><DT><CODE>-munaligned-doubles</CODE>
+<DD>Assume that doubles have 8 byte alignment.  This is the default.
+<P>
+
+With <SAMP>`-munaligned-doubles'</SAMP>, GCC assumes that doubles have 8 byte
+alignment only if they are contained in another type, or if they have an
+absolute address.  Otherwise, it assumes they have 4 byte alignment.
+Specifying this option avoids some rare compatibility problems with code
+generated by other compilers.  It is not the default because it results
+in a performance loss, especially for floating point code.
+</P><P>
+
+<DT><CODE>-mv8</CODE>
+<DD><DT><CODE>-msparclite</CODE>
+<DD>These two options select variations on the SPARC architecture.
+<P>
+
+By default (unless specifically configured for the Fujitsu SPARClite),
+GCC generates code for the v7 variant of the SPARC architecture.
+</P><P>
+
+<SAMP>`-mv8'</SAMP> will give you SPARC v8 code.  The only difference from v7
+code is that the compiler emits the integer multiply and integer
+divide instructions which exist in SPARC v8 but not in SPARC v7.
+</P><P>
+
+<SAMP>`-msparclite'</SAMP> will give you SPARClite code.  This adds the integer
+multiply, integer divide step and scan (<CODE>ffs</CODE>) instructions which
+exist in SPARClite but not in SPARC v7.
+</P><P>
+
+These options are deprecated and will be deleted in a future GCC release.
+They have been replaced with <SAMP>`-mcpu=xxx'</SAMP>.
+</P><P>
+
+<DT><CODE>-mcypress</CODE>
+<DD><DT><CODE>-msupersparc</CODE>
+<DD>These two options select the processor for which the code is optimised.
+<P>
+
+With <SAMP>`-mcypress'</SAMP> (the default), the compiler optimizes code for the
+Cypress CY7C602 chip, as used in the SparcStation/SparcServer 3xx series.
+This is also appropriate for the older SparcStation 1, 2, IPX etc.
+</P><P>
+
+With <SAMP>`-msupersparc'</SAMP> the compiler optimizes code for the SuperSparc cpu, as
+used in the SparcStation 10, 1000 and 2000 series. This flag also enables use
+of the full SPARC v8 instruction set.
+</P><P>
+
+These options are deprecated and will be deleted in a future GCC release.
+They have been replaced with <SAMP>`-mcpu=xxx'</SAMP>.
+</P><P>
+
+<DT><CODE>-mcpu=<VAR>cpu_type</VAR></CODE>
+<DD>Set the instruction set, register set, and instruction scheduling parameters
+for machine type <VAR>cpu_type</VAR>.  Supported values for <VAR>cpu_type</VAR> are
+<SAMP>`v7'</SAMP>, <SAMP>`cypress'</SAMP>, <SAMP>`v8'</SAMP>, <SAMP>`supersparc'</SAMP>, <SAMP>`sparclite'</SAMP>,
+<SAMP>`hypersparc'</SAMP>, <SAMP>`sparclite86x'</SAMP>, <SAMP>`f930'</SAMP>, <SAMP>`f934'</SAMP>,
+<SAMP>`sparclet'</SAMP>, <SAMP>`tsc701'</SAMP>, <SAMP>`v9'</SAMP>, and <SAMP>`ultrasparc'</SAMP>.
+<P>
+
+Default instruction scheduling parameters are used for values that select
+an architecture and not an implementation.  These are <SAMP>`v7'</SAMP>, <SAMP>`v8'</SAMP>,
+<SAMP>`sparclite'</SAMP>, <SAMP>`sparclet'</SAMP>, <SAMP>`v9'</SAMP>.
+</P><P>
+
+Here is a list of each supported architecture and their supported
+implementations.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>    v7:             cypress
+    v8:             supersparc, hypersparc
+    sparclite:      f930, f934, sparclite86x
+    sparclet:       tsc701
+    v9:             ultrasparc
+</FONT></pre></td></tr></table></P><P>
+
+<DT><CODE>-mtune=<VAR>cpu_type</VAR></CODE>
+<DD>Set the instruction scheduling parameters for machine type
+<VAR>cpu_type</VAR>, but do not set the instruction set or register set that the
+option <SAMP>`-mcpu='</SAMP><VAR>cpu_type</VAR> would.
+<P>
+
+The same values for <SAMP>`-mcpu='</SAMP><VAR>cpu_type</VAR> are used for
+<SAMP>`-mtune='</SAMP><BR><VAR>cpu_type</VAR>, though the only useful values are those that
+select a particular cpu implementation: <SAMP>`cypress'</SAMP>, <SAMP>`supersparc'</SAMP>,
+<SAMP>`hypersparc'</SAMP>, <SAMP>`f930'</SAMP>, <SAMP>`f934'</SAMP>, <SAMP>`sparclite86x'</SAMP>,
+<SAMP>`tsc701'</SAMP>, <SAMP>`ultrasparc'</SAMP>.
+</P><P>
+
+<DT><CODE>-malign-loops=<VAR>num</VAR></CODE>
+<DD>Align loops to a 2 raised to a <VAR>num</VAR> byte boundary.  If
+<SAMP>`-malign-loops'</SAMP> is not specified, the default is 2.
+<P>
+
+<DT><CODE>-malign-jumps=<VAR>num</VAR></CODE>
+<DD>Align instructions that are only jumped to to a 2 raised to a <VAR>num</VAR>
+byte boundary.  If <SAMP>`-malign-jumps'</SAMP> is not specified, the default is 2.
+<P>
+
+<DT><CODE>-malign-functions=<VAR>num</VAR></CODE>
+<DD>Align the start of functions to a 2 raised to <VAR>num</VAR> byte boundary.
+If <SAMP>`-malign-functions'</SAMP> is not specified, the default is 2 if compiling
+for 32 bit sparc, and 5 if compiling for 64 bit sparc.
+<P>
+
+</DL>
+<P>
+
+These <SAMP>`-m'</SAMP> switches are supported in addition to the above
+on the SPARCLET processor.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-mlittle-endian</CODE>
+<DD>Generate code for a processor running in little-endian mode.
+<P>
+
+<DT><CODE>-mlive-g0</CODE>
+<DD>Treat register <CODE>%g0</CODE> as a normal register.
+GCC will continue to clobber it as necessary but will not assume
+it always reads as 0.
+<P>
+
+<DT><CODE>-mbroken-saverestore</CODE>
+<DD>Generate code that does not use non-trivial forms of the <CODE>save</CODE> and
+<CODE>restore</CODE> instructions.  Early versions of the SPARCLET processor do
+not correctly handle <CODE>save</CODE> and <CODE>restore</CODE> instructions used with
+arguments.  They correctly handle them used without arguments.  A <CODE>save</CODE>
+instruction used without arguments increments the current window pointer
+but does not allocate a new stack frame.  It is assumed that the window
+overflow trap handler will properly handle this case as will interrupt
+handlers.
+</DL>
+<P>
+
+These <SAMP>`-m'</SAMP> switches are supported in addition to the above
+on SPARC V9 processors in 64 bit environments.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>-mlittle-endian</CODE>
+<DD>Generate code for a processor running in little-endian mode.
+<P>
+
+<DT><CODE>-m32</CODE>
+<DD><DT><CODE>-m64</CODE>
+<DD>Generate code for a 32 bit or 64 bit environment.
+The 32 bit environment sets int, long and pointer to 32 bits.
+The 64 bit environment sets int to 32 bits and long and pointer
+to 64 bits.
+<P>
+
+<DT><CODE>-mcmodel=medlow</CODE>
+<DD>Generate code for the Medium/Low code model: the program must be linked
+in the low 32 bits of the address space.  Pointers are 64 bits.
+Programs can be statically or dynamically linked.
+<P>
+
+<DT><CODE>-mcmodel=medmid</CODE>
+<DD>Generate code for the Medium/Middle code model: the program must be linked
+in the low 44 bits of the address space, the text segment must be less than
+2G bytes, and data segment must be within 2G of the text segment.
+Pointers are 64 bits.
+<P>
+
+<DT><CODE>-mcmodel=medany</CODE>
+<DD>Generate code for the Medium/Anywhere code model: the program may be linked
+anywhere in the address space, the text segment must be less than
+2G bytes, and data segment must be within 2G of the text segment.
+Pointers are 64 bits.
+<P>
+
+<DT><CODE>-mcmodel=embmedany</CODE>
+<DD>Generate code for the Medium/Anywhere code model for embedded systems:
+assume a 32 bit text and a 32 bit data segment, both starting anywhere
+(determined at link time).  Register %g4 points to the base of the
+data segment.  Pointers still 64 bits.
+Programs are statically linked, PIC is not supported.
+<P>
+
+<DT><CODE>-mstack-bias</CODE>
+<DD><DT><CODE>-mno-stack-bias</CODE>
+<DD>With <SAMP>`-mstack-bias'</SAMP>, GCC assumes that the stack pointer, and
+frame pointer if present, are offset by -2047 which must be added back
+when making stack frame references.
+Otherwise, assume no such offset is present.
+</DL>
+<P>
+
+<A NAME="Convex Options"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_18.html#SEC18"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_20.html#SEC20"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_20.html#SEC20"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_16.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_43.html#SEC43"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

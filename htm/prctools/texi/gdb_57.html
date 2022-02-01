@@ -1,0 +1,161 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Auto Display</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Auto Display">
+<META NAME="keywords" CONTENT="Debugging with GDB: Auto Display">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC57"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_56.html#SEC56"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_58.html#SEC58"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_58.html#SEC58"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 8.6 Automatic display </H2>
+<!--docid::SEC57::-->
+<P>
+
+If you find that you want to print the value of an expression frequently
+(to see how it changes), you might want to add it to the <EM>automatic
+display list</EM> so that GDB prints its value each time your program stops.
+Each expression added to the list is given a number to identify it;
+to remove an expression from the list, you specify that number.
+The automatic display looks like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>2: foo = 38
+3: bar[5] = (struct hack *) 0x3804
+</FONT></pre></td></tr></table></P><P>
+
+This display shows item numbers, expressions and their current values.  As with
+displays you request manually using <CODE>x</CODE> or <CODE>print</CODE>, you can
+specify the output format you prefer; in fact, <CODE>display</CODE> decides
+whether to use <CODE>print</CODE> or <CODE>x</CODE> depending on how elaborate your
+format specification is--it uses <CODE>x</CODE> if you specify a unit size,
+or one of the two formats (<SAMP>`i'</SAMP> and <SAMP>`s'</SAMP>) that are only
+supported by <CODE>x</CODE>; otherwise it uses <CODE>print</CODE>.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX317"></A>
+<DT><CODE>display <VAR>expr</VAR></CODE>
+<DD>Add the expression <VAR>expr</VAR> to the list of expressions to display
+each time your program stops.  See section <A HREF="gdb_52.html#SEC52">Expressions</A>.
+<P>
+
+<CODE>display</CODE> does not repeat if you press <KBD>RET</KBD> again after using it.
+</P><P>
+
+<DT><CODE>display/<VAR>fmt</VAR> <VAR>expr</VAR></CODE>
+<DD>For <VAR>fmt</VAR> specifying only a display format and not a size or
+count, add the expression <VAR>expr</VAR> to the auto-display list but
+arrange to display it each time in the specified format <VAR>fmt</VAR>.
+See section <A HREF="gdb_55.html#SEC55">Output formats</A>.
+<P>
+
+<DT><CODE>display/<VAR>fmt</VAR> <VAR>addr</VAR></CODE>
+<DD>For <VAR>fmt</VAR> <SAMP>`i'</SAMP> or <SAMP>`s'</SAMP>, or including a unit-size or a
+number of units, add the expression <VAR>addr</VAR> as a memory address to
+be examined each time your program stops.  Examining means in effect
+doing <SAMP>`x/<VAR>fmt</VAR> <VAR>addr</VAR>'</SAMP>.  See section <A HREF="gdb_56.html#SEC56">Examining memory</A>.
+</DL>
+<P>
+
+For example, <SAMP>`display/i $pc'</SAMP> can be helpful, to see the machine
+instruction about to be executed each time execution stops (<SAMP>`$pc'</SAMP>
+is a common name for the program counter; see section <A HREF="gdb_61.html#SEC61">Registers</A>).
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX318"></A>
+<A NAME="IDX319"></A>
+<DT><CODE>undisplay <VAR>dnums</VAR><small>...</small></CODE>
+<DD><DT><CODE>delete display <VAR>dnums</VAR><small>...</small></CODE>
+<DD>Remove item numbers <VAR>dnums</VAR> from the list of expressions to display.
+<P>
+
+<CODE>undisplay</CODE> does not repeat if you press <KBD>RET</KBD> after using it.
+(Otherwise you would just get the error <SAMP>`No display number <small>...</small>'</SAMP>.)
+</P><P>
+
+<A NAME="IDX320"></A>
+<DT><CODE>disable display <VAR>dnums</VAR><small>...</small></CODE>
+<DD>Disable the display of item numbers <VAR>dnums</VAR>.  A disabled display
+item is not printed automatically, but is not forgotten.  It may be
+enabled again later.
+<P>
+
+<A NAME="IDX321"></A>
+<DT><CODE>enable display <VAR>dnums</VAR><small>...</small></CODE>
+<DD>Enable display of item numbers <VAR>dnums</VAR>.  It becomes effective once
+again in auto display of its expression, until you specify otherwise.
+<P>
+
+<DT><CODE>display</CODE>
+<DD>Display the current values of the expressions on the list, just as is
+done when your program stops.
+<P>
+
+<A NAME="IDX322"></A>
+<DT><CODE>info display</CODE>
+<DD>Print the list of expressions previously set up to display
+automatically, each one with its item number, but without showing the
+values.  This includes disabled expressions, which are marked as such.
+It also includes expressions which would not be displayed right now
+because they refer to automatic variables not currently available.
+</DL>
+<P>
+
+If a display expression refers to local variables, then it does not make
+sense outside the lexical context for which it was set up.  Such an
+expression is disabled when execution enters a context where one of its
+variables is not defined.  For example, if you give the command
+<CODE>display last_char</CODE> while inside a function with an argument
+<CODE>last_char</CODE>, GDB displays this argument while your program
+continues to stop inside that function.  When it stops elsewhere--where
+there is no variable <CODE>last_char</CODE>---the display is disabled
+automatically.  The next time your program stops where <CODE>last_char</CODE>
+is meaningful, you can enable the display expression once again.
+</P><P>
+
+<A NAME="Print Settings"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_56.html#SEC56"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_58.html#SEC58"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_58.html#SEC58"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_51.html#SEC51"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_70.html#SEC70"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

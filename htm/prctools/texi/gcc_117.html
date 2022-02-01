@@ -1,0 +1,182 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: C++ Signatures</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: C++ Signatures">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: C++ Signatures">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC117"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_116.html#SEC116"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 5.7 Type Abstraction using Signatures </H2>
+<!--docid::SEC117::-->
+<P>
+
+<A NAME="IDX393"></A>
+<A NAME="IDX394"></A>
+<A NAME="IDX395"></A>
+<A NAME="IDX396"></A>
+<A NAME="IDX397"></A>
+<A NAME="IDX398"></A>
+<A NAME="IDX399"></A>
+</P><P>
+
+In GNU C++, you can use the keyword <CODE>signature</CODE> to define a
+completely abstract class interface as a datatype.  You can connect this
+abstraction with actual classes using signature pointers.  If you want
+to use signatures, run the GNU compiler with the
+<SAMP>`-fhandle-signatures'</SAMP> command-line option.  (With this option, the
+compiler reserves a second keyword <CODE>sigof</CODE> as well, for a future
+extension.)
+</P><P>
+
+Roughly, signatures are type abstractions or interfaces of classes.
+Some other languages have similar facilities.  C++ signatures are
+related to ML's signatures, Haskell's type classes, definition modules
+in Modula-2, interface modules in Modula-3, abstract types in Emerald,
+type modules in Trellis/Owl, categories in Scratchpad II, and types in
+POOL-I.  For a more detailed discussion of signatures, see
+<CITE>Signatures: A Language Extension for Improving Type Abstraction and
+Subtype Polymorphism in C++</CITE>
+by Gerald Baumgartner and Vincent F. Russo (Tech report
+CSD--TR--95--051, Dept. of Computer Sciences, Purdue University,
+August 1995, a slightly improved version appeared in
+<EM>Software--Practice &#38; Experience</EM>, <B>25</B>(8), pp. 863--889,
+August 1995).  You can get the tech report by anonymous FTP from
+<CODE>ftp.cs.purdue.edu</CODE> in <TT>`pub/gb/Signature-design.ps.gz'</TT>.
+</P><P>
+
+Syntactically, a signature declaration is a collection of
+member function declarations and nested type declarations.
+For example, this signature declaration defines a new abstract type
+<CODE>S</CODE> with member functions <SAMP>`int foo ()'</SAMP> and <SAMP>`int bar (int)'</SAMP>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>signature S
+{
+  int foo ();
+  int bar (int);
+};
+</pre></td></tr></table></P><P>
+
+Since signature types do not include implementation definitions, you
+cannot write an instance of a signature directly.  Instead, you can
+define a pointer to any class that contains the required interfaces as a
+<EM>signature pointer</EM>.  Such a class <EM>implements</EM> the signature
+type.
+</P><P>
+
+To use a class as an implementation of <CODE>S</CODE>, you must ensure that
+the class has public member functions <SAMP>`int foo ()'</SAMP> and <SAMP>`int
+bar (int)'</SAMP>.  The class can have other member functions as well, public
+or not; as long as it offers what's declared in the signature, it is
+suitable as an implementation of that signature type.
+</P><P>
+
+For example, suppose that <CODE>C</CODE> is a class that meets the
+requirements of signature <CODE>S</CODE> (<CODE>C</CODE> <EM>conforms to</EM>
+<CODE>S</CODE>).  Then
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>C obj;
+S * p = &#38;obj;
+</pre></td></tr></table></P><P>
+
+defines a signature pointer <CODE>p</CODE> and initializes it to point to an
+object of type <CODE>C</CODE>.
+The member function call <SAMP>`int i = p-&#62;foo ();'</SAMP>
+executes <SAMP>`obj.foo ()'</SAMP>.
+</P><P>
+
+<A NAME="IDX400"></A>
+Abstract virtual classes provide somewhat similar facilities in standard
+C++.  There are two main advantages to using signatures instead:
+</P><P>
+
+<OL>
+<LI>
+Subtyping becomes independent from inheritance.  A class or signature
+type <CODE>T</CODE> is a subtype of a signature type <CODE>S</CODE> independent of
+any inheritance hierarchy as long as all the member functions declared
+in <CODE>S</CODE> are also found in <CODE>T</CODE>.  So you can define a subtype
+hierarchy that is completely independent from any inheritance
+(implementation) hierarchy, instead of being forced to use types that
+mirror the class inheritance hierarchy.
+<P>
+
+<LI>
+Signatures allow you to work with existing class hierarchies as
+implementations of a signature type.  If those class hierarchies are
+only available in compiled form, you're out of luck with abstract virtual
+classes, since an abstract virtual class cannot be retrofitted on top of
+existing class hierarchies.  So you would be required to write interface
+classes as subtypes of the abstract virtual class.
+</OL>
+<P>
+
+<A NAME="IDX401"></A>
+<A NAME="IDX402"></A>
+There is one more detail about signatures.  A signature declaration can
+contain member function <EM>definitions</EM> as well as member function
+declarations.  A signature member function with a full definition is
+called a <EM>default implementation</EM>; classes need not contain that
+particular interface in order to conform.  For example, a
+class <CODE>C</CODE> can conform to the signature
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>signature T
+{
+  int f (int);
+  int f0 () { return f (0); };
+};
+</pre></td></tr></table></P><P>
+
+whether or not <CODE>C</CODE> implements the member function <SAMP>`int f0 ()'</SAMP>.
+If you define <CODE>C::f0</CODE>, that definition takes precedence;
+otherwise, the default implementation <CODE>S::f0</CODE> applies.
+</P><P>
+
+<A NAME="Gcov"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_116.html#SEC116"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_118.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

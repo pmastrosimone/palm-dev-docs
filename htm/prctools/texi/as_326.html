@@ -1,0 +1,302 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: MMIX-Pseudos</TITLE>
+
+<META NAME="description" CONTENT="Using as: MMIX-Pseudos">
+<META NAME="keywords" CONTENT="Using as: MMIX-Pseudos">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC335"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_325.html#SEC334"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_327.html#SEC336"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_327.html#SEC336"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_322.html#SEC331"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_327.html#SEC336"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 8.21.3.4 Assembler Directives </H4>
+<!--docid::SEC335::-->
+<P>
+
+<DL COMPACT>
+<DT><CODE>LOC</CODE>
+<DD><A NAME="IDX1020"></A>
+<A NAME="IDX1021"></A>
+<A NAME="IDX1022"></A>
+<A NAME="IDX1023"></A>
+<P>
+
+<A NAME="MMIX-loc"></A>
+The <CODE>LOC</CODE> directive sets the current location to the value of the
+operand field, which may include changing sections.  If the operand is a
+constant, the section is set to either <CODE>.data</CODE> if the value is
+<CODE>0x2000000000000000</CODE> or larger, else it is set to <CODE>.text</CODE>.
+Within a section, the current location may only be changed to
+monotonically higher addresses.  A LOC expression must be a previously
+defined symbol or a "pure" constant.
+</P><P>
+
+An example, which sets the label <VAR>prev</VAR> to the current location, and
+updates the current location to eight bytes forward:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>prev LOC @+8
+</FONT></pre></td></tr></table></P><P>
+
+When a LOC has a constant as its operand, a symbol
+<CODE>__.MMIX.start..text</CODE> or <CODE>__.MMIX.start..data</CODE> is defined
+depending on the address as mentioned above.  Each such symbol is
+interpreted as special by the linker, locating the section at that
+address.  Note that if multiple files are linked, the first object file
+with that section will be mapped to that address (not necessarily the file
+with the LOC definition).
+</P><P>
+
+<DT><CODE>LOCAL</CODE>
+<DD><A NAME="IDX1024"></A>
+<A NAME="IDX1025"></A>
+<A NAME="IDX1026"></A>
+<A NAME="IDX1027"></A>
+<P>
+
+<A NAME="MMIX-local"></A>
+Example:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre> LOCAL external_symbol
+ LOCAL 42
+ .local asymbol
+</FONT></pre></td></tr></table></P><P>
+
+This directive-operation generates a link-time assertion that the operand
+does not correspond to a global register.  The operand is an expression
+that at link-time resolves to a register symbol or a number.  A number is
+treated as the register having that number.  There is one restriction on
+the use of this directive: the pseudo-directive must be placed in a
+section with contents, code or data.
+</P><P>
+
+<DT><CODE>IS</CODE>
+<DD><A NAME="IDX1028"></A>
+<A NAME="IDX1029"></A>
+<A NAME="IDX1030"></A>
+<A NAME="IDX1031"></A>
+<P>
+
+<A NAME="MMIX-is"></A>
+The <CODE>IS</CODE> directive:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>asymbol IS an_expression
+</FONT></pre></td></tr></table>sets the symbol <SAMP>`asymbol'</SAMP> to <SAMP>`an_expression'</SAMP>.  A symbol may not
+be set more than once using this directive.  Local labels may be set using
+this directive, for example:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>5H IS @+4
+</FONT></pre></td></tr></table></P><P>
+
+<DT><CODE>GREG</CODE>
+<DD><A NAME="IDX1032"></A>
+<A NAME="IDX1033"></A>
+<A NAME="IDX1034"></A>
+<A NAME="IDX1035"></A>
+<P>
+
+<A NAME="MMIX-greg"></A>
+This directive reserves a global register, gives it an initial value and
+optionally gives it a symbolic name.  Some examples:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>areg GREG
+breg GREG data_value
+     GREG data_buffer
+     .greg creg, another_data_value
+</FONT></pre></td></tr></table></P><P>
+
+The symbolic register name can be used in place of a (non-special)
+register.  If a value isn't provided, it defaults to zero.  Unless the
+option <SAMP>`--no-merge-gregs'</SAMP> is specified, non-zero registers allocated
+with this directive may be eliminated by <CODE>as</CODE>; another
+register with the same value used in its place.
+Any of the instructions
+<SAMP>`CSWAP'</SAMP>,
+<SAMP>`GO'</SAMP>,
+<SAMP>`LDA'</SAMP>,
+<SAMP>`LDBU'</SAMP>,
+<SAMP>`LDB'</SAMP>,
+<SAMP>`LDHT'</SAMP>,
+<SAMP>`LDOU'</SAMP>,
+<SAMP>`LDO'</SAMP>,
+<SAMP>`LDSF'</SAMP>,
+<SAMP>`LDTU'</SAMP>,
+<SAMP>`LDT'</SAMP>,
+<SAMP>`LDUNC'</SAMP>,
+<SAMP>`LDVTS'</SAMP>,
+<SAMP>`LDWU'</SAMP>,
+<SAMP>`LDW'</SAMP>,
+<SAMP>`PREGO'</SAMP>,
+<SAMP>`PRELD'</SAMP>,
+<SAMP>`PREST'</SAMP>,
+<SAMP>`PUSHGO'</SAMP>,
+<SAMP>`STBU'</SAMP>,
+<SAMP>`STB'</SAMP>,
+<SAMP>`STCO'</SAMP>,
+<SAMP>`STHT'</SAMP>,
+<SAMP>`STOU'</SAMP>,
+<SAMP>`STSF'</SAMP>,
+<SAMP>`STTU'</SAMP>,
+<SAMP>`STT'</SAMP>,
+<SAMP>`STUNC'</SAMP>,
+<SAMP>`SYNCD'</SAMP>,
+<SAMP>`SYNCID'</SAMP>,
+<A NAME="GREG-base"></A>
+can have a value nearby an initial value in place of its
+second and third operands.  Here, "nearby" is defined as within the
+range 0<small>...</small>255 from the initial value of such an allocated register.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>buffer1 BYTE 0,0,0,0,0
+buffer2 BYTE 0,0,0,0,0
+ <small>...</small>
+ GREG buffer1
+ LDOU $42,buffer2
+</FONT></pre></td></tr></table>In the example above, the <SAMP>`Y'</SAMP> field of the <CODE>LDOUI</CODE> instruction
+(LDOU with a constant Z) will be replaced with the global register
+allocated for <SAMP>`buffer1'</SAMP>, and the <SAMP>`Z'</SAMP> field will have the value
+5, the offset from <SAMP>`buffer1'</SAMP> to <SAMP>`buffer2'</SAMP>.  The result is
+equivalent to this code:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>buffer1 BYTE 0,0,0,0,0
+buffer2 BYTE 0,0,0,0,0
+ <small>...</small>
+tmpreg GREG buffer1
+ LDOU $42,tmpreg,(buffer2-buffer1)
+</FONT></pre></td></tr></table></P><P>
+
+Global registers allocated with this directive are allocated in order
+higher-to-lower within a file.  Other than that, the exact order of
+register allocation and elimination is undefined.  For example, the order
+is undefined when more than one file with such directives are linked
+together.  With the options <SAMP>`-x'</SAMP> and <SAMP>`--linker-allocated-gregs'</SAMP>,
+<SAMP>`GREG'</SAMP> directives for two-operand cases like the one mentioned above
+can be omitted.  Sufficient global registers will then be allocated by the
+linker.
+</P><P>
+
+<DT><CODE>BYTE</CODE>
+<DD><A NAME="IDX1036"></A>
+<A NAME="IDX1037"></A>
+<A NAME="IDX1038"></A>
+<A NAME="IDX1039"></A>
+<P>
+
+<A NAME="MMIX-byte"></A>
+The <SAMP>`BYTE'</SAMP> directive takes a series of operands separated by a comma.
+If an operand is a string (see section <A HREF="as_34.html#SEC35">3.6.1.1 Strings</A>), each character of that string
+is emitted as a byte.  Other operands must be constant expressions without
+forward references, in the range 0<small>...</small>255.  If you need operands having
+expressions with forward references, use <SAMP>`.byte'</SAMP> (see section <A HREF="as_75.html#SEC78">7.7 <CODE>.byte <VAR>expressions</VAR></CODE></A>).  An
+operand can be omitted, defaulting to a zero value.
+</P><P>
+
+<DT><CODE>WYDE</CODE>
+<DD><DT><CODE>TETRA</CODE>
+<DD><DT><CODE>OCTA</CODE>
+<DD><A NAME="IDX1040"></A>
+<A NAME="IDX1041"></A>
+<A NAME="IDX1042"></A>
+<A NAME="IDX1043"></A>
+<A NAME="IDX1044"></A>
+<A NAME="IDX1045"></A>
+<A NAME="IDX1046"></A>
+<A NAME="IDX1047"></A>
+<A NAME="IDX1048"></A>
+<A NAME="IDX1049"></A>
+<A NAME="IDX1050"></A>
+<A NAME="IDX1051"></A>
+<P>
+
+<A NAME="MMIX-constants"></A>
+The directives <SAMP>`WYDE'</SAMP>, <SAMP>`TETRA'</SAMP> and <SAMP>`OCTA'</SAMP> emit constants of
+two, four and eight bytes size respectively.  Before anything else happens
+for the directive, the current location is aligned to the respective
+constant-size bondary.  If a label is defined at the beginning of the
+line, its value will be that after the alignment.  A single operand can be
+omitted, defaulting to a zero value emitted for the directive.  Operands
+can be expressed as strings (see section <A HREF="as_34.html#SEC35">3.6.1.1 Strings</A>), in which case each
+character in the string is emitted as a separate constant of the size
+indicated by the directive.
+</P><P>
+
+<DT><CODE>PREFIX</CODE>
+<DD><A NAME="IDX1052"></A>
+<A NAME="IDX1053"></A>
+<A NAME="IDX1054"></A>
+<A NAME="IDX1055"></A>
+<P>
+
+<A NAME="MMIX-prefix"></A>
+The <SAMP>`PREFIX'</SAMP> directive sets a symbol name prefix to be prepended to
+all symbols (except local symbols, see section <A HREF="as_324.html#SEC333">8.21.3.2 Symbols</A>), that are not
+prefixed with <SAMP>`:'</SAMP>, until the next <SAMP>`PREFIX'</SAMP> directive.  Such
+prefixes accumulate.  For example,
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre> PREFIX a
+ PREFIX b
+c IS 0
+</FONT></pre></td></tr></table>defines a symbol <SAMP>`abc'</SAMP> with the value 0.
+</P><P>
+
+<DT><CODE>BSPEC</CODE>
+<DD><DT><CODE>ESPEC</CODE>
+<DD><A NAME="IDX1056"></A>
+<A NAME="IDX1057"></A>
+<A NAME="IDX1058"></A>
+<A NAME="IDX1059"></A>
+<A NAME="IDX1060"></A>
+<A NAME="IDX1061"></A>
+<A NAME="IDX1062"></A>
+<A NAME="IDX1063"></A>
+<P>
+
+<A NAME="MMIX-spec"></A>
+A pair of <SAMP>`BSPEC'</SAMP> and <SAMP>`ESPEC'</SAMP> directives delimit a section of
+special contents (without specified semantics).  Example:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre> BSPEC 42
+ TETRA 1,2,3
+ ESPEC
+</FONT></pre></td></tr></table>The single operand to <SAMP>`BSPEC'</SAMP> must be number in the range
+0<small>...</small>255.  The <SAMP>`BSPEC'</SAMP> number 80 is used by the GNU binutils
+implementation.
+</DL>
+<P>
+
+<A NAME="MMIX-mmixal"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_325.html#SEC334"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_327.html#SEC336"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_327.html#SEC336"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_322.html#SEC331"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_327.html#SEC336"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

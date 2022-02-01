@@ -1,0 +1,119 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Side Effects</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Side Effects">
+<META NAME="keywords" CONTENT="The C Preprocessor: Side Effects">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC24"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_23.html#SEC23"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_25.html#SEC25"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_20.html#SEC20"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 1.4.8.4 Duplication of Side Effects </H4>
+<!--docid::SEC24::-->
+<P>
+
+<A NAME="IDX48"></A>
+<A NAME="IDX49"></A>
+Many C programs define a macro <SAMP>`min'</SAMP>, for "minimum", like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define min(X, Y)  ((X) &#60; (Y) ? (X) : (Y))
+</pre></td></tr></table></P><P>
+
+When you use this macro with an argument containing a side effect,
+as shown here,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>next = min (x + y, foo (z));
+</pre></td></tr></table></P><P>
+
+it expands as follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>next = ((x + y) &#60; (foo (z)) ? (x + y) : (foo (z)));
+</pre></td></tr></table></P><P>
+
+where <SAMP>`x + y'</SAMP> has been substituted for <SAMP>`X'</SAMP> and <SAMP>`foo (z)'</SAMP>
+for <SAMP>`Y'</SAMP>.
+</P><P>
+
+The function <SAMP>`foo'</SAMP> is used only once in the statement as it appears
+in the program, but the expression <SAMP>`foo (z)'</SAMP> has been substituted
+twice into the macro expansion.  As a result, <SAMP>`foo'</SAMP> might be called
+two times when the statement is executed.  If it has side effects or
+if it takes a long time to compute, the results might not be what you
+intended.  We say that <SAMP>`min'</SAMP> is an <EM>unsafe</EM> macro.
+</P><P>
+
+The best solution to this problem is to define <SAMP>`min'</SAMP> in a way that
+computes the value of <SAMP>`foo (z)'</SAMP> only once.  The C language offers no
+standard way to do this, but it can be done with GNU C extensions as
+follows:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define min(X, Y)                     \
+({ typeof (X) __x = (X), __y = (Y);   \
+   (__x &#60; __y) ? __x : __y; })
+</pre></td></tr></table></P><P>
+
+If you do not wish to use GNU C extensions, the only solution is to be
+careful when <EM>using</EM> the macro <SAMP>`min'</SAMP>.  For example, you can
+calculate the value of <SAMP>`foo (z)'</SAMP>, save it in a variable, and use that
+variable in <SAMP>`min'</SAMP>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define min(X, Y)  ((X) &#60; (Y) ? (X) : (Y))
+<small>...</small>
+{
+  int tem = foo (z);
+  next = min (x + y, tem);
+}
+</pre></td></tr></table></P><P>
+
+(where we assume that <SAMP>`foo'</SAMP> returns type <SAMP>`int'</SAMP>).
+</P><P>
+
+<A NAME="Self-Reference"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_23.html#SEC23"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_25.html#SEC25"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_20.html#SEC20"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

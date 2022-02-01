@@ -1,0 +1,256 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Special Targets</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Special Targets">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Special Targets">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC44"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_39.html#SEC43"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_41.html#SEC45"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.9 Special Built-in Target Names </H2>
+<!--docid::SEC44::-->
+<P>
+
+Certain names have special meanings if they appear as targets.
+</P><P>
+
+<DL COMPACT>
+<A NAME="IDX116"></A>
+<DT><CODE>.PHONY</CODE>
+<DD><P>
+
+The prerequisites of the special target <CODE>.PHONY</CODE> are considered to
+be phony targets.  When it is time to consider such a target,
+<CODE>make</CODE> will run its commands unconditionally, regardless of
+whether a file with that name exists or what its last-modification
+time is.  See section <A HREF="make_37.html#SEC41">Phony Targets</A>.
+</P><P>
+
+<A NAME="IDX117"></A>
+<DT><CODE>.SUFFIXES</CODE>
+<DD><P>
+
+The prerequisites of the special target <CODE>.SUFFIXES</CODE> are the list
+of suffixes to be used in checking for suffix rules.
+See section <A HREF="make_112.html#SEC116">Old-Fashioned Suffix Rules</A>.
+</P><P>
+
+<A NAME="IDX118"></A>
+<DT><CODE>.DEFAULT</CODE>
+<DD><P>
+
+The commands specified for <CODE>.DEFAULT</CODE> are used for any target for
+which no rules are found (either explicit rules or implicit rules).
+See section <A HREF="make_111.html#SEC115">10.6 Defining Last-Resort Default Rules</A>.  If <CODE>.DEFAULT</CODE> commands are specified, every
+file mentioned as a prerequisite, but not as a target in a rule, will have
+these commands executed on its behalf.  See section <A HREF="make_113.html#SEC117">Implicit Rule Search Algorithm</A>.
+</P><P>
+
+<A NAME="IDX119"></A>
+<DT><CODE>.PRECIOUS</CODE>
+<DD><A NAME="IDX120"></A>
+<A NAME="IDX121"></A>
+<P>
+
+The targets which <CODE>.PRECIOUS</CODE> depends on are given the following
+special treatment: if <CODE>make</CODE> is killed or interrupted during the
+execution of their commands, the target is not deleted.
+See section <A HREF="make_53.html#SEC57">Interrupting or Killing <CODE>make</CODE></A>.  Also, if the
+target is an intermediate file, it will not be deleted after it is no
+longer needed, as is normally done.  See section <A HREF="make_103.html#SEC107">Chains of Implicit Rules</A>.  In this latter respect it overlaps with the
+<CODE>.SECONDARY</CODE> special target.
+</P><P>
+
+You can also list the target pattern of an implicit rule (such as
+<SAMP>`%.o'</SAMP>) as a prerequisite file of the special target <CODE>.PRECIOUS</CODE>
+to preserve intermediate files created by rules whose target patterns
+match that file's name.
+</P><P>
+
+<A NAME="IDX122"></A>
+<DT><CODE>.INTERMEDIATE</CODE>
+<DD><A NAME="IDX123"></A>
+<P>
+
+The targets which <CODE>.INTERMEDIATE</CODE> depends on are treated as
+intermediate files.  See section <A HREF="make_103.html#SEC107">Chains of Implicit Rules</A>.
+<CODE>.INTERMEDIATE</CODE> with no prerequisites has no effect.
+</P><P>
+
+<A NAME="IDX124"></A>
+<DT><CODE>.SECONDARY</CODE>
+<DD><A NAME="IDX125"></A>
+<A NAME="IDX126"></A>
+<P>
+
+The targets which <CODE>.SECONDARY</CODE> depends on are treated as
+intermediate files, except that they are never automatically deleted.
+See section <A HREF="make_103.html#SEC107">Chains of Implicit Rules</A>.
+</P><P>
+
+<CODE>.SECONDARY</CODE> with no prerequisites causes all targets to be treated
+as secondary (i.e., no target is removed because it is considered
+intermediate).
+</P><P>
+
+<A NAME="IDX127"></A>
+<DT><CODE>.DELETE_ON_ERROR</CODE>
+<DD><A NAME="IDX128"></A>
+<P>
+
+If <CODE>.DELETE_ON_ERROR</CODE> is mentioned as a target anywhere in the
+makefile, then <CODE>make</CODE> will delete the target of a rule if it has
+changed and its commands exit with a nonzero exit status, just as it
+does when it receives a signal.  See section <A HREF="make_52.html#SEC56">Errors in Commands</A>.
+</P><P>
+
+<A NAME="IDX129"></A>
+<DT><CODE>.IGNORE</CODE>
+<DD><P>
+
+If you specify prerequisites for <CODE>.IGNORE</CODE>, then <CODE>make</CODE> will
+ignore errors in execution of the commands run for those particular
+files.  The commands for <CODE>.IGNORE</CODE> are not meaningful.
+</P><P>
+
+If mentioned as a target with no prerequisites, <CODE>.IGNORE</CODE> says to
+ignore errors in execution of commands for all files.  This usage of
+<SAMP>`.IGNORE'</SAMP> is supported only for historical compatibility.  Since
+this affects every command in the makefile, it is not very useful; we
+recommend you use the more selective ways to ignore errors in specific
+commands.  See section <A HREF="make_52.html#SEC56">Errors in Commands</A>.
+</P><P>
+
+<A NAME="IDX130"></A>
+<DT><CODE>.LOW_RESOLUTION_TIME</CODE>
+<DD><P>
+
+If you specify prerequisites for <CODE>.LOW_RESOLUTION_TIME</CODE>,
+<CODE>make</CODE> assumes that these files are created by commands that
+generate low resolution time stamps.  The commands for
+<CODE>.LOW_RESOLUTION_TIME</CODE> are not meaningful.
+</P><P>
+
+The high resolution file time stamps of many modern hosts lessen the
+chance of <CODE>make</CODE> incorrectly concluding that a file is up to
+date.  Unfortunately, these hosts provide no way to set a high
+resolution file time stamp, so commands like <SAMP>`cp -p'</SAMP> that
+explicitly set a file's time stamp must discard its subsecond part.  If
+a file is created by such a command, you should list it as a
+prerequisite of <CODE>.LOW_RESOLUTION_TIME</CODE> so that <CODE>make</CODE> does
+not mistakenly conclude that the file is out of date.  For example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.LOW_RESOLUTION_TIME: dst
+dst: src
+        cp -p src dst
+</pre></td></tr></table></P><P>
+
+Since <SAMP>`cp -p'</SAMP> discards the subsecond part of <TT>`src'</TT>'s time
+stamp, <TT>`dst'</TT> is typically slightly older than <TT>`src'</TT> even when
+it is up to date.  The <CODE>.LOW_RESOLUTION_TIME</CODE> line causes
+<CODE>make</CODE> to consider <TT>`dst'</TT> to be up to date if its time stamp
+is at the start of the same second that <TT>`src'</TT>'s time stamp is in.
+</P><P>
+
+Due to a limitation of the archive format, archive member time stamps
+are always low resolution.  You need not list archive members as
+prerequisites of <CODE>.LOW_RESOLUTION_TIME</CODE>, as <CODE>make</CODE> does this
+automatically.
+</P><P>
+
+<A NAME="IDX131"></A>
+<DT><CODE>.SILENT</CODE>
+<DD><P>
+
+If you specify prerequisites for <CODE>.SILENT</CODE>, then <CODE>make</CODE> will
+not print the commands to remake those particular files before executing
+them.  The commands for <CODE>.SILENT</CODE> are not meaningful.
+</P><P>
+
+If mentioned as a target with no prerequisites, <CODE>.SILENT</CODE> says not
+to print any commands before executing them.  This usage of
+<SAMP>`.SILENT'</SAMP> is supported only for historical compatibility.  We
+recommend you use the more selective ways to silence specific commands.
+See section <A HREF="make_49.html#SEC53">Command Echoing</A>.  If you want to silence all commands
+for a particular run of <CODE>make</CODE>, use the <SAMP>`-s'</SAMP> or
+<SAMP>`--silent'</SAMP> option (see section <A HREF="make_98.html#SEC102">9.7 Summary of Options</A>).
+</P><P>
+
+<A NAME="IDX132"></A>
+<DT><CODE>.EXPORT_ALL_VARIABLES</CODE>
+<DD><P>
+
+Simply by being mentioned as a target, this tells <CODE>make</CODE> to
+export all variables to child processes by default.
+See section <A HREF="make_56.html#SEC60">Communicating Variables to a Sub-<CODE>make</CODE></A>.
+</P><P>
+
+<A NAME="IDX133"></A>
+<DT><CODE>.NOTPARALLEL</CODE>
+<DD><A NAME="IDX134"></A>
+<P>
+
+If <CODE>.NOTPARALLEL</CODE> is mentioned as a target, then this invocation of
+<CODE>make</CODE> will be run serially, even if the <SAMP>`-j'</SAMP> option is
+given.  Any recursively invoked <CODE>make</CODE> command will still be run in
+parallel (unless its makefile contains this target).  Any prerequisites
+on this target are ignored.
+</DL>
+<P>
+
+Any defined implicit rule suffix also counts as a special target if it
+appears as a target, and so does the concatenation of two suffixes, such
+as <SAMP>`.c.o'</SAMP>.  These targets are suffix rules, an obsolete way of
+defining implicit rules (but a way still widely used).  In principle, any
+target name could be special in this way if you break it in two and add
+both pieces to the suffix list.  In practice, suffixes normally begin with
+<SAMP>`.'</SAMP>, so these special target names also begin with <SAMP>`.'</SAMP>.
+See section <A HREF="make_112.html#SEC116">Old-Fashioned Suffix Rules</A>.
+</P><P>
+
+<A NAME="Multiple Targets"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_39.html#SEC43"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_41.html#SEC45"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_22.html#SEC26"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_48.html#SEC52"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

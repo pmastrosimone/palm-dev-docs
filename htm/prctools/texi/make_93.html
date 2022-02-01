@@ -1,0 +1,205 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Goals</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Goals">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Goals">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC97"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_92.html#SEC96"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_94.html#SEC98"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 9.2 Arguments to Specify the Goals </H2>
+<!--docid::SEC97::-->
+<P>
+
+The <EM>goals</EM> are the targets that <CODE>make</CODE> should strive ultimately
+to update.  Other targets are updated as well if they appear as
+prerequisites of goals, or prerequisites of prerequisites of goals, etc.
+</P><P>
+
+By default, the goal is the first target in the makefile (not counting
+targets that start with a period).  Therefore, makefiles are usually
+written so that the first target is for compiling the entire program or
+programs they describe.  If the first rule in the makefile has several
+targets, only the first target in the rule becomes the default goal, not
+the whole list.
+</P><P>
+
+You can specify a different goal or goals with arguments to <CODE>make</CODE>.
+Use the name of the goal as an argument.  If you specify several goals,
+<CODE>make</CODE> processes each of them in turn, in the order you name them.
+</P><P>
+
+Any target in the makefile may be specified as a goal (unless it
+starts with <SAMP>`-'</SAMP> or contains an <SAMP>`='</SAMP>, in which case it will be
+parsed as a switch or variable definition, respectively).  Even
+targets not in the makefile may be specified, if <CODE>make</CODE> can find
+implicit rules that say how to make them.
+</P><P>
+
+<A NAME="IDX342"></A>
+<A NAME="IDX343"></A>
+<CODE>Make</CODE> will set the special variable <CODE>MAKECMDGOALS</CODE> to the
+list of goals you specified on the command line.  If no goals were given
+on the command line, this variable is empty.  Note that this variable
+should be used only in special circumstances.
+</P><P>
+
+An example of appropriate use is to avoid including <TT>`.d'</TT> files
+during <CODE>clean</CODE> rules (see section <A HREF="make_47.html#SEC51">4.14 Generating Prerequisites Automatically</A>), so
+<CODE>make</CODE> won't create them only to immediately remove them
+again:</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>sources = foo.c bar.c
+
+ifneq ($(MAKECMDGOALS),clean)
+include $(sources:.c=.d)
+endif
+</pre></td></tr></table></P><P>
+
+One use of specifying a goal is if you want to compile only a part of
+the program, or only one of several programs.  Specify as a goal each
+file that you wish to remake.  For example, consider a directory containing
+several programs, with a makefile that starts like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>.PHONY: all
+all: size nm ld ar as
+</pre></td></tr></table></P><P>
+
+If you are working on the program <CODE>size</CODE>, you might want to say
+<SAMP>`make size'</SAMP> so that only the files of that program are recompiled.
+</P><P>
+
+Another use of specifying a goal is to make files that are not normally
+made.  For example, there may be a file of debugging output, or a
+version of the program that is compiled specially for testing, which has
+a rule in the makefile but is not a prerequisite of the default goal.
+</P><P>
+
+Another use of specifying a goal is to run the commands associated with
+a phony target (see section <A HREF="make_37.html#SEC41">4.6 Phony Targets</A>) or empty target (see section <A HREF="make_39.html#SEC43">Empty Target Files to Record Events</A>).  Many makefiles contain
+a phony target named <TT>`clean'</TT> which deletes everything except source
+files.  Naturally, this is done only if you request it explicitly with
+<SAMP>`make clean'</SAMP>.  Following is a list of typical phony and empty
+target names.  See section <A HREF="make_127.html#SEC131">14.5 Standard Targets for Users</A>, for a detailed list of all the
+standard target names which GNU software packages use.
+</P><P>
+
+<DL COMPACT>
+<DT><TT>`all'</TT>
+<DD><A NAME="IDX344"></A>
+Make all the top-level targets the makefile knows about.
+<P>
+
+<DT><TT>`clean'</TT>
+<DD><A NAME="IDX345"></A>
+Delete all files that are normally created by running <CODE>make</CODE>.
+<P>
+
+<DT><TT>`mostlyclean'</TT>
+<DD><A NAME="IDX346"></A>
+Like <SAMP>`clean'</SAMP>, but may refrain from deleting a few files that people
+normally don't want to recompile.  For example, the <SAMP>`mostlyclean'</SAMP>
+target for GCC does not delete <TT>`libgcc.a'</TT>, because recompiling it
+is rarely necessary and takes a lot of time.
+<P>
+
+<DT><TT>`distclean'</TT>
+<DD><A NAME="IDX347"></A>
+<DT><TT>`realclean'</TT>
+<DD><A NAME="IDX348"></A>
+<DT><TT>`clobber'</TT>
+<DD><A NAME="IDX349"></A>
+Any of these targets might be defined to delete <EM>more</EM> files than
+<SAMP>`clean'</SAMP> does.  For example, this would delete configuration files
+or links that you would normally create as preparation for compilation,
+even if the makefile itself cannot create these files.
+<P>
+
+<DT><TT>`install'</TT>
+<DD><A NAME="IDX350"></A>
+Copy the executable file into a directory that users typically search
+for commands; copy any auxiliary files that the executable uses into
+the directories where it will look for them.
+<P>
+
+<DT><TT>`print'</TT>
+<DD><A NAME="IDX351"></A>
+Print listings of the source files that have changed.
+<P>
+
+<DT><TT>`tar'</TT>
+<DD><A NAME="IDX352"></A>
+Create a tar file of the source files.
+<P>
+
+<DT><TT>`shar'</TT>
+<DD><A NAME="IDX353"></A>
+Create a shell archive (shar file) of the source files.
+<P>
+
+<DT><TT>`dist'</TT>
+<DD><A NAME="IDX354"></A>
+Create a distribution file of the source files.  This might
+be a tar file, or a shar file, or a compressed version of one of the
+above, or even more than one of the above.
+<P>
+
+<DT><TT>`TAGS'</TT>
+<DD><A NAME="IDX355"></A>
+Update a tags table for this program.
+<P>
+
+<DT><TT>`check'</TT>
+<DD><A NAME="IDX356"></A>
+<DT><TT>`test'</TT>
+<DD><A NAME="IDX357"></A>
+Perform self tests on the program this makefile builds.
+</DL>
+<P>
+
+<A NAME="Instead of Execution"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_92.html#SEC96"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_94.html#SEC98"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_91.html#SEC95"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,158 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Bootstrapping</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Bootstrapping">
+<META NAME="keywords" CONTENT="Debugging with GDB: Bootstrapping">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC138"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_137.html#SEC137"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_139.html#SEC139"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_139.html#SEC139"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_136.html#SEC136"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 17.3.2 What you must do for the stub </H3>
+<!--docid::SEC138::-->
+<P>
+
+<A NAME="IDX630"></A>
+The debugging stubs that come with GDB are set up for a particular
+chip architecture, but they have no information about the rest of your
+debugging target machine.
+</P><P>
+
+First of all you need to tell the stub how to communicate with the
+serial port.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>int getDebugChar()</CODE>
+<DD><A NAME="IDX631"></A>
+Write this subroutine to read a single character from the serial port.
+It may be identical to <CODE>getchar</CODE> for your target system; a
+different name is used to allow you to distinguish the two if you wish.
+<P>
+
+<DT><CODE>void putDebugChar(int)</CODE>
+<DD><A NAME="IDX632"></A>
+Write this subroutine to write a single character to the serial port.
+It may be identical to <CODE>putchar</CODE> for your target system; a
+different name is used to allow you to distinguish the two if you wish.
+</DL>
+<P>
+
+<A NAME="IDX633"></A>
+<A NAME="IDX634"></A>
+If you want GDB to be able to stop your program while it is
+running, you need to use an interrupt-driven serial driver, and arrange
+for it to stop when it receives a <CODE>^C</CODE> (<SAMP>`\003'</SAMP>, the control-C
+character).  That is the character which GDB uses to tell the
+remote system to stop.
+</P><P>
+
+Getting the debugging target to return the proper status to GDB
+probably requires changes to the standard stub; one quick and dirty way
+is to just execute a breakpoint instruction (the "dirty" part is that
+GDB reports a <CODE>SIGTRAP</CODE> instead of a <CODE>SIGINT</CODE>).
+</P><P>
+
+Other routines you need to supply are:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>void exceptionHandler (int <VAR>exception_number</VAR>, void *<VAR>exception_address</VAR>)</CODE>
+<DD><A NAME="IDX635"></A>
+Write this function to install <VAR>exception_address</VAR> in the exception
+handling tables.  You need to do this because the stub does not have any
+way of knowing what the exception handling tables on your target system
+are like (for example, the processor's table might be in ROM,
+containing entries which point to a table in RAM).
+<VAR>exception_number</VAR> is the exception number which should be changed;
+its meaning is architecture-dependent (for example, different numbers
+might represent divide by zero, misaligned access, etc).  When this
+exception occurs, control should be transferred directly to
+<VAR>exception_address</VAR>, and the processor state (stack, registers,
+and so on) should be just as it is when a processor exception occurs.  So if
+you want to use a jump instruction to reach <VAR>exception_address</VAR>, it
+should be a simple jump, not a jump to subroutine.
+<P>
+
+For the 386, <VAR>exception_address</VAR> should be installed as an interrupt
+gate so that interrupts are masked while the handler runs.  The gate
+should be at privilege level 0 (the most privileged level).  The
+SPARC and 68k stubs are able to mask interrupts themselves without
+help from <CODE>exceptionHandler</CODE>.
+</P><P>
+
+<DT><CODE>void flush_i_cache()</CODE>
+<DD><A NAME="IDX636"></A>
+On SPARC and SPARCLITE only, write this subroutine to flush the
+instruction cache, if any, on your target machine.  If there is no
+instruction cache, this subroutine may be a no-op.
+<P>
+
+On target machines that have instruction caches, GDB requires this
+function to make certain that the state of your program is stable.
+</DL>
+<P>
+
+You must also make sure this library routine is available:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>void *memset(void *, int, int)</CODE>
+<DD><A NAME="IDX637"></A>
+This is the standard library function <CODE>memset</CODE> that sets an area of
+memory to a known value.  If you have one of the free versions of
+<CODE>libc.a</CODE>, <CODE>memset</CODE> can be found there; otherwise, you must
+either obtain it from your hardware manufacturer, or write your own.
+</DL>
+<P>
+
+If you do not use the GNU C compiler, you may need other standard
+library subroutines as well; this varies from one stub to another,
+but in general the stubs are likely to use any of the common library
+subroutines which <CODE>gcc</CODE> generates as inline code.
+</P><P>
+
+<A NAME="Debug Session"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_137.html#SEC137"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_139.html#SEC139"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_139.html#SEC139"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_136.html#SEC136"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

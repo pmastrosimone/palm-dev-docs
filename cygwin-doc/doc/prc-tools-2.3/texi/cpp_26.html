@@ -1,0 +1,213 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>The C Preprocessor: Argument Prescan</TITLE>
+
+<META NAME="description" CONTENT="The C Preprocessor: Argument Prescan">
+<META NAME="keywords" CONTENT="The C Preprocessor: Argument Prescan">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC26"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_25.html#SEC25"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_27.html#SEC27"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_20.html#SEC20"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 1.4.8.6 Separate Expansion of Macro Arguments </H4>
+<!--docid::SEC26::-->
+<P>
+
+We have explained that the expansion of a macro, including the substituted
+actual arguments, is scanned over again for macro calls to be expanded.
+</P><P>
+
+What really happens is more subtle: first each actual argument text is scanned
+separately for macro calls.  Then the results of this are substituted into
+the macro body to produce the macro expansion, and the macro expansion
+is scanned again for macros to expand.
+</P><P>
+
+The result is that the actual arguments are scanned <EM>twice</EM> to expand
+macro calls in them.
+</P><P>
+
+Most of the time, this has no effect.  If the actual argument contained
+any macro calls, they are expanded during the first scan.  The result
+therefore contains no macro calls, so the second scan does not change it.
+If the actual argument were substituted as given, with no prescan,
+the single remaining scan would find the same macro calls and produce
+the same results.
+</P><P>
+
+You might expect the double scan to change the results when a
+self-referential macro is used in an actual argument of another macro
+(see section <A HREF="cpp_25.html#SEC25">1.4.8.5 Self-Referential Macros</A>): the self-referential macro would be expanded once
+in the first scan, and a second time in the second scan.  But this is not
+what happens.  The self-references that do not expand in the first scan are
+marked so that they will not expand in the second scan either.
+</P><P>
+
+The prescan is not done when an argument is stringified or concatenated.
+Thus,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define str(s) #s
+#define foo 4
+str (foo)
+</pre></td></tr></table></P><P>
+
+expands to <SAMP>`"foo"'</SAMP>.  Once more, prescan has been prevented from
+having any noticeable effect.
+</P><P>
+
+More precisely, stringification and concatenation use the argument as
+written, in un-prescanned form.  The same actual argument would be used in
+prescanned form if it is substituted elsewhere without stringification or
+concatenation.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define str(s) #s lose(s)
+#define foo 4
+str (foo)
+</pre></td></tr></table></P><P>
+
+expands to <SAMP>`"foo" lose(4)'</SAMP>.
+</P><P>
+
+You might now ask, "Why mention the prescan, if it makes no difference?
+And why not skip it and make the preprocessor faster?"  The answer is
+that the prescan does make a difference in three special cases:
+</P><P>
+
+<UL>
+<LI>
+Nested calls to a macro.
+<P>
+
+<LI>
+Macros that call other macros that stringify or concatenate.
+<P>
+
+<LI>
+Macros whose expansions contain unshielded commas.
+</UL>
+<P>
+
+We say that <EM>nested</EM> calls to a macro occur when a macro's actual
+argument contains a call to that very macro.  For example, if <SAMP>`f'</SAMP>
+is a macro that expects one argument, <SAMP>`f (f (1))'</SAMP> is a nested
+pair of calls to <SAMP>`f'</SAMP>.  The desired expansion is made by
+expanding <SAMP>`f (1)'</SAMP> and substituting that into the definition of
+<SAMP>`f'</SAMP>.  The prescan causes the expected result to happen.
+Without the prescan, <SAMP>`f (1)'</SAMP> itself would be substituted as
+an actual argument, and the inner use of <SAMP>`f'</SAMP> would appear
+during the main scan as an indirect self-reference and would not
+be expanded.  Here, the prescan cancels an undesirable side effect
+(in the medical, not computational, sense of the term) of the special
+rule for self-referential macros.
+</P><P>
+
+But prescan causes trouble in certain other cases of nested macro calls.
+Here is an example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define foo  a,b
+#define bar(x) lose(x)
+#define lose(x) (1 + (x))
+
+bar(foo)
+</pre></td></tr></table></P><P>
+
+We would like <SAMP>`bar(foo)'</SAMP> to turn into <SAMP>`(1 + (foo))'</SAMP>, which
+would then turn into <SAMP>`(1 + (a,b))'</SAMP>.  But instead, <SAMP>`bar(foo)'</SAMP>
+expands into <SAMP>`lose(a,b)'</SAMP>, and you get an error because <CODE>lose</CODE>
+requires a single argument.  In this case, the problem is easily solved
+by the same parentheses that ought to be used to prevent misnesting of
+arithmetic operations:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define foo (a,b)
+#define bar(x) lose((x))
+</pre></td></tr></table></P><P>
+
+The problem is more serious when the operands of the macro are not
+expressions; for example, when they are statements.  Then parentheses
+are unacceptable because they would make for invalid C code:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define foo { int a, b; <small>...</small> }
+</pre></td></tr></table></P><P>
+
+In GNU C you can shield the commas using the <SAMP>`({<small>...</small>})'</SAMP>
+construct which turns a compound statement into an expression:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define foo ({ int a, b; <small>...</small> })
+</pre></td></tr></table></P><P>
+
+Or you can rewrite the macro definition to avoid such commas:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define foo { int a; int b; <small>...</small> }
+</pre></td></tr></table></P><P>
+
+There is also one case where prescan is useful.  It is possible
+to use prescan to expand an argument and then stringify it--if you use
+two levels of macros.  Let's add a new macro <SAMP>`xstr'</SAMP> to the
+example shown above:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define xstr(s) str(s)
+#define str(s) #s
+#define foo 4
+xstr (foo)
+</pre></td></tr></table></P><P>
+
+This expands into <SAMP>`"4"'</SAMP>, not <SAMP>`"foo"'</SAMP>.  The reason for the
+difference is that the argument of <SAMP>`xstr'</SAMP> is expanded at prescan
+(because <SAMP>`xstr'</SAMP> does not specify stringification or concatenation of
+the argument).  The result of prescan then forms the actual argument for
+<SAMP>`str'</SAMP>.  <SAMP>`str'</SAMP> uses its argument without prescan because it
+performs stringification; but it cannot prevent or undo the prescanning
+already done by <SAMP>`xstr'</SAMP>.
+</P><P>
+
+<A NAME="Cascaded Macros"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_25.html#SEC25"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_27.html#SEC27"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_19.html#SEC19"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_20.html#SEC20"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_29.html#SEC29"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_43.html#SEC43">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="cpp_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

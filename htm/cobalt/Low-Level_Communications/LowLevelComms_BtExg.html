@@ -1,0 +1,248 @@
+<html>
+<head>
+<title>(Protein) Bluetooth Exchange Library Support | Low-Level Communications</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:14:08">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="608590"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="LowLevelCommsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_BtApps.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_BtRef.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelCommsIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">12 &nbsp;&nbsp;
+Bluetooth Exchange Library Support</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Low-Level Communications</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="LowLevelComms_BT_Pt.html">Part III: Bluetooth</a> </h1>
+<h1 class="SideTOC1"><a href="LowLevelComms_BtExg.html">12  Bluetooth Exchange Library Support</a></h1>
+
+   <h2 class="SideTOC2"><a href="#993212">
+   Detecting the Bluetooth Exchange Library</a></h2>
+
+   <h2 class="SideTOC2"><a href="#993217">
+   Using the Exchange Manager With Bluetooth</a></h2>
+
+      <h3 class="SideTOC3"><a href="#993224">
+      Bluetooth Exchange URLs</a></h3>
+
+      <h3 class="SideTOC3"><a href="#993234">
+      Obtaining the URL of a Remote Device</a></h3>
+
+   <h2 class="SideTOC2"><a href="#993256">
+   ExgLibGet() and ExgLibRequest()</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="993208"> </a>Accompanying the Bluetooth Library is the Bluetooth Exchange Library, a shared library that allows applications to support Bluetooth using the standard Exchange Manager APIs. The Bluetooth Exchange Library conforms to the Object Push and Generic Object Exchange profiles.</p>
+
+<p><a name="993209"> </a>For more information about the Exchange Manager, see <a href="../High-Level_Communications/HLC_ExgMgrConcept.html#994958">Chapter 4, "Object Exchange,"</a> of the book <i>Exploring Palm OS: High-Level Communications</i>.</p>
+
+<h2 class="haH2">
+  <a name="993212"> </a>Detecting the Bluetooth Exchange Library <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="993213"> </a>To check for the presence of the Bluetooth Exchange Library, you use <code>FtrGet</code>:</p>
+<pre class="sl">err = FtrGet(btexgFtrCreator,
+     btexgFtrNumVersion, &amp;btExgLibVersion);</pre>
+
+<p><a name="993215"> </a>If the Bluetooth Exchange Library is present, <code>FtrGet</code> returns <code>errNone</code>. In this case, the value pointed to by <code>btExgLibVersion</code> contains the version number of the Bluetooth Exchange Library. The format of the version number is <code>0xMMmfsbbb</code>, where <code>MM</code> is the major version, <code>m</code> is the minor version, <code>f</code> is the bug fix level, <code>s</code> is the stage, and <code>bbb</code> is the build number. Stage 3 indicates a release version of the library. Stage 2 indicates a beta release, stage 1 indicates an alpha release, and stage 0 indicates a development release. So, for example, a value of <code>0x01013000</code> would correspond to the released version 1.01 of the Bluetooth Exchange Library.</p>
+
+<h2 class="haH2">
+  <a name="993217"> </a>Using the Exchange Manager With Bluetooth <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="993218"> </a>Using the Exchange Manager with Bluetooth is almost exactly like using it with IrDA and SMS. The differences are as follows:</p>
+<ul type="disc">
+  <li><a name="993219"> </a>The URL you use when you send an object has some special fields specific to Bluetooth.
+  <li><a name="993220"> </a>Your application may want to know the URL of the device or devices with which it is communicating. The Exchange Manager provides a way to get this information.
+  <li><a name="993221"> </a>The <code>ExgLibGet()</code> and <code>ExgLibRequest()</code> functions are not supported with Bluetooth.
+</ul>
+
+<p><a name="993222"> </a>These differences are discussed further in the following sections.</p>
+<h3 class="hbH3">
+  <a name="993224"> </a>Bluetooth Exchange URLs <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993225"> </a>If you send objects using the Bluetooth Exchange Library and use a URL, you can send the objects to single or multiple devices at the same time depending on the way the URL is formed. A Bluetooth Exchange Library URL can have one of the following forms:</p>
+
+<dl>
+<dt><a name="993226"> </a><code>_btobex:<i>filename</i></code></dt>
+<dt><a name="993227"> </a><code><code class="par">_btobex://</code><i>filename</i></code></dt>
+<dt><a name="993228"> </a><code>_btobex://?_multi/<i>filename</i></code></dt>
+<dd><a name="993833"> </a>Performs a device inquiry, presents the available devices to the user, and allows the user to choose one or more devices. Sends the object to all selected devices.</dd>
+
+<dt><a name="993229"> </a><code>_btobex://?_single/<i>filename</i></code></dt>
+<dd><a name="993835"> </a>Performs a device inquiry, presents the available devices to the user, and allows the user to choose only one device. Sends the object to that device.</dd>
+
+<dt><a name="993230"> </a><code>_btobex://<i>address1</i>[,<i>address2</i>, ...]/<i>filename</i></code></dt>
+<dd><a name="993837"> </a>Sends the object to the device(s) with the specified Bluetooth device address(es). The addresses are in the form "<code>xx:xx:xx:xx:xx:xx</code>".</dd>
+
+</dl>
+
+<p><a name="993231"> </a>Do not combine these URL forms. Doing so may give unintended results.</p>
+<h3 class="hbH3">
+  <a name="993234"> </a>Obtaining the URL of a Remote Device <a href="#608590"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="993235"> </a>For some applications you need to know the URL that addresses the remote device from which you receive data. This is especially useful for games. You can get the URL after calling <a href="../High-Level_Communications/HLC_ExgMgrRef.html#1283452"><code>ExgAccept()</code></a> using the <a href="../High-Level_Communications/HLC_ExgMgrRef.html#1269178"><code>ExgControl()</code></a> function code <code>exgLibCtlGetUrl</code> as shown in the following code:</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+ExgCtlGetURLType getUrl;<a name="993236"> </a>
+UInt16 getUrlLen;<a name="993237"> </a>
+<a name="993238"> </a>
+// First get the size of the URL<a name="993239"> </a>
+getUrl.socketP = exgSocketP;<a name="993240"> </a>
+getUrl.URLP = NULL;<a name="993241"> </a>
+getUrl.URLSize = 0;<a name="993242"> </a>
+getUrlLen =  sizeof(getUrl);<a name="993243"> </a>
+ExgControl(exgSocketP, exgLibCtlGetURL, &amp;getUrl, &amp;getUrlLen);<a name="993244"> </a>
+<a name="993245"> </a>
+// Now get the URL<a name="993246"> </a>
+getUrl.URLP = MemPtrNew(getUrl.URLSize);<a name="993247"> </a>
+ExgControl(exgSocketP, exgLibCtlGetURL, &amp;getUrl, &amp;getUrlLen);<a name="993248"> </a>
+<a name="993249"> </a>
+// getUrl.URLP points to a null-terminated URL string<a name="993250"> </a>
+// describing the remote device, for example,<a name="993251"> </a>
+// "_btobex://01:23:45:67:89:ab/"<a name="993252"> </a>
+...<a name="993253"> </a>
+// Free the URL after you're done with it<a name="993254"> </a>
+MemPtrFree(getUrl.URLP);<a name="993255"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h2 class="haH2">
+  <a name="993256"> </a>ExgLibGet() and ExgLibRequest() <a href="#608590"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="993258"> </a>The Bluetooth Exchange Library does not support the pull functions provided by <code>ExgLibGet()</code> and <code>ExgLibRequest()</code>. If you want to perform these functions, you must use the general Bluetooth Library APIs. See <a href="LowLevelComms_BtApps.html#608590">"Developing Bluetooth-enabled Applications"</a>.</p>
+
+<p><a name="993050"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 2004, PalmSource, Inc. and its affiliates.  All rights reserved. <br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="LowLevelComms_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="LowLevelCommsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_BtApps.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelComms_BtRef.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="LowLevelCommsIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

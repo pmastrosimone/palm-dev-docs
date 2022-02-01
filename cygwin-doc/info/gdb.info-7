@@ -1,0 +1,1116 @@
+This is gdb.info, produced by makeinfo version 4.3 from
+/netrel/src/gdb-20030919-1/gdb/doc/gdb.texinfo.
+
+INFO-DIR-SECTION Programming & development tools.
+START-INFO-DIR-ENTRY
+* Gdb: (gdb).                     The GNU debugger.
+END-INFO-DIR-ENTRY
+
+   This file documents the GNU debugger GDB.
+
+   This is the Ninth Edition, of `Debugging with GDB: the GNU
+Source-Level Debugger' for GDB Version 2003-09-20-cvs (cygwin-special).
+
+   Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996,
+1998,
+1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
+
+   Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs Free
+Documentation", with the Front-Cover Texts being "A GNU Manual," and
+with the Back-Cover Texts as in (a) below.
+
+   (a) The Free Software Foundation's Back-Cover Text is: "You have
+freedom to copy and modify this GNU Manual, like GNU software.  Copies
+published by the Free Software Foundation raise funds for GNU
+development."
+
+
+File: gdb.info,  Node: M2 Defaults,  Next: Deviations,  Prev: M2 Constants,  Up: Modula-2
+
+Modula-2 defaults
+.................
+
+   If type and range checking are set automatically by GDB, they both
+default to `on' whenever the working language changes to Modula-2.
+This happens regardless of whether you or GDB selected the working
+language.
+
+   If you allow GDB to set the language automatically, then entering
+code compiled from a file whose name ends with `.mod' sets the working
+language to Modula-2.  *Note Having GDB set the language automatically:
+Automatically, for further details.
+
+
+File: gdb.info,  Node: Deviations,  Next: M2 Checks,  Prev: M2 Defaults,  Up: Modula-2
+
+Deviations from standard Modula-2
+.................................
+
+   A few changes have been made to make Modula-2 programs easier to
+debug.  This is done primarily via loosening its type strictness:
+
+   * Unlike in standard Modula-2, pointer constants can be formed by
+     integers.  This allows you to modify pointer variables during
+     debugging.  (In standard Modula-2, the actual address contained in
+     a pointer variable is hidden from you; it can only be modified
+     through direct assignment to another pointer variable or
+     expression that returned a pointer.)
+
+   * C escape sequences can be used in strings and characters to
+     represent non-printable characters.  GDB prints out strings with
+     these escape sequences embedded.  Single non-printable characters
+     are printed using the `CHR(NNN)' format.
+
+   * The assignment operator (`:=') returns the value of its right-hand
+     argument.
+
+   * All built-in procedures both modify _and_ return their argument.
+
+
+File: gdb.info,  Node: M2 Checks,  Next: M2 Scope,  Prev: Deviations,  Up: Modula-2
+
+Modula-2 type and range checks
+..............................
+
+     _Warning:_ in this release, GDB does not yet perform type or range
+     checking.
+
+   GDB considers two Modula-2 variables type equivalent if:
+
+   * They are of types that have been declared equivalent via a `TYPE
+     T1 = T2' statement
+
+   * They have been declared on the same line.  (Note:  This is true of
+     the GNU Modula-2 compiler, but it may not be true of other
+     compilers.)
+
+   As long as type checking is enabled, any attempt to combine variables
+whose types are not equivalent is an error.
+
+   Range checking is done on all mathematical operations, assignment,
+array index bounds, and all built-in functions and procedures.
+
+
+File: gdb.info,  Node: M2 Scope,  Next: GDB/M2,  Prev: M2 Checks,  Up: Modula-2
+
+The scope operators `::' and `.'
+................................
+
+   There are a few subtle differences between the Modula-2 scope
+operator (`.') and the GDB scope operator (`::').  The two have similar
+syntax:
+
+
+     MODULE . ID
+     SCOPE :: ID
+
+where SCOPE is the name of a module or a procedure, MODULE the name of
+a module, and ID is any declared identifier within your program, except
+another module.
+
+   Using the `::' operator makes GDB search the scope specified by
+SCOPE for the identifier ID.  If it is not found in the specified
+scope, then GDB searches all scopes enclosing the one specified by
+SCOPE.
+
+   Using the `.' operator makes GDB search the current scope for the
+identifier specified by ID that was imported from the definition module
+specified by MODULE.  With this operator, it is an error if the
+identifier ID was not imported from definition module MODULE, or if ID
+is not an identifier in MODULE.
+
+
+File: gdb.info,  Node: GDB/M2,  Prev: M2 Scope,  Up: Modula-2
+
+GDB and Modula-2
+................
+
+   Some GDB commands have little use when debugging Modula-2 programs.
+Five subcommands of `set print' and `show print' apply specifically to
+C and C++: `vtbl', `demangle', `asm-demangle', `object', and `union'.
+The first four apply to C++, and the last to the C `union' type, which
+has no direct analogue in Modula-2.
+
+   The `@' operator (*note Expressions: Expressions.), while available
+with any language, is not useful with Modula-2.  Its intent is to aid
+the debugging of "dynamic arrays", which cannot be created in Modula-2
+as they can in C or C++.  However, because an address can be specified
+by an integral constant, the construct `{TYPE}ADREXP' is still useful.
+
+   In GDB scripts, the Modula-2 inequality operator `#' is interpreted
+as the beginning of a comment.  Use `<>' instead.
+
+
+File: gdb.info,  Node: Unsupported languages,  Prev: Support,  Up: Languages
+
+Unsupported languages
+=====================
+
+   In addition to the other fully-supported programming languages, GDB
+also provides a pseudo-language, called `minimal'.  It does not
+represent a real programming language, but provides a set of
+capabilities close to what the C or assembly languages provide.  This
+should allow most simple operations to be performed while debugging an
+application that uses a language currently not supported by GDB.
+
+   If the language is set to `auto', GDB will automatically select this
+language if the current frame corresponds to an unsupported language.
+
+
+File: gdb.info,  Node: Symbols,  Next: Altering,  Prev: Languages,  Up: Top
+
+Examining the Symbol Table
+**************************
+
+   The commands described in this chapter allow you to inquire about the
+symbols (names of variables, functions and types) defined in your
+program.  This information is inherent in the text of your program and
+does not change as your program executes.  GDB finds it in your
+program's symbol table, in the file indicated when you started GDB
+(*note Choosing files: File Options.), or by one of the file-management
+commands (*note Commands to specify files: Files.).
+
+   Occasionally, you may need to refer to symbols that contain unusual
+characters, which GDB ordinarily treats as word delimiters.  The most
+frequent case is in referring to static variables in other source files
+(*note Program variables: Variables.).  File names are recorded in
+object files as debugging symbols, but GDB would ordinarily parse a
+typical file name, like `foo.c', as the three words `foo' `.' `c'.  To
+allow GDB to recognize `foo.c' as a single symbol, enclose it in single
+quotes; for example,
+
+     p 'foo.c'::x
+
+looks up the value of `x' in the scope of the file `foo.c'.
+
+`info address SYMBOL'
+     Describe where the data for SYMBOL is stored.  For a register
+     variable, this says which register it is kept in.  For a
+     non-register local variable, this prints the stack-frame offset at
+     which the variable is always stored.
+
+     Note the contrast with `print &SYMBOL', which does not work at all
+     for a register variable, and for a stack local variable prints the
+     exact address of the current instantiation of the variable.
+
+`info symbol ADDR'
+     Print the name of a symbol which is stored at the address ADDR.
+     If no symbol is stored exactly at ADDR, GDB prints the nearest
+     symbol and an offset from it:
+
+          (gdb) info symbol 0x54320
+          _initialize_vx + 396 in section .text
+
+     This is the opposite of the `info address' command.  You can use
+     it to find out the name of a variable or a function given its
+     address.
+
+`whatis EXPR'
+     Print the data type of expression EXPR.  EXPR is not actually
+     evaluated, and any side-effecting operations (such as assignments
+     or function calls) inside it do not take place.  *Note
+     Expressions: Expressions.
+
+`whatis'
+     Print the data type of `$', the last value in the value history.
+
+`ptype TYPENAME'
+     Print a description of data type TYPENAME.  TYPENAME may be the
+     name of a type, or for C code it may have the form `class
+     CLASS-NAME', `struct STRUCT-TAG', `union UNION-TAG' or `enum
+     ENUM-TAG'.
+
+`ptype EXPR'
+`ptype'
+     Print a description of the type of expression EXPR.  `ptype'
+     differs from `whatis' by printing a detailed description, instead
+     of just the name of the type.
+
+     For example, for this variable declaration:
+
+          struct complex {double real; double imag;} v;
+
+     the two commands give this output:
+
+          (gdb) whatis v
+          type = struct complex
+          (gdb) ptype v
+          type = struct complex {
+              double real;
+              double imag;
+          }
+
+     As with `whatis', using `ptype' without an argument refers to the
+     type of `$', the last value in the value history.
+
+`info types REGEXP'
+`info types'
+     Print a brief description of all types whose names match REGEXP
+     (or all types in your program, if you supply no argument).  Each
+     complete typename is matched as though it were a complete line;
+     thus, `i type value' gives information on all types in your
+     program whose names include the string `value', but `i type
+     ^value$' gives information only on types whose complete name is
+     `value'.
+
+     This command differs from `ptype' in two ways: first, like
+     `whatis', it does not print a detailed description; second, it
+     lists all source files where a type is defined.
+
+`info scope ADDR'
+     List all the variables local to a particular scope.  This command
+     accepts a location--a function name, a source line, or an address
+     preceded by a `*', and prints all the variables local to the scope
+     defined by that location.  For example:
+
+          (gdb) info scope command_line_handler
+          Scope for command_line_handler:
+          Symbol rl is an argument at stack/frame offset 8, length 4.
+          Symbol linebuffer is in static storage at address 0x150a18, length 4.
+          Symbol linelength is in static storage at address 0x150a1c, length 4.
+          Symbol p is a local variable in register $esi, length 4.
+          Symbol p1 is a local variable in register $ebx, length 4.
+          Symbol nline is a local variable in register $edx, length 4.
+          Symbol repeat is a local variable at frame offset -8, length 4.
+
+     This command is especially useful for determining what data to
+     collect during a "trace experiment", see *Note collect: Tracepoint
+     Actions.
+
+`info source'
+     Show information about the current source file--that is, the
+     source file for the function containing the current point of
+     execution:
+        * the name of the source file, and the directory containing it,
+
+        * the directory it was compiled in,
+
+        * its length, in lines,
+
+        * which programming language it is written in,
+
+        * whether the executable includes debugging information for
+          that file, and if so, what format the information is in
+          (e.g., STABS, Dwarf 2, etc.), and
+
+        * whether the debugging information includes information about
+          preprocessor macros.
+
+`info sources'
+     Print the names of all source files in your program for which
+     there is debugging information, organized into two lists: files
+     whose symbols have already been read, and files whose symbols will
+     be read when needed.
+
+`info functions'
+     Print the names and data types of all defined functions.
+
+`info functions REGEXP'
+     Print the names and data types of all defined functions whose
+     names contain a match for regular expression REGEXP.  Thus, `info
+     fun step' finds all functions whose names include `step'; `info
+     fun ^step' finds those whose names start with `step'.  If a
+     function name contains characters that conflict with the regular
+     expression language (eg.  `operator*()'), they may be quoted with
+     a backslash.
+
+`info variables'
+     Print the names and data types of all variables that are declared
+     outside of functions (i.e. excluding local variables).
+
+`info variables REGEXP'
+     Print the names and data types of all variables (except for local
+     variables) whose names contain a match for regular expression
+     REGEXP.
+
+`info classes'
+`info classes REGEXP'
+     Display all Objective-C classes in your program, or (with the
+     REGEXP argument) all those matching a particular regular
+     expression.
+
+`info selectors'
+`info selectors REGEXP'
+     Display all Objective-C selectors in your program, or (with the
+     REGEXP argument) all those matching a particular regular
+     expression.
+
+     Some systems allow individual object files that make up your
+     program to be replaced without stopping and restarting your
+     program.  For example, in VxWorks you can simply recompile a
+     defective object file and keep on running.  If you are running on
+     one of these systems, you can allow GDB to reload the symbols for
+     automatically relinked modules:
+
+    `set symbol-reloading on'
+          Replace symbol definitions for the corresponding source file
+          when an object file with a particular name is seen again.
+
+    `set symbol-reloading off'
+          Do not replace symbol definitions when encountering object
+          files of the same name more than once.  This is the default
+          state; if you are not running on a system that permits
+          automatic relinking of modules, you should leave
+          `symbol-reloading' off, since otherwise GDB may discard
+          symbols when linking large programs, that may contain several
+          modules (from different directories or libraries) with the
+          same name.
+
+    `show symbol-reloading'
+          Show the current `on' or `off' setting.
+
+`set opaque-type-resolution on'
+     Tell GDB to resolve opaque types.  An opaque type is a type
+     declared as a pointer to a `struct', `class', or `union'--for
+     example, `struct MyType *'--that is used in one source file
+     although the full declaration of `struct MyType' is in another
+     source file.  The default is on.
+
+     A change in the setting of this subcommand will not take effect
+     until the next time symbols for a file are loaded.
+
+`set opaque-type-resolution off'
+     Tell GDB not to resolve opaque types.  In this case, the type is
+     printed as follows:
+          {<no data fields>}
+
+`show opaque-type-resolution'
+     Show whether opaque types are resolved or not.
+
+`maint print symbols FILENAME'
+`maint print psymbols FILENAME'
+`maint print msymbols FILENAME'
+     Write a dump of debugging symbol data into the file FILENAME.
+     These commands are used to debug the GDB symbol-reading code.  Only
+     symbols with debugging data are included.  If you use `maint print
+     symbols', GDB includes all the symbols for which it has already
+     collected full details: that is, FILENAME reflects symbols for
+     only those files whose symbols GDB has read.  You can use the
+     command `info sources' to find out which files these are.  If you
+     use `maint print psymbols' instead, the dump shows information
+     about symbols that GDB only knows partially--that is, symbols
+     defined in files that GDB has skimmed, but not yet read
+     completely.  Finally, `maint print msymbols' dumps just the
+     minimal symbol information required for each object file from
+     which GDB has read some symbols.  *Note Commands to specify files:
+     Files, for a discussion of how GDB reads symbols (in the
+     description of `symbol-file').
+
+`maint info symtabs [ REGEXP ]'
+`maint info psymtabs [ REGEXP ]'
+     List the `struct symtab' or `struct partial_symtab' structures
+     whose names match REGEXP.  If REGEXP is not given, list them all.
+     The output includes expressions which you can copy into a GDB
+     debugging this one to examine a particular structure in more
+     detail.  For example:
+
+          (gdb) maint info psymtabs dwarf2read
+          { objfile /home/gnu/build/gdb/gdb
+            ((struct objfile *) 0x82e69d0)
+            { psymtab /home/gnu/src/gdb/dwarf2read.c
+              ((struct partial_symtab *) 0x8474b10)
+              readin no
+              fullname (null)
+              text addresses 0x814d3c8 -- 0x8158074
+              globals (* (struct partial_symbol **) 0x8507a08 @ 9)
+              statics (* (struct partial_symbol **) 0x40e95b78 @ 2882)
+              dependencies (none)
+            }
+          }
+          (gdb) maint info symtabs
+          (gdb)
+
+     We see that there is one partial symbol table whose filename
+     contains the string `dwarf2read', belonging to the `gdb'
+     executable; and we see that GDB has not read in any symtabs yet at
+     all.  If we set a breakpoint on a function, that will cause GDB to
+     read the symtab for the compilation unit containing that function:
+
+          (gdb) break dwarf2_psymtab_to_symtab
+          Breakpoint 1 at 0x814e5da: file /home/gnu/src/gdb/dwarf2read.c,
+          line 1574.
+          (gdb) maint info symtabs
+          { objfile /home/gnu/build/gdb/gdb
+            ((struct objfile *) 0x82e69d0)
+            { symtab /home/gnu/src/gdb/dwarf2read.c
+              ((struct symtab *) 0x86c1f38)
+              dirname (null)
+              fullname (null)
+              blockvector ((struct blockvector *) 0x86c1bd0) (primary)
+              debugformat DWARF 2
+            }
+          }
+          (gdb)
+
+
+File: gdb.info,  Node: Altering,  Next: GDB Files,  Prev: Symbols,  Up: Top
+
+Altering Execution
+******************
+
+   Once you think you have found an error in your program, you might
+want to find out for certain whether correcting the apparent error
+would lead to correct results in the rest of the run.  You can find the
+answer by experiment, using the GDB features for altering execution of
+the program.
+
+   For example, you can store new values into variables or memory
+locations, give your program a signal, restart it at a different
+address, or even return prematurely from a function.
+
+* Menu:
+
+* Assignment::                  Assignment to variables
+* Jumping::                     Continuing at a different address
+* Signaling::                   Giving your program a signal
+* Returning::                   Returning from a function
+* Calling::                     Calling your program's functions
+* Patching::                    Patching your program
+
+
+File: gdb.info,  Node: Assignment,  Next: Jumping,  Up: Altering
+
+Assignment to variables
+=======================
+
+   To alter the value of a variable, evaluate an assignment expression.
+*Note Expressions: Expressions.  For example,
+
+     print x=4
+
+stores the value 4 into the variable `x', and then prints the value of
+the assignment expression (which is 4).  *Note Using GDB with Different
+Languages: Languages, for more information on operators in supported
+languages.
+
+   If you are not interested in seeing the value of the assignment, use
+the `set' command instead of the `print' command.  `set' is really the
+same as `print' except that the expression's value is not printed and
+is not put in the value history (*note Value history: Value History.).
+The expression is evaluated only for its effects.
+
+   If the beginning of the argument string of the `set' command appears
+identical to a `set' subcommand, use the `set variable' command instead
+of just `set'.  This command is identical to `set' except for its lack
+of subcommands.  For example, if your program has a variable `width',
+you get an error if you try to set a new value with just `set
+width=13', because GDB has the command `set width':
+
+     (gdb) whatis width
+     type = double
+     (gdb) p width
+     $4 = 13
+     (gdb) set width=47
+     Invalid syntax in expression.
+
+The invalid expression, of course, is `=47'.  In order to actually set
+the program's variable `width', use
+
+     (gdb) set var width=47
+
+   Because the `set' command has many subcommands that can conflict
+with the names of program variables, it is a good idea to use the `set
+variable' command instead of just `set'.  For example, if your program
+has a variable `g', you run into problems if you try to set a new value
+with just `set g=4', because GDB has the command `set gnutarget',
+abbreviated `set g':
+
+     (gdb) whatis g
+     type = double
+     (gdb) p g
+     $1 = 1
+     (gdb) set g=4
+     (gdb) p g
+     $2 = 1
+     (gdb) r
+     The program being debugged has been started already.
+     Start it from the beginning? (y or n) y
+     Starting program: /home/smith/cc_progs/a.out
+     "/home/smith/cc_progs/a.out": can't open to read symbols:
+                                      Invalid bfd target.
+     (gdb) show g
+     The current BFD target is "=4".
+
+The program variable `g' did not change, and you silently set the
+`gnutarget' to an invalid value.  In order to set the variable `g', use
+
+     (gdb) set var g=4
+
+   GDB allows more implicit conversions in assignments than C; you can
+freely store an integer value into a pointer variable or vice versa,
+and you can convert any structure to any other structure that is the
+same length or shorter.
+
+   To store values into arbitrary places in memory, use the `{...}'
+construct to generate a value of specified type at a specified address
+(*note Expressions: Expressions.).  For example, `{int}0x83040' refers
+to memory location `0x83040' as an integer (which implies a certain size
+and representation in memory), and
+
+     set {int}0x83040 = 4
+
+stores the value 4 into that memory location.
+
+
+File: gdb.info,  Node: Jumping,  Next: Signaling,  Prev: Assignment,  Up: Altering
+
+Continuing at a different address
+=================================
+
+   Ordinarily, when you continue your program, you do so at the place
+where it stopped, with the `continue' command.  You can instead
+continue at an address of your own choosing, with the following
+commands:
+
+`jump LINESPEC'
+     Resume execution at line LINESPEC.  Execution stops again
+     immediately if there is a breakpoint there.  *Note Printing source
+     lines: List, for a description of the different forms of LINESPEC.
+     It is common practice to use the `tbreak' command in conjunction
+     with `jump'.  *Note Setting breakpoints: Set Breaks.
+
+     The `jump' command does not change the current stack frame, or the
+     stack pointer, or the contents of any memory location or any
+     register other than the program counter.  If line LINESPEC is in a
+     different function from the one currently executing, the results
+     may be bizarre if the two functions expect different patterns of
+     arguments or of local variables.  For this reason, the `jump'
+     command requests confirmation if the specified line is not in the
+     function currently executing.  However, even bizarre results are
+     predictable if you are well acquainted with the machine-language
+     code of your program.
+
+`jump *ADDRESS'
+     Resume execution at the instruction at address ADDRESS.
+
+   On many systems, you can get much the same effect as the `jump'
+command by storing a new value into the register `$pc'.  The difference
+is that this does not start your program running; it only changes the
+address of where it _will_ run when you continue.  For example,
+
+     set $pc = 0x485
+
+makes the next `continue' command or stepping command execute at
+address `0x485', rather than at the address where your program stopped.
+*Note Continuing and stepping: Continuing and Stepping.
+
+   The most common occasion to use the `jump' command is to back
+up--perhaps with more breakpoints set--over a portion of a program that
+has already executed, in order to examine its execution in more detail.
+
+
+File: gdb.info,  Node: Signaling,  Next: Returning,  Prev: Jumping,  Up: Altering
+
+Giving your program a signal
+============================
+
+`signal SIGNAL'
+     Resume execution where your program stopped, but immediately give
+     it the signal SIGNAL.  SIGNAL can be the name or the number of a
+     signal.  For example, on many systems `signal 2' and `signal
+     SIGINT' are both ways of sending an interrupt signal.
+
+     Alternatively, if SIGNAL is zero, continue execution without
+     giving a signal.  This is useful when your program stopped on
+     account of a signal and would ordinary see the signal when resumed
+     with the `continue' command; `signal 0' causes it to resume
+     without a signal.
+
+     `signal' does not repeat when you press <RET> a second time after
+     executing the command.
+
+   Invoking the `signal' command is not the same as invoking the `kill'
+utility from the shell.  Sending a signal with `kill' causes GDB to
+decide what to do with the signal depending on the signal handling
+tables (*note Signals::).  The `signal' command passes the signal
+directly to your program.
+
+
+File: gdb.info,  Node: Returning,  Next: Calling,  Prev: Signaling,  Up: Altering
+
+Returning from a function
+=========================
+
+`return'
+`return EXPRESSION'
+     You can cancel execution of a function call with the `return'
+     command.  If you give an EXPRESSION argument, its value is used as
+     the function's return value.
+
+   When you use `return', GDB discards the selected stack frame (and
+all frames within it).  You can think of this as making the discarded
+frame return prematurely.  If you wish to specify a value to be
+returned, give that value as the argument to `return'.
+
+   This pops the selected stack frame (*note Selecting a frame:
+Selection.), and any other frames inside of it, leaving its caller as
+the innermost remaining frame.  That frame becomes selected.  The
+specified value is stored in the registers used for returning values of
+functions.
+
+   The `return' command does not resume execution; it leaves the
+program stopped in the state that would exist if the function had just
+returned.  In contrast, the `finish' command (*note Continuing and
+stepping: Continuing and Stepping.) resumes execution until the
+selected stack frame returns naturally.
+
+
+File: gdb.info,  Node: Calling,  Next: Patching,  Prev: Returning,  Up: Altering
+
+Calling program functions
+=========================
+
+`call EXPR'
+     Evaluate the expression EXPR without displaying `void' returned
+     values.
+
+   You can use this variant of the `print' command if you want to
+execute a function from your program, but without cluttering the output
+with `void' returned values.  If the result is not void, it is printed
+and saved in the value history.
+
+
+File: gdb.info,  Node: Patching,  Prev: Calling,  Up: Altering
+
+Patching programs
+=================
+
+   By default, GDB opens the file containing your program's executable
+code (or the corefile) read-only.  This prevents accidental alterations
+to machine code; but it also prevents you from intentionally patching
+your program's binary.
+
+   If you'd like to be able to patch the binary, you can specify that
+explicitly with the `set write' command.  For example, you might want
+to turn on internal debugging flags, or even to make emergency repairs.
+
+`set write on'
+`set write off'
+     If you specify `set write on', GDB opens executable and core files
+     for both reading and writing; if you specify `set write off' (the
+     default), GDB opens them read-only.
+
+     If you have already loaded a file, you must load it again (using
+     the `exec-file' or `core-file' command) after changing `set
+     write', for your new setting to take effect.
+
+`show write'
+     Display whether executable files and core files are opened for
+     writing as well as reading.
+
+
+File: gdb.info,  Node: GDB Files,  Next: Targets,  Prev: Altering,  Up: Top
+
+GDB Files
+*********
+
+   GDB needs to know the file name of the program to be debugged, both
+in order to read its symbol table and in order to start your program.
+To debug a core dump of a previous run, you must also tell GDB the name
+of the core dump file.
+
+* Menu:
+
+* Files::                       Commands to specify files
+* Separate Debug Files::        Debugging information in separate files
+* Symbol Errors::               Errors reading symbol files
+
+
+File: gdb.info,  Node: Files,  Next: Separate Debug Files,  Up: GDB Files
+
+Commands to specify files
+=========================
+
+   You may want to specify executable and core dump file names.  The
+usual way to do this is at start-up time, using the arguments to GDB's
+start-up commands (*note Getting In and Out of GDB: Invocation.).
+
+   Occasionally it is necessary to change to a different file during a
+GDB session.  Or you may run GDB and forget to specify a file you want
+to use.  In these situations the GDB commands to specify new files are
+useful.
+
+`file FILENAME'
+     Use FILENAME as the program to be debugged.  It is read for its
+     symbols and for the contents of pure memory.  It is also the
+     program executed when you use the `run' command.  If you do not
+     specify a directory and the file is not found in the GDB working
+     directory, GDB uses the environment variable `PATH' as a list of
+     directories to search, just as the shell does when looking for a
+     program to run.  You can change the value of this variable, for
+     both GDB and your program, using the `path' command.
+
+     On systems with memory-mapped files, an auxiliary file named
+     `FILENAME.syms' may hold symbol table information for FILENAME.
+     If so, GDB maps in the symbol table from `FILENAME.syms', starting
+     up more quickly.  See the descriptions of the file options
+     `-mapped' and `-readnow' (available on the command line, and with
+     the commands `file', `symbol-file', or `add-symbol-file',
+     described below), for more information.
+
+`file'
+     `file' with no argument makes GDB discard any information it has
+     on both executable file and the symbol table.
+
+`exec-file [ FILENAME ]'
+     Specify that the program to be run (but not the symbol table) is
+     found in FILENAME.  GDB searches the environment variable `PATH'
+     if necessary to locate your program.  Omitting FILENAME means to
+     discard information on the executable file.
+
+`symbol-file [ FILENAME ]'
+     Read symbol table information from file FILENAME.  `PATH' is
+     searched when necessary.  Use the `file' command to get both symbol
+     table and program to run from the same file.
+
+     `symbol-file' with no argument clears out GDB information on your
+     program's symbol table.
+
+     The `symbol-file' command causes GDB to forget the contents of its
+     convenience variables, the value history, and all breakpoints and
+     auto-display expressions.  This is because they may contain
+     pointers to the internal data recording symbols and data types,
+     which are part of the old symbol table data being discarded inside
+     GDB.
+
+     `symbol-file' does not repeat if you press <RET> again after
+     executing it once.
+
+     When GDB is configured for a particular environment, it
+     understands debugging information in whatever format is the
+     standard generated for that environment; you may use either a GNU
+     compiler, or other compilers that adhere to the local conventions.
+     Best results are usually obtained from GNU compilers; for example,
+     using `gcc' you can generate debugging information for optimized
+     code.
+
+     For most kinds of object files, with the exception of old SVR3
+     systems using COFF, the `symbol-file' command does not normally
+     read the symbol table in full right away.  Instead, it scans the
+     symbol table quickly to find which source files and which symbols
+     are present.  The details are read later, one source file at a
+     time, as they are needed.
+
+     The purpose of this two-stage reading strategy is to make GDB
+     start up faster.  For the most part, it is invisible except for
+     occasional pauses while the symbol table details for a particular
+     source file are being read.  (The `set verbose' command can turn
+     these pauses into messages if desired.  *Note Optional warnings
+     and messages: Messages/Warnings.)
+
+     We have not implemented the two-stage strategy for COFF yet.  When
+     the symbol table is stored in COFF format, `symbol-file' reads the
+     symbol table data in full right away.  Note that "stabs-in-COFF"
+     still does the two-stage strategy, since the debug info is actually
+     in stabs format.
+
+`symbol-file FILENAME [ -readnow ] [ -mapped ]'
+`file FILENAME [ -readnow ] [ -mapped ]'
+     You can override the GDB two-stage strategy for reading symbol
+     tables by using the `-readnow' option with any of the commands that
+     load symbol table information, if you want to be sure GDB has the
+     entire symbol table available.
+
+     If memory-mapped files are available on your system through the
+     `mmap' system call, you can use another option, `-mapped', to
+     cause GDB to write the symbols for your program into a reusable
+     file.  Future GDB debugging sessions map in symbol information
+     from this auxiliary symbol file (if the program has not changed),
+     rather than spending time reading the symbol table from the
+     executable program.  Using the `-mapped' option has the same
+     effect as starting GDB with the `-mapped' command-line option.
+
+     You can use both options together, to make sure the auxiliary
+     symbol file has all the symbol information for your program.
+
+     The auxiliary symbol file for a program called MYPROG is called
+     `MYPROG.syms'.  Once this file exists (so long as it is newer than
+     the corresponding executable), GDB always attempts to use it when
+     you debug MYPROG; no special options or commands are needed.
+
+     The `.syms' file is specific to the host machine where you run
+     GDB.  It holds an exact image of the internal GDB symbol table.
+     It cannot be shared across multiple host platforms.
+
+`core-file [ FILENAME ]'
+     Specify the whereabouts of a core dump file to be used as the
+     "contents of memory".  Traditionally, core files contain only some
+     parts of the address space of the process that generated them; GDB
+     can access the executable file itself for other parts.
+
+     `core-file' with no argument specifies that no core file is to be
+     used.
+
+     Note that the core file is ignored when your program is actually
+     running under GDB.  So, if you have been running your program and
+     you wish to debug a core file instead, you must kill the
+     subprocess in which the program is running.  To do this, use the
+     `kill' command (*note Killing the child process: Kill Process.).
+
+`add-symbol-file FILENAME ADDRESS'
+`add-symbol-file FILENAME ADDRESS [ -readnow ] [ -mapped ]'
+`add-symbol-file FILENAME -sSECTION ADDRESS ...'
+     The `add-symbol-file' command reads additional symbol table
+     information from the file FILENAME.  You would use this command
+     when FILENAME has been dynamically loaded (by some other means)
+     into the program that is running.  ADDRESS should be the memory
+     address at which the file has been loaded; GDB cannot figure this
+     out for itself.  You can additionally specify an arbitrary number
+     of `-sSECTION ADDRESS' pairs, to give an explicit section name and
+     base address for that section.  You can specify any ADDRESS as an
+     expression.
+
+     The symbol table of the file FILENAME is added to the symbol table
+     originally read with the `symbol-file' command.  You can use the
+     `add-symbol-file' command any number of times; the new symbol data
+     thus read keeps adding to the old.  To discard all old symbol data
+     instead, use the `symbol-file' command without any arguments.
+
+     Although FILENAME is typically a shared library file, an
+     executable file, or some other object file which has been fully
+     relocated for loading into a process, you can also load symbolic
+     information from relocatable `.o' files, as long as:
+
+        * the file's symbolic information refers only to linker symbols
+          defined in that file, not to symbols defined by other object
+          files,
+
+        * every section the file's symbolic information refers to has
+          actually been loaded into the inferior, as it appears in the
+          file, and
+
+        * you can determine the address at which every section was
+          loaded, and provide these to the `add-symbol-file' command.
+
+     Some embedded operating systems, like Sun Chorus and VxWorks, can
+     load relocatable files into an already running program; such
+     systems typically make the requirements above easy to meet.
+     However, it's important to recognize that many native systems use
+     complex link procedures (`.linkonce' section factoring and C++
+     constructor table assembly, for example) that make the
+     requirements difficult to meet.  In general, one cannot assume
+     that using `add-symbol-file' to read a relocatable object file's
+     symbolic information will have the same effect as linking the
+     relocatable object file into the program in the normal way.
+
+     `add-symbol-file' does not repeat if you press <RET> after using
+     it.
+
+     You can use the `-mapped' and `-readnow' options just as with the
+     `symbol-file' command, to change how GDB manages the symbol table
+     information for FILENAME.
+
+`add-shared-symbol-file'
+     The `add-shared-symbol-file' command can be used only under
+     Harris' CXUX operating system for the Motorola 88k.  GDB
+     automatically looks for shared libraries, however if GDB does not
+     find yours, you can run `add-shared-symbol-file'.  It takes no
+     arguments.
+
+`section'
+     The `section' command changes the base address of section SECTION
+     of the exec file to ADDR.  This can be used if the exec file does
+     not contain section addresses, (such as in the a.out format), or
+     when the addresses specified in the file itself are wrong.  Each
+     section must be changed separately.  The `info files' command,
+     described below, lists all the sections and their addresses.
+
+`info files'
+`info target'
+     `info files' and `info target' are synonymous; both print the
+     current target (*note Specifying a Debugging Target: Targets.),
+     including the names of the executable and core dump files
+     currently in use by GDB, and the files from which symbols were
+     loaded.  The command `help target' lists all possible targets
+     rather than current ones.
+
+`maint info sections'
+     Another command that can give you extra information about program
+     sections is `maint info sections'.  In addition to the section
+     information displayed by `info files', this command displays the
+     flags and file offset of each section in the executable and core
+     dump files.  In addition, `maint info sections' provides the
+     following command options (which may be arbitrarily combined):
+
+    `ALLOBJ'
+          Display sections for all loaded object files, including
+          shared libraries.
+
+    `SECTIONS'
+          Display info only for named SECTIONS.
+
+    `SECTION-FLAGS'
+          Display info only for sections for which SECTION-FLAGS are
+          true.  The section flags that GDB currently knows about are:
+         `ALLOC'
+               Section will have space allocated in the process when
+               loaded.  Set for all sections except those containing
+               debug information.
+
+         `LOAD'
+               Section will be loaded from the file into the child
+               process memory.  Set for pre-initialized code and data,
+               clear for `.bss' sections.
+
+         `RELOC'
+               Section needs to be relocated before loading.
+
+         `READONLY'
+               Section cannot be modified by the child process.
+
+         `CODE'
+               Section contains executable code only.
+
+         `DATA'
+               Section contains data only (no executable code).
+
+         `ROM'
+               Section will reside in ROM.
+
+         `CONSTRUCTOR'
+               Section contains data for constructor/destructor lists.
+
+         `HAS_CONTENTS'
+               Section is not empty.
+
+         `NEVER_LOAD'
+               An instruction to the linker to not output the section.
+
+         `COFF_SHARED_LIBRARY'
+               A notification to the linker that the section contains
+               COFF shared library information.
+
+         `IS_COMMON'
+               Section contains common symbols.
+
+`set trust-readonly-sections on'
+     Tell GDB that readonly sections in your object file really are
+     read-only (i.e. that their contents will not change).  In that
+     case, GDB can fetch values from these sections out of the object
+     file, rather than from the target program.  For some targets
+     (notably embedded ones), this can be a significant enhancement to
+     debugging performance.
+
+     The default is off.
+
+`set trust-readonly-sections off'
+     Tell GDB not to trust readonly sections.  This means that the
+     contents of the section might change while the program is running,
+     and must therefore be fetched from the target when needed.
+
+   All file-specifying commands allow both absolute and relative file
+names as arguments.  GDB always converts the file name to an absolute
+file name and remembers it that way.
+
+   GDB supports HP-UX, SunOS, SVr4, Irix 5, and IBM RS/6000 shared
+libraries.
+
+   GDB automatically loads symbol definitions from shared libraries
+when you use the `run' command, or when you examine a core file.
+(Before you issue the `run' command, GDB does not understand references
+to a function in a shared library, however--unless you are debugging a
+core file).
+
+   On HP-UX, if the program loads a library explicitly, GDB
+automatically loads the symbols at the time of the `shl_load' call.
+
+   There are times, however, when you may wish to not automatically load
+symbol definitions from shared libraries, such as when they are
+particularly large or there are many of them.
+
+   To control the automatic loading of shared library symbols, use the
+commands:
+
+`set auto-solib-add MODE'
+     If MODE is `on', symbols from all shared object libraries will be
+     loaded automatically when the inferior begins execution, you
+     attach to an independently started inferior, or when the dynamic
+     linker informs GDB that a new library has been loaded.  If MODE is
+     `off', symbols must be loaded manually, using the `sharedlibrary'
+     command.  The default value is `on'.
+
+`show auto-solib-add'
+     Display the current autoloading mode.
+
+   To explicitly load shared library symbols, use the `sharedlibrary'
+command:
+
+`info share'
+`info sharedlibrary'
+     Print the names of the shared libraries which are currently loaded.
+
+`sharedlibrary REGEX'
+`share REGEX'
+     Load shared object library symbols for files matching a Unix
+     regular expression.  As with files loaded automatically, it only
+     loads shared libraries required by your program for a core file or
+     after typing `run'.  If REGEX is omitted all shared libraries
+     required by your program are loaded.
+
+   On some systems, such as HP-UX systems, GDB supports autoloading
+shared library symbols until a limiting threshold size is reached.
+This provides the benefit of allowing autoloading to remain on by
+default, but avoids autoloading excessively large shared libraries, up
+to a threshold that is initially set, but which you can modify if you
+wish.
+
+   Beyond that threshold, symbols from shared libraries must be
+explicitly loaded.  To load these symbols, use the command
+`sharedlibrary FILENAME'.  The base address of the shared library is
+determined automatically by GDB and need not be specified.
+
+   To display or set the threshold, use the commands:
+
+`set auto-solib-limit THRESHOLD'
+     Set the autoloading size threshold, in an integral number of
+     megabytes.  If THRESHOLD is nonzero and shared library autoloading
+     is enabled, symbols from all shared object libraries will be
+     loaded until the total size of the loaded shared library symbols
+     exceeds this threshold.  Otherwise, symbols must be loaded
+     manually, using the `sharedlibrary' command.  The default
+     threshold is 100 (i.e. 100 Mb).
+
+`show auto-solib-limit'
+     Display the current autoloading size threshold, in megabytes.
+
+   Shared libraries are also supported in many cross or remote debugging
+configurations.  A copy of the target's libraries need to be present on
+the host system; they need to be the same as the target libraries,
+although the copies on the target can be stripped as long as the copies
+on the host are not.
+
+   You need to tell GDB where the target libraries are, so that it can
+load the correct copies--otherwise, it may try to load the host's
+libraries.  GDB has two variables to specify the search directories for
+target libraries.
+
+`set solib-absolute-prefix PATH'
+     If this variable is set, PATH will be used as a prefix for any
+     absolute shared library paths; many runtime loaders store the
+     absolute paths to the shared library in the target program's
+     memory.  If you use `solib-absolute-prefix' to find shared
+     libraries, they need to be laid out in the same way that they are
+     on the target, with e.g. a `/usr/lib' hierarchy under PATH.
+
+     You can set the default value of `solib-absolute-prefix' by using
+     the configure-time `--with-sysroot' option.
+
+`show solib-absolute-prefix'
+     Display the current shared library prefix.
+
+`set solib-search-path PATH'
+     If this variable is set, PATH is a colon-separated list of
+     directories to search for shared libraries.  `solib-search-path'
+     is used after `solib-absolute-prefix' fails to locate the library,
+     or if the path to the library is relative instead of absolute.  If
+     you want to use `solib-search-path' instead of
+     `solib-absolute-prefix', be sure to set `solib-absolute-prefix' to
+     a nonexistant directory to prevent GDB from finding your host's
+     libraries.
+
+`show solib-search-path'
+     Display the current shared library search path.
+

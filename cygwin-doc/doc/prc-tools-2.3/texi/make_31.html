@@ -1,0 +1,96 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: General Search</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: General Search">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: General Search">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC35"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_32.html#SEC36"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_26.html#SEC30"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_30.html#SEC34"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_37.html#SEC41"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 4.5.1 <CODE>VPATH</CODE>: Search Path for All Prerequisites </H3>
+<!--docid::SEC35::-->
+<P>
+
+The value of the <CODE>make</CODE> variable <CODE>VPATH</CODE> specifies a list of
+directories that <CODE>make</CODE> should search.  Most often, the
+directories are expected to contain prerequisite files that are not in the
+current directory; however, <CODE>VPATH</CODE> specifies a search list that
+<CODE>make</CODE> applies for all files, including files which are targets of
+rules.
+</P><P>
+
+Thus, if a file that is listed as a target or prerequisite does not exist
+in the current directory, <CODE>make</CODE> searches the directories listed in
+<CODE>VPATH</CODE> for a file with that name.  If a file is found in one of
+them, that file may become the prerequisite (see below).  Rules may then
+specify the names of files in the prerequisite list as if they all
+existed in the current directory.  See section <A HREF="make_34.html#SEC38">Writing Shell Commands with Directory Search</A>.
+</P><P>
+
+In the <CODE>VPATH</CODE> variable, directory names are separated by colons or
+blanks.  The order in which directories are listed is the order followed
+by <CODE>make</CODE> in its search.  (On MS-DOS and MS-Windows, semi-colons
+are used as separators of directory names in <CODE>VPATH</CODE>, since the
+colon can be used in the pathname itself, after the drive letter.)
+</P><P>
+
+For example,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>VPATH = src:../headers
+</pre></td></tr></table></P><P>
+
+specifies a path containing two directories, <TT>`src'</TT> and
+<TT>`../headers'</TT>, which <CODE>make</CODE> searches in that order.
+</P><P>
+
+With this value of <CODE>VPATH</CODE>, the following rule,
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo.o : foo.c
+</pre></td></tr></table></P><P>
+
+is interpreted as if it were written like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>foo.o : src/foo.c
+</pre></td></tr></table></P><P>
+
+assuming the file <TT>`foo.c'</TT> does not exist in the current directory but
+is found in the directory <TT>`src'</TT>.
+</P><P>
+
+<A NAME="Selective Search"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

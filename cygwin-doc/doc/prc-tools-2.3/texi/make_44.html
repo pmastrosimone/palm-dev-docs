@@ -1,0 +1,161 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Static Usage</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Static Usage">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Static Usage">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC48"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_43.html#SEC47"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_45.html#SEC49"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_42.html#SEC46"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_43.html#SEC47"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_46.html#SEC50"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H3> 4.12.1 Syntax of Static Pattern Rules </H3>
+<!--docid::SEC48::-->
+<P>
+
+Here is the syntax of a static pattern rule:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre><VAR>targets</VAR> <small>...</small>: <VAR>target-pattern</VAR>: <VAR>prereq-patterns</VAR> <small>...</small>
+        <VAR>commands</VAR>
+        <small>...</small>
+</pre></td></tr></table></P><P>
+
+The <VAR>targets</VAR> list specifies the targets that the rule applies to.
+The targets can contain wildcard characters, just like the targets of
+ordinary rules (see section <A HREF="make_26.html#SEC30">Using Wildcard Characters in File Names</A>).
+</P><P>
+
+<A NAME="IDX136"></A>
+<A NAME="IDX137"></A>
+The <VAR>target-pattern</VAR> and <VAR>prereq-patterns</VAR> say how to compute the
+prerequisites of each target.  Each target is matched against the
+<VAR>target-pattern</VAR> to extract a part of the target name, called the
+<EM>stem</EM>.  This stem is substituted into each of the <VAR>prereq-patterns</VAR>
+to make the prerequisite names (one from each <VAR>prereq-pattern</VAR>).
+</P><P>
+
+Each pattern normally contains the character <SAMP>`%'</SAMP> just once.  When the
+<VAR>target-pattern</VAR> matches a target, the <SAMP>`%'</SAMP> can match any part of
+the target name; this part is called the <EM>stem</EM>.  The rest of the
+pattern must match exactly.  For example, the target <TT>`foo.o'</TT> matches
+the pattern <SAMP>`%.o'</SAMP>, with <SAMP>`foo'</SAMP> as the stem.  The targets
+<TT>`foo.c'</TT> and <TT>`foo.out'</TT> do not match that pattern.</P><P>
+
+<A NAME="IDX138"></A>
+The prerequisite names for each target are made by substituting the stem
+for the <SAMP>`%'</SAMP> in each prerequisite pattern.  For example, if one
+prerequisite pattern is <TT>`%.c'</TT>, then substitution of the stem
+<SAMP>`foo'</SAMP> gives the prerequisite name <TT>`foo.c'</TT>.  It is legitimate
+to write a prerequisite pattern that does not contain <SAMP>`%'</SAMP>; then this
+prerequisite is the same for all targets.
+</P><P>
+
+<A NAME="IDX139"></A>
+<A NAME="IDX140"></A>
+<A NAME="IDX141"></A>
+<A NAME="IDX142"></A>
+<A NAME="IDX143"></A>
+<SAMP>`%'</SAMP> characters in pattern rules can be quoted with preceding
+backslashes (<SAMP>`\'</SAMP>).  Backslashes that would otherwise quote <SAMP>`%'</SAMP>
+characters can be quoted with more backslashes.  Backslashes that quote
+<SAMP>`%'</SAMP> characters or other backslashes are removed from the pattern
+before it is compared to file names or has a stem substituted into it.
+Backslashes that are not in danger of quoting <SAMP>`%'</SAMP> characters go
+unmolested.  For example, the pattern <TT>`the\%weird\\%pattern\\'</TT> has
+<SAMP>`the%weird\'</SAMP> preceding the operative <SAMP>`%'</SAMP> character, and
+<SAMP>`pattern\\'</SAMP> following it.  The final two backslashes are left alone
+because they cannot affect any <SAMP>`%'</SAMP> character.</P><P>
+
+Here is an example, which compiles each of <TT>`foo.o'</TT> and <TT>`bar.o'</TT>
+from the corresponding <TT>`.c'</TT> file:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>objects = foo.o bar.o
+
+all: $(objects)
+
+$(objects): %.o: %.c
+        $(CC) -c $(CFLAGS) $&#60; -o $@
+</pre></td></tr></table></P><P>
+
+Here <SAMP>`$&#60;'</SAMP> is the automatic variable that holds the name of the
+prerequisite and <SAMP>`$@'</SAMP> is the automatic variable that holds the name
+of the target; see <A HREF="make_107.html#SEC111">Automatic Variables</A>.
+</P><P>
+
+Each target specified must match the target pattern; a warning is issued
+for each target that does not.  If you have a list of files, only some of
+which will match the pattern, you can use the <CODE>filter</CODE> function to
+remove nonmatching file names (see section <A HREF="make_81.html#SEC85">Functions for String Substitution and Analysis</A>):
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>files = foo.elc bar.o lose.o
+
+$(filter %.o,$(files)): %.o: %.c
+        $(CC) -c $(CFLAGS) $&#60; -o $@
+$(filter %.elc,$(files)): %.elc: %.el
+        emacs -f batch-byte-compile $&#60;
+</pre></td></tr></table></P><P>
+
+In this example the result of <SAMP>`$(filter %.o,$(files))'</SAMP> is
+<TT>`bar.o lose.o'</TT>, and the first static pattern rule causes each of
+these object files to be updated by compiling the corresponding C source
+file.  The result of <SAMP>`$(filter %.elc,$(files))'</SAMP> is
+<TT>`foo.elc'</TT>, so that file is made from <TT>`foo.el'</TT>.</P><P>
+
+Another example shows how to use <CODE>$*</CODE> in static pattern rules:
+<A NAME="IDX144"></A>
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>bigoutput littleoutput : %output : text.g
+        generate text.g -$* &#62; $@
+</pre></td></tr></table></P><P>
+
+When the <CODE>generate</CODE> command is run, <CODE>$*</CODE> will expand to the
+stem, either <SAMP>`big'</SAMP> or <SAMP>`little'</SAMP>.
+</P><P>
+
+<A NAME="Static versus Implicit"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_43.html#SEC47"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_45.html#SEC49"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_42.html#SEC46"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_43.html#SEC47"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_46.html#SEC50"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

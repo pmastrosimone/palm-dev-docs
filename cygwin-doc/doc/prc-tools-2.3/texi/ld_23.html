@@ -1,0 +1,109 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Untitled Document: Input Section Basics</TITLE>
+
+<META NAME="description" CONTENT="Untitled Document: Input Section Basics">
+<META NAME="keywords" CONTENT="Untitled Document: Input Section Basics">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC23"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_22.html#SEC22"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_24.html#SEC24"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_28.html#SEC28"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_22.html#SEC22"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_28.html#SEC28"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 3.6.4.1 Input Section Basics </H4>
+<!--docid::SEC23::-->
+An input section description consists of a file name optionally followed
+by a list of section names in parentheses.
+<P>
+
+The file name and the section name may be wildcard patterns, which we
+describe further below (see section <A HREF="ld_24.html#SEC24">3.6.4.2 Input Section Wildcard Patterns</A>).
+</P><P>
+
+The most common input section description is to include all input
+sections with a particular name in the output section.  For example, to
+include all input <SAMP>`.text'</SAMP> sections, you would write:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>*(.text)
+</FONT></pre></td></tr></table>Here the <SAMP>`*'</SAMP> is a wildcard which matches any file name.  To exclude a list
+of files from matching the file name wildcard, EXCLUDE_FILE may be used to
+match all files except the ones specified in the EXCLUDE_FILE list.  For
+example:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(*(EXCLUDE_FILE (*crtend.o *otherfile.o) .ctors))
+</FONT></pre></td></tr></table>will cause all .ctors sections from all files except <TT>`crtend.o'</TT> and
+<TT>`otherfile.o'</TT> to be included.
+</P><P>
+
+There are two ways to include more than one section:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>*(.text .rdata)
+*(.text) *(.rdata)
+</FONT></pre></td></tr></table>The difference between these is the order in which the <SAMP>`.text'</SAMP> and
+<SAMP>`.rdata'</SAMP> input sections will appear in the output section.  In the
+first example, they will be intermingled, appearing in the same order as
+they are found in the linker input.  In the second example, all
+<SAMP>`.text'</SAMP> input sections will appear first, followed by all
+<SAMP>`.rdata'</SAMP> input sections.
+</P><P>
+
+You can specify a file name to include sections from a particular file.
+You would do this if one or more of your files contain special data that
+needs to be at a particular location in memory.  For example:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>data.o(.data)
+</FONT></pre></td></tr></table></P><P>
+
+If you use a file name without a list of sections, then all sections in
+the input file will be included in the output section.  This is not
+commonly done, but it may by useful on occasion.  For example:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>data.o
+</FONT></pre></td></tr></table></P><P>
+
+When you use a file name which does not contain any wild card
+characters, the linker will first see if you also specified the file
+name on the linker command line or in an <CODE>INPUT</CODE> command.  If you
+did not, the linker will attempt to open the file as an input file, as
+though it appeared on the command line.  Note that this differs from an
+<CODE>INPUT</CODE> command, because the linker will not search for the file in
+the archive search path.
+</P><P>
+
+<A NAME="Input Section Wildcards"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_22.html#SEC22"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_24.html#SEC24"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_28.html#SEC28"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_22.html#SEC22"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_28.html#SEC28"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_70.html#SEC70">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="ld_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

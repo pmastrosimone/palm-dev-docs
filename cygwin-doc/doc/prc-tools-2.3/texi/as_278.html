@@ -1,0 +1,92 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using as: 8.13.4.1 Other instruction support (pseudo-instructions)</TITLE>
+
+<META NAME="description" CONTENT="Using as: 8.13.4.1 Other instruction support (pseudo-instructions)">
+<META NAME="keywords" CONTENT="Using as: 8.13.4.1 Other instruction support (pseudo-instructions)">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC287"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_277.html#SEC286"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_279.html#SEC288"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_169.html#SEC178"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_277.html#SEC286"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_279.html#SEC288"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_438.html#SEC447">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="as_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H4> 8.13.4.1 Other instruction support (pseudo-instructions) </H4>
+<!--docid::SEC287::-->
+For compatibility with some other i860 assemblers, a number of
+pseudo-instructions are supported. While these are supported, they are
+a very undesirable feature that should be avoided -- in particular, when
+they result in an expansion to multiple actual i860 instructions. Below
+are the pseudo-instructions that result in expansions.
+<UL>
+<LI>Load large immediate into general register:
+<P>
+
+The pseudo-instruction <CODE>mov imm,%rn</CODE> (where the immediate does
+not fit within a signed 16-bit field) will be expanded into:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>orh large_imm@h,%r0,%rn
+or large_imm@l,%rn,%rn
+</FONT></pre></td></tr></table><LI>Load/store with relocatable address expression:
+<P>
+
+For example, the pseudo-instruction <CODE>ld.b addr,%rn</CODE> 
+will be expanded into:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>orh addr_exp@ha,%r0,%r31
+ld.l addr_exp@l(%r31),%rn
+</FONT></pre></td></tr></table></P><P>
+
+The analogous expansions apply to <CODE>ld.x, st.x, fld.x, pfld.x, fst.x</CODE>, and <CODE>pst.x</CODE> as well.
+<LI>Signed large immediate with add/subtract:
+<P>
+
+If any of the arithmetic operations <CODE>adds, addu, subs, subu</CODE> are used
+with an immediate larger than 16-bits (signed), then they will be expanded.
+For instance, the pseudo-instruction <CODE>adds large_imm,%rx,%rn</CODE> expands to:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>orh large_imm@h,%r0,%r31
+or large_imm@l,%r31,%r31
+adds %r31,%rx,%rn
+</FONT></pre></td></tr></table><LI>Unsigned large immediate with logical operations:
+<P>
+
+Logical operations (<CODE>or, andnot, or, xor</CODE>) also result in expansions.
+The pseudo-instruction <CODE>or large_imm,%rx,%rn</CODE> results in:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>orh large_imm@h,%rx,%r31
+or large_imm@l,%r31,%rn
+</FONT></pre></td></tr></table></P><P>
+
+Similarly for the others, except for <CODE>and</CODE> which expands to:
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>andnot (-1 - large_imm)@h,%rx,%r31
+andnot (-1 - large_imm)@l,%r31,%rn
+</FONT></pre></td></tr></table></UL>
+<P>
+
+<A NAME="i960-Dependent"></A>
+<HR SIZE=1>
+
+</BODY>
+</HTML>

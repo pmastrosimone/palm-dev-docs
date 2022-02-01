@@ -1,0 +1,1278 @@
+<html>
+<head>
+<title>(Protein) Application Start and Stop | Programming Basics</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource_HTML_2003 20041101">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks AutoMap 2003 for FrameMaker 8.0.6.2138">
+<META NAME="LASTUPDATED" CONTENT="11/22/04 11:21:43">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="971704"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="ProgrammingBasicsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Nutshell.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="EventLoop.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="ProgrammingBasicsIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">2 &nbsp;&nbsp;
+Application Start and Stop</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">Programming Basics</p>
+<p class="SubTitle">Exploring Palm OS&#174; </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1-PartTab"><a href="ProgrammingBasics_Part1.html">Part I: Concepts</a> </h1>
+<h1 class="SideTOC1"><a href="AppStartAndStop.html">2  Application Start and Stop</a></h1>
+
+   <h2 class="SideTOC2"><a href="#971753">
+   Launch Codes and Launching an Application</a></h2>
+
+   <h2 class="SideTOC2"><a href="#971779">
+   Responding to Launch Codes</a></h2>
+
+      <h3 class="SideTOC3"><a href="#971867">
+      Responding to Normal Launch</a></h3>
+
+      <h3 class="SideTOC3"><a href="#971987">
+      Responding to Other Launch Codes</a></h3>
+
+   <h2 class="SideTOC2"><a href="#972010">
+   Launching Applications Programmatically</a></h2>
+
+      <h3 class="SideTOC3"><a href="#989062">
+      Sublaunching in Another Process</a></h3>
+
+      <h3 class="SideTOC3"><a href="#972075">
+      Creating Your Own Launch Codes </a></h3>
+
+   <h2 class="SideTOC2"><a href="#972083">
+   Stopping an Application </a></h2>
+
+   <h2 class="SideTOC2"><a href="#982563">
+   Launch Code Summary</a></h2>
+
+   <h2 class="SideTOC2"><a href="#994122">
+   Application Manager Function Summary</a></h2>
+
+</div>
+</td>
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+
+<!--END SIDETOC-->
+
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="971706"> </a>On desktop computers, an application starts up when a user launches it and stops when the user chooses the Exit or Quit command. These things occur a little bit differently on a Palm Powered&#8482; device. A Palm OS application does launch when the user requests it, but it may also launch in response to some other user action, such as a request by the global find facility. Palm OS applications don't have an Exit command; instead they exit when a user switches to another application. </p>
+
+<p><a name="971707"> </a>This chapter describes how an application launches, how an application stops, and the code you must write to perform these tasks properly. This chapter covers: </p>
+   <blockquote class = "bq"><a name="971711"> </a><a href="AppStartAndStop.html#971753">Launch Codes and Launching an Application</a></blockquote>
+   <blockquote class = "bq"><a name="971715"> </a><a href="AppStartAndStop.html#971779">Responding to Launch Codes</a></blockquote>
+   <blockquote class = "bq"><a name="971719"> </a><a href="AppStartAndStop.html#972010">Launching Applications Programmatically</a></blockquote>
+   <blockquote class = "bq"><a name="971727"> </a><a href="AppStartAndStop.html#972083">Stopping an Application</a></blockquote>
+   <blockquote class = "bq"><a name="971739"> </a><a href="AppStartAndStop.html#982563">Launch Code Summary</a></blockquote>
+   <blockquote class = "bq"><a name="971747"> </a><a href="AppStartAndStop.html#994122">Application Manager Function Summary</a></blockquote>
+
+<p><a name="971748"> </a>This chapter does not cover the main application event loop. The event loop is covered in <a href="EventLoop.html#977418">Chapter 3, "Events and the Event Loop."</a></p>
+
+<h2 class="haH2">
+  <a name="971753"> </a>Launch Codes and Launching an Application <a href="#971704"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="971755"> </a>An application launches when its <a href="AppMgr.html#994755"><code>PilotMain()</code></a> function is called with a <b>launch code</b>. Launch codes are a means of communication between the Palm OS and the application or between two applications. </p>
+
+<p><a name="971756"> </a>For example, an application typically launches when a user presses one of the buttons on the device or selects an application icon from the Application Launcher. When this happens, the system generates the launch code <a href="CmnLaunchCodes.html#994023"><code>sysAppLaunchCmdNormalLaunch</code></a>, which tells the application to perform a full launch and display its user interface. </p>
+
+<p><a name="971759"> </a>Other launch codes specify that the application should perform some action but not necessarily become the current application (the application the user sees). A good example of this is the launch code used by the global find facility. The global find facility allows users to search all databases for a certain record, such as a name. In this case, it would be very wasteful to do a full launch&#8212;including launching the user interface&#8212;of each application only to access the application's databases in search of that item. Using a launch code avoids this overhead.</p>
+
+<p><a name="971760"> </a>Each launch code may be accompanied by two types of information:</p>
+<ul type="disc">
+  <li><a name="971762"> </a>A parameter block, a pointer to a launch-code-specific structure that contains several parameters. These parameters contain information necessary to handle the associated launch code. 
+  <li><a name="971764"> </a>Launch flags indicate how the application should behave. For example, a flag could be used to specify whether the application should display UI or not. See <a href="CmnLaunchCodes.html#993791">"Launch Flags"</a> for a list of standard Palm OS launch flags.
+</ul>
+
+<p><a name="971771"> </a>A complete list of all launch codes is provided at the end of this chapter in the section <a href="AppStartAndStop.html#982563">"Launch Code Summary."</a> That section contains links into where each launch code is fully described.</p>
+
+<h2 class="haH2">
+  <a name="971779"> </a>Responding to Launch Codes <a href="#971704"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="971780"> </a>Your application should respond to launch codes in a function named <a href="AppMgr.html#994755"><code>PilotMain()</code></a>. <code>PilotMain()</code> is the entry point for all applications. </p>
+
+<p><a name="971785"> </a>When an application receives a launch code, it must first check whether it can handle this particular code. For example, only applications that have text data should respond to a launch code requesting a string search. If an application can't handle a launch code, it exits without failure, returning <code>errNone</code>. Otherwise, it performs the action immediately and returns. </p>
+
+<p><a name="971789"> </a><a href="AppStartAndStop.html#971792">Listing 2.1</a> shows selected parts of <code>PilotMain()</code> from the Datebook application as an example.</p>
+<p class="CCodeCaption">
+  <a name="971792"> </a><b>Listing 2.1&nbsp;&nbsp;Parts of Datebook's PilotMain() function</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+uint32_t PilotMain (uint16_t cmd, MemPtr cmdPBP, uint16_t launchFlags) {<a name="989605"> </a>
+   ExgPassableSocketType* passableSocketP;<a name="990778"> </a>
+   ExgSocketType* socketP;<a name="990780"> </a>
+   DmOpenRef dbP;<a name="990782"> </a>
+   uint32_t cursorID = dbInvalidCursorID;<a name="990784"> </a>
+   uint32_t value;<a name="990786"> </a>
+   uint32_t defaultForm;<a name="990788"> </a>
+   uint16_t mode;<a name="990790"> </a>
+   Boolean launched;<a name="990792"> </a>
+   status_t error = errNone; // the error returned by PilotMain<a name="990794"> </a>
+<a name="989629"> </a>
+   // Get application dbP<a name="990798"> </a>
+   if ((error = SysGetModuleDatabase(SysGetRefNum(), &amp;gApplicationDbID,
+      &amp;gApplicationDbP)) &lt; errNone)<a name="990800"> </a>
+      return error;<a name="990802"> </a>
+<a name="989637"> </a>
+   // Assign the local device time zone<a name="990825"> </a>
+   gettimezone(gDeviceTimeZone, TZNAME_MAX);<a name="990827"> </a>
+<a name="989653"> </a>
+   switch (cmd){<a name="990831"> </a>
+      // Launch code sent by the launcher or the datebook button.<a name="990839"> </a>
+      case sysAppLaunchCmdNormalLaunch:<a name="990841"> </a>
+         error = PrvStartApplication ();<a name="990843"> </a>
+         if (error &lt; errNone)<a name="990845"> </a>
+            return (error);<a name="990847"> </a>
+<a name="989669"> </a>
+         // If the user previously left the Datebook while viewing the agenda,<a name="990867"> </a>
+         // return there. Otherwise, go to the day view<a name="990869"> </a>
+         error = FtrGet (sysFileCDatebook, recentFormFeature, &amp;value);<a name="990871"> </a>
+         if (error)<a name="990873"> </a>
+            defaultForm = defaultRecentForm;<a name="990875"> </a>
+         else<a name="990894"> </a>
+            defaultForm = value;<a name="990896"> </a>
+<a name="989685"> </a>
+         FrmGotoForm(gApplicationDbP, (uint16_t) defaultForm);<a name="990903"> </a>
+<a name="989689"> </a>
+         PrvEventLoop ();<a name="990912"> </a>
+         PrvStopApplication ();<a name="990914"> </a>
+         break;<a name="990920"> </a>
+<a name="989697"> </a>
+      case sysAppLaunchCmdExgGetData:<a name="990928"> </a>
+         // Handle a get request<a name="990938"> </a>
+         ...<a name="990940"> </a>
+<a name="989739"> </a>
+      case appLaunchCmdExgGetFullLaunch:<a name="990994"> </a>
+         ...<a name="990996"> </a>
+<a name="989781"> </a>
+      case  appLaunchCmdAlarmEventGoto:<a name="991085"> </a>
+         // This action code is a DateBook specific custom launch code.<a name="991087"> </a>
+         // It will always require that the app launches as it is a result<a name="991089"> </a>
+         // of a SysUIAppSwitch call.<a name="991096"> </a>
+         ...<a name="991098"> </a>
+<a name="989809"> </a>
+      case  sysAppLaunchCmdGoTo:<a name="991150"> </a>
+         // This action code might be sent to the app when it's already running<a name="991152"> </a>
+         // if the use hits the "Go To" button in the Find Results dialog box.<a name="991154"> </a>
+         launched = launchFlags &amp; sysAppLaunchFlagNewGlobals;<a name="991156"> </a>
+         if (launched) {<a name="991158"> </a>
+            // New start<a name="991162"> </a>
+            error = PrvStartApplication ();<a name="991164"> </a>
+            if (error &lt; errNone)<a name="991166"> </a>
+               break;<a name="991168"> </a>
+<a name="989831"> </a>
+            PrvGoToItem ((GoToParamsPtr) cmdPBP, launched);<a name="991172"> </a>
+<a name="989835"> </a>
+            PrvEventLoop ();<a name="991176"> </a>
+            PrvStopApplication ();<a name="991178"> </a>
+         } else<a name="991180"> </a>
+            // application was already started<a name="991193"> </a>
+            PrvGoToItem ((GoToParamsPtr) cmdPBP, launched);<a name="991195"> </a>
+         break;<a name="991197"> </a>
+<a name="989851"> </a>
+      case sysAppLaunchCmdFind:<a name="991205"> </a>
+         // Launch code sent when the user is looking for some text.<a name="991207"> </a>
+         ...<a name="991209"> </a>
+<a name="989861"> </a>
+      case sysAppLaunchCmdSyncNotify:<a name="991215"> </a>
+         // Launch code sent by sync application to notify the datebook<a name="991233"> </a>
+         // application that its database was been synced.<a name="991235"> </a>
+         ...<a name="991237"> </a>
+<a name="989873"> </a>
+      case sysAppLaunchCmdNotify:<a name="991262"> </a>
+         ...<a name="991267"> </a>
+<a name="989901"> </a>
+      case  sysAppLaunchCmdSystemReset:<a name="991328"> </a>
+         // This action code is sent after the system is reset.<a name="991330"> </a>
+         ...<a name="991332"> </a>
+<a name="989955"> </a>
+      case sysAppLaunchCmdExgAskUser:<a name="991395"> </a>
+         ...<a name="991397"> </a>
+<a name="989987"> </a>
+      case sysAppLaunchCmdExgReceiveData:<a name="991484"> </a>
+         // Receive the record.  The app will parse the data and add it <a name="991486"> </a>
+         // to the database.<a name="992565"> </a>
+         ...<a name="991504"> </a>
+<a name="992589"> </a>
+      case sysAppLaunchCmdExgPreview:<a name="991595"> </a>
+         ...<a name="991597"> </a>
+<a name="990063"> </a>
+      case sysAppLaunchCmdInitDatabase:<a name="991622"> </a>
+         // This action code is sent by the DesktopLink server when it creates<a name="991628"> </a>
+         // a new database.  We will initialize the new database.<a name="991630"> </a>
+         ...<a name="991635"> </a>
+<a name="990077"> </a>
+      case sysAppLaunchCmdAlarmTriggered:<a name="991652"> </a>
+         // Launch code sent by Alarm Manager to notify the datebook<a name="991654"> </a>
+         // application that an alarm has triggered.<a name="991660"> </a>
+         ...<a name="991670"> </a>
+<a name="990091"> </a>
+      case sysAppLaunchCmdAttention:<a name="991694"> </a>
+         // Launch Code sent by Attention Manager to let Datebook draw<a name="991696"> </a>
+         // alarmed events.<a name="991698"> </a>
+         ...<a name="991700"> </a>
+<a name="990105"> </a>
+      case sysAppLaunchCmdExportRecordGetCount:<a name="991708"> </a>
+         ...<a name="992480"> </a>
+<a name="990177"> </a>
+      case sysAppLaunchCmdExportRecord:<a name="991846"> </a>
+         ...<a name="992427"> </a>
+<a name="990253"> </a>
+      case sysAppLaunchCmdImportRecord:<a name="991975"> </a>
+         ...<a name="992381"> </a>
+<a name="990321"> </a>
+      case sysAppLaunchCmdDeleteRecord:<a name="992117"> </a>
+         ...<a name="992346"> </a>
+      default:<a name="992270"> </a>
+         break;<a name="992272"> </a>
+   }<a name="992274"> </a>
+<a name="990397"> </a>
+   return error;<a name="992286"> </a>
+}<a name="992288"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<div><hr>
+  <a name="994899"> </a> <b>NOTE: </b> The above code calls <code>SysGetModuleDatabase()</code> and <code>gettimezone()</code> for every launch code. Programs should only call functions like these for those launch codes in which the values are needed: both of these calls result in an IPC (interprocess communcation), which should be avoided whenever possible.
+<hr>
+</div>
+<h3 class="hbH3">
+  <a name="971867"> </a>Responding to Normal Launch <a href="#971704"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="971868"> </a>When an application receives the launch code <a href="CmnLaunchCodes.html#994023"><code>sysAppLaunchCmdNormalLaunch</code></a>, it begins with a start routine, then goes into an event loop, and finally exits with a stop routine. (The event loop is described in <a href="EventLoop.html#977418">Chapter 3, "Events and the Event Loop."</a> The stop routine is shown in the section <a href="AppStartAndStop.html#972083">"Stopping an Application"</a> at the end of this chapter.) </p>
+
+<p><a name="971877"> </a>During the start routine, your application should perform these actions: </p>
+<ol type="1">
+  <li value="1"><a name="971879"> </a>Get system-wide preferences (for example for numeric or date and time formats) and use them to initialize global variables that will be referenced throughout the application. 
+  <li value="2"><a name="971880"> </a>Find the application database. If none exists, create it and initialize it. 
+  <li value="3"><a name="971882"> </a>Get application-specific preferences and initialize related global variables. 
+  <li value="4"><a name="971884"> </a>Initialize any other global variables.
+</ol>
+
+<p><a name="971888"> </a>As you saw in <a href="AppStartAndStop.html#971792">Listing 2.1</a>, the Datebook application responds to <code>sysAppLaunchCmdNormalLaunch</code> by calling a function named <code>PrvStartApplication()</code>. <a href="AppStartAndStop.html#971893">Listing 2.2</a> shows this function. </p>
+<p class="CCodeCaption">
+  <a name="971893"> </a><b>Listing 2.2&nbsp;&nbsp;PrvStartApplication() from Datebook</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+static status_t PrvStartApplication(void) {<a name="992831"> </a>
+   status_t err;<a name="992833"> </a>
+   uint16_t mode;<a name="992834"> </a>
+   DateTimeType dateTime;<a name="992835"> </a>
+   DatebookPreferenceType prefs;<a name="992836"> </a>
+   int16_t prefsVersion;<a name="992837"> </a>
+   time_t rangeStartTime;<a name="992838"> </a>
+   time_t rangeEndTime;<a name="992839"> </a>
+<a name="992840"> </a>
+<a name="992841"> </a>
+   // Load the ToDo application as a shared lib. Doing this, the ToDo<a name="992842"> </a>
+   // globals will be kept all along the Datebook execution<a name="992843"> </a>
+   err = SysLoadModule(sysFileTApplication, sysFileCToDo, 0, 0, &amp;ToDoRefNum);<a name="992844"> </a>
+   ErrNonFatalDisplayIf(err &lt; errNone, 
+      "Unable to load the ToDo application as a shared library");<a name="992845"> </a>
+<a name="992846"> </a>
+   // Determime if secret record should be shown.<a name="992847"> </a>
+   PrivateRecordVisualStatus = CurrentRecordVisualStatus =
+      (privateRecordViewEnum)PrefGetPreference(prefShowPrivateRecords);<a name="992848"> </a>
+<a name="992850"> </a>
+   mode = (PrivateRecordVisualStatus == hidePrivateRecords) ? 
+         dmModeReadWrite : (dmModeReadWrite | dmModeShowSecret);<a name="992851"> </a>
+<a name="992853"> </a>
+   // Get the time formats from the system preferences.<a name="992854"> </a>
+   TimeFormat = (TimeFormatType)PrefGetPreference(prefTimeFormat);<a name="992855"> </a>
+<a name="992856"> </a>
+   // Get the date formats from the system preferences.<a name="992857"> </a>
+   LongDateFormat = (DateFormatType)PrefGetPreference(prefLongDateFormat);<a name="992858"> </a>
+   ShortDateFormat = (DateFormatType)PrefGetPreference(prefDateFormat);<a name="992859"> </a>
+<a name="992860"> </a>
+   // Get the starting day of the week from the system preferences.<a name="992861"> </a>
+   StartDayOfWeek = (uint16_t) PrefGetPreference(prefWeekStartDay);<a name="992862"> </a>
+<a name="992863"> </a>
+   // Get today's date.<a name="992864"> </a>
+   TimSecondsToDateTime (TimGetSeconds(), &amp;dateTime);<a name="992865"> </a>
+   Date.year = dateTime.year - firstYear;<a name="992866"> </a>
+   Date.month = dateTime.month;<a name="992867"> </a>
+   Date.day = dateTime.day;<a name="992868"> </a>
+<a name="992870"> </a>
+   // Find the application's data file.  If it don't exist create it.<a name="992871"> </a>
+   err = DateDBOpenDatabase (&amp;ApptDB, mode);<a name="992872"> </a>
+   if (err &lt; errNone)<a name="992873"> </a>
+      return err;<a name="992874"> </a>
+<a name="992875"> </a>
+   // Create initial cursor based on current date and a 1-day range (day / 
+agenda view)<a name="992877"> </a>
+   CalculateStartEndRangeTimes(&amp;Date, 1, &amp;rangeStartTime, &amp;rangeEndTime, NULL);<a name="992878"> </a>
+   err =  ApptDBOpenOrRequeryWithNewRange(ApptDB, &amp;gApptCursorID,
+      rangeStartTime, rangeEndTime, true);<a name="992879"> </a>
+   if (err &lt; errNone)<a name="992883"> </a>
+      return err;<a name="992884"> </a>
+<a name="992887"> </a>
+   PIMAppProfilingBegin("PrvStartApplication, TimeZoneToAscii")<a name="992888"> </a>
+<a name="992889"> </a>
+   // Get the devivce localized time zone name<a name="992890"> </a>
+   TimeZoneToAscii(gDeviceTimeZone, gLocalizedTimeZomeName);<a name="992891"> </a>
+<a name="992892"> </a>
+   PIMAppProfilingEnd();<a name="992893"> </a>
+<a name="992894"> </a>
+   // Read the preferences / saved-state information<a name="992896"> </a>
+   prefsVersion = DatebookLoadPrefs (&amp;prefs);<a name="992897"> </a>
+   DayStartHour = prefs.dayStartHour;<a name="992898"> </a>
+   DayEndHour = prefs.dayEndHour;<a name="992899"> </a>
+   AlarmPreset = prefs.alarmPreset;<a name="992900"> </a>
+   SaveBackup = prefs.saveBackup;<a name="992901"> </a>
+   ShowTimeBars = prefs.showTimeBars;<a name="992902"> </a>
+   CompressDayView = prefs.compressDayView;<a name="992903"> </a>
+   ShowTimedAppts = prefs.showTimedAppts;<a name="992904"> </a>
+   ShowUntimedAppts = prefs.showUntimedAppts;<a name="992905"> </a>
+   ShowDailyRepeatingAppts = prefs.showDailyRepeatingAppts;<a name="992906"> </a>
+   AlarmSoundRepeatCount = prefs.alarmSoundRepeatCount;<a name="992907"> </a>
+   AlarmSoundRepeatInterval = prefs.alarmSoundRepeatInterval;<a name="992908"> </a>
+   AlarmSoundUniqueRecID = prefs.alarmSoundUniqueRecID;<a name="992909"> </a>
+   ApptDescFont = prefs.apptDescFont;<a name="992910"> </a>
+   AlarmSnooze = prefs.alarmSnooze;<a name="992911"> </a>
+<a name="992912"> </a>
+   // Get the previous current category<a name="992913"> </a>
+   PrvLoadCurrentCategories(&amp;DateBkCurrentCategoriesCount,
+      &amp;DateBkCurrentCategoriesP);<a name="992914"> </a>
+<a name="992915"> </a>
+   // Reset selection<a name="992916"> </a>
+   TopVisibleAppt = 0;<a name="992917"> </a>
+<a name="992918"> </a>
+   // Set initial active tab for the details dialog in day view<a name="992919"> </a>
+   DetailsSetDefaultEventDetailsTab(DetailsBookOptionsTabId);<a name="992920"> </a>
+<a name="992921"> </a>
+   return errNone;<a name="992922"> </a>
+}<a name="992923"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h3 class="hbH3">
+  <a name="971987"> </a>Responding to Other Launch Codes <a href="#971704"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="971988"> </a>If an application receives a launch code other than <a href="CmnLaunchCodes.html#994023"><code>sysAppLaunchCmdNormalLaunch</code></a>, it decides if it should respond to that launch code. If it responds to the launch code, it does so by implementing a launch code handler, which is invoked from its <a href="AppMgr.html#994755"><code>PilotMain()</code></a> function. </p>
+
+<p><a name="972007"> </a>If your application receives a launch code other than <code>sysAppLaunchCmdNormalLaunch</code> or <a href="CmnLaunchCodes.html#993710"><code>sysAppLaunchCmdGoTo</code></a>, you can find out if it is the current application by checking the launch flags that are sent with the launch code. If the application is the currently running application, the <code>sysAppLaunchFlagSubCall</code> flag is set. This flag is set by the system and isn't (and shouldn't be) set by the sender of a launch code. </p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+Boolean appIsActive = launchFlags &amp; <code>sysAppLaunchFlagSubCall</code>;<a name="972008"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h2 class="haH2">
+  <a name="972010"> </a>Launching Applications Programmatically <a href="#971704"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="972012"> </a>Applications can send launch codes to each other, so your application might be launched from another application or it might be launched from the system. An application can use a launch code to request that another application perform an action or modify its data. For example, a data collection application could instruct an email application to queue up a particular message to be sent.</p>
+
+<div><hr>
+  <a name="972013"> </a> <b>TIP: </b> There are other ways for applications to communicate. See <a href="Notifications.html#972381">"When to Use the Helper API"</a> to help you decide which method to use. 
+<hr>
+</div>
+
+<p><a name="972017"> </a>Sending a launch code to another application is like calling a specific subroutine in that application: the application responding to the launch code is responsible for determining what to do given the launch code constant passed on the stack as a parameter. </p>
+
+<p><a name="972018"> </a>To send a launch code to another application, use one of the <code>SysAppLaunch...()</code> functions from the Application Manager. You use these functions when you want to make use of another application's functionality and eventually return control to your application. The process of calling another application as a subroutine is sometimes referred to as a <b>sublaunch</b>.</p>
+
+<p><a name="988453"> </a>The Application Manager defines the following <code>SysAppLaunch...()</code> functions:</p>
+
+<dl>
+<dt><a name="988462"> </a><a href="AppMgr.html#995070"><code>SysAppLaunch()</code></a></dt>
+<dd><a name="988482"> </a>Launches an application as a subroutine of the caller in the caller's process. This function can only be called from the main UI thread. Use with care: most applications will want to use one of the other <code>SysAppLaunch...()</code> functions instead.</dd>
+
+<dt><a name="988568"> </a><a href="AppMgr.html#998122"><code>SysAppLaunchLocal()</code></a></dt>
+<dd><a name="988569"> </a>Launch an application as a subroutine of the caller in the caller's process, unless the application being launched is already running in another process. In this case, the launch code and parameters are sent to the running application. This function can only be called from the main UI thread.</dd>
+
+<dt><a name="988573"> </a><a href="AppMgr.html#995186"><code>SysAppLaunchRemote()</code></a></dt>
+<dd><a name="988574"> </a>Launch an application as a subroutine of the caller in a separate, newly-created process, unless the application being launched is already running in another process in which case the launch code and parameters are sent to the running application. Remote launching allows applications to execute untrusted code without compromising their own security. This function can only be called from the main UI thread.</dd>
+
+</dl>
+
+<div><hr>
+  <a name="994165"> </a> <b>NOTE: </b> The parameter block you pass in to any of the above cannot contain pointers to other data or objects. 
+<hr>
+</div>
+
+<p><a name="972023"> </a>For example, you could use <a href="AppMgr.html#998122"><code>SysAppLaunchLocal()</code></a> to request that the built in Address Book application search its databases for a specified phone number and return the results of the search to your application.</p>
+
+<p><a name="972034"> </a>An alternative, simpler method of sending launch codes is the <a href="AppMgr.html#995594"><code>SysBroadcastActionCode()</code></a> call. This function automatically finds all other user-interface applications and calls the appropriate <code>SysAppLaunch...()</code> function to send the launch code to each of them.</p>
+
+<p><a name="972042"> </a>When an application is launched using one of the <code>SysAppLaunch...()</code> functions, the system considers that application to be the current application even though the application has not switched from the user's perspective. Thus, if your application is called from another application, it can still use the function <a href="../System_Management/Loader.html#993500"><code>SysGetModuleDatabase()</code></a> to get the database ID of its own database. </p>
+
+<p><a name="972048"> </a>If you want to actually close your application and open another application, use <a href="AppMgr.html#996594"><code>SysUIAppSwitch()</code></a> instead. This function notifies the system which application to launch next and feeds an <code>appStopEvent</code> event into the event queue. If and when the current application responds to the quit event and returns, the system launches the new application.</p>
+
+<div><hr>
+  <a name="972070"> </a> <span class="warning">WARNING! </span> Do not use the <a href="AppMgr.html#996594"><code>SysUIAppSwitch()</code></a> or <code>SysAppLaunch...()</code> functions to open the Application Launcher application. If another application has replaced the default launcher with one of its own, this function will open the system-supplied launcher instead of the custom one. To open the correct Launcher reliably, enqueue a <code>keyDownEvent</code> that contains a <code>launchChr</code>.  
+<hr>
+</div>
+
+<p><a name="998901"> </a>When you launch an application using <code>SysUIAppSwitch()</code> you have the option to pass a parameter block (using the <code class="par">cmdPBP</code> parameter) containing application-specific information to the application being launched. To create this parameter block, allocate a block of memory using <a href="../Memory_Databases_Files/MemoryMgr.html#996040"><code>MemPtrNew()</code></a> and then call <a href="../Memory_Databases_Files/MemoryMgr.html#996617"><code>MemPtrSetOwner()</code></a> to set the block's owner ID to 0.  This assigns ownership of the block to the system; memory blocks owned by the system aren't automatically freed when the calling application exits. Once ownership of the block has been assigned to the system, neither the launching nor the launched application need worry about freeing the block since the operating system will do this itself after the launched application exits.</p>
+
+<p><a name="999030"> </a>Note that your parameter block must be self contained. That is, it must not have pointers to anything on the stack or to memory blocks that are owned by an application. If you don't need to pass a parameter block to the application being launched, pass <code>NULL</code> for the <code class="par">cmdPBP</code> parameter.</p>
+<h3 class="hbH3">
+  <a name="989062"> </a>Sublaunching in Another Process <a href="#971704"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="988999"> </a>Each sublaunch takes place in its own transient process, except when the currently running application receives a request to sublaunch itself, in which case the sublaunch takes place in the Application Process. The sublaunched thread, whether in the main Application process or a sublaunched process, effectively becomes the Application process and thread for the duration of the sublaunch. In other words, the thread requesting the sublaunch is effectively suspended while the sublaunched thread executes. Once the sublaunched application exits, the sublaunched process that was created to accommodate the sublaunch is then completely torn down.</p>
+
+<p><a name="996040"> </a>See <a href="../System_Management/Threading.html#1019891">"Processes and Applications"</a> of <i>Exploring Palm OS: System Management</i> for a diagram showing all of the Palm OS Cobalt processes.</p>
+<h3 class="hbH3">
+  <a name="972075"> </a>Creating Your Own Launch Codes  <a href="#971704"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="972077"> </a>Palm OS contains a large number of predefined launch codes, which are listed in <a href="AppStartAndStop.html#982563">"Launch Code Summary."</a> In addition, developers can create their own launch codes to implement specific functionality. Both the sending and the receiving application must know about and handle any developer-defined launch codes. </p>
+
+<p><a name="972081"> </a>The launch code parameter is an unsigned 16-bit value. All launch codes with values 0&#8211;32767 are reserved for use by the system and for future enhancements. Launch codes beginning at <span style="color: #000000;  font-family: Courier; font-style: normal; font-weight: normal; text-decoration: none; text-transform: none; vertical-align: baseline">sysAppLaunchCmdCustomBase</span> (that is, those from 32768 to 65535) are available for private use by applications.</p>
+
+<h2 class="haH2">
+  <a name="972083"> </a>Stopping an Application  <a href="#971704"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="993398"> </a>An application shuts itself down when it receives the event <a href="EventCodes.html#994789"><code>appStopEvent</code></a>. Note that this is an event, not a launch code. The application must detect this event and terminate. (Events are covered in detail in <a href="EventLoop.html#988571">Chapter 3, "Palm OS Events."</a>) Applications typically call a "StopApplication" function in response to the <code>appStopEvent</code>, before returning from <code>PilotMain()</code>.</p>
+
+<p><a name="993405"> </a>The <code>appStopEvent</code> gives the a application an opportunity to perform cleanup activities including closing databases and saving state information. In the stop function, an application should first flush all active records, close the application's database, and save those aspects of the current state needed for the next time the application is started. <a href="AppStartAndStop.html#972094">Listing 2.3</a> is an example of a stop function&#8212;this is from the Datebook application.</p>
+<p class="CCodeCaption">
+  <a name="972094"> </a><b>Listing 2.3&nbsp;&nbsp;PrvStopApplication() from Datebook</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+static void PrvStopApplication (void) {<a name="993306"> </a>
+   // Save the preferences<a name="993308"> </a>
+   DatebookSavePrefs();<a name="993309"> </a>
+<a name="993310"> </a>
+   // Save current categories<a name="993311"> </a>
+   PrvSaveCurrentCategories(DateBkCurrentCategoriesCount,
+      DateBkCurrentCategoriesP);<a name="993312"> </a>
+<a name="993313"> </a>
+   // Send a frmSave event to all the open forms.<a name="993314"> </a>
+   FrmSaveAllForms ();<a name="993315"> </a>
+<a name="993316"> </a>
+   // Close all the open forms.<a name="993317"> </a>
+   FrmCloseAllForms ();<a name="993318"> </a>
+<a name="993319"> </a>
+   // Close the application's cursor<a name="993320"> </a>
+   ApptCloseCursor(&amp;gApptCursorID);<a name="993321"> </a>
+<a name="993322"> </a>
+   // Close the application's data file.<a name="993323"> </a>
+   DbCloseDatabase (ApptDB);<a name="993324"> </a>
+   ApptDB = NULL;<a name="993325"> </a>
+<a name="993326"> </a>
+   // Unload the ToDo application loaded as a shared library<a name="993327"> </a>
+   if (ToDoRefNum != kRALInvalidRefNum)<a name="993328"> </a>
+      SysUnloadModule(ToDoRefNum);<a name="993329"> </a>
+}<a name="993330"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h2 class="haH2">
+  <a name="982563"> </a>Launch Code Summary <a href="#971704"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="982569"> </a>The following tables list all Palm OS standard launch codes. These launch codes are declared in <code>CmnLaunchCodes.h</code>, <code>TelephonyLib.h</code>, and <code>Preferences.h</code>. All the parameters for a launch code are passed in a single parameter block, and the results are returned in the same parameter block.</p>
+
+<p class="caption"><a name="993461"> </a><b>Table 2.1&nbsp;&nbsp;Palm OS Launch Codes </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="993465"> </a><b>Code</b></p>
+    </th>
+    <th><p class="tt"><a name="993467"> </a><b>Request</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993472"> </a><a href="../System_Management/Preferences.html#1006419"><code>prefAppLaunchCmdSetActivePanel</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993474"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993479"> </a><a href="CmnLaunchCodes.html#996994"><code>sysAppLaunchCmdAddRecord</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="993481"> </a>Add a record to a database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993486"> </a><a href="../System_Management/AlarmMgr.html#995029"><code>sysAppLaunchCmdAlarmTriggered</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="993488"> </a>Schedule next alarm or perform quick actions such as sounding alarm tones.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993493"> </a><a href="../System_Management/AttentionMgr.html#1063135"><code>sysAppLaunchCmdAttention</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="993495"> </a>Perform the action requested by the Attention Manager.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993500"> </a><a href="Event.html#1026557"><code>sysAppLaunchCmdBackground</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993502"> </a>Sent to the executable module that is launched in a background thread.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993507"> </a><a href="CmnLaunchCodes.html#993894"><code>sysAppLaunchCmdCardLaunch</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993509"> </a>Launch the application. This launch code signifies that the application is being launched from an expansion card.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993514"> </a><a href="CmnLaunchCodes.html#997137"><code>sysAppLaunchCmdCountryChange</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="993516"> </a>Respond to country change.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993521"> </a><a href="CmnLaunchCodes.html#992997"><code>sysAppLaunchCmdDeleteRecord</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993523"> </a>Instructs the application to delete a specified database record.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993528"> </a><a href="../System_Management/AlarmMgr.html#995265"><code>sysAppLaunchCmdDisplayAlarm</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="993530"> </a>Display specified alarm dialog or perform time-consuming alarm-related actions.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993535"> </a><a href="CmnLaunchCodes.html#997772"><code>sysAppLaunchCmdEventHook</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993537"> </a>Allow the application to process an event.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993542"> </a><a href="CmnLaunchCodes.html#993025"><code>sysAppLaunchCmdExportRecord</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993544"> </a>Instructs the application to export a specified database record.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993548"> </a><a href="CmnLaunchCodes.html#1015234"><code>sysAppLaunchCmdExportRecordGetCount</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993551"> </a>Instructs the application to return the number of records in the application's database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993556"> </a><a href="CmnLaunchCodes.html#1015584"><code>sysAppLaunchCmdFailedAppNotify</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993558"> </a>Indicates a failure in an application that was just switched to.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993563"> </a><a href="CmnLaunchCodes.html#1002230"><code>sysAppLaunchCmdFepPanelAddWord</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993565"> </a>Add a word to the FEP user dictionary.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993570"> </a><a href="CmnLaunchCodes.html#1002442"><code>sysAppLaunchCmdFinalizeUI</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993572"> </a>Instructs the application's start-up code to de-initialize the process's UI.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993577"> </a><a href="CmnLaunchCodes.html#1002516"><code>sysAppLaunchCmdFind</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="993579"> </a>Find a text string.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993584"> </a><a href="CmnLaunchCodes.html#993710"><code>sysAppLaunchCmdGoTo</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="993586"> </a>Go to a particular record, display it, and optionally select the specified text.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993591"> </a><a href="CmnLaunchCodes.html#993902"><code>sysAppLaunchCmdHandleSyncCallApp</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993593"> </a>Perform some application-specific operation at the behest of the application's conduit.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993598"> </a><a href="CmnLaunchCodes.html#994319"><code>sysAppLaunchCmdImportRecord</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993600"> </a>Presents the application with a record to be added to or updated in the application's database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993605"> </a><a href="CmnLaunchCodes.html#994056"><code>sysAppLaunchCmdInitDatabase</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="993607"> </a>Initialize database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993612"> </a><a href="CmnLaunchCodes.html#1003944"><code>sysAppLaunchCmdInitializeUI</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993614"> </a>Instructs the application's start-up code to initialize the process's UI.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993619"> </a><a href="CmnLaunchCodes.html#1004041"><code>sysAppLaunchCmdLookup</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="993621"> </a>Look up data. In contrast to <code>sysAppLaunchCmdFind</code>, a level of indirection is implied. For example, look up a phone number associated with a name.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993626"> </a><a href="CmnLaunchCodes.html#1004171"><code>sysAppLaunchCmdLookupWord</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993628"> </a>Look a word up in the FEP dictionaries.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993633"> </a><a href="CmnLaunchCodes.html#1004258"><code>sysAppLaunchCmdMultimediaEvent</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993635"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993640"> </a><a href="CmnLaunchCodes.html#994023"><code>sysAppLaunchCmdNormalLaunch</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="993642"> </a>Launch normally. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993647"> </a><a href="CmnLaunchCodes.html#994016"><code>sysAppLaunchCmdNotify</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="993649"> </a>Receive a notification. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993654"> </a><a href="CmnLaunchCodes.html#994066"><code>sysAppLaunchCmdOpenDB</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993656"> </a>Launch application and open a database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993661"> </a><a href="CmnLaunchCodes.html#1004617"><code>sysAppLaunchCmdPanelCalledFromApp</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993663"> </a>Tell preferences panel that it was invoked from an application, not the Preferences application.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993668"> </a><a href="CmnLaunchCodes.html#1004854"><code>sysAppLaunchCmdPinletLaunch</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993670"> </a>Sent to an application that is launched as a pinlet instead of <a href="CmnLaunchCodes.html#994023"><code>sysAppLaunchCmdNormalLaunch</code></a> in order to launch the application.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993678"> </a><a href="CmnLaunchCodes.html#1004855"><code>sysAppLaunchCmdReturnFromPanel</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993680"> </a>Tell an application that it's restarting after preferences panel had been called. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993685"> </a><a href="CmnLaunchCodes.html#1005211"><code>sysAppLaunchCmdRun68KApp</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993687"> </a>Launch a 68K-based application.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993692"> </a><a href="CmnLaunchCodes.html#994125"><code>sysAppLaunchCmdSaveData</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993694"> </a>Save data. Often sent before find operations. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993696"> </a><code>sysAppLaunchCmdSlipLaunch</code></p>
+    </td>
+    <td><p class="tt"><a name="993698"> </a>System use only.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993700"> </a><code>sysAppLaunchCmdSyncCallApplicationV10</code></p>
+    </td>
+    <td><p class="tt"><a name="993702"> </a>Obsolete launch code.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993707"> </a><a href="CmnLaunchCodes.html#993716"><code>sysAppLaunchCmdSyncNotify</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993709"> </a>Notify applications that a HotSync has been completed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993714"> </a><a href="CmnLaunchCodes.html#1005619"><code>sysAppLaunchCmdSyncRequest</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993716"> </a>Request a HotSync.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993721"> </a><a href="CmnLaunchCodes.html#1005741"><code>sysAppLaunchCmdSyncRequestLocal</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993723"> </a>Request a "local" HotSync.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993728"> </a><a href="CmnLaunchCodes.html#1005773"><code>sysAppLaunchCmdSyncRequestRemote</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993730"> </a>Request a "remote" HotSync.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993735"> </a><a href="CmnLaunchCodes.html#1005796"><code>sysAppLaunchCmdSystemLock</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993737"> </a>Sent to the Security application to request that the system be locked down. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993742"> </a><a href="CmnLaunchCodes.html#993896"><code>sysAppLaunchCmdSystemReset</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993744"> </a>Respond to system reset. No UI is allowed during this launch code. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993749"> </a><a href="CmnLaunchCodes.html#1005925"><code>sysAppLaunchCmdTimeChange</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993751"> </a>Respond to system time change.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993756"> </a><a href="CmnLaunchCodes.html#994073"><code>sysAppLaunchPnpsPreLaunch</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993758"> </a>Pre-launch code for "plug-and-play" devices.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993763"> </a><code>sysBootAppLaunchCmdNoSublaunch</code></p>
+    </td>
+    <td><p class="tt"><a name="993765"> </a>Informs the boot application that a no-notify reset has occurred.<i> This launch code is for system use only.</i></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993770"> </a><a href="CmnLaunchCodes.html#1010011"><code>sysLaunchCmdAppExited</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993772"> </a>An application has exited from its <a href="AppMgr.html#994755"><code>PilotMain()</code></a> function.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993780"> </a><a href="CmnLaunchCodes.html#1010007"><code>sysLaunchCmdBoot</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993782"> </a>Informs operating system initialization procedures that the system is booting. <i>This launch code is for system use only.</i></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993787"> </a><a href="CmnLaunchCodes.html#993881"><code>sysLaunchCmdFinalize</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993789"> </a>An executable module is being unloaded; gives the module a last chance to do any needed "de-initialization."</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993794"> </a><a href="CmnLaunchCodes.html#993873"><code>sysLaunchCmdGetGlobals</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993796"> </a>Retrieve a pointer to an executable module's globals structure.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993801"> </a><a href="CmnLaunchCodes.html#1011562"><code>sysLaunchCmdGetModuleID</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993803"> </a>Retrieve an executable module's module ID.<i> This launch code is for system use only.</i></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993805"> </a><code>sysLaunchCmdGraphicsAccelInit</code></p>
+    </td>
+    <td><p class="tt"><a name="993807"> </a>System use only.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993812"> </a><a href="CmnLaunchCodes.html#993888"><code>sysLaunchCmdInitialize</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993814"> </a>An executable module has been loaded; gives the executable a chance to do any needed initialization.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993819"> </a><a href="CmnLaunchCodes.html#1011604"><code>sysLaunchCmdInitRuntime</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993821"> </a>A newly-loaded executable module should initialize its module ID and linker stub.<i> This launch code is for system use only.</i></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993826"> </a><a href="CmnLaunchCodes.html#1011629"><code>sysLibLaunchCmdGet68KSupportEntry</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993828"> </a>Determine if a shared library can be called from a 68K application.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993833"> </a><a href="CmnLaunchCodes.html#1011641"><code>sysPackageLaunchAttachImage</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993835"> </a>A package has been loaded and should supply an image context used by the package to determine when the package should be unloaded.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993840"> </a><a href="CmnLaunchCodes.html#1011676"><code>sysPackageLaunchGetInstantiate</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993842"> </a>Asks a package for the function used to instantiate the package's components.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994855"> </a><a href="../System_Management/Loader.html#1022863"><code>sysPatchLaunchCmdClearInfo</code></a></p>
+    </td>
+    <td><p class="tt"><a name="994857"> </a>Informs a patch that a target shared library has been unloaded.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993847"> </a><a href="../System_Management/Loader.html#1001451"><code>sysPatchLaunchCmdSetInfo</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993849"> </a>Informs a patch that one of the shared libraries it wants to patch is being loaded.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993854"> </a><a href="CmnLaunchCodes.html#1011684"><code>sysPinletLaunchCmdLoadProcPtrs</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993856"> </a>Requests pointers to the functions used by the Pen Input Manager when interacting with a pinlet.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993861"> </a><a href="CmnLaunchCodes.html#1011709"><code>sysSvcLaunchCmdGetQuickEditLabel</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993863"> </a>Get a "quick edit" label for one of the standard service panels.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993868"> </a><a href="CmnLaunchCodes.html#1011733"><code>sysSvcLaunchCmdGetServiceID</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993870"> </a>Get a standard service panel's service ID.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993875"> </a><a href="CmnLaunchCodes.html#1011763"><code>sysSvcLaunchCmdGetServiceInfo</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993877"> </a>Obtain the name and service ID for a given system service.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993882"> </a><a href="CmnLaunchCodes.html#1011779"><code>sysSvcLaunchCmdGetServiceList</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993884"> </a>Obtain a list of system services.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993889"> </a><a href="CmnLaunchCodes.html#1011792"><code>sysSvcLaunchCmdSetServiceID</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993891"> </a>Set a standard service panel's service ID.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<p class="caption"><a name="993898"> </a><b>Table 2.2&nbsp;&nbsp;Communications-related Launch Codes </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="993902"> </a><b>Code</b></p>
+    </th>
+    <th><p class="tt"><a name="993904"> </a><b>Request</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993906"> </a><code>kTelNwkLaunchCmdNetworkStatusChange</code></p>
+    </td>
+    <td><p class="tt"><a name="993908"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993910"> </a><code>kTelNwkLaunchCmdSignalLevelChange</code></p>
+    </td>
+    <td><p class="tt"><a name="993912"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993914"> </a><code>kTelNwkLaunchCmdUssdAnswer</code></p>
+    </td>
+    <td><p class="tt"><a name="993916"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993918"> </a><code>kTelPowLaunchCmdBatteryChargeLevelChange</code></p>
+    </td>
+    <td><p class="tt"><a name="993920"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993922"> </a><code>kTelPowLaunchCmdBatteryConnectionStatusChange</code></p>
+    </td>
+    <td><p class="tt"><a name="993924"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993926"> </a><code>kTelPowLaunchCmdConnectionOff</code></p>
+    </td>
+    <td><p class="tt"><a name="993928"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993930"> </a><code>kTelPowLaunchCmdConnectionOn</code></p>
+    </td>
+    <td><p class="tt"><a name="993932"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993934"> </a><code>kTelPowLaunchCmdPhonebookNotReady</code></p>
+    </td>
+    <td><p class="tt"><a name="993936"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993938"> </a><code>kTelPowLaunchCmdPhonebookReady</code></p>
+    </td>
+    <td><p class="tt"><a name="993940"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993942"> </a><code>kTelPowLaunchCmdSmsNotReady</code></p>
+    </td>
+    <td><p class="tt"><a name="993944"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993946"> </a><code>kTelPowLaunchCmdSmsReady</code></p>
+    </td>
+    <td><p class="tt"><a name="993948"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993950"> </a><code>kTelSmsLaunchCmdIncomingMessage</code></p>
+    </td>
+    <td><p class="tt"><a name="993952"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993954"> </a><code>kTelSpcLaunchCmdCallAlerting</code></p>
+    </td>
+    <td><p class="tt"><a name="993956"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993958"> </a><code>kTelSpcLaunchCmdCallConnect</code></p>
+    </td>
+    <td><p class="tt"><a name="993960"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993962"> </a><code>kTelSpcLaunchCmdCallDialing</code></p>
+    </td>
+    <td><p class="tt"><a name="993964"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993966"> </a><code>kTelSpcLaunchCmdCallerIdAvailable</code></p>
+    </td>
+    <td><p class="tt"><a name="993968"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993970"> </a><code>kTelSpcLaunchCmdCallHeld</code></p>
+    </td>
+    <td><p class="tt"><a name="993972"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993974"> </a><code>kTelSpcLaunchCmdCallIncoming</code></p>
+    </td>
+    <td><p class="tt"><a name="993976"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993978"> </a><code>kTelSpcLaunchCmdCallReleased</code></p>
+    </td>
+    <td><p class="tt"><a name="993980"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993982"> </a><code>kTelSpcLaunchCmdCallWaiting</code></p>
+    </td>
+    <td><p class="tt"><a name="993984"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993986"> </a><code>kTelStyLaunchCmdAuthenticated</code></p>
+    </td>
+    <td><p class="tt"><a name="993988"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993990"> </a><code>kTelStyLaunchCmdAuthenticationCanceled</code></p>
+    </td>
+    <td><p class="tt"><a name="993992"> </a> </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="993997"> </a><a href="CmnLaunchCodes.html#996275"><code>sysAppLaunchCmdAntennaUp</code></a></p>
+    </td>
+    <td><p class="tt"><a name="993999"> </a>The antenna has been raised on a device that is appropriately equipped.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994004"> </a><a href="../High-Level_Communications/HLC_ExgMgrRef.html#1327297"><code>sysAppLaunchCmdExgAskUser</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="994006"> </a>Let the application override display of the dialog asking user if they want to receive incoming data via the Exchange Manager.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994011"> </a><a href="../High-Level_Communications/HLC_ExgMgrRef.html#1327329"><code>sysAppLaunchCmdExgGetData</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="994013"> </a>Notify the application that it should send data using the Exchange Manager.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994018"> </a><a href="../High-Level_Communications/HLC_ExgMgrRef.html#1328314"><code>sysAppLaunchCmdExgPreview</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="994020"> </a>Notify the application that it should display a preview using the Exchange Manager. </p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994025"> </a><a href="../High-Level_Communications/HLC_ExgMgrRef.html#1327402"><code>sysAppLaunchCmdExgReceiveData</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="994027"> </a>Notify the application that it should receive incoming data using the Exchange Manager.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994032"> </a><a href="CmnLaunchCodes.html#1003495"><code>sysAppLaunchCmdGoToURL</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="994034"> </a>Launch an application and open a URL.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994039"> </a><a href="CmnLaunchCodes.html#1006037"><code>sysAppLaunchCmdURLParams</code></a></p>
+    </td>
+    <td><p class="tt"><a name="994041"> </a>Obsolete launch code.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994046"> </a><a href="CmnLaunchCodes.html#1006487"><code>sysAppLaunchNppiNoUI</code></a></p>
+    </td>
+    <td><p class="tt"><a name="994048"> </a>Launch a network panel plug-in without UI, and load NetLib.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994053"> </a><a href="CmnLaunchCodes.html#1006504"><code>sysAppLaunchNppiUI</code></a></p>
+    </td>
+    <td><p class="tt"><a name="994055"> </a>Launch a network panel plug-in with UI.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994060"> </a><a href="../Low-Level_Communications/LowLevelComms_BtRef.html#1394969"><code>sysBtLaunchCmdExecuteService</code></a></p>
+    </td>
+    <td><p class="tt"><a name="994062"> </a>Let Bluetooth service applications know that there is an inbound-connected data socket.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994067"> </a><a href="../Low-Level_Communications/LowLevelComms_BtRef.html#1384572"><code>sysBtLaunchCmdPrepareService</code></a></p>
+    </td>
+    <td><p class="tt"><a name="994069"> </a>Let Bluetooth service applications know that a listener socket has been created and to request an SDP service record.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994074"> </a><a href="CmnLaunchCodes.html#1009832"><code>sysCncPluginLaunchCmdGetPlugins</code></a></p>
+    </td>
+    <td><p class="tt"><a name="994076"> </a>Request for plug-in descriptions from Connection Manager plug-in modules</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994081"> </a><a href="CmnLaunchCodes.html#1009859"><code>sysCncPluginLaunchCmdRegister</code></a></p>
+    </td>
+    <td><p class="tt"><a name="994083"> </a>Instructs Connection Manager plug-ins to initialize themselves.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994088"> </a><a href="CmnLaunchCodes.html#1009879"><code>sysCncPluginLaunchCmdUnregister</code></a></p>
+    </td>
+    <td><p class="tt"><a name="994090"> </a>The Connection Manager plug-in is being removed.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994095"> </a><a href="CmnLaunchCodes.html#1009904"><code>sysCncWizardLaunchCmdEdit</code></a></p>
+    </td>
+    <td><p class="tt"><a name="994097"> </a>Edit a Connection Manager profile.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994102"> </a><a href="CmnLaunchCodes.html#1009933"><code>sysDialLaunchCmdDial</code></a></p>
+    </td>
+    <td><p class="tt"><a name="994104"> </a>Dial the modem.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994109"> </a><a href="CmnLaunchCodes.html#1009972"><code>sysDialLaunchCmdHangUp</code></a></p>
+    </td>
+    <td><p class="tt"><a name="994111"> </a>Hang the modem up.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994113"> </a><code>sysIOSDriverInstall</code></p>
+    </td>
+    <td><p class="tt"><a name="994115"> </a>System use only.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="994117"> </a><code>sysIOSDriverRemove</code></p>
+    </td>
+    <td><p class="tt"><a name="994119"> </a>System use only.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+
+<h2 class="haH2">
+  <a name="994122"> </a>Application Manager Function Summary <a href="#971704"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <td><p class="tt"><a name="997171"> </a><span style="color: #000000;  font-style: normal; font-weight: bold; text-decoration: none; text-transform: none; vertical-align: baseline">Launching Applications</span></p>
+    </td>
+    <td><p class="tt"><a name="997173"> </a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="997178"> </a><a href="AppMgr.html#995070"><code>SysAppLaunch()</code></a><br><a href="AppMgr.html#998122"><code>SysAppLaunchLocal()</code></a><br><a href="AppMgr.html#995186"><code>SysAppLaunchRemote()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="997189"> </a><a href="AppMgr.html#995528"><code>SysAppLaunchV40()</code></a><br><a href="AppMgr.html#996594"><code>SysUIAppSwitch()</code></a><br><a href="AppMgr.html#996880"><code>SysUIAppSwitchV40()</code></a></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" rowspan="1"><p class="tt"><a name="997197"> </a><b>Other Application Manager Functions</b></p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="997204"> </a><a href="AppMgr.html#995594"><code>SysBroadcastActionCode()</code></a><br><a href="AppMgr.html#995640"><code>SysCurAppDatabase()</code></a><br><a href="AppMgr.html#995966"><code>SysCurAppDatabaseV40()</code></a></p>
+    </td>
+    <td><p class="tt"><a name="997215"> </a><a href="AppMgr.html#996268"><code>SysGetStackInfo()</code></a><br><a href="AppMgr.html#996554"><code>SysReset()</code></a></p>
+    </td>
+  </tr>
+</table>
+
+</div>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1996&#8211;2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="ProgrammingBasics_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="ProgrammingBasicsTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="Nutshell.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="EventLoop.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="ProgrammingBasicsIX.html">Index</a>
+</p>
+</td>
+</tr>
+</table>
+<!-- END FOOTER -->
+
+</body>
+</html>

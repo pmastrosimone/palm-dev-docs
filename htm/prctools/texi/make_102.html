@@ -1,0 +1,289 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>GNU <CODE>make</CODE>: Implicit Variables</TITLE>
+
+<META NAME="description" CONTENT="GNU <CODE>make</CODE>: Implicit Variables">
+<META NAME="keywords" CONTENT="GNU <CODE>make</CODE>: Implicit Variables">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC106"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_101.html#SEC105"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_103.html#SEC107"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 10.3 Variables Used by Implicit Rules </H2>
+<!--docid::SEC106::-->
+<P>
+
+The commands in built-in implicit rules make liberal use of certain
+predefined variables.  You can alter these variables in the makefile,
+with arguments to <CODE>make</CODE>, or in the environment to alter how the
+implicit rules work without redefining the rules themselves.  You can
+cancel all variables used by implicit rules with the <SAMP>`-R'</SAMP> or
+<SAMP>`--no-builtin-variables'</SAMP> option.
+</P><P>
+
+For example, the command used to compile a C source file actually says
+<SAMP>`$(CC) -c $(CFLAGS) $(CPPFLAGS)'</SAMP>.  The default values of the variables
+used are <SAMP>`cc'</SAMP> and nothing, resulting in the command <SAMP>`cc -c'</SAMP>.  By
+redefining <SAMP>`CC'</SAMP> to <SAMP>`ncc'</SAMP>, you could cause <SAMP>`ncc'</SAMP> to be
+used for all C compilations performed by the implicit rule.  By redefining
+<SAMP>`CFLAGS'</SAMP> to be <SAMP>`-g'</SAMP>, you could pass the <SAMP>`-g'</SAMP> option to
+each compilation.  <EM>All</EM> implicit rules that do C compilation use
+<SAMP>`$(CC)'</SAMP> to get the program name for the compiler and <EM>all</EM>
+include <SAMP>`$(CFLAGS)'</SAMP> among the arguments given to the compiler.</P><P>
+
+The variables used in implicit rules fall into two classes: those that are
+names of programs (like <CODE>CC</CODE>) and those that contain arguments for the
+programs (like <CODE>CFLAGS</CODE>).  (The "name of a program" may also contain
+some command arguments, but it must start with an actual executable program
+name.)  If a variable value contains more than one argument, separate them
+with spaces.
+</P><P>
+
+Here is a table of variables used as names of programs in built-in rules:
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>AR</CODE>
+<DD><A NAME="IDX508"></A>
+Archive-maintaining program; default <SAMP>`ar'</SAMP>.
+<A NAME="IDX509"></A>
+<P>
+
+<DT><CODE>AS</CODE>
+<DD><A NAME="IDX510"></A>
+Program for doing assembly; default <SAMP>`as'</SAMP>.
+<A NAME="IDX511"></A>
+<P>
+
+<DT><CODE>CC</CODE>
+<DD><A NAME="IDX512"></A>
+Program for compiling C programs; default <SAMP>`cc'</SAMP>.
+<A NAME="IDX513"></A>
+<P>
+
+<DT><CODE>CXX</CODE>
+<DD><A NAME="IDX514"></A>
+Program for compiling C++ programs; default <SAMP>`g++'</SAMP>.
+<A NAME="IDX515"></A>
+<P>
+
+<DT><CODE>CO</CODE>
+<DD><A NAME="IDX516"></A>
+Program for extracting a file from RCS; default <SAMP>`co'</SAMP>.
+<A NAME="IDX517"></A>
+<P>
+
+<DT><CODE>CPP</CODE>
+<DD><A NAME="IDX518"></A>
+Program for running the C preprocessor, with results to standard output;
+default <SAMP>`$(CC) -E'</SAMP>.
+<P>
+
+<DT><CODE>FC</CODE>
+<DD><A NAME="IDX519"></A>
+Program for compiling or preprocessing Fortran and Ratfor programs;
+default <SAMP>`f77'</SAMP>.
+<A NAME="IDX520"></A>
+<P>
+
+<DT><CODE>GET</CODE>
+<DD><A NAME="IDX521"></A>
+Program for extracting a file from SCCS; default <SAMP>`get'</SAMP>.
+<A NAME="IDX522"></A>
+<P>
+
+<DT><CODE>LEX</CODE>
+<DD><A NAME="IDX523"></A>
+Program to use to turn Lex grammars into C programs or Ratfor programs;
+default <SAMP>`lex'</SAMP>.
+<A NAME="IDX524"></A>
+<P>
+
+<DT><CODE>PC</CODE>
+<DD><A NAME="IDX525"></A>
+Program for compiling Pascal programs; default <SAMP>`pc'</SAMP>.
+<A NAME="IDX526"></A>
+<P>
+
+<DT><CODE>YACC</CODE>
+<DD><A NAME="IDX527"></A>
+Program to use to turn Yacc grammars into C programs; default <SAMP>`yacc'</SAMP>.
+<A NAME="IDX528"></A>
+<P>
+
+<DT><CODE>YACCR</CODE>
+<DD><A NAME="IDX529"></A>
+Program to use to turn Yacc grammars into Ratfor
+programs; default <SAMP>`yacc -r'</SAMP>.
+<P>
+
+<DT><CODE>MAKEINFO</CODE>
+<DD><A NAME="IDX530"></A>
+Program to convert a Texinfo source file into an Info file; default
+<SAMP>`makeinfo'</SAMP>.
+<A NAME="IDX531"></A>
+<P>
+
+<DT><CODE>TEX</CODE>
+<DD><A NAME="IDX532"></A>
+Program to make TeX DVI files from TeX source;
+default <SAMP>`tex'</SAMP>.
+<A NAME="IDX533"></A>
+<P>
+
+<DT><CODE>TEXI2DVI</CODE>
+<DD><A NAME="IDX534"></A>
+Program to make TeX DVI files from Texinfo source;
+default <SAMP>`texi2dvi'</SAMP>.
+<A NAME="IDX535"></A>
+<P>
+
+<DT><CODE>WEAVE</CODE>
+<DD><A NAME="IDX536"></A>
+Program to translate Web into TeX; default <SAMP>`weave'</SAMP>.
+<A NAME="IDX537"></A>
+<P>
+
+<DT><CODE>CWEAVE</CODE>
+<DD><A NAME="IDX538"></A>
+Program to translate C Web into TeX; default <SAMP>`cweave'</SAMP>.
+<A NAME="IDX539"></A>
+<P>
+
+<DT><CODE>TANGLE</CODE>
+<DD><A NAME="IDX540"></A>
+Program to translate Web into Pascal; default <SAMP>`tangle'</SAMP>.
+<A NAME="IDX541"></A>
+<P>
+
+<DT><CODE>CTANGLE</CODE>
+<DD><A NAME="IDX542"></A>
+Program to translate C Web into C; default <SAMP>`ctangle'</SAMP>.
+<A NAME="IDX543"></A>
+<P>
+
+<DT><CODE>RM</CODE>
+<DD><A NAME="IDX544"></A>
+Command to remove a file; default <SAMP>`rm -f'</SAMP>.
+<A NAME="IDX545"></A>
+</DL>
+<P>
+
+Here is a table of variables whose values are additional arguments for the
+programs above.  The default values for all of these is the empty
+string, unless otherwise noted.
+</P><P>
+
+<DL COMPACT>
+<DT><CODE>ARFLAGS</CODE>
+<DD><A NAME="IDX546"></A>
+Flags to give the archive-maintaining program; default <SAMP>`rv'</SAMP>.
+<P>
+
+<DT><CODE>ASFLAGS</CODE>
+<DD><A NAME="IDX547"></A>
+Extra flags to give to the assembler (when explicitly
+invoked on a <SAMP>`.s'</SAMP> or <SAMP>`.S'</SAMP> file).
+<P>
+
+<DT><CODE>CFLAGS</CODE>
+<DD><A NAME="IDX548"></A>
+Extra flags to give to the C compiler.
+<P>
+
+<DT><CODE>CXXFLAGS</CODE>
+<DD><A NAME="IDX549"></A>
+Extra flags to give to the C++ compiler.
+<P>
+
+<DT><CODE>COFLAGS</CODE>
+<DD><A NAME="IDX550"></A>
+Extra flags to give to the RCS <CODE>co</CODE> program.
+<P>
+
+<DT><CODE>CPPFLAGS</CODE>
+<DD><A NAME="IDX551"></A>
+Extra flags to give to the C preprocessor and programs
+that use it (the C and Fortran compilers).
+<P>
+
+<DT><CODE>FFLAGS</CODE>
+<DD><A NAME="IDX552"></A>
+Extra flags to give to the Fortran compiler.
+<P>
+
+<DT><CODE>GFLAGS</CODE>
+<DD><A NAME="IDX553"></A>
+Extra flags to give to the SCCS <CODE>get</CODE> program.
+<P>
+
+<DT><CODE>LDFLAGS</CODE>
+<DD><A NAME="IDX554"></A>
+Extra flags to give to compilers when they are
+supposed to invoke the linker, <SAMP>`ld'</SAMP>.
+<P>
+
+<DT><CODE>LFLAGS</CODE>
+<DD><A NAME="IDX555"></A>
+Extra flags to give to Lex.
+<P>
+
+<DT><CODE>PFLAGS</CODE>
+<DD><A NAME="IDX556"></A>
+Extra flags to give to the Pascal compiler.
+<P>
+
+<DT><CODE>RFLAGS</CODE>
+<DD><A NAME="IDX557"></A>
+Extra flags to give to the Fortran compiler for Ratfor programs.
+<P>
+
+<DT><CODE>YFLAGS</CODE>
+<DD><A NAME="IDX558"></A>
+Extra flags to give to Yacc.
+</DL>
+<P>
+
+<A NAME="Chained Rules"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_101.html#SEC105"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_103.html#SEC107"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_99.html#SEC103"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_114.html#SEC118"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="make_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

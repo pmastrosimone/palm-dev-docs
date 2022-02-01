@@ -1,0 +1,171 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Debugging with GDB: Server</TITLE>
+
+<META NAME="description" CONTENT="Debugging with GDB: Server">
+<META NAME="keywords" CONTENT="Debugging with GDB: Server">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC134"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_135.html#SEC135"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 17.1 Using the <CODE>gdbserver</CODE> program </H2>
+<!--docid::SEC134::-->
+<P>
+
+<A NAME="IDX602"></A>
+<A NAME="IDX603"></A>
+<CODE>gdbserver</CODE> is a control program for Unix-like systems, which
+allows you to connect your program with a remote GDB via
+<CODE>target remote</CODE>---but without linking in the usual debugging stub.
+</P><P>
+
+<CODE>gdbserver</CODE> is not a complete replacement for the debugging stubs,
+because it requires essentially the same operating-system facilities
+that GDB itself does.  In fact, a system that can run
+<CODE>gdbserver</CODE> to connect to a remote GDB could also run
+GDB locally!  <CODE>gdbserver</CODE> is sometimes useful nevertheless,
+because it is a much smaller program than GDB itself.  It is
+also easier to port than all of GDB, so you may be able to get
+started more quickly on a new system by using <CODE>gdbserver</CODE>.
+Finally, if you develop code for real-time systems, you may find that
+the tradeoffs involved in real-time operation make it more convenient to
+do as much development work as possible on another system, for example
+by cross-compiling.  You can use <CODE>gdbserver</CODE> to make a similar
+choice for debugging.
+</P><P>
+
+GDB and <CODE>gdbserver</CODE> communicate via either a serial line
+or a TCP connection, using the standard GDB remote serial
+protocol.
+</P><P>
+
+<DL COMPACT>
+<DT><EM>On the target machine,</EM>
+<DD>you need to have a copy of the program you want to debug.
+<CODE>gdbserver</CODE> does not need your program's symbol table, so you can
+strip the program if necessary to save space.  GDB on the host
+system does all the symbol handling.
+<P>
+
+To use the server, you must tell it how to communicate with GDB;
+the name of your program; and the arguments for your program.  The usual
+syntax is:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>target&#62; gdbserver <VAR>comm</VAR> <VAR>program</VAR> [ <VAR>args</VAR> <small>...</small> ]
+</FONT></pre></td></tr></table></P><P>
+
+<VAR>comm</VAR> is either a device name (to use a serial line) or a TCP
+hostname and portnumber.  For example, to debug Emacs with the argument
+<SAMP>`foo.txt'</SAMP> and communicate with GDB over the serial port
+<TT>`/dev/com1'</TT>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>target&#62; gdbserver /dev/com1 emacs foo.txt
+</FONT></pre></td></tr></table></P><P>
+
+<CODE>gdbserver</CODE> waits passively for the host GDB to communicate
+with it.
+</P><P>
+
+To use a TCP connection instead of a serial line:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>target&#62; gdbserver host:2345 emacs foo.txt
+</FONT></pre></td></tr></table></P><P>
+
+The only difference from the previous example is the first argument,
+specifying that you are communicating with the host GDB via
+TCP.  The <SAMP>`host:2345'</SAMP> argument means that <CODE>gdbserver</CODE> is to
+expect a TCP connection from machine <SAMP>`host'</SAMP> to local TCP port 2345.
+(Currently, the <SAMP>`host'</SAMP> part is ignored.)  You can choose any number
+you want for the port number as long as it does not conflict with any
+TCP ports already in use on the target system (for example, <CODE>23</CODE> is
+reserved for <CODE>telnet</CODE>).<A NAME="DOCF4" HREF="gdb_fot.html#FOOT4">(4)</A>  You must use the same port number with the host GDB
+<CODE>target remote</CODE> command.
+</P><P>
+
+On some targets, <CODE>gdbserver</CODE> can also attach to running programs.
+This is accomplished via the <CODE>--attach</CODE> argument.  The syntax is:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>target&#62; gdbserver <VAR>comm</VAR> --attach <VAR>pid</VAR>
+</FONT></pre></td></tr></table></P><P>
+
+<VAR>pid</VAR> is the process ID of a currently running process.  It isn't necessary
+to point <CODE>gdbserver</CODE> at a binary for the running process.
+</P><P>
+
+<DT><EM>On the GDB host machine,</EM>
+<DD>you need an unstripped copy of your program, since GDB needs
+symbols and debugging information.  Start up GDB as usual,
+using the name of the local copy of your program as the first argument.
+(You may also need the <SAMP>`--baud'</SAMP> option if the serial line is
+running at anything other than 9600bps.)  After that, use <CODE>target
+remote</CODE> to establish communications with <CODE>gdbserver</CODE>.  Its argument
+is either a device name (usually a serial device, like
+<TT>`/dev/ttyb'</TT>), or a TCP port descriptor in the form
+<CODE><VAR>host</VAR>:<VAR>PORT</VAR></CODE>.  For example:
+<P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) target remote /dev/ttyb
+</FONT></pre></td></tr></table></P><P>
+
+communicates with the server via serial line <TT>`/dev/ttyb'</TT>, and
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>(gdb) target remote the-target:2345
+</FONT></pre></td></tr></table></P><P>
+
+communicates via a TCP connection to port 2345 on host <TT>`the-target'</TT>.
+For TCP connections, you must start up <CODE>gdbserver</CODE> prior to using
+the <CODE>target remote</CODE> command.  Otherwise you may get an error whose
+text depends on the host system, but which usually looks something like
+<SAMP>`Connection refused'</SAMP>.
+</DL>
+<P>
+
+<A NAME="NetWare"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_135.html#SEC135"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_133.html#SEC133"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_140.html#SEC140"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_284.html#SEC638">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gdb_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

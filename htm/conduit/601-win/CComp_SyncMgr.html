@@ -1,0 +1,755 @@
+<html>
+<head>
+<title>Using the Classic Sync Manager API | C/C++ Sync Suite Companion</title> 
+<link href="psi_devpubs.css" rel="stylesheet" type="text/css">
+
+<!-- BEGIN META DATA -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META NAME="KEYWORDS" CONTENT="C, C++, C/C++ Sync Suite, Sync Manager, classic, open, close, read, write, database, CDK, conduit, conduits, Windows">
+<META NAME="DESCRIPTION" CONTENT="Provides an overview of the classic Sync Manager and how to use it in C API-based conduits for Windows.">
+<META NAME="PSITEMPLATE" CONTENT="1006-007 PalmSource HTML 20040609">
+<META NAME="GENERATOR" CONTENT="Quadralay WebWorks Publisher Professional Edition 6.0.7">
+<META NAME="LASTUPDATED" CONTENT="06/28/04 08:29:32">
+<!-- END META DATA -->
+</head>
+
+<body bgcolor="#ffffff" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<a name="995934"></a>
+
+<!-- BEGIN TOPNAV -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="images/shim.gif" width="7" height="75" border="0" alt=""></td>
+<td align="left"><table border="0" cellpadding="0" cellspacing="0" width="744">
+<tr>
+<td><img name="index_r2_c1" src="images/shim.gif" width="25" height="75" border="0" alt=""></td>
+<td valign="top"><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_r2_c4" src="images/shim.gif" width="96" height="15" border="0" alt=""></td>
+</tr>
+<tr>
+<td><a href="http://www.palmsource.com/"><img name="ps_logo" src="images/ps_logo.gif" width="96" height="54" border="0" alt=""></a></td>
+</tr>
+
+</table>
+</td>
+
+<td><table border="0" cellpadding="0" cellspacing="0" width="30">
+<td><img name="index_x" src="images/shim.gif" width="30" height="75" border="0" alt=""></td>
+</table></td>
+
+<!--BEGIN MASTHEAD-->
+<td><table border="0" cellpadding="0" cellspacing="0" width="96">
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK NAVIGATION-->
+<span class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncCompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_EntryPoints.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_SyncMgrExtended.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncCompanionIX.html">Index</a>
+</span>
+<!--END BOOK NAVIGATION-->
+</tr>
+<tr>
+<td>
+<!--BEGIN PAGE TITLE-->
+<h2 class="PageTitle">4 &nbsp;&nbsp;
+Using the Classic Sync Manager API</h2></td>
+<!--END PAGE TITLE-->
+</tr>
+<tr>
+<td>
+<!--BEGIN BOOK TITLE-->
+<p class="BookTitle">C/C++ Sync Suite Companion</p>
+<p class="SubTitle">Palm OS&#174; Conduit Development Kit for  Windows, Version 6.0.1 </p>
+<!--END BOOK TITLE-->
+</td>
+</tr>
+<tr>
+<td><img name="index_x" src="images/shim.gif" width="615" height="5" border="0" alt=""></td>
+</tr>
+</table>
+</td>
+<!--END MASTHEAD-->
+</tr>
+</table>
+<img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+</tr>
+</table>
+<!-- END TOPNAV -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top" width="5"><img name="index_x" src="images/shim.gif" width="5" height="33" border="0" alt=""></td>
+
+<!--BEGIN SIDETOC-->
+<td valign="top" width="175">
+<div id="sidetoc" valign="bottom">
+<h1 class="SideTOC1"><a href="CComp_SyncMgr.html">4  Using the Classic Sync Manager API</a></h1>
+
+   <h2 class="SideTOC2"><a href="#999168">
+   Classic Sync Manager Overview</a></h2>
+
+      <h3 class="SideTOC3"><a href="#999187">
+      Sync Manager Error Checking</a></h3>
+
+      <h3 class="SideTOC3"><a href="#999190">
+      Classes and Structures in Sync Manager</a></h3>
+
+      <h3 class="SideTOC3"><a href="#999194">
+      Sync Manager and Performance</a></h3>
+
+      <h3 class="SideTOC3"><a href="#999224">
+      Typical Flow of Sync Manager Calls </a></h3>
+
+   <h2 class="SideTOC2"><a href="#999234">
+   Registering Your Conduit with Sync Manager</a></h2>
+
+   <h2 class="SideTOC2"><a href="#999250">
+   Opening Your Database</a></h2>
+
+   <h2 class="SideTOC2"><a href="#999355">
+   Working with Databases</a></h2>
+
+      <h3 class="SideTOC3"><a href="#999363">
+      Reading Handheld Database Records and Resources</a></h3>
+
+      <h3 class="SideTOC3"><a href="#999487">
+      Iterating Through a Database</a></h3>
+
+      <h3 class="SideTOC3"><a href="#999549">
+      Writing Handheld Database Records and Resources</a></h3>
+
+      <h3 class="SideTOC3"><a href="#999605">
+      Deleting Records in Handheld Databases</a></h3>
+
+      <h3 class="SideTOC3"><a href="#999696">
+      Cleaning Up Records</a></h3>
+
+   <h2 class="SideTOC2"><a href="#999720">
+   Closing Your Database</a></h2>
+
+   <h2 class="SideTOC2"><a href="#999735">
+   Updating the HotSync Manager Progress Display </a></h2>
+
+</div>
+</td>
+<!--END SIDETOC-->
+
+<td width="5">&nbsp;&nbsp;</td>
+<td width="2" background="images/index_r8_c10.gif"><img src="images/shim.gif" width="2" height="75" border="0" alt=""></td>
+<td width="5">&nbsp;&nbsp;</td>
+<td valign="top">
+
+<!--BEGIN CONTENT-->
+<div id="content" valign="bottom">
+<p><a name="999134"> </a>The classic Sync Manager API is a low-level programming interface to HotSync<sup>&#174;</sup> operations with <a href="Intro_Glossary.html#918816"><span style="color: #333;;  font-style: normal; font-weight: bold; text-decoration: underline; text-transform: none; vertical-align: baseline">classic database</span></a>s. This chapter provides an overview of the Sync Manager and how to use it in these sections:</p>
+   <blockquote class = "bq"><a name="999138"> </a><a href="CComp_SyncMgr.html#999168">Classic Sync Manager Overview</a> </blockquote>
+   <blockquote class = "bq"><a name="999142"> </a><a href="CComp_SyncMgr.html#999234">Registering Your Conduit with Sync Manager</a> </blockquote>
+   <blockquote class = "bq"><a name="999146"> </a><a href="CComp_SyncMgr.html#999250">Opening Your Database</a> </blockquote>
+   <blockquote class = "bq"><a name="999150"> </a><a href="CComp_SyncMgr.html#999355">Working with Databases</a> </blockquote>
+   <blockquote class = "bq"><a name="999154"> </a><a href="CComp_SyncMgr.html#999720">Closing Your Database</a> </blockquote>
+   <blockquote class = "bq"><a name="999158"> </a><a href="CComp_SyncMgr.html#999735">Updating the HotSync Manager Progress Display</a> </blockquote>
+
+<p><a name="999159"> </a>The Sync Manager API libraries are located in the <code>&lt;CDK&gt;\C++\Win\lib</code> directory of the C/C++ Sync Suite. </p>
+
+<h2 class="haH2">
+  <a name="999168"> </a>Classic Sync Manager Overview <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="999169"> </a>The classic Sync Manager manages all communications between the handheld and the desktop computer during synchronization operations with classic databases. This allows conduits to perform their operations without any consideration of how the data is moving between the handheld and desktop. </p>
+
+<p><a name="999170"> </a>Your conduit does not need to distinguish between direct cable, modem, or network connections. In fact, your code does not need do anything with respect to the mechanics of exchanging data between the desktop computer and the handheld.</p>
+<div class="NINoteImportant"><hr>
+  <a name="999171"> </a> <b>NOTE: </b> The Sync Manager access only Palm OS databases on the handheld. To access cards in expansion slots, call the Expansion Manager and Virtual File System Manager described in <a href="CComp_Expansion.html#995934">Chapter 6, "Using Expansion Technology."</a> 
+<hr>
+</div>
+
+<p><a name="999175"> </a>HotSync Manager calls each conduit that is properly registered with it on the user's desktop computer. HotSync Manager calls an entry point, the <a href="CRef_CnAPI.html#996737"><code>OpenConduit()</code></a> function, in your conduit, which allows your conduit to begin operation. The conduit can then call Sync Manager functions to exchange data with the handheld.</p>
+
+<p><a name="999179"> </a>To use the Sync Manager, your conduit must first call the Sync Manager <a href="CRef_SyncCommon.html#1003249"><code>SyncRegisterConduit()</code></a> function to configure the conduit. You can then call the Sync Manager functions to exchange data with the handheld. When you finish your synchronization process, call the <a href="CRef_SyncCommon.html#1003946"><code>SyncUnRegisterConduit()</code></a> function to release the Sync Manager to other processes.</p>
+<div class="NINoteImportant"><hr>
+  <a name="999186"> </a> <b>NOTE: </b> The Sync Manager is not guaranteed to be thread-safe, which means that you must make all of your Sync Manager calls from the same thread that launched your conduit.
+<hr>
+</div>
+<h3 class="hbH3">
+  <a name="999187"> </a>Sync Manager Error Checking <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="999188"> </a>Because the connection to the handheld might be interrupted at any time, you must be sure to check for errors after calling any Sync Manager function. </p>
+<div class="NINoteImportant"><hr>
+  <a name="999189"> </a> <b>IMPORTANT: </b> If your call to a Sync Manager function returns an error, the other values returned by that function are considered undefined. Using these values can cause data corruption.
+<hr>
+</div>
+<h3 class="hbH3">
+  <a name="999190"> </a>Classes and Structures in Sync Manager <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="999191"> </a>The Sync Manager API includes a number of classes that are described in this chapter. All of these classes consist of data members only and can be used in the same manner as you use standard C data structures.</p>
+<h3 class="hbH3">
+  <a name="999194"> </a>Sync Manager and Performance <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="999195"> </a>You need to keep in mind that many of the calls you make to the Sync Manager functions require the transfer of data between your desktop computer and the handheld. These calls are input/output bound and may require significant amounts of time to complete. For best performance of your conduit, you need to structure your logic to minimize the number of Sync Manager function calls. </p>
+
+<p><a name="999196"> </a>Specifically, you should design your code with the following performance-enhancing tips in mind:</p>
+<ul type="disc">
+  <li><a name="999197"> </a>Avoid reading a record or information block more than once from the handheld database. You can cache information in the desktop computer to eliminate the need to access the same information more than once.
+  <li><a name="999198"> </a>When you are reading information from a database, allocate a buffer (up to 64 KB) that is large enough to store the largest possible record size in that database. This is significantly faster than making one call to determine the data size and another call to actually read the data.
+</ul>
+
+<p><a name="999199"> </a>The following Sync Manager functions are not I/O bound and can therefore be called without significantly impacting the performance of your conduits:</p>
+<ul type="disc">
+  <li><a name="999203"> </a><a href="CRef_SyncCommon.html#1000322"><code>SyncGetAPIVersion()</code></a> 
+  <li><a name="999207"> </a><a href="CRef_SyncCommon.html#1000718"><code>SyncHHToHostDWord()</code></a> 
+  <li><a name="999211"> </a><a href="CRef_SyncCommon.html#1000811"><code>SyncHHToHostWord()</code></a> 
+  <li><a name="999215"> </a><a href="CRef_SyncCommon.html#1000938"><code>SyncHostToHHDWord()</code></a> 
+  <li><a name="999219"> </a><a href="CRef_SyncCommon.html#1001039"><code>SyncHostToHHWord()</code></a> 
+  <li><a name="999223"> </a><a href="CRef_SyncCommon.html#1004163"><code>SyncYieldCycles()</code></a> 
+</ul>
+<h3 class="hbH3">
+  <a name="999224"> </a>Typical Flow of Sync Manager Calls  <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="999225"> </a>The following sections describe the flow of calls from a typical conduit to the Sync Manager. These calls fall into the following categories:</p>
+<ul type="disc">
+  <li><a name="999226"> </a>registering the conduit with the Sync Manager 
+  <li><a name="999227"> </a>opening a database
+  <li><a name="999228"> </a>reading and writing records
+  <li><a name="999229"> </a>working with record categories
+  <li><a name="999230"> </a>closing the database
+  <li><a name="999231"> </a>unregistering the conduit with the Sync Manager
+</ul>
+
+<h2 class="haH2">
+  <a name="999234"> </a>Registering Your Conduit with Sync Manager <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="999235"> </a>You must register your conduit with the Sync Manager by calling the <a href="CRef_SyncCommon.html#1003249"><code>SyncRegisterConduit()</code></a> function. The Sync Manager returns a handle for your conduit, which you use in subsequent calls. When your conduit is done, you unregister it by calling the <a href="CRef_SyncCommon.html#1003946"><code>SyncUnRegisterConduit()</code></a> function. Most conduits make these calls in their <a href="CRef_CnAPI.html#996737"><code>OpenConduit()</code></a> functions. </p>
+<div class="NINoteImportant"><hr>
+  <a name="999245"> </a> <b>NOTE: </b> Be careful not to confuse registering with the Sync Manger and registering with HotSync Manager. Your conduit must register with the <i>Sync</i> Manager at run time. You must register your conduit with <i>HotSync</i> Manager at install time, otherwise HotSync Manager does not run your conduit (see <a href="CComp_Basics.html#996105">"Registering C API-based Conduits with HotSync Manager"</a>). 
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="999250"> </a>Opening Your Database <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="999254"> </a>You can use the <a href="CRef_SyncClassic.html#1070464"><code>SyncCreateDB()</code></a> function to create a new, opened database on the handheld, or you can use the <a href="CRef_SyncClassic.html#1070634"><code>SyncOpenDB()</code></a> function to open an existing handheld database. <a href="CComp_SyncMgr.html#999262">Listing 4.1</a> shows a section of code from an <code>OpenDataBase()</code> function. This function calls both the <code>SyncCreateDB()</code> and <code>SyncOpenDB()</code> functions.</p>
+<p class="CCodeCaption">
+  <a name="999262"> </a><b>Listing 4.1&nbsp;&nbsp;Opening a handheld database</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+BOOL OpenDataBase( CLogMgr&amp; theLog, const char * pName, DWORD dbCreator, <a name="999263"> </a>
+   DWORD dbType, BYTE&amp; hDataBase, WORD&amp; dbRecordCount, <a name="999264"> </a>
+   BOOL clearDB )<a name="999265"> </a>
+{<a name="999266"> </a>
+long retVal;<a name="999267"> </a>
+   // Open the remote database. <a name="999268"> </a>
+   retVal = <i>SyncOpenDB</i>( pName, 0, hDataBase );<a name="999269"> </a>
+   if ( retVal )<a name="999270"> </a>
+   {<a name="999271"> </a>
+      if ( retVal == SYNCERR_FILE_NOT_FOUND )<a name="999272"> </a>
+      {<a name="999273"> </a>
+         TRACE( "SyncOpenDB( %s ) failed [ %lX ], attempting to create DB.\n", <a name="999274"> </a>
+            pName, retVal );<a name="999275"> </a>
+<a name="999276"> </a>
+         // The database does not exist, so create it.<a name="999277"> </a>
+         CDbCreateDB  createInfo;<a name="999278"> </a>
+         memset( &amp;createInfo, 0, sizeof( CDbCreateDB ) ) ;<a name="999279"> </a>
+<a name="999280"> </a>
+         createInfo.m_Creator   = dbCreator; <a name="999281"> </a>
+         createInfo.m_Type      = dbType; <a name="999282"> </a>
+         createInfo.m_Flags     = eRecord;          // eRecord; <a name="999283"> </a>
+         createInfo.m_CardNo    = 0;                // Target card number <a name="999284"> </a>
+         createInfo.m_Version   = 0;<a name="999285"> </a>
+<a name="999286"> </a>
+         ASSERT( strlen( pName ) &lt;= DB_NAMELEN );<a name="999287"> </a>
+         strcpy( createInfo.m_Name, pName );<a name="999288"> </a>
+<a name="999289"> </a>
+         retVal = <i>SyncCreateDB</i>( createInfo );<a name="999290"> </a>
+         if ( retVal )<a name="999291"> </a>
+         {<a name="999292"> </a>
+            CString theDBName( pName );<a name="999293"> </a>
+            // fatal error<a name="999294"> </a>
+            theLog.Message( IDS_CANT_CREATE_DB, theDBName, TRUE ); <a name="1003787"> </a>
+<a name="1003764"> </a>
+<a name="999295"> </a>
+            TRACE( "SyncCreateDB( %s ) failed [ %lX ].\n", pName, retVal );<a name="999296"> </a>
+<a name="999297"> </a>
+            return FALSE;<a name="999298"> </a>
+         }<a name="999299"> </a>
+         else<a name="999300"> </a>
+         {<a name="999301"> </a>
+            // Database is open with handle createInfo.m_FileHandle. <a name="999302"> </a>
+            hDataBase = createInfo.m_FileHandle;<a name="999303"> </a>
+<a name="999304"> </a>
+            TRACE( "SyncCreateDB( %s ) succeeded.\n", pName );<a name="999305"> </a>
+         } <a name="999306"> </a>
+      }<a name="999307"> </a>
+      else<a name="999308"> </a>
+      {<a name="999309"> </a>
+         CString theDBName( pName );<a name="999310"> </a>
+         // fatal error <a name="999311"> </a>
+         theLog.Message( IDS_CANT_OPEN_DB, theDBName, TRUE );<a name="1003974"> </a>
+<a name="999312"> </a>
+         TRACE( "SyncOpenDB( %s ) failed [ %lX ].\n", pName, retVal );<a name="999313"> </a>
+<a name="999314"> </a>
+         return FALSE;<a name="999315"> </a>
+      }<a name="999316"> </a>
+   }<a name="999317"> </a>
+   // If clearDB, then clear all the existing records in the database.<a name="999318"> </a>
+   if ( clearDB )<a name="999319"> </a>
+   {<a name="999320"> </a>
+      retVal = <i>SyncPurgeAllRecs</i>( hDataBase );<a name="999321"> </a>
+      if ( retVal )<a name="999322"> </a>
+      {<a name="999323"> </a>
+         CString theDBName( pName );<a name="999324"> </a>
+         // fatal error<a name="999325"> </a>
+         theLog.Message( IDS_CANT_PURGE_DB, theDBName, TRUE );<a name="1004101"> </a>
+<a name="999326"> </a>
+         TRACE( "SyncPurgeAllRecs( %s ) failed [ %lX ].\n", pName, retVal );<a name="999327"> </a>
+<a name="999328"> </a>
+         return FALSE;<a name="999329"> </a>
+      }<a name="999330"> </a>
+      else<a name="999331"> </a>
+      {<a name="999332"> </a>
+         TRACE( "SyncPurgeAllRecs( %s ) succeeded.\n", pName );<a name="999333"> </a>
+      }<a name="999334"> </a>
+   }<a name="999335"> </a>
+<a name="999336"> </a>
+   // Determine how many records are in the remote database. <a name="999337"> </a>
+   retVal = <i>SyncGetDBRecordCount</i>( hDataBase, dbRecordCount );<a name="999338"> </a>
+   if ( retVal )<a name="999339"> </a>
+   {<a name="999340"> </a>
+      if ( hDataBase ) <i>SyncCloseDB</i>( hDataBase );<a name="999341"> </a>
+<a name="999342"> </a>
+      CString theDBName( pName );<a name="999343"> </a>
+      // fatal error<a name="999344"> </a>
+      theLog.Message( IDS_CANT_GET_DBRECCOUNT, theDBName, TRUE );<a name="1004251"> </a>
+<a name="999345"> </a>
+      TRACE( "SyncGetDBRecordCount( %s ) failed [ %lX ].\n", pName, retVal );<a name="999346"> </a>
+<a name="999347"> </a>
+      return FALSE;<a name="999348"> </a>
+   }<a name="999349"> </a>
+<a name="999350"> </a>
+   return TRUE;<a name="999351"> </a>
+<a name="999352"> </a>
+} // OpenDataBase <a name="999353"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h2 class="haH2">
+  <a name="999355"> </a>Working with Databases <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="999356"> </a>Each database is a collection of records with the following characteristics:</p>
+<ul type="disc">
+  <li><a name="999357"> </a>Each record in a database has an ID that is unique within the database.
+  <li><a name="999358"> </a>Each record in a database has flags that specify whether it has been marked as private, deleted, modified, archived, or busy.
+  <li><a name="999359"> </a>Each record in a database belongs to a category.
+  <li><a name="999360"> </a>The database contains an application information block that stores global information about the database. This block is typically used to store the names of categories for records in the database.
+  <li><a name="999361"> </a>The database has a sort information block that stores ordering information for records in the database. This block is for use by the application; Palm OS<sup>&#174;</sup> does not use it.
+</ul>
+<h3 class="hbH3">
+  <a name="999363"> </a>Reading Handheld Database Records and Resources <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="999367"> </a>As shown in <a href="CComp_SyncMgr.html#999375">Table 4.1</a>, the Sync Manager provides a number of functions for retrieving records and resources from a database on the handheld. Each of these functions reads the record or resource into an object of the <a href="CRef_SyncClassic.html#1070265"><code>CRawRecordInfo</code></a> class. </p>
+
+<p><a name="999371"> </a>Before calling each function, you must fill in values for some of the <code>CRawRecordInfo</code> object's fields. The function retrieves the record from the handheld and fills in other fields with the record information. The fields required for each function are described in the documentation for each function.</p>
+
+<p class="fineprint">
+<p class="caption"><a name="999375"> </a><b>Table 4.1&nbsp;&nbsp;Functions for reading records from handheld databases </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="999382"> </a><b>Function</b></p>
+    </th>
+    <th><p class="tt"><a name="999384"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999390"> </a><a href="CRef_SyncClassic.html#1128645"><code>SyncReadNextModifiedRec()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="999392"> </a>An iterator function that retrieves the next modified, archived, or deleted record from an opened record database on the handheld. Each call retrieves the next modified record until all modified records have been returned.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999397"> </a><a href="CRef_SyncClassic.html#1070816"><code>SyncReadNextModifiedRecInCategory()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="999401"> </a>An iterator function that retrieves modified records, including deleted and archived records, in a category from an open database on the handheld. Each call retrieves the next modified record from the category, until all modified records have been retrieved.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999407"> </a><a href="CRef_SyncClassic.html#1070834"><code>SyncReadNextRecInCategory()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="999409"> </a>An iterator function that retrieves any record in a category from an open database on the handheld, including deleted, archived, and modified records. Each call retrieves the next record from the category, until all records have been retrieved.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999415"> </a><a href="CRef_SyncClassic.html#1070890"><code>SyncReadRecordById()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="999417"> </a>Retrieves a record, by ID, from an open database on the handheld.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999423"> </a><a href="CRef_SyncClassic.html#1070908"><code>SyncReadRecordByIndex()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="999425"> </a>Retrieves a record, by index, from an open database on the handheld.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999431"> </a><a href="CRef_SyncClassic.html#1070926"><code>SyncReadResRecordByIndex()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="999433"> </a>Retrieves a resource record, by index, from an open resource database on the handheld.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<p><a name="999438"> </a><a href="CComp_SyncMgr.html#999440">Listing 4.2</a> shows a method named <code>ImportPrefs()</code>, which calls <code>SyncReadRecordByIndex()</code> to read records by index.</p>
+<p class="CCodeCaption">
+  <a name="999440"> </a><b>Listing 4.2&nbsp;&nbsp;Reading records from a handheld database</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+BOOL CNetPrefs::ImportPrefs( BYTE hHHDataBase, WORD recIndex )<a name="999441"> </a>
+{<a name="999442"> </a>
+   BYTE  readBuf[ READ_BUF_SIZE ];<a name="999443"> </a>
+   BOOL  importSuccess = TRUE;<a name="999444"> </a>
+<a name="999445"> </a>
+   fHDataBase = hHHDataBase;<a name="999446"> </a>
+<a name="999447"> </a>
+<a name="999448"> </a>
+   // Read from the HH database at index recIndex.<a name="999449"> </a>
+   CRawRecordInfo rrInfo;<a name="999450"> </a>
+<a name="999451"> </a>
+   ::memset( &amp;rrInfo, 0, sizeof( rrInfo ) );<a name="999452"> </a>
+<a name="999453"> </a>
+   rrInfo.m_FileHandle  = hHHDataBase;<a name="999454"> </a>
+   rrInfo.m_RecIndex    = recIndex;<a name="999455"> </a>
+   rrInfo.m_pBytes      = (BYTE *) &amp;readBuf[ 0 ];<a name="999456"> </a>
+   rrInfo.m_RecSize     = READ_BUF_SIZE;<a name="999457"> </a>
+   rrInfo.m_TotalBytes  = READ_BUF_SIZE;<a name="999458"> </a>
+<a name="999459"> </a>
+   long retVal = ::<i>SyncReadRecordByIndex</i>( rrInfo );<a name="999460"> </a>
+   if ( retVal )<a name="999461"> </a>
+   {<a name="999462"> </a>
+      importSuccess = FALSE;<a name="999463"> </a>
+      fPLogMgr-&gt;Message( IDS_CANT_READ_DB );<a name="999464"> </a>
+   }<a name="999465"> </a>
+   else<a name="999466"> </a>
+   {<a name="999467"> </a>
+      // The read succeeded, so copy the data onto fCompressedBuffer.<a name="999468"> </a>
+      fHHDBRecID = rrInfo.m_RecId;<a name="999469"> </a>
+<a name="999470"> </a>
+      ASSERT( rrInfo.m_RecSize != 0 );<a name="999471"> </a>
+<a name="999472"> </a>
+      if ( fCompressedBuffer != NULL ) delete fCompressedBuffer;<a name="999473"> </a>
+      fCompressedBuffer  = new BYTE[ rrInfo.m_RecSize ];<a name="999474"> </a>
+      fCompressedLength  = rrInfo.m_RecSize;<a name="999475"> </a>
+<a name="999476"> </a>
+      ::memcpy( (void *) fCompressedBuffer, (void *) rrInfo.m_pBytes, <a name="999477"> </a>
+         fCompressedLength );<a name="999478"> </a>
+   }<a name="999479"> </a>
+<a name="999480"> </a>
+   return importSuccess;<a name="999481"> </a>
+<a name="999482"> </a>
+} // CNetPrefs::ImportPrefs<a name="999483"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h3 class="hbH3">
+  <a name="999487"> </a>Iterating Through a Database <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="999488"> </a>The Sync Manager also provides functions that you can use to iterate through a database on the handheld. To iterate through records in a database, you first reset the current index into the database by calling the <a href="CRef_SyncClassic.html#1070946"><code>SyncResetRecordIndex()</code></a> function, and then repeatedly call one of the following retrieval functions:</p>
+<ul type="disc">
+  <li><a name="999495"> </a><a href="CRef_SyncClassic.html#1070834"><code>SyncReadNextRecInCategory()</code></a> retrieves the next record in a certain record category.
+  <li><a name="999499"> </a><a href="CRef_SyncClassic.html#1128645"><code>SyncReadNextModifiedRec()</code></a> retrieves the next record that has been modified (since the last synchronization).
+  <li><a name="999503"> </a><a href="CRef_SyncClassic.html#1070816"><code>SyncReadNextModifiedRecInCategory()</code></a> retrieves the next record in a specific record category that has been modified.
+</ul>
+
+<p><a name="999504"> </a>The Sync Manager automatically resets the current database iteration index for a database upon opening the database. To reset the index for subsequent iterations, you must call the <a href="CRef_SyncClassic.html#1070946"><code>SyncResetRecordIndex</code></a> function.</p>
+
+<p><a name="999512"> </a><a href="CComp_SyncMgr.html#999518">Listing 4.3</a> shows a section of code from that uses <a href="CRef_SyncClassic.html#1128645"><code>SyncReadNextModifiedRec()</code></a> to retrieve each record that has been modified in the handheld database.</p>
+<p class="CCodeCaption">
+  <a name="999518"> </a><b>Listing 4.3&nbsp;&nbsp;Using an iterator function to read handheld records</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+CRawRecordInfo rawRecord;<a name="999519"> </a>
+<a name="999520"> </a>
+retval = AllocateRawRecordMemory(rawRecord, EXPENSE_RAW_REC_MEM);<a name="999521"> </a>
+   // Read in each modified remote record one at a time.<a name="999522"> </a>
+while (!err &amp;&amp; !retval)<a name="999523"> </a>
+{<a name="999524"> </a>
+   if (!(err = <i>SyncReadNextModifiedRec</i>(rawRecord)))<a name="999525"> </a>
+   {<a name="999526"> </a>
+      // Convert from raw record format to CExpenseRecord.<a name="999527"> </a>
+      if (!m_pDTConvert-&gt;ConvertFromRemote(remRecord, rawRecord))<a name="999528"> </a>
+      {<a name="999529"> </a>
+         // Synchronize the record obtained from the handheld.<a name="999530"> </a>
+         retval = SynchronizeRecord(remRecord, locRecord,<a name="999531"> </a>
+            backRecord);<a name="999532"> </a>
+      }<a name="999533"> </a>
+      else<a name="999534"> </a>
+         retval = CONDERR_CONVERT_FROM_REMOTE_REC; <a name="999535"> </a>
+   } <a name="999536"> </a>
+   memset(rawRecord.m_pBytes, 0, rawRecord.m_TotalBytes);<a name="999537"> </a>
+   }<a name="999538"> </a>
+if (err &amp;&amp; err != SYNCERR_FILE_NOT_FOUND)<a name="999539"> </a>
+   LogBadReadRecord(err);<a name="999540"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+
+<h4 class="hcH4">
+  <a name="999542"> </a>Modifying a Database While Iterating
+</h4>
+
+<p><a name="999543"> </a>The Sync Manager does not support the interleaving of iterating through and modifying a database at the same time, which means that you need to structure your logic not to modify a database while iterating through it. Beginning with version 2.0 of Palm OS software, you can safely delete records from a database while iterating through it, <i>except</i> when using the <a href="CRef_SyncClassic.html#1070676"><code>SyncPurgeAllRecsInCategory()</code></a> function. </p>
+<h3 class="hbH3">
+  <a name="999549"> </a>Writing Handheld Database Records and Resources <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="999550"> </a>The Sync Manager provides several functions for writing records and resources to a database on the handheld. Each of these functions sends record information that you have stored in an object of the <a href="CRef_SyncClassic.html#1070265"><code>CRawRecordInfo</code></a> class. You can use these functions to modify an existing record or to add a new record to a database.</p>
+
+<p><a name="999554"> </a>To write a record to a handheld database, fill in certain fields in the raw record object and then call one of the Sync Manager record-writing functions. The function sends the record to a database on the handheld.</p>
+
+<p><a name="999559"> </a>You can use the <a href="CRef_SyncClassic.html#1071040"><code>SyncWriteRec()</code></a> function to write a record to a handheld record database, and you can use <a href="CRef_SyncClassic.html#1071058"><code>SyncWriteResourceRec()</code></a> to write a resource to a resource database on the handheld.</p>
+
+<p><a name="999567"> </a><a href="CComp_SyncMgr.html#999570">Listing 4.4</a> shows a method named <code>ExportPrefs()</code>, which calls the <code>SyncWriteRec()</code> function. </p>
+<p class="CCodeCaption">
+  <a name="999570"> </a><b>Listing 4.4&nbsp;&nbsp;Writing records to a handheld</b>
+</p>
+
+<div class="CodeRule"><hr></div><pre class="CodeBlock">
+BOOL CNetPrefs::ExportPrefs( BYTE hHHDataBase )<a name="999571"> </a>
+{<a name="999572"> </a>
+   BOOL  exportSuccess = TRUE;<a name="999573"> </a>
+<a name="999574"> </a>
+   fHDataBase = hHHDataBase;<a name="999575"> </a>
+<a name="999576"> </a>
+   if ( fCompressedLength != 0 )<a name="999577"> </a>
+   {<a name="999578"> </a>
+      ASSERT( fCompressedBuffer != NULL );<a name="999579"> </a>
+<a name="999580"> </a>
+      // write to the HH database.<a name="999581"> </a>
+<a name="999582"> </a>
+      CRawRecordInfo  rrInfo;<a name="999583"> </a>
+      ::memset( &amp;rrInfo, 0, sizeof( rrInfo ) );<a name="999584"> </a>
+<a name="999585"> </a>
+      rrInfo.m_FileHandle   = hHHDataBase;<a name="999586"> </a>
+      rrInfo.m_RecId        = fHHDBRecID;<a name="999587"> </a>
+      rrInfo.m_pBytes       = fCompressedBuffer;<a name="999588"> </a>
+      rrInfo.m_RecSize      = fCompressedLength;<a name="999589"> </a>
+<a name="999590"> </a>
+      long retVal = ::<i>SyncWriteRec</i>( rrInfo );<a name="999591"> </a>
+      if ( retVal )<a name="999592"> </a>
+      {<a name="999593"> </a>
+         exportSuccess = FALSE;<a name="999594"> </a>
+         fPLogMgr-&gt;Message( IDS_CANT_WRITE_DB );<a name="999595"> </a>
+      }<a name="999596"> </a>
+<a name="999597"> </a>
+   }<a name="999598"> </a>
+<a name="999599"> </a>
+   return exportSuccess;<a name="999600"> </a>
+<a name="999601"> </a>
+} // CNetPrefs::ExportPrefs<a name="999602"> </a>
+</pre><div class="CodeRule"><hr></div>
+
+<h3 class="hbH3">
+  <a name="999605"> </a>Deleting Records in Handheld Databases <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="999606"> </a>When you use a Sync Manager function to delete a record or resource from a database, the record or resource is immediately deleted and removed from the database. This is in contrast to some calls that applications on the handheld make to delete records, which only mark those records for deletion but do not remove them immediately. </p>
+<div class="NINoteImportant"><hr>
+  <a name="999607"> </a> <b>NOTE: </b> Sync Manager functions that begin with <code>Delete</code> and <code>Purge</code> both delete objects <i>immediately</i>.
+<hr>
+</div>
+
+<p><a name="999608"> </a>The Sync Manager provides several functions for deleting records or resources from databases. To use these functions, you assign data to specific fields in an object of the <a href="CRef_SyncClassic.html#1070265"><code>CRawRecordInfo</code></a> class. You then call one of the functions described in <a href="CComp_SyncMgr.html#999621">Table 4.2</a>. </p>
+
+<p class="fineprint">
+<p class="caption"><a name="999621"> </a><b>Table 4.2&nbsp;&nbsp;Functions for deleting single records </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="999625"> </a><b>Function</b></p>
+    </th>
+    <th><p class="tt"><a name="999627"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999633"> </a><a href="CRef_SyncClassic.html#1070520"><code>SyncDeleteRec()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="999635"> </a>Deletes a record from a record database.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999641"> </a><a href="CRef_SyncClassic.html#1070538"><code>SyncDeleteResourceRec()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="999643"> </a>Deletes a specific resource from a resource database.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<p><a name="999645"> </a>You can delete multiple records by calling one of the functions described in <a href="CComp_SyncMgr.html#999655">Table 4.3</a>. </p>
+
+<p class="fineprint">
+<p class="caption"><a name="999655"> </a><b>Table 4.3&nbsp;&nbsp;Functions for deleting multiple records </b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="999659"> </a><b>Function</b></p>
+    </th>
+    <th><p class="tt"><a name="999661"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999667"> </a><a href="CRef_SyncClassic.html#1070696"><code>SyncPurgeDeletedRecs()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="999669"> </a>Removes all of the records in a record database that have previously been marked as deleted or archived.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999675"> </a><a href="CRef_SyncClassic.html#1070658"><code>SyncPurgeAllRecs()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="999677"> </a>Removes all records in a record database on the handheld.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999682"> </a><a href="CRef_SyncClassic.html#1070676"><code>SyncPurgeAllRecsInCategory()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="999686"> </a>Removes all of the records in a specific category from a record database on the handheld.</p>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999692"> </a><a href="CRef_SyncClassic.html#1070482"><code>SyncDeleteAllResourceRec()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="999694"> </a>Removes all resources from a resource database.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+<h3 class="hbH3">
+  <a name="999696"> </a>Cleaning Up Records <a href="#995934"><span class="nav">^TOP^</span></a>
+</h3>
+
+
+<p><a name="999700"> </a>You can use the function shown in <a href="CComp_SyncMgr.html#999704">Table 4.4</a> at the end of your synchronization operations to clear the record status flags.</p>
+
+<p class="fineprint">
+<p class="caption"><a name="999704"> </a><b>Table 4.4&nbsp;&nbsp;Functions to clean up records</b></p>
+<div class="tablediv"><table cellspacing="0" class="tTable">
+
+  <tr valign="top">
+    <th><p class="tt"><a name="999708"> </a><b>Function</b></p>
+    </th>
+    <th><p class="tt"><a name="999710"> </a><b>Description</b></p>
+    </th>
+  </tr>
+  <tr valign="top">
+    <td><p class="tt"><a name="999715"> </a><a href="CRef_SyncClassic.html#1070964"><code>SyncResetSyncFlags()</code></a> </p>
+    </td>
+    <td><p class="tt"><a name="999717"> </a>Resets the modified flag of all records in the opened record database on the handheld. Resets the backup date for an opened record or resource database.</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</p>
+
+<h2 class="haH2">
+  <a name="999720"> </a>Closing Your Database <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="999721"> </a>After you have finished with a handheld database, you must call the <a href="CRef_SyncClassic.html#1070426"><code>SyncCloseDB()</code></a> or <a href="CRef_SyncClassic.html#1070444"><code>SyncCloseDBEx()</code></a> function to close it as shown in <a href="CComp_SyncMgr.html#999262">Listing 4.1</a>. The Sync Manager allows only one database to be open at any time. </p>
+<div class="NINoteImportant"><hr>
+  <a name="999731"> </a> <b>IMPORTANT: </b> If you open a database, you must close it before exiting your conduit; otherwise, other conduits will not be able to open their databases.
+<hr>
+</div>
+
+<h2 class="haH2">
+  <a name="999735"> </a>Updating the HotSync Manager Progress Display  <a href="#995934"><span class="nav">^TOP^</span></a>
+</h2>
+
+
+<p><a name="1004795"> </a>If your conduit is performing any time-consuming operations between Sync Manager calls, you need to call the <a href="CRef_SyncCommon.html#1004163"><code>SyncYieldCycles()</code></a> function periodically to keep HotSync Manager's progress display indicator current (<a href="CComp_SyncMgr.html#999749">Figure 4.1</a>). If you neglect to call this function frequently enough, the user interface will appear to be frozen.</p>
+
+<p><a name="1004806"> </a>You must call the <a href="CRef_SyncCommon.html#1004163"><code>SyncYieldCycles()</code></a> function, and all other Sync Manager functions, from the same thread that launched your conduit. </p>
+
+<p class="FFigureCaption">
+  <a name="999749"> </a><b>Figure 4.1&nbsp;&nbsp;HotSync Manager progress display indicator</b>
+</p>
+<div align="left"><img src="images/HotSyncProgress.jpg" border="0" hspace="0" vspace="0">
+</div>
+
+<p><a name="999754"> </a></p>
+&nbsp;<br>
+</div>
+<!--END CONTENT-->
+
+</td>
+<td width="5">&nbsp;&nbsp;</td>
+</tr>
+
+</table>
+
+<!-- BEGIN FOOTER -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="7" rowspan="2"><img name="index_x" src="images/shim.gif" width="7" height="33" border="0" alt=""></td>
+<td align="left"><img name="dashes" src="images/dashes.gif" width="744" height="3" border="0" alt=""></td>
+<td width="10" rowspan="2"><img name="index_x" src="images/shim.gif" width="10" height="33" border="0" alt=""></td>
+</tr>
+<tr>
+<td align="center">
+<p class="footer">
+Copyright © 1999-2004, PalmSource, Inc. and its affiliates. All rights reserved.<br>
+<a href="http://www.palmsource.com/contact/">Write Us</a> | <a href="http://www.palmos.com/dev/training/">Training</a> | <a href="http://www.palmos.com/dev/support/kb/">Knowledge Base</a> | <a href="CComp_Front.html" target="_blank">Legal</a></p>
+<br>
+<!--BEGIN BOOK NAVIGATION-->
+<p class="nav">
+<A href="http://www.palmos.com/dev/support/docs/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="C++SyncCompanionTOC.html">Table of Contents</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_EntryPoints.html">&lt;&nbsp;Previous</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="CComp_SyncMgrExtended.html">Next&nbsp;&gt;</a>&nbsp;&nbsp;
+             |&nbsp;&nbsp;<a href="C++SyncCompanionIX.html">Index</a>
+</p>
+</td>
+</tr>
+<!-- END FOOTER -->
+
+</body>
+</html>

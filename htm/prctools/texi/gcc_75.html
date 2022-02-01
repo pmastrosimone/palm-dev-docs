@@ -1,0 +1,137 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Variable Length</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Variable Length">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Variable Length">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC75"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_74.html#SEC74"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_76.html#SEC76"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_63.html#SEC63"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 4.14 Arrays of Variable Length </H2>
+<!--docid::SEC75::-->
+<P>
+
+Variable-length automatic arrays are allowed in GNU C.  These arrays are
+declared like any other automatic arrays, but with a length that is not
+a constant expression.  The storage is allocated at the point of
+declaration and deallocated when the brace-level is exited.  For
+example:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>FILE *
+concat_fopen (char *s1, char *s2, char *mode)
+{
+  char str[strlen (s1) + strlen (s2) + 1];
+  strcpy (str, s1);
+  strcat (str, s2);
+  return fopen (str, mode);
+}
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX266"></A>
+<A NAME="IDX267"></A>
+<A NAME="IDX268"></A>
+Jumping or breaking out of the scope of the array name deallocates the
+storage.  Jumping into the scope is not allowed; you get an error
+message for it.
+</P><P>
+
+<A NAME="IDX269"></A>
+You can use the function <CODE>alloca</CODE> to get an effect much like
+variable-length arrays.  The function <CODE>alloca</CODE> is available in
+many other C implementations (but not in all).  On the other hand,
+variable-length arrays are more elegant.
+</P><P>
+
+There are other differences between these two methods.  Space allocated
+with <CODE>alloca</CODE> exists until the containing <EM>function</EM> returns.
+The space for a variable-length array is deallocated as soon as the array
+name's scope ends.  (If you use both variable-length arrays and
+<CODE>alloca</CODE> in the same function, deallocation of a variable-length array
+will also deallocate anything more recently allocated with <CODE>alloca</CODE>.)
+</P><P>
+
+You can also use variable-length arrays as arguments to functions:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>struct entry
+tester (int len, char data[len][len])
+{
+  <small>...</small>
+}
+</pre></td></tr></table></P><P>
+
+The length of an array is computed once when the storage is allocated
+and is remembered for the scope of the array in case you access it with
+<CODE>sizeof</CODE>.
+</P><P>
+
+If you want to pass the array first and the length afterward, you can
+use a forward declaration in the parameter list--another GNU extension.
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>struct entry
+tester (int len; char data[len][len], int len)
+{
+  <small>...</small>
+}
+</pre></td></tr></table></P><P>
+
+<A NAME="IDX270"></A>
+The <SAMP>`int len'</SAMP> before the semicolon is a <EM>parameter forward
+declaration</EM>, and it serves the purpose of making the name <CODE>len</CODE>
+known when the declaration of <CODE>data</CODE> is parsed.
+</P><P>
+
+You can write any number of such parameter forward declarations in the
+parameter list.  They can be separated by commas or semicolons, but the
+last one must end with a semicolon, which is followed by the "real"
+parameter declarations.  Each forward declaration must match a "real"
+declaration in parameter name and data type.
+</P><P>
+
+<A NAME="Macro Varargs"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_74.html#SEC74"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_76.html#SEC76"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_63.html#SEC63"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_61.html#SEC61"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_110.html#SEC110"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,168 @@
+<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on 2003-09-18 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
+<HEAD>
+<TITLE>Using the GNU Compiler Collection: Include Files and VMS</TITLE>
+
+<META NAME="description" CONTENT="Using the GNU Compiler Collection: Include Files and VMS">
+<META NAME="keywords" CONTENT="Using the GNU Compiler Collection: Include Files and VMS">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
+</HEAD>
+
+<BODY >
+
+<A NAME="SEC148"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_147.html#SEC147"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_149.html#SEC149"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_147.html#SEC147"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_147.html#SEC147"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H2> 11.1 Include Files and VMS </H2>
+<!--docid::SEC148::-->
+<P>
+
+<A NAME="IDX458"></A>
+<A NAME="IDX459"></A>
+<A NAME="IDX460"></A>
+Due to the differences between the filesystems of Unix and VMS, GCC
+attempts to translate file names in <SAMP>`#include'</SAMP> into names that VMS
+will understand.  The basic strategy is to prepend a prefix to the
+specification of the include file, convert the whole filename to a VMS
+filename, and then try to open the file.  GCC tries various prefixes
+one by one until one of them succeeds:
+</P><P>
+
+<OL>
+<LI>
+The first prefix is the <SAMP>`GNU_CC_INCLUDE:'</SAMP> logical name: this is
+where GNU C header files are traditionally stored.  If you wish to store
+header files in non-standard locations, then you can assign the logical
+<SAMP>`GNU_CC_INCLUDE'</SAMP> to be a search list, where each element of the
+list is suitable for use with a rooted logical.
+<P>
+
+<LI>
+The next prefix tried is <SAMP>`SYS$SYSROOT:[SYSLIB.]'</SAMP>.  This is where
+VAX-C header files are traditionally stored.
+<P>
+
+<LI>
+If the include file specification by itself is a valid VMS filename, the
+preprocessor then uses this name with no prefix in an attempt to open
+the include file.
+<P>
+
+<LI>
+If the file specification is not a valid VMS filename (i.e. does not
+contain a device or a directory specifier, and contains a <SAMP>`/'</SAMP>
+character), the preprocessor tries to convert it from Unix syntax to
+VMS syntax.
+<P>
+
+Conversion works like this: the first directory name becomes a device,
+and the rest of the directories are converted into VMS-format directory
+names.  For example, the name <TT>`X11/foobar.h'</TT> is
+translated to <TT>`X11:[000000]foobar.h'</TT> or <TT>`X11:foobar.h'</TT>,
+whichever one can be opened.  This strategy allows you to assign a
+logical name to point to the actual location of the header files.
+</P><P>
+
+<LI>
+If none of these strategies succeeds, the <SAMP>`#include'</SAMP> fails.
+</OL>
+<P>
+
+Include directives of the form:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#include foobar
+</pre></td></tr></table></P><P>
+
+are a common source of incompatibility between VAX-C and GCC.  VAX-C
+treats this much like a standard <CODE>#include &#60;foobar.h&#62;</CODE> directive.
+That is incompatible with the ANSI C behavior implemented by GCC: to
+expand the name <CODE>foobar</CODE> as a macro.  Macro expansion should
+eventually yield one of the two standard formats for <CODE>#include</CODE>:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#include "<VAR>file</VAR>"
+#include &#60;<VAR>file</VAR>&#62;
+</pre></td></tr></table></P><P>
+
+If you have this problem, the best solution is to modify the source to
+convert the <CODE>#include</CODE> directives to one of the two standard forms.
+That will work with either compiler.  If you want a quick and dirty fix,
+define the file names as macros with the proper expansion, like this:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#define stdio &#60;stdio.h&#62;
+</pre></td></tr></table></P><P>
+
+This will work, as long as the name doesn't conflict with anything else
+in the program.
+</P><P>
+
+Another source of incompatibility is that VAX-C assumes that:
+</P><P>
+
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>#include "foobar"
+</pre></td></tr></table></P><P>
+
+is actually asking for the file <TT>`foobar.h'</TT>.  GCC does not
+make this assumption, and instead takes what you ask for literally;
+it tries to read the file <TT>`foobar'</TT>.  The best way to avoid this
+problem is to always specify the desired file extension in your include
+directives.
+</P><P>
+
+GCC for VMS is distributed with a set of include files that is
+sufficient to compile most general purpose programs.  Even though the
+GCC distribution does not contain header files to define constants
+and structures for some VMS system-specific functions, there is no
+reason why you cannot use GCC with any of these functions.  You first
+may have to generate or create header files, either by using the public
+domain utility <CODE>UNSDL</CODE> (which can be found on a DECUS tape), or by
+extracting the relevant modules from one of the system macro libraries,
+and using an editor to construct a C header file.
+</P><P>
+
+A <CODE>#include</CODE> file name cannot contain a DECNET node name.  The
+preprocessor reports an I/O error if you attempt to use a node name,
+whether explicitly, or implicitly via a logical name.
+</P><P>
+
+<A NAME="Global Declarations"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_147.html#SEC147"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_149.html#SEC149"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_147.html#SEC147"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_147.html#SEC147"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_157.html#SEC157">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="gcc_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+
+</BODY>
+</HTML>
